@@ -9,4 +9,5 @@ comments: false
 ---
 
 Per scrivere in *Markdown* non é necessario conoscere le equazioni, ma per scrivere un'equazione è necessario conoscere il linguaggio *Markdown*:
-$$(3x-5)^2=5$$ 
+
+$$(3x-5)^2=5$$
