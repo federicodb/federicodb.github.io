@@ -15,4 +15,4 @@ Sono convinto che l'utilizzo di queste tecnologie possa aiutare gli studenti a c
 
 Sul mio sito troverete risorse didattiche, tutorial e consigli per utilizzare la stampa 3D e il coding nell'insegnamento della matematica, spero possano esservi utili!
 
-<iframe src="https://editor.p5js.org/federicodebenedictis/full/ox00d0oij"></iframe>
+<iframe src="https://editor.p5js.org/federicodebenedictis/full/ox00d0oij frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
