@@ -11,3 +11,4 @@ Da quando insegno ho sempre cercato di rendere l'apprendimento della matematica 
 
 Sono convinto che l'utilizzo di queste tecnologie possa aiutare gli studenti a comprendere meglio i concetti matematici e a sviluppare le loro capacità di pensiero critico e problem solving. Sul mio sito troverete risorse didattiche, tutorial e consigli per utilizzare la stampa 3D e il coding nell'insegnamento della matematica, spero possano esservi utili!
 
+<iframe src="https://editor.p5js.org/federicodebenedictis/full/ox00d0oij"></iframe>
