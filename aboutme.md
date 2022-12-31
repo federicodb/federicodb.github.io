@@ -5,7 +5,7 @@ subtitle: Why you'd want to go on a date with me
 ---
 ### My story
 
-Sono un professore di matematica, e da un paio di anni ho creato un account instagram, [Melting Math](https://instagram.com/meltingmath). 
+Sono un professore di matematica, e da un paio di anni ho creato un account instagram, [Melting Math](https://instagram.com/meltingmath). Lì raccolgo i miei esperimenti con Blender, di animazione e di modellazione parametrica. Contiene anche esperimenti con A.I. per la generazione di immagini, video ed animazioni.
 
 Da quando insegno ho sempre cercato di rendere l'apprendimento della matematica il più interessante e coinvolgente possibile per i miei studenti, e negli ultimi anni ho scoperto che utilizzare la stampa 3D e il coding nella mia didattica è un ottimo modo per raggiungere questo obiettivo. 
 
