@@ -3,14 +3,11 @@ layout: page
 title: About me
 subtitle: Why you'd want to go on a date with me
 ---
-
-My name is Inigo Montoya. I have the following qualities:
-
-- I rock a great mustache
-- I'm extremely loyal to my family
-
-What else do you need?
-
 ### My story
 
-To be honest, I'm having some trouble remembering right now, so why don't you just watch [my movie](https://en.wikipedia.org/wiki/The_Princess_Bride_%28film%29) and it will answer **all** your questions.
+Sono un professore di matematica, e da un paio di anni ho creato un account instagram, [Melting Math](https://instagram.com/meltingmath). 
+
+Da quando insegno ho sempre cercato di rendere l'apprendimento della matematica il più interessante e coinvolgente possibile per i miei studenti, e negli ultimi anni ho scoperto che utilizzare la stampa 3D e il coding nella mia didattica è un ottimo modo per raggiungere questo obiettivo. 
+
+Sono convinto che l'utilizzo di queste tecnologie possa aiutare gli studenti a comprendere meglio i concetti matematici e a sviluppare le loro capacità di pensiero critico e problem solving. Sul mio sito troverete risorse didattiche, tutorial e consigli per utilizzare la stampa 3D e il coding nell'insegnamento della matematica, spero possano esservi utili!
+
