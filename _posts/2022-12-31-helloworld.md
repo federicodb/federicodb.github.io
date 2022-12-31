@@ -42,7 +42,7 @@ per il quale basta il codice:
 {% highlight latex %}
 $$\begin{cases}
     (3x-5)^2 \geq 5 \\
-    x<9> \\
+    x<9 \\
     x-4>x^2-2
 \end{cases}$$
 {% endhighlight %}
