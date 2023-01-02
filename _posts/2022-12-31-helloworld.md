@@ -2,7 +2,7 @@
 layout: post
 title: LaTeX, GitHub e Markdown
 subtitle: Come scrivere la matematica in classe nel 2023
-tags: [test]
+tags: [math, latex, github, markdown, coding]
 comments: false
 ---
 
