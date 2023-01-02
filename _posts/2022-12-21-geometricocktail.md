@@ -104,6 +104,8 @@ La stampa 3D ci ha dato la possibilità di sperimentare con la tassellazione, ai
 ### Il taglia-pasta di Sierpinski
 Inoltre sono stati creati dei taglia-pasta a forma di triangolo equilatero, che combinati con un certo criterio hanno permesso di ricreare una geometria frattale molto affascinante, il *triangolo di Sierpinski*.
 
+![triangolo di sierp](../assets/img/sierp.png)
+
 Il triangolo di Sierpinski è ottenuto a partire da un triangolo equilatero di lato $$l$$ area $$A_{0}$$.
 Congiungendo i punti medi dei lati si ottiene una suddivisione del triangolo originale in 4 triangoli, di cui uno (quello bianco) capovolto.
 Pensiamo di scartare il triangolo capovolto. Allora l'area restante è pari a $$\frac{3}{4}A_{0}$$. Al contrario, il perimetro iniziale, pari a $3l$, cresce di $$\frac{3}{2}l$$.
