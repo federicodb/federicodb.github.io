@@ -106,10 +106,10 @@ Inoltre sono stati creati dei taglia-pasta a forma di triangolo equilatero, che 
 
 ![triangolo di Sierpinski](https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Sierpinsky_triangle_%28evolution%29.png/930px-Sierpinsky_triangle_%28evolution%29.png =600x)
 
-Il triangolo di Sierpinski è ottenuto a partire da un triangolo equilatero di lato $l$ area $A_{0}$.
+Il triangolo di Sierpinski è ottenuto a partire da un triangolo equilatero di lato $l$ area $$A_{0}$$.
 Congiungendo i punti medi dei lati si ottiene una suddivisione del triangolo originale in 4 triangoli, di cui uno (quello bianco) capovolto.
-Pensiamo di scartare il triangolo capovolto. Allora l'area restante è pari a $\frac{3}{4}A_{0}$. Al contrario, il perimetro iniziale, pari a $3l$, cresce di $\frac{3}{2}l$
-Se continuiamo per successive *iterazioni*, otteniamo ad ogni passaggio i $\frac{3}{4}$ dell'area del passaggio precedente, ed il perimetro cresce di $\frac{9}{4}l$. 
+Pensiamo di scartare il triangolo capovolto. Allora l'area restante è pari a $$\frac{3}{4}A_{0}$$. Al contrario, il perimetro iniziale, pari a $3l$, cresce di $$\frac{3}{2}l$$.
+Se continuiamo per successive *iterazioni*, otteniamo ad ogni passaggio i $$\frac{3}{4}$$ dell'area del passaggio precedente, ed il perimetro cresce di $$\frac{9}{4}l$$. 
 L'area diminuisce, mentre il perimetro totale cresce. 
 
 Continuando all'infinito otteniamo un [*frattale*](https://it.wikipedia.org/wiki/Frattale), ossia un oggetto geometrico che si ripete nella sua forma allo stesso modo su scale diverse, e dunque ingrandendo una qualunque sua parte si ottiene una figura simile all'originale. Si dice quindi geometria frattale, la geometria (non euclidea) che studia queste strutture, ricorrenti ad esempio nella progettazione ingegneristica di reti e in molti fenomeni naturali, dall'infinitamente piccolo all'infinitamente grande.
