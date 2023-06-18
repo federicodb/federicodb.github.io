@@ -1,3 +1,12 @@
+---
+layout: post
+title: Funzioni di variabile reale
+subtitle: Appunti del corso di matematica 22/23
+tags: [STEAM, math, geometry, 3dprint]
+comments: false
+---
+
+
 # Funzioni di variabile reale
 
 Created time: June 13, 2023 5:17 PM
