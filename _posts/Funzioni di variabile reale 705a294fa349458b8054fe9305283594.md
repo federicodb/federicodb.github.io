@@ -8,12 +8,6 @@ comments: false
 
 
 # Funzioni di variabile reale
-
-Created time: June 13, 2023 5:17 PM
-Last edited time: June 18, 2023 9:56 AM
-Owner: Federico De Benedictis
-Tags: Policies
-
 ![Firefly math functions plots handwriting sketched 43940.jpg](Funzioni%20di%20variabile%20reale%20705a294fa349458b8054fe9305283594/Firefly_math_functions_plots_handwriting_sketched_43940.jpg)
 
 ## Cosa è una funzione
