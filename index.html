@@ -1,5 +1,176 @@
----
-layout: home
-title: Melting Math
-subtitle: A space for melting math
----
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archivio Didattico</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    
+    <style>
+        /* Layout */
+        .header-section { margin-bottom: 2rem; border-bottom: 1px solid var(--muted-border-color); padding-bottom: 1rem; }
+        
+        /* Wordcloud Container */
+        #cloud-container {
+            width: 100%;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            position: relative;
+        }
+        /* Messaggio sovrapposto alla cloud se vuota */
+        #cloud-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: var(--muted-color); pointer-events: none;
+        }
+
+        /* Card Articoli */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        article { cursor: pointer; transition: transform 0.2s, opacity 0.3s; }
+        article:hover { transform: translateY(-5px); border-color: var(--primary); }
+        
+        /* Tag Styles */
+        .tag-pill { 
+            font-size: 0.75rem; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            background: var(--card-background-color); 
+            border: 1px solid var(--muted-border-color);
+            margin-right: 5px;
+            display: inline-block;
+        }
+        .active-filter { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        /* Control Bar */
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+    <main class="container">
+        
+        <header class="header-section">
+            <hgroup>
+                <h1>Diario di Laboratorio</h1>
+                <h2>Esplora le attività per tema, classe o anno</h2>
+            </hgroup>
+        </header>
+
+        <section>
+            <small>Filtra cliccando sulle parole chiave o esplora la nuvola:</small>
+            <div id="cloud-container">
+                <canvas id="word-cloud" width="1000" height="300"></canvas>
+                <div id="cloud-overlay">Caricamento Tags...</div>
+            </div>
+            
+            <div class="controls">
+                <strong id="results-count">Mostrando tutti i post</strong>
+                <button class="outline secondary" onclick="resetFilters()" style="width: auto; font-size: 0.8rem;">Resetta Filtri ✕</button>
+            </div>
+        </section>
+
+        <div class="grid-cards" id="posts-grid">
+            </div>
+
+    </main>
+
+    <script src="database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+
+    <script>
+        const grid = document.getElementById('posts-grid');
+        const countLabel = document.getElementById('results-count');
+        let activeTag = null;
+
+        // --- FUNZIONE: Inizializzazione ---
+        window.onload = function() {
+            renderPosts(db);
+            generateCloud(db);
+        };
+
+        // --- FUNZIONE: Disegna i Post ---
+        function renderPosts(data) {
+            grid.innerHTML = '';
+            
+            // Ordina per data (dal più recente)
+            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            data.forEach(post => {
+                const article = document.createElement('article');
+                article.onclick = () => window.location.href = post.url;
+                
+                // Crea HTML dei tag
+                const tagsHtml = post.tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
+                const dateObj = new Date(post.date).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                article.innerHTML = `
+                    <header><small>${dateObj}</small></header>
+                    <h4>${post.title}</h4>
+                    <p>${post.excerpt}</p>
+                    <footer>${tagsHtml}</footer>
+                `;
+                grid.appendChild(article);
+            });
+            
+            countLabel.innerText = `Visualizzati ${data.length} post`;
+        }
+
+        // --- FUNZIONE: Genera Wordcloud ---
+        function generateCloud(data) {
+            // Estrae e conta tutti i tag
+            const tagCounts = {};
+            data.forEach(post => {
+                post.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            });
+
+            // Converte in formato array per wordcloud2: [['Tag', peso], ...]
+            // Aumentiamo il peso per renderli più leggibili
+            const list = Object.keys(tagCounts).map(key => [key, tagCounts[key] * 15 + 10]);
+
+            const canvas = document.getElementById('word-cloud');
+            // Adatta il canvas alla larghezza del contenitore
+            canvas.width = document.getElementById('cloud-container').offsetWidth;
+            
+            document.getElementById('cloud-overlay').style.display = 'none';
+
+            WordCloud(canvas, {
+                list: list,
+                gridSize: 8,
+                weightFactor: 1.2, // Scala la dimensione
+                fontFamily: 'system-ui, sans-serif',
+                color: 'random-light', // Colori chiari per tema scuro
+                backgroundColor: 'transparent',
+                rotateRatio: 0, // 0 = tutto orizzontale (più leggibile)
+                click: function(item) {
+                    filterByTag(item[0]);
+                },
+                hover: function(item, dimension, event) {
+                    canvas.style.cursor = item ? 'pointer' : 'default';
+                }
+            });
+        }
+
+        // --- FUNZIONE: Filtra ---
+        function filterByTag(tag) {
+            activeTag = tag;
+            const filtered = db.filter(post => post.tags.includes(tag));
+            renderPosts(filtered);
+            countLabel.innerHTML = `Filtro: <strong>${tag}</strong> (${filtered.length})`;
+            window.scrollTo({ top: document.getElementById('posts-grid').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function resetFilters() {
+            activeTag = null;
+            renderPosts(db);
+        }
+        
+        // Ridisegna la cloud se si ridimensiona la finestra
+        window.onresize = () => generateCloud(db);
+
+    </script>
+</body>
+</html>
