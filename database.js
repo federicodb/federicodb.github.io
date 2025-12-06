@@ -5,25 +5,25 @@
 
 const db = [
     {
-        title: "Onde e Armoniche",
-        date: "2025-12-10", // Formato YYYY-MM-DD per ordinamento
-        url: "lezioni/01-onde.html",
-        tags: ["Fisica", "5A-Informatica", "p5.js", "Onde", "Seno", "Laboratorio"],
-        excerpt: "Visualizzazione interattiva delle onde sinusoidali."
+        title: "Classificazione di Funzioni",
+        date: "2025-12-6", // Formato YYYY-MM-DD per ordinamento
+        url: "lezioni/math_underground003_4el.html",
+        tags: ["Funzioni", "DOminio", "Classificazione", "Onde", "Seno", "Laboratorio"],
+        excerpt: "Mappa per la classificazione di funzioni"
     },
     {
-        title: "Frattali e Ricorsione",
+        title: "Scomposizione di polinomi",
         date: "2025-11-15",
-        url: "lezioni/02-frattali.html",
-        tags: ["Matematica", "4B-Grafica", "Ricorsione", "Arte Generativa", "Mandelbrot"],
-        excerpt: "Creare l'insieme di Mandelbrot pixel per pixel."
+        url: "lezioni/cards_polinomi_memory004.html",
+        tags: ["Matematica", "Polinomi", "Scomposizio", "Algebra", "Memo"],
+        excerpt: "Visualizzare graficamente le principali scomposizioni di polinomi"
     },
     {
-        title: "Statistica con D3.js",
+        title: "Operazioni in Z",
         date: "2025-10-20",
-        url: "lezioni/03-d3js.html",
-        tags: ["Matematica", "5A-Informatica", "Dati", "Open Source", "JavaScript"],
-        excerpt: "Analisi dati visuale direttamente nel browser."
+        url: "lezioni/memory_1el_numeri_004.html",
+        tags: ["Matematica", "Potenze", "Operazioni", "Proprietà", "Errori"],
+        excerpt: "Impariamo a lavorare con i numeri interi"
     },
     // Aggiungi qui le nuove lezioni...
 ];
