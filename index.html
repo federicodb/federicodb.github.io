@@ -1,176 +1,168 @@
 <!DOCTYPE html>
-<html lang="it" data-theme="dark">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archivio Didattico</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FedericoDB Lab</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     
     <style>
-        /* Layout */
-        .header-section { margin-bottom: 2rem; border-bottom: 1px solid var(--muted-border-color); padding-bottom: 1rem; }
-        
-        /* Wordcloud Container */
-        #cloud-container {
-            width: 100%;
-            height: 300px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            cursor: pointer;
-            position: relative;
-        }
-        /* Messaggio sovrapposto alla cloud se vuota */
-        #cloud-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: var(--muted-color); pointer-events: none;
+        :root {
+            --primary: #4f46e5; /* Indaco professionale */
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
         }
 
-        /* Card Articoli */
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-        article { cursor: pointer; transition: transform 0.2s, opacity 0.3s; }
-        article:hover { transform: translateY(-5px); border-color: var(--primary); }
-        
-        /* Tag Styles */
-        .tag-pill { 
-            font-size: 0.75rem; 
-            padding: 2px 8px; 
-            border-radius: 12px; 
-            background: var(--card-background-color); 
-            border: 1px solid var(--muted-border-color);
-            margin-right: 5px;
-            display: inline-block;
+        body {
+            background-color: #0f172a; /* Slate 900 (Scuro elegante) */
+            color: var(--text-main);
+            padding-bottom: 3rem;
         }
-        .active-filter { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Intestazione */
+        header { padding: 2rem 0; text-align: center; }
+        header h1 { margin-bottom: 0.5rem; color: #38bdf8; text-transform: uppercase; letter-spacing: 2px; }
         
-        /* Control Bar */
-        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        /* Filtri (bottoni stile chip) */
+        .filters {
+            display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 1rem; margin-bottom: 2rem;
+            justify-content: center; -webkit-overflow-scrolling: touch;
+        }
+        .filter-btn {
+            background: #334155; border: 1px solid #475569; color: #cbd5e1;
+            padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem; cursor: pointer; white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
+
+        /* Griglia Responsive */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Card della Lezione */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            text-decoration: none; /* Rimuove sottolineatura link */
+            color: inherit;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-color: #38bdf8; }
+
+        /* Elementi della Card */
+        .card-meta { display: flex; justify-content: space-between; font-size: 0.7rem; color: #94a3b8; margin-bottom: 0.5rem; uppercase; letter-spacing: 1px; }
+        .card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; color: white; }
+        .card p { font-size: 0.9rem; color: #cbd5e1; flex-grow: 1; margin-bottom: 1rem; }
+        
+        /* Tags visivi */
+        .card-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background: #334155; color: #94a3b8; }
+        
+        /* Icona Tipo Lezione (Angolo in alto a destra) */
+        .card-icon { position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; opacity: 0.5; }
+
     </style>
 </head>
 <body>
 
     <main class="container">
-        
-        <header class="header-section">
-            <hgroup>
-                <h1>Diario di Laboratorio</h1>
-                <h2>Esplora le attività per tema, classe o anno</h2>
-            </hgroup>
+        <header>
+            <h1>Laboratorio Digitale</h1>
+            <p>Matematica • Fisica • Coding • Creatività</p>
         </header>
 
-        <section>
-            <small>Filtra cliccando sulle parole chiave o esplora la nuvola:</small>
-            <div id="cloud-container">
-                <canvas id="word-cloud" width="1000" height="300"></canvas>
-                <div id="cloud-overlay">Caricamento Tags...</div>
-            </div>
-            
-            <div class="controls">
-                <strong id="results-count">Mostrando tutti i post</strong>
-                <button class="outline secondary" onclick="resetFilters()" style="width: auto; font-size: 0.8rem;">Resetta Filtri ✕</button>
-            </div>
-        </section>
+        <div class="filters" id="filterBar">
+            <button class="filter-btn active" data-filter="all">Tutti</button>
+            <button class="filter-btn" data-filter="1EL">1ª Elettronica</button>
+            <button class="filter-btn" data-filter="4EL">4ª Elettronica</button>
+            <button class="filter-btn" data-filter="Matematica">Matematica</button>
+            <button class="filter-btn" data-filter="Lab">Laboratorio</button>
+            <button class="filter-btn" data-filter="Giochi">Giochi</button>
+        </div>
 
-        <div class="grid-cards" id="posts-grid">
-            </div>
+        <div class="grid-container">
 
+            <a href="lezioni/cards_polinomi_memory004.html" class="card" data-tags="Matematica Giochi 1EL">
+                <div class="card-icon">🧩</div> <div class="card-meta">
+                    <span>15 Nov 2025</span>
+                    <span style="color: #fbbf24;">★ New</span>
+                </div>
+                <h3>FactorMatch Memory</h3>
+                <p>Sfida a tempo sulle scomposizioni di polinomi. Trova le coppie tra polinomio e fattorizzazione.</p>
+                <div class="card-tags">
+                    <span class="tag">#Algebra</span>
+                    <span class="tag">#Gamification</span>
+                </div>
+            </a>
+
+            <a href="lezioni/math_underground003_4el.html" class="card" data-tags="Matematica 4EL Lab">
+                <div class="card-icon">🚇</div>
+                <div class="card-meta">
+                    <span>06 Dic 2025</span>
+                </div>
+                <h3>Math Underground</h3>
+                <p>Mappa interattiva stile metropolitana per visualizzare il dominio e la classificazione delle funzioni.</p>
+                <div class="card-tags">
+                    <span class="tag">#Analisi</span>
+                    <span class="tag">#Mappe</span>
+                </div>
+            </a>
+
+            <a href="lezioni/voto_consapevole_2.5.html" class="card" data-tags="Lab Civica 4EL">
+                <div class="card-icon">🎲</div>
+                <div class="card-meta">
+                    <span>01 Ott 2025</span>
+                </div>
+                <h3>Voto Consapevole</h3>
+                <p>Simulazione interattiva sull'Equilibrio di Nash applicato alla media dei voti scolastici.</p>
+                <div class="card-tags">
+                    <span class="tag">#EdCivica</span>
+                    <span class="tag">#Simulazione</span>
+                </div>
+            </a>
+
+            </div>
     </main>
 
-    <script src="database.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
-
     <script>
-        const grid = document.getElementById('posts-grid');
-        const countLabel = document.getElementById('results-count');
-        let activeTag = null;
+        // Logica semplice per i filtri (Vanilla JS - 0 dipendenze)
+        const buttons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.card');
 
-        // --- FUNZIONE: Inizializzazione ---
-        window.onload = function() {
-            renderPosts(db);
-            generateCloud(db);
-        };
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 1. Gestione stile bottone attivo
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
 
-        // --- FUNZIONE: Disegna i Post ---
-        function renderPosts(data) {
-            grid.innerHTML = '';
-            
-            // Ordina per data (dal più recente)
-            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const filterValue = btn.getAttribute('data-filter');
 
-            data.forEach(post => {
-                const article = document.createElement('article');
-                article.onclick = () => window.location.href = post.url;
-                
-                // Crea HTML dei tag
-                const tagsHtml = post.tags.map(t => `<span class="tag-pill">${t}</span>`).join('');
-                const dateObj = new Date(post.date).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' });
-
-                article.innerHTML = `
-                    <header><small>${dateObj}</small></header>
-                    <h4>${post.title}</h4>
-                    <p>${post.excerpt}</p>
-                    <footer>${tagsHtml}</footer>
-                `;
-                grid.appendChild(article);
-            });
-            
-            countLabel.innerText = `Visualizzati ${data.length} post`;
-        }
-
-        // --- FUNZIONE: Genera Wordcloud ---
-        function generateCloud(data) {
-            // Estrae e conta tutti i tag
-            const tagCounts = {};
-            data.forEach(post => {
-                post.tags.forEach(tag => {
-                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                // 2. Logica Filtro
+                cards.forEach(card => {
+                    const tags = card.getAttribute('data-tags'); // Legge i tag dalla card
+                    
+                    if (filterValue === 'all') {
+                        card.style.display = 'flex';
+                    } else {
+                        // Controlla se il tag è presente nella stringa data-tags
+                        if (tags.includes(filterValue)) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
                 });
             });
-
-            // Converte in formato array per wordcloud2: [['Tag', peso], ...]
-            // Aumentiamo il peso per renderli più leggibili
-            const list = Object.keys(tagCounts).map(key => [key, tagCounts[key] * 15 + 10]);
-
-            const canvas = document.getElementById('word-cloud');
-            // Adatta il canvas alla larghezza del contenitore
-            canvas.width = document.getElementById('cloud-container').offsetWidth;
-            
-            document.getElementById('cloud-overlay').style.display = 'none';
-
-            WordCloud(canvas, {
-                list: list,
-                gridSize: 8,
-                weightFactor: 1.2, // Scala la dimensione
-                fontFamily: 'system-ui, sans-serif',
-                color: 'random-light', // Colori chiari per tema scuro
-                backgroundColor: 'transparent',
-                rotateRatio: 0, // 0 = tutto orizzontale (più leggibile)
-                click: function(item) {
-                    filterByTag(item[0]);
-                },
-                hover: function(item, dimension, event) {
-                    canvas.style.cursor = item ? 'pointer' : 'default';
-                }
-            });
-        }
-
-        // --- FUNZIONE: Filtra ---
-        function filterByTag(tag) {
-            activeTag = tag;
-            const filtered = db.filter(post => post.tags.includes(tag));
-            renderPosts(filtered);
-            countLabel.innerHTML = `Filtro: <strong>${tag}</strong> (${filtered.length})`;
-            window.scrollTo({ top: document.getElementById('posts-grid').offsetTop - 100, behavior: 'smooth' });
-        }
-
-        function resetFilters() {
-            activeTag = null;
-            renderPosts(db);
-        }
-        
-        // Ridisegna la cloud se si ridimensiona la finestra
-        window.onresize = () => generateCloud(db);
-
+        });
     </script>
 </body>
 </html>
