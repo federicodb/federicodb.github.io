@@ -6,11 +6,19 @@
 const db = [
     {
         "title": "FactorMatch",
-        "excerpt": "Attività di laboratorio interattiva.",
-        "tags": [],
+        "excerpt": "Impariamo ad associare un polinomio con la sua forma fattorizzata.",
+        "tags": [
+            "Matematica",
+            "Algebra",
+            "Scomposizioni",
+            "Polinomi",
+            "Tecniche",
+            "Raccoglimento",
+            "Fattorizzazione"
+        ],
         "url": "lezioni/cards_polinomi_memory004.html",
         "date": "2025-12-07",
-        "icon": "📄"
+        "icon": "📐"
     },
     {
         "title": "Math Underground",
@@ -29,12 +37,17 @@ const db = [
         "icon": "📄"
     },
     {
-        "title": "Game Theory Lab 2.5 🎲",
-        "excerpt": "Attività di laboratorio interattiva.",
-        "tags": [],
+        "title": "Voto Consapevole",
+        "excerpt": "Una attività sull",
+        "tags": [
+            "Matematica",
+            "Teoria dei Giochi",
+            "Equilibrio di Nash",
+            "Cittadinanza Consapevole"
+        ],
         "url": "lezioni/voto_consapevole_2.5.html",
         "date": "2025-12-07",
-        "icon": "📄"
+        "icon": "📐"
     },
     {
         "title": "Math Invaders 2.5",
@@ -42,14 +55,6 @@ const db = [
         "tags": [],
         "url": "lezioni/MCD_mcm_1el_002.html",
         "date": "2025-12-05",
-        "icon": "📄"
-    },
-    {
-        "title": "Game Theory Lab 2.5 🎲",
-        "excerpt": "Attività di laboratorio interattiva.",
-        "tags": [],
-        "url": "lezioni/voto_cosapevole.2.5.html",
-        "date": "2025-12-04",
         "icon": "📄"
     },
     {
