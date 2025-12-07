@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GonioMatch - Signal Processing</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configurazione Tailwind per Dark Mode e Font -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        math: ['Noto Serif', 'serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        radar: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            900: '#14532d',
+                            950: '#052e16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- KaTeX per la matematica -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Serif:wght@700&family=Fira+Code:wght@500&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        /* --- 3D CARD ENGINE --- */
+        .perspective-1000 { perspective: 1000px; }
+        
+        .flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .flipper.flipped { transform: rotateY(180deg); }
+
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .face-front { transform: rotateY(0deg); }
+        .face-back { transform: rotateY(180deg); }
+
+        /* Scrollbar Invisibile ma funzionale */
+        .scroller::-webkit-scrollbar { width: 4px; }
+        .scroller::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark .scroller::-webkit-scrollbar-thumb { background: #475569; }
+
+        /* Griglia CRT per sfondo */
+        .bg-crt {
+            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="root" class="h-full w-full"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+
+        // --- CONFIGURAZIONE COSTANTI ---
+        const RUSH_MEM_TIME = 10;
+        const RUSH_PLAY_TIME = 120;
+
+        const AVATARS = ['📡', '🔭', '🛰️', '📻', '🧬', '🔬', '🥽', '💾', '🕹️', '📟', '🔋', '🏗️'];
+        
+        // EMOJI "RADAR/SIGNAL" THEME
+        const EMOJI_POOL = [
+            '📡','🌊','📻','🔊','📶','🔌','🔋','💿','💾','🕹️','📺','🧭',
+            '⏲️','🧲','🧬','🌡️','📐','📏','📎','📌','📍','🔭','🔬','🩸',
+            '🦠','💊','🩺','🧪','🧹','🔧','🔨','⛏️','🔩','⚙️','🧱','🛢️'
+        ];
+
+        // COLORI PER COPPIE (Alto contrasto e distintivi)
+        const PAIR_COLORS = [
+            'bg-rose-50 text-rose-900 border-rose-400 dark:bg-rose-950/40 dark:text-rose-200 dark:border-rose-700',
+            'bg-emerald-50 text-emerald-900 border-emerald-400 dark:bg-emerald-950/40 dark:text-emerald-200 dark:border-emerald-700',
+            'bg-sky-50 text-sky-900 border-sky-400 dark:bg-sky-950/40 dark:text-sky-200 dark:border-sky-700',
+            'bg-amber-50 text-amber-900 border-amber-400 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-700',
+            'bg-violet-50 text-violet-900 border-violet-400 dark:bg-violet-950/40 dark:text-violet-200 dark:border-violet-700',
+            'bg-orange-50 text-orange-900 border-orange-400 dark:bg-orange-950/40 dark:text-orange-200 dark:border-orange-700',
+            'bg-pink-50 text-pink-900 border-pink-400 dark:bg-pink-950/40 dark:text-pink-200 dark:border-pink-700',
+            'bg-cyan-50 text-cyan-900 border-cyan-400 dark:bg-cyan-950/40 dark:text-cyan-200 dark:border-cyan-700',
+            'bg-lime-50 text-lime-900 border-lime-400 dark:bg-lime-950/40 dark:text-lime-200 dark:border-lime-700',
+            'bg-fuchsia-50 text-fuchsia-900 border-fuchsia-400 dark:bg-fuchsia-950/40 dark:text-fuchsia-200 dark:border-fuchsia-700',
+        ];
+
+        const LEVELS = [
+            { id: 0, label: "Calibrazione", desc: "6 Carte (3 Coppie)", pairs: 3, points: 300, ghost: true },
+            { id: 1, label: "Segnale Base", desc: "12 Carte (6 Coppie)", pairs: 6, points: 600, ghost: false },
+            { id: 2, label: "Modulazione", desc: "16 Carte (8 Coppie)", pairs: 8, points: 1200, ghost: false },
+            { id: 3, label: "Frequenza Alta", desc: "20 Carte (10 Coppie)", pairs: 10, points: 2000, ghost: false }
+        ];
+
+        // --- DATABASE GONIOMETRICO (BUCKET SYSTEM) ---
+        // Ogni "bucket" ha un valore di risposta univoco e N possibili domande.
+        // Questo garantisce l'univocità della risposta nel tabellone.
+        
+        const ANSWER_BUCKETS = [
+            { id: 'zero',   val: '0',              qs: ['\\sin(0)', '\\sin(180^\\circ)', '\\sin(\\pi)', '\\cos(90^\\circ)', '\\cos(\\frac{\\pi}{2})', '\\tan(0)'] },
+            { id: 'one',    val: '1',              qs: ['\\sin(90^\\circ)', '\\cos(0)', '\\cos(360^\\circ)', '\\tan(45^\\circ)', '\\sin^2(x)+\\cos^2(x)'] },
+            { id: 'minus1', val: '-1',             qs: ['\\sin(270^\\circ)', '\\cos(180^\\circ)', '\\cos(\\pi)', '\\sin(\\frac{3}{2}\\pi)'] },
+            { id: 'half',   val: '\\frac{1}{2}',   qs: ['\\sin(30^\\circ)', '\\sin(\\frac{\\pi}{6})', '\\cos(60^\\circ)', '\\cos(\\frac{\\pi}{3})'] },
+            { id: 'mhalf',  val: '-\\frac{1}{2}',  qs: ['\\sin(210^\\circ)', '\\cos(120^\\circ)', '\\cos(\\frac{2}{3}\\pi)', '\\sin(330^\\circ)'] },
+            { id: 'sq2_2',  val: '\\frac{\\sqrt{2}}{2}', qs: ['\\sin(45^\\circ)', '\\cos(45^\\circ)', '\\sin(\\frac{\\pi}{4})'] },
+            { id: 'msq2_2', val: '-\\frac{\\sqrt{2}}{2}', qs: ['\\sin(225^\\circ)', '\\cos(135^\\circ)', '\\sin(\\frac{5}{4}\\pi)'] },
+            { id: 'sq3_2',  val: '\\frac{\\sqrt{3}}{2}', qs: ['\\sin(60^\\circ)', '\\cos(30^\\circ)', '\\sin(\\frac{\\pi}{3})'] },
+            { id: 'msq3_2', val: '-\\frac{\\sqrt{3}}{2}', qs: ['\\sin(300^\\circ)', '\\cos(150^\\circ)', '\\cos(\\frac{5}{6}\\pi)'] },
+            { id: 'sq3',    val: '\\sqrt{3}',      qs: ['\\tan(60^\\circ)', '\\tan(\\frac{\\pi}{3})', '\\cot(30^\\circ)'] },
+            { id: 'invsq3', val: '\\frac{\\sqrt{3}}{3}', qs: ['\\tan(30^\\circ)', '\\tan(\\frac{\\pi}{6})', '\\cot(60^\\circ)'] },
+            { id: 'minvsq3',val: '-\\frac{\\sqrt{3}}{3}', qs: ['\\tan(150^\\circ)', '\\tan(\\frac{5}{6}\\pi)'] }
+        ];
+
+        const TRAP_CARDS = [
+            { q: '\\tan(90^\\circ)', a: '\\nexists', hint: 'Asintoto Verticale' },
+            { q: '\\tan(\\frac{\\pi}{2})', a: '\\nexists', hint: 'Asintoto Verticale' },
+            { q: '\\sin(x) = 2', a: '\\emptyset', hint: 'Fuori dal Codominio [-1, 1]' },
+            { q: '\\cos(x) = -1.5', a: '\\emptyset', hint: 'Fuori dal Codominio [-1, 1]' },
+            { q: '\\sqrt{-1}', a: '\\notin \\mathbb{R}', hint: 'Numero Immaginario' },
+            { q: '\\frac{1}{\\sin(0)}', a: '\\nexists', hint: 'Divisione per Zero' }
+        ];
+
+        // Briefing Pedagogico
+        const BRIEFING_ITEMS = [
+            { title: "Identità Fondamentale", tex: "\\sin^2(x) + \\cos^2(x) = 1", color: "bg-emerald-50 border-emerald-200 text-emerald-900" },
+            { title: "Angoli Notevoli (30°)", tex: "\\begin{cases} \\sin(30^\\circ) = 1/2 \\\\ \\cos(30^\\circ) = \\sqrt{3}/2 \\end{cases}", color: "bg-sky-50 border-sky-200 text-sky-900" },
+            { title: "Angoli Notevoli (45°)", tex: "\\sin(45^\\circ) = \\cos(45^\\circ) = \\frac{\\sqrt{2}}{2}", color: "bg-violet-50 border-violet-200 text-violet-900" },
+            { title: "La Trappola (Range)", tex: "-1 \\leq \\sin(x) \\leq 1", color: "bg-amber-50 border-amber-200 text-amber-900" },
+            { title: "La Trappola (Tan)", tex: "\\tan(90^\\circ) \\rightarrow \\infty \\; (\\nexists)", color: "bg-red-50 border-red-200 text-red-900" }
+        ];
+
+        // --- ICONE SVG ---
+        const Icon = ({ d, size=20, className="" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={d}/></svg>
+        );
+        const Icons = {
+            Radar: <Icon d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0 M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0 M12 12v-9 M12 12l4 4" />,
+            Wave: <Icon d="M4 15l3 -6l3 6l3 -6l3 6l3 -6l3 6" />,
+            Warning: <Icon d="M12 9v2m0 4v.01M5.07 19H18.93a2 2 0 001.73-3L13.73 4a2 2 0 00-3.46 0L3.34 16a2 2 0 001.73 3z" />,
+            Check: <Icon d="M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01 9 11.01" />,
+            Play: <Icon d="M5 3l14 9-14 9V3z" />,
+            Timer: <Icon d="M10 2h4 M12 14l3-3 M12 14v-4 M12 22a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" />,
+            Trophy: <Icon d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6 M18 9h1.5a2.5 2.5 0 0 0 0-5H18 M4 22h16 M10 14.66V17 M14 14.66V17 M12 2v10 M12 17a5 5 0 0 0-5 4 M12 17a5 5 0 0 1 5 4" />,
+            Sun: <Icon d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />,
+            Moon: <Icon d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        };
+
+        // --- MATH ENGINE ---
+        const MathText = ({ txt, className = "" }) => {
+            const defaultCardSize = "text-xl md:text-2xl"; 
+            const appliedClass = className || defaultCardSize;
+            const html = useMemo(() => {
+                try {
+                    return window.katex ? window.katex.renderToString(txt, { throwOnError: false, displayMode: true }) : txt;
+                } catch (e) { return txt; }
+            }, [txt]);
+
+            return <div className={`font-math flex items-center justify-center w-full h-full p-1 leading-relaxed ${appliedClass}`} dangerouslySetInnerHTML={{__html: html}} />;
+        };
+
+        const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const generateCards = (levelId) => {
+            const levelConfig = LEVELS.find(l => l.id === levelId);
+            const pairsCount = levelConfig.pairs;
+            const pairs = [];
+            
+            // 1. SELECT ONE TRAP (MANDATORY)
+            const trap = TRAP_CARDS[getRandomInt(0, TRAP_CARDS.length - 1)];
+            pairs.push({ 
+                q: trap.q, 
+                a: trap.a, 
+                type: 'trap', 
+                hint: trap.hint 
+            });
+
+            // 2. SELECT UNIQUE ANSWER BUCKETS
+            // Shuffle buckets to get random unique answers
+            const shuffledBuckets = [...ANSWER_BUCKETS].sort(() => Math.random() - 0.5);
+            
+            // Fill remaining slots
+            for (let i = 0; i < pairsCount - 1; i++) {
+                if (i < shuffledBuckets.length) {
+                    const bucket = shuffledBuckets[i];
+                    // Pick one random question from this bucket
+                    const rndQ = bucket.qs[getRandomInt(0, bucket.qs.length - 1)];
+                    pairs.push({
+                        q: rndQ,
+                        a: bucket.val,
+                        type: 'standard',
+                        hint: 'Analisi Segnale'
+                    });
+                } else {
+                    // Fallback if we run out of unique buckets (unlikely with this setup but good for safety)
+                    pairs.push({ q: 'ERROR', a: 'RETRY', type: 'error' });
+                }
+            }
+
+            // 3. GENERATE DECK
+            const deck = [];
+            const shuffledEmojis = [...EMOJI_POOL].sort(() => Math.random() - 0.5);
+            
+            pairs.forEach((p, i) => {
+                const color = PAIR_COLORS[i % PAIR_COLORS.length];
+                // Card A (Question / Signal) -> DOMANDA
+                deck.push({ 
+                    id: `p${i}a`, 
+                    pairId: i, 
+                    content: p.q, 
+                    cardType: 'q', 
+                    emoji: shuffledEmojis[i * 2], 
+                    color, 
+                    ...p 
+                });
+                // Card B (Answer / Value) -> RISPOSTA
+                deck.push({ 
+                    id: `p${i}b`, 
+                    pairId: i, 
+                    content: p.a, 
+                    cardType: 'a', 
+                    emoji: shuffledEmojis[i * 2 + 1], 
+                    color, 
+                    ...p 
+                });
+            });
+
+            return deck.sort(() => Math.random() - 0.5).map(c => ({...c, isFlipped: false, isMatched: false, seen: false}));
+        };
+
+        const saveScore = (entry) => {
+            const lb = JSON.parse(localStorage.getItem('gm_lb') || '[]');
+            lb.push(entry);
+            lb.sort((a, b) => b.score - a.score || a.moves - b.moves);
+            localStorage.setItem('gm_lb', JSON.stringify(lb.slice(0, 50)));
+            return lb.slice(0, 50);
+        };
+
+        // --- APP COMPONENT ---
+        function App() {
+            const [theme, setTheme] = useState(localStorage.getItem('gm_theme') || 'dark'); // Default Dark for Radar feel
+            const [view, setView] = useState('menu');
+            const [nick, setNick] = useState(localStorage.getItem('gm_nick') || '');
+            const [userAvatar, setUserAvatar] = useState(localStorage.getItem('gm_avatar') || AVATARS[0]);
+            const [lvl, setLvl] = useState(1);
+            const [lb, setLb] = useState([]);
+
+            const [cards, setCards] = useState([]);
+            const [moves, setMoves] = useState(0);
+            const [score, setScore] = useState(0);
+            const [accumulatedScore, setAccumulatedScore] = useState(0);
+            
+            const [flipped, setFlipped] = useState([]); 
+            const [lock, setLock] = useState(false);
+            const [matchMsg, setMatchMsg] = useState(null);
+            const [isRush, setIsRush] = useState(false);
+            const [rushPhase, setRushPhase] = useState(null);
+            const [timeLeft, setTimeLeft] = useState(0);
+
+            useEffect(() => {
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+                localStorage.setItem('gm_theme', theme);
+            }, [theme]);
+
+            useEffect(() => {
+                setLb(JSON.parse(localStorage.getItem('gm_lb') || '[]'));
+                if (!localStorage.getItem('gm_avatar')) {
+                    setUserAvatar(AVATARS[0]);
+                }
+            }, [view]);
+
+            // Score Logic
+            useEffect(() => {
+                if (view !== 'game') return;
+                const levelData = LEVELS.find(l => l.id === lvl);
+                const minMoves = levelData.pairs;
+                const maxPoints = levelData.points;
+                const matchesFound = cards.filter(c => c.isMatched).length / 2;
+                const effectiveMoves = Math.max(minMoves, moves);
+                const efficiencyFactor = minMoves / Math.max(minMoves, effectiveMoves || 1);
+                const completionRatio = matchesFound / minMoves;
+                const currentLevelScore = Math.floor(maxPoints * completionRatio * efficiencyFactor);
+                setScore(accumulatedScore + currentLevelScore);
+            }, [moves, cards, view, accumulatedScore, lvl]);
+
+            // Timer Logic
+            useEffect(() => {
+                let timer;
+                if (isRush && rushPhase) {
+                    if (timeLeft > 0) {
+                        timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+                    } else {
+                        if (rushPhase === 'mem') {
+                            setRushPhase('play');
+                            setTimeLeft(RUSH_PLAY_TIME);
+                            setCards(c => c.map(card => ({ ...card, isFlipped: false })));
+                        } else {
+                            handleRushEnd(false);
+                        }
+                    }
+                }
+                return () => clearInterval(timer);
+            }, [isRush, rushPhase, timeLeft]);
+
+            const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+
+            const handleCardClick = (id) => {
+                if (lock || (isRush && rushPhase === 'mem')) return;
+                const card = cards.find(c => c.id === id);
+                if (card.isFlipped || card.isMatched) return;
+
+                setCards(prev => prev.map(c => c.id === id ? { ...c, isFlipped: true, seen: true } : c));
+                const newFlipped = [...flipped, id];
+                setFlipped(newFlipped);
+
+                if (newFlipped.length === 2) {
+                    setLock(true);
+                    if (!isRush) setMoves(m => m + 1); 
+                    setTimeout(() => checkForMatch(newFlipped), 500); 
+                }
+            };
+
+            const checkForMatch = ([id1, id2]) => {
+                setCards(currentCards => {
+                    const c1 = currentCards.find(c => c.id === id1);
+                    const c2 = currentCards.find(c => c.id === id2);
+                    let nextCards = [...currentCards];
+                    
+                    if (c1.pairId === c2.pairId) {
+                        // MATCH
+                        nextCards = nextCards.map(c => (c.id === id1 || c.id === id2) ? { ...c, isMatched: true, isFlipped: true } : c);
+                        
+                        let msgText = "Segnale Agganciato";
+                        if (c1.type === 'trap') msgText = "Anomalia Identificata!";
+                        
+                        setMatchMsg({ text: msgText, sub: c1.hint, color: c1.color });
+                        setTimeout(() => setMatchMsg(null), 2500);
+                        
+                        setLock(false);
+                        if (nextCards.filter(c => !c.isMatched).length === 0) {
+                            if (isRush) handleRushEnd(true); else setTimeout(() => setView('win'), 1000);
+                        }
+                    } else {
+                        // NO MATCH
+                        setTimeout(() => {
+                            setCards(prev => prev.map(c => (c.id === id1 || c.id === id2) ? { ...c, isFlipped: false } : c));
+                            setLock(false);
+                        }, 1200);
+                    }
+                    setFlipped([]);
+                    return nextCards;
+                });
+            };
+
+            const handleRushEnd = (won) => {
+                setIsRush(false);
+                setRushPhase(null);
+                if (won) {
+                    setScore(s => s * 2);
+                    setMatchMsg({ text: "OVERCLOCK RIUSCITO", sub: "Punti x2", color: "bg-yellow-400 text-black border-yellow-600" });
+                } else {
+                    setScore(s => Math.floor(s / 2)); 
+                    setMatchMsg({ text: "SEGNALE PERSO", sub: "Punti / 2", color: "bg-red-500 text-white border-red-700" });
+                }
+                setTimeout(() => setView('final'), 2000);
+            };
+
+            const startGame = (rush = false) => {
+                if (!rush) {
+                    if (!nick.trim()) return alert("Identificativo Operatore Richiesto");
+                    localStorage.setItem('gm_nick', nick);
+                    setAccumulatedScore(0);
+                    setMoves(0);
+                    setScore(0);
+                } else {
+                    setAccumulatedScore(score);
+                    setMoves(0);
+                }
+                let newCards = generateCards(lvl);
+                setCards(newCards);
+                setFlipped([]);
+                setLock(false);
+                if (rush) {
+                    setIsRush(true); setRushPhase('mem'); setTimeLeft(RUSH_MEM_TIME);
+                    setCards(prev => prev.map(c => ({ ...c, isFlipped: true })));
+                    setView('game');
+                } else {
+                    setIsRush(false); setView('game');
+                }
+            };
+
+            const saveAndExit = () => {
+                const currentLvl = LEVELS.find(l => l.id === lvl);
+                saveScore({ name: nick, avatar: userAvatar, score: score, moves: moves, minMoves: currentLvl.pairs, lvl: currentLvl.label, date: new Date().toLocaleDateString() });
+                setView('menu');
+            };
+
+            // --- UI RENDERERS ---
+            if (view === 'menu') {
+                return (
+                    <div className="flex h-screen w-screen bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-mono transition-colors duration-500">
+                        <aside className="w-full md:w-1/3 max-w-md bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 h-full dark:bg-slate-800 dark:border-slate-700">
+                            <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                                <div>
+                                    <h1 className="text-2xl font-black text-slate-900 dark:text-radar-500 tracking-tighter flex items-center gap-2">
+                                        <span className="text-3xl">{Icons.Radar}</span> GonioMatch
+                                    </h1>
+                                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mt-1">Signal Processing Unit v3.0</p>
+                                </div>
+                                <button onClick={toggleTheme} className="p-2 rounded-lg bg-slate-200 text-slate-600 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                    {theme === 'light' ? Icons.Moon : Icons.Sun}
+                                </button>
+                            </div>
+                            
+                            <div className="flex-1 overflow-y-auto p-6 space-y-8 scroller">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">ID Operatore</label>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => {
+                                            const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length;
+                                            setUserAvatar(AVATARS[nextIdx]);
+                                            localStorage.setItem('gm_avatar', AVATARS[nextIdx]);
+                                        }} className="bg-slate-100 hover:bg-slate-200 cursor-pointer text-2xl w-14 h-14 flex items-center justify-center rounded-lg border-2 border-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-600 transition-all active:scale-95">
+                                            {userAvatar}
+                                        </button>
+                                        <input value={nick} onChange={e => setNick(e.target.value)} placeholder="NOME IN CODICE..." className="w-full bg-slate-100 rounded-lg px-4 font-bold text-slate-700 border-2 border-transparent focus:border-radar-500 focus:bg-white outline-none transition-all uppercase dark:bg-slate-700 dark:text-radar-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"/>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Protocollo</label>
+                                    <div className="grid gap-2">
+                                        {LEVELS.map(l => (
+                                            <button key={l.id} onClick={() => setLvl(l.id)}
+                                                className={`text-left p-3 rounded-lg border-2 transition-all flex justify-between items-center group ${lvl === l.id ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/30 dark:border-radar-500' : 'border-slate-200 hover:border-slate-300 bg-white dark:bg-slate-800 dark:border-slate-700 dark:hover:border-slate-500'}`}
+                                            >
+                                                <div>
+                                                    <div className={`font-bold text-sm ${lvl === l.id ? 'text-radar-900 dark:text-radar-100' : 'text-slate-600 dark:text-slate-400'}`}>{l.label}</div>
+                                                    <div className="text-[10px] opacity-60 font-mono">{l.desc}</div>
+                                                </div>
+                                                {lvl === l.id && <div className="text-radar-600 dark:text-radar-400 animate-pulse">{Icons.Check}</div>}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                
+                                <div className="bg-slate-100 rounded-xl border border-slate-200 p-4 dark:bg-slate-800 dark:border-slate-700">
+                                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700">
+                                        <div className="text-yellow-500">{Icons.Trophy}</div>
+                                        <span className="font-bold text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Top Signals</span>
+                                    </div>
+                                    <div className="max-h-48 overflow-y-auto scroller space-y-2 font-sans">
+                                        {lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 font-mono">NO DATA LOGGED</div>}
+                                        {lb.map((row, i) => (
+                                            <div key={i} className="flex justify-between items-center text-xs p-2 bg-white rounded border border-slate-200 shadow-sm dark:bg-slate-700 dark:border-slate-600">
+                                                <div className="flex gap-2 items-center">
+                                                    <span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i<3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-600 dark:text-slate-300'}`}>{i+1}</span>
+                                                    <span className="text-base leading-none">{row.avatar || '👤'}</span>
+                                                    <span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200 uppercase">{row.name}</span>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="text-radar-600 font-bold dark:text-radar-400">{row.score}</div>
+                                                    <div className="text-[9px] text-slate-400 font-mono">{row.moves}mv</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-6 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                                <button onClick={() => startGame(false)} className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2 dark:bg-radar-600 dark:hover:bg-radar-500 dark:text-white tracking-widest text-sm uppercase">
+                                    Avvia Scansione {Icons.Play}
+                                </button>
+                            </div>
+                        </aside>
+
+                        <main className="hidden md:flex flex-1 bg-crt items-center justify-center relative overflow-hidden bg-slate-100 dark:bg-slate-950">
+                             <div className="w-full max-w-5xl p-8">
+                                <div className="bg-white/90 backdrop-blur p-10 rounded-2xl shadow-2xl border border-slate-200 h-full flex flex-col dark:bg-slate-900/90 dark:border-radar-900/50">
+                                    <div className="flex items-center gap-6 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
+                                        <div className="p-4 bg-radar-100 text-radar-600 rounded-xl dark:bg-radar-900 dark:text-radar-400">{Icons.Wave}</div>
+                                        <div>
+                                            <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">MANUALE DI CAMPO</h2>
+                                            <p className="text-slate-500 font-medium dark:text-slate-400 font-mono text-sm mt-1">Riferimenti Goniometrici Essenziali</p>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto scroller pr-2">
+                                        <div className="space-y-4">
+                                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg border-l-4 border-radar-500 dark:bg-slate-800 dark:border-radar-500">
+                                                <div className="text-radar-600 dark:text-radar-400 mt-1">{Icons.Warning}</div>
+                                                <div>
+                                                    <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wide dark:text-white">Direttiva Primaria</h3>
+                                                    <p className="text-slate-600 text-sm mt-1 leading-relaxed dark:text-slate-300">
+                                                        Il sistema genera onde uniche. Associa ogni <strong>Funzione (Bordo Tratteggiato)</strong> al suo <strong>Valore Numerico (Bordo Continuo)</strong>. 
+                                                        Attenzione alle trappole di segnale (valori impossibili).
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <h3 className="font-bold text-slate-400 text-[10px] uppercase tracking-widest mb-2">Pattern Riconosciuti</h3>
+                                            {BRIEFING_ITEMS.map((item, idx) => (
+                                                <div key={idx} className={`p-3 rounded border flex flex-col justify-center min-h-[80px] ${item.color} dark:bg-opacity-10 dark:border-opacity-30`}>
+                                                    <div className="text-[9px] font-bold opacity-70 mb-1 uppercase tracking-wider">{item.title}</div>
+                                                    <div className="w-full overflow-x-auto no-scrollbar">
+                                                        <MathText txt={item.tex} className="text-sm dark:text-slate-200 text-left justify-start"/>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                        </main>
+                    </div>
+                );
+            }
+
+            const isGameView = view === 'game' || view === 'win' || view === 'final';
+            if (isGameView) {
+                const n = cards.length;
+                let gridClass = n === 6 ? "grid-cols-3 grid-rows-2" : 
+                                n === 12 ? "grid-cols-4 grid-rows-3" : 
+                                n === 16 ? "grid-cols-4 grid-rows-4" : 
+                                "grid-cols-5 grid-rows-4";
+
+                return (
+                    <div className="h-screen w-screen flex flex-col bg-slate-100 overflow-hidden dark:bg-slate-950 font-mono bg-crt">
+                        <header className="h-16 bg-white/80 backdrop-blur shadow-sm flex items-center justify-between px-6 z-30 shrink-0 border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+                            <div className="flex items-center gap-6">
+                                <button onClick={() => setView('menu')} className="text-[10px] font-bold text-slate-400 hover:text-red-500 uppercase tracking-widest border border-slate-200 rounded px-2 py-1 hover:border-red-400 transition-all dark:border-slate-700">Abort Mission</button>
+                                {isRush ? (
+                                    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ${rushPhase==='mem'?'bg-yellow-100 text-yellow-800 border-yellow-200':'bg-red-100 text-red-800 border-red-200 animate-pulse'}`}>
+                                        {Icons.Timer} {timeLeft}s
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col">
+                                        <span className="text-[9px] font-bold text-slate-400 uppercase leading-none tracking-widest">Signal Strenght</span>
+                                        <span className="text-xl font-bold text-radar-600 leading-none mt-1 dark:text-radar-400">{score} dB</span>
+                                    </div>
+                                )}
+                            </div>
+                            {matchMsg && (
+                                <div className={`absolute top-20 left-1/2 -translate-x-1/2 px-8 py-4 rounded shadow-2xl border-l-4 flex items-center gap-4 animate-bounce z-50 bg-white dark:bg-slate-800 ${matchMsg.color || 'border-l-radar-500 border-slate-200'}`}>
+                                    <div className="text-2xl">{matchMsg.text.includes('!') ? '⚠️' : '✅'}</div>
+                                    <div>
+                                        <div className="font-black text-slate-900 text-base uppercase tracking-tight dark:text-white">{matchMsg.text}</div>
+                                        <div className="text-xs font-medium text-slate-500 uppercase dark:text-slate-400 font-sans">{matchMsg.sub}</div>
+                                    </div>
+                                </div>
+                            )}
+                        </header>
+                        
+                        <main className="flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center relative">
+                            <div className={`grid gap-3 md:gap-4 w-full max-w-6xl h-full max-h-full ${gridClass}`}>
+                                {cards.map(card => {
+                                    const isGhostMode = LEVELS.find(l => l.id === lvl).ghost;
+                                    const showGhostContent = isGhostMode && card.seen;
+                                    const isFaceUp = card.isFlipped || card.isMatched;
+                                    
+                                    // LOGICA DEI BORDI: DASHED PER DOMANDA, SOLID PER RISPOSTA
+                                    let borderStyle = card.cardType === 'q' ? 'border-dashed' : 'border-solid';
+                                    
+                                    let flipperStyle = `bg-white border-slate-300 dark:bg-slate-800 dark:border-slate-600 ${borderStyle}`;
+                                    let backContentStyle = "text-slate-900 dark:text-slate-100";
+                                    
+                                    if (card.isMatched) {
+                                        flipperStyle = `${card.color} border-solid border-transparent shadow-none opacity-50`;
+                                    } else if (card.type === 'trap' && isFaceUp) {
+                                         // Trappola sempre Solid quando rivelata per impatto
+                                         flipperStyle = "bg-red-50 border-solid border-red-500 dark:bg-red-900/50 dark:border-red-500";
+                                         backContentStyle = "text-red-700 dark:text-red-200";
+                                    }
+
+                                    return (
+                                        <div key={card.id} onClick={() => handleCardClick(card.id)} className="perspective-1000 relative cursor-pointer w-full h-full min-h-0 group select-none">
+                                            <div className={`flipper w-full h-full shadow-md rounded-lg border-2 transition-all duration-300
+                                                ${flipperStyle}
+                                                ${isFaceUp ? 'flipped' : 'hover:border-radar-400 hover:shadow-lg hover:-translate-y-0.5 dark:hover:border-radar-500'}
+                                            `}>
+                                                {/* FRONTE (COPERTO) */}
+                                                <div className="face face-front rounded-lg overflow-hidden bg-white dark:bg-slate-800">
+                                                    {showGhostContent ? (
+                                                        <div className="opacity-40 w-full h-full flex items-center justify-center p-1">
+                                                             <MathText txt={card.content} className="text-xs md:text-sm text-slate-500 dark:text-slate-400" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                                                            <span className="text-3xl md:text-5xl filter grayscale group-hover:grayscale-0 transition-all duration-300">{card.emoji}</span>
+                                                            <div className="mt-2 w-8 h-1 bg-slate-100 rounded-full dark:bg-slate-700 group-hover:bg-radar-200 dark:group-hover:bg-radar-800 transition-colors"></div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                {/* RETRO (SCOPERTO) */}
+                                                <div className="face face-back p-2 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+                                                    <div className={`w-full h-full flex items-center justify-center text-center ${backContentStyle}`}>
+                                                        <MathText 
+                                                            txt={card.content} 
+                                                            className={`font-bold tracking-tight break-words w-full ${card.content.length > 10 ? 'text-lg' : 'text-2xl md:text-3xl'}`} 
+                                                        />
+                                                    </div>
+                                                    {/* Indicatore Tipo Card (Angolo) */}
+                                                    <div className="absolute top-1 right-2 text-[8px] font-bold uppercase opacity-30 tracking-widest">
+                                                        {card.cardType === 'q' ? 'INPUT' : 'VAL'}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </main>
+
+                        {/* WIN MODAL */}
+                        {view === 'win' && (
+                            <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
+                                <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full relative overflow-hidden dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-radar-400 to-emerald-400"></div>
+                                    <h2 className="text-3xl font-black text-slate-800 mb-1 dark:text-white tracking-tight">ANALISI COMPLETA</h2>
+                                    <p className="text-slate-500 mb-8 dark:text-slate-400 text-sm font-mono uppercase tracking-wide">Integrità Dati: 100%</p>
+                                    
+                                    <div className="flex justify-center items-end gap-2 mb-8">
+                                        <span className="text-5xl font-black text-radar-600 dark:text-radar-400">{score}</span>
+                                        <span className="text-sm font-bold text-slate-400 mb-2 uppercase">Punti</span>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        <button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-lg font-bold shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+                                            {Icons.Zap} Overclock (Rush Mode)
+                                        </button>
+                                        <button onClick={saveAndExit} className="w-full py-3 bg-white border-2 border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600 uppercase tracking-wide text-xs">
+                                            Salva nel Log
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* FINAL SCORE MODAL */}
+                         {view === 'final' && (
+                            <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95 font-mono">
+                                <div className="text-center text-white border border-slate-700 p-10 rounded-3xl bg-slate-900">
+                                    <div className="text-6xl mb-6">{score > 1000 ? '📡' : '📉'}</div>
+                                    <h2 className="text-6xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">{score}</h2>
+                                    <p className="text-sm text-radar-400 mb-8 font-bold uppercase tracking-[0.3em]">Risultato Finale</p>
+                                    <button onClick={saveAndExit} className="px-10 py-4 bg-white text-slate-900 rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                                        RIAVVIA SISTEMA
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+            return null;
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

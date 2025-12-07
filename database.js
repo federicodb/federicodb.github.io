@@ -14,7 +14,8 @@ const db = [
             "Polinomi",
             "Tecniche",
             "Raccoglimento",
-            "Fattorizzazione"
+            "Fattorizzazione",
+            "Gamification"
         ],
         "url": "lezioni/cards_polinomi_memory004.html",
         "date": "2025-12-07",
@@ -50,6 +51,24 @@ const db = [
         "icon": "📐"
     },
     {
+        "title": "Laboratorio Frazioni: Torte, Barre e Retta Numerica",
+        "excerpt": "Visualizzazione delle principali operazioni tra frazioni.",
+        "tags": [
+            "Matematica",
+            "Algebra",
+            "1EL",
+            "2EL",
+            "4EL",
+            "2GR",
+            "3MEC",
+            "Frazioni",
+            "Numeri Razionali"
+        ],
+        "url": "lezioni/fractions_lab_001.html",
+        "date": "2025-12-07",
+        "icon": "📐"
+    },
+    {
         "title": "Math Invaders 2.5",
         "excerpt": "Attività di laboratorio interattiva.",
         "tags": [],
@@ -58,19 +77,19 @@ const db = [
         "icon": "📄"
     },
     {
-        "title": "Laboratorio Frazioni: Torte, Barre e Retta Numerica",
-        "excerpt": "Attività di laboratorio interattiva.",
-        "tags": [],
-        "url": "lezioni/fractions_lab_001.html",
-        "date": "2025-12-03",
-        "icon": "📄"
-    },
-    {
         "title": "Algebra Tiles 3D",
         "excerpt": "Attività di laboratorio interattiva.",
         "tags": [],
         "url": "lezioni/visualizzatore polinomi 2d 3d 001.html",
         "date": "2025-11-25",
+        "icon": "📄"
+    },
+    {
+        "title": "GonioMatch",
+        "excerpt": "Attività di laboratorio interattiva.",
+        "tags": [],
+        "url": "lezioni/gioco_sin_cos_01.html",
+        "date": "2025-11-24",
         "icon": "📄"
     }
 ];
