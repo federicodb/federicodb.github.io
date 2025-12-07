@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Tiles 3D - Scomposizione Polinomi</title>
+    <!-- Importiamo Tailwind per l'UI veloce -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importiamo Three.js e OrbitControls come moduli -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #1a1a1a; color: white; font-family: 'Segoe UI', sans-serif; }
+        #canvas-container { width: 100vw; height: 100vh; display: block; }
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        /* Stile per i controlli input */
+        input[type=number] {
+            background: #333;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+            padding: 4px;
+            width: 60px;
+            text-align: center;
+        }
+        /* Slider personalizzato */
+        input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px; width: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+            margin-top: -6px;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            cursor: pointer; background: #4b5563;
+            border-radius: 2px;
+        }
+        
+        /* Animazione fade per i messaggi */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- UI Overlay -->
+    <div class="absolute top-4 left-4 z-10 glass-panel p-5 rounded-xl max-w-sm max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <h1 class="text-xl font-bold mb-2 text-blue-400">Algebra Tiles 3D</h1>
+        
+        <!-- Selezione Grado -->
+        <div class="flex space-x-2 mb-4">
+            <button id="btn-deg2" class="flex-1 py-1 bg-blue-600 rounded hover:bg-blue-500 transition text-xs font-bold">2D (Area)</button>
+            <button id="btn-deg3" class="flex-1 py-1 bg-gray-700 rounded hover:bg-gray-600 transition text-xs">3D (Volume)</button>
+        </div>
+
+        <!-- Input Coefficienti -->
+        <div id="inputs-container" class="grid grid-cols-4 gap-2 items-center mb-4">
+            <!-- Verrà popolato via JS -->
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+            <button id="btn-visualize" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded shadow transition w-full mr-2 text-sm">
+                Genera
+            </button>
+            <button id="btn-random" class="bg-purple-600 hover:bg-purple-500 text-white py-2 px-3 rounded shadow transition" title="Esempio Casuale">
+                🎲
+            </button>
+        </div>
+
+        <!-- Esplosione -->
+        <div class="mb-4 border-t border-gray-700 pt-3">
+            <label class="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Esplosione Radiale</span>
+                <span id="explosion-val">0%</span>
+            </label>
+            <input type="range" id="explosion-slider" min="0" max="200" value="0" class="w-full">
+        </div>
+
+        <!-- Output Fattorizzazione -->
+        <div id="result-output" class="mb-4 p-2 bg-gray-800 rounded border border-gray-700 min-h-[30px] flex items-center justify-center text-xs font-mono text-center">
+            In attesa di input...
+        </div>
+
+        <!-- Export Stampa 3D -->
+        <div class="border-t border-gray-700 pt-3">
+            <h3 class="text-xs font-bold text-gray-300 mb-2 flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Stampa 3D (STL)
+            </h3>
+            <div class="flex items-center space-x-2 mb-2">
+                <label class="text-xs text-gray-400">Scala (mm/unità):</label>
+                <input type="number" id="print-scale" value="20" min="1" max="100" class="w-16 h-7 text-xs">
+            </div>
+            <button id="btn-export" class="w-full bg-gray-700 hover:bg-gray-600 text-white py-1.5 rounded text-xs transition border border-gray-600">
+                Scarica .STL
+            </button>
+            <div id="size-warning" class="hidden mt-2 text-[10px] text-orange-400 bg-orange-900/30 p-2 rounded border border-orange-800">
+                ⚠️ Attenzione: Dimensioni stimate > 180mm (A1 Mini). Riduci la scala o l'esplosione.
+            </div>
+        </div>
+
+        <!-- Controlli Vista -->
+        <div class="mt-4 pt-2 border-t border-gray-700">
+            <label class="flex items-center cursor-pointer">
+                <div class="relative">
+                    <input type="checkbox" id="view-toggle" class="sr-only peer">
+                    <div class="w-9 h-5 bg-gray-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                </div>
+                <span class="ml-2 text-xs text-gray-400" id="view-label">2D</span>
+            </label>
+        </div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <!-- Logica Applicativa -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+
+        // --- CONFIGURAZIONE ---
+        const SCENE_CONFIG = {
+            xSize: 2.0, 
+            unitSize: 1.0, 
+            spacing: 0.05, 
+            animSpeed: 0.05
+        };
+
+        const COLORS = {
+            positive: { x3: 0x8e44ad, x2: 0x2980b9, x: 0x27ae60, 1: 0xf1c40f },
+            negative: { base: 0xc0392b }
+        };
+
+        let state = {
+            degree: 2,
+            is3D: false,
+            boundingBoxCenter: new THREE.Vector3()
+        };
+
+        // --- THREE.JS SETUP ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x202020);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        const aspect = window.innerWidth / window.innerHeight;
+        const frustumSize = 20;
+        
+        const cameraOrtho = new THREE.OrthographicCamera(
+            frustumSize * aspect / -2, frustumSize * aspect / 2,
+            frustumSize / 2, frustumSize / -2,
+            1, 1000
+        );
+        cameraOrtho.position.set(0, 0, 20);
+        cameraOrtho.zoom = 1.5;
+        cameraOrtho.updateProjectionMatrix();
+
+        const cameraPersp = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+        cameraPersp.position.set(12, 12, 18);
+
+        let currentCamera = cameraOrtho;
+
+        const controls = new OrbitControls(cameraPersp, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 20, 10);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        scene.add(dirLight);
+
+        const gridHelper = new THREE.GridHelper(50, 50, 0x444444, 0x222222);
+        gridHelper.rotation.x = Math.PI / 2; 
+        scene.add(gridHelper);
+
+        const blocksGroup = new THREE.Group();
+        scene.add(blocksGroup);
+
+        // --- LOGICA MATEMATICA ---
+        function generateRandomPolynomial() {
+            if (state.degree === 2) {
+                const a = Math.floor(Math.random() * 3) + 1;
+                const b = Math.floor(Math.random() * 3) + 1;
+                return expandFactors([1, a], [1, b]);
+            } else {
+                const a = Math.floor(Math.random() * 2) + 1;
+                const b = Math.floor(Math.random() * 2) + 1;
+                const c = Math.floor(Math.random() * 2) + 1;
+                return expandFactors3([1, a], [1, b], [1, c]);
+            }
+        }
+
+        function expandFactors(f1, f2) {
+            const A = f1[0] * f2[0];
+            const B = f1[0] * f2[1] + f1[1] * f2[0];
+            const C = f1[1] * f2[1];
+            return { coeffs: [A, B, C], factors: [f1, f2] };
+        }
+
+        function expandFactors3(f1, f2, f3) {
+            const partial = expandFactors(f1, f2);
+            const [Ap, Bp, Cp] = partial.coeffs;
+            const [e, f] = f3;
+            const A = Ap * e; 
+            const B = Ap * f + Bp * e;
+            const C = Bp * f + Cp * e; 
+            const D = Cp * f; 
+            return { coeffs: [A, B, C, D], factors: [f1, f2, f3] };
+        }
+
+        function factorize(coeffs) {
+            const limit = 8;
+            if (state.degree === 2) {
+                const [a, b, c] = coeffs;
+                if (a === 1) {
+                    for (let p = 0; p <= limit; p++) {
+                        for (let q = 0; q <= limit; q++) {
+                            if (p * q === c && p + q === b) return [[1, p], [1, q]];
+                        }
+                    }
+                }
+            } else {
+                const [a, b, c, d] = coeffs;
+                if (a === 1) {
+                    for (let p = 0; p <= limit; p++) {
+                        for (let q = 0; q <= limit; q++) {
+                            for (let r = 0; r <= limit; r++) {
+                                if (p*q*r === d && (p+q+r) === b && (p*q + p*r + q*r) === c) return [[1, p], [1, q], [1, r]];
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        // --- COSTRUZIONE GEOMETRICA ---
+        function createBlock(type, width, height, depth, x, y, z) {
+            const geometry = new THREE.BoxGeometry(width, height, depth);
+            
+            let color = COLORS.positive['1'];
+            const vol = (width > 1.5 ? 1 : 0) + (height > 1.5 ? 1 : 0) + (depth > 1.5 ? 1 : 0);
+            if (vol === 3) color = COLORS.positive.x3;
+            else if (vol === 2) color = COLORS.positive.x2;
+            else if (vol === 1) color = COLORS.positive.x;
+
+            const material = new THREE.MeshStandardMaterial({ 
+                color: color,
+                roughness: 0.3,
+                metalness: 0.1
+            });
+            
+            const mesh = new THREE.Mesh(geometry, material);
+            const edges = new THREE.EdgesGeometry(geometry);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 }));
+            mesh.add(line);
+
+            // Posizionamento iniziale relativo (senza offset globale ancora)
+            // Memorizziamo il centro locale del blocco
+            const cx = x + width/2;
+            const cy = y - height/2;
+            const cz = z + depth/2;
+            
+            mesh.position.set(cx, cy, cz);
+            
+            // Salviamo la posizione originale RELATIVA AL GRUPPO (che sarà centrato)
+            // Per ora salviamo questa, poi la ricalcoliamo dopo il centering del gruppo
+            mesh.userData = { 
+                type: type, 
+                w: width, h: height, d: depth,
+                originalLocalPos: new THREE.Vector3(cx, cy, cz) 
+            };
+            
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            return mesh;
+        }
+
+        function buildScene(factors) {
+            // Reset slider
+            document.getElementById('explosion-slider').value = 0;
+            document.getElementById('explosion-val').innerText = '0%';
+
+            while(blocksGroup.children.length > 0){ 
+                blocksGroup.remove(blocksGroup.children[0]); 
+            }
+
+            const getDimArray = (f) => {
+                let parts = [];
+                for(let i=0; i<f[0]; i++) parts.push({type: 'x', size: SCENE_CONFIG.xSize});
+                for(let i=0; i<f[1]; i++) parts.push({type: '1', size: SCENE_CONFIG.unitSize});
+                return parts;
+            };
+
+            const dimsX = getDimArray(factors[0]);
+            const dimsY = getDimArray(factors[1]);
+            const dimsZ = factors.length > 2 ? getDimArray(factors[2]) : [{type: '1', size: state.is3D ? SCENE_CONFIG.unitSize : 0.1}];
+
+            let currentY = 0;
+            dimsY.forEach(dY => {
+                let currentX = 0;
+                dimsX.forEach(dX => {
+                    let currentZ = 0;
+                    dimsZ.forEach(dZ => {
+                        const actualDepth = state.degree === 2 ? 0.1 : dZ.size;
+                        const mesh = createBlock(
+                            `${dX.type}-${dY.type}-${dZ.type}`,
+                            dX.size - SCENE_CONFIG.spacing,
+                            dY.size - SCENE_CONFIG.spacing,
+                            actualDepth - (state.degree === 3 ? SCENE_CONFIG.spacing : 0),
+                            currentX, currentY, currentZ
+                        );
+                        blocksGroup.add(mesh);
+                        currentZ += dZ.size;
+                    });
+                    currentX += dX.size;
+                });
+                currentY -= dY.size;
+            });
+
+            // Calcolo dimensioni totali per centratura
+            const totalW = dimsX.reduce((a,b)=>a+b.size, 0);
+            const totalH = dimsY.reduce((a,b)=>a+b.size, 0);
+            const totalD = dimsZ.reduce((a,b)=>a+b.size, 0);
+            
+            // Posizionamento del gruppo in modo che il suo centro geometrico cada nell'origine del mondo (0,0,0)
+            blocksGroup.position.set(-totalW / 2, totalH / 2, state.degree === 3 ? -totalD / 2 : 0);
+
+            // AGGIORNAMENTO POSIZIONI ORIGINALI PER ESPLOSIONE
+            // L'algoritmo di esplosione userà la posizione WORLD (o locale al gruppo) rispetto al centro
+            // Dato che il gruppo è spostato, le mesh al suo interno hanno coordinate positive.
+            // Calcoliamo il centro geometrico del boundig box interno alle mesh
+            const box = new THREE.Box3().setFromObject(blocksGroup);
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            
+            // Per esplosione corretta, vogliamo che i pezzi si allontanino dal centro del parallelepipedo.
+            // Poiché blocksGroup è posizionato per centrare il tutto a (0,0,0) world,
+            // il centro locale del parallelepipedo rispetto al gruppo è:
+            const localCenter = new THREE.Vector3(totalW/2, -totalH/2, totalD/2);
+
+            blocksGroup.children.forEach(mesh => {
+                // Vettore direzione dal centro al pezzo
+                const dir = new THREE.Vector3().subVectors(mesh.userData.originalLocalPos, localCenter);
+                mesh.userData.explosionDir = dir; 
+            });
+
+            checkPrintSize();
+        }
+
+        function updateExplosion() {
+            const val = parseInt(document.getElementById('explosion-slider').value) / 100;
+            document.getElementById('explosion-val').innerText = Math.round(val * 100) + '%';
+            
+            blocksGroup.children.forEach(mesh => {
+                const original = mesh.userData.originalLocalPos;
+                const dir = mesh.userData.explosionDir;
+                // Nuova posizione = Originale + (Direzione * fattore)
+                mesh.position.copy(original).addScaledVector(dir, val * 0.8); // 0.8 fattore estetico
+            });
+            
+            checkPrintSize();
+        }
+
+        // --- STAMPA 3D / EXPORT ---
+        function checkPrintSize() {
+            const scale = parseFloat(document.getElementById('print-scale').value) || 20;
+            const box = new THREE.Box3().setFromObject(blocksGroup);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+
+            // Size è in unità Three.js. Moltiplichiamo per scala (mm/unità)
+            const dimMm = {
+                x: size.x * scale,
+                y: size.y * scale,
+                z: size.z * scale
+            };
+
+            const maxDim = Math.max(dimMm.x, dimMm.y, dimMm.z);
+            const warningEl = document.getElementById('size-warning');
+            
+            // Bambu Lab A1 Mini volume approx 180x180x180
+            if (maxDim > 180) {
+                warningEl.classList.remove('hidden');
+                warningEl.innerHTML = `⚠️ Dimensioni: ${Math.round(dimMm.x)}x${Math.round(dimMm.y)}x${Math.round(dimMm.z)}mm.<br>Supera i 180mm (A1 Mini).`;
+            } else {
+                warningEl.classList.add('hidden');
+            }
+        }
+
+        function exportSTL() {
+            const exporter = new STLExporter();
+            const scale = parseFloat(document.getElementById('print-scale').value) || 20;
+            
+            // Cloniamo il gruppo per scalare senza influenzare la vista
+            const clone = blocksGroup.clone(true);
+            
+            // Applichiamo la scala e ruotiamo per la stampa (Y-up in 3js -> Z-up in slicer solitamente, ma STL è dumb)
+            // Ruotiamo -90 su X per avere il "piano" frontale sul letto di stampa se è 2D, o base se 3D
+            clone.scale.set(scale, scale, scale);
+            clone.rotation.x = -Math.PI / 2;
+            clone.updateMatrixWorld(true);
+
+            const result = exporter.parse(clone, { binary: true });
+            const blob = new Blob([result], { type: 'application/octet-stream' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `polinomio_3d_${state.degree}deg.stl`;
+            link.click();
+        }
+
+
+        // --- UI LOGIC ---
+
+        const inputContainer = document.getElementById('inputs-container');
+        const resultOutput = document.getElementById('result-output');
+        const viewToggle = document.getElementById('view-toggle');
+        const viewLabel = document.getElementById('view-label');
+
+        function updateInputFields() {
+            inputContainer.innerHTML = '';
+            const coeffs = state.degree === 2 ? ['x²', 'x', '1'] : ['x³', 'x²', 'x', '1'];
+            const ids = state.degree === 2 ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd'];
+
+            ids.forEach((id, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex flex-col items-center';
+                
+                const label = document.createElement('span');
+                label.className = 'text-xs font-bold text-gray-400 mb-1';
+                label.innerHTML = coeffs[index]; 
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.id = `coeff-${id}`;
+                input.value = 1;
+                input.min = 0;
+                
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                inputContainer.appendChild(wrapper);
+            });
+        }
+
+        function getCoeffsFromInput() {
+            const ids = state.degree === 2 ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd'];
+            return ids.map(id => parseInt(document.getElementById(`coeff-${id}`).value) || 0);
+        }
+
+        function setCoeffsToInput(coeffs) {
+            const ids = state.degree === 2 ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd'];
+            ids.forEach((id, index) => {
+                document.getElementById(`coeff-${id}`).value = coeffs[index];
+            });
+        }
+
+        function updateVisualization() {
+            const coeffs = getCoeffsFromInput();
+            const factors = factorize(coeffs);
+
+            if (factors) {
+                let str = "";
+                factors.forEach(f => {
+                    str += `(${f[0] > 1 ? f[0] : ''}x + ${f[1]})`;
+                });
+                resultOutput.innerHTML = `<span class="text-green-400 font-bold">Fattorizzabile:</span><br><span class="text-white">${str}</span>`;
+                resultOutput.className = "mb-4 p-2 bg-gray-800 rounded border border-green-700 min-h-[30px] flex items-center justify-center text-xs font-mono text-center fade-in";
+                
+                buildScene(factors);
+            } else {
+                resultOutput.innerHTML = `<span class="text-red-400">Non fattorizzabile</span>`;
+                resultOutput.className = "mb-4 p-2 bg-gray-800 rounded border border-red-900 min-h-[30px] flex items-center justify-center text-xs font-mono text-center fade-in";
+                while(blocksGroup.children.length > 0){ blocksGroup.remove(blocksGroup.children[0]); }
+            }
+        }
+
+        function toggleView() {
+            state.is3D = viewToggle.checked;
+            viewLabel.innerText = state.is3D ? "3D" : "2D";
+            
+            if (state.is3D) {
+                currentCamera = cameraPersp;
+                controls.enabled = true;
+                gridHelper.rotation.x = 0; 
+            } else {
+                currentCamera = cameraOrtho;
+                controls.enabled = false;
+                cameraOrtho.position.set(0, 0, 20);
+                cameraOrtho.lookAt(0,0,0);
+                gridHelper.rotation.x = Math.PI / 2; 
+            }
+            updateVisualization();
+        }
+
+        // Event Listeners
+        document.getElementById('btn-deg2').addEventListener('click', () => {
+            state.degree = 2;
+            updateInputFields();
+            viewToggle.checked = false;
+            toggleView();
+            updateVisualization();
+            
+            document.getElementById('btn-deg2').classList.add('bg-blue-600', 'font-bold');
+            document.getElementById('btn-deg2').classList.remove('bg-gray-700');
+            document.getElementById('btn-deg3').classList.add('bg-gray-700');
+            document.getElementById('btn-deg3').classList.remove('bg-blue-600', 'font-bold');
+        });
+
+        document.getElementById('btn-deg3').addEventListener('click', () => {
+            state.degree = 3;
+            updateInputFields();
+            viewToggle.checked = true;
+            toggleView();
+            updateVisualization();
+
+            document.getElementById('btn-deg3').classList.add('bg-blue-600', 'font-bold');
+            document.getElementById('btn-deg3').classList.remove('bg-gray-700');
+            document.getElementById('btn-deg2').classList.add('bg-gray-700');
+            document.getElementById('btn-deg2').classList.remove('bg-blue-600', 'font-bold');
+        });
+
+        document.getElementById('btn-visualize').addEventListener('click', updateVisualization);
+        
+        document.getElementById('btn-random').addEventListener('click', () => {
+            const data = generateRandomPolynomial();
+            setCoeffsToInput(data.coeffs);
+            updateVisualization();
+        });
+
+        document.getElementById('explosion-slider').addEventListener('input', updateExplosion);
+        
+        document.getElementById('btn-export').addEventListener('click', exportSTL);
+        document.getElementById('print-scale').addEventListener('input', checkPrintSize);
+
+        viewToggle.addEventListener('change', toggleView);
+
+        window.addEventListener('resize', () => {
+            const aspect = window.innerWidth / window.innerHeight;
+            cameraPersp.aspect = aspect;
+            cameraPersp.updateProjectionMatrix();
+            cameraOrtho.left = -frustumSize * aspect / 2;
+            cameraOrtho.right = frustumSize * aspect / 2;
+            cameraOrtho.top = frustumSize / 2;
+            cameraOrtho.bottom = -frustumSize / 2;
+            cameraOrtho.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, currentCamera);
+        }
+
+        updateInputFields();
+        const initData = generateRandomPolynomial();
+        setCoeffsToInput(initData.coeffs);
+        updateVisualization();
+        animate();
+
+    </script>
+</body>
+</html>
+

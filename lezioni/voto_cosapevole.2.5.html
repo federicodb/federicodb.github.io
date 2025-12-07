@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Theory Lab 2.5 🎲</title>
+    
+    <!-- Tailwind CSS (Styling - Open Source) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Space Grotesk (Tech/Modern Vibe) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Alpine.js (Reactivity - Open Source) -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+
+    <!-- Chart.js (Grafici - Open Source) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- KaTeX (Math Rendering - Open Source) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #e2e8f0;
+        }
+
+        /* Animazione Shake */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .shake-element { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
+        /* Custom Range Slider */
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
+            background: #38bdf8; cursor: pointer; margin-top: -8px; 
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px;
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mission Text Styling */
+        .mission-text em { color: #38bdf8; font-style: normal; font-weight: 600; }
+        .mission-text strong { color: #f8fafc; font-weight: 700; }
+        .theory-card { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 163, 184, 0.1); transition: all 0.3s; }
+        .theory-card:hover { background: rgba(30, 41, 59, 0.8); border-color: rgba(56, 189, 248, 0.3); transform: translateY(-2px); }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-20 selection:bg-sky-500/30" 
+      x-data="gameLogic()" 
+      x-init="initSim()">
+
+    <!-- Navbar -->
+    <nav class="w-full p-6 flex flex-col md:flex-row justify-between items-center glass-panel sticky top-0 z-50 mb-8 border-b border-slate-700/50 gap-4">
+        <div class="flex items-center gap-3">
+            <span class="text-3xl filter drop-shadow-lg">🎲</span>
+            <div>
+                <h1 class="font-bold text-xl leading-none text-white tracking-tight">Voto Consapevole <span class="text-sky-400">2.5</span></h1>
+                <p class="text-xs text-slate-400 font-medium">Laboratorio di Teoria dei Giochi</p>
+            </div>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-3">
+             <button @click="showMission = true" class="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-full transition shadow-lg shadow-indigo-500/20 border border-indigo-400/30 flex items-center gap-2 font-bold animate-pulse">
+                <span>🚀</span> Missione
+            </button>
+            <button @click="showTheory = true" class="text-sm bg-teal-700 hover:bg-teal-600 text-white px-5 py-2.5 rounded-full transition shadow-lg shadow-teal-500/20 border border-teal-400/30 flex items-center gap-2 font-bold">
+                <span>🧠</span> Teoria & Realtà
+            </button>
+            <button @click="showRules = true" class="text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-full transition border border-slate-600 hover:border-slate-500 flex items-center gap-2">
+                <span>📚</span> Regole
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container mx-auto px-4 max-w-[1800px] space-y-8">
+
+        <!-- SETUP PANEL (Full Width) -->
+        <section class="glass-panel p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-32 bg-sky-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+                <div class="w-full md:w-1/2">
+                    <label class="block text-slate-400 text-sm font-bold mb-3 uppercase tracking-wider flex items-center gap-2">
+                        <span>👥</span> Studenti in Classe \( (N) \)
+                    </label>
+                    <div class="flex items-center gap-4">
+                        <input type="number" x-model.number="totalStudents" @input="reinitClass" min="5" max="100" 
+                               class="bg-slate-900/80 border-2 border-slate-600 text-white text-3xl font-bold rounded-2xl p-4 w-36 focus:outline-none focus:border-sky-500 text-center transition shadow-inner">
+                        <div class="text-sm text-slate-400 leading-relaxed max-w-xs">
+                            Partecipanti totali.<br>Il sistema ricalcola la soglia critica.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-1/2 flex flex-col items-end">
+                    <div class="text-right">
+                        <div class="text-slate-400 text-sm font-bold uppercase tracking-wider mb-1">Soglia Critica \( (\lfloor N/3 \rfloor) \)</div>
+                        <div class="flex items-baseline justify-end gap-3">
+                            <span class="text-6xl font-bold text-sky-400 filter drop-shadow-md" x-text="threshold"></span>
+                            <span class="text-2xl text-slate-600 font-light">/ <span x-text="totalStudents"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 COLUMN LAYOUT -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+            
+            <!-- COLUMN 1: CONTROLLI STUDENTE (3/12) -->
+            <div class="xl:col-span-3 space-y-6 sticky top-28">
+                <!-- MY AVATAR CARD -->
+                <div class="glass-panel p-6 rounded-3xl border-l-4 transition-colors duration-500" 
+                     :class="isMyRequestSus ? 'border-amber-400 bg-amber-900/10' : 'border-emerald-400 bg-emerald-900/10'">
+                    
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 class="text-xl font-bold flex items-center gap-2">
+                            <span class="text-2xl">👤</span> Il Tuo Avatar
+                        </h2>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border"
+                              :class="isMyRequestSus ? 'bg-amber-500/20 text-amber-300 border-amber-500/50' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'"
+                              x-text="isMyRequestSus ? 'Richiesta Ambigua' : 'Richiesta Onesta'">
+                        </span>
+                    </div>
+
+                    <!-- P_i Input -->
+                    <div class="mb-6">
+                        <label class="flex justify-between text-sm font-bold mb-3 text-slate-300">
+                            <span>Merito Reale \( (P_i) \)</span>
+                            <span class="text-sky-400 text-lg font-bold bg-slate-800 px-3 rounded" x-text="myPi"></span>
+                        </label>
+                        <div class="grid grid-cols-9 gap-1 bg-slate-800/50 p-1.5 rounded-xl">
+                            <template x-for="val in 9">
+                                <button @click="setPi(val)" 
+                                        class="aspect-square rounded-md text-sm font-bold transition-all relative"
+                                        :class="myPi === val ? 'bg-sky-500 text-white shadow-lg z-10 scale-110' : 'text-slate-500 hover:bg-slate-700 hover:text-slate-200'">
+                                    <span x-text="val" class="absolute inset-0 flex items-center justify-center"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- R_i Input -->
+                    <div class="mb-2">
+                        <label class="flex justify-between text-sm font-bold mb-4 text-slate-300">
+                            <span>Voto Richiesto \( (R_i) \)</span>
+                            <span class="text-lg font-bold bg-slate-800 px-3 rounded" 
+                                  :class="isMyRequestSus ? 'text-amber-400' : 'text-emerald-400'" 
+                                  x-text="myRi"></span>
+                        </label>
+                        <input type="range" x-model.number="myRi" :min="myPi" max="10" step="1" class="w-full accent-emerald-500" @input="updateChart">
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 leading-relaxed">
+                        Definisci la tua strategia usando i controlli qui sopra.
+                    </p>
+                </div>
+            </div>
+
+            <!-- COLUMN 2: VISUALIZZAZIONE & DATI AGGREGATI (5/12) -->
+            <div class="xl:col-span-5 space-y-6">
+
+                <!-- RESULT CARD -->
+                <div class="glass-panel p-8 rounded-3xl text-center relative overflow-hidden transition-all duration-500"
+                     :class="penaltyActive ? 'border-red-500/50 shadow-2xl shadow-red-900/20' : 'border-emerald-500/50 shadow-2xl shadow-emerald-900/20'">
+                     
+                     <div class="absolute inset-0 opacity-20 pointer-events-none transition-colors duration-500"
+                          :class="penaltyActive ? 'bg-gradient-to-br from-red-600 to-slate-900' : 'bg-gradient-to-br from-emerald-600 to-slate-900'"></div>
+
+                    <div class="relative flex flex-col items-center justify-center gap-4">
+                        <div>
+                            <h3 class="text-slate-400 font-bold tracking-[0.2em] uppercase text-xs mb-2">Il Tuo Voto Finale</h3>
+                            <div class="text-8xl font-black transition-all tracking-tighter"
+                                 :class="penaltyActive ? 'text-red-500 shake-element' : 'text-white'"
+                                 x-text="myFinalGrade">
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold mb-1" x-text="penaltyActive ? '💀 Penalità Attiva' : '✅ Esito Positivo'"></div>
+                            <p class="text-sm text-slate-300 leading-snug" x-text="resultMessage"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TENSION METER -->
+                <div class="glass-panel p-8 rounded-3xl">
+                    <div class="flex justify-between items-end mb-4">
+                        <h3 class="font-bold text-sm text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                            <span>Tension Meter</span>
+                            <span class="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-[10px]" x-text="`${totalSusCount} Richieste Ambigue`"></span>
+                        </h3>
+                    </div>
+
+                    <div class="h-16 w-full bg-slate-800/80 rounded-2xl overflow-hidden relative shadow-inner border border-slate-700/50">
+                        <div class="absolute top-0 bottom-0 w-0.5 bg-white z-20 shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-300"
+                             :style="`left: ${(threshold / totalStudents) * 100}%`">
+                             <div class="absolute -top-0 -translate-x-1/2 bg-white text-slate-900 text-[10px] font-black px-2 py-1 rounded-b shadow-lg uppercase tracking-wider border border-slate-300 z-30">
+                                Soglia: <span x-text="threshold" class="text-red-600"></span>
+                             </div>     
+                        </div>
+                        <div class="h-full transition-all duration-700 ease-out flex items-center justify-end pr-4"
+                             :style="`width: ${(totalSusCount / totalStudents) * 100}%`"
+                             :class="penaltyActive ? 'bg-gradient-to-r from-orange-500 via-red-500 to-red-600' : 'bg-gradient-to-r from-sky-500 via-teal-400 to-emerald-400'">
+                             <span class="font-bold text-white drop-shadow-md" x-text="`${Math.round((totalSusCount / totalStudents) * 100)}%`"></span>
+                        </div>
+                        <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNCIgaGVpZ2h0PSI0IiB2aWV3Qm94PSIwIDAgNCA0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xIDNoMXYxSDFWM3ptMiAxaDF2MUgzVjR6IiBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=')]"></div>
+                    </div>
+                    
+                    <div class="flex justify-between text-[10px] text-slate-500 mt-2 uppercase font-bold tracking-wider px-1">
+                        <span>Safe Zone</span>
+                        <span>Danger Zone (Penalità)</span>
+                    </div>
+                </div>
+
+                <!-- ANALISI PAYOFF CHART -->
+                <div class="glass-panel p-6 rounded-3xl">
+                    <h3 class="font-bold text-lg text-white mb-2 flex items-center gap-2">📈 Analisi Payoff</h3>
+                    <p class="text-xs text-slate-400 mb-4">Grafico di come cambia il tuo voto all'aumentare dei "furbi" in classe.</p>
+                    <div class="relative h-64 w-full"><canvas id="payoffChart"></canvas></div>
+                </div>
+
+            </div>
+
+            <!-- COLUMN 3: REGISTRO CLASSE COMPLETO (4/12) -->
+            <div class="xl:col-span-4">
+                <div class="glass-panel p-6 rounded-3xl flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-6 sticky top-0 z-20">
+                        <div>
+                            <h3 class="font-bold text-lg text-white flex items-center gap-2">📋 Registro Classe</h3>
+                            <p class="text-xs text-slate-400 mt-1">Lista completa simulata</p>
+                        </div>
+                        <button @click="randomizeClass" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-lg border border-slate-600 transition flex items-center gap-2 shadow-lg">
+                            <span>🎲</span> Randomizza
+                        </button>
+                    </div>
+                    
+                    <div class="w-full">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="text-xs uppercase text-slate-400 font-bold border-b border-slate-700/50">
+                                <tr>
+                                    <th class="p-3">Studente</th>
+                                    <th class="p-3 text-center">Merito</th>
+                                    <th class="p-3 text-center">Richiesta</th>
+                                    <th class="p-3 text-right">Esito</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm divide-y divide-slate-700/50">
+                                <!-- TU -->
+                                <tr class="bg-sky-900/20 border-l-2 border-sky-500">
+                                    <td class="p-3 font-bold text-sky-300 flex flex-col">
+                                        <span>TU</span>
+                                        <span class="text-[9px] text-sky-500/70 font-normal uppercase">Player</span>
+                                    </td>
+                                    <td class="p-3 font-mono text-center" x-text="myPi"></td>
+                                    <td class="p-3 font-mono font-bold text-center" x-text="myRi"></td>
+                                    <td class="p-3 text-right font-bold text-lg" x-text="myFinalGrade"></td>
+                                </tr>
+                                <!-- STUDENTI SIMULATI -->
+                                <template x-for="(student, index) in simulatedStudents" :key="index">
+                                    <tr class="hover:bg-slate-800/50 transition-colors group" :class="student.ri > student.pi ? 'bg-amber-900/5' : ''">
+                                        <td class="p-3 text-slate-400">
+                                            <div class="flex flex-col">
+                                                <span x-text="`#${index + 1}`" class="font-bold text-slate-500 group-hover:text-slate-300"></span>
+                                                <span x-show="student.ri > student.pi" class="text-[9px] text-amber-500 uppercase tracking-wider font-bold mt-0.5">SUS</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-3 font-mono text-slate-300 text-center" x-text="student.pi"></td>
+                                        <td class="p-3 text-center">
+                                            <select x-model.number="student.ri" @change="updateSimStats" 
+                                                    class="bg-slate-900 border border-slate-600 rounded px-2 py-1 text-xs focus:border-sky-500 focus:outline-none cursor-pointer w-12 text-center appearance-none hover:bg-slate-800 transition" 
+                                                    :class="student.ri > student.pi ? 'text-amber-400 border-amber-500/50' : 'text-emerald-400 border-emerald-500/50'">
+                                                <template x-for="r in 10">
+                                                    <option :value="r" x-text="r" :selected="r === student.ri" x-show="r >= student.pi"></option>
+                                                </template>
+                                            </select>
+                                        </td>
+                                        <td class="p-3 text-right font-mono font-bold" :class="penaltyActive ? 'text-red-400' : 'text-emerald-400'" x-text="calculateStudentGrade(student)"></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- MODAL TEORIA & REALTA' (Nuovo) -->
+        <div x-show="showTheory" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md" x-transition.opacity style="display: none;">
+            <div class="bg-slate-900 border-2 border-teal-500/50 p-8 rounded-3xl max-w-4xl w-full shadow-[0_0_50px_rgba(20,184,166,0.2)] relative overflow-y-auto max-h-[90vh]" @click.away="showTheory = false">
+                <button @click="showTheory = false" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center transition hover:bg-teal-600">✕</button>
+                
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-black text-white">Dal Gioco alla Realtà: <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-cyan-400">Teoria & Cittadinanza</span></h2>
+                    <p class="text-slate-400 mt-2">Perché "barare" conviene al singolo ma distrugge la collettività?</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    
+                    <!-- COLONNA 1: Concetti Teorici -->
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-bold text-white border-b border-slate-700 pb-2 flex items-center gap-2">🧠 I Fondamentali</h3>
+                        
+                        <div class="theory-card p-4 rounded-xl">
+                            <h4 class="font-bold text-teal-400">1. Equilibrio di Nash</h4>
+                            <p class="text-sm text-slate-300 mt-1 leading-relaxed">
+                                È una situazione in cui <strong>nessuno ha interesse a cambiare strategia da solo</strong>, date le scelte degli altri. 
+                                <br><span class="text-xs text-slate-500 italic">Esempio nel gioco:</span> Se tutti sono "furbi" e la penalità è attiva, tornare onesti da soli non ti salva (prenderesti comunque metà voto). Sei bloccato in un equilibrio negativo.
+                            </p>
+                        </div>
+
+                        <div class="theory-card p-4 rounded-xl">
+                            <h4 class="font-bold text-teal-400">2. Ottimo di Pareto</h4>
+                            <p class="text-sm text-slate-300 mt-1 leading-relaxed">
+                                È una situazione in cui <strong>non si può migliorare la condizione di qualcuno senza peggiorare quella di qualcun altro</strong>.
+                                <br><span class="text-xs text-slate-500 italic">Differenza chiave:</span> L'Equilibrio di Nash spesso NON è un Ottimo di Pareto. Nel "Dilemma del Prigioniero", l'equilibrio (tutti tradiscono) è peggiore per tutti rispetto alla cooperazione.
+                            </p>
+                        </div>
+
+                        <div class="theory-card p-4 rounded-xl">
+                            <h4 class="font-bold text-teal-400">3. Tragedia dei Beni Comuni</h4>
+                            <p class="text-sm text-slate-300 mt-1 leading-relaxed">
+                                Quando l'accesso a una risorsa è libero (il "voto alto"), l'interesse individuale spinge a sfruttarla eccessivamente, portando al suo esaurimento o distruzione per tutti.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- COLONNA 2: Applicazioni Reali -->
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-bold text-white border-b border-slate-700 pb-2 flex items-center gap-2">🌍 Cittadinanza Attiva</h3>
+                        
+                        <div class="theory-card p-4 rounded-xl border-l-4 border-l-indigo-500">
+                            <h4 class="font-bold text-indigo-400">Legalità vs Opportunismo</h4>
+                            <p class="text-sm text-slate-300 mt-1 leading-relaxed">
+                                Il "furbetto" (free-rider) gode dei benefici della società (strade, sanità, sicurezza) senza pagarne i costi (tasse, rispetto delle regole). Se lo fanno in pochi, il sistema regge. Se lo fanno in molti, scatta la penalità collettiva: servizi scadenti, sfiducia, degrado.
+                            </p>
+                        </div>
+
+                        <div class="theory-card p-4 rounded-xl border-l-4 border-l-pink-500">
+                            <h4 class="font-bold text-pink-400">Ambiente & Sostenibilità</h4>
+                            <p class="text-sm text-slate-300 mt-1 leading-relaxed">
+                                Inquinare conviene all'individuo (costa meno che smaltire), ma se tutti inquinano, l'ambiente diventa invivibile per tutti. La "penalità" qui è il cambiamento climatico.
+                            </p>
+                        </div>
+
+                         <div class="theory-card p-4 rounded-xl border-l-4 border-l-emerald-500">
+                            <h4 class="font-bold text-emerald-400">Altruismo Razionale</h4>
+                            <p class="text-sm text-slate-300 mt-1 leading-relaxed">
+                                Essere onesti non è solo "buono", è <strong>intelligente a lungo termine</strong> se crea fiducia. La sfida della cittadinanza è costruire meccanismi (leggi, norme sociali, educazione) che rendano la cooperazione la scelta più vantaggiosa.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL MISSIONE (STORYTELLING) -->
+        <div x-show="showMission" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md" x-transition.opacity style="display: none;">
+            <div class="bg-slate-900 border-2 border-indigo-500/50 p-8 rounded-3xl max-w-2xl w-full shadow-[0_0_50px_rgba(79,70,229,0.2)] relative mission-text overflow-y-auto max-h-[90vh]" @click.away="showMission = false">
+                <button @click="showMission = false" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center transition hover:bg-indigo-600">✕</button>
+                <div class="text-center mb-6">
+                    <span class="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold uppercase tracking-widest border border-indigo-500/30 mb-2">Briefing Missione</span>
+                    <h2 class="text-3xl md:text-4xl font-black text-white leading-tight">Voto Consapevole:<br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Hack The System</span> 🎮</h2>
+                </div>
+                <div class="space-y-6 text-slate-300 leading-relaxed text-sm md:text-base">
+                    <div class="p-4 bg-slate-800/50 rounded-xl border-l-4 border-purple-500">
+                        <p><strong>POV:</strong> Il prof è impazzito e ti lascia decidere il voto. Sembra un sogno, vero? <br>Plot twist: è una trappola psicologica. O meglio, un <strong>esperimento sociale</strong>.</p>
+                        <p class="mt-2 text-slate-400 italic">Benvenuto nel laboratorio dove la Matematica incontra la Psicologia. Qui non vince chi sa le formule a memoria, ma chi sa prevedere le mosse degli altri.</p>
+                    </div>
+                    <p>Sei un <em>Team Player</em> o vuoi solo <em>farmare</em> voti a spese del server (la tua classe)? 🤡</p>
+                    <h3 class="text-xl font-bold text-white mt-6 border-b border-slate-700 pb-2">🕹️ Come Funziona (The Rules)</h3>
+                    <p>Il gioco è semplice, ma il finale dipende da quanto vi fidate l'uno dell'altro.</p>
+                    <div class="grid gap-4 mt-2">
+                        <div class="p-3 bg-slate-800 rounded-lg">
+                            <h4 class="font-bold text-white">1. Il tuo Stat di Base (\(P_i\)) 📊</h4>
+                            <p class="text-xs text-slate-400 mt-1">Questo è il tuo voto reale, quello che sai di meritare onestamente.</p>
+                            <ul class="list-disc list-inside mt-2 text-slate-300 text-xs">
+                                <li>Se hai studiato da Dio ➡️ 9.</li>
+                                <li>Se hai improvvisato ➡️ 4.</li>
+                            </ul>
+                        </div>
+                        <div class="p-3 bg-slate-800 rounded-lg">
+                            <h4 class="font-bold text-white">2. La tua Mossa (\(R_i\)) 🎲</h4>
+                            <p class="text-xs text-slate-400 mt-1">Qui decidi la strategia.</p>
+                            <ul class="mt-2 space-y-2 text-xs">
+                                <li class="flex gap-2"><span class="text-emerald-400 font-bold">Modalità Safe (Onesto):</span> <span>Chiedi esattamente quello che meriti (\(R_i = P_i\)). Sei un pilastro della società. 🗿</span></li>
+                                <li class="flex gap-2"><span class="text-amber-400 font-bold">Modalità Sus (Greedy):</span> <span>Chiedi PIÙ di quello che meriti (\(R_i > P_i\)). Se ti va bene, fai <em>Stonks</em> 📈. Ma c'è un rischio...</span></li>
+                            </ul>
+                        </div>
+                        <div class="p-3 bg-red-900/10 border border-red-900/30 rounded-lg">
+                            <h4 class="font-bold text-red-400">3. Il Crash del Server (La Penalità) 💀</h4>
+                            <p class="text-xs text-slate-300 mt-1">Qui arriva il bello. Il sistema regge solo un certo numero di "furbi".</p>
+                            <ul class="list-disc list-inside mt-2 text-slate-300 text-xs">
+                                <li>La <strong>Soglia Critica</strong> è 1/3 della classe.</li>
+                                <li>Se <strong>troppe persone</strong> provano a fare i furbi, il sistema collassa.</li>
+                                <li><strong>Risultato:</strong> Tutti vengono <em>nerfati</em>. Il voto diventa la metà del merito (\(P_i \times 0.5\)). Un bagno di sangue. 🩸</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mt-6 border-b border-slate-700 pb-2">🧠 Missione: Non Far Crollare Tutto</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>✅ Usa gli slider per vedere cosa succede se tu fai il furbo.</li>
+                        <li>✅ Usa la tabella per simulare il comportamento dei tuoi compagni (NPC o amici?).</li>
+                        <li>✅ Guarda il <strong>Tension Meter</strong>: se entra nella zona rossa, siete tutti <em>Cooked</em>.</li>
+                    </ul>
+                    <div class="mt-6 p-4 bg-gradient-to-r from-indigo-900/50 to-slate-900 rounded-xl border border-indigo-500/30 text-center">
+                        <p class="font-bold text-white italic">"La domanda non è 'quanto posso prendere?'.<br>La domanda è: 'quanto mi fido che gli altri non siano avidi quanto me?'"</p>
+                    </div>
+                </div>
+                <button @click="showMission = false" class="mt-8 w-full bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white py-4 rounded-xl font-bold transition shadow-lg shadow-indigo-900/50 uppercase tracking-widest text-sm">Accetta la sfida 🚀</button>
+            </div>
+        </div>
+
+        <!-- MODAL REGOLE (Classico) -->
+        <div x-show="showRules" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md" x-transition.opacity style="display: none;">
+            <div class="bg-slate-900 border border-slate-700 p-8 rounded-3xl max-w-2xl w-full shadow-2xl relative" @click.away="showRules = false">
+                <button @click="showRules = false" class="absolute top-6 right-6 text-slate-500 hover:text-white bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center">✕</button>
+                <h2 class="text-3xl font-bold mb-6 text-white">Regole del Laboratorio</h2>
+                <div class="space-y-4 text-slate-300">
+                    <p><strong>1. Obiettivo:</strong> Massimizzare il proprio voto.</p>
+                    <p><strong>2. Richiesta Ambigua (RA):</strong> Chiedere \( R_i > P_i \).</p>
+                    <p><strong>3. Penalità:</strong> Se \( N_{RA} > \lfloor N/3 \rfloor \), tutti prendono \( \max(1, P_i \times 0.5) \).</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- LOGICA APP -->
+    <script>
+        function gameLogic() {
+            let chartInstance = null;
+            return {
+                totalStudents: 20,
+                threshold: 0,
+                myPi: 6, 
+                myRi: 6, 
+                simulatedStudents: [], 
+                showRules: false,
+                showMission: false,
+                showTheory: false, // Nuovo stato
+
+                get isMyRequestSus() { return this.myRi > this.myPi; },
+                
+                get totalSusCount() {
+                    let count = this.isMyRequestSus ? 1 : 0;
+                    this.simulatedStudents.forEach(s => { if (s.ri > s.pi) count++; });
+                    return count;
+                },
+
+                get penaltyActive() { return this.totalSusCount > this.threshold; },
+
+                get myFinalGrade() { return this.calculateGrade(this.myPi, this.myRi, this.totalSusCount); },
+
+                get resultMessage() {
+                    if (this.penaltyActive) return `Soglia superata (${this.totalSusCount} RA). Penalità attiva.`;
+                    if (this.isMyRequestSus) return `Hai rischiato e vinto (${this.myRi}).`;
+                    return `Hai giocato onestamente (${this.myPi}).`;
+                },
+
+                initSim() {
+                    this.reinitClass();
+                    this.$nextTick(() => {
+                        renderMathInElement(document.body, { delimiters: [{left: '\\(', right: '\\)', display: false}], throwOnError: false });
+                        this.initChart();
+                    });
+                },
+
+                setPi(val) {
+                    this.myPi = val;
+                    if (this.myRi < val) this.myRi = val;
+                    this.updateChart();
+                },
+
+                reinitClass() {
+                    this.threshold = Math.floor(this.totalStudents / 3);
+                    this.simulatedStudents = [];
+                    for(let i=0; i < this.totalStudents - 1; i++) {
+                        let pi = Math.floor(Math.random() * 9) + 1;
+                        let isSus = Math.random() < 0.3;
+                        let ri = isSus && pi < 9 ? Math.min(10, pi + Math.floor(Math.random()*3)+1) : pi;
+                        this.simulatedStudents.push({ pi: pi, ri: ri });
+                    }
+                    this.updateChart();
+                },
+
+                randomizeClass() {
+                    this.simulatedStudents.forEach(s => {
+                        let isSus = Math.random() < 0.4; 
+                        if (s.pi < 9 && isSus) {
+                            s.ri = Math.min(10, s.pi + Math.floor(Math.random() * 3) + 1);
+                        } else { s.ri = s.pi; }
+                    });
+                    this.updateChart();
+                },
+
+                calculateGrade(pi, ri, currentTotalSus) {
+                    if (currentTotalSus > this.threshold) {
+                        return Math.max(1, Number((pi * 0.5).toFixed(1)));
+                    } else { return ri > pi ? Math.min(10, ri) : ri; }
+                },
+
+                calculateStudentGrade(student) { return this.calculateGrade(student.pi, student.ri, this.totalSusCount); },
+
+                updateSimStats() { this.updateChart(); },
+
+                initChart() {
+                    const ctx = document.getElementById('payoffChart').getContext('2d');
+                    chartInstance = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [
+                                { label: 'Voto se BARI (RA)', borderColor: '#fbbf24', borderWidth: 2, data: [], tension: 0.1, pointRadius: 0 },
+                                { label: 'Voto se ONESTO', borderColor: '#10b981', borderWidth: 2, data: [], tension: 0.1, pointRadius: 0 }
+                            ]
+                        },
+                        options: {
+                            responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' },
+                            plugins: {
+                                legend: { labels: { color: '#cbd5e1' } },
+                                tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleColor: '#fff', bodyColor: '#cbd5e1', callbacks: { title: (items) => `Se ${items[0].label} persone totali barano:` } },
+                                annotation: { annotations: { line1: { type: 'line', xMin: 0, xMax: 0, borderColor: 'rgba(239, 68, 68, 0.5)', borderWidth: 2, borderDash: [5, 5], label: { display: true, content: 'SOGLIA', position: 'start', color: '#ef4444', backgroundColor: 'rgba(0,0,0,0)' } } } }
+                            },
+                            scales: {
+                                x: { title: { display: true, text: 'Totale Studenti SUS (N_ra)', color: '#64748b' }, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                                y: { min: 0, max: 10, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                            }
+                        }
+                    });
+                    this.updateChart();
+                },
+
+                updateChart() {
+                    if (!chartInstance) return;
+                    const labels = Array.from({length: this.totalStudents + 1}, (_, i) => i);
+                    const hypotheticalSusRi = this.myRi > this.myPi ? this.myRi : Math.min(10, this.myPi + 1);
+                    const dataSus = labels.map(n_sus => n_sus > this.threshold ? Math.max(1, this.myPi * 0.5) : hypotheticalSusRi);
+                    const dataHonest = labels.map(n_sus => n_sus > this.threshold ? Math.max(1, this.myPi * 0.5) : this.myPi);
+
+                    chartInstance.data.labels = labels;
+                    chartInstance.data.datasets[0].data = dataSus;
+                    chartInstance.data.datasets[0].label = `Voto con richiesta ${hypotheticalSusRi}`;
+                    chartInstance.data.datasets[1].data = dataHonest;
+                    chartInstance.data.datasets[1].label = `Voto con richiesta ${this.myPi} (Onesto)`;
+                    chartInstance.update();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
