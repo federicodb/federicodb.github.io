@@ -1,29 +1,39 @@
-/* Questo è il tuo archivio centrale. 
-   Ogni volta che crei un file .html, aggiungi qui una riga.
-   I tag possono essere: Anno scolastico, Indirizzo (es. 5A-Inf), Tema, Keyword.
+/* 
+   ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
+   Non modificare manualmente. Aggiorna i <meta> nei file HTML.
 */
 
 const db = [
     {
-        title: "Classificazione di Funzioni",
-        date: "2025-12-6", // Formato YYYY-MM-DD per ordinamento
-        url: "lezioni/math_underground003_4el.html",
-        tags: ["Matematica", "Funzioni", "DOminio", "Classificazione", "Onde", "Seno", "Laboratorio"],
-        excerpt: "Mappa per la classificazione di funzioni"
+        "title": "FactorMatch",
+        "excerpt": "Attività di laboratorio interattiva.",
+        "tags": [],
+        "url": "lezioni/cards_polinomi_memory004.html",
+        "date": "2025-12-07",
+        "icon": "📄"
     },
     {
-        title: "Scomposizione di polinomi",
-        date: "2025-11-15",
-        url: "lezioni/cards_polinomi_memory004.html",
-        tags: ["Matematica", "Polinomi", "Scomposizioni", "Algebra", "Memo"],
-        excerpt: "Visualizzare graficamente le principali scomposizioni di polinomi"
+        "title": "Math Underground",
+        "excerpt": "Attività di laboratorio interattiva.",
+        "tags": [],
+        "url": "lezioni/math_underground003_4el.html",
+        "date": "2025-12-07",
+        "icon": "📄"
     },
     {
-        title: "Operazioni in Z",
-        date: "2025-10-20",
-        url: "lezioni/memory_1el_numeri_004.html",
-        tags: ["Matematica", "Potenze", "Operazioni", "Algebra", "Proprietà", "Errori"],
-        excerpt: "Impariamo a lavorare con i numeri interi"
+        "title": "MathMatch 4.1",
+        "excerpt": "Attività di laboratorio interattiva.",
+        "tags": [],
+        "url": "lezioni/memory_1el_numeri_004.html",
+        "date": "2025-12-07",
+        "icon": "📄"
     },
-    // Aggiungi qui le nuove lezioni...
+    {
+        "title": "Game Theory Lab 2.5 🎲",
+        "excerpt": "Attività di laboratorio interattiva.",
+        "tags": [],
+        "url": "lezioni/voto_consapevole_2.5.html",
+        "date": "2025-12-07",
+        "icon": "📄"
+    }
 ];
