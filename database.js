@@ -39,7 +39,7 @@ const db = [
     },
     {
         "title": "Voto Consapevole",
-        "excerpt": "Una attività sull",
+        "excerpt": "Una attività sull’applicazione della Teoria dei Giochi e del concetto di equilibrio di Nash",
         "tags": [
             "Matematica",
             "Teoria dei Giochi",

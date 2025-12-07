@@ -2,128 +2,248 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ORFINI MATH LAB</title>
-    <!-- PicoCSS minimalista -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>FedericoDB Lab</title>
+    
+    <!-- Google Font: Roboto (Lo standard del Material Design) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
+        /* --- MATERIAL DESIGN 3 (Dark AMOLED Theme) --- */
         :root {
-            --primary: #4f46e5;
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --md-sys-color-background: #000000;       /* Nero AMOLED */
+            --md-sys-color-surface: #141414;          /* Grigio scurissimo per le card */
+            --md-sys-color-surface-variant: #282828;  /* Grigio per hover/bordi */
+            
+            --md-sys-color-on-background: #E6E1E5;    /* Testo principale (bianco sporco) */
+            --md-sys-color-on-surface-variant: #CAC4D0; /* Testo secondario */
+            --md-sys-color-outline: #49454F;          /* Bordi sottili */
+            
+            --md-elevation-1: 0px 1px 2px rgba(0,0,0,0.3);
+            --md-shape-corner: 16px;                  /* Raggio stondatura schede */
+            --md-shape-pill: 100px;                   /* Raggio filtri */
         }
 
+        /* RESET & BASE */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            padding-bottom: 3rem;
-            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-background);
+            font-family: 'Roboto', sans-serif;
+            min-height: 100dvh;
+            /* Typography */
+            letter-spacing: 0.01em;
+            line-height: 1.5;
         }
 
-        /* Header */
-        header { padding: 3rem 1rem 2rem; text-align: center; }
-        header h1 { margin-bottom: 0.5rem; color: #38bdf8; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
-        header p { color: var(--text-muted); font-size: 0.9rem; }
-
-        /* Filtri */
-        .filters {
-            display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.5rem 1rem 1.5rem; 
-            justify-content: center; -webkit-overflow-scrolling: touch;
-        }
-        .filter-btn {
-            background: #334155; border: 1px solid #475569; color: #cbd5e1;
-            padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.85rem; cursor: pointer; white-space: nowrap;
-            transition: all 0.2s ease; font-weight: 600;
-        }
-        .filter-btn:hover { background: #475569; }
-        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 0 15px rgba(79, 70, 229, 0.4); }
-
-        /* Griglia */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.5rem;
-            padding: 0 1rem;
-            max-width: 1400px;
+        /* --- HEADER --- */
+        header {
+            padding: 3rem 1.5rem 1rem;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Card */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid #334155;
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-            cursor: pointer;
-            position: relative;
-            display: flex; flex-direction: column;
-            text-decoration: none; color: inherit;
-            height: 100%;
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 400; /* Material Design usa pesi leggeri per titoli grandi */
+            margin: 0 0 0.5rem 0;
+            color: #ffffff;
+            letter-spacing: -0.02em;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: #38bdf8; }
         
-        .card-icon { position: absolute; top: 1.2rem; right: 1.2rem; font-size: 1.8rem; opacity: 0.8; }
-        .card-date { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; font-family: monospace; }
-        .card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; color: white; font-weight: 700; padding-right: 2rem; }
-        .card p { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1.5rem; flex-grow: 1; line-height: 1.5; }
-        
-        .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
-        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; background: #334155; color: #94a3b8; font-weight: 500; }
+        header p {
+            font-size: 1rem;
+            color: var(--md-sys-color-on-surface-variant);
+            font-weight: 300;
+            margin: 0;
+            max-width: 600px;
+        }
 
-        /* Stato vuoto */
-        #empty-state { text-align: center; padding: 4rem; color: var(--text-muted); grid-column: 1 / -1; display: none; }
+        /* --- FILTRI (CHIPS) --- */
+        .filters-container {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(0,0,0,0.85); /* Sfondo semi-trasparente */
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1f1f1f;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .filters {
+            display: flex; gap: 0.75rem; overflow-x: auto; 
+            padding: 0 1.5rem; max-width: 1200px; margin: 0 auto;
+            -webkit-overflow-scrolling: touch; 
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        /* Stile "Filter Chip" Material Design */
+        .chip {
+            background: transparent;
+            border: 1px solid var(--md-sys-color-outline);
+            color: var(--md-sys-color-on-surface-variant);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px; /* Look leggermente più tech/squadrato rispetto al pill */
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .chip:hover {
+            background-color: rgba(255,255,255,0.05);
+            border-color: #79747E;
+        }
+
+        /* Stato Attivo (Selected) */
+        .chip.active {
+            background-color: #333333; /* Grigio medio */
+            color: #ffffff;
+            border-color: #ffffff;
+            /* Nessun colore "accento", solo scala di grigi */
+        }
+
+        /* --- GRIGLIA & CARDS --- */
+        main { padding: 0 1.5rem 6rem; max-width: 1200px; margin: 0 auto; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: var(--md-shape-corner);
+            padding: 1.5rem;
+            text-decoration: none; color: inherit;
+            display: flex; flex-direction: column;
+            border: 1px solid transparent;
+            transition: transform 0.2s, background-color 0.2s;
+            position: relative;
+        }
+
+        .card:active { transform: scale(0.98); background-color: #1f1f1f; }
+        
+        /* Hover su Desktop */
+        @media (hover: hover) {
+            .card:hover {
+                background-color: #1a1a1a;
+                border-color: #333;
+                transform: translateY(-4px);
+            }
+        }
+
+        /* Layout Card: Emoji a sinistra, testo a destra (o sopra/sotto) */
+        .card-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-emoji {
+            font-size: 3rem; /* Emoji Grande come accento */
+            line-height: 1;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.1)); /* Leggero glow */
+        }
+        
+        .card-date {
+            font-size: 0.75rem;
+            color: #666;
+            font-family: monospace;
+            border: 1px solid #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .card h3 {
+            font-size: 1.25rem; font-weight: 500; color: #fff;
+            margin: 0 0 0.5rem 0; line-height: 1.3;
+        }
+
+        .card p {
+            color: #aaa; font-size: 0.9rem; line-height: 1.5;
+            margin: 0 0 1.5rem 0; flex-grow: 1; font-weight: 300;
+        }
+
+        .card-footer {
+            display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: auto;
+        }
+
+        .tag-badge {
+            font-size: 0.7rem;
+            background: #252525;
+            color: #ccc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- STATO VUOTO --- */
+        #empty-state {
+            grid-column: 1 / -1;
+            text-align: center; padding: 4rem;
+            color: #444; font-size: 1.5rem;
+            display: none;
+        }
+
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; } /* 1 colonna secca su mobile */
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>ORFINI MATH LAB</h1>
-        <p>Risorse Didattiche Open Source</p>
+        <h1>FedericoDB Lab</h1>
+        <p>Risorse Didattiche Open Source. Semplice, essenziale, accessibile.</p>
     </header>
 
-    <div class="filters" id="filterBar">
-        <button class="filter-btn active" data-filter="all">Tutti</button>
-        <!-- I filtri verranno popolati dinamicamente o puoi lasciarli statici se preferisci -->
-        <button class="filter-btn" data-filter="Matematica">Matematica</button>
-        <button class="filter-btn" data-filter="Algebra">Fisica</button>
-        <button class="filter-btn" data-filter="Lab">Lab</button>
-        <button class="filter-btn" data-filter="Gioco">Gamification</button>
-        <button class="filter-btn" data-filter="1EL">1EL</button>
-        <button class="filter-btn" data-filter="2EL">2EL</button>
-        <button class="filter-btn" data-filter="2GR">2GR</button>
-        <button class="filter-btn" data-filter="3MEC">3MEC</button>
-        <button class="filter-btn" data-filter="4EL">4EL</button>
+    <div class="filters-container">
+        <div class="filters" id="filterBar">
+            <button class="chip active" data-filter="all">Tutti</button>
+            <button class="chip" data-filter="Matematica">Matematica</button>
+            <button class="chip" data-filter="Fisica">Fisica</button>
+            <button class="chip" data-filter="Lab">Lab</button>
+            <button class="chip" data-filter="Gioco">Games</button>
+            <button class="chip" data-filter="1EL">1EL</button>
+            <button class="chip" data-filter="4EL">4EL</button>
+        </div>
     </div>
 
     <main>
-        <div class="grid-container" id="grid">
-            <!-- LE CARD VERRANNO INSERITE QUI DA JS -->
+        <div class="grid" id="grid">
+            <!-- Card iniettate via JS -->
         </div>
-        <div id="empty-state">Nessuna lezione trovata con questo filtro.</div>
+        <div id="empty-state">
+            ( ˘_˘ )<br><br>Nessuna attività trovata.
+        </div>
     </main>
 
-    <!-- 1. Carichiamo il database generato da Python -->
+    <!-- DATABASE -->
     <script src="database.js"></script>
 
-    <!-- 2. Logica di Rendering -->
     <script>
         const grid = document.getElementById('grid');
         const emptyState = document.getElementById('empty-state');
-        const buttons = document.querySelectorAll('.filter-btn');
-
-        // Se database.js non esiste o è vuoto (primo avvio senza build), usiamo un array vuoto per non rompere il sito
-        const data = (typeof db !== 'undefined') ? db : [];
+        const chips = document.querySelectorAll('.chip');
+        
+        // Fallback Database
+        const safeData = (typeof db !== 'undefined') ? db : [];
 
         function render(filter) {
             grid.innerHTML = '';
             let count = 0;
 
-            data.forEach(item => {
-                // Logica di filtro inclusiva: se filtro="all" o se uno dei tag dell'item contiene la stringa del filtro
+            safeData.forEach(item => {
                 const match = filter === 'all' || item.tags.some(t => t.includes(filter));
                 
                 if (match) {
@@ -132,18 +252,25 @@
                     card.href = item.url;
                     card.className = 'card';
                     
-                    const tagsHtml = item.tags.map(t => `<span class="tag">#${t}</span>`).join('');
-                    
-                    // Formatta la data (opzionale)
+                    const tagsHtml = item.tags.map(t => `<span class="tag-badge">#${t}</span>`).join('');
                     const dateObj = new Date(item.date);
-                    const dateStr = !isNaN(dateObj) ? dateObj.toLocaleDateString('it-IT') : item.date;
+                    // Formato data breve tecnico: DD.MM.YY
+                    const dateStr = !isNaN(dateObj) ? 
+                        `${String(dateObj.getDate()).padStart(2,'0')}.${String(dateObj.getMonth()+1).padStart(2,'0')}.${String(dateObj.getFullYear()).slice(-2)}` : 
+                        item.date;
+
+                    // NOTA: item.icon viene generato automaticamente da build.py in base ai tag
+                    // Se build.py non ha assegnato un'icona, usiamo un fallback generico
+                    const emoji = item.icon || '📄';
 
                     card.innerHTML = `
-                        <div class="card-icon">${item.icon}</div>
-                        <div class="card-date">${dateStr}</div>
+                        <div class="card-header">
+                            <div class="card-emoji">${emoji}</div>
+                            <div class="card-date">${dateStr}</div>
+                        </div>
                         <h3>${item.title}</h3>
                         <p>${item.excerpt}</p>
-                        <div class="card-tags">${tagsHtml}</div>
+                        <div class="card-footer">${tagsHtml}</div>
                     `;
                     grid.appendChild(card);
                 }
@@ -152,11 +279,16 @@
             emptyState.style.display = count === 0 ? 'block' : 'none';
         }
 
-        // Setup Filtri
-        buttons.forEach(btn => {
+        // Logic Chips
+        chips.forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelector('.filter-btn.active').classList.remove('active');
+                // Rimuovi active da tutti
+                document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+                // Aggiungi active al cliccato
                 btn.classList.add('active');
+                // Scroll automatico per centrare il chip cliccato (UX Mobile)
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                
                 render(btn.dataset.filter);
             });
         });

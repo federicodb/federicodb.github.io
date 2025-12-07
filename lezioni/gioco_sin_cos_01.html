@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GonioMatch - Signal Processing</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Configurazione Tailwind per Dark Mode e Font -->
     <script>
         tailwind.config = {
@@ -32,11 +33,11 @@
             }
         }
     </script>
-    
+
     <!-- KaTeX per la matematica -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    
+
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -44,9 +45,9 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Serif:wght@700&family=Fira+Code:wght@500&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
+
+        body {
+            font-family: 'Inter', sans-serif;
             overflow: hidden;
             height: 100vh;
             width: 100vw;
@@ -54,10 +55,12 @@
             -webkit-user-select: none;
             user-select: none;
         }
-        
+
         /* --- 3D CARD ENGINE --- */
-        .perspective-1000 { perspective: 1000px; }
-        
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
         .flipper {
             position: relative;
             width: 100%;
@@ -67,7 +70,9 @@
             will-change: transform;
         }
 
-        .flipper.flipped { transform: rotateY(180deg); }
+        .flipper.flipped {
+            transform: rotateY(180deg);
+        }
 
         .face {
             position: absolute;
@@ -82,13 +87,27 @@
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
 
-        .face-front { transform: rotateY(0deg); }
-        .face-back { transform: rotateY(180deg); }
+        .face-front {
+            transform: rotateY(0deg);
+        }
+
+        .face-back {
+            transform: rotateY(180deg);
+        }
 
         /* Scrollbar Invisibile ma funzionale */
-        .scroller::-webkit-scrollbar { width: 4px; }
-        .scroller::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .dark .scroller::-webkit-scrollbar-thumb { background: #475569; }
+        .scroller::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scroller::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark .scroller::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
 
         /* Griglia CRT per sfondo */
         .bg-crt {
@@ -97,6 +116,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="root" class="h-full w-full"></div>
 
@@ -108,12 +128,12 @@
         const RUSH_PLAY_TIME = 120;
 
         const AVATARS = ['📡', '🔭', '🛰️', '📻', '🧬', '🔬', '🥽', '💾', '🕹️', '📟', '🔋', '🏗️'];
-        
+
         // EMOJI "RADAR/SIGNAL" THEME
         const EMOJI_POOL = [
-            '📡','🌊','📻','🔊','📶','🔌','🔋','💿','💾','🕹️','📺','🧭',
-            '⏲️','🧲','🧬','🌡️','📐','📏','📎','📌','📍','🔭','🔬','🩸',
-            '🦠','💊','🩺','🧪','🧹','🔧','🔨','⛏️','🔩','⚙️','🧱','🛢️'
+            '📡', '🌊', '📻', '🔊', '📶', '🔌', '🔋', '💿', '💾', '🕹️', '📺', '🧭',
+            '⏲️', '🧲', '🧬', '🌡️', '📐', '📏', '📎', '📌', '📍', '🔭', '🔬', '🩸',
+            '🦠', '💊', '🩺', '🧪', '🧹', '🔧', '🔨', '⛏️', '🔩', '⚙️', '🧱', '🛢️'
         ];
 
         // COLORI PER COPPIE (Alto contrasto e distintivi)
@@ -140,20 +160,20 @@
         // --- DATABASE GONIOMETRICO (BUCKET SYSTEM) ---
         // Ogni "bucket" ha un valore di risposta univoco e N possibili domande.
         // Questo garantisce l'univocità della risposta nel tabellone.
-        
+
         const ANSWER_BUCKETS = [
-            { id: 'zero',   val: '0',              qs: ['\\sin(0)', '\\sin(180^\\circ)', '\\sin(\\pi)', '\\cos(90^\\circ)', '\\cos(\\frac{\\pi}{2})', '\\tan(0)'] },
-            { id: 'one',    val: '1',              qs: ['\\sin(90^\\circ)', '\\cos(0)', '\\cos(360^\\circ)', '\\tan(45^\\circ)', '\\sin^2(x)+\\cos^2(x)'] },
-            { id: 'minus1', val: '-1',             qs: ['\\sin(270^\\circ)', '\\cos(180^\\circ)', '\\cos(\\pi)', '\\sin(\\frac{3}{2}\\pi)'] },
-            { id: 'half',   val: '\\frac{1}{2}',   qs: ['\\sin(30^\\circ)', '\\sin(\\frac{\\pi}{6})', '\\cos(60^\\circ)', '\\cos(\\frac{\\pi}{3})'] },
-            { id: 'mhalf',  val: '-\\frac{1}{2}',  qs: ['\\sin(210^\\circ)', '\\cos(120^\\circ)', '\\cos(\\frac{2}{3}\\pi)', '\\sin(330^\\circ)'] },
-            { id: 'sq2_2',  val: '\\frac{\\sqrt{2}}{2}', qs: ['\\sin(45^\\circ)', '\\cos(45^\\circ)', '\\sin(\\frac{\\pi}{4})'] },
+            { id: 'zero', val: '0', qs: ['\\sin(0)', '\\sin(180^\\circ)', '\\sin(\\pi)', '\\cos(90^\\circ)', '\\cos(\\frac{\\pi}{2})', '\\tan(0)'] },
+            { id: 'one', val: '1', qs: ['\\sin(90^\\circ)', '\\cos(0)', '\\cos(360^\\circ)', '\\tan(45^\\circ)', '\\sin^2(x)+\\cos^2(x)'] },
+            { id: 'minus1', val: '-1', qs: ['\\sin(270^\\circ)', '\\cos(180^\\circ)', '\\cos(\\pi)', '\\sin(\\frac{3}{2}\\pi)'] },
+            { id: 'half', val: '\\frac{1}{2}', qs: ['\\sin(30^\\circ)', '\\sin(\\frac{\\pi}{6})', '\\cos(60^\\circ)', '\\cos(\\frac{\\pi}{3})'] },
+            { id: 'mhalf', val: '-\\frac{1}{2}', qs: ['\\sin(210^\\circ)', '\\cos(120^\\circ)', '\\cos(\\frac{2}{3}\\pi)', '\\sin(330^\\circ)'] },
+            { id: 'sq2_2', val: '\\frac{\\sqrt{2}}{2}', qs: ['\\sin(45^\\circ)', '\\cos(45^\\circ)', '\\sin(\\frac{\\pi}{4})'] },
             { id: 'msq2_2', val: '-\\frac{\\sqrt{2}}{2}', qs: ['\\sin(225^\\circ)', '\\cos(135^\\circ)', '\\sin(\\frac{5}{4}\\pi)'] },
-            { id: 'sq3_2',  val: '\\frac{\\sqrt{3}}{2}', qs: ['\\sin(60^\\circ)', '\\cos(30^\\circ)', '\\sin(\\frac{\\pi}{3})'] },
+            { id: 'sq3_2', val: '\\frac{\\sqrt{3}}{2}', qs: ['\\sin(60^\\circ)', '\\cos(30^\\circ)', '\\sin(\\frac{\\pi}{3})'] },
             { id: 'msq3_2', val: '-\\frac{\\sqrt{3}}{2}', qs: ['\\sin(300^\\circ)', '\\cos(150^\\circ)', '\\cos(\\frac{5}{6}\\pi)'] },
-            { id: 'sq3',    val: '\\sqrt{3}',      qs: ['\\tan(60^\\circ)', '\\tan(\\frac{\\pi}{3})', '\\cot(30^\\circ)'] },
+            { id: 'sq3', val: '\\sqrt{3}', qs: ['\\tan(60^\\circ)', '\\tan(\\frac{\\pi}{3})', '\\cot(30^\\circ)'] },
             { id: 'invsq3', val: '\\frac{\\sqrt{3}}{3}', qs: ['\\tan(30^\\circ)', '\\tan(\\frac{\\pi}{6})', '\\cot(60^\\circ)'] },
-            { id: 'minvsq3',val: '-\\frac{\\sqrt{3}}{3}', qs: ['\\tan(150^\\circ)', '\\tan(\\frac{5}{6}\\pi)'] }
+            { id: 'minvsq3', val: '-\\frac{\\sqrt{3}}{3}', qs: ['\\tan(150^\\circ)', '\\tan(\\frac{5}{6}\\pi)'] }
         ];
 
         const TRAP_CARDS = [
@@ -175,8 +195,8 @@
         ];
 
         // --- ICONE SVG ---
-        const Icon = ({ d, size=20, className="" }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={d}/></svg>
+        const Icon = ({ d, size = 20, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={d} /></svg>
         );
         const Icons = {
             Radar: <Icon d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0 M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0 M12 12v-9 M12 12l4 4" />,
@@ -192,7 +212,7 @@
 
         // --- MATH ENGINE ---
         const MathText = ({ txt, className = "" }) => {
-            const defaultCardSize = "text-xl md:text-2xl"; 
+            const defaultCardSize = "text-xl md:text-2xl";
             const appliedClass = className || defaultCardSize;
             const html = useMemo(() => {
                 try {
@@ -200,7 +220,7 @@
                 } catch (e) { return txt; }
             }, [txt]);
 
-            return <div className={`font-math flex items-center justify-center w-full h-full p-1 leading-relaxed ${appliedClass}`} dangerouslySetInnerHTML={{__html: html}} />;
+            return <div className={`font-math flex items-center justify-center w-full h-full p-1 leading-relaxed ${appliedClass}`} dangerouslySetInnerHTML={{ __html: html }} />;
         };
 
         const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -209,20 +229,20 @@
             const levelConfig = LEVELS.find(l => l.id === levelId);
             const pairsCount = levelConfig.pairs;
             const pairs = [];
-            
+
             // 1. SELECT ONE TRAP (MANDATORY)
             const trap = TRAP_CARDS[getRandomInt(0, TRAP_CARDS.length - 1)];
-            pairs.push({ 
-                q: trap.q, 
-                a: trap.a, 
-                type: 'trap', 
-                hint: trap.hint 
+            pairs.push({
+                q: trap.q,
+                a: trap.a,
+                type: 'trap',
+                hint: trap.hint
             });
 
             // 2. SELECT UNIQUE ANSWER BUCKETS
             // Shuffle buckets to get random unique answers
             const shuffledBuckets = [...ANSWER_BUCKETS].sort(() => Math.random() - 0.5);
-            
+
             // Fill remaining slots
             for (let i = 0; i < pairsCount - 1; i++) {
                 if (i < shuffledBuckets.length) {
@@ -244,32 +264,32 @@
             // 3. GENERATE DECK
             const deck = [];
             const shuffledEmojis = [...EMOJI_POOL].sort(() => Math.random() - 0.5);
-            
+
             pairs.forEach((p, i) => {
                 const color = PAIR_COLORS[i % PAIR_COLORS.length];
                 // Card A (Question / Signal) -> DOMANDA
-                deck.push({ 
-                    id: `p${i}a`, 
-                    pairId: i, 
-                    content: p.q, 
-                    cardType: 'q', 
-                    emoji: shuffledEmojis[i * 2], 
-                    color, 
-                    ...p 
+                deck.push({
+                    id: `p${i}a`,
+                    pairId: i,
+                    content: p.q,
+                    cardType: 'q',
+                    emoji: shuffledEmojis[i * 2],
+                    color,
+                    ...p
                 });
                 // Card B (Answer / Value) -> RISPOSTA
-                deck.push({ 
-                    id: `p${i}b`, 
-                    pairId: i, 
-                    content: p.a, 
-                    cardType: 'a', 
-                    emoji: shuffledEmojis[i * 2 + 1], 
-                    color, 
-                    ...p 
+                deck.push({
+                    id: `p${i}b`,
+                    pairId: i,
+                    content: p.a,
+                    cardType: 'a',
+                    emoji: shuffledEmojis[i * 2 + 1],
+                    color,
+                    ...p
                 });
             });
 
-            return deck.sort(() => Math.random() - 0.5).map(c => ({...c, isFlipped: false, isMatched: false, seen: false}));
+            return deck.sort(() => Math.random() - 0.5).map(c => ({ ...c, isFlipped: false, isMatched: false, seen: false }));
         };
 
         const saveScore = (entry) => {
@@ -293,8 +313,8 @@
             const [moves, setMoves] = useState(0);
             const [score, setScore] = useState(0);
             const [accumulatedScore, setAccumulatedScore] = useState(0);
-            
-            const [flipped, setFlipped] = useState([]); 
+
+            const [flipped, setFlipped] = useState([]);
             const [lock, setLock] = useState(false);
             const [matchMsg, setMatchMsg] = useState(null);
             const [isRush, setIsRush] = useState(false);
@@ -360,8 +380,8 @@
 
                 if (newFlipped.length === 2) {
                     setLock(true);
-                    if (!isRush) setMoves(m => m + 1); 
-                    setTimeout(() => checkForMatch(newFlipped), 500); 
+                    if (!isRush) setMoves(m => m + 1);
+                    setTimeout(() => checkForMatch(newFlipped), 500);
                 }
             };
 
@@ -370,17 +390,17 @@
                     const c1 = currentCards.find(c => c.id === id1);
                     const c2 = currentCards.find(c => c.id === id2);
                     let nextCards = [...currentCards];
-                    
+
                     if (c1.pairId === c2.pairId) {
                         // MATCH
                         nextCards = nextCards.map(c => (c.id === id1 || c.id === id2) ? { ...c, isMatched: true, isFlipped: true } : c);
-                        
+
                         let msgText = "Segnale Agganciato";
                         if (c1.type === 'trap') msgText = "Anomalia Identificata!";
-                        
+
                         setMatchMsg({ text: msgText, sub: c1.hint, color: c1.color });
                         setTimeout(() => setMatchMsg(null), 2500);
-                        
+
                         setLock(false);
                         if (nextCards.filter(c => !c.isMatched).length === 0) {
                             if (isRush) handleRushEnd(true); else setTimeout(() => setView('win'), 1000);
@@ -404,7 +424,7 @@
                     setScore(s => s * 2);
                     setMatchMsg({ text: "OVERCLOCK RIUSCITO", sub: "Punti x2", color: "bg-yellow-400 text-black border-yellow-600" });
                 } else {
-                    setScore(s => Math.floor(s / 2)); 
+                    setScore(s => Math.floor(s / 2));
                     setMatchMsg({ text: "SEGNALE PERSO", sub: "Punti / 2", color: "bg-red-500 text-white border-red-700" });
                 }
                 setTimeout(() => setView('final'), 2000);
@@ -443,8 +463,8 @@
             // --- UI RENDERERS ---
             if (view === 'menu') {
                 return (
-                    <div className="flex h-screen w-screen bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-mono transition-colors duration-500">
-                        <aside className="w-full md:w-1/3 max-w-md bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 h-full dark:bg-slate-800 dark:border-slate-700">
+                    <div className="flex h-screen w-screen bg-slate-50 text-slate-800 dark:bg-black dark:text-slate-100 font-mono transition-colors duration-500">
+                        <aside className="w-full md:w-1/3 max-w-md bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 h-full dark:bg-neutral-900 dark:border-neutral-800">
                             <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
                                 <div>
                                     <h1 className="text-2xl font-black text-slate-900 dark:text-radar-500 tracking-tighter flex items-center gap-2">
@@ -456,7 +476,7 @@
                                     {theme === 'light' ? Icons.Moon : Icons.Sun}
                                 </button>
                             </div>
-                            
+
                             <div className="flex-1 overflow-y-auto p-6 space-y-8 scroller">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">ID Operatore</label>
@@ -468,7 +488,7 @@
                                         }} className="bg-slate-100 hover:bg-slate-200 cursor-pointer text-2xl w-14 h-14 flex items-center justify-center rounded-lg border-2 border-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-600 transition-all active:scale-95">
                                             {userAvatar}
                                         </button>
-                                        <input value={nick} onChange={e => setNick(e.target.value)} placeholder="NOME IN CODICE..." className="w-full bg-slate-100 rounded-lg px-4 font-bold text-slate-700 border-2 border-transparent focus:border-radar-500 focus:bg-white outline-none transition-all uppercase dark:bg-slate-700 dark:text-radar-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"/>
+                                        <input value={nick} onChange={e => setNick(e.target.value)} placeholder="NOME IN CODICE..." className="w-full bg-slate-100 rounded-lg px-4 font-bold text-slate-700 border-2 border-transparent focus:border-radar-500 focus:bg-white outline-none transition-all uppercase dark:bg-slate-700 dark:text-radar-100 dark:placeholder-slate-500 dark:focus:bg-slate-800" />
                                     </div>
                                 </div>
 
@@ -488,7 +508,7 @@
                                         ))}
                                     </div>
                                 </div>
-                                
+
                                 <div className="bg-slate-100 rounded-xl border border-slate-200 p-4 dark:bg-slate-800 dark:border-slate-700">
                                     <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700">
                                         <div className="text-yellow-500">{Icons.Trophy}</div>
@@ -499,7 +519,7 @@
                                         {lb.map((row, i) => (
                                             <div key={i} className="flex justify-between items-center text-xs p-2 bg-white rounded border border-slate-200 shadow-sm dark:bg-slate-700 dark:border-slate-600">
                                                 <div className="flex gap-2 items-center">
-                                                    <span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i<3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-600 dark:text-slate-300'}`}>{i+1}</span>
+                                                    <span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i < 3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-600 dark:text-slate-300'}`}>{i + 1}</span>
                                                     <span className="text-base leading-none">{row.avatar || '👤'}</span>
                                                     <span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200 uppercase">{row.name}</span>
                                                 </div>
@@ -520,9 +540,9 @@
                             </div>
                         </aside>
 
-                        <main className="hidden md:flex flex-1 bg-crt items-center justify-center relative overflow-hidden bg-slate-100 dark:bg-slate-950">
-                             <div className="w-full max-w-5xl p-8">
-                                <div className="bg-white/90 backdrop-blur p-10 rounded-2xl shadow-2xl border border-slate-200 h-full flex flex-col dark:bg-slate-900/90 dark:border-radar-900/50">
+                        <main className="hidden md:flex flex-1 bg-crt items-center justify-center relative overflow-hidden bg-slate-100 dark:bg-black">
+                            <div className="w-full max-w-5xl p-8">
+                                <div className="bg-white/90 backdrop-blur p-10 rounded-2xl shadow-2xl border border-slate-200 h-full flex flex-col dark:bg-neutral-900/90 dark:border-neutral-800/50">
                                     <div className="flex items-center gap-6 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
                                         <div className="p-4 bg-radar-100 text-radar-600 rounded-xl dark:bg-radar-900 dark:text-radar-400">{Icons.Wave}</div>
                                         <div>
@@ -537,7 +557,7 @@
                                                 <div>
                                                     <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wide dark:text-white">Direttiva Primaria</h3>
                                                     <p className="text-slate-600 text-sm mt-1 leading-relaxed dark:text-slate-300">
-                                                        Il sistema genera onde uniche. Associa ogni <strong>Funzione (Bordo Tratteggiato)</strong> al suo <strong>Valore Numerico (Bordo Continuo)</strong>. 
+                                                        Il sistema genera onde uniche. Associa ogni <strong>Funzione (Bordo Tratteggiato)</strong> al suo <strong>Valore Numerico (Bordo Continuo)</strong>.
                                                         Attenzione alle trappole di segnale (valori impossibili).
                                                     </p>
                                                 </div>
@@ -549,14 +569,14 @@
                                                 <div key={idx} className={`p-3 rounded border flex flex-col justify-center min-h-[80px] ${item.color} dark:bg-opacity-10 dark:border-opacity-30`}>
                                                     <div className="text-[9px] font-bold opacity-70 mb-1 uppercase tracking-wider">{item.title}</div>
                                                     <div className="w-full overflow-x-auto no-scrollbar">
-                                                        <MathText txt={item.tex} className="text-sm dark:text-slate-200 text-left justify-start"/>
+                                                        <MathText txt={item.tex} className="text-sm dark:text-slate-200 text-left justify-start" />
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
                                 </div>
-                             </div>
+                            </div>
                         </main>
                     </div>
                 );
@@ -565,18 +585,18 @@
             const isGameView = view === 'game' || view === 'win' || view === 'final';
             if (isGameView) {
                 const n = cards.length;
-                let gridClass = n === 6 ? "grid-cols-3 grid-rows-2" : 
-                                n === 12 ? "grid-cols-4 grid-rows-3" : 
-                                n === 16 ? "grid-cols-4 grid-rows-4" : 
-                                "grid-cols-5 grid-rows-4";
+                let gridClass = n === 6 ? "grid-cols-3 grid-rows-2" :
+                    n === 12 ? "grid-cols-4 grid-rows-3" :
+                        n === 16 ? "grid-cols-4 grid-rows-4" :
+                            "grid-cols-5 grid-rows-4";
 
                 return (
-                    <div className="h-screen w-screen flex flex-col bg-slate-100 overflow-hidden dark:bg-slate-950 font-mono bg-crt">
-                        <header className="h-16 bg-white/80 backdrop-blur shadow-sm flex items-center justify-between px-6 z-30 shrink-0 border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+                    <div className="h-screen w-screen flex flex-col bg-slate-100 overflow-hidden dark:bg-black font-mono bg-crt">
+                        <header className="h-16 bg-white/80 backdrop-blur shadow-sm flex items-center justify-between px-6 z-30 shrink-0 border-b border-slate-200 dark:bg-neutral-900/80 dark:border-neutral-800">
                             <div className="flex items-center gap-6">
                                 <button onClick={() => setView('menu')} className="text-[10px] font-bold text-slate-400 hover:text-red-500 uppercase tracking-widest border border-slate-200 rounded px-2 py-1 hover:border-red-400 transition-all dark:border-slate-700">Abort Mission</button>
                                 {isRush ? (
-                                    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ${rushPhase==='mem'?'bg-yellow-100 text-yellow-800 border-yellow-200':'bg-red-100 text-red-800 border-red-200 animate-pulse'}`}>
+                                    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ${rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-red-100 text-red-800 border-red-200 animate-pulse'}`}>
                                         {Icons.Timer} {timeLeft}s
                                     </div>
                                 ) : (
@@ -596,26 +616,26 @@
                                 </div>
                             )}
                         </header>
-                        
+
                         <main className="flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center relative">
                             <div className={`grid gap-3 md:gap-4 w-full max-w-6xl h-full max-h-full ${gridClass}`}>
                                 {cards.map(card => {
                                     const isGhostMode = LEVELS.find(l => l.id === lvl).ghost;
                                     const showGhostContent = isGhostMode && card.seen;
                                     const isFaceUp = card.isFlipped || card.isMatched;
-                                    
+
                                     // LOGICA DEI BORDI: DASHED PER DOMANDA, SOLID PER RISPOSTA
                                     let borderStyle = card.cardType === 'q' ? 'border-dashed' : 'border-solid';
-                                    
+
                                     let flipperStyle = `bg-white border-slate-300 dark:bg-slate-800 dark:border-slate-600 ${borderStyle}`;
                                     let backContentStyle = "text-slate-900 dark:text-slate-100";
-                                    
+
                                     if (card.isMatched) {
                                         flipperStyle = `${card.color} border-solid border-transparent shadow-none opacity-50`;
                                     } else if (card.type === 'trap' && isFaceUp) {
-                                         // Trappola sempre Solid quando rivelata per impatto
-                                         flipperStyle = "bg-red-50 border-solid border-red-500 dark:bg-red-900/50 dark:border-red-500";
-                                         backContentStyle = "text-red-700 dark:text-red-200";
+                                        // Trappola sempre Solid quando rivelata per impatto
+                                        flipperStyle = "bg-red-50 border-solid border-red-500 dark:bg-red-900/50 dark:border-red-500";
+                                        backContentStyle = "text-red-700 dark:text-red-200";
                                     }
 
                                     return (
@@ -628,7 +648,7 @@
                                                 <div className="face face-front rounded-lg overflow-hidden bg-white dark:bg-slate-800">
                                                     {showGhostContent ? (
                                                         <div className="opacity-40 w-full h-full flex items-center justify-center p-1">
-                                                             <MathText txt={card.content} className="text-xs md:text-sm text-slate-500 dark:text-slate-400" />
+                                                            <MathText txt={card.content} className="text-xs md:text-sm text-slate-500 dark:text-slate-400" />
                                                         </div>
                                                     ) : (
                                                         <div className="flex flex-col items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
@@ -637,13 +657,13 @@
                                                         </div>
                                                     )}
                                                 </div>
-                                                
+
                                                 {/* RETRO (SCOPERTO) */}
                                                 <div className="face face-back p-2 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
                                                     <div className={`w-full h-full flex items-center justify-center text-center ${backContentStyle}`}>
-                                                        <MathText 
-                                                            txt={card.content} 
-                                                            className={`font-bold tracking-tight break-words w-full ${card.content.length > 10 ? 'text-lg' : 'text-2xl md:text-3xl'}`} 
+                                                        <MathText
+                                                            txt={card.content}
+                                                            className={`font-bold tracking-tight break-words w-full ${card.content.length > 10 ? 'text-lg' : 'text-2xl md:text-3xl'}`}
                                                         />
                                                     </div>
                                                     {/* Indicatore Tipo Card (Angolo) */}
@@ -665,7 +685,7 @@
                                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-radar-400 to-emerald-400"></div>
                                     <h2 className="text-3xl font-black text-slate-800 mb-1 dark:text-white tracking-tight">ANALISI COMPLETA</h2>
                                     <p className="text-slate-500 mb-8 dark:text-slate-400 text-sm font-mono uppercase tracking-wide">Integrità Dati: 100%</p>
-                                    
+
                                     <div className="flex justify-center items-end gap-2 mb-8">
                                         <span className="text-5xl font-black text-radar-600 dark:text-radar-400">{score}</span>
                                         <span className="text-sm font-bold text-slate-400 mb-2 uppercase">Punti</span>
@@ -682,9 +702,9 @@
                                 </div>
                             </div>
                         )}
-                        
+
                         {/* FINAL SCORE MODAL */}
-                         {view === 'final' && (
+                        {view === 'final' && (
                             <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95 font-mono">
                                 <div className="text-center text-white border border-slate-700 p-10 rounded-3xl bg-slate-900">
                                     <div className="text-6xl mb-6">{score > 1000 ? '📡' : '📉'}</div>
@@ -706,4 +726,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>

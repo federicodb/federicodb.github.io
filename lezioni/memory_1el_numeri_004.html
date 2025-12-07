@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">     <title>MathMatch 4.1 - Smart Scaffolding</title>
-    
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MathMatch 4.1 - Smart Scaffolding</title>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Configurazione Tailwind per Dark Mode -->
     <script>
         tailwind.config = {
@@ -25,11 +28,11 @@
             }
         }
     </script>
-    
+
     <!-- KaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    
+
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -37,9 +40,9 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Serif:wght@700&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
+
+        body {
+            font-family: 'Inter', sans-serif;
             overflow: hidden;
             height: 100vh;
             width: 100vw;
@@ -49,10 +52,16 @@
             transition: background-color 0.3s ease, color 0.3s ease;
             background-color: #f1f5f9;
         }
-        
+
+        .dark body {
+            background-color: #000000;
+        }
+
         /* --- 3D ENGINE (STILE v2.5 RIPRISTINATO) --- */
-        .perspective-1000 { perspective: 1000px; }
-        
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
         .flipper {
             position: relative;
             width: 100%;
@@ -60,10 +69,13 @@
             transform-style: preserve-3d;
             transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
             will-change: transform;
-            border-radius: 0.75rem; /* Bordo arrotondato sul contenitore */
+            border-radius: 0.75rem;
+            /* Bordo arrotondato sul contenitore */
         }
 
-        .flipper.flipped { transform: rotateY(180deg); }
+        .flipper.flipped {
+            transform: rotateY(180deg);
+        }
 
         .face {
             position: absolute;
@@ -71,38 +83,56 @@
             height: 100%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            border-radius: 0.75rem; /* Match parent radius */
+            border-radius: 0.75rem;
+            /* Match parent radius */
             display: flex;
             align-items: center;
             justify-content: center;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
         }
 
-        .face-front { 
-            transform: rotateY(0deg); 
+        .face-front {
+            transform: rotateY(0deg);
             z-index: 2;
         }
-        
-        .face-back { 
-            transform: rotateY(180deg); 
+
+        .face-back {
+            transform: rotateY(180deg);
             /* Ruotiamo il contenuto per leggerlo dritto quando la carta è girata */
         }
 
         /* Tipografia Matematica */
-        .font-math { font-family: 'Noto Serif', serif; }
-        
+        .font-math {
+            font-family: 'Noto Serif', serif;
+        }
+
         /* Scrollbar */
-        .scroller::-webkit-scrollbar { width: 6px; }
-        .scroller::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .dark .scroller::-webkit-scrollbar-thumb { background: #475569; }
+        .scroller::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scroller::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark .scroller::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
 
         #confetti-canvas {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
         }
     </style>
 </head>
+
 <body>
     <div id="root" class="h-full w-full"></div>
 
@@ -114,7 +144,7 @@
         // --- AUDIO ENGINE ---
         const AudioEngine = {
             ctx: null,
-            init: function() {
+            init: function () {
                 if (!this.ctx) {
                     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
                 }
@@ -122,7 +152,7 @@
                     this.ctx.resume();
                 }
             },
-            playTone: function(freq, type, duration, vol = 0.1) {
+            playTone: function (freq, type, duration, vol = 0.1) {
                 if (!this.ctx) return;
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
@@ -135,32 +165,32 @@
                 osc.start();
                 osc.stop(this.ctx.currentTime + duration);
             },
-            playFlip: function() { this.playTone(400, 'sine', 0.1, 0.05); },
-            playMatch: function() { 
-                this.playTone(523.25, 'triangle', 0.2, 0.1); 
-                setTimeout(() => this.playTone(659.25, 'triangle', 0.2, 0.1), 100); 
-                setTimeout(() => this.playTone(783.99, 'triangle', 0.4, 0.1), 200); 
+            playFlip: function () { this.playTone(400, 'sine', 0.1, 0.05); },
+            playMatch: function () {
+                this.playTone(523.25, 'triangle', 0.2, 0.1);
+                setTimeout(() => this.playTone(659.25, 'triangle', 0.2, 0.1), 100);
+                setTimeout(() => this.playTone(783.99, 'triangle', 0.4, 0.1), 200);
             },
-            playError: function() {
+            playError: function () {
                 this.playTone(150, 'sawtooth', 0.3, 0.05);
                 setTimeout(() => this.playTone(100, 'sawtooth', 0.3, 0.05), 100);
             },
-            playWin: function() {
+            playWin: function () {
                 const notes = [523.25, 659.25, 783.99, 1046.50];
                 notes.forEach((n, i) => setTimeout(() => this.playTone(n, 'square', 0.4, 0.05), i * 100));
             }
         };
 
         // --- CONFIGURAZIONE ---
-        const RUSH_MEM_TIME = 30; 
-        const RUSH_PLAY_TIME = 45; 
+        const RUSH_MEM_TIME = 30;
+        const RUSH_PLAY_TIME = 45;
 
         const AVATARS = ['👨‍🚀', '👩‍🔬', '🥷', '🧙‍♂️', '🧛‍♀️', '🧜‍♂️', '🧚‍♀️', '🧞‍♂️', '🦸‍♀️', '🦹‍♂️', '🕵️‍♀️', '🧑‍🎨', '🦊', '🦉'];
 
         const EMOJI_POOL = [
-            '🚀','💎','🌶️','🍄','🎱','🎸','🌵','🔥','⚡','🌈','🪐','🧩',
-            '🎲','🎯','🎨','🎭','🎪','🎡','🎢','🎃','🎄','🎈','🎁','🏆',
-            '🥇','⚽','🏀','🎾','🍩','🍕','🍟','🍔','🦄','🤖','👾','👻'
+            '🚀', '💎', '🌶️', '🍄', '🎱', '🎸', '🌵', '🔥', '⚡', '🌈', '🪐', '🧩',
+            '🎲', '🎯', '🎨', '🎭', '🎪', '🎡', '🎢', '🎃', '🎄', '🎈', '🎁', '🏆',
+            '🥇', '⚽', '🏀', '🎾', '🍩', '🍕', '🍟', '🍔', '🦄', '🤖', '👾', '👻'
         ];
 
         // Colori vividi per il testo
@@ -213,39 +243,39 @@
         };
 
         const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-        
+
         // --- LOGICA MATEMATICA (Mantenuta identica alla 3.0/3.3) ---
         const generateMathItem = (type) => {
-            switch(type) {
+            switch (type) {
                 case 'pemdas':
                     const pSub = getRandomInt(0, 5);
-                    if (pSub === 0) { const a=getRandomInt(2,6), b=getRandomInt(2,5), c=getRandomInt(2,4); return { poly: `${a} + ${b} \\cdot ${c}`, fact: `${a+b*c}`, type: "pemdas" }; }
-                    else if (pSub === 1) { const c=getRandomInt(2,4), b=c*getRandomInt(2,5), a=getRandomInt(2,10); return { poly: `${a} + ${b} : ${c}`, fact: `${a+b/c}`, type: "pemdas" }; }
-                    else if (pSub === 2) { const a=getRandomInt(10,20), b=getRandomInt(2,5), c=getRandomInt(2,4); return { poly: `${a} - ${b} + ${c}`, fact: `${a-b+c}`, type: "pemdas" }; }
-                    else if (pSub === 3) { const b=getRandomInt(2,4), a=b*getRandomInt(2,4)*getRandomInt(2,3), c=getRandomInt(2,3); return { poly: `${a} : ${b} \\cdot ${c}`, fact: `${(a/b)*c}`, type: "pemdas" }; }
-                    else if (pSub === 4) { const a=getRandomInt(2,5), b=getRandomInt(2,5), c=getRandomInt(2,4); return { poly: `(${a} + ${b}) \\cdot ${c}`, fact: `${(a+b)*c}`, type: "pemdas" }; }
-                    else { const b=getRandomInt(2,5); return { poly: `-${b}^2`, fact: `${-1*b*b}`, type: "pemdas" }; }
+                    if (pSub === 0) { const a = getRandomInt(2, 6), b = getRandomInt(2, 5), c = getRandomInt(2, 4); return { poly: `${a} + ${b} \\cdot ${c}`, fact: `${a + b * c}`, type: "pemdas" }; }
+                    else if (pSub === 1) { const c = getRandomInt(2, 4), b = c * getRandomInt(2, 5), a = getRandomInt(2, 10); return { poly: `${a} + ${b} : ${c}`, fact: `${a + b / c}`, type: "pemdas" }; }
+                    else if (pSub === 2) { const a = getRandomInt(10, 20), b = getRandomInt(2, 5), c = getRandomInt(2, 4); return { poly: `${a} - ${b} + ${c}`, fact: `${a - b + c}`, type: "pemdas" }; }
+                    else if (pSub === 3) { const b = getRandomInt(2, 4), a = b * getRandomInt(2, 4) * getRandomInt(2, 3), c = getRandomInt(2, 3); return { poly: `${a} : ${b} \\cdot ${c}`, fact: `${(a / b) * c}`, type: "pemdas" }; }
+                    else if (pSub === 4) { const a = getRandomInt(2, 5), b = getRandomInt(2, 5), c = getRandomInt(2, 4); return { poly: `(${a} + ${b}) \\cdot ${c}`, fact: `${(a + b) * c}`, type: "pemdas" }; }
+                    else { const b = getRandomInt(2, 5); return { poly: `-${b}^2`, fact: `${-1 * b * b}`, type: "pemdas" }; }
                 case 'trap':
-                    return Math.random() > 0.5 ? { poly: `${getRandomInt(1,9)} : 0`, fact: `\\text{Impossibile}`, type: "trap" } : { poly: `\\sqrt{-${getRandomInt(2,9)**2}}`, fact: `\\text{Non Reale}`, type: "trap" };
+                    return Math.random() > 0.5 ? { poly: `${getRandomInt(1, 9)} : 0`, fact: `\\text{Impossibile}`, type: "trap" } : { poly: `\\sqrt{-${getRandomInt(2, 9) ** 2}}`, fact: `\\text{Non Reale}`, type: "trap" };
                 case 'integers':
-                    const a=getRandomInt(2,12), b=getRandomInt(2,12), s1=Math.random()>0.5?-1:1, s2=Math.random()>0.5?-1:1;
-                    const valA=a*s1, valB=b*s2, termB=valB>0?`+ ${valB}`:`- ${Math.abs(valB)}`;
-                    return { poly: `${valA} ${termB}`, fact: `${valA+valB}`, type: "integers" };
+                    const a = getRandomInt(2, 12), b = getRandomInt(2, 12), s1 = Math.random() > 0.5 ? -1 : 1, s2 = Math.random() > 0.5 ? -1 : 1;
+                    const valA = a * s1, valB = b * s2, termB = valB > 0 ? `+ ${valB}` : `- ${Math.abs(valB)}`;
+                    return { poly: `${valA} ${termB}`, fact: `${valA + valB}`, type: "integers" };
                 case 'powers_prop':
-                    const ppType=getRandomInt(0,2), base=getRandomInt(2,5);
-                    if (ppType===0) { const e1=getRandomInt(2,4), e2=getRandomInt(2,4); return { poly: `${base}^${e1} \\cdot ${base}^${e2}`, fact: `${base}^${e1+e2}`, type: "powers_prop" }; }
-                    else if (ppType===1) { const e2=getRandomInt(2,3), e1=e2+getRandomInt(1,3); return { poly: `${base}^${e1} : ${base}^${e2}`, fact: `${base}^${e1-e2}`, type: "powers_prop" }; }
-                    else { const e1=getRandomInt(2,3), e2=getRandomInt(2,3); return { poly: `(${base}^${e1})^${e2}`, fact: `${base}^${e1*e2}`, type: "powers_prop" }; }
-                case 'exp_zero': return { poly: `${getRandomInt(2,99)}^0`, fact: `1`, type: "exp_zero" };
-                case 'exp_neg': { const nBase=getRandomInt(2,4), nExp=getRandomInt(1,3); return { poly: `${nBase}^{-${nExp}}`, fact: `\\frac{1}{${Math.pow(nBase,nExp)}}`, type: "exp_neg" }; }
-                case 'opp_sum': { const oNum=getRandomInt(2,20); return { poly: `${oNum} + (-${oNum})`, fact: `0`, type: "opp_sum" }; }
-                case 'inverse_prod': { const iNum=getRandomInt(2,9); return { poly: `${iNum} \\cdot \\frac{1}{${iNum}}`, fact: `1`, type: "inverse_prod" }; }
-                case 'square5': { const n=getRandomInt(1,9); return { poly: `${n}5^2`, fact: `${(n*(n+1))*100+25}`, type: "square5" }; }
-                case 'square50': { const d=getRandomInt(1,4), s=Math.random()>0.5?1:-1, num=50+d*s; return { poly: `${num}^2`, fact: `${num*num}`, type: "square50" }; }
-                case 'square100': { const d=getRandomInt(1,4), s=Math.random()>0.5?1:-1, num=100+d*s; return { poly: `${num}^2`, fact: `${num*num}`, type: "square100" }; }
+                    const ppType = getRandomInt(0, 2), base = getRandomInt(2, 5);
+                    if (ppType === 0) { const e1 = getRandomInt(2, 4), e2 = getRandomInt(2, 4); return { poly: `${base}^${e1} \\cdot ${base}^${e2}`, fact: `${base}^${e1 + e2}`, type: "powers_prop" }; }
+                    else if (ppType === 1) { const e2 = getRandomInt(2, 3), e1 = e2 + getRandomInt(1, 3); return { poly: `${base}^${e1} : ${base}^${e2}`, fact: `${base}^${e1 - e2}`, type: "powers_prop" }; }
+                    else { const e1 = getRandomInt(2, 3), e2 = getRandomInt(2, 3); return { poly: `(${base}^${e1})^${e2}`, fact: `${base}^${e1 * e2}`, type: "powers_prop" }; }
+                case 'exp_zero': return { poly: `${getRandomInt(2, 99)}^0`, fact: `1`, type: "exp_zero" };
+                case 'exp_neg': { const nBase = getRandomInt(2, 4), nExp = getRandomInt(1, 3); return { poly: `${nBase}^{-${nExp}}`, fact: `\\frac{1}{${Math.pow(nBase, nExp)}}`, type: "exp_neg" }; }
+                case 'opp_sum': { const oNum = getRandomInt(2, 20); return { poly: `${oNum} + (-${oNum})`, fact: `0`, type: "opp_sum" }; }
+                case 'inverse_prod': { const iNum = getRandomInt(2, 9); return { poly: `${iNum} \\cdot \\frac{1}{${iNum}}`, fact: `1`, type: "inverse_prod" }; }
+                case 'square5': { const n = getRandomInt(1, 9); return { poly: `${n}5^2`, fact: `${(n * (n + 1)) * 100 + 25}`, type: "square5" }; }
+                case 'square50': { const d = getRandomInt(1, 4), s = Math.random() > 0.5 ? 1 : -1, num = 50 + d * s; return { poly: `${num}^2`, fact: `${num * num}`, type: "square50" }; }
+                case 'square100': { const d = getRandomInt(1, 4), s = Math.random() > 0.5 ? 1 : -1, num = 100 + d * s; return { poly: `${num}^2`, fact: `${num * num}`, type: "square100" }; }
                 case 'mcd_mcm':
-                    if (Math.random()>0.5) { const k=getRandomInt(2,6), a=k*getRandomInt(2,3), b=k*getRandomInt(4,5), gcd=(x,y)=>!y?x:gcd(y,x%y); return { poly: `\\text{M.C.D.}(${a}, ${b})`, fact: `${gcd(a,b)}`, type: "mcd_mcm" }; }
-                    else { const a=getRandomInt(2,5), b=getRandomInt(2,5), gcd=(x,y)=>!y?x:gcd(y,x%y); return { poly: `\\text{m.c.m.}(${a}, ${b})`, fact: `${(a*b)/gcd(a,b)}`, type: "mcd_mcm" }; }
+                    if (Math.random() > 0.5) { const k = getRandomInt(2, 6), a = k * getRandomInt(2, 3), b = k * getRandomInt(4, 5), gcd = (x, y) => !y ? x : gcd(y, x % y); return { poly: `\\text{M.C.D.}(${a}, ${b})`, fact: `${gcd(a, b)}`, type: "mcd_mcm" }; }
+                    else { const a = getRandomInt(2, 5), b = getRandomInt(2, 5), gcd = (x, y) => !y ? x : gcd(y, x % y); return { poly: `\\text{m.c.m.}(${a}, ${b})`, fact: `${(a * b) / gcd(a, b)}`, type: "mcd_mcm" }; }
                 default: return { poly: "1+1", fact: "2", type: "error" };
             }
         };
@@ -254,8 +284,8 @@
             const levelConfig = LEVELS.find(l => l.id === levelId);
             const pairsCount = levelConfig.pairs;
             const pairs = [];
-            const usedResults = new Set(); 
-            
+            const usedResults = new Set();
+
             const availableTypes = Object.keys(activeGenerators).filter(k => activeGenerators[k].active);
             if (availableTypes.length === 0) availableTypes.push('pemdas');
 
@@ -266,7 +296,7 @@
             // Gestione Trappola Unica
             if (activeGenerators['trap']?.active) {
                 const idx = typePool.findIndex(t => t !== 'trap');
-                if(idx >= 0) typePool[idx] = 'trap';
+                if (idx >= 0) typePool[idx] = 'trap';
                 let trapCount = 0;
                 typePool = typePool.map(t => {
                     if (t === 'trap') return ++trapCount > 1 ? availableTypes[0] : t;
@@ -291,20 +321,20 @@
             }
 
             const deck = [];
-            const shuffledEmojis = [...EMOJI_POOL].sort(()=>Math.random()-0.5);
-            
+            const shuffledEmojis = [...EMOJI_POOL].sort(() => Math.random() - 0.5);
+
             pairs.forEach((p, i) => {
                 const color = PAIR_COLORS[i % PAIR_COLORS.length];
-                deck.push({ id: `p${i}a`, pairId: i, content: p.poly, cardType: 'question', emoji: shuffledEmojis[i*2], color, ...p });
-                deck.push({ id: `p${i}b`, pairId: i, content: p.fact, cardType: 'answer', emoji: shuffledEmojis[i*2+1], color, ...p });
+                deck.push({ id: `p${i}a`, pairId: i, content: p.poly, cardType: 'question', emoji: shuffledEmojis[i * 2], color, ...p });
+                deck.push({ id: `p${i}b`, pairId: i, content: p.fact, cardType: 'answer', emoji: shuffledEmojis[i * 2 + 1], color, ...p });
             });
-            return deck.sort(() => Math.random() - 0.5).map(c => ({...c, isFlipped: false, isMatched: false, seen: false}));
+            return deck.sort(() => Math.random() - 0.5).map(c => ({ ...c, isFlipped: false, isMatched: false, seen: false }));
         };
 
-        const Icon = ({ d, size=20, className="" }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={d}/></svg>
+        const Icon = ({ d, size = 20, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={d} /></svg>
         );
-        
+
         const Icons = {
             Trophy: (p) => <Icon d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6 M18 9h1.5a2.5 2.5 0 0 0 0-5H18 M4 22h16 M10 14.66V17 M14 14.66V17 M12 2v10 M12 17a5 5 0 0 0-5 4 M12 17a5 5 0 0 1 5 4" {...p} />,
             Play: (p) => <Icon d="M5 3l14 9-14 9V3z" {...p} />,
@@ -326,7 +356,7 @@
                     return window.katex ? window.katex.renderToString(txt, { throwOnError: false, displayMode: !inline }) : txt;
                 } catch (e) { return txt; }
             }, [txt, inline]);
-            return <div className={`font-math select-none pointer-events-none ${className} ${inline?'inline-block':''}`} dangerouslySetInnerHTML={{__html: html}} />;
+            return <div className={`font-math select-none pointer-events-none ${className} ${inline ? 'inline-block' : ''}`} dangerouslySetInnerHTML={{ __html: html }} />;
         };
 
         const Confetti = ({ active }) => {
@@ -337,10 +367,10 @@
                 let particles = [];
                 const resize = () => { canvasRef.current.width = window.innerWidth; canvasRef.current.height = window.innerHeight; };
                 window.addEventListener('resize', resize); resize();
-                for(let i=0;i<150;i++) particles.push({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight-window.innerHeight,vx:Math.random()*4-2,vy:Math.random()*5+2,color:['#f43f5e','#f59e0b','#10b981','#3b82f6','#8b5cf6'][Math.floor(Math.random()*5)],size:Math.random()*8+4});
+                for (let i = 0; i < 150; i++) particles.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight - window.innerHeight, vx: Math.random() * 4 - 2, vy: Math.random() * 5 + 2, color: ['#f43f5e', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'][Math.floor(Math.random() * 5)], size: Math.random() * 8 + 4 });
                 const loop = () => {
-                    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-                    particles.forEach(p=>{p.y+=p.vy;p.x+=p.vx;if(p.y>window.innerHeight)p.y=-20;ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size)});
+                    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+                    particles.forEach(p => { p.y += p.vy; p.x += p.vx; if (p.y > window.innerHeight) p.y = -20; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size) });
                     requestAnimationFrame(loop);
                 };
                 const id = requestAnimationFrame(loop);
@@ -373,26 +403,26 @@
             const [timeLeft, setTimeLeft] = useState(0);
             const [rushPhase, setRushPhase] = useState(null);
             const [multiTurn, setMultiTurn] = useState(0);
-            const [multiScores, setMultiScores] = useState([0,0]);
+            const [multiScores, setMultiScores] = useState([0, 0]);
 
             useEffect(() => {
                 document.documentElement.classList.toggle('dark', theme === 'dark');
                 localStorage.setItem('mm_theme', theme);
             }, [theme]);
 
-            const initAudio = () => { if(soundEnabled) AudioEngine.init(); };
+            const initAudio = () => { if (soundEnabled) AudioEngine.init(); };
 
             const startGame = () => {
                 initAudio();
-                if(!nick.trim()) setNick("Giocatore 1");
-                if(gameMode==='multi' && !nick2.trim()) setNick2("Giocatore 2");
-                setScore(0); setMoves(0); setMultiScores([0,0]); setMultiTurn(0);
-                
+                if (!nick.trim()) setNick("Giocatore 1");
+                if (gameMode === 'multi' && !nick2.trim()) setNick2("Giocatore 2");
+                setScore(0); setMoves(0); setMultiScores([0, 0]); setMultiTurn(0);
+
                 let newCards = generateCards(lvl, genConfig);
-                if(gameMode === 'rush') {
+                if (gameMode === 'rush') {
                     setRushPhase('mem');
                     setTimeLeft(RUSH_MEM_TIME);
-                    newCards = newCards.map(c => ({...c, isFlipped: true, seen: true})); // Se Rush, sono viste
+                    newCards = newCards.map(c => ({ ...c, isFlipped: true, seen: true })); // Se Rush, sono viste
                 } else {
                     setRushPhase(null);
                 }
@@ -416,19 +446,19 @@
             }, [timeLeft, gameMode, view, rushPhase]);
 
             const handleCardClick = (id) => {
-                if(lock || (gameMode === 'rush' && rushPhase === 'mem')) return;
+                if (lock || (gameMode === 'rush' && rushPhase === 'mem')) return;
                 const card = cards.find(c => c.id === id);
-                if(card.isFlipped || card.isMatched) return;
-                initAudio(); if(soundEnabled) AudioEngine.playFlip();
-                
+                if (card.isFlipped || card.isMatched) return;
+                initAudio(); if (soundEnabled) AudioEngine.playFlip();
+
                 // Segna come "seen" quando viene girata
                 setCards(prev => prev.map(c => c.id === id ? { ...c, isFlipped: true, seen: true } : c));
                 const newFlipped = [...flipped, id];
                 setFlipped(newFlipped);
 
-                if(newFlipped.length === 2) {
+                if (newFlipped.length === 2) {
                     setLock(true);
-                    if(gameMode !== 'multi') setMoves(m => m+1);
+                    if (gameMode !== 'multi') setMoves(m => m + 1);
                     checkForMatch(newFlipped);
                 }
             };
@@ -439,35 +469,35 @@
                 const isMatch = c1.pairId === c2.pairId;
 
                 setTimeout(() => {
-                    if(isMatch) {
-                        if(soundEnabled) AudioEngine.playMatch();
+                    if (isMatch) {
+                        if (soundEnabled) AudioEngine.playMatch();
                         setCards(prev => prev.map(c => (c.id === id1 || c.id === id2) ? { ...c, isMatched: true, isFlipped: true } : c));
                         setMatchMsg({ text: "Corretto!", sub: EXPLANATIONS[c1.type], color: c1.color });
-                        if(gameMode === 'multi') {
-                            setMultiScores(s => { const n=[...s]; n[multiTurn]+=100; return n; });
+                        if (gameMode === 'multi') {
+                            setMultiScores(s => { const n = [...s]; n[multiTurn] += 100; return n; });
                         }
                         const remaining = cards.filter(c => !c.isMatched && c.id !== id1 && c.id !== id2).length;
-                        if(remaining === 0) handleGameOver(true);
+                        if (remaining === 0) handleGameOver(true);
                     } else {
-                        if(soundEnabled) AudioEngine.playError();
+                        if (soundEnabled) AudioEngine.playError();
                         setCards(prev => prev.map(c => (c.id === id1 || c.id === id2) ? { ...c, isFlipped: false } : c));
-                        if(gameMode === 'multi') setMultiTurn(t => t===0?1:0);
+                        if (gameMode === 'multi') setMultiTurn(t => t === 0 ? 1 : 0);
                     }
-                    setLock(false); setFlipped([]); 
+                    setLock(false); setFlipped([]);
                     setTimeout(() => setMatchMsg(null), 2000);
                 }, isMatch ? 500 : 1200);
             };
 
             const handleGameOver = (won) => {
-                if(won && soundEnabled) AudioEngine.playWin();
-                if(gameMode !== 'multi' && won) {
-                    const lData = LEVELS.find(l=>l.id===lvl);
+                if (won && soundEnabled) AudioEngine.playWin();
+                if (gameMode !== 'multi' && won) {
+                    const lData = LEVELS.find(l => l.id === lvl);
                     const efficiency = lData.pairs / Math.max(lData.pairs, moves);
                     let finalScore = Math.floor(lData.points * efficiency);
-                    if(scaffoldMode) finalScore = Math.floor(finalScore * 0.66);
+                    if (scaffoldMode) finalScore = Math.floor(finalScore * 0.66);
                     setScore(finalScore);
                     const entry = { name: nick, avatar: userAvatar, score: finalScore, lvl: lData.label, date: new Date().toLocaleDateString() };
-                    const newLb = [...lb, entry].sort((a,b)=>b.score-a.score).slice(0,50);
+                    const newLb = [...lb, entry].sort((a, b) => b.score - a.score).slice(0, 50);
                     localStorage.setItem('mm_lb', JSON.stringify(newLb));
                     setLb(newLb);
                 }
@@ -476,17 +506,17 @@
 
             // RENDER
             if (view === 'menu') return (
-                <div className="flex flex-col md:flex-row h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
-                    <div className="w-full md:w-1/3 p-6 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 overflow-y-auto scroller">
+                <div className="flex flex-col md:flex-row h-screen bg-slate-50 dark:bg-black text-slate-800 dark:text-slate-100">
+                    <div className="w-full md:w-1/3 p-6 bg-white dark:bg-neutral-900 border-r border-slate-200 dark:border-neutral-800 overflow-y-auto scroller">
                         <div className="flex justify-between items-center mb-6">
                             <h1 className="text-2xl font-black">MathMatch <span className="text-indigo-600">4.1</span></h1>
-                            <button onClick={()=>setTheme(t=>t==='light'?'dark':'light')} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700">{theme==='light'?<Icons.Moon/>:<Icons.Sun/>}</button>
+                            <button onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700">{theme === 'light' ? <Icons.Moon /> : <Icons.Sun />}</button>
                         </div>
                         <div className="space-y-6">
                             <div className="grid grid-cols-3 gap-2">
-                                {[{id:'single',l:'Solo',i:Icons.User},{id:'rush',l:'Rush',i:Icons.Timer},{id:'multi',l:'1vs1',i:Icons.Users}].map(m=>(
-                                    <button key={m.id} onClick={()=>setGameMode(m.id)} className={`p-2 rounded-xl border-2 flex flex-col items-center ${gameMode===m.id?'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30':'border-slate-200 dark:border-slate-600'}`}>
-                                        <m.i className={gameMode===m.id?'text-indigo-600':''}/>
+                                {[{ id: 'single', l: 'Solo', i: Icons.User }, { id: 'rush', l: 'Rush', i: Icons.Timer }, { id: 'multi', l: '1vs1', i: Icons.Users }].map(m => (
+                                    <button key={m.id} onClick={() => setGameMode(m.id)} className={`p-2 rounded-xl border-2 flex flex-col items-center ${gameMode === m.id ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30' : 'border-slate-200 dark:border-slate-600'}`}>
+                                        <m.i className={gameMode === m.id ? 'text-indigo-600' : ''} />
                                         <span className="text-xs font-bold mt-1">{m.l}</span>
                                     </button>
                                 ))}
@@ -494,51 +524,51 @@
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-slate-400">Giocatori</label>
                                 <div className="flex gap-2">
-                                    <button onClick={()=>setUserAvatar(AVATARS[(AVATARS.indexOf(userAvatar)+1)%AVATARS.length])} className="w-10 h-10 text-xl bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">{userAvatar}</button>
-                                    <input value={nick} onChange={e=>setNick(e.target.value)} placeholder="Giocatore 1" className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg px-3 font-bold text-sm outline-none focus:ring-2 ring-indigo-500"/>
+                                    <button onClick={() => setUserAvatar(AVATARS[(AVATARS.indexOf(userAvatar) + 1) % AVATARS.length])} className="w-10 h-10 text-xl bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">{userAvatar}</button>
+                                    <input value={nick} onChange={e => setNick(e.target.value)} placeholder="Giocatore 1" className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg px-3 font-bold text-sm outline-none focus:ring-2 ring-indigo-500" />
                                 </div>
-                                {gameMode==='multi' && (
+                                {gameMode === 'multi' && (
                                     <div className="flex gap-2">
-                                        <button onClick={()=>setUserAvatar2(AVATARS[(AVATARS.indexOf(userAvatar2)+1)%AVATARS.length])} className="w-10 h-10 text-xl bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">{userAvatar2}</button>
-                                        <input value={nick2} onChange={e=>setNick2(e.target.value)} placeholder="Giocatore 2" className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg px-3 font-bold text-sm outline-none focus:ring-2 ring-indigo-500"/>
+                                        <button onClick={() => setUserAvatar2(AVATARS[(AVATARS.indexOf(userAvatar2) + 1) % AVATARS.length])} className="w-10 h-10 text-xl bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">{userAvatar2}</button>
+                                        <input value={nick2} onChange={e => setNick2(e.target.value)} placeholder="Giocatore 2" className="flex-1 bg-slate-100 dark:bg-slate-700 rounded-lg px-3 font-bold text-sm outline-none focus:ring-2 ring-indigo-500" />
                                     </div>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold uppercase text-slate-400">Difficoltà</label>
-                                {LEVELS.map(l=>(
-                                    <button key={l.id} onClick={()=>setLvl(l.id)} className={`w-full text-left p-3 rounded-xl border-2 flex justify-between ${lvl===l.id?'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20':'border-slate-200 dark:border-slate-600'}`}>
+                                {LEVELS.map(l => (
+                                    <button key={l.id} onClick={() => setLvl(l.id)} className={`w-full text-left p-3 rounded-xl border-2 flex justify-between ${lvl === l.id ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20' : 'border-slate-200 dark:border-slate-600'}`}>
                                         <span className="font-bold text-sm">{l.label}</span>
                                         <span className="text-xs opacity-60">{l.desc}</span>
                                     </button>
                                 ))}
                             </div>
-                            <button onClick={()=>setScaffoldMode(!scaffoldMode)} className={`w-full flex items-center justify-between p-3 rounded-xl border-2 ${scaffoldMode?'border-teal-500 bg-teal-50 dark:bg-teal-900/20':'border-slate-200 dark:border-slate-600'}`}>
+                            <button onClick={() => setScaffoldMode(!scaffoldMode)} className={`w-full flex items-center justify-between p-3 rounded-xl border-2 ${scaffoldMode ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20' : 'border-slate-200 dark:border-slate-600'}`}>
                                 <div className="flex items-center gap-2">
-                                    <Icons.Ghost className={scaffoldMode?'text-teal-600':'text-slate-400'}/>
+                                    <Icons.Ghost className={scaffoldMode ? 'text-teal-600' : 'text-slate-400'} />
                                     <div className="text-left"><div className="font-bold text-xs uppercase">Scaffolding</div><div className="text-[10px]">Permanenza Testo (-33%)</div></div>
                                 </div>
-                                <div className={`w-4 h-4 rounded-full border ${scaffoldMode?'bg-teal-500 border-teal-500':'border-slate-300'}`}/>
+                                <div className={`w-4 h-4 rounded-full border ${scaffoldMode ? 'bg-teal-500 border-teal-500' : 'border-slate-300'}`} />
                             </button>
-                            <button onClick={startGame} className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all flex justify-center gap-2">GIOCA <Icons.Play/></button>
+                            <button onClick={startGame} className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all flex justify-center gap-2">GIOCA <Icons.Play /></button>
                         </div>
                     </div>
-                    <div className="flex-1 p-6 bg-slate-100 dark:bg-slate-900 overflow-y-auto scroller">
-                        <h2 className="text-xl font-black mb-4 flex items-center gap-2"><Icons.Settings/> CONFIGURAZIONE DIDATTICA</h2>
+                    <div className="flex-1 p-6 bg-slate-100 dark:bg-black overflow-y-auto scroller">
+                        <h2 className="text-xl font-black mb-4 flex items-center gap-2"><Icons.Settings /> CONFIGURAZIONE DIDATTICA</h2>
                         <div className="grid md:grid-cols-2 gap-4 mb-8">
-                            {Object.entries(genConfig).map(([k,c])=>(
-                                <div key={k} onClick={()=>setGenConfig(p=>({...p,[k]:{...p[k],active:!p[k].active}}))} className={`cursor-pointer p-4 rounded-xl border-2 flex gap-3 ${c.active?'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20':'border-slate-200 dark:border-slate-700 opacity-60'}`}>
-                                    <div className={`w-5 h-5 rounded border flex items-center justify-center ${c.active?'bg-indigo-600 border-indigo-600 text-white':'bg-white border-slate-300'}`}>{c.active && <Icon d="M20 6L9 17l-5-5"/>}</div>
+                            {Object.entries(genConfig).map(([k, c]) => (
+                                <div key={k} onClick={() => setGenConfig(p => ({ ...p, [k]: { ...p[k], active: !p[k].active } }))} className={`cursor-pointer p-4 rounded-xl border-2 flex gap-3 ${c.active ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'border-slate-200 dark:border-slate-700 opacity-60'}`}>
+                                    <div className={`w-5 h-5 rounded border flex items-center justify-center ${c.active ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-white border-slate-300'}`}>{c.active && <Icon d="M20 6L9 17l-5-5" />}</div>
                                     <div>
                                         <div className="font-bold">{c.label}</div>
-                                        <MathText txt={c.desc} className="text-xs opacity-70" inline={true}/>
+                                        <MathText txt={c.desc} className="text-xs opacity-70" inline={true} />
                                     </div>
                                 </div>
                             ))}
                         </div>
                         <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
-                            <div className="flex items-center gap-2 mb-2 text-amber-600 font-bold"><Icons.Trophy/> CLASSIFICA</div>
-                            {lb.slice(0,3).map((r,i)=><div key={i} className="flex justify-between text-xs py-1 border-b border-amber-100 dark:border-amber-800 last:border-0"><span>{i+1}. {r.avatar} {r.name}</span><span className="font-mono font-bold">{r.score}</span></div>)}
+                            <div className="flex items-center gap-2 mb-2 text-amber-600 font-bold"><Icons.Trophy /> CLASSIFICA</div>
+                            {lb.slice(0, 3).map((r, i) => <div key={i} className="flex justify-between text-xs py-1 border-b border-amber-100 dark:border-amber-800 last:border-0"><span>{i + 1}. {r.avatar} {r.name}</span><span className="font-mono font-bold">{r.score}</span></div>)}
                         </div>
                     </div>
                 </div>
@@ -547,19 +577,19 @@
             // RENDER GIOCO
             if (view === 'game' || view === 'win' || view === 'final') {
                 const n = cards.length;
-                let gridClass = n===6?"grid-cols-3":n===12?"grid-cols-4":n===16?"grid-cols-4":"grid-cols-5";
-                
+                let gridClass = n === 6 ? "grid-cols-3" : n === 12 ? "grid-cols-4" : n === 16 ? "grid-cols-4" : "grid-cols-5";
+
                 return (
-                    <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
-                        <div className="h-16 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-between px-4 shrink-0 z-10">
-                            <button onClick={()=>setView('menu')} className="text-xs font-bold text-slate-400 hover:text-red-500 uppercase">ESCI</button>
+                    <div className="h-screen flex flex-col bg-slate-50 dark:bg-black">
+                        <div className="h-16 bg-white dark:bg-neutral-900 shadow-sm flex items-center justify-between px-4 shrink-0 z-10">
+                            <button onClick={() => setView('menu')} className="text-xs font-bold text-slate-400 hover:text-red-500 uppercase">ESCI</button>
                             <div className="flex items-center gap-4">
-                                {gameMode==='rush' && <div className={`flex items-center gap-2 font-mono font-bold text-xl ${rushPhase==='mem'?'text-yellow-600':'text-red-600'}`}><Icons.Timer/> {timeLeft}s</div>}
-                                {gameMode==='multi' ? (
+                                {gameMode === 'rush' && <div className={`flex items-center gap-2 font-mono font-bold text-xl ${rushPhase === 'mem' ? 'text-yellow-600' : 'text-red-600'}`}><Icons.Timer /> {timeLeft}s</div>}
+                                {gameMode === 'multi' ? (
                                     <div className="flex gap-4 items-center font-bold">
-                                        <div className={`px-2 py-1 rounded ${multiTurn===0?'bg-indigo-100 text-indigo-700':''}`}>{userAvatar} {multiScores[0]}</div>
+                                        <div className={`px-2 py-1 rounded ${multiTurn === 0 ? 'bg-indigo-100 text-indigo-700' : ''}`}>{userAvatar} {multiScores[0]}</div>
                                         <div className="text-xs text-slate-300">VS</div>
-                                        <div className={`px-2 py-1 rounded ${multiTurn===1?'bg-rose-100 text-rose-700':''}`}>{userAvatar2} {multiScores[1]}</div>
+                                        <div className={`px-2 py-1 rounded ${multiTurn === 1 ? 'bg-rose-100 text-rose-700' : ''}`}>{userAvatar2} {multiScores[1]}</div>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-end">
@@ -571,8 +601,8 @@
                         </div>
 
                         {matchMsg && (
-                            <div className={`absolute top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce-short bg-white dark:bg-slate-800 border-2 rounded-xl px-6 py-3 shadow-xl flex items-center gap-3 ${matchMsg.color}`}>
-                                <Icons.Check className="text-green-500"/>
+                            <div className={`absolute top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce-short bg-white dark:bg-neutral-900 border-2 rounded-xl px-6 py-3 shadow-xl flex items-center gap-3 ${matchMsg.color}`}>
+                                <Icons.Check className="text-green-500" />
                                 <div>
                                     <div className="font-black text-sm">{matchMsg.text}</div>
                                     <div className="text-xs opacity-75">{matchMsg.sub}</div>
@@ -585,16 +615,16 @@
                                 {cards.map(c => {
                                     // STILE "SOLIDO" v2.5 per evitare salti
                                     // Bordo sempre presente sul flipper
-                                    let borderColor = "border-slate-300 dark:border-slate-600";
+                                    let borderColor = "border-slate-300 dark:border-neutral-700";
                                     let borderStyle = c.cardType === 'question' ? 'border-dashed' : 'border-solid';
-                                    let bgClass = "bg-white dark:bg-slate-800";
-                                    
-                                    if(c.isMatched) {
-                                        borderColor = c.color.split(' ')[2].replace('border-','border-'); // Estrarre colore bordo dal preset
+                                    let bgClass = "bg-white dark:bg-neutral-900";
+
+                                    if (c.isMatched) {
+                                        borderColor = c.color.split(' ')[2].replace('border-', 'border-'); // Estrarre colore bordo dal preset
                                         bgClass = c.color.split(' ')[0]; // Estrarre bg
                                         borderStyle = 'border-solid';
-                                    } else if(c.isFlipped) {
-                                        if(c.cardType === 'question') {
+                                    } else if (c.isFlipped) {
+                                        if (c.cardType === 'question') {
                                             borderColor = "border-sky-400";
                                             bgClass = "bg-sky-50 dark:bg-sky-900/20";
                                         } else {
@@ -604,18 +634,18 @@
                                     }
 
                                     return (
-                                        <div key={c.id} onClick={()=>handleCardClick(c.id)} className="perspective-1000 relative w-full h-full cursor-pointer group">
+                                        <div key={c.id} onClick={() => handleCardClick(c.id)} className="perspective-1000 relative w-full h-full cursor-pointer group">
                                             <div className={`flipper w-full h-full shadow-sm transition-all duration-500 border-2 ${borderColor} ${borderStyle} ${bgClass} ${c.isFlipped || c.isMatched ? 'flipped' : 'hover:-translate-y-1'}`}>
-                                                
+
                                                 {/* FRONTE (COPERTA) */}
                                                 <div className="face face-front flex flex-col items-center justify-center">
                                                     {/* NUOVA LOGICA SCAFFOLDING: Se attiva E carta già vista, mostra contenuto */}
                                                     <div className={`opacity-${scaffoldMode && c.seen && !c.isMatched ? '100' : '0'} transition-opacity duration-300 absolute`}>
                                                         <div className="scale-75 pointer-events-none opacity-50 blur-[0.5px]">
-                                                            <MathText txt={c.content} className="text-xs text-black dark:text-white"/>
+                                                            <MathText txt={c.content} className="text-xs text-black dark:text-white" />
                                                         </div>
                                                     </div>
-                                                    
+
                                                     {/* Emoji (sparisce se girata O se scaffolding mostra contenuto) */}
                                                     <span className={`text-4xl transition-opacity duration-200 ${c.isFlipped || c.isMatched || (scaffoldMode && c.seen) ? 'opacity-0' : 'opacity-100'}`}>
                                                         {c.emoji}
@@ -624,7 +654,7 @@
 
                                                 {/* RETRO (SCOPERTA) */}
                                                 <div className="face face-back flex items-center justify-center p-1">
-                                                    <MathText txt={c.content} className="text-black dark:text-white font-bold text-lg md:text-2xl"/>
+                                                    <MathText txt={c.content} className="text-black dark:text-white font-bold text-lg md:text-2xl" />
                                                 </div>
                                             </div>
                                         </div>
@@ -635,14 +665,14 @@
 
                         {view !== 'game' && (
                             <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center">
-                                <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-2xl text-center max-w-sm w-full animate-bounce-short">
-                                    <Confetti active={true}/>
-                                    <div className="text-6xl mb-4">{view==='win'?'🏆':'☠️'}</div>
-                                    <h2 className="text-3xl font-black mb-2 dark:text-white">{view==='win'?'VITTORIA!':'FINE GIOCO'}</h2>
+                                <div className="bg-white dark:bg-neutral-900 p-8 rounded-3xl shadow-2xl text-center max-w-sm w-full animate-bounce-short">
+                                    <Confetti active={true} />
+                                    <div className="text-6xl mb-4">{view === 'win' ? '🏆' : '☠️'}</div>
+                                    <h2 className="text-3xl font-black mb-2 dark:text-white">{view === 'win' ? 'VITTORIA!' : 'FINE GIOCO'}</h2>
                                     <p className="text-slate-500 mb-6 font-bold">{score} Punti</p>
                                     <div className="grid gap-2">
                                         <button onClick={startGame} className="py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg hover:scale-105 transition-transform">RIGIOCA</button>
-                                        <button onClick={()=>setView('menu')} className="py-3 bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-200 transition-colors">MENU</button>
+                                        <button onClick={() => setView('menu')} className="py-3 bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 rounded-xl font-bold hover:bg-slate-200 transition-colors">MENU</button>
                                     </div>
                                 </div>
                             </div>
@@ -657,4 +687,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>
