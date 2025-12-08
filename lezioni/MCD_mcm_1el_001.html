@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Invaders - MCM & MCD</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Pixel & Modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base & Transitions */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        /* Pixel Art Style */
+        .font-pixel { font-family: 'Press Start 2P', cursive; }
+        
+        /* Scanline Effect */
+        .arcade-screen {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            image-rendering: pixelated; 
+        }
+        .arcade-screen::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 10;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Animations */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .animate-blink { animation: blink 1s step-end infinite; }
+        
+        /* Interactive Elements */
+        .interactive-num {
+            border-bottom: 2px dashed rgba(255,255,255,0.3);
+            cursor: help; transition: color 0.2s;
+        }
+        .interactive-num:hover { color: #4ade80; border-color: #4ade80; }
+        
+        /* Selection Cards */
+        .select-card { transition: all 0.2s; border: 2px solid #334155; }
+        .select-card:hover { border-color: #64748b; transform: translateY(-2px); }
+        .select-card.selected { border-color: #22c55e; background-color: rgba(34, 197, 94, 0.1); box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container max-w-5xl mx-auto p-4 md:p-6">
+        
+        <!-- Header Retro -->
+        <header class="mb-8 text-center">
+            <h1 class="font-pixel text-2xl md:text-4xl text-green-400 mb-2 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">
+                MATH<span class="text-white">INVADERS</span>
+            </h1>
+            <p class="text-slate-500 text-xs md:text-sm font-mono tracking-widest uppercase">Insert Coin to Start Learning</p>
+        </header>
+        
+        <!-- Sticky Player Bar -->
+        <div class="sticky top-2 z-50 flex justify-center mb-6 pointer-events-none">
+             <div class="bg-slate-900/90 backdrop-blur border-2 border-slate-700 rounded px-4 py-2 shadow-2xl flex items-center gap-4 pointer-events-auto">
+                 <div class="flex items-center gap-2">
+                     <span class="text-green-400 font-pixel text-xs">PLAYER</span>
+                     <input type="text" id="playerNameInput" 
+                            class="bg-transparent border-b-2 border-slate-600 text-white font-mono font-bold w-32 focus:outline-none focus:border-green-500 text-center uppercase" 
+                            value="CADET" onchange="setPlayerName(this.value)">
+                 </div>
+                 <div class="h-4 w-px bg-slate-700"></div>
+                 <div class="text-xs font-mono text-slate-400">SCORE: <span id="highScoreDisplay" class="text-yellow-400 font-bold">0000</span></div>
+             </div>
+        </div>
+
+        <!-- VISTA MENU -->
+        <div id="view-menu" class="animate-fade-in">
+            <div class="bg-slate-900 rounded border-4 border-slate-800 p-6 md:p-10 shadow-2xl max-w-3xl mx-auto">
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Colonna 1: Tipo Gioco & Scenario -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="font-pixel text-xs text-blue-400 mb-3 uppercase">1. Scegli Missione</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div onclick="setGameMode('mcm')" id="mode-mcm" class="select-card p-3 rounded bg-slate-800 cursor-pointer selected">
+                                    <div class="font-bold text-white text-sm mb-1">🚀 Sincronia</div>
+                                    <div class="text-[10px] text-slate-400">m.c.m. & Tempo</div>
+                                </div>
+                                <div onclick="setGameMode('mcd')" id="mode-mcd" class="select-card p-3 rounded bg-slate-800 cursor-pointer">
+                                    <div class="font-bold text-white text-sm mb-1">🍕 Ottimizza</div>
+                                    <div class="text-[10px] text-slate-400">M.C.D. & Spazio</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="scenario-selector">
+                            <h3 class="font-pixel text-xs text-purple-400 mb-3 uppercase mt-6">2. Scenario (Solo MCM)</h3>
+                            <div class="space-y-2">
+                                <div onclick="setScenario('invaders')" id="scen-invaders" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3 selected">
+                                    <span class="text-xl">👾</span>
+                                    <div>
+                                        <div class="font-bold text-white text-xs">SPACE INVADERS</div>
+                                        <div class="text-[9px] text-green-400">Pixel Art Action</div>
+                                    </div>
+                                </div>
+                                <div onclick="setScenario('planets')" id="scen-planets" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3">
+                                    <span class="text-xl">🪐</span>
+                                    <div>
+                                        <div class="font-bold text-white text-xs">COSMIC ALIGNMENT</div>
+                                        <div class="text-[9px] text-blue-400">Orbital Physics</div>
+                                    </div>
+                                </div>
+                                <div onclick="setScenario('prison')" id="scen-prison" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3">
+                                    <span class="text-xl">⛓️</span>
+                                    <div>
+                                        <div class="font-bold text-white text-xs">MATH PRISON</div>
+                                        <div class="text-[9px] text-red-400">Escape Logic</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Colonna 2: Livello & Start -->
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-pixel text-xs text-yellow-400 mb-3 uppercase">3. Difficoltà</h3>
+                            <div id="level-list" class="space-y-2">
+                                <!-- JS Injected -->
+                            </div>
+                        </div>
+
+                        <button onclick="showView('game')" id="startGameButton" 
+                            class="w-full mt-8 bg-green-600 hover:bg-green-500 border-b-4 border-green-800 active:border-b-0 active:translate-y-1 text-white font-pixel text-sm py-4 rounded transition-all shadow-[0_0_15px_rgba(34,197,94,0.4)] flex items-center justify-center gap-3 group">
+                            <span class="animate-pulse">▶</span> START GAME
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-slate-800 flex justify-between items-center">
+                    <div class="text-[10px] font-mono text-slate-500" id="verificationHash">HASH: ---</div>
+                    <button onclick="showView('leaderboard')" class="text-xs text-slate-400 hover:text-white font-bold underline decoration-slate-600">
+                        VEDI CLASSIFICA
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA LEADERBOARD -->
+        <div id="view-leaderboard" class="hidden max-w-2xl mx-auto">
+            <div class="bg-slate-900 rounded border-2 border-slate-700 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="font-pixel text-yellow-400 text-lg">TOP SCORES</h2>
+                    <button onclick="showView('menu')" class="text-red-400 hover:text-red-300 font-pixel text-xs">✕ EXIT</button>
+                </div>
+                <div id="leaderboardFullList" class="space-y-1 font-mono text-sm max-h-96 overflow-y-auto pr-2">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA GIOCO -->
+        <div id="view-game" class="hidden animate-fade-in">
+            
+            <!-- HUD -->
+            <div class="flex justify-between items-end mb-2 px-2 font-mono text-xs text-slate-400">
+                <div id="level-badge" class="bg-slate-800 px-2 py-1 rounded border border-slate-600 text-white">LVL 1</div>
+                <button onclick="showView('menu')" class="hover:text-red-400 transition-colors">ABORT MISSION</button>
+            </div>
+
+            <!-- GAME FRAME -->
+            <div class="bg-black rounded-lg border-4 border-slate-700 shadow-2xl relative overflow-hidden">
+                
+                <!-- Tool Bar -->
+                <div class="bg-slate-900 border-b border-slate-800 p-3 flex flex-wrap gap-4 items-center justify-between">
+                    
+                    <!-- Problem Data -->
+                    <div class="flex items-center gap-2 font-pixel text-[10px] md:text-xs">
+                        <span class="text-blue-400" id="challenge-label">DATA:</span>
+                        <div id="challenge-numbers" class="flex gap-3 text-white"></div>
+                        <button onclick="toggleLab()" class="ml-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 px-2 py-1 rounded border border-slate-600" title="Scaffolding">
+                            🧪 LAB
+                        </button>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="flex items-center gap-2">
+                        <input type="number" id="game-input" class="bg-black border-2 border-slate-600 text-green-400 font-pixel text-sm w-20 py-2 px-2 text-center focus:border-green-500 focus:outline-none" placeholder="000">
+                        <button id="action-btn" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded border-b-4 border-slate-900 active:border-b-0 active:translate-y-px text-xs font-pixel">
+                            FIRE
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CANVAS WRAPPER (Arcade Screen) -->
+                <div class="relative w-full aspect-[16/9] md:aspect-[2/1] bg-black arcade-screen">
+                    <canvas id="mainCanvas" class="w-full h-full block pixelated"></canvas>
+                    
+                    <!-- HUD Overlays -->
+                    <div id="timer-overlay" class="absolute top-4 right-4 font-pixel text-yellow-400 text-xs md:text-sm z-20 hidden">
+                        TIME <span class="text-white">00</span>
+                    </div>
+                    
+                    <button id="freeze-btn" onclick="activateFreeze()" class="hidden absolute bottom-4 left-4 font-pixel text-[10px] bg-cyan-900/80 text-cyan-200 border border-cyan-500 px-3 py-2 rounded shadow-[0_0_10px_rgba(6,182,212,0.5)] hover:bg-cyan-800 z-20 disabled:opacity-30">
+                        ❄ FREEZE
+                    </button>
+
+                    <!-- Messages (MCM) -->
+                    <div id="feedback-overlay" class="hidden absolute inset-0 flex items-center justify-center z-30 bg-black/80 backdrop-blur-sm flex-col">
+                        <div id="fb-icon" class="text-6xl mb-4">🏆</div>
+                        <div id="fb-text" class="font-pixel text-green-400 text-lg md:text-2xl mb-2 text-center px-4">MISSION ACCOMPLISHED</div>
+                        <div id="fb-sub" class="font-mono text-slate-300 text-xs mb-6">TARGET DESTROYED</div>
+                        <button id="next-btn" class="font-pixel text-xs bg-white text-black px-6 py-3 hover:scale-105 transition-transform">
+                            NEXT WAVE ▶
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- MCD Success Bar (Footer, NON OVERLAPPING) -->
+                <div id="mcd-success-bar" class="hidden bg-emerald-900 border-t-4 border-emerald-500 p-4 text-center">
+                    <div class="font-pixel text-emerald-300 text-sm mb-1">TAGLIO PERFETTO!</div>
+                    <div class="font-mono text-emerald-100 text-xs">
+                        Hai diviso l'area in moduli di lato <span id="res-val" class="font-bold text-white"></span>
+                    </div>
+                    <button onclick="startGame()" class="mt-2 bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-1 rounded text-xs font-bold">
+                        NUOVA TEGLIA ▶
+                    </button>
+                </div>
+
+                <!-- FACTOR LAB (Overlay) -->
+                <div id="factor-lab" class="hidden absolute top-14 left-2 z-40 bg-slate-900/95 border-2 border-indigo-500 p-3 rounded shadow-xl max-w-xs">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-pixel text-[10px] text-indigo-400">FACTOR LAB</span>
+                        <button onclick="toggleLab()" class="text-slate-500 hover:text-white text-xs">✕</button>
+                    </div>
+                    <div class="flex flex-wrap gap-1 mb-2">
+                        <!-- Primes injected -->
+                        <div id="lab-primes" class="contents"></div>
+                    </div>
+                    <div class="bg-black p-2 text-right font-mono text-green-400 border border-slate-700 flex justify-between items-center">
+                        <button onclick="resetLab()" class="text-[10px] text-red-500 hover:text-red-400">CLR</button>
+                        <span id="lab-res">1</span>
+                    </div>
+                    <div id="lab-hist" class="text-[9px] text-slate-500 mt-1 h-3 text-right"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- ASSETS: PIXEL ART SPRITES ---
+        var SPRITES = {
+            alien: [
+                [0,0,1,0,0,0,0,0,1,0,0], [0,0,0,1,0,0,0,1,0,0,0], [0,0,1,1,1,1,1,1,1,0,0],
+                [0,1,1,0,1,1,1,0,1,1,0], [1,1,1,1,1,1,1,1,1,1,1], [1,0,1,1,1,1,1,1,1,0,1],
+                [1,0,1,0,0,0,0,0,1,0,1], [0,0,0,1,1,0,1,1,0,0,0]
+            ],
+            cannon: [
+                [0,0,0,0,0,1,0,0,0,0,0], [0,0,0,0,1,1,1,0,0,0,0], [0,0,0,0,1,1,1,0,0,0,0],
+                [0,1,1,1,1,1,1,1,1,1,0], [1,1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1]
+            ],
+            bunker: [
+                [0,1,1,1,1,1,1,1,1,1,0], [1,1,1,1,1,1,1,1,1,1,1], [1,1,1,1,1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1,1,1,1,1], [1,1,1,0,0,0,0,0,1,1,1], [1,1,0,0,0,0,0,0,0,1,1],
+                [1,1,0,0,0,0,0,0,0,1,1]
+            ]
+        };
+
+        // --- CONFIG ---
+        var PRIMES = [2, 3, 5, 7, 11, 13, 17];
+        var LEVELS = [
+            { id: 0, label: "BASE", desc: "Training: 3 Numeri", count: 3, maxP: 5, mult: 1.0, basePoints: 100 },
+            { id: 1, label: "MID", desc: "Combat: 4 Numeri", count: 4, maxP: 11, mult: 1.5, basePoints: 200 },
+            { id: 2, label: "PRO", desc: "Elite: 5 Numeri", count: 5, maxP: 17, mult: 2.5, basePoints: 300 }
+        ];
+
+        var S = {
+            player: 'CADET',
+            score: 0,
+            mode: 'mcm', // mcm or mcd
+            scenario: 'invaders', // invaders, planets, prison
+            level: LEVELS[0],
+            labFactors: [],
+            mcm: { cycles: [], target: 0, user: 0, t: 0, shooting: false, frozen: false },
+            mcd: { w:0, h:0, d:0, target:0 },
+            anim: null,
+            particles: []
+        };
+
+        var cvs = document.getElementById('mainCanvas');
+        var ctx = cvs.getContext('2d');
+
+        // --- CORE ---
+        function init() {
+            // Load & Sanitize Score
+            S.player = localStorage.getItem('mi_player') || 'CADET';
+            let savedScore = parseInt(localStorage.getItem('mi_score'));
+            if (isNaN(savedScore)) savedScore = 0;
+            S.score = savedScore;
+            
+            document.getElementById('playerNameInput').value = S.player;
+            document.getElementById('highScoreDisplay').textContent = S.score.toString().padStart(4,'0');
+            
+            // Build Menu
+            document.getElementById('level-list').innerHTML = LEVELS.map(l => `
+                <div onclick="setLevel(${l.id})" id="lvl-${l.id}" class="select-card bg-slate-800 p-3 rounded cursor-pointer flex justify-between items-center ${l.id===0?'selected':''}">
+                    <span class="font-pixel text-[10px] text-white">${l.label}</span>
+                    <span class="font-mono text-[9px] text-slate-400">x${l.mult}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('lab-primes').innerHTML = PRIMES.map(p => 
+                `<button onclick="labAdd(${p})" class="bg-slate-700 text-white w-6 h-6 text-[10px] font-bold hover:bg-green-600">${p}</button>`
+            ).join('');
+
+            setLevel(0);
+            setGameMode('mcm');
+            setScenario('invaders');
+        }
+
+        // --- LOGIC ---
+        function setPlayerName(n) { S.player = n.toUpperCase(); localStorage.setItem('mi_player', S.player); }
+        
+        function setGameMode(m) {
+            S.mode = m;
+            document.querySelectorAll('#mode-mcm, #mode-mcd').forEach(e => e.classList.remove('selected'));
+            document.getElementById(`mode-${m}`).classList.add('selected');
+            
+            const scenEl = document.getElementById('scenario-selector');
+            if(m === 'mcd') scenEl.classList.add('opacity-30', 'pointer-events-none');
+            else scenEl.classList.remove('opacity-30', 'pointer-events-none');
+        }
+
+        function setScenario(s) {
+            if(S.mode === 'mcd') return;
+            S.scenario = s;
+            document.querySelectorAll('[id^="scen-"]').forEach(e => e.classList.remove('selected'));
+            document.getElementById(`scen-${s}`).classList.add('selected');
+        }
+
+        function setLevel(id) {
+            S.level = LEVELS[id];
+            document.querySelectorAll('[id^="lvl-"]').forEach(e => e.classList.remove('selected'));
+            document.getElementById(`lvl-${id}`).classList.add('selected');
+        }
+
+        function showView(v) {
+            document.getElementById('view-menu').classList.add('hidden');
+            document.getElementById('view-leaderboard').classList.add('hidden');
+            document.getElementById('view-game').classList.add('hidden');
+            document.getElementById(`view-${v}`).classList.remove('hidden');
+            
+            if(v === 'game') startGame();
+            if(v === 'leaderboard') renderLeaderboard();
+        }
+
+        function startGame() {
+            cancelAnimationFrame(S.anim);
+            S.particles = [];
+            S.mcm.frozen = false;
+            S.labFactors = [];
+            resetLab();
+            document.getElementById('feedback-overlay').classList.add('hidden');
+            document.getElementById('mcd-success-bar').classList.add('hidden');
+            document.getElementById('game-input').value = '';
+            document.getElementById('game-input').disabled = false;
+            document.getElementById('action-btn').disabled = false;
+            
+            cvs.width = cvs.clientWidth;
+            cvs.height = cvs.clientHeight;
+            ctx.imageSmoothingEnabled = false; 
+
+            document.getElementById('level-badge').innerText = S.level.label;
+            document.getElementById('timer-overlay').classList.toggle('hidden', S.mode !== 'mcm');
+            document.getElementById('freeze-btn').classList.toggle('hidden', S.mode !== 'mcm');
+            
+            if(S.mode === 'mcm') initMCM();
+            else initMCD();
+        }
+
+        // --- MATH ---
+        const gcd = (a,b)=>b===0?a:gcd(b,a%b);
+        const lcm = (a,b)=>(a*b)/gcd(a,b);
+        const arrLcm = a => a.reduce(lcm);
+        const arrGcd = a => a.reduce(gcd);
+
+        function genNums(count, maxP) {
+            let res = [];
+            let safety = 0;
+            while(res.length < count && safety++ < 100) {
+                let n = 1;
+                let factors = Math.random()>0.5 ? 2 : 1;
+                for(let i=0; i<factors; i++) {
+                    let p = PRIMES[Math.floor(Math.random() * PRIMES.filter(x=>x<=maxP).length)];
+                    let pow = (S.level.id>0 && Math.random()>0.8) ? 2 : 1;
+                    n *= Math.pow(p, pow);
+                }
+                if(n>1 && n<60 && !res.includes(n)) res.push(n);
+            }
+            if(res.length<count) res=[2,3,4,5].slice(0,count);
+            return res.sort((a,b)=>a-b);
+        }
+
+        function createInteractiveNumber(n, label="") {
+            const el = document.createElement('span');
+            el.className = "interactive-num mx-1";
+            el.innerHTML = label + n;
+            el.onclick = () => {
+                let temp = n, f = [];
+                for(let i=2; i<=temp; i++) while(temp%i===0) { f.push(i); temp/=i; }
+                el.innerText = f.join('·');
+                el.classList.remove('interactive-num');
+                el.classList.add('text-yellow-400');
+            };
+            return el;
+        }
+
+        // --- MCM GAME ---
+        function initMCM() {
+            const nums = genNums(S.level.count, S.level.maxP);
+            S.mcm.cycles = nums;
+            S.mcm.target = arrLcm(nums);
+            S.mcm.user = 0;
+            S.mcm.t = 0;
+            S.mcm.shooting = false;
+            
+            const con = document.getElementById('challenge-numbers');
+            con.innerHTML = '';
+            nums.forEach(n => con.appendChild(createInteractiveNumber(n, '')));
+            document.getElementById('challenge-label').innerText = "PERIODS:";
+            
+            document.getElementById('action-btn').innerText = "SYNC";
+            document.getElementById('action-btn').onclick = () => {
+                const v = parseInt(document.getElementById('game-input').value);
+                if(v>0) {
+                    S.mcm.user = v;
+                    S.mcm.startTime = Date.now();
+                    S.mcm.shooting = false;
+                    document.getElementById('game-input').disabled = true;
+                    document.getElementById('action-btn').disabled = true;
+                    loop();
+                }
+            };
+            drawMCM(0);
+        }
+
+        function loop() {
+            if(S.mode !== 'mcm') return;
+            const now = Date.now();
+            const realElapsed = (now - S.mcm.startTime) / 1000;
+            
+            let simT = 0;
+            const target = S.mcm.user;
+            if(realElapsed <= 7) simT = (realElapsed / 7) * (target * 0.9);
+            else simT = (target * 0.9) + ((realElapsed - 7) / 3) * (target * 0.1);
+            
+            if(simT > target) simT = target;
+            S.mcm.t = simT;
+            
+            document.getElementById('timer-overlay').innerHTML = `TIME <span class="text-white">${simT.toFixed(2)}</span>`;
+            drawMCM(simT);
+            
+            if(Math.abs(simT - target) < 0.01 && !S.mcm.shooting && realElapsed > 9.8) {
+                S.mcm.shooting = true;
+                S.mcm.shotStart = now;
+            }
+            
+            if(S.mcm.shooting) {
+                if((now - S.mcm.shotStart)/1000 > 1.5) {
+                    endGame(S.mcm.user === S.mcm.target, S.mcm.target);
+                    return;
+                }
+            } else if (realElapsed > 10.2) {
+                endGame(S.mcm.user === S.mcm.target, S.mcm.target);
+                return;
+            }
+            S.anim = requestAnimationFrame(loop);
+        }
+
+        function drawMCM(t) {
+            const w = cvs.width, h = cvs.height;
+            const cx = w/2, cy = h/2;
+            
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0,0,w,h);
+            
+            if(S.scenario === 'invaders') drawInvaders(w, h, t);
+            else if(S.scenario === 'planets') drawPlanets(w, h, t);
+            else drawPrison(w, h, t);
+            
+            // Player
+            if(S.scenario === 'prison') {
+                // Prisoner is center
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI*2); ctx.fill();
+            } else {
+                drawPixelSprite(SPRITES.cannon, cx, h-30, '#4ade80', 3);
+            }
+            
+            if(S.mcm.shooting) {
+                const shotElapsed = (Date.now() - S.mcm.shotStart)/1000;
+                const isWin = S.mcm.user === S.mcm.target;
+                
+                if(S.scenario === 'prison') {
+                    // Escape Movement (Outwards)
+                    const dist = shotElapsed * 300;
+                    ctx.fillStyle = isWin ? '#facc15' : '#ef4444';
+                    ctx.beginPath(); ctx.arc(cx, cy - dist, 6, 0, Math.PI*2); ctx.fill();
+                    if(dist > 200 && isWin && S.particles.length === 0) spawnParticles(cx, cy-200, '#facc15');
+                } else {
+                    const bulletY = h-40 - (shotElapsed * h * 0.8);
+                    if(bulletY > 60) {
+                        ctx.fillStyle = isWin ? '#facc15' : '#ef4444';
+                        ctx.fillRect(cx-2, bulletY, 4, 12);
+                    } else if (isWin && S.particles.length === 0) {
+                        spawnParticles(cx, 50, '#facc15');
+                    }
+                }
+            }
+            updateParticles();
+        }
+
+        function drawInvaders(w, h, t) {
+            drawPixelSprite(SPRITES.alien, w/2, 50, '#ef4444', 4); // Target
+            S.mcm.cycles.forEach((c, i) => {
+                const y = 100 + i * 50;
+                // Move logic: Hole at center when t%c == 0
+                const offset = Math.sin((t/c) * Math.PI * 2) * (w*0.4);
+                const count = 8;
+                const gapIdx = 4;
+                for(let k=0; k<count; k++) {
+                    if(k === gapIdx) continue;
+                    const bx = (w/2) + offset + (k-gapIdx)*40;
+                    drawPixelSprite(SPRITES.bunker, bx, y, '#22c55e', 2);
+                }
+            });
+        }
+
+        function drawPlanets(w, h, t) {
+            const cx = w/2, cy = h/2 - 20;
+            // Sun
+            ctx.fillStyle = '#facc15';
+            ctx.beginPath(); ctx.arc(cx, cy, 15, 0, Math.PI*2); ctx.fill();
+            // Star rays
+            ctx.strokeStyle = '#facc15'; ctx.lineWidth = 2;
+            for(let i=0; i<8; i++) {
+                const a = i * Math.PI/4;
+                ctx.beginPath(); ctx.moveTo(cx + Math.cos(a)*20, cy + Math.sin(a)*20);
+                ctx.lineTo(cx + Math.cos(a)*25, cy + Math.sin(a)*25); ctx.stroke();
+            }
+
+            S.mcm.cycles.forEach((c, i) => {
+                const r = 40 + i*35;
+                const angle = (t % c) / c * Math.PI * 2 - Math.PI/2; // Start at top
+                
+                // Orbit path
+                ctx.strokeStyle = '#334155'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+                
+                // Alignment Line (Visual Guide)
+                if(i===0) { ctx.strokeStyle = '#64748b'; ctx.setLineDash([2,4]); ctx.beginPath(); ctx.moveTo(cx, cy-15); ctx.lineTo(cx, cy-r-50); ctx.stroke(); ctx.setLineDash([]); }
+
+                // Planet
+                const px = cx + Math.cos(angle) * r;
+                const py = cy + Math.sin(angle) * r;
+                ctx.fillStyle = ['#3b82f6', '#ec4899', '#10b981', '#f97316'][i%4];
+                ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI*2); ctx.fill();
+            });
+        }
+
+        function drawPrison(w, h, t) {
+            const cx = w/2, cy = h/2;
+            
+            // Aim Line (Freedom Path) - Top
+            ctx.strokeStyle = '#334155';
+            ctx.setLineDash([2, 4]);
+            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - 200); ctx.stroke();
+            ctx.setLineDash([]);
+
+            S.mcm.cycles.forEach((c, i) => {
+                const r = 40 + i*30;
+                // Wall rotates. Gap at -PI/2 (top) when aligned.
+                const angle = (t % c) / c * Math.PI * 2;
+                const gapSize = 0.4; // radians
+                
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(angle);
+                
+                // Draw Wall (Arc)
+                ctx.strokeStyle = ['#94a3b8', '#64748b', '#475569'][i%3];
+                ctx.lineWidth = 12;
+                ctx.beginPath();
+                // Draw almost full circle, skipping top area (relative to rotation)
+                // Gap is centered at -PI/2 in local space.
+                // Draw from -PI/2 + gap/2 to -PI/2 - gap/2
+                ctx.arc(0, 0, r, -Math.PI/2 + gapSize, -Math.PI/2 - gapSize + Math.PI*2);
+                ctx.stroke();
+                
+                // Wall Details (Rivets)
+                ctx.fillStyle = '#0f172a';
+                for(let k=0; k<8; k++) {
+                    const rivetA = k * Math.PI/4;
+                    ctx.beginPath(); ctx.arc(Math.cos(rivetA)*r, Math.sin(rivetA)*r, 2, 0, Math.PI*2); ctx.fill();
+                }
+                
+                ctx.restore();
+            });
+        }
+
+        // --- MCD GAME ---
+        function initMCD() {
+            const is3d = S.level.id === 2;
+            const base = Math.floor(Math.random()*4)+2;
+            const target = base * (Math.floor(Math.random()*3)+1);
+            const m1 = (Math.floor(Math.random()*3)+1)*2; 
+            const m2 = (Math.floor(Math.random()*3)+1)*2+1; 
+            const m3 = (Math.floor(Math.random()*3)+1)*3; 
+            
+            S.mcd.w = target * m1;
+            S.mcd.h = target * m2;
+            S.mcd.d = is3d ? target * m3 : 0;
+            S.mcd.target = is3d ? arrGcd([S.mcd.w,S.mcd.h,S.mcd.d]) : gcd(S.mcd.w,S.mcd.h);
+            
+            const con = document.getElementById('challenge-numbers');
+            con.innerHTML = '';
+            [S.mcd.w, S.mcd.h, S.mcd.d].filter(x=>x>0).forEach((n,i) => {
+                con.appendChild(createInteractiveNumber(n, ['W:','H:','D:'][i]));
+            });
+            document.getElementById('challenge-label').innerText = "DIMS:";
+            document.getElementById('action-btn').innerText = "CUT";
+            document.getElementById('action-btn').onclick = () => {
+                const v = parseInt(document.getElementById('game-input').value);
+                if(v>0) checkMCD(v);
+            };
+            drawMCD(0);
+        }
+
+        function checkMCD(val) {
+            drawMCD(val);
+            const isCorrect = val === S.mcd.target;
+            if(!isCorrect) setTimeout(() => drawMCD(S.mcd.target, true), 800);
+            
+            if (isCorrect) {
+                // Show Footer Bar instead of overlay
+                const bar = document.getElementById('mcd-success-bar');
+                document.getElementById('res-val').innerText = val;
+                bar.classList.remove('hidden');
+                
+                // Add Score
+                let pts = Math.floor(S.level.basePoints * S.level.mult);
+                S.score += pts;
+                localStorage.setItem('mi_score', S.score);
+                document.getElementById('highScoreDisplay').innerText = S.score.toString().padStart(4,'0');
+                saveScore();
+            } else {
+                endGame(false, S.mcd.target);
+            }
+        }
+
+        function drawMCD(cut, ghost=false) {
+            const w = cvs.width, h = cvs.height;
+            const cx = w/2, cy = h/2;
+            if(!ghost) ctx.clearRect(0,0,w,h);
+            
+            const max = Math.max(S.mcd.w, S.mcd.h, S.mcd.d||0);
+            const scale = (S.mcd.d ? 100 : 200) / max;
+            
+            ctx.save();
+            if(ghost) { ctx.globalAlpha=0.5; ctx.strokeStyle='#4ade80'; }
+            else { ctx.strokeStyle='#fff'; ctx.fillStyle='#f59e0b'; }
+            
+            if(S.mcd.d) {
+                // 3D Cube
+                const sw = S.mcd.w*scale, sh=S.mcd.h*scale;
+                if(!ghost) ctx.fillRect(cx-sw/2, cy-sh/2, sw, sh);
+                ctx.strokeRect(cx-sw/2, cy-sh/2, sw, sh);
+                if(cut) {
+                    ctx.beginPath();
+                    const sCut = cut*scale;
+                    for(let x=sCut; x<sw; x+=sCut) { ctx.moveTo(cx-sw/2+x, cy-sh/2); ctx.lineTo(cx-sw/2+x, cy+sh/2); }
+                    for(let y=sCut; y<sh; y+=sCut) { ctx.moveTo(cx-sw/2, cy-sh/2+y); ctx.lineTo(cx+sw/2, cy-sh/2+y); }
+                    ctx.stroke();
+                }
+            } else {
+                // 2D Pizza
+                const sw = S.mcd.w*scale, sh=S.mcd.h*scale;
+                if(!ghost) ctx.fillRect(cx-sw/2, cy-sh/2, sw, sh);
+                ctx.strokeRect(cx-sw/2, cy-sh/2, sw, sh);
+                if(cut) {
+                    ctx.beginPath();
+                    const sCut = cut*scale;
+                    for(let x=sCut; x<sw; x+=sCut) { ctx.moveTo(cx-sw/2+x, cy-sh/2); ctx.lineTo(cx-sw/2+x, cy+sh/2); }
+                    for(let y=sCut; y<sh; y+=sCut) { ctx.moveTo(cx-sw/2, cy-sh/2+y); ctx.lineTo(cx+sw/2, cy-sh/2+y); }
+                    ctx.stroke();
+                }
+            }
+            ctx.restore();
+        }
+
+        // --- COMMON GAME LOGIC ---
+        function endGame(win, correct) {
+            const ol = document.getElementById('feedback-overlay');
+            ol.classList.remove('hidden');
+            
+            if(win) {
+                document.getElementById('fb-icon').innerText = "🏆";
+                document.getElementById('fb-text').className = "font-pixel text-green-400 text-lg md:text-2xl mb-2 text-center";
+                document.getElementById('fb-text').innerText = "MISSION ACCOMPLISHED";
+                
+                let pts = Math.floor(S.level.basePoints * S.level.mult);
+                S.score += pts;
+                localStorage.setItem('mi_score', S.score);
+                document.getElementById('highScoreDisplay').innerText = S.score.toString().padStart(4,'0');
+                saveScore();
+            } else {
+                document.getElementById('fb-icon').innerText = "💥";
+                document.getElementById('fb-text').className = "font-pixel text-red-500 text-2xl mb-2 text-center";
+                document.getElementById('fb-text').innerText = "FAILED";
+                document.getElementById('fb-sub').innerText = `ANS: ${correct}`;
+            }
+            document.getElementById('next-btn').onclick = () => showView('menu');
+        }
+
+        function saveScore() {
+            let lb = JSON.parse(localStorage.getItem('mi_lb')||'[]');
+            lb.push({ n: S.player, s: S.score });
+            lb.sort((a,b)=>b.s-a.s);
+            localStorage.setItem('mi_lb', JSON.stringify(lb.slice(0,10)));
+        }
+        
+        function renderLeaderboard() {
+            const lb = JSON.parse(localStorage.getItem('mi_lb')||'[]');
+            document.getElementById('leaderboardFullList').innerHTML = lb.map((e,i) => `
+                <div class="flex justify-between border-b border-slate-700 py-2">
+                    <span>${i+1}. ${e.n}</span>
+                    <span class="text-green-400">${e.s}</span>
+                </div>
+            `).join('');
+        }
+
+        function spawnParticles(x, y, c) {
+            for(let i=0; i<30; i++) S.particles.push({ x, y, vx:(Math.random()-.5)*10, vy:(Math.random()-.5)*10, life:1, color:c });
+        }
+        function updateParticles() {
+            S.particles.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.life-=0.05; if(p.life>0){ ctx.globalAlpha=p.life; ctx.fillStyle=p.color; ctx.fillRect(p.x,p.y,4,4); }});
+            ctx.globalAlpha=1.0;
+        }
+
+        function toggleLab() { document.getElementById('factor-lab').classList.toggle('hidden'); }
+        function labAdd(n) { S.labFactors.push(n); updateLab(); }
+        function resetLab() { S.labFactors = []; updateLab(); }
+        function updateLab() {
+            const res = S.labFactors.length ? S.labFactors.reduce((a,b)=>a*b) : 1;
+            document.getElementById('lab-res').innerText = res;
+            document.getElementById('lab-hist').innerText = S.labFactors.join('x');
+        }
+        function activateFreeze() {
+            if(!S.mcm.frozen) { S.mcm.frozen = true; document.getElementById('freeze-btn').classList.add('opacity-50'); }
+        }
+        
+        // SPRITES RENDERER
+        function drawPixelSprite(sprite, cx, cy, color, scale=4) {
+            ctx.fillStyle = color;
+            const h = sprite.length, w = sprite[0].length;
+            const offX = cx - (w*scale)/2, offY = cy - (h*scale)/2;
+            for(let y=0; y<h; y++) for(let x=0; x<w; x++) if(sprite[y][x]) ctx.fillRect(offX+x*scale, offY+y*scale, scale, scale);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

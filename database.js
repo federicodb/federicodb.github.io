@@ -69,19 +69,11 @@ const db = [
         "icon": "📐"
     },
     {
-        "title": "Math Invaders 2.5",
-        "excerpt": "Attività di laboratorio interattiva.",
-        "tags": [],
-        "url": "lezioni/MCD_mcm_1el_002.html",
-        "date": "2025-12-05",
-        "icon": "📄"
-    },
-    {
         "title": "Algebra Tiles 3D",
         "excerpt": "Attività di laboratorio interattiva.",
         "tags": [],
         "url": "lezioni/visualizzatore polinomi 2d 3d 001.html",
-        "date": "2025-11-25",
+        "date": "2025-12-07",
         "icon": "📄"
     },
     {
@@ -89,7 +81,15 @@ const db = [
         "excerpt": "Attività di laboratorio interattiva.",
         "tags": [],
         "url": "lezioni/gioco_sin_cos_01.html",
-        "date": "2025-11-24",
+        "date": "2025-12-07",
+        "icon": "📄"
+    },
+    {
+        "title": "Math Invaders",
+        "excerpt": "Attività di laboratorio interattiva.",
+        "tags": [],
+        "url": "lezioni/MCD_mcm_1el_001.html",
+        "date": "2025-12-02",
         "icon": "📄"
     }
 ];
