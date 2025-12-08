@@ -2,22 +2,44 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Math Invaders: MCD & mcm</title>
+    <meta name="description" content="Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. (Massimo Comune Divisore) e m.c.m. (Minimo Comune Multiplo).">
+    <meta name="keywords" content="Matematica, Aritmetica, MCD, mcm, 1EL, Mat:Calcolo, Mat:ProblemSolving, Gamification, EU:STEM">
+    <meta name="date" content="2025-12-08">
+
+    <!-- 2. FIX MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <title>Math Invaders - MCM & MCD</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Pixel & Modern -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Base & Transitions */
-        body {
+        /* 3. CSS FULLSCREEN ROBUSTO */
+        html, body {
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
-            min-height: 100vh;
             color: #f8fafc;
-            overflow-x: hidden;
+            width: 100vw;
+            height: 100dvh; /* Altezza reale mobile */
+            margin: 0; padding: 0;
+            overflow: hidden; /* Blocca scroll pagina */
+            position: fixed;
+            touch-action: manipulation;
+            -webkit-user-select: none; user-select: none;
         }
         
+        /* Contenitore scrollabile interno */
+        .app-scroller {
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         /* Pixel Art Style */
         .font-pixel { font-family: 'Press Start 2P', cursive; }
         
@@ -27,6 +49,7 @@
             overflow: hidden;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
             image-rendering: pixelated; 
+            touch-action: none; /* Impedisce scroll trascinando il canvas */
         }
         .arcade-screen::after {
             content: " ";
@@ -58,205 +81,208 @@
 </head>
 <body>
 
-    <div class="app-container max-w-5xl mx-auto p-4 md:p-6">
+    <div class="app-scroller p-4 md:p-6">
+        <div class="max-w-5xl mx-auto">
         
-        <!-- Header Retro -->
-        <header class="mb-8 text-center">
-            <h1 class="font-pixel text-2xl md:text-4xl text-green-400 mb-2 drop-shadow-[0_2px_0_rgba(0,0,0,1)]">
-                MATH<span class="text-white">INVADERS</span>
-            </h1>
-            <p class="text-slate-500 text-xs md:text-sm font-mono tracking-widest uppercase">Insert Coin to Start Learning</p>
-        </header>
-        
-        <!-- Sticky Player Bar -->
-        <div class="sticky top-2 z-50 flex justify-center mb-6 pointer-events-none">
-             <div class="bg-slate-900/90 backdrop-blur border-2 border-slate-700 rounded px-4 py-2 shadow-2xl flex items-center gap-4 pointer-events-auto">
-                 <div class="flex items-center gap-2">
-                     <span class="text-green-400 font-pixel text-xs">PLAYER</span>
-                     <input type="text" id="playerNameInput" 
-                            class="bg-transparent border-b-2 border-slate-600 text-white font-mono font-bold w-32 focus:outline-none focus:border-green-500 text-center uppercase" 
-                            value="CADET" onchange="setPlayerName(this.value)">
-                 </div>
-                 <div class="h-4 w-px bg-slate-700"></div>
-                 <div class="text-xs font-mono text-slate-400">SCORE: <span id="highScoreDisplay" class="text-yellow-400 font-bold">0000</span></div>
-             </div>
-        </div>
-
-        <!-- VISTA MENU -->
-        <div id="view-menu" class="animate-fade-in">
-            <div class="bg-slate-900 rounded border-4 border-slate-800 p-6 md:p-10 shadow-2xl max-w-3xl mx-auto">
-                
-                <div class="grid md:grid-cols-2 gap-8">
-                    <!-- Colonna 1: Tipo Gioco & Scenario -->
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="font-pixel text-xs text-blue-400 mb-3 uppercase">1. Scegli Missione</h3>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div onclick="setGameMode('mcm')" id="mode-mcm" class="select-card p-3 rounded bg-slate-800 cursor-pointer selected">
-                                    <div class="font-bold text-white text-sm mb-1">🚀 Sincronia</div>
-                                    <div class="text-[10px] text-slate-400">m.c.m. & Tempo</div>
-                                </div>
-                                <div onclick="setGameMode('mcd')" id="mode-mcd" class="select-card p-3 rounded bg-slate-800 cursor-pointer">
-                                    <div class="font-bold text-white text-sm mb-1">🍕 Ottimizza</div>
-                                    <div class="text-[10px] text-slate-400">M.C.D. & Spazio</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="scenario-selector">
-                            <h3 class="font-pixel text-xs text-purple-400 mb-3 uppercase mt-6">2. Scenario (Solo MCM)</h3>
-                            <div class="space-y-2">
-                                <div onclick="setScenario('invaders')" id="scen-invaders" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3 selected">
-                                    <span class="text-xl">👾</span>
-                                    <div>
-                                        <div class="font-bold text-white text-xs">SPACE INVADERS</div>
-                                        <div class="text-[9px] text-green-400">Pixel Art Action</div>
-                                    </div>
-                                </div>
-                                <div onclick="setScenario('planets')" id="scen-planets" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3">
-                                    <span class="text-xl">🪐</span>
-                                    <div>
-                                        <div class="font-bold text-white text-xs">COSMIC ALIGNMENT</div>
-                                        <div class="text-[9px] text-blue-400">Orbital Physics</div>
-                                    </div>
-                                </div>
-                                <div onclick="setScenario('prison')" id="scen-prison" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3">
-                                    <span class="text-xl">⛓️</span>
-                                    <div>
-                                        <div class="font-bold text-white text-xs">MATH PRISON</div>
-                                        <div class="text-[9px] text-red-400">Escape Logic</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Colonna 2: Livello & Start -->
-                    <div class="flex flex-col justify-between">
-                        <div>
-                            <h3 class="font-pixel text-xs text-yellow-400 mb-3 uppercase">3. Difficoltà</h3>
-                            <div id="level-list" class="space-y-2">
-                                <!-- JS Injected -->
-                            </div>
-                        </div>
-
-                        <button onclick="showView('game')" id="startGameButton" 
-                            class="w-full mt-8 bg-green-600 hover:bg-green-500 border-b-4 border-green-800 active:border-b-0 active:translate-y-1 text-white font-pixel text-sm py-4 rounded transition-all shadow-[0_0_15px_rgba(34,197,94,0.4)] flex items-center justify-center gap-3 group">
-                            <span class="animate-pulse">▶</span> START GAME
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="mt-6 pt-6 border-t border-slate-800 flex justify-between items-center">
-                    <div class="text-[10px] font-mono text-slate-500" id="verificationHash">HASH: ---</div>
-                    <button onclick="showView('leaderboard')" class="text-xs text-slate-400 hover:text-white font-bold underline decoration-slate-600">
-                        VEDI CLASSIFICA
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- VISTA LEADERBOARD -->
-        <div id="view-leaderboard" class="hidden max-w-2xl mx-auto">
-            <div class="bg-slate-900 rounded border-2 border-slate-700 p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="font-pixel text-yellow-400 text-lg">TOP SCORES</h2>
-                    <button onclick="showView('menu')" class="text-red-400 hover:text-red-300 font-pixel text-xs">✕ EXIT</button>
-                </div>
-                <div id="leaderboardFullList" class="space-y-1 font-mono text-sm max-h-96 overflow-y-auto pr-2">
-                    <!-- JS Injected -->
-                </div>
-            </div>
-        </div>
-
-        <!-- VISTA GIOCO -->
-        <div id="view-game" class="hidden animate-fade-in">
+            <!-- Header Retro -->
+            <header class="mb-4 md:mb-8 text-center" id="main-header">
+                <h1 class="font-pixel text-xl md:text-4xl text-green-400 mb-2 drop-shadow-[0_2px_0_rgba(0,0,0,1)] leading-tight">
+                    MATH<span class="text-white">INVADERS</span>
+                </h1>
+                <p class="text-slate-500 text-[10px] md:text-sm font-mono tracking-widest uppercase">Insert Coin to Start Learning</p>
+            </header>
             
-            <!-- HUD -->
-            <div class="flex justify-between items-end mb-2 px-2 font-mono text-xs text-slate-400">
-                <div id="level-badge" class="bg-slate-800 px-2 py-1 rounded border border-slate-600 text-white">LVL 1</div>
-                <button onclick="showView('menu')" class="hover:text-red-400 transition-colors">ABORT MISSION</button>
+            <!-- Sticky Player Bar -->
+            <div class="sticky top-0 z-50 flex justify-center mb-6 pointer-events-none">
+                 <div class="bg-slate-900/95 backdrop-blur border-2 border-slate-700 rounded px-4 py-2 shadow-2xl flex items-center gap-4 pointer-events-auto">
+                     <div class="flex items-center gap-2">
+                         <span class="text-green-400 font-pixel text-[10px]">PLAYER</span>
+                         <input type="text" id="playerNameInput" 
+                                class="bg-transparent border-b-2 border-slate-600 text-white font-mono font-bold w-24 md:w-32 focus:outline-none focus:border-green-500 text-center uppercase text-sm" 
+                                value="CADET" onchange="setPlayerName(this.value)">
+                     </div>
+                     <div class="h-4 w-px bg-slate-700"></div>
+                     <div class="text-[10px] md:text-xs font-mono text-slate-400">SCORE: <span id="highScoreDisplay" class="text-yellow-400 font-bold">0000</span></div>
+                 </div>
             </div>
 
-            <!-- GAME FRAME -->
-            <div class="bg-black rounded-lg border-4 border-slate-700 shadow-2xl relative overflow-hidden">
-                
-                <!-- Tool Bar -->
-                <div class="bg-slate-900 border-b border-slate-800 p-3 flex flex-wrap gap-4 items-center justify-between">
+            <!-- VISTA MENU -->
+            <div id="view-menu" class="animate-fade-in pb-10">
+                <div class="bg-slate-900 rounded border-4 border-slate-800 p-6 md:p-10 shadow-2xl max-w-3xl mx-auto">
                     
-                    <!-- Problem Data -->
-                    <div class="flex items-center gap-2 font-pixel text-[10px] md:text-xs">
-                        <span class="text-blue-400" id="challenge-label">DATA:</span>
-                        <div id="challenge-numbers" class="flex gap-3 text-white"></div>
-                        <button onclick="toggleLab()" class="ml-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 px-2 py-1 rounded border border-slate-600" title="Scaffolding">
-                            🧪 LAB
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Colonna 1: Tipo Gioco & Scenario -->
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="font-pixel text-[10px] text-blue-400 mb-3 uppercase">1. Scegli Missione</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div onclick="setGameMode('mcm')" id="mode-mcm" class="select-card p-3 rounded bg-slate-800 cursor-pointer selected">
+                                        <div class="font-bold text-white text-sm mb-1">🚀 Sincronia</div>
+                                        <div class="text-[10px] text-slate-400">m.c.m. & Tempo</div>
+                                    </div>
+                                    <div onclick="setGameMode('mcd')" id="mode-mcd" class="select-card p-3 rounded bg-slate-800 cursor-pointer">
+                                        <div class="font-bold text-white text-sm mb-1">🍕 Ottimizza</div>
+                                        <div class="text-[10px] text-slate-400">M.C.D. & Spazio</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="scenario-selector">
+                                <h3 class="font-pixel text-[10px] text-purple-400 mb-3 uppercase mt-6">2. Scenario (Solo MCM)</h3>
+                                <div class="space-y-2">
+                                    <div onclick="setScenario('invaders')" id="scen-invaders" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3 selected">
+                                        <span class="text-xl">👾</span>
+                                        <div>
+                                            <div class="font-bold text-white text-xs">SPACE INVADERS</div>
+                                            <div class="text-[9px] text-green-400">Pixel Art Action</div>
+                                        </div>
+                                    </div>
+                                    <div onclick="setScenario('planets')" id="scen-planets" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3">
+                                        <span class="text-xl">🪐</span>
+                                        <div>
+                                            <div class="font-bold text-white text-xs">COSMIC ALIGNMENT</div>
+                                            <div class="text-[9px] text-blue-400">Orbital Physics</div>
+                                        </div>
+                                    </div>
+                                    <div onclick="setScenario('prison')" id="scen-prison" class="select-card p-3 rounded bg-slate-800 cursor-pointer flex items-center gap-3">
+                                        <span class="text-xl">⛓️</span>
+                                        <div>
+                                            <div class="font-bold text-white text-xs">MATH PRISON</div>
+                                            <div class="text-[9px] text-red-400">Escape Logic</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colonna 2: Livello & Start -->
+                        <div class="flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-pixel text-[10px] text-yellow-400 mb-3 uppercase">3. Difficoltà</h3>
+                                <div id="level-list" class="space-y-2">
+                                    <!-- JS Injected -->
+                                </div>
+                            </div>
+
+                            <button onclick="showView('game')" id="startGameButton" 
+                                class="w-full mt-8 bg-green-600 hover:bg-green-500 border-b-4 border-green-800 active:border-b-0 active:translate-y-1 text-white font-pixel text-xs py-4 rounded transition-all shadow-[0_0_15px_rgba(34,197,94,0.4)] flex items-center justify-center gap-3 group">
+                                <span class="animate-pulse">▶</span> START GAME
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-slate-800 flex justify-between items-center">
+                        <div class="text-[10px] font-mono text-slate-500" id="verificationHash">HASH: ---</div>
+                        <button onclick="showView('leaderboard')" class="text-xs text-slate-400 hover:text-white font-bold underline decoration-slate-600">
+                            VEDI CLASSIFICA
                         </button>
                     </div>
-
-                    <!-- Input Area -->
-                    <div class="flex items-center gap-2">
-                        <input type="number" id="game-input" class="bg-black border-2 border-slate-600 text-green-400 font-pixel text-sm w-20 py-2 px-2 text-center focus:border-green-500 focus:outline-none" placeholder="000">
-                        <button id="action-btn" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded border-b-4 border-slate-900 active:border-b-0 active:translate-y-px text-xs font-pixel">
-                            FIRE
-                        </button>
-                    </div>
                 </div>
-
-                <!-- CANVAS WRAPPER (Arcade Screen) -->
-                <div class="relative w-full aspect-[16/9] md:aspect-[2/1] bg-black arcade-screen">
-                    <canvas id="mainCanvas" class="w-full h-full block pixelated"></canvas>
-                    
-                    <!-- HUD Overlays -->
-                    <div id="timer-overlay" class="absolute top-4 right-4 font-pixel text-yellow-400 text-xs md:text-sm z-20 hidden">
-                        TIME <span class="text-white">00</span>
-                    </div>
-                    
-                    <button id="freeze-btn" onclick="activateFreeze()" class="hidden absolute bottom-4 left-4 font-pixel text-[10px] bg-cyan-900/80 text-cyan-200 border border-cyan-500 px-3 py-2 rounded shadow-[0_0_10px_rgba(6,182,212,0.5)] hover:bg-cyan-800 z-20 disabled:opacity-30">
-                        ❄ FREEZE
-                    </button>
-
-                    <!-- Messages (MCM) -->
-                    <div id="feedback-overlay" class="hidden absolute inset-0 flex items-center justify-center z-30 bg-black/80 backdrop-blur-sm flex-col">
-                        <div id="fb-icon" class="text-6xl mb-4">🏆</div>
-                        <div id="fb-text" class="font-pixel text-green-400 text-lg md:text-2xl mb-2 text-center px-4">MISSION ACCOMPLISHED</div>
-                        <div id="fb-sub" class="font-mono text-slate-300 text-xs mb-6">TARGET DESTROYED</div>
-                        <button id="next-btn" class="font-pixel text-xs bg-white text-black px-6 py-3 hover:scale-105 transition-transform">
-                            NEXT WAVE ▶
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- MCD Success Bar (Footer, NON OVERLAPPING) -->
-                <div id="mcd-success-bar" class="hidden bg-emerald-900 border-t-4 border-emerald-500 p-4 text-center">
-                    <div class="font-pixel text-emerald-300 text-sm mb-1">TAGLIO PERFETTO!</div>
-                    <div class="font-mono text-emerald-100 text-xs">
-                        Hai diviso l'area in moduli di lato <span id="res-val" class="font-bold text-white"></span>
-                    </div>
-                    <button onclick="startGame()" class="mt-2 bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-1 rounded text-xs font-bold">
-                        NUOVA TEGLIA ▶
-                    </button>
-                </div>
-
-                <!-- FACTOR LAB (Overlay) -->
-                <div id="factor-lab" class="hidden absolute top-14 left-2 z-40 bg-slate-900/95 border-2 border-indigo-500 p-3 rounded shadow-xl max-w-xs">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-pixel text-[10px] text-indigo-400">FACTOR LAB</span>
-                        <button onclick="toggleLab()" class="text-slate-500 hover:text-white text-xs">✕</button>
-                    </div>
-                    <div class="flex flex-wrap gap-1 mb-2">
-                        <!-- Primes injected -->
-                        <div id="lab-primes" class="contents"></div>
-                    </div>
-                    <div class="bg-black p-2 text-right font-mono text-green-400 border border-slate-700 flex justify-between items-center">
-                        <button onclick="resetLab()" class="text-[10px] text-red-500 hover:text-red-400">CLR</button>
-                        <span id="lab-res">1</span>
-                    </div>
-                    <div id="lab-hist" class="text-[9px] text-slate-500 mt-1 h-3 text-right"></div>
-                </div>
-
             </div>
+
+            <!-- VISTA LEADERBOARD -->
+            <div id="view-leaderboard" class="hidden max-w-2xl mx-auto pb-10">
+                <div class="bg-slate-900 rounded border-2 border-slate-700 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="font-pixel text-yellow-400 text-lg">TOP SCORES</h2>
+                        <button onclick="showView('menu')" class="text-red-400 hover:text-red-300 font-pixel text-xs">✕ EXIT</button>
+                    </div>
+                    <div id="leaderboardFullList" class="space-y-1 font-mono text-sm max-h-96 overflow-y-auto pr-2">
+                        <!-- JS Injected -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA GIOCO -->
+            <div id="view-game" class="hidden animate-fade-in pb-4">
+                
+                <!-- HUD -->
+                <div class="flex justify-between items-end mb-2 px-2 font-mono text-xs text-slate-400">
+                    <div id="level-badge" class="bg-slate-800 px-2 py-1 rounded border border-slate-600 text-white">LVL 1</div>
+                    <button onclick="showView('menu')" class="hover:text-red-400 transition-colors">ABORT MISSION</button>
+                </div>
+
+                <!-- GAME FRAME -->
+                <div class="bg-black rounded-lg border-4 border-slate-700 shadow-2xl relative overflow-hidden">
+                    
+                    <!-- Tool Bar -->
+                    <div class="bg-slate-900 border-b border-slate-800 p-2 md:p-3 flex flex-wrap gap-2 items-center justify-between">
+                        
+                        <!-- Problem Data -->
+                        <div class="flex items-center gap-2 font-pixel text-[10px] md:text-xs overflow-x-auto whitespace-nowrap hide-scrollbar">
+                            <span class="text-blue-400" id="challenge-label">DATA:</span>
+                            <div id="challenge-numbers" class="flex gap-2 text-white"></div>
+                            <button onclick="toggleLab()" class="ml-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 px-2 py-1 rounded border border-slate-600 shrink-0" title="Scaffolding">
+                                🧪 LAB
+                            </button>
+                        </div>
+
+                        <!-- Input Area -->
+                        <div class="flex items-center gap-2 ml-auto">
+                            <!-- text-base per evitare zoom su iPhone -->
+                            <input type="number" id="game-input" class="bg-black border-2 border-slate-600 text-green-400 font-pixel text-base w-20 py-2 px-2 text-center focus:border-green-500 focus:outline-none rounded" placeholder="000">
+                            <button id="action-btn" class="bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2 rounded border-b-4 border-slate-900 active:border-b-0 active:translate-y-px text-[10px] font-pixel shrink-0">
+                                FIRE
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CANVAS WRAPPER (Arcade Screen) -->
+                    <div class="relative w-full aspect-[16/10] md:aspect-[2/1] bg-black arcade-screen">
+                        <canvas id="mainCanvas" class="w-full h-full block pixelated"></canvas>
+                        
+                        <!-- HUD Overlays -->
+                        <div id="timer-overlay" class="absolute top-4 right-4 font-pixel text-yellow-400 text-[10px] md:text-xs z-20 hidden">
+                            TIME <span class="text-white">00</span>
+                        </div>
+                        
+                        <button id="freeze-btn" onclick="activateFreeze()" class="hidden absolute bottom-4 left-4 font-pixel text-[10px] bg-cyan-900/80 text-cyan-200 border border-cyan-500 px-3 py-2 rounded shadow-[0_0_10px_rgba(6,182,212,0.5)] hover:bg-cyan-800 z-20 disabled:opacity-30">
+                            ❄ FREEZE
+                        </button>
+
+                        <!-- Messages (MCM) -->
+                        <div id="feedback-overlay" class="hidden absolute inset-0 flex items-center justify-center z-30 bg-black/80 backdrop-blur-sm flex-col">
+                            <div id="fb-icon" class="text-6xl mb-4 animate-bounce">🏆</div>
+                            <div id="fb-text" class="font-pixel text-green-400 text-lg md:text-2xl mb-2 text-center px-4">MISSION ACCOMPLISHED</div>
+                            <div id="fb-sub" class="font-mono text-slate-300 text-xs mb-6">TARGET DESTROYED</div>
+                            <button id="next-btn" class="font-pixel text-xs bg-white text-black px-6 py-3 hover:scale-105 transition-transform rounded">
+                                NEXT WAVE ▶
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- MCD Success Bar (Footer) -->
+                    <div id="mcd-success-bar" class="hidden bg-emerald-900 border-t-4 border-emerald-500 p-3 text-center">
+                        <div class="font-pixel text-emerald-300 text-xs mb-1">TAGLIO PERFETTO!</div>
+                        <div class="font-mono text-emerald-100 text-[10px] md:text-xs">
+                            Hai diviso l'area in moduli di lato <span id="res-val" class="font-bold text-white"></span>
+                        </div>
+                        <button onclick="startGame()" class="mt-2 bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-1 rounded text-[10px] font-bold">
+                            NUOVA TEGLIA ▶
+                        </button>
+                    </div>
+
+                    <!-- FACTOR LAB (Overlay) -->
+                    <div id="factor-lab" class="hidden absolute top-14 left-2 z-40 bg-slate-900/95 border-2 border-indigo-500 p-3 rounded shadow-xl max-w-xs">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-pixel text-[10px] text-indigo-400">FACTOR LAB</span>
+                            <button onclick="toggleLab()" class="text-slate-500 hover:text-white text-xs">✕</button>
+                        </div>
+                        <div class="flex flex-wrap gap-1 mb-2">
+                            <!-- Primes injected -->
+                            <div id="lab-primes" class="contents"></div>
+                        </div>
+                        <div class="bg-black p-2 text-right font-mono text-green-400 border border-slate-700 flex justify-between items-center">
+                            <button onclick="resetLab()" class="text-[10px] text-red-500 hover:text-red-400">CLR</button>
+                            <span id="lab-res">1</span>
+                        </div>
+                        <div id="lab-hist" class="text-[9px] text-slate-500 mt-1 h-3 text-right"></div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
-
     </div>
 
     <script>
@@ -305,7 +331,6 @@
 
         // --- CORE ---
         function init() {
-            // Load & Sanitize Score
             S.player = localStorage.getItem('mi_player') || 'CADET';
             let savedScore = parseInt(localStorage.getItem('mi_score'));
             if (isNaN(savedScore)) savedScore = 0;
@@ -314,7 +339,6 @@
             document.getElementById('playerNameInput').value = S.player;
             document.getElementById('highScoreDisplay').textContent = S.score.toString().padStart(4,'0');
             
-            // Build Menu
             document.getElementById('level-list').innerHTML = LEVELS.map(l => `
                 <div onclick="setLevel(${l.id})" id="lvl-${l.id}" class="select-card bg-slate-800 p-3 rounded cursor-pointer flex justify-between items-center ${l.id===0?'selected':''}">
                     <span class="font-pixel text-[10px] text-white">${l.label}</span>
@@ -323,7 +347,7 @@
             `).join('');
             
             document.getElementById('lab-primes').innerHTML = PRIMES.map(p => 
-                `<button onclick="labAdd(${p})" class="bg-slate-700 text-white w-6 h-6 text-[10px] font-bold hover:bg-green-600">${p}</button>`
+                `<button onclick="labAdd(${p})" class="bg-slate-700 text-white w-6 h-6 text-[10px] font-bold hover:bg-green-600 rounded">${p}</button>`
             ).join('');
 
             setLevel(0);
@@ -363,7 +387,13 @@
             document.getElementById('view-game').classList.add('hidden');
             document.getElementById(`view-${v}`).classList.remove('hidden');
             
-            if(v === 'game') startGame();
+            if(v === 'game') {
+                // Nasconde l'header principale per dare spazio al gioco
+                document.getElementById('main-header').classList.add('hidden');
+                startGame();
+            } else {
+                document.getElementById('main-header').classList.remove('hidden');
+            }
             if(v === 'leaderboard') renderLeaderboard();
         }
 
@@ -379,8 +409,10 @@
             document.getElementById('game-input').disabled = false;
             document.getElementById('action-btn').disabled = false;
             
-            cvs.width = cvs.clientWidth;
-            cvs.height = cvs.clientHeight;
+            // Forza ridimensionamento canvas
+            const container = cvs.parentElement;
+            cvs.width = container.clientWidth;
+            cvs.height = container.clientHeight;
             ctx.imageSmoothingEnabled = false; 
 
             document.getElementById('level-badge').innerText = S.level.label;
@@ -416,7 +448,7 @@
 
         function createInteractiveNumber(n, label="") {
             const el = document.createElement('span');
-            el.className = "interactive-num mx-1";
+            el.className = "interactive-num mx-1 font-mono";
             el.innerHTML = label + n;
             el.onclick = () => {
                 let temp = n, f = [];

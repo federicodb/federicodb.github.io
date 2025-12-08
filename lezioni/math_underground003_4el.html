@@ -2,7 +2,16 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Math Underground: Mappa Funzioni</title>
+    <meta name="description" content="Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche (Dominio, Tipi, Proprietà).">
+    <meta name="keywords" content="Matematica, Analisi, Funzioni, Dominio, Mappa, 4EL, 5EL, Mat:Analisi, Mat:Modellizzazione, EU:STEM, Lab">
+    <meta name="date" content="2025-12-06">
+
+    <!-- 2. FIX MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <title>Math Underground - Pure Black</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +24,7 @@
 
     <style>
         /* FONDO NERO PURO (AMOLED) */
-        body { font-family: 'Outfit', sans-serif; background-color: #000000; overflow: hidden; color: #f8fafc; }
+        body { font-family: 'Outfit', sans-serif; background-color: #000000; overflow: hidden; color: #f8fafc; width: 100vw; height: 100dvh; position: fixed; }
         
         /* Metro Lines - Schematic Style */
         .metro-path {
@@ -88,7 +97,7 @@
         input[type=range]::-webkit-slider-runnable-track { cursor: pointer; }
     </style>
 </head>
-<body class="h-screen w-screen text-slate-100 selection:bg-cyan-500 selection:text-white">
+<body class="h-full w-full text-slate-100 selection:bg-cyan-500 selection:text-white">
 
     <!-- NAVIGAZIONE -->
     <nav class="absolute top-0 left-0 w-full z-40 p-6 flex justify-between items-start pointer-events-none">
@@ -103,7 +112,7 @@
     <!-- SCHERMATA 1: LA MAPPA -->
     <div id="screen-map" class="screen bg-grid-chalk flex items-center justify-center overflow-auto cursor-grab active:cursor-grabbing">
         
-        <svg id="main-svg" viewBox="0 0 1600 900" class="w-full h-full min-w-[1200px]" preserveAspectRatio="xMidYMid meet">
+        <svg id="main-svg" viewBox="0 0 1600 900" class="w-full h-full min-w-[1000px]" preserveAspectRatio="xMidYMid slice">
             
             <defs>
                 <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -116,7 +125,6 @@
             </defs>
 
             <!-- *** START BRANCH (BIANCO E BEN VISIBILE) *** -->
-            <!-- Opacità piena, larghezza fissa, filtro glow attivo -->
             <path d="M 150 450 L 300 450" class="metro-path" stroke="#ffffff" stroke-width="6" stroke-opacity="1" />
             
             <!-- RAMO ALGEBRICHE (BLU) -->
@@ -155,13 +163,8 @@
 
             <!-- *** START NODE (Fisso, senza animazione scala) *** -->
             <g onclick="showJunctionInfo('start')" class="cursor-pointer group">
-                <!-- Cerchio Base (Rimosso 'group-hover:scale-110') -->
                 <circle cx="150" cy="450" r="40" fill="#000000" stroke="#fff" stroke-width="4" class="transition-colors" />
-                
-                <!-- Testo START -->
                 <text x="150" y="442" text-anchor="middle" fill="white" font-weight="900" font-size="14" style="font-family: 'Outfit', sans-serif;">START</text>
-                
-                <!-- Testo y=f(x) -->
                 <text x="150" y="465" text-anchor="middle" fill="#94a3b8" font-size="14" style="font-family: 'Noto Serif', serif; font-style: italic;">y = f(x)</text>
             </g>
 
@@ -207,28 +210,34 @@
         </div>
     </div>
 
-    <!-- SCHERMATA DETTAGLIO -->
+    <!-- SCHERMATA DETTAGLIO (LAYOUT MOBILE RIVISTO) -->
     <div id="screen-detail" class="screen hidden-right bg-black flex flex-col z-50">
-        <div class="bg-zinc-900 border-b border-zinc-800 px-6 py-4 flex items-center justify-between shadow-lg z-10">
+        <!-- HEADER -->
+        <div class="bg-zinc-900 border-b border-zinc-800 px-6 py-4 flex items-center justify-between shadow-lg z-30 shrink-0">
             <button onclick="closeDetails()" class="flex items-center text-xs font-bold text-slate-500 hover:text-white uppercase tracking-wide transition-colors group">
                 <span class="mr-2 group-hover:-translate-x-1 transition-transform">←</span> Mappa
             </button>
             <h2 id="detail-title" class="text-lg font-bold text-white uppercase tracking-wider text-shadow-glow"></h2>
         </div>
-        <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
-            <!-- CANVAS -->
-            <div class="flex-1 relative bg-grid-chalk flex flex-col p-4">
+
+        <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+            <!-- CANVAS (Top su mobile, Left su desktop) -->
+            <div class="flex-1 relative bg-grid-chalk flex flex-col p-4 md:h-full h-[45%]">
                 <div class="flex-1 relative w-full h-full bg-zinc-900/50 rounded-2xl border border-zinc-800/50 shadow-inner overflow-hidden">
                     <canvas id="detailChart"></canvas>
                 </div>
-                <div class="absolute top-8 right-8 bg-black/80 backdrop-blur px-4 py-3 rounded-xl border border-zinc-700 shadow-2xl pointer-events-none">
-                    <div id="detail-formula" class="text-xl font-mono text-cyan-300"></div>
-                </div>
             </div>
             
-            <!-- CONTROLLI -->
-            <div class="w-full md:w-80 border-l border-zinc-800 bg-zinc-900 overflow-y-auto shadow-2xl z-20">
-                <div class="p-6 space-y-8">
+            <!-- CONTROLLI E FORMULA (Bottom su mobile, Right su desktop) -->
+            <div class="w-full md:w-96 border-l border-zinc-800 bg-zinc-900 shadow-2xl z-20 flex flex-col md:h-full h-[55%]">
+                
+                <!-- FORMULA AREA (Sticky Header del pannello controlli) -->
+                <div class="bg-zinc-950 border-b border-zinc-800 p-4 shrink-0 shadow-lg relative z-10 flex items-center justify-center min-h-[80px]">
+                    <div id="detail-formula" class="text-xl md:text-2xl font-mono text-cyan-300 font-bold break-all text-center"></div>
+                </div>
+
+                <!-- SCROLLABLE CONTROLS -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-8">
                     <div>
                         <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center">
                             <span class="w-1 h-3 bg-cyan-500 mr-2 rounded-full"></span> Analisi
@@ -239,11 +248,12 @@
                             <p id="detail-app" class="text-xs text-slate-400 font-mono"></p>
                         </div>
                     </div>
+                    
                     <div>
                         <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center">
                             <span class="w-1 h-3 bg-fuchsia-500 mr-2 rounded-full"></span> Parametri
                         </h4>
-                        <div id="detail-controls" class="space-y-6"></div>
+                        <div id="detail-controls" class="space-y-6 pb-8"></div>
                     </div>
                 </div>
             </div>

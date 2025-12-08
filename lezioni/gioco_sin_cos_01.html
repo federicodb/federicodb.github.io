@@ -3,7 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>GonioMatch: Segnali Goniometrici</title>
+    <meta name="description" content="Gioco Memory a tema Radar per memorizzare gli angoli notevoli di Seno, Coseno e Tangente.">
+    <meta name="keywords" content="Matematica, Goniometria, Trigonometria, Funzioni, Angoli, 3MEC, 4EL, Mat:Analisi, Lab, Gamification">
+    <meta name="date" content="2025-12-08">
+
+    <!-- 2. FIX MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <title>GonioMatch - Signal Processing</title>
 
     <!-- Tailwind CSS -->
@@ -46,14 +55,17 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Serif:wght@700&family=Fira+Code:wght@500&display=swap');
 
-        body {
+        /* 3. CSS FULLSCREEN ROBUSTO */
+        html, body {
             font-family: 'Inter', sans-serif;
             overflow: hidden;
-            height: 100vh;
             width: 100vw;
+            height: 100dvh; /* Dynamic Viewport Height */
+            position: fixed; /* Inchioda la pagina su iOS */
             touch-action: manipulation;
             -webkit-user-select: none;
             user-select: none;
+            margin: 0; padding: 0;
         }
 
         /* --- 3D CARD ENGINE --- */
@@ -85,6 +97,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            overflow: hidden; /* Taglia contenuto extra */
         }
 
         .face-front {
@@ -95,7 +108,11 @@
             transform: rotateY(180deg);
         }
 
-        /* Scrollbar Invisibile ma funzionale */
+        /* Scrollbar Nascosta per Card Content */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Scrollbar Visibile per Liste */
         .scroller::-webkit-scrollbar {
             width: 4px;
         }
@@ -157,10 +174,6 @@
             { id: 3, label: "Frequenza Alta", desc: "20 Carte (10 Coppie)", pairs: 10, points: 2000, ghost: false }
         ];
 
-        // --- DATABASE GONIOMETRICO (BUCKET SYSTEM) ---
-        // Ogni "bucket" ha un valore di risposta univoco e N possibili domande.
-        // Questo garantisce l'univocità della risposta nel tabellone.
-
         const ANSWER_BUCKETS = [
             { id: 'zero', val: '0', qs: ['\\sin(0)', '\\sin(180^\\circ)', '\\sin(\\pi)', '\\cos(90^\\circ)', '\\cos(\\frac{\\pi}{2})', '\\tan(0)'] },
             { id: 'one', val: '1', qs: ['\\sin(90^\\circ)', '\\cos(0)', '\\cos(360^\\circ)', '\\tan(45^\\circ)', '\\sin^2(x)+\\cos^2(x)'] },
@@ -200,7 +213,7 @@
         );
         const Icons = {
             Radar: <Icon d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0 M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0 M12 12v-9 M12 12l4 4" />,
-            Wave: <Icon d="M4 15l3 -6l3 6l3 -6l3 6l3 -6l3 6" />,
+            Wave: <Icon d="M4 15l3 -6l3 6l3 -6l3 6l3 -6l3 6l3 -6l3 6" />,
             Warning: <Icon d="M12 9v2m0 4v.01M5.07 19H18.93a2 2 0 001.73-3L13.73 4a2 2 0 00-3.46 0L3.34 16a2 2 0 001.73 3z" />,
             Check: <Icon d="M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01 9 11.01" />,
             Play: <Icon d="M5 3l14 9-14 9V3z" />,
@@ -210,17 +223,23 @@
             Moon: <Icon d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         };
 
-        // --- MATH ENGINE ---
+        // --- MATH ENGINE (Fix Overflow) ---
         const MathText = ({ txt, className = "" }) => {
-            const defaultCardSize = "text-xl md:text-2xl";
+            const defaultCardSize = "text-base md:text-xl lg:text-2xl"; // Font slightly adjusted
             const appliedClass = className || defaultCardSize;
+            
             const html = useMemo(() => {
                 try {
                     return window.katex ? window.katex.renderToString(txt, { throwOnError: false, displayMode: true }) : txt;
                 } catch (e) { return txt; }
             }, [txt]);
 
-            return <div className={`font-math flex items-center justify-center w-full h-full p-1 leading-relaxed ${appliedClass}`} dangerouslySetInnerHTML={{ __html: html }} />;
+            return (
+                <div 
+                    className={`font-math w-full h-full flex flex-col justify-center items-center p-2 leading-relaxed overflow-y-auto hide-scrollbar break-words ${appliedClass}`} 
+                    dangerouslySetInnerHTML={{ __html: html }} 
+                />
+            );
         };
 
         const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -240,14 +259,11 @@
             });
 
             // 2. SELECT UNIQUE ANSWER BUCKETS
-            // Shuffle buckets to get random unique answers
             const shuffledBuckets = [...ANSWER_BUCKETS].sort(() => Math.random() - 0.5);
 
-            // Fill remaining slots
             for (let i = 0; i < pairsCount - 1; i++) {
                 if (i < shuffledBuckets.length) {
                     const bucket = shuffledBuckets[i];
-                    // Pick one random question from this bucket
                     const rndQ = bucket.qs[getRandomInt(0, bucket.qs.length - 1)];
                     pairs.push({
                         q: rndQ,
@@ -256,7 +272,6 @@
                         hint: 'Analisi Segnale'
                     });
                 } else {
-                    // Fallback if we run out of unique buckets (unlikely with this setup but good for safety)
                     pairs.push({ q: 'ERROR', a: 'RETRY', type: 'error' });
                 }
             }
@@ -267,26 +282,8 @@
 
             pairs.forEach((p, i) => {
                 const color = PAIR_COLORS[i % PAIR_COLORS.length];
-                // Card A (Question / Signal) -> DOMANDA
-                deck.push({
-                    id: `p${i}a`,
-                    pairId: i,
-                    content: p.q,
-                    cardType: 'q',
-                    emoji: shuffledEmojis[i * 2],
-                    color,
-                    ...p
-                });
-                // Card B (Answer / Value) -> RISPOSTA
-                deck.push({
-                    id: `p${i}b`,
-                    pairId: i,
-                    content: p.a,
-                    cardType: 'a',
-                    emoji: shuffledEmojis[i * 2 + 1],
-                    color,
-                    ...p
-                });
+                deck.push({ id: `p${i}a`, pairId: i, content: p.q, cardType: 'q', emoji: shuffledEmojis[i * 2], color, ...p });
+                deck.push({ id: `p${i}b`, pairId: i, content: p.a, cardType: 'a', emoji: shuffledEmojis[i * 2 + 1], color, ...p });
             });
 
             return deck.sort(() => Math.random() - 0.5).map(c => ({ ...c, isFlipped: false, isMatched: false, seen: false }));
@@ -302,7 +299,7 @@
 
         // --- APP COMPONENT ---
         function App() {
-            const [theme, setTheme] = useState(localStorage.getItem('gm_theme') || 'dark'); // Default Dark for Radar feel
+            const [theme, setTheme] = useState(localStorage.getItem('gm_theme') || 'dark');
             const [view, setView] = useState('menu');
             const [nick, setNick] = useState(localStorage.getItem('gm_nick') || '');
             const [userAvatar, setUserAvatar] = useState(localStorage.getItem('gm_avatar') || AVATARS[0]);
@@ -329,12 +326,9 @@
 
             useEffect(() => {
                 setLb(JSON.parse(localStorage.getItem('gm_lb') || '[]'));
-                if (!localStorage.getItem('gm_avatar')) {
-                    setUserAvatar(AVATARS[0]);
-                }
+                if (!localStorage.getItem('gm_avatar')) setUserAvatar(AVATARS[0]);
             }, [view]);
 
-            // Score Logic
             useEffect(() => {
                 if (view !== 'game') return;
                 const levelData = LEVELS.find(l => l.id === lvl);
@@ -344,24 +338,18 @@
                 const effectiveMoves = Math.max(minMoves, moves);
                 const efficiencyFactor = minMoves / Math.max(minMoves, effectiveMoves || 1);
                 const completionRatio = matchesFound / minMoves;
-                const currentLevelScore = Math.floor(maxPoints * completionRatio * efficiencyFactor);
-                setScore(accumulatedScore + currentLevelScore);
+                setScore(accumulatedScore + Math.floor(maxPoints * completionRatio * efficiencyFactor));
             }, [moves, cards, view, accumulatedScore, lvl]);
 
-            // Timer Logic
             useEffect(() => {
                 let timer;
                 if (isRush && rushPhase) {
-                    if (timeLeft > 0) {
-                        timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
-                    } else {
+                    if (timeLeft > 0) timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+                    else {
                         if (rushPhase === 'mem') {
-                            setRushPhase('play');
-                            setTimeLeft(RUSH_PLAY_TIME);
+                            setRushPhase('play'); setTimeLeft(RUSH_PLAY_TIME);
                             setCards(c => c.map(card => ({ ...card, isFlipped: false })));
-                        } else {
-                            handleRushEnd(false);
-                        }
+                        } else handleRushEnd(false);
                     }
                 }
                 return () => clearInterval(timer);
@@ -392,21 +380,16 @@
                     let nextCards = [...currentCards];
 
                     if (c1.pairId === c2.pairId) {
-                        // MATCH
                         nextCards = nextCards.map(c => (c.id === id1 || c.id === id2) ? { ...c, isMatched: true, isFlipped: true } : c);
-
                         let msgText = "Segnale Agganciato";
                         if (c1.type === 'trap') msgText = "Anomalia Identificata!";
-
                         setMatchMsg({ text: msgText, sub: c1.hint, color: c1.color });
                         setTimeout(() => setMatchMsg(null), 2500);
-
                         setLock(false);
                         if (nextCards.filter(c => !c.isMatched).length === 0) {
                             if (isRush) handleRushEnd(true); else setTimeout(() => setView('win'), 1000);
                         }
                     } else {
-                        // NO MATCH
                         setTimeout(() => {
                             setCards(prev => prev.map(c => (c.id === id1 || c.id === id2) ? { ...c, isFlipped: false } : c));
                             setLock(false);
@@ -418,8 +401,7 @@
             };
 
             const handleRushEnd = (won) => {
-                setIsRush(false);
-                setRushPhase(null);
+                setIsRush(false); setRushPhase(null);
                 if (won) {
                     setScore(s => s * 2);
                     setMatchMsg({ text: "OVERCLOCK RIUSCITO", sub: "Punti x2", color: "bg-yellow-400 text-black border-yellow-600" });
@@ -434,17 +416,12 @@
                 if (!rush) {
                     if (!nick.trim()) return alert("Identificativo Operatore Richiesto");
                     localStorage.setItem('gm_nick', nick);
-                    setAccumulatedScore(0);
-                    setMoves(0);
-                    setScore(0);
+                    setAccumulatedScore(0); setMoves(0); setScore(0);
                 } else {
-                    setAccumulatedScore(score);
-                    setMoves(0);
+                    setAccumulatedScore(score); setMoves(0);
                 }
                 let newCards = generateCards(lvl);
-                setCards(newCards);
-                setFlipped([]);
-                setLock(false);
+                setCards(newCards); setFlipped([]); setLock(false);
                 if (rush) {
                     setIsRush(true); setRushPhase('mem'); setTimeLeft(RUSH_MEM_TIME);
                     setCards(prev => prev.map(c => ({ ...c, isFlipped: true })));
@@ -463,117 +440,26 @@
             // --- UI RENDERERS ---
             if (view === 'menu') {
                 return (
-                    <div className="flex h-screen w-screen bg-slate-50 text-slate-800 dark:bg-black dark:text-slate-100 font-mono transition-colors duration-500">
+                    <div className="flex h-full w-full bg-slate-50 text-slate-800 dark:bg-black dark:text-slate-100 font-mono transition-colors duration-500">
                         <aside className="w-full md:w-1/3 max-w-md bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 h-full dark:bg-neutral-900 dark:border-neutral-800">
                             <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                                <div>
-                                    <h1 className="text-2xl font-black text-slate-900 dark:text-radar-500 tracking-tighter flex items-center gap-2">
-                                        <span className="text-3xl">{Icons.Radar}</span> GonioMatch
-                                    </h1>
-                                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mt-1">Signal Processing Unit v3.0</p>
-                                </div>
-                                <button onClick={toggleTheme} className="p-2 rounded-lg bg-slate-200 text-slate-600 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
-                                    {theme === 'light' ? Icons.Moon : Icons.Sun}
-                                </button>
+                                <div><h1 className="text-2xl font-black text-slate-900 dark:text-radar-500 tracking-tighter flex items-center gap-2"><span className="text-3xl">{Icons.Radar}</span> GonioMatch</h1><p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mt-1">Signal Processing Unit v3.0</p></div>
+                                <button onClick={toggleTheme} className="p-2 rounded-lg bg-slate-200 text-slate-600 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">{theme === 'light' ? Icons.Moon : Icons.Sun}</button>
                             </div>
-
                             <div className="flex-1 overflow-y-auto p-6 space-y-8 scroller">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">ID Operatore</label>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => {
-                                            const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length;
-                                            setUserAvatar(AVATARS[nextIdx]);
-                                            localStorage.setItem('gm_avatar', AVATARS[nextIdx]);
-                                        }} className="bg-slate-100 hover:bg-slate-200 cursor-pointer text-2xl w-14 h-14 flex items-center justify-center rounded-lg border-2 border-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-600 transition-all active:scale-95">
-                                            {userAvatar}
-                                        </button>
-                                        <input value={nick} onChange={e => setNick(e.target.value)} placeholder="NOME IN CODICE..." className="w-full bg-slate-100 rounded-lg px-4 font-bold text-slate-700 border-2 border-transparent focus:border-radar-500 focus:bg-white outline-none transition-all uppercase dark:bg-slate-700 dark:text-radar-100 dark:placeholder-slate-500 dark:focus:bg-slate-800" />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Protocollo</label>
-                                    <div className="grid gap-2">
-                                        {LEVELS.map(l => (
-                                            <button key={l.id} onClick={() => setLvl(l.id)}
-                                                className={`text-left p-3 rounded-lg border-2 transition-all flex justify-between items-center group ${lvl === l.id ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/30 dark:border-radar-500' : 'border-slate-200 hover:border-slate-300 bg-white dark:bg-slate-800 dark:border-slate-700 dark:hover:border-slate-500'}`}
-                                            >
-                                                <div>
-                                                    <div className={`font-bold text-sm ${lvl === l.id ? 'text-radar-900 dark:text-radar-100' : 'text-slate-600 dark:text-slate-400'}`}>{l.label}</div>
-                                                    <div className="text-[10px] opacity-60 font-mono">{l.desc}</div>
-                                                </div>
-                                                {lvl === l.id && <div className="text-radar-600 dark:text-radar-400 animate-pulse">{Icons.Check}</div>}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="bg-slate-100 rounded-xl border border-slate-200 p-4 dark:bg-slate-800 dark:border-slate-700">
-                                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700">
-                                        <div className="text-yellow-500">{Icons.Trophy}</div>
-                                        <span className="font-bold text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Top Signals</span>
-                                    </div>
-                                    <div className="max-h-48 overflow-y-auto scroller space-y-2 font-sans">
-                                        {lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 font-mono">NO DATA LOGGED</div>}
-                                        {lb.map((row, i) => (
-                                            <div key={i} className="flex justify-between items-center text-xs p-2 bg-white rounded border border-slate-200 shadow-sm dark:bg-slate-700 dark:border-slate-600">
-                                                <div className="flex gap-2 items-center">
-                                                    <span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i < 3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-600 dark:text-slate-300'}`}>{i + 1}</span>
-                                                    <span className="text-base leading-none">{row.avatar || '👤'}</span>
-                                                    <span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200 uppercase">{row.name}</span>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="text-radar-600 font-bold dark:text-radar-400">{row.score}</div>
-                                                    <div className="text-[9px] text-slate-400 font-mono">{row.moves}mv</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">ID Operatore</label><div className="flex gap-2"><button onClick={() => { const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length; setUserAvatar(AVATARS[nextIdx]); localStorage.setItem('gm_avatar', AVATARS[nextIdx]); }} className="bg-slate-100 hover:bg-slate-200 cursor-pointer text-2xl w-14 h-14 flex items-center justify-center rounded-lg border-2 border-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-600 transition-all active:scale-95">{userAvatar}</button><input value={nick} onChange={e => setNick(e.target.value)} placeholder="NOME IN CODICE..." className="w-full bg-slate-100 rounded-lg px-4 font-bold text-slate-700 border-2 border-transparent focus:border-radar-500 focus:bg-white outline-none transition-all uppercase dark:bg-slate-700 dark:text-radar-100 dark:placeholder-slate-500 dark:focus:bg-slate-800" /></div></div>
+                                <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Protocollo</label><div className="grid gap-2">{LEVELS.map(l => (<button key={l.id} onClick={() => setLvl(l.id)} className={`text-left p-3 rounded-lg border-2 transition-all flex justify-between items-center group ${lvl === l.id ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/30 dark:border-radar-500' : 'border-slate-200 hover:border-slate-300 bg-white dark:bg-slate-800 dark:border-slate-700 dark:hover:border-slate-500'}`}><div><div className={`font-bold text-sm ${lvl === l.id ? 'text-radar-900 dark:text-radar-100' : 'text-slate-600 dark:text-slate-400'}`}>{l.label}</div><div className="text-[10px] opacity-60 font-mono">{l.desc}</div></div>{lvl === l.id && <div className="text-radar-600 dark:text-radar-400 animate-pulse">{Icons.Check}</div>}</button>))}</div></div>
+                                <div className="bg-slate-100 rounded-xl border border-slate-200 p-4 dark:bg-slate-800 dark:border-slate-700"><div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700"><div className="text-yellow-500">{Icons.Trophy}</div><span className="font-bold text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Top Signals</span></div><div className="max-h-48 overflow-y-auto scroller space-y-2 font-sans">{lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 font-mono">NO DATA LOGGED</div>}{lb.map((row, i) => (<div key={i} className="flex justify-between items-center text-xs p-2 bg-white rounded border border-slate-200 shadow-sm dark:bg-slate-700 dark:border-slate-600"><div className="flex gap-2 items-center"><span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i < 3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-600 dark:text-slate-300'}`}>{i + 1}</span><span className="text-base leading-none">{row.avatar || '👤'}</span><span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200 uppercase">{row.name}</span></div><div className="text-right"><div className="text-radar-600 font-bold dark:text-radar-400">{row.score}</div><div className="text-[9px] text-slate-400 font-mono">{row.moves}mv</div></div></div>))}</div></div>
                             </div>
-
-                            <div className="p-6 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                                <button onClick={() => startGame(false)} className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2 dark:bg-radar-600 dark:hover:bg-radar-500 dark:text-white tracking-widest text-sm uppercase">
-                                    Avvia Scansione {Icons.Play}
-                                </button>
-                            </div>
+                            <div className="p-6 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50"><button onClick={() => startGame(false)} className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2 dark:bg-radar-600 dark:hover:bg-radar-500 dark:text-white tracking-widest text-sm uppercase">Avvia Scansione {Icons.Play}</button></div>
                         </aside>
-
                         <main className="hidden md:flex flex-1 bg-crt items-center justify-center relative overflow-hidden bg-slate-100 dark:bg-black">
                             <div className="w-full max-w-5xl p-8">
                                 <div className="bg-white/90 backdrop-blur p-10 rounded-2xl shadow-2xl border border-slate-200 h-full flex flex-col dark:bg-neutral-900/90 dark:border-neutral-800/50">
-                                    <div className="flex items-center gap-6 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
-                                        <div className="p-4 bg-radar-100 text-radar-600 rounded-xl dark:bg-radar-900 dark:text-radar-400">{Icons.Wave}</div>
-                                        <div>
-                                            <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">MANUALE DI CAMPO</h2>
-                                            <p className="text-slate-500 font-medium dark:text-slate-400 font-mono text-sm mt-1">Riferimenti Goniometrici Essenziali</p>
-                                        </div>
-                                    </div>
+                                    <div className="flex items-center gap-6 mb-8 pb-6 border-b border-slate-200 dark:border-slate-800"><div className="p-4 bg-radar-100 text-radar-600 rounded-xl dark:bg-radar-900 dark:text-radar-400">{Icons.Wave}</div><div><h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">MANUALE DI CAMPO</h2><p className="text-slate-500 font-medium dark:text-slate-400 font-mono text-sm mt-1">Riferimenti Goniometrici Essenziali</p></div></div>
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto scroller pr-2">
-                                        <div className="space-y-4">
-                                            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg border-l-4 border-radar-500 dark:bg-slate-800 dark:border-radar-500">
-                                                <div className="text-radar-600 dark:text-radar-400 mt-1">{Icons.Warning}</div>
-                                                <div>
-                                                    <h3 className="font-bold text-slate-900 text-sm uppercase tracking-wide dark:text-white">Direttiva Primaria</h3>
-                                                    <p className="text-slate-600 text-sm mt-1 leading-relaxed dark:text-slate-300">
-                                                        Il sistema genera onde uniche. Associa ogni <strong>Funzione (Bordo Tratteggiato)</strong> al suo <strong>Valore Numerico (Bordo Continuo)</strong>.
-                                                        Attenzione alle trappole di segnale (valori impossibili).
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-3">
-                                            <h3 className="font-bold text-slate-400 text-[10px] uppercase tracking-widest mb-2">Pattern Riconosciuti</h3>
-                                            {BRIEFING_ITEMS.map((item, idx) => (
-                                                <div key={idx} className={`p-3 rounded border flex flex-col justify-center min-h-[80px] ${item.color} dark:bg-opacity-10 dark:border-opacity-30`}>
-                                                    <div className="text-[9px] font-bold opacity-70 mb-1 uppercase tracking-wider">{item.title}</div>
-                                                    <div className="w-full overflow-x-auto no-scrollbar">
-                                                        <MathText txt={item.tex} className="text-sm dark:text-slate-200 text-left justify-start" />
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        <div className="space-y-4"><div className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg border-l-4 border-radar-500 dark:bg-slate-800 dark:border-radar-500"><div className="text-radar-600 dark:text-radar-400 mt-1">{Icons.Warning}</div><div><h3 className="font-bold text-slate-900 text-sm uppercase tracking-wide dark:text-white">Direttiva Primaria</h3><p className="text-slate-600 text-sm mt-1 leading-relaxed dark:text-slate-300">Il sistema genera onde uniche. Associa ogni <strong>Funzione (Bordo Tratteggiato)</strong> al suo <strong>Valore Numerico (Bordo Continuo)</strong>. Attenzione alle trappole di segnale (valori impossibili).</p></div></div></div>
+                                        <div className="space-y-3"><h3 className="font-bold text-slate-400 text-[10px] uppercase tracking-widest mb-2">Pattern Riconosciuti</h3>{BRIEFING_ITEMS.map((item, idx) => (<div key={idx} className={`p-3 rounded border flex flex-col justify-center min-h-[80px] ${item.color} dark:bg-opacity-10 dark:border-opacity-30`}><div className="text-[9px] font-bold opacity-70 mb-1 uppercase tracking-wider">{item.title}</div><div className="w-full overflow-x-auto no-scrollbar"><MathText txt={item.tex} className="text-sm dark:text-slate-200 text-left justify-start" /></div></div>))}</div>
                                     </div>
                                 </div>
                             </div>
@@ -585,91 +471,38 @@
             const isGameView = view === 'game' || view === 'win' || view === 'final';
             if (isGameView) {
                 const n = cards.length;
-                let gridClass = n === 6 ? "grid-cols-3 grid-rows-2" :
-                    n === 12 ? "grid-cols-4 grid-rows-3" :
-                        n === 16 ? "grid-cols-4 grid-rows-4" :
-                            "grid-cols-5 grid-rows-4";
+                let gridClass = n === 6 ? "grid-cols-3 grid-rows-2" : n === 12 ? "grid-cols-4 grid-rows-3" : n === 16 ? "grid-cols-4 grid-rows-4" : "grid-cols-5 grid-rows-4";
 
                 return (
-                    <div className="h-screen w-screen flex flex-col bg-slate-100 overflow-hidden dark:bg-black font-mono bg-crt">
+                    <div className="h-full w-full flex flex-col bg-slate-100 overflow-hidden dark:bg-black font-mono bg-crt">
                         <header className="h-16 bg-white/80 backdrop-blur shadow-sm flex items-center justify-between px-6 z-30 shrink-0 border-b border-slate-200 dark:bg-neutral-900/80 dark:border-neutral-800">
                             <div className="flex items-center gap-6">
                                 <button onClick={() => setView('menu')} className="text-[10px] font-bold text-slate-400 hover:text-red-500 uppercase tracking-widest border border-slate-200 rounded px-2 py-1 hover:border-red-400 transition-all dark:border-slate-700">Abort Mission</button>
-                                {isRush ? (
-                                    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ${rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-red-100 text-red-800 border-red-200 animate-pulse'}`}>
-                                        {Icons.Timer} {timeLeft}s
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col">
-                                        <span className="text-[9px] font-bold text-slate-400 uppercase leading-none tracking-widest">Signal Strenght</span>
-                                        <span className="text-xl font-bold text-radar-600 leading-none mt-1 dark:text-radar-400">{score} dB</span>
-                                    </div>
-                                )}
+                                {isRush ? (<div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ${rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-red-100 text-red-800 border-red-200 animate-pulse'}`}>{Icons.Timer} {timeLeft}s</div>) : (<div className="flex flex-col"><span className="text-[9px] font-bold text-slate-400 uppercase leading-none tracking-widest">Signal Strenght</span><span className="text-xl font-bold text-radar-600 leading-none mt-1 dark:text-radar-400">{score} dB</span></div>)}
                             </div>
-                            {matchMsg && (
-                                <div className={`absolute top-20 left-1/2 -translate-x-1/2 px-8 py-4 rounded shadow-2xl border-l-4 flex items-center gap-4 animate-bounce z-50 bg-white dark:bg-slate-800 ${matchMsg.color || 'border-l-radar-500 border-slate-200'}`}>
-                                    <div className="text-2xl">{matchMsg.text.includes('!') ? '⚠️' : '✅'}</div>
-                                    <div>
-                                        <div className="font-black text-slate-900 text-base uppercase tracking-tight dark:text-white">{matchMsg.text}</div>
-                                        <div className="text-xs font-medium text-slate-500 uppercase dark:text-slate-400 font-sans">{matchMsg.sub}</div>
-                                    </div>
-                                </div>
-                            )}
+                            {matchMsg && (<div className={`absolute top-20 left-1/2 -translate-x-1/2 px-8 py-4 rounded shadow-2xl border-l-4 flex items-center gap-4 animate-bounce z-50 bg-white dark:bg-slate-800 ${matchMsg.color || 'border-l-radar-500 border-slate-200'}`}><div className="text-2xl">{matchMsg.text.includes('!') ? '⚠️' : '✅'}</div><div><div className="font-black text-slate-900 text-base uppercase tracking-tight dark:text-white">{matchMsg.text}</div><div className="text-xs font-medium text-slate-500 uppercase dark:text-slate-400 font-sans">{matchMsg.sub}</div></div></div>)}
                         </header>
-
                         <main className="flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center relative">
                             <div className={`grid gap-3 md:gap-4 w-full max-w-6xl h-full max-h-full ${gridClass}`}>
                                 {cards.map(card => {
                                     const isGhostMode = LEVELS.find(l => l.id === lvl).ghost;
                                     const showGhostContent = isGhostMode && card.seen;
                                     const isFaceUp = card.isFlipped || card.isMatched;
-
-                                    // LOGICA DEI BORDI: DASHED PER DOMANDA, SOLID PER RISPOSTA
                                     let borderStyle = card.cardType === 'q' ? 'border-dashed' : 'border-solid';
-
                                     let flipperStyle = `bg-white border-slate-300 dark:bg-slate-800 dark:border-slate-600 ${borderStyle}`;
                                     let backContentStyle = "text-slate-900 dark:text-slate-100";
-
-                                    if (card.isMatched) {
-                                        flipperStyle = `${card.color} border-solid border-transparent shadow-none opacity-50`;
-                                    } else if (card.type === 'trap' && isFaceUp) {
-                                        // Trappola sempre Solid quando rivelata per impatto
-                                        flipperStyle = "bg-red-50 border-solid border-red-500 dark:bg-red-900/50 dark:border-red-500";
-                                        backContentStyle = "text-red-700 dark:text-red-200";
-                                    }
+                                    if (card.isMatched) flipperStyle = `${card.color} border-solid border-transparent shadow-none opacity-50`;
+                                    else if (card.type === 'trap' && isFaceUp) { flipperStyle = "bg-red-50 border-solid border-red-500 dark:bg-red-900/50 dark:border-red-500"; backContentStyle = "text-red-700 dark:text-red-200"; }
 
                                     return (
                                         <div key={card.id} onClick={() => handleCardClick(card.id)} className="perspective-1000 relative cursor-pointer w-full h-full min-h-0 group select-none">
-                                            <div className={`flipper w-full h-full shadow-md rounded-lg border-2 transition-all duration-300
-                                                ${flipperStyle}
-                                                ${isFaceUp ? 'flipped' : 'hover:border-radar-400 hover:shadow-lg hover:-translate-y-0.5 dark:hover:border-radar-500'}
-                                            `}>
-                                                {/* FRONTE (COPERTO) */}
+                                            <div className={`flipper w-full h-full shadow-md rounded-lg border-2 transition-all duration-300 ${flipperStyle} ${isFaceUp ? 'flipped' : 'hover:border-radar-400 hover:shadow-lg hover:-translate-y-0.5 dark:hover:border-radar-500'}`}>
                                                 <div className="face face-front rounded-lg overflow-hidden bg-white dark:bg-slate-800">
-                                                    {showGhostContent ? (
-                                                        <div className="opacity-40 w-full h-full flex items-center justify-center p-1">
-                                                            <MathText txt={card.content} className="text-xs md:text-sm text-slate-500 dark:text-slate-400" />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="flex flex-col items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
-                                                            <span className="text-3xl md:text-5xl filter grayscale group-hover:grayscale-0 transition-all duration-300">{card.emoji}</span>
-                                                            <div className="mt-2 w-8 h-1 bg-slate-100 rounded-full dark:bg-slate-700 group-hover:bg-radar-200 dark:group-hover:bg-radar-800 transition-colors"></div>
-                                                        </div>
-                                                    )}
+                                                    {showGhostContent ? (<div className="opacity-40 w-full h-full flex items-center justify-center p-1"><MathText txt={card.content} className="text-xs md:text-sm text-slate-500 dark:text-slate-400" /></div>) : (<div className="flex flex-col items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity"><span className="text-3xl md:text-5xl filter grayscale group-hover:grayscale-0 transition-all duration-300">{card.emoji}</span><div className="mt-2 w-8 h-1 bg-slate-100 rounded-full dark:bg-slate-700 group-hover:bg-radar-200 dark:group-hover:bg-radar-800 transition-colors"></div></div>)}
                                                 </div>
-
-                                                {/* RETRO (SCOPERTO) */}
                                                 <div className="face face-back p-2 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
-                                                    <div className={`w-full h-full flex items-center justify-center text-center ${backContentStyle}`}>
-                                                        <MathText
-                                                            txt={card.content}
-                                                            className={`font-bold tracking-tight break-words w-full ${card.content.length > 10 ? 'text-lg' : 'text-2xl md:text-3xl'}`}
-                                                        />
-                                                    </div>
-                                                    {/* Indicatore Tipo Card (Angolo) */}
-                                                    <div className="absolute top-1 right-2 text-[8px] font-bold uppercase opacity-30 tracking-widest">
-                                                        {card.cardType === 'q' ? 'INPUT' : 'VAL'}
-                                                    </div>
+                                                    <div className={`w-full h-full flex items-center justify-center text-center ${backContentStyle}`}><MathText txt={card.content} className={`font-bold tracking-tight break-words w-full ${card.content.length > 10 ? 'text-lg' : 'text-2xl md:text-3xl'}`} /></div>
+                                                    <div className="absolute top-1 right-2 text-[8px] font-bold uppercase opacity-30 tracking-widest">{card.cardType === 'q' ? 'INPUT' : 'VAL'}</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -677,42 +510,24 @@
                                 })}
                             </div>
                         </main>
-
-                        {/* WIN MODAL */}
                         {view === 'win' && (
                             <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
                                 <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full relative overflow-hidden dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-radar-400 to-emerald-400"></div>
                                     <h2 className="text-3xl font-black text-slate-800 mb-1 dark:text-white tracking-tight">ANALISI COMPLETA</h2>
                                     <p className="text-slate-500 mb-8 dark:text-slate-400 text-sm font-mono uppercase tracking-wide">Integrità Dati: 100%</p>
-
-                                    <div className="flex justify-center items-end gap-2 mb-8">
-                                        <span className="text-5xl font-black text-radar-600 dark:text-radar-400">{score}</span>
-                                        <span className="text-sm font-bold text-slate-400 mb-2 uppercase">Punti</span>
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-lg font-bold shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
-                                            {Icons.Zap} Overclock (Rush Mode)
-                                        </button>
-                                        <button onClick={saveAndExit} className="w-full py-3 bg-white border-2 border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600 uppercase tracking-wide text-xs">
-                                            Salva nel Log
-                                        </button>
-                                    </div>
+                                    <div className="flex justify-center items-end gap-2 mb-8"><span className="text-5xl font-black text-radar-600 dark:text-radar-400">{score}</span><span className="text-sm font-bold text-slate-400 mb-2 uppercase">Punti</span></div>
+                                    <div className="space-y-3"><button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-lg font-bold shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wide text-sm">{Icons.Zap} Overclock (Rush Mode)</button><button onClick={saveAndExit} className="w-full py-3 bg-white border-2 border-slate-200 text-slate-600 rounded-lg font-bold hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600 uppercase tracking-wide text-xs">Salva nel Log</button></div>
                                 </div>
                             </div>
                         )}
-
-                        {/* FINAL SCORE MODAL */}
                         {view === 'final' && (
                             <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95 font-mono">
                                 <div className="text-center text-white border border-slate-700 p-10 rounded-3xl bg-slate-900">
                                     <div className="text-6xl mb-6">{score > 1000 ? '📡' : '📉'}</div>
                                     <h2 className="text-6xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">{score}</h2>
                                     <p className="text-sm text-radar-400 mb-8 font-bold uppercase tracking-[0.3em]">Risultato Finale</p>
-                                    <button onClick={saveAndExit} className="px-10 py-4 bg-white text-slate-900 rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                                        RIAVVIA SISTEMA
-                                    </button>
+                                    <button onClick={saveAndExit} className="px-10 py-4 bg-white text-slate-900 rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">RIAVVIA SISTEMA</button>
                                 </div>
                             </div>
                         )}
@@ -726,5 +541,4 @@
         root.render(<App />);
     </script>
 </body>
-
 </html>

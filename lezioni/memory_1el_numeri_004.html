@@ -3,8 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Caccia all'Errore: Operazioni in Z</title>
+    <meta name="description" content="Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette ed evita le trappole degli errori comuni di calcolo.">
+    <meta name="keywords" content="Matematica, Aritmetica, Numeri Interi, Z, Potenze, Errori Comuni, 1EL, Mat:Calcolo, Mat:ProblemSolving, Gamification, EU:STEM">
+    <meta name="date" content="2025-10-20">
+
+    <!-- 2. FIX MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <title>MathMatch 4.1 - Smart Scaffolding</title>
 
     <!-- Tailwind CSS -->
@@ -41,14 +49,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Serif:wght@700&display=swap');
 
-        body {
+        /* 3. CSS FULLSCREEN ROBUSTO */
+        html, body {
+            margin: 0; padding: 0;
             font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            height: 100vh;
+            overflow: hidden; /* Blocca scroll elastico */
             width: 100vw;
+            height: 100dvh; /* Altezza dinamica reale */
+            position: fixed; /* Inchioda la pagina */
             touch-action: manipulation;
-            -webkit-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; user-select: none;
             transition: background-color 0.3s ease, color 0.3s ease;
             background-color: #f1f5f9;
         }
@@ -57,7 +67,7 @@
             background-color: #000000;
         }
 
-        /* --- 3D ENGINE (STILE v2.5 RIPRISTINATO) --- */
+        /* --- 3D ENGINE --- */
         .perspective-1000 {
             perspective: 1000px;
         }
@@ -70,7 +80,6 @@
             transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
             will-change: transform;
             border-radius: 0.75rem;
-            /* Bordo arrotondato sul contenitore */
         }
 
         .flipper.flipped {
@@ -84,7 +93,6 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             border-radius: 0.75rem;
-            /* Match parent radius */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -99,7 +107,6 @@
 
         .face-back {
             transform: rotateY(180deg);
-            /* Ruotiamo il contenuto per leggerlo dritto quando la carta è girata */
         }
 
         /* Tipografia Matematica */
@@ -687,5 +694,4 @@
         root.render(<App />);
     </script>
 </body>
-
 </html>

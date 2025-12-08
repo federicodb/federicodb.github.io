@@ -3,7 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE (BUILDER) -->
+    <title>Scomposizione Polinomi (Memory)</title>
+    <meta name="description" content="Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).">
+    <meta name="keywords" content="Matematica, Algebra, Polinomi, Scomposizioni, Prodotti Notevoli, 1EL, 2EL, Mat:Calcolo, EU:ImparareImparare, Gamification">
+    <meta name="date" content="2025-12-08">
+
+    <!-- 2. FIX MOBILE & VIEWPORT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <title>FactorMatch - Palestra Matematica</title>
 
     <!-- Tailwind CSS -->
@@ -36,11 +45,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Serif:wght@700&display=swap');
 
-        body {
+        /* FIX ALTEZZA MOBILE (100dvh) e SCROLL */
+        html, body {
+            margin: 0; padding: 0;
             font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            height: 100vh;
+            overflow: hidden; /* Blocca lo scroll elastico della pagina intera */
             width: 100vw;
+            height: 100dvh; /* Altezza dinamica reale */
+            position: fixed; /* Inchioda la pagina su iOS */
             touch-action: manipulation;
             -webkit-user-select: none;
             user-select: none;
@@ -76,6 +88,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+            overflow: hidden; /* IMPORTANTE: Taglia contenuto extra */
         }
 
         .face-front {
@@ -91,42 +104,24 @@
             font-family: 'Noto Serif', serif;
         }
 
-        /* Nascondi scrollbar ma mantieni funzionalità */
-        .no-scrollbar::-webkit-scrollbar {
+        /* Scrollbar Nascosta ma funzionale per le Card */
+        .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
-
-        .no-scrollbar {
+        .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        /* Scrollbar personalizzata */
+        /* Scrollbar personalizzata per le liste (non le card) */
         .scroller::-webkit-scrollbar {
             width: 4px;
         }
-
         .scroller::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
     </style>
-
-    <!-- Titolo che appare nella card -->
-    <title>Gioco memory: Scomposizione di Polinomi</title>
-
-    <!-- Descrizione breve -->
-    <meta name="description" content="Impariamo ad associare un polinomio con la sua forma fattorizzata.">
-
-    <!-- Tag per i filtri (es. Matematica, 1EL, Lab) -->
-    <meta name="keywords"
-        content="Matematica, Algebra, Scomposizioni, Polinomi, Tecniche, Raccoglimento, Fattorizzazione, Gamification">
-
-    <!-- Fix Mobile (Fondamentale per iPhone) -->
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <!-- ... -->
-
 </head>
 
 <body>
@@ -141,7 +136,6 @@
 
         const AVATARS = ['👨‍🚀', '👩‍🔬', '🥷', '🧙‍♂️', '🧛‍♀️', '🧜‍♂️', '🧚‍♀️', '🧞‍♂️', '🦸‍♀️', '🦹‍♂️', '🕵️‍♀️', '🧑‍🎨'];
 
-        // EMOJI AD ALTO CONTRASTO
         const EMOJI_POOL = [
             '🚀', '💎', '🌶️', '🍄', '🎱', '🎸', '🌵', '🔥', '⚡', '🌈', '🪐', '🧩',
             '🎲', '🎯', '🎨', '🎭', '🎪', '🎡', '🎢', '🎃', '🎄', '🎈', '🎁', '🏆',
@@ -182,7 +176,6 @@
             { title: "Somma di Quadrati", tex: "\\begin{gathered} x^2 + a^2 \\\\ \\downarrow \\\\ \\text{Irriducibile} \\end{gathered}", color: "border-red-200 bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800" },
         ];
 
-        // --- ICONE SVG ---
         const Icon = ({ d, size = 20, className = "" }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={d} /></svg>
         );
@@ -198,10 +191,8 @@
             Moon: <Icon d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         };
 
-        // --- LOGICA MATEMATICA ---
         const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-        // Generatori di Polinomi
         const generators = {
             trap: () => {
                 const k = getRandomInt(2, 6);
@@ -240,13 +231,9 @@
             const pairsCount = levelConfig.pairs;
             const pairs = [];
             const usedSignatures = new Set();
-
-            // 1. INSERIMENTO OBBLIGATORIO (e UNICO) della TRAPPOLA
             const trapItem = generators.trap();
             pairs.push(trapItem);
             usedSignatures.add(trapItem.poly);
-
-            // Rimuoviamo 'trap' dai generatori disponibili per le prossime carte
             const otherTypes = Object.keys(generators).filter(k => k !== 'trap');
 
             let attempts = 0;
@@ -259,8 +246,6 @@
                     pairs.push(item);
                 }
             }
-
-            // Filler di sicurezza
             while (pairs.length < pairsCount) {
                 const n = pairs.length + 2;
                 const filler = { poly: `${n}x - ${n * n}`, fact: `${n}(x - ${n})`, type: "common" };
@@ -275,31 +260,17 @@
 
             pairs.forEach((p, i) => {
                 const color = PAIR_COLORS[i % PAIR_COLORS.length];
-                deck.push({
-                    id: `p${i}a`,
-                    pairId: i,
-                    content: p.poly,
-                    cardType: 'poly',
-                    emoji: shuffledEmojis[i * 2],
-                    color,
-                    ...p
-                });
-                deck.push({
-                    id: `p${i}b`,
-                    pairId: i,
-                    content: p.fact,
-                    cardType: 'fact',
-                    emoji: shuffledEmojis[i * 2 + 1],
-                    color,
-                    ...p
-                });
+                deck.push({ id: `p${i}a`, pairId: i, content: p.poly, cardType: 'poly', emoji: shuffledEmojis[i * 2], color, ...p });
+                deck.push({ id: `p${i}b`, pairId: i, content: p.fact, cardType: 'fact', emoji: shuffledEmojis[i * 2 + 1], color, ...p });
             });
             return deck.sort(() => Math.random() - 0.5).map(c => ({ ...c, isFlipped: false, isMatched: false, seen: false }));
         };
 
-        // Math Rendering
+        // --- MATH TEXT COMPONENT (MODIFICATO PER FIT E SCROLL) ---
+        // Ora gestisce overflow-y con scroll nascosto se il contenuto è troppo alto
         const MathText = ({ txt, className = "" }) => {
-            const defaultCardSize = "text-lg md:text-2xl";
+            // Usa text-base o text-sm su mobile invece di text-lg per sicurezza
+            const defaultCardSize = "text-base md:text-xl lg:text-2xl"; 
             const appliedClass = className || defaultCardSize;
 
             const html = useMemo(() => {
@@ -309,8 +280,8 @@
             }, [txt]);
 
             return (
-                <div
-                    className={`font-math flex items-center justify-center w-full h-full p-1 leading-relaxed ${appliedClass}`}
+                <div 
+                    className={`font-math w-full h-full flex flex-col justify-center items-center p-2 leading-relaxed overflow-y-auto hide-scrollbar break-words ${appliedClass}`}
                     dangerouslySetInnerHTML={{ __html: html }}
                 />
             );
@@ -324,7 +295,6 @@
             return lb.slice(0, 50);
         };
 
-        // --- APP ---
         function App() {
             const [theme, setTheme] = useState(localStorage.getItem('fm_theme') || 'light');
             const [view, setView] = useState('menu');
@@ -332,12 +302,10 @@
             const [userAvatar, setUserAvatar] = useState(localStorage.getItem('fm_avatar') || AVATARS[0]);
             const [lvl, setLvl] = useState(1);
             const [lb, setLb] = useState([]);
-
             const [cards, setCards] = useState([]);
             const [moves, setMoves] = useState(0);
             const [score, setScore] = useState(0);
             const [accumulatedScore, setAccumulatedScore] = useState(0);
-
             const [flipped, setFlipped] = useState([]);
             const [lock, setLock] = useState(false);
             const [matchMsg, setMatchMsg] = useState(null);
@@ -346,11 +314,8 @@
             const [timeLeft, setTimeLeft] = useState(0);
 
             useEffect(() => {
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
                 localStorage.setItem('fm_theme', theme);
             }, [theme]);
 
@@ -363,36 +328,27 @@
                 }
             }, [view]);
 
-            // SCORE ALGORITHM
             useEffect(() => {
                 if (view !== 'game') return;
                 const levelData = LEVELS.find(l => l.id === lvl);
                 const minMoves = levelData.pairs;
                 const maxPoints = levelData.points;
-
                 const matchesFound = cards.filter(c => c.isMatched).length / 2;
                 const effectiveMoves = Math.max(minMoves, moves);
                 const efficiencyFactor = minMoves / Math.max(minMoves, effectiveMoves || 1);
                 const completionRatio = matchesFound / minMoves;
-
-                const currentLevelScore = Math.floor(maxPoints * completionRatio * efficiencyFactor);
-                setScore(accumulatedScore + currentLevelScore);
-
+                setScore(accumulatedScore + Math.floor(maxPoints * completionRatio * efficiencyFactor));
             }, [moves, cards, view, accumulatedScore, lvl]);
 
             useEffect(() => {
                 let timer;
                 if (isRush && rushPhase) {
-                    if (timeLeft > 0) {
-                        timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
-                    } else {
+                    if (timeLeft > 0) timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+                    else {
                         if (rushPhase === 'mem') {
-                            setRushPhase('play');
-                            setTimeLeft(RUSH_PLAY_TIME);
+                            setRushPhase('play'); setTimeLeft(RUSH_PLAY_TIME);
                             setCards(c => c.map(card => ({ ...card, isFlipped: false })));
-                        } else {
-                            handleRushEnd(false);
-                        }
+                        } else handleRushEnd(false);
                     }
                 }
                 return () => clearInterval(timer);
@@ -419,10 +375,8 @@
                     const c1 = currentCards.find(c => c.id === id1);
                     const c2 = currentCards.find(c => c.id === id2);
                     let nextCards = [...currentCards];
-
                     if (c1.pairId === c2.pairId) {
                         nextCards = nextCards.map(c => (c.id === id1 || c.id === id2) ? { ...c, isMatched: true, isFlipped: true } : c);
-
                         setMatchMsg({ text: "Fattorizzazione Corretta!", sub: EXPLANATIONS[c1.type] || "Ben fatto.", color: c1.color });
                         setTimeout(() => setMatchMsg(null), 3000);
                         setLock(false);
@@ -441,8 +395,7 @@
             };
 
             const handleRushEnd = (won) => {
-                setIsRush(false);
-                setRushPhase(null);
+                setIsRush(false); setRushPhase(null);
                 if (won) {
                     setScore(s => s * 2);
                     setMatchMsg({ text: "RADDOPPIO RIUSCITO!", sub: "Punteggio duplicato.", color: "bg-yellow-100 text-yellow-900 dark:text-yellow-100 dark:bg-yellow-900" });
@@ -457,17 +410,12 @@
                 if (!rush) {
                     if (!nick.trim()) return alert("Inserisci un nome!");
                     localStorage.setItem('fm_nick', nick);
-                    setAccumulatedScore(0);
-                    setMoves(0);
-                    setScore(0);
+                    setAccumulatedScore(0); setMoves(0); setScore(0);
                 } else {
-                    setAccumulatedScore(score);
-                    setMoves(0);
+                    setAccumulatedScore(score); setMoves(0);
                 }
                 let newCards = generateCards(lvl);
-                setCards(newCards);
-                setFlipped([]);
-                setLock(false);
+                setCards(newCards); setFlipped([]); setLock(false);
                 if (rush) {
                     setIsRush(true); setRushPhase('mem'); setTimeLeft(RUSH_MEM_TIME);
                     setCards(prev => prev.map(c => ({ ...c, isFlipped: true })));
@@ -483,118 +431,30 @@
                 setView('menu');
             };
 
-            // --- RENDER UI ---
+            // RENDER
             if (view === 'menu') {
                 return (
-                    <div className="flex h-screen w-screen bg-slate-50 text-slate-800 dark:bg-black dark:text-slate-100">
+                    <div className="flex h-full w-full bg-slate-50 text-slate-800 dark:bg-black dark:text-slate-100">
                         <aside className="w-full md:w-1/3 max-w-md bg-white border-r border-slate-200 flex flex-col shadow-xl z-20 h-full dark:bg-neutral-900 dark:border-neutral-800">
                             <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-                                <div>
-                                    <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">FactorMatch <span className="text-indigo-600 text-lg">Pro</span></h1>
-                                    <p className="text-xs text-slate-400 uppercase font-bold tracking-widest mt-1">Scomposizioni Polinomiali</p>
-                                </div>
-                                <button onClick={toggleTheme} className="p-2 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
-                                    {theme === 'light' ? Icons.Moon : Icons.Sun}
-                                </button>
+                                <div><h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">FactorMatch <span className="text-indigo-600 text-lg">Pro</span></h1><p className="text-xs text-slate-400 uppercase font-bold tracking-widest mt-1">Scomposizioni Polinomiali</p></div>
+                                <button onClick={toggleTheme} className="p-2 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">{theme === 'light' ? Icons.Moon : Icons.Sun}</button>
                             </div>
-
                             <div className="flex-1 overflow-y-auto p-6 space-y-8 scroller">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-400">Identità Studente</label>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => {
-                                            const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length;
-                                            setUserAvatar(AVATARS[nextIdx]);
-                                            localStorage.setItem('fm_avatar', AVATARS[nextIdx]);
-                                        }} className="bg-indigo-50 hover:bg-indigo-100 cursor-pointer text-2xl w-12 h-12 flex items-center justify-center rounded-xl select-none transition-colors dark:bg-slate-700 dark:hover:bg-slate-600">
-                                            {userAvatar}
-                                        </button>
-                                        <input value={nick} onChange={e => setNick(e.target.value)} placeholder="Il tuo nome..." className="w-full bg-slate-100 rounded-xl px-4 font-bold text-slate-700 focus:ring-2 ring-indigo-200 outline-none transition-all dark:bg-slate-700 dark:text-white dark:placeholder-slate-400" />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-slate-400">Missione</label>
-                                    <div className="grid gap-2">
-                                        {LEVELS.map(l => (
-                                            <button key={l.id} onClick={() => setLvl(l.id)}
-                                                className={`text-left p-3 rounded-xl border-2 transition-all flex justify-between items-center ${lvl === l.id ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:border-indigo-500' : 'border-slate-200 hover:border-indigo-200 hover:bg-white dark:border-slate-600 dark:hover:bg-slate-700 dark:hover:border-slate-500'}`}
-                                            >
-                                                <div>
-                                                    <div className="font-bold text-sm">{l.label}</div>
-                                                    <div className="text-[10px] opacity-60">{l.desc}</div>
-                                                </div>
-                                                {lvl === l.id && <div className="text-indigo-600 dark:text-indigo-400">{Icons.Check}</div>}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 dark:bg-slate-700/50 dark:border-slate-600">
-                                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-600">
-                                        <div className="text-yellow-500">{Icons.Trophy}</div>
-                                        <span className="font-bold text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Hall of Fame</span>
-                                    </div>
-                                    <div className="max-h-40 overflow-y-auto scroller space-y-2">
-                                        {lb.length === 0 && <div className="text-xs text-center py-4 opacity-40">Nessun dato</div>}
-                                        {lb.map((row, i) => (
-                                            <div key={i} className="flex justify-between items-center text-xs p-2 bg-white rounded-lg shadow-sm dark:bg-slate-800 dark:shadow-none">
-                                                <div className="flex gap-2 items-center">
-                                                    <span className={`w-4 h-4 rounded-full flex items-center justify-center font-mono font-bold ${i < 3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'}`}>{i + 1}</span>
-                                                    <span className="text-lg leading-none">{row.avatar || '👤'}</span>
-                                                    <span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200">{row.name}</span>
-                                                </div>
-                                                <div className="flex flex-col items-end">
-                                                    <div className="text-indigo-600 font-bold dark:text-indigo-400">{row.score}pt</div>
-                                                    <div className="text-[9px] text-slate-400 font-mono">
-                                                        {row.moves} / {row.minMoves || '-'}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                <div className="space-y-2"><label className="text-xs font-bold uppercase text-slate-400">Identità Studente</label><div className="flex gap-2"><button onClick={() => { const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length; setUserAvatar(AVATARS[nextIdx]); localStorage.setItem('fm_avatar', AVATARS[nextIdx]); }} className="bg-indigo-50 hover:bg-indigo-100 cursor-pointer text-2xl w-12 h-12 flex items-center justify-center rounded-xl select-none transition-colors dark:bg-slate-700 dark:hover:bg-slate-600">{userAvatar}</button><input value={nick} onChange={e => setNick(e.target.value)} placeholder="Il tuo nome..." className="w-full bg-slate-100 rounded-xl px-4 font-bold text-slate-700 focus:ring-2 ring-indigo-200 outline-none transition-all dark:bg-slate-700 dark:text-white dark:placeholder-slate-400" /></div></div>
+                                <div className="space-y-2"><label className="text-xs font-bold uppercase text-slate-400">Missione</label><div className="grid gap-2">{LEVELS.map(l => (<button key={l.id} onClick={() => setLvl(l.id)} className={`text-left p-3 rounded-xl border-2 transition-all flex justify-between items-center ${lvl === l.id ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:border-indigo-500' : 'border-slate-200 hover:border-indigo-200 hover:bg-white dark:border-slate-600 dark:hover:bg-slate-700 dark:hover:border-slate-500'}`}><div><div className="font-bold text-sm">{l.label}</div><div className="text-[10px] opacity-60">{l.desc}</div></div>{lvl === l.id && <div className="text-indigo-600 dark:text-indigo-400">{Icons.Check}</div>}</button>))}</div></div>
+                                <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 dark:bg-slate-700/50 dark:border-slate-600"><div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-600"><div className="text-yellow-500">{Icons.Trophy}</div><span className="font-bold text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Hall of Fame</span></div><div className="max-h-40 overflow-y-auto scroller space-y-2">{lb.length === 0 && <div className="text-xs text-center py-4 opacity-40">Nessun dato</div>}{lb.map((row, i) => (<div key={i} className="flex justify-between items-center text-xs p-2 bg-white rounded-lg shadow-sm dark:bg-slate-800 dark:shadow-none"><div className="flex gap-2 items-center"><span className={`w-4 h-4 rounded-full flex items-center justify-center font-mono font-bold ${i < 3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'}`}>{i + 1}</span><span className="text-lg leading-none">{row.avatar || '👤'}</span><span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200">{row.name}</span></div><div className="flex flex-col items-end"><div className="text-indigo-600 font-bold dark:text-indigo-400">{row.score}pt</div><div className="text-[9px] text-slate-400 font-mono">{row.moves} / {row.minMoves || '-'}</div></div></div>))}</div></div>
                             </div>
-
-                            <div className="p-6 border-t border-slate-100 dark:border-slate-700">
-                                <button onClick={() => startGame(false)} className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-xl active:scale-95 transition-all flex justify-center gap-2 dark:bg-indigo-600 dark:hover:bg-indigo-500">
-                                    INIZIA {Icons.Play}
-                                </button>
-                            </div>
+                            <div className="p-6 border-t border-slate-100 dark:border-slate-700"><button onClick={() => startGame(false)} className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-xl active:scale-95 transition-all flex justify-center gap-2 dark:bg-indigo-600 dark:hover:bg-indigo-500">INIZIA {Icons.Play}</button></div>
                         </aside>
-
                         <main className="hidden md:flex flex-1 bg-slate-100 items-center justify-center relative overflow-hidden dark:bg-black">
                             <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] dark:opacity-[0.05] dark:invert"></div>
-                            <div className="w-full max-w-7xl p-4 md:p-8">
+                            <div className="w-full max-w-7xl p-4 md:p-8 h-full">
                                 <div className="bg-white p-6 md:p-10 rounded-3xl shadow-2xl border border-slate-200 h-full flex flex-col dark:bg-neutral-900 dark:border-neutral-800">
-                                    <div className="flex items-center gap-4 mb-6 md:mb-8 shrink-0">
-                                        <div className="p-4 bg-indigo-100 text-indigo-600 rounded-2xl dark:bg-indigo-900/50 dark:text-indigo-300">{Icons.Book}</div>
-                                        <div>
-                                            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">BRIEFING OPERATIVO</h2>
-                                            <p className="text-slate-500 font-medium dark:text-slate-400">Metodi di Scomposizione</p>
-                                        </div>
-                                    </div>
+                                    <div className="flex items-center gap-4 mb-6 md:mb-8 shrink-0"><div className="p-4 bg-indigo-100 text-indigo-600 rounded-2xl dark:bg-indigo-900/50 dark:text-indigo-300">{Icons.Book}</div><div><h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">BRIEFING OPERATIVO</h2><p className="text-slate-500 font-medium dark:text-slate-400">Metodi di Scomposizione</p></div></div>
                                     <div className="space-y-6 flex-1 overflow-y-auto scroller pr-2">
-                                        <div className="p-5 bg-amber-50 rounded-xl border border-amber-100 flex gap-4 items-start dark:bg-amber-900/20 dark:border-amber-800">
-                                            <div className="text-amber-600 mt-1 shrink-0 dark:text-amber-400">{Icons.Target}</div>
-                                            <div>
-                                                <h3 className="font-bold text-amber-900 text-sm mb-1 uppercase tracking-widest dark:text-amber-200">Obiettivo Primario</h3>
-                                                <p className="text-amber-800 text-sm leading-relaxed font-medium dark:text-amber-300">Associa ogni <strong>Polinomio</strong> alla sua corretta <strong>Fattorizzazione</strong>.</p>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <h3 className="font-bold text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 pb-2 dark:border-slate-700">Database Pattern</h3>
-                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                                {BRIEFING_ITEMS.map((item, idx) => (
-                                                    <div key={idx} className={`p-3 rounded-xl border-2 transition-colors flex flex-col justify-center min-h-[120px] overflow-hidden w-full ${item.color}`}>
-                                                        <div className="text-[10px] font-bold opacity-50 mb-1 uppercase tracking-wider text-center dark:text-slate-300 dark:opacity-70">{item.title}</div>
-                                                        <div className="w-full overflow-x-auto no-scrollbar flex justify-center">
-                                                            <MathText txt={item.tex} className="text-[0.65rem] sm:text-xs text-slate-700 whitespace-nowrap dark:text-slate-200" />
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
+                                        <div className="p-5 bg-amber-50 rounded-xl border border-amber-100 flex gap-4 items-start dark:bg-amber-900/20 dark:border-amber-800"><div className="text-amber-600 mt-1 shrink-0 dark:text-amber-400">{Icons.Target}</div><div><h3 className="font-bold text-amber-900 text-sm mb-1 uppercase tracking-widest dark:text-amber-200">Obiettivo Primario</h3><p className="text-amber-800 text-sm leading-relaxed font-medium dark:text-amber-300">Associa ogni <strong>Polinomio</strong> alla sua corretta <strong>Fattorizzazione</strong>.</p></div></div>
+                                        <div className="space-y-4"><h3 className="font-bold text-slate-400 text-xs uppercase tracking-widest border-b border-slate-100 pb-2 dark:border-slate-700">Database Pattern</h3><div className="grid grid-cols-2 md:grid-cols-3 gap-4">{BRIEFING_ITEMS.map((item, idx) => (<div key={idx} className={`p-3 rounded-xl border-2 transition-colors flex flex-col justify-center min-h-[120px] overflow-hidden w-full ${item.color}`}><div className="text-[10px] font-bold opacity-50 mb-1 uppercase tracking-wider text-center dark:text-slate-300 dark:opacity-70">{item.title}</div><div className="w-full overflow-x-auto hide-scrollbar flex justify-center"><MathText txt={item.tex} className="text-[0.65rem] sm:text-xs text-slate-700 whitespace-nowrap dark:text-slate-200" /></div></div>))}</div></div>
                                     </div>
                                 </div>
                             </div>
@@ -603,83 +463,56 @@
                 );
             }
 
-            // RENDER GAME
+            // RENDER GAME (FULLSCREEN FIXED)
             const isGameView = view === 'game' || view === 'win' || view === 'final';
             if (isGameView) {
                 const n = cards.length;
                 let gridClass = "";
-                if (n === 6) gridClass = "grid-cols-3 grid-rows-2";
-                else if (n === 12) gridClass = "grid-cols-4 grid-rows-3";
+                // Ottimizzazione griglia per mobile e desktop
+                if (n === 6) gridClass = "grid-cols-2 grid-rows-3 md:grid-cols-3 md:grid-rows-2";
+                else if (n === 12) gridClass = "grid-cols-3 grid-rows-4 md:grid-cols-4 md:grid-rows-3";
                 else if (n === 16) gridClass = "grid-cols-4 grid-rows-4";
-                else if (n === 20) gridClass = "grid-cols-5 grid-rows-4";
-                else gridClass = "grid-cols-4";
+                else if (n === 20) gridClass = "grid-cols-4 grid-rows-5 md:grid-cols-5 md:grid-rows-4";
+                else gridClass = "grid-cols-4"; 
 
                 return (
-                    <div className="h-screen w-screen flex flex-col bg-slate-100 overflow-hidden dark:bg-black">
-                        <header className="h-16 bg-white shadow-sm flex items-center justify-between px-4 z-20 shrink-0 border-b border-slate-200 dark:bg-neutral-900 dark:border-neutral-800">
-                            <div className="flex items-center gap-4">
+                    <div className="h-full w-full flex flex-col bg-slate-100 overflow-hidden dark:bg-black">
+                        <header className="h-14 shrink-0 bg-white shadow-sm flex items-center justify-between px-4 z-20 border-b border-slate-200 dark:bg-neutral-900 dark:border-neutral-800">
+                            <div className="flex items-center gap-3">
                                 <button onClick={() => setView('menu')} className="text-xs font-bold text-slate-400 hover:text-red-500 uppercase tracking-wider transition-colors">ESCI</button>
-                                {isRush && (
-                                    <div className={`flex items-center gap-2 px-3 py-1 rounded-lg font-mono font-bold ${rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-red-100 text-red-700 animate-pulse dark:bg-red-900 dark:text-red-100'}`}>
-                                        {Icons.Timer} {timeLeft}s
-                                    </div>
-                                )}
-                                {!isRush && (
-                                    <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase leading-none">Punti</span>
-                                        <span className="text-xl font-mono font-bold text-indigo-600 leading-none dark:text-indigo-400">{score}</span>
-                                    </div>
-                                )}
+                                {isRush && (<div className={`flex items-center gap-2 px-3 py-1 rounded-lg font-mono font-bold ${rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-red-100 text-red-700 animate-pulse dark:bg-red-900 dark:text-red-100'}`}>{Icons.Timer} {timeLeft}s</div>)}
+                                {!isRush && (<div className="flex flex-col"><span className="text-[9px] font-bold text-slate-400 uppercase leading-none">Punti</span><span className="text-lg font-mono font-bold text-indigo-600 leading-none dark:text-indigo-400">{score}</span></div>)}
                             </div>
-                            {matchMsg && (
-                                <div className={`absolute top-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl border-2 flex items-center gap-3 animate-bounce z-50 bg-white ${matchMsg.color || 'border-indigo-100'} dark:bg-slate-800 dark:border-slate-600`}>
-                                    <div className="bg-green-100 text-green-600 rounded-full p-1 dark:bg-green-900 dark:text-green-300">{Icons.Check}</div>
-                                    <div className="text-left">
-                                        <div className="font-black text-slate-800 text-sm dark:text-white">{matchMsg.text}</div>
-                                        <div className="text-xs font-bold text-slate-500 uppercase dark:text-slate-300">{matchMsg.sub}</div>
-                                    </div>
-                                </div>
-                            )}
+                            {matchMsg && (<div className={`absolute top-16 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl shadow-xl border-2 flex items-center gap-2 animate-bounce z-50 bg-white ${matchMsg.color || 'border-indigo-100'} dark:bg-slate-800 dark:border-slate-600`}><div className="bg-green-100 text-green-600 rounded-full p-1 dark:bg-green-900 dark:text-green-300 scale-75">{Icons.Check}</div><div className="text-left"><div className="font-black text-slate-800 text-xs dark:text-white">{matchMsg.text}</div></div></div>)}
                         </header>
-                        <main className="flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center bg-slate-100 dark:bg-black">
-                            <div className={`grid gap-3 w-full max-w-6xl h-full max-h-full ${gridClass}`}>
+                        
+                        <main className="flex-1 p-2 overflow-hidden flex items-center justify-center bg-slate-100 dark:bg-black relative">
+                            <div className={`grid gap-2 w-full h-full max-w-5xl ${gridClass}`}>
                                 {cards.map(card => {
                                     const isGhostMode = LEVELS.find(l => l.id === lvl).ghost;
                                     const showGhostContent = isGhostMode && card.seen;
                                     const isFaceUp = card.isFlipped || card.isMatched;
-
-                                    let flipperStyle = "bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700";
-                                    if (card.isMatched) {
-                                        flipperStyle = `${card.color} border-solid`;
-                                    } else if (card.cardType === 'poly') {
-                                        flipperStyle = "bg-white border-slate-300 border-solid dark:bg-slate-800 dark:border-slate-500";
-                                    } else {
-                                        flipperStyle = "bg-slate-50 border-slate-400 border-dashed dark:bg-slate-900 dark:border-slate-500";
-                                    }
+                                    
+                                    let flipperStyle = "bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700"; 
+                                    if (card.isMatched) flipperStyle = `${card.color} border-solid`;
+                                    else if (card.cardType === 'poly') flipperStyle = "bg-white border-slate-300 border-solid dark:bg-slate-800 dark:border-slate-500";
+                                    else flipperStyle = "bg-slate-50 border-slate-400 border-dashed dark:bg-slate-900 dark:border-slate-500";
 
                                     return (
                                         <div key={card.id} onClick={() => handleCardClick(card.id)} className="perspective-1000 relative cursor-pointer w-full h-full min-h-0 group">
-                                            <div className={`flipper w-full h-full shadow-sm rounded-xl border-2 transition-all duration-500
-                                                ${flipperStyle}
-                                                ${isFaceUp ? 'flipped' : 'hover:border-indigo-300 hover:-translate-y-1 dark:hover:border-indigo-500'}
-                                            `}>
-                                                <div className="face face-front rounded-xl overflow-hidden flex items-center justify-center bg-transparent">
+                                            <div className={`flipper w-full h-full shadow-sm rounded-xl border-2 transition-all duration-300 ${flipperStyle} ${isFaceUp ? 'flipped' : 'hover:border-indigo-300 hover:-translate-y-1 dark:hover:border-indigo-500'}`}>
+                                                <div className="face face-front rounded-xl flex items-center justify-center bg-transparent">
                                                     {showGhostContent ? (
-                                                        <div className="opacity-60 w-full h-full flex items-center justify-center p-2 text-slate-800 dark:text-slate-200">
-                                                            <MathText txt={card.content} className="" />
+                                                        <div className="opacity-50 w-full h-full flex items-center justify-center p-1 text-slate-800 dark:text-slate-200">
+                                                             <MathText txt={card.content} className="text-xs" />
                                                         </div>
                                                     ) : (
-                                                        <span className="text-4xl md:text-5xl select-none transform transition-transform duration-300 group-hover:scale-110">
-                                                            {card.emoji}
-                                                        </span>
+                                                        <span className="text-3xl md:text-5xl select-none transform transition-transform duration-300 group-hover:scale-110">{card.emoji}</span>
                                                     )}
                                                 </div>
-                                                <div className="face face-back p-1 rounded-xl flex items-center justify-center bg-transparent">
+                                                <div className="face face-back p-1 rounded-xl flex items-center justify-center bg-transparent overflow-hidden">
                                                     <div className="w-full h-full flex items-center justify-center text-center text-slate-900 dark:text-slate-100">
-                                                        <MathText
-                                                            txt={card.content}
-                                                            className="font-black tracking-tight break-words w-full"
-                                                        />
+                                                        <MathText txt={card.content} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -688,34 +521,27 @@
                                 })}
                             </div>
                         </main>
+                        
+                        {/* MODALS (WIN/FINAL) - Fixed Positioning */}
                         {view === 'win' && (
                             <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
                                 <div className="bg-white p-8 rounded-3xl shadow-2xl text-center max-w-md w-full relative overflow-hidden dark:bg-slate-800">
                                     <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                                    <h2 className="text-4xl font-black text-slate-800 mb-2 dark:text-white">OTTIMO LAVORO!</h2>
-                                    <p className="text-slate-500 mb-8 dark:text-slate-400">Polinomi Scomposti. Punti: <strong className="text-indigo-600 dark:text-indigo-400">{score}</strong></p>
+                                    <h2 className="text-3xl font-black text-slate-800 mb-2 dark:text-white">OTTIMO!</h2>
+                                    <p className="text-slate-500 mb-8 dark:text-slate-400">Punti: <strong className="text-indigo-600 dark:text-indigo-400">{score}</strong></p>
                                     <div className="space-y-3">
-                                        <button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-2xl font-black shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2">
-                                            {Icons.Zap} RADDOPPIA (RUSH)
-                                        </button>
-                                        <p className="text-xs text-slate-400 italic dark:text-slate-500">Trova {cards.length / 2} coppie in {isRush ? RUSH_MEM_TIME + RUSH_PLAY_TIME : 'tempo libero'}.</p>
-                                        <div className="h-px bg-slate-100 my-4 dark:bg-slate-700"></div>
-                                        <button onClick={saveAndExit} className="w-full py-3 bg-white border-2 border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
-                                            SALVA E ESCI
-                                        </button>
+                                        <button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-2xl font-black shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">{Icons.Zap} RADDOPPIA</button>
+                                        <button onClick={saveAndExit} className="w-full py-3 bg-white border-2 border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600">SALVA E ESCI</button>
                                     </div>
                                 </div>
                             </div>
                         )}
                         {view === 'final' && (
-                            <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95">
+                            <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
                                 <div className="text-center text-white">
                                     <div className="text-6xl mb-4">{score > 100 ? '🚀' : '📉'}</div>
                                     <h2 className="text-5xl font-black mb-2">{score} PT</h2>
-                                    <p className="text-xl opacity-70 mb-8 font-medium">RISULTATO FINALE</p>
-                                    <button onClick={saveAndExit} className="px-8 py-3 bg-white text-slate-900 rounded-full font-bold hover:scale-105 transition-transform">
-                                        TORNA AL MENU
-                                    </button>
+                                    <button onClick={saveAndExit} className="px-8 py-3 bg-white text-slate-900 rounded-full font-bold hover:scale-105 transition-transform mt-8">TORNA AL MENU</button>
                                 </div>
                             </div>
                         )}
@@ -729,5 +555,4 @@
         root.render(<App />);
     </script>
 </body>
-
 </html>
