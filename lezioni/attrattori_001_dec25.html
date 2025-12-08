@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Chaos Lab: Sistemi Dinamici</title>
+    <meta name="description" content="Simulatore 3D di Attrattori Strani (Lorenz, Rössler, Chen). Esplora il Caos Deterministico e le Equazioni Differenziali tramite integrazione numerica RK4.">
+    <meta name="keywords" content="Matematica, Fisica, Analisi, Sistemi Dinamici, Caos, Attrattori, 4EL, 2GR, 2EL, Mat:Analisi, Mat:Modellizzazione, EU:STEM, EU:Digitale, Simulazione">
+    <meta name="date" content="2025-10-24">
+
+    <!-- 2. FIX MOBILE & VIEWPORT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <title>Chaos Lab | SOTA Visualizer</title>
+    
+    <!-- Caricamento Font e Icone Open Source -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;600&display=swap" rel="stylesheet">
+    
+    <!-- MathJax per il rendering delle equazioni LaTeX -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Tailwind CSS per styling rapido della UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Import Map: Il segreto per usare moduli ES6 moderni senza bundler -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <style>
+        /* Styling personalizzato per l'atmosfera "Cyber-Lab" */
+        html, body {
+            margin: 0; padding: 0;
+            overflow: hidden; /* Blocca scroll pagina */
+            background-color: #050505; /* Nero profondo */
+            font-family: 'Inter', sans-serif;
+            color: #e0e0e0;
+            width: 100vw;
+            height: 100dvh; /* Altezza reale mobile */
+            position: fixed; /* Inchioda su iOS */
+            touch-action: none; /* Disabilita gesture browser sul canvas */
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+            outline: none;
+        }
+
+        /* Overlay UI Didattico Responsive */
+        #ui-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            pointer-events: none; /* Permette click through */
+            max-width: 400px;
+            width: calc(100% - 40px);
+            max-height: calc(100dvh - 100px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+        }
+
+        /* Stato nascosto per mobile toggle */
+        #ui-overlay.hidden-ui {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-20px);
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px; /* Padding ridotto per mobile */
+            pointer-events: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            overflow-y: auto; /* Scroll interno se troppo alto */
+        }
+
+        /* Scrollbar sottile per i pannelli */
+        .glass-panel::-webkit-scrollbar { width: 4px; }
+        .glass-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #00f2ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.2rem;
+        }
+
+        .math-container {
+            font-size: 0.85rem;
+            color: #b0b0b0;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 6px;
+            border-left: 2px solid #00f2ff;
+            overflow-x: auto;
+        }
+
+        /* Loading Overlay */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s;
+        }
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #333;
+            border-top: 4px solid #00f2ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Mobile UI Toggle Button */
+        #ui-toggle-btn {
+            position: absolute;
+            bottom: 20px; right: 20px;
+            z-index: 50;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: rgba(0, 242, 255, 0.2);
+            border: 1px solid rgba(0, 242, 255, 0.5);
+            color: #00f2ff;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+        }
+        #ui-toggle-btn:active { transform: scale(0.95); }
+
+        /* Lil-GUI adjustments for mobile & Theme Override */
+        .lil-gui { 
+            --background-color: #0f0f11;
+            --text-color: #e0e0e0;
+            --title-background-color: #1a1a1d;
+            --widget-color: #333;
+            --hover-color: #444;
+            --focus-color: #555;
+            --number-color: #00f2ff;
+            --string-color: #00ff88;
+            font-family: 'Inter', sans-serif;
+        }
+        .lil-gui .title { color: #00f2ff; font-weight: bold; }
+        
+        /* FIX COLORI MENU A TENDINA (SELECT) - Forzatura Importante */
+        .lil-gui select {
+            background-color: #222 !important;
+            color: #e0e0e0 !important;
+            border: 1px solid #444 !important;
+        }
+        .lil-gui select:focus {
+            border-color: #00f2ff !important;
+            outline: none;
+        }
+        /* Anche le option devono essere scure */
+        .lil-gui option {
+            background-color: #222 !important;
+            color: #e0e0e0 !important;
+        }
+
+        .lil-gui.root { 
+            position: absolute; 
+            top: 20px; right: 20px; 
+            z-index: 20; 
+            max-height: 90vh;
+        }
+        @media (max-width: 600px) {
+            .lil-gui.root { top: auto; bottom: 80px; right: 20px; max-width: 200px; }
+            #ui-overlay { max-height: 60vh; width: calc(100% - 40px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-spinner"></div>
+        <div class="mt-4 text-gray-400 font-mono text-xs md:text-sm text-center px-4">
+            Inizializzazione Sistema RK4...<br>
+            <span class="text-[10px] text-gray-600">Caricamento moduli fisici</span>
+        </div>
+    </div>
+
+    <!-- Contenitore WebGL -->
+    <div id="canvas-container"></div>
+
+    <!-- Toggle Button per Mobile -->
+    <button id="ui-toggle-btn" onclick="document.getElementById('ui-overlay').classList.toggle('hidden-ui')">
+        👁️
+    </button>
+
+    <!-- Pannello Informativo Sinistro -->
+    <div id="ui-overlay">
+        <div class="glass-panel">
+            <h1 class="text-xl md:text-2xl">Chaos Lab <span class="text-xs align-top opacity-50 font-mono">v2.1</span></h1>
+            <p class="text-[10px] text-gray-400 mb-2 font-mono uppercase tracking-widest">Laboratorio Sistemi Dinamici</p>
+            
+            <div id="attractor-info">
+                <h2 id="attractor-name" class="text-base md:text-lg font-bold text-white mb-1">Lorenz System</h2>
+                <div class="text-[10px] text-gray-500 mb-1 uppercase font-bold">Modello Matematico</div>
+                <div id="math-display" class="math-container">
+                    <!-- MathJax inietterà qui le formule -->
+                    $$ \begin{cases} \dot{x} = \sigma(y-x) \\ \dot{y} = x(\rho-z)-y \\ \dot{z} = xy - \beta z \end{cases} $$
+                </div>
+                <div id="status-panel" class="mt-3 grid grid-cols-2 gap-2 text-xs font-mono text-gray-500 border-t border-gray-700/50 pt-2">
+                    <div>Punti: <span id="points-count" class="text-cyan-400">0</span></div>
+                    <div>FPS: <span id="fps-count" class="text-cyan-400">--</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <div class="text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">Controlli Maker & Export</div>
+            
+            <!-- Riga 1: Controlli Simulazione -->
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <button id="btn-play" class="bg-yellow-900/40 hover:bg-yellow-800/60 text-yellow-200 text-[10px] py-2 px-2 rounded border border-yellow-700/50 transition flex items-center justify-center gap-1 active:scale-95 font-mono">
+                    ⏸ Stop
+                </button>
+                <button id="btn-reset" class="bg-red-900/30 hover:bg-red-900/50 text-red-200 text-[10px] py-2 px-2 rounded border border-red-900/50 transition flex items-center justify-center gap-1 active:scale-95 font-mono">
+                    ↺ Reset
+                </button>
+            </div>
+
+            <!-- Riga 2: Screenshot -->
+            <div class="mb-2">
+                <button id="btn-screenshot" class="w-full bg-gray-800 hover:bg-gray-700 text-white text-[10px] py-2 px-2 rounded border border-gray-700 transition flex items-center justify-center gap-1 active:scale-95">
+                    📸 Screenshot
+                </button>
+            </div>
+
+            <!-- Riga 3: Export 3D -->
+            <div class="grid grid-cols-2 gap-2">
+                <button id="btn-obj" class="bg-blue-900/30 hover:bg-blue-900/50 text-blue-200 text-[10px] py-2 px-2 rounded border border-blue-900/50 transition flex items-center justify-center gap-1 active:scale-95" title="Per Blender (Curve)">
+                    💾 OBJ (Linee)
+                </button>
+                <button id="btn-stl" class="bg-green-900/30 hover:bg-green-900/50 text-green-200 text-[10px] py-2 px-2 rounded border border-green-900/50 transition flex items-center justify-center gap-1 active:scale-95" title="Per Stampa 3D (Solido)">
+                    🧊 STL (Solido)
+                </button>
+            </div>
+            <div id="export-status" class="text-[10px] text-yellow-500 mt-2 text-center h-4 font-mono"></div>
+        </div>
+    </div>
+
+    <!-- Logica Principale -->
+    <script type="module">
+        // Importazioni ES6 dirette da CDN (Nessun Bundler richiesto)
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+        import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
+        import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+
+        // --- DEFINIZIONE ATTRATTORI ---
+        const ATTRACTORS = {
+            lorenz: {
+                name: "Lorenz Attractor",
+                params: { sigma: 10, rho: 28, beta: 8/3 },
+                latex: String.raw`\begin{cases} \dot{x} = \sigma(y-x) \\ \dot{y} = x(\rho-z)-y \\ \dot{z} = xy - \beta z \end{cases}`,
+                scale: 0.8,
+                center: new THREE.Vector3(0, 0, 25),
+                derivatives: (x, y, z, p) => ({
+                    dx: p.sigma * (y - x),
+                    dy: x * (p.rho - z) - y,
+                    dz: x * y - p.beta * z
+                })
+            },
+            rossler: {
+                name: "Rössler Attractor",
+                params: { a: 0.2, b: 0.2, c: 5.7 },
+                latex: String.raw`\begin{cases} \dot{x} = -y-z \\ \dot{y} = x + ay \\ \dot{z} = b + z(x-c) \end{cases}`,
+                scale: 1.5,
+                center: new THREE.Vector3(0, 0, 0),
+                derivatives: (x, y, z, p) => ({
+                    dx: -y - z,
+                    dy: x + p.a * y,
+                    dz: p.b + z * (x - p.c)
+                })
+            },
+            chen: {
+                name: "Chen Attractor",
+                params: { a: 40, b: 3, c: 28 },
+                latex: String.raw`\begin{cases} \dot{x} = a(y-x) \\ \dot{y} = (c-a)x - xz + cy \\ \dot{z} = xy - bz \end{cases}`,
+                scale: 0.6,
+                center: new THREE.Vector3(0, 0, 20),
+                derivatives: (x, y, z, p) => ({
+                    dx: p.a * (y - x),
+                    dy: (p.c - p.a) * x - x * z + p.c * y,
+                    dz: x * y - p.b * z
+                })
+            },
+            aizawa: {
+                name: "Aizawa Attractor",
+                params: { a: 0.95, b: 0.7, c: 0.6, d: 3.5, e: 0.25, f: 0.1 },
+                latex: String.raw`\begin{cases} \dot{x} = (z-b)x - dy \\ \dot{y} = dx + (z-b)y \\ \dot{z} = c + az - \frac{z^3}{3} - (x^2+y^2)(1+ez) + f z x^3 \end{cases}`, 
+                scale: 20.0,
+                center: new THREE.Vector3(0, 0, 0.5),
+                derivatives: (x, y, z, p) => ({
+                    dx: (z - p.b) * x - p.d * y,
+                    dy: p.d * x + (z - p.b) * y,
+                    dz: p.c + p.a * z - (z * z * z) / 3 - (x * x + y * y) * (1 + p.e * z) + p.f * z * x * x * x 
+                })
+            },
+            halvorsen: {
+                name: "Halvorsen Attractor",
+                params: { a: 1.89 },
+                latex: String.raw`\begin{cases} \dot{x} = -ax -4y -4z -y^2 \\ \dot{y} = -ay -4z -4x -z^2 \\ \dot{z} = -az -4x -4y -x^2 \end{cases}`,
+                scale: 1.5,
+                center: new THREE.Vector3(-2, -2, -2),
+                derivatives: (x, y, z, p) => ({
+                    dx: -p.a * x - 4 * y - 4 * z - y * y,
+                    dy: -p.a * y - 4 * z - 4 * x - z * z,
+                    dz: -p.a * z - 4 * x - 4 * y - x * x
+                })
+            }
+        };
+
+        class ChaosApp {
+            constructor() {
+                this.container = document.getElementById('canvas-container');
+                
+                // Configurazione Simulazione
+                this.config = {
+                    attractor: 'lorenz',
+                    speed: 2.0,
+                    opacity: 0.8,
+                    maxPoints: 30000,
+                    lineThickness: 1, // Per STL
+                    tubeSegments: 6,   // Per STL
+                    colorMode: 'velocity', // velocity | z-axis | solid
+                    baseColor: '#00ffff',
+                    bloomStrength: 1.5,
+                    bloomRadius: 0.4,
+                    bloomThreshold: 0
+                };
+
+                this.params = { ...ATTRACTORS['lorenz'].params };
+                this.state = { x: 0.1, y: 0, z: 0 };
+                this.points = [];
+                this.velocities = [];
+                this.lastTime = 0;
+                this.frameCount = 0;
+                this.isPlaying = true;
+                
+                // Variabili Three.js
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.controls = null;
+                this.composer = null;
+                this.lineMesh = null;
+                this.headMesh = null; 
+                
+                // Init
+                this.initThree();
+                this.initPostProcessing();
+                this.initSceneObjects();
+                this.initGUI();
+                this.initListeners();
+                
+                // Rimuovi loader
+                document.getElementById('loader').style.opacity = 0;
+                setTimeout(() => document.getElementById('loader').remove(), 500);
+
+                this.animate();
+            }
+
+            initThree() {
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.FogExp2(0x050505, 0.002);
+
+                this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.set(40, 20, 50);
+
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Ottimizza per mobile
+                this.renderer.toneMapping = THREE.ReinhardToneMapping;
+                this.container.appendChild(this.renderer.domElement);
+
+                this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.autoRotate = true;
+                this.controls.autoRotateSpeed = 0.5;
+
+                const ambientLight = new THREE.AmbientLight(0x404040);
+                this.scene.add(ambientLight);
+                const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+                pointLight.position.set(10, 10, 10);
+                this.scene.add(pointLight);
+            }
+
+            initPostProcessing() {
+                const renderScene = new RenderPass(this.scene, this.camera);
+                
+                const bloomPass = new UnrealBloomPass(
+                    new THREE.Vector2(window.innerWidth, window.innerHeight),
+                    this.config.bloomStrength,
+                    this.config.bloomRadius,
+                    this.config.bloomThreshold
+                );
+
+                this.composer = new EffectComposer(this.renderer);
+                this.composer.addPass(renderScene);
+                this.composer.addPass(bloomPass);
+
+                this.bloomPass = bloomPass;
+            }
+
+            initSceneObjects() {
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(this.config.maxPoints * 3);
+                const colors = new Float32Array(this.config.maxPoints * 3);
+                
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                
+                const material = new THREE.LineBasicMaterial({
+                    vertexColors: true,
+                    blending: THREE.AdditiveBlending,
+                    transparent: true,
+                    opacity: this.config.opacity,
+                    depthWrite: false
+                });
+
+                this.lineMesh = new THREE.Line(geometry, material);
+                this.lineMesh.geometry.setDrawRange(0, 0);
+                this.lineMesh.frustumCulled = false; 
+                this.scene.add(this.lineMesh);
+
+                const headGeo = new THREE.SphereGeometry(0.5, 16, 16);
+                const headMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                this.headMesh = new THREE.Mesh(headGeo, headMat);
+                this.scene.add(this.headMesh);
+
+                const gridHelper = new THREE.GridHelper(200, 50, 0x333333, 0x111111);
+                gridHelper.position.y = -40;
+                this.scene.add(gridHelper);
+            }
+
+            // --- RK4 Integration ---
+            rk4Step(x, y, z, dt) {
+                const sys = ATTRACTORS[this.config.attractor];
+                const p = this.params;
+                const k1 = sys.derivatives(x, y, z, p);
+                const k2 = sys.derivatives(x + k1.dx * dt * 0.5, y + k1.dy * dt * 0.5, z + k1.dz * dt * 0.5, p);
+                const k3 = sys.derivatives(x + k2.dx * dt * 0.5, y + k2.dy * dt * 0.5, z + k2.dz * dt * 0.5, p);
+                const k4 = sys.derivatives(x + k3.dx * dt, y + k3.dy * dt, z + k3.dz * dt, p);
+
+                return {
+                    x: x + (k1.dx + 2*k2.dx + 2*k3.dx + k4.dx) * (dt / 6),
+                    y: y + (k1.dy + 2*k2.dy + 2*k3.dy + k4.dy) * (dt / 6),
+                    z: z + (k1.dz + 2*k2.dz + 2*k3.dz + k4.dz) * (dt / 6),
+                    v: Math.sqrt(k1.dx**2 + k1.dy**2 + k1.dz**2)
+                };
+            }
+
+            updatePhysics(updateGeometry = true) {
+                const dt = 0.01 * this.config.speed;
+                const nextState = this.rk4Step(this.state.x, this.state.y, this.state.z, dt);
+                
+                this.state.x = nextState.x;
+                this.state.y = nextState.y;
+                this.state.z = nextState.z;
+
+                this.points.push(new THREE.Vector3(this.state.x, this.state.y, this.state.z));
+                this.velocities.push(nextState.v);
+
+                if (this.points.length > this.config.maxPoints) {
+                    this.points.shift();
+                    this.velocities.shift();
+                }
+                
+                if (updateGeometry) {
+                    this.updateGeometryAttributes();
+                }
+            }
+
+            updateGeometryAttributes() {
+                const positions = this.lineMesh.geometry.attributes.position.array;
+                const colors = this.lineMesh.geometry.attributes.color.array;
+                const sys = ATTRACTORS[this.config.attractor];
+                const count = this.points.length;
+                let maxVel = 0; 
+                
+                if(this.config.colorMode === 'velocity') {
+                    // Simple subsampling for performance
+                    for(let i=0; i<count; i+=10) if(this.velocities[i] > maxVel) maxVel = this.velocities[i];
+                    if(maxVel === 0) maxVel = 1;
+                }
+
+                const c1 = new THREE.Color(); 
+                
+                for (let i = 0; i < count; i++) {
+                    const p = this.points[i];
+                    const sx = p.x * sys.scale;
+                    const sy = p.y * sys.scale;
+                    const sz = p.z * sys.scale;
+
+                    positions[i * 3] = sx;
+                    positions[i * 3 + 1] = sy;
+                    positions[i * 3 + 2] = sz;
+
+                    let t = 0;
+                    if (this.config.colorMode === 'velocity') {
+                        t = this.velocities[i] / maxVel;
+                        c1.setHSL(0.6 - (t * 0.5), 1.0, 0.5 + (t * 0.5));
+                    } else if (this.config.colorMode === 'z-axis') {
+                        t = (p.z + 20) / 60; 
+                        c1.setHSL(t, 1.0, 0.5);
+                    } else {
+                        c1.setStyle(this.config.baseColor);
+                    }
+
+                    const alpha = Math.max(0.1, i / count); 
+                    colors[i * 3] = c1.r * alpha; 
+                    colors[i * 3 + 1] = c1.g * alpha;
+                    colors[i * 3 + 2] = c1.b * alpha;
+                }
+
+                if(count > 0) {
+                    const lastP = this.points[count - 1];
+                    this.headMesh.position.set(lastP.x * sys.scale, lastP.y * sys.scale, lastP.z * sys.scale);
+                }
+
+                this.lineMesh.geometry.attributes.position.needsUpdate = true;
+                this.lineMesh.geometry.attributes.color.needsUpdate = true;
+                this.lineMesh.geometry.setDrawRange(0, count);
+                document.getElementById('points-count').innerText = count;
+            }
+
+            // --- UI & INTERACTION ---
+            initGUI() {
+                const gui = new GUI({ title: 'Impostazioni Lab', width: 250 });
+                gui.close(); // Closed by default on mobile
+                
+                const simFolder = gui.addFolder('Simulazione');
+                simFolder.add(this.config, 'attractor', Object.keys(ATTRACTORS)).name('Sistema').onChange(v => this.changeAttractor(v));
+                simFolder.add(this.config, 'speed', 0, 10).name('Velocità');
+                simFolder.add(this.config, 'maxPoints', 1000, 100000, 1000).name('Max Punti').onFinishChange(() => this.resetSimulation());
+                
+                this.paramsFolder = gui.addFolder('Parametri Fisici');
+
+                const viewFolder = gui.addFolder('Rendering');
+                viewFolder.add(this.config, 'bloomStrength', 0, 3).name('Intensità Glow').onChange(v => this.bloomPass.strength = v);
+                viewFolder.add(this.config, 'colorMode', ['velocity', 'z-axis', 'solid']).name('Modo Colore');
+                viewFolder.addColor(this.config, 'baseColor').name('Colore Base');
+                viewFolder.add(this.controls, 'autoRotate').name('Auto Rotazione');
+
+                const exportFolder = gui.addFolder('Esportazione STL');
+                exportFolder.add(this.config, 'lineThickness', 0.1, 2.0).name('Spessore');
+                
+                this.gui = gui;
+                this.refreshParamsGUI();
+            }
+
+            refreshParamsGUI() {
+                this.paramsFolder.children.forEach(c => c.destroy());
+                this.paramsFolder.children = [];
+                const currentParams = ATTRACTORS[this.config.attractor].params;
+                for (const key in currentParams) {
+                    const val = currentParams[key];
+                    const range = Math.max(10, Math.abs(val) * 2);
+                    this.paramsFolder.add(this.params, key, val - range, val + range).name(key).listen();
+                }
+            }
+
+            changeAttractor(key) {
+                const sys = ATTRACTORS[key];
+                this.params = { ...sys.params };
+                this.state = { x: 0.1, y: 0.1, z: 0.1 };
+                this.points = [];
+                this.velocities = [];
+                
+                document.getElementById('attractor-name').innerText = sys.name;
+                const mathContainer = document.getElementById('math-display');
+                mathContainer.innerHTML = `$$ ${sys.latex} $$`;
+                if(window.MathJax) MathJax.typesetPromise([mathContainer]);
+                
+                this.controls.target.copy(sys.center);
+                this.controls.update();
+                this.refreshParamsGUI();
+                this.resetSimulation();
+            }
+
+            togglePlay() {
+                this.isPlaying = !this.isPlaying;
+                const btn = document.getElementById('btn-play');
+                
+                if (this.isPlaying) {
+                    btn.innerText = '⏸ Stop';
+                    btn.classList.remove('bg-green-900/40', 'text-green-200', 'border-green-700/50');
+                    btn.classList.add('bg-yellow-900/40', 'text-yellow-200', 'border-yellow-700/50');
+                } else {
+                    btn.innerText = '▶ Avvia';
+                    btn.classList.remove('bg-yellow-900/40', 'text-yellow-200', 'border-yellow-700/50');
+                    btn.classList.add('bg-green-900/40', 'text-green-200', 'border-green-700/50');
+                }
+            }
+
+            resetSimulation() {
+                // RESET PURO: Pulisce tutto e riparte da zero.
+                this.points = [];
+                this.velocities = [];
+                this.state = { x: 0.1, y: 0.1, z: 0.1 };
+                
+                // Aggiorna immediatamente la geometria per nascondere la vecchia scia
+                const newPos = new Float32Array(this.config.maxPoints * 3);
+                const newCol = new Float32Array(this.config.maxPoints * 3);
+                this.lineMesh.geometry.setAttribute('position', new THREE.BufferAttribute(newPos, 3));
+                this.lineMesh.geometry.setAttribute('color', new THREE.BufferAttribute(newCol, 3));
+                
+                // Set draw range a 0 per pulire
+                this.lineMesh.geometry.setDrawRange(0, 0);
+                document.getElementById('points-count').innerText = 0;
+                
+                // Se è in pausa, renderizza un frame per mostrare il reset (schermo nero/pulito)
+                if (!this.isPlaying) {
+                    this.renderer.render(this.scene, this.camera);
+                }
+            }
+
+            initListeners() {
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    this.composer.setSize(window.innerWidth, window.innerHeight);
+                });
+
+                document.getElementById('btn-reset').addEventListener('click', () => this.resetSimulation());
+                document.getElementById('btn-play').addEventListener('click', () => this.togglePlay());
+                
+                document.getElementById('btn-screenshot').addEventListener('click', () => {
+                    this.renderer.render(this.scene, this.camera);
+                    const link = document.createElement('a');
+                    link.download = `chaos_${this.config.attractor}.png`;
+                    link.href = this.renderer.domElement.toDataURL('image/png');
+                    link.click();
+                });
+
+                document.getElementById('btn-obj').addEventListener('click', () => this.exportOBJ());
+                document.getElementById('btn-stl').addEventListener('click', () => this.exportSTL());
+            }
+
+            // --- EXPORT FUNCTIONALITY ---
+            exportOBJ() {
+                const exporter = new OBJExporter();
+                const result = exporter.parse(this.lineMesh);
+                this.saveString(result, `${this.config.attractor}_lines.obj`);
+            }
+
+            exportSTL() {
+                const status = document.getElementById('export-status');
+                status.innerText = "Generazione mesh...";
+                
+                setTimeout(() => {
+                    if (this.points.length < 2) return;
+                    const scaledPoints = this.points.map(p => p.clone().multiplyScalar(ATTRACTORS[this.config.attractor].scale));
+                    const curve = new THREE.CatmullRomCurve3(scaledPoints);
+                    const tubeGeo = new THREE.TubeGeometry(curve, Math.min(this.points.length, 2000), this.config.lineThickness, this.config.tubeSegments, false);
+                    const tubeMesh = new THREE.Mesh(tubeGeo, new THREE.MeshBasicMaterial());
+                    
+                    const exporter = new STLExporter();
+                    const result = exporter.parse(tubeMesh, { binary: true });
+                    tubeGeo.dispose();
+                    
+                    this.saveArrayBuffer(result, `${this.config.attractor}_solid.stl`);
+                    status.innerText = "";
+                }, 50);
+            }
+
+            saveString(text, filename) {
+                const blob = new Blob([text], { type: 'text/plain' });
+                this.save(blob, filename);
+            }
+            saveArrayBuffer(buffer, filename) {
+                const blob = new Blob([buffer], { type: 'application/octet-stream' });
+                this.save(blob, filename);
+            }
+            save(blob, filename) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+            }
+
+            animate(time) {
+                requestAnimationFrame((t) => this.animate(t));
+                
+                if (this.isPlaying) {
+                    this.updatePhysics();
+                }
+                
+                this.controls.update();
+                this.composer.render();
+
+                // FPS Calc
+                if(time - this.lastTime >= 1000) {
+                    document.getElementById('fps-count').innerText = this.frameCount;
+                    this.frameCount = 0;
+                    this.lastTime = time;
+                }
+                this.frameCount++;
+            }
+        }
+
+        // Avvio Applicazione
+        new ChaosApp();
+    </script>
+</body>
+</html>

@@ -10,13 +10,20 @@
     <meta name="keywords" content="Matematica, Fisica, Ed. Civica, Laboratorio, Orfini, Gamification, PBL, STEM, MeltingMath">
     <meta name="date" content="2025-12-08">
     
-    <!-- Font Inter & Icons -->
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- Font Collection per la Cloud -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    
-    <!-- WordCloud Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code:wght@500&family=Inter:wght@400;700;900&family=Pacifico&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
 
     <style>
         /* --- MATERIAL DESIGN 3 TOKENS --- */
@@ -56,7 +63,7 @@
         }
 
         [data-theme="dark"] {
-            --md-sys-color-background: #0a0a0a; 
+            --md-sys-color-background: #000000; /* AMOLED Black */
             --md-sys-color-on-background: #e2e2e6;
             --md-sys-color-surface: #111111;
             --md-sys-color-surface-container: #1c1c1c; 
@@ -97,42 +104,71 @@
         }
 
         /* --- HEADER & HERO --- */
-        header { padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        header { padding: 2rem 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
 
         .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 2rem;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
         }
 
         h1 {
-            font-size: 1.75rem; font-weight: 900; line-height: 1.2; margin: 0;
-            letter-spacing: -0.5px;
-            background: linear-gradient(90deg, var(--md-sys-color-on-background), var(--md-sys-color-outline));
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(2rem, 6vw, 4rem); /* Responsive Huge Title */
+            font-weight: 900; 
+            line-height: 1; 
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -2px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--md-sys-color-on-background) 30%, var(--md-sys-color-primary));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         
         .subtitle {
-            font-size: 0.9rem; color: var(--md-sys-color-outline); margin-top: 0.2rem; font-weight: 500;
+            font-size: 1rem; 
+            color: var(--md-sys-color-outline); 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-weight: 600;
+            margin-top: 0.5rem;
         }
 
         .theme-btn {
+            position: absolute;
+            top: 0; right: 0;
             width: 48px; height: 48px; border-radius: 50%;
             border: 1px solid var(--md-sys-color-outline-variant);
             background: transparent; color: var(--md-sys-color-on-background);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: all 0.2s; font-size: 1.2rem;
         }
-        .theme-btn:hover { background-color: var(--md-sys-color-surface-container-high); }
+        .theme-btn:hover { background-color: var(--md-sys-color-surface-container-high); transform: rotate(15deg); }
 
-        /* --- WORD CLOUD --- */
+        @media (max-width: 768px) {
+            .theme-btn { position: relative; margin-left: auto; margin-bottom: 1rem; top: auto; right: auto; }
+            .top-bar { align-items: stretch; text-align: center; }
+        }
+
+        /* --- 3D CLOUD CONTAINER --- */
         #cloud-wrapper {
-            width: 100%; height: 220px;
-            background-color: var(--md-sys-color-surface-container);
+            width: 100%; height: 320px; /* Altezza aumentata per il 3D */
+            background-color: transparent; /* Sfondo trasparente per ereditare dal body o impostato via JS */
             border-radius: var(--md-shape-corner-large);
             margin-bottom: 2rem;
             position: relative; overflow: hidden;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
-            padding: 10px; cursor: pointer;
+            /* box-shadow rimosso per integrarsi con lo sfondo */
+            padding: 0; cursor: grab;
+        }
+        #cloud-wrapper:active { cursor: grabbing; }
+        
+        #cloud-overlay {
+            position: absolute; bottom: 15px; right: 20px;
+            pointer-events: none; opacity: 0.5;
+            font-size: 0.7rem; color: var(--md-sys-color-outline);
+            text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
         }
 
         /* --- FILTRI --- */
@@ -209,7 +245,7 @@
             background-color: rgba(255,255,255,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* --- FOOTER (NUOVO) --- */
+        /* --- FOOTER --- */
         .site-footer {
             background-color: var(--md-sys-color-surface-container);
             border-top: 1px solid var(--md-sys-color-outline-variant);
@@ -238,15 +274,12 @@
         }
         .footer-link:hover { color: var(--md-sys-color-primary); }
 
-        /* Card MeltingMath */
         .mm-card {
             background: var(--md-sys-color-surface);
             border: 1px solid var(--md-sys-color-outline-variant);
             border-radius: var(--md-shape-corner-medium);
             padding: 1.5rem; display: flex; align-items: center; gap: 1rem;
-            transition: transform 0.2s;
-            text-decoration: none; /* RIMUOVE LA SOTTOLINEATURA */
-            color: inherit; /* RIMUOVE IL BLU STANDARD */
+            transition: transform 0.2s; text-decoration: none; color: inherit;
         }
         .mm-card:hover { transform: translateY(-3px); border-color: #d62976; }
         
@@ -257,7 +290,6 @@
             color: white; font-size: 1.5rem; flex-shrink: 0;
         }
 
-        /* Utility */
         #empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--md-sys-color-outline); }
         #reset-filter {
             display: none; margin: 0 0 1rem auto; background: none; border: 1px solid var(--md-sys-color-outline);
@@ -275,17 +307,16 @@
 
     <header>
         <div class="top-bar">
-            <div>
-                <h1>Laboratorio Matematico<br>Orfini Foligno</h1>
-                <p class="subtitle">Didattica Interattiva Open Source</p>
-            </div>
+            <h1>Laboratorio Matematico<br>Orfini Foligno</h1>
+            <p class="subtitle">Didattica Interattiva Open Source</p>
             <button class="theme-btn" onclick="toggleTheme()" aria-label="Cambia tema">
                 <span id="theme-icon">🌙</span>
             </button>
         </div>
         
         <div id="cloud-wrapper">
-            <canvas id="word-cloud"></canvas>
+            <!-- Three.js Canvas will be injected here -->
+            <div id="cloud-overlay">Ruota &bull; Zooma &bull; Esplora</div>
         </div>
     </header>
 
@@ -343,13 +374,11 @@
             <!-- SEZIONE MELTINGMATH -->
             <div class="footer-section">
                 <h4>Social & Community</h4>
-                <!-- Aggiunta classe e stili per fixare il colore del link -->
                 <a href="https://instagram.com/meltingmath" target="_blank" class="mm-card">
                     <div class="mm-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                     </div>
                     <div>
-                        <!-- Colore primario applicato esplicitamente -->
                         <div style="font-weight: 800; font-size: 1rem; color: var(--md-sys-color-primary);">MeltingMath</div>
                         <div style="font-size: 0.8rem; color: var(--md-sys-color-outline);">Segui il progetto su Instagram</div>
                     </div>
@@ -365,97 +394,53 @@
     <!-- SCRIPT DATA (INLINE PER ANTEPRIMA) -->
     <script>
         const inlineDB = [
-            {
-                title: "Math Underground: Mappa Funzioni",
-                url: "math_underground003_4el.html",
-                excerpt: "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche.",
-                tags: ["Matematica", "Analisi", "Funzioni", "4EL"],
-                date: "2025-12-06"
-            },
-            {
-                title: "Caccia all'Errore: Operazioni in Z",
-                url: "memory_1el_numeri_004.html",
-                excerpt: "Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette.",
-                tags: ["Matematica", "Aritmetica", "1EL"],
-                date: "2025-10-20"
-            },
-            {
-                title: "GonioMatch: Segnali Goniometrici",
-                url: "gioco_sin_cos_01.html",
-                excerpt: "Gioco Memory a tema 'Radar' per memorizzare gli angoli notevoli di Seno, Coseno e Tangente.",
-                tags: ["Matematica", "Goniometria", "3MEC", "4EL"],
-                date: "2025-12-08"
-            },
-            {
-                title: "Voto Consapevole: Simulatore Nash",
-                url: "voto_consapevole_2.5.html",
-                excerpt: "Simulazione interattiva sull'Equilibrio di Nash applicato ai voti scolastici.",
-                tags: ["Ed. Civica", "Matematica", "3EL", "4EL"],
-                date: "2025-10-01"
-            },
-            {
-                title: "Algebra Tiles 3D",
-                url: "visualizzatore polinomi 2d 3d 001.html",
-                excerpt: "Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi.",
-                tags: ["Matematica", "Algebra", "1EL", "2EL", "2GP"],
-                date: "2025-12-08"
-            },
-            {
-                title: "Math Invaders: MCD & mcm",
-                url: "MCD_mcm_1el_001.html",
-                excerpt: "Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. e m.c.m.",
-                tags: ["Matematica", "Aritmetica", "1EL"],
-                date: "2025-12-08"
-            },
-            {
-                title: "Scomposizione Polinomi (Memory)",
-                url: "cards_polinomi_memory004.html",
-                excerpt: "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni.",
-                tags: ["Matematica", "Algebra", "1EL", "2EL", "2GP"],
-                date: "2025-12-08"
-            },
-            {
-                title: "Laboratorio Frazioni",
-                url: "fractions_lab_001.html",
-                excerpt: "Simulatore interattivo per comprendere le operazioni tra frazioni attraverso modelli visivi.",
-                tags: ["Matematica", "Aritmetica", "1EL", "2EL", "2GP"],
-                date: "2025-12-08"
-            }
+            { title: "Math Underground: Mappa Funzioni", url: "math_underground003_4el.html", excerpt: "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche.", tags: ["Matematica", "Analisi", "Funzioni", "4EL"], date: "2025-12-06" },
+            { title: "Caccia all'Errore: Operazioni in Z", url: "memory_1el_numeri_004.html", excerpt: "Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette.", tags: ["Matematica", "Aritmetica", "1EL"], date: "2025-10-20" },
+            { title: "GonioMatch: Segnali Goniometrici", url: "gioco_sin_cos_01.html", excerpt: "Gioco Memory a tema 'Radar' per memorizzare gli angoli notevoli di Seno, Coseno e Tangente.", tags: ["Matematica", "Goniometria", "3MEC", "4EL"], date: "2025-12-08" },
+            { title: "Voto Consapevole: Simulatore Nash", url: "voto_consapevole_2.5.html", excerpt: "Simulazione interattiva sull'Equilibrio di Nash applicato ai voti scolastici.", tags: ["Ed. Civica", "Matematica", "3EL", "4EL"], date: "2025-10-01" },
+            { title: "Algebra Tiles 3D", url: "visualizzatore polinomi 2d 3d 001.html", excerpt: "Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi.", tags: ["Matematica", "Algebra", "1EL", "2EL", "2GP"], date: "2025-12-08" },
+            { title: "Math Invaders: MCD & mcm", url: "MCD_mcm_1el_001.html", excerpt: "Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. e m.c.m.", tags: ["Matematica", "Aritmetica", "1EL"], date: "2025-12-08" },
+            { title: "Scomposizione Polinomi (Memory)", url: "cards_polinomi_memory004.html", excerpt: "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni.", tags: ["Matematica", "Algebra", "1EL", "2EL", "2GP"], date: "2025-12-08" },
+            { title: "Laboratorio Frazioni", url: "fractions_lab_001.html", excerpt: "Simulatore interattivo per comprendere le operazioni tra frazioni attraverso modelli visivi.", tags: ["Matematica", "Aritmetica", "1EL", "2EL", "2GP"], date: "2025-12-08" }
         ];
     </script>
 
-    <!-- CARICAMENTO DATABASE ESTERNO (FALLBACK SU INLINE) -->
     <script src="database.js"></script>
 
-    <script>
-        // --- 1. GESTIONE TEMA ---
+    <!-- APP LOGIC (MODULE) -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- 1. CONFIGURAZIONE TEMA E DATA ---
         const html = document.documentElement;
         const themeIcon = document.getElementById('theme-icon');
-        
         const savedTheme = localStorage.getItem('theme') || 'dark';
-        setTheme(savedTheme);
-
-        function toggleTheme() {
-            const current = html.getAttribute('data-theme');
-            setTheme(current === 'dark' ? 'light' : 'dark');
-        }
-
-        function setTheme(t) {
-            html.setAttribute('data-theme', t);
-            localStorage.setItem('theme', t);
-            themeIcon.innerText = t === 'dark' ? '☀️' : '🌙';
-            if(window.initWordCloud) setTimeout(window.initWordCloud, 100);
-        }
-
-        // --- 2. CONFIGURAZIONE EMOJI E COLORI ---
-        // Usa inlineDB se db non è definito (fallback per anteprima)
+        
         const safeData = (typeof db !== 'undefined') ? db : inlineDB;
+        
+        // Globale per accessibilità
+        window.toggleTheme = () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            themeIcon.innerText = next === 'dark' ? '☀️' : '🌙';
+            if(window.rebuildCloud) window.rebuildCloud();
+        };
+        html.setAttribute('data-theme', savedTheme);
+        themeIcon.innerText = savedTheme === 'dark' ? '☀️' : '🌙';
 
+        // Mappa Emoji estesa
         const specificEmojiMap = {
             'voto': '⚖️', 'nash': '🧠', 'memory': '🧩', 'polinomi': '🧱',
             'underground': '🚇', 'mercatore': '🌍', 'corrente': '⚡',
-            'goniomatch': '📡', 'tavola': '🔢', 'insiemi': '🔴', 'frazioni': '🍰', 'sketch': '🎨'
+            'goniomatch': '📡', 'tavola': '🔢', 'insiemi': '🔴', 
+            'frazioni': '🍰', 'sketch': '🎨', 'invaders': '👾', 
+            'caccia': '💣', 'algebra tiles': '🟦', 'scomposizione': '➗'
         };
+        
+        const fallbackEmojis = ['📐', '✏️', '🖥️', '🎲', '🚀', '💡', '🔍'];
 
         const themeColors = [
             { bg: 'var(--card-blue)', fg: 'var(--card-on-blue)' },
@@ -466,24 +451,34 @@
             { bg: 'var(--card-yellow)', fg: 'var(--card-on-yellow)' }
         ];
 
-        function getStableColor(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            return themeColors[Math.abs(hash) % themeColors.length];
-        }
-
-        function getSmartEmoji(item) {
+        function getSmartEmoji(item, prevEmoji) {
             const keyString = (item.url + item.title).toLowerCase();
+            let chosen = '📄';
+            
+            // 1. Cerca match specifico
             for (const [key, emo] of Object.entries(specificEmojiMap)) {
-                if (keyString.includes(key)) return emo;
+                if (keyString.includes(key)) { chosen = emo; break; }
             }
-            if (item.tags.some(t => t.includes('Fisica'))) return '⚛️';
-            if (item.tags.some(t => t.includes('Matematica'))) return '📐';
-            return '📄';
+            
+            // 2. Fallback per categoria
+            if (chosen === '📄') {
+                if (item.tags.some(t => t.includes('Fisica'))) chosen = '⚛️';
+                else if (item.tags.some(t => t.includes('Matematica'))) chosen = '📐';
+            }
+
+            // 3. Controllo duplicato adiacente
+            if (chosen === prevEmoji) {
+                // Prendi una random dai fallback se collidono
+                chosen = fallbackEmojis[Math.floor(Math.random() * fallbackEmojis.length)];
+            }
+            return chosen;
         }
 
-        // --- 3. GENERAZIONE FILTRI ---
+        // --- 2. FILTRI E GRIGLIA ---
         const filterBar = document.getElementById('filterBar');
+        const grid = document.getElementById('grid');
+        const emptyState = document.getElementById('empty-state');
+        const resetBtn = document.getElementById('reset-filter');
 
         function initFilters() {
             const tagCounts = {};
@@ -493,53 +488,44 @@
             sortedTags.forEach(tag => {
                 const btn = document.createElement('button');
                 btn.className = 'chip';
-                const label = tagCounts[tag] > 1 ? `${tag} (${tagCounts[tag]})` : tag;
-                btn.innerText = label;
-                btn.onclick = () => applyFilter(tag);
+                btn.innerText = tagCounts[tag] > 1 ? `${tag} (${tagCounts[tag]})` : tag;
+                btn.onclick = () => window.applyFilter(tag);
                 filterBar.appendChild(btn);
             });
         }
 
-        // --- 4. RENDER GRID ---
-        const grid = document.getElementById('grid');
-        const emptyState = document.getElementById('empty-state');
-        const resetBtn = document.getElementById('reset-filter');
-
-        function renderCards(filter) {
+        window.applyFilter = function(filter) {
             grid.innerHTML = '';
             let count = 0;
-
+            let prevEmoji = '';
+            
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             const activeBtn = Array.from(document.querySelectorAll('.chip')).find(c => c.innerText.startsWith(filter === 'all' ? 'Tutti' : filter));
             if(activeBtn) activeBtn.classList.add('active');
             
             resetBtn.style.display = filter === 'all' ? 'none' : 'block';
 
-            safeData.forEach(item => {
-                const match = filter === 'all' || item.tags.includes(filter);
-                if (match) {
+            safeData.forEach((item, index) => {
+                if (filter === 'all' || item.tags.includes(filter)) {
                     count++;
                     const card = document.createElement('a');
-                    card.href = item.url;
-                    card.className = 'card';
+                    card.href = item.url; card.className = 'card';
                     
-                    const colors = getStableColor(item.title);
-                    card.style.setProperty('--card-bg', colors.bg);
+                    // Colore sequenziale basato sull'indice di visualizzazione per evitare clash
+                    const colors = themeColors[count % themeColors.length];
+                    card.style.setProperty('--card-bg', colors.bg); 
                     card.style.setProperty('--card-fg', colors.fg);
+                    
+                    const emoji = getSmartEmoji(item, prevEmoji);
+                    prevEmoji = emoji; // Aggiorna per il prossimo ciclo
 
-                    const emoji = getSmartEmoji(item);
                     const d = new Date(item.date);
                     const dateStr = !isNaN(d) ? `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}` : item.date;
                     const tagsHtml = item.tags.slice(0, 3).map(t => `<span class="tag-pill">#${t}</span>`).join('');
 
                     card.innerHTML = `
-                        <div class="card-header">
-                            <div class="card-emoji">${emoji}</div>
-                            <div class="card-date">${dateStr}</div>
-                        </div>
-                        <h3>${item.title}</h3>
-                        <p>${item.excerpt}</p>
-                        <div class="card-tags">${tagsHtml}</div>
+                        <div class="card-header"><div class="card-emoji">${emoji}</div><div class="card-date">${dateStr}</div></div>
+                        <h3>${item.title}</h3><p>${item.excerpt}</p><div class="card-tags">${tagsHtml}</div>
                     `;
                     grid.appendChild(card);
                 }
@@ -547,55 +533,209 @@
             emptyState.style.display = count === 0 ? 'block' : 'none';
         }
 
-        window.applyFilter = function(tag) { renderCards(tag); }
+        // --- 3. 3D WORD CLOUD (CONSTELLATION) ---
+        let scene, camera, renderer, controls, group;
+        const fonts = [
+            "bold 60px 'Inter', sans-serif",
+            "bold 60px 'Fira Code', monospace", 
+            "60px 'Pacifico', cursive",
+            "bold 60px 'Bangers', cursive",
+            "italic 60px 'Playfair Display', serif"
+        ];
 
-        // --- 5. WORD CLOUD ---
-        window.initWordCloud = function() {
-            if (!safeData.length) return;
-            const tagCounts = {};
-            safeData.forEach(item => item.tags.forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+        function createTextTexture(text, sizeFactor, index) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const font = fonts[Math.floor(Math.random() * fonts.length)];
             
-            const list = Object.keys(tagCounts).map(k => [k, 20 + tagCounts[k] * 10]);
-            const canvas = document.getElementById('word-cloud');
-            const wrapper = document.getElementById('cloud-wrapper');
+            ctx.font = font;
+            const metrics = ctx.measureText(text);
+            const w = metrics.width + 40;
+            const h = 100;
             
-            canvas.width = wrapper.offsetWidth;
-            canvas.height = wrapper.offsetHeight;
+            canvas.width = w; canvas.height = h;
+            
+            // Random Color vivid - High Contrast for Dark Mode
             const isDark = html.getAttribute('data-theme') === 'dark';
             
-            WordCloud(canvas, {
-                list: list,
-                gridSize: 15,
-                weightFactor: 1.3,
-                fontFamily: 'Inter, sans-serif',
-                color: (word, weight) => {
-                    const hue = Math.floor(Math.random() * 360);
-                    return `hsl(${hue}, ${isDark ? '80%' : '60%'}, ${isDark ? '70%' : '40%'})`;
-                },
-                backgroundColor: 'transparent',
-                rotateRatio: 0,
-                shrinkToFit: true,
-                drawOutOfBound: false,
-                click: (item) => {
-                    if(item) {
-                        applyFilter(item[0]);
-                        window.scrollTo({ top: filterBar.offsetTop - 80, behavior: 'smooth' });
-                    }
-                },
-                hover: (item) => { wrapper.style.cursor = item ? 'pointer' : 'default'; }
+            // Use index to influence hue for nearby color grouping, plus some randomness
+            const baseHue = (index * 137.5) % 360; // Golden angle distribution for hues
+            const hue = (baseHue + Math.random() * 30 - 15) % 360; 
+            
+            // High Lightness and Saturation for contrast against dark background
+            const lightness = isDark ? '75%' : '40%'; 
+            const saturation = isDark ? '85%' : '70%';
+            const color = `hsl(${hue}, ${saturation}, ${lightness})`;
+
+            ctx.font = font;
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, w/2, h/2);
+            
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.minFilter = THREE.LinearFilter;
+            return { tex, ratio: w/h };
+        }
+
+        function init3DCloud() {
+            const container = document.getElementById('cloud-wrapper');
+            if(!container) return;
+            container.innerHTML = '<div id="cloud-overlay">Ruota &bull; Zooma &bull; Esplora</div>';
+
+            const w = container.offsetWidth;
+            const h = container.offsetHeight;
+
+            scene = new THREE.Scene();
+            // Colore sfondo dinamico dalla pagina (CSS variable)
+            const style = getComputedStyle(document.body);
+            const bgColor = style.getPropertyValue('--md-sys-color-surface-container').trim();
+            scene.background = new THREE.Color(bgColor || (html.getAttribute('data-theme') === 'dark' ? 0x000000 : 0xf0f4f8));
+            scene.fog = new THREE.FogExp2(scene.background, 0.002);
+
+            camera = new THREE.PerspectiveCamera(50, w/h, 1, 1000);
+            
+            // IMMERSIVE VIEW: Camera at CENTER, Orbit Enabled
+            camera.position.set(0, 0, 0.1); 
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(w, h);
+            container.appendChild(renderer.domElement);
+
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 0.5;
+            controls.enableZoom = true;
+            controls.enablePan = false; 
+            
+            // Invert controls for "looking around" feel from inside
+            controls.rotateSpeed = -0.5;
+
+            group = new THREE.Group();
+            scene.add(group);
+
+            // Analisi Dati
+            const tagCounts = {};
+            safeData.forEach(item => item.tags.forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+            const tags = Object.keys(tagCounts);
+            const maxCount = Math.max(...Object.values(tagCounts));
+            const minCount = Math.min(...Object.values(tagCounts));
+
+            // Fibonacci Sphere Algorithm per distribuzione uniforme
+            const phi = Math.PI * (3 - Math.sqrt(5)); // Golden Angle
+            const n = tags.length;
+            const radius = 90; // Raggio della sfera
+
+            tags.forEach((tag, i) => {
+                const y = 1 - (i / (n - 1)) * 2; // y va da 1 a -1
+                const radiusAtY = Math.sqrt(1 - y * y); // raggio al livello y
+                const theta = phi * i; // Golden angle increment
+
+                const x = Math.cos(theta) * radiusAtY;
+                const z = Math.sin(theta) * radiusAtY;
+
+                // Calcolo Dimensione
+                const count = tagCounts[tag];
+                const normalized = (count - minCount) / (maxCount - minCount || 1); 
+                const scale = 20 + (normalized * 25); 
+
+                const { tex, ratio } = createTextTexture(tag, scale, i);
+                const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+                const sprite = new THREE.Sprite(mat);
+                
+                sprite.scale.set(scale * ratio, scale, 1);
+                sprite.position.set(x * radius, y * radius, z * radius);
+                
+                // Salva dati per interazione
+                sprite.userData = { tag: tag };
+                group.add(sprite);
             });
+
+            // Costellazione (Linee)
+            const lineMat = new THREE.LineBasicMaterial({ 
+                color: html.getAttribute('data-theme') === 'dark' ? 0xffffff : 0x000000, 
+                transparent: true, opacity: 0.1 
+            });
+            
+            const lineGeo = new THREE.BufferGeometry();
+            const linePos = [];
+
+            // Collega ogni nodo ai 2 vicini più prossimi
+            for(let i=0; i<group.children.length; i++) {
+                const posA = group.children[i].position;
+                let neighbors = [];
+                
+                for(let j=0; j<group.children.length; j++) {
+                    if(i===j) continue;
+                    const dist = posA.distanceTo(group.children[j].position);
+                    neighbors.push({ idx: j, dist: dist });
+                }
+                neighbors.sort((a,b) => a.dist - b.dist);
+                
+                // Prendi i primi 2 vicini
+                for(let k=0; k<Math.min(2, neighbors.length); k++) {
+                    const posB = group.children[neighbors[k].idx].position;
+                    linePos.push(posA.x, posA.y, posA.z);
+                    linePos.push(posB.x, posB.y, posB.z);
+                }
+            }
+            lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
+            const lines = new THREE.LineSegments(lineGeo, lineMat);
+            group.add(lines);
+
+            // Raycaster per click
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+
+            renderer.domElement.addEventListener('click', (event) => {
+                const rect = renderer.domElement.getBoundingClientRect();
+                mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+                
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(group.children.filter(c => c.isSprite));
+                
+                if(intersects.length > 0) {
+                    const tag = intersects[0].object.userData.tag;
+                    window.applyFilter(tag);
+                    window.scrollTo({ top: filterBar.offsetTop - 80, behavior: 'smooth' });
+                }
+            });
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.rebuildCloud = () => {
+            const el = document.getElementById('cloud-wrapper');
+            if(el) { 
+                el.innerHTML = ''; 
+                init3DCloud(); 
+            }
         };
 
-        window.onload = function() {
+        // --- INIT ---
+        window.addEventListener('load', () => {
             initFilters();
-            renderCards('all');
-            setTimeout(initWordCloud, 100);
-        };
+            window.applyFilter('all');
+            setTimeout(init3DCloud, 100);
+        });
 
-        window.onresize = () => {
-            clearTimeout(window.resizeTimer);
-            window.resizeTimer = setTimeout(window.initWordCloud, 200);
-        };
+        window.addEventListener('resize', () => {
+            if(camera && renderer) {
+                const c = document.getElementById('cloud-wrapper');
+                camera.aspect = c.offsetWidth / c.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(c.offsetWidth, c.offsetHeight);
+            }
+        });
+
     </script>
 </body>
 </html>

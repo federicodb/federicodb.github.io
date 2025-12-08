@@ -245,6 +245,36 @@ const db = [
         "icon": "📐"
     },
     {
+        "title": "AlgebraLab 3D: Geometria dei Polinomi",
+        "excerpt": "Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.",
+        "tags": [
+            "Matematica",
+            "Algebra",
+            "Geometria",
+            "1EL",
+            "2EL",
+            "2GR",
+            "3MEC",
+            "4EL",
+            "Mat:Modellizzazione",
+            "Mat:Geometria",
+            "EU:STEM",
+            "Lab",
+            "Visualizzazione"
+        ],
+        "url": "lezioni/scomp_3d_grafica_002.html",
+        "date": "2025-12-08",
+        "icon": "📐"
+    },
+    {
+        "title": "PIP",
+        "excerpt": "Terminale RobCo Industries. Simulatore avanzato con profili utente, difficoltà adattiva e classifiche.",
+        "tags": [],
+        "url": "lezioni/retta_fallout_001.html",
+        "date": "2025-12-08",
+        "icon": "📄"
+    },
+    {
         "title": "Math Underground: Mappa Funzioni",
         "excerpt": "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche (Dominio, Tipi, Proprietà).",
         "tags": [
@@ -262,6 +292,29 @@ const db = [
         ],
         "url": "lezioni/math_underground003_4el.html",
         "date": "2025-12-06",
+        "icon": "📐"
+    },
+    {
+        "title": "Chaos Lab: Sistemi Dinamici",
+        "excerpt": "Simulatore 3D di Attrattori Strani (Lorenz, Rössler, Chen). Esplora il Caos Deterministico e le Equazioni Differenziali tramite integrazione numerica RK4.",
+        "tags": [
+            "Matematica",
+            "Fisica",
+            "Analisi",
+            "Sistemi Dinamici",
+            "Caos",
+            "Attrattori",
+            "4EL",
+            "2GR",
+            "2EL",
+            "Mat:Analisi",
+            "Mat:Modellizzazione",
+            "EU:STEM",
+            "EU:Digitale",
+            "Simulazione"
+        ],
+        "url": "lezioni/attrattori_001_dec25.html",
+        "date": "2025-10-24",
         "icon": "📐"
     },
     {

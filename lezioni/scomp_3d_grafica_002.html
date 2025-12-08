@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE (ORFINI BUILDER) -->
+    <title>AlgebraLab 3D: Geometria dei Polinomi</title>
+    <meta name="description" content="Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.">
+    <meta name="keywords" content="Matematica, Algebra, Geometria, 1EL, 2EL, 2GR, 3MEC, 4EL, Mat:Modellizzazione, Mat:Geometria, EU:STEM, Lab, Visualizzazione">
+    <meta name="date" content="2025-12-08">
+
+    <!-- 2. FIX MOBILE & VIEWPORT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { 
+            margin: 0; padding: 0; overflow: hidden; 
+            background-color: #020617; /* Slate 950 */
+            color: #e2e8f0; 
+            font-family: 'Inter', sans-serif; 
+            width: 100vw; height: 100dvh;
+            position: fixed;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px;
+            border-radius: 50%; background: #06b6d4; cursor: pointer; margin-top: -6px;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5); border: 2px solid #fff;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px;
+        }
+
+        .math-font { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Scrollbar custom */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGAZIONE ORFINI -->
+    <a href="#" onclick="history.back()" class="absolute top-4 right-4 z-50 glass-panel p-2 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition shadow-lg flex items-center gap-2 pr-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="text-xs font-bold uppercase tracking-wider">Lab Home</span>
+    </a>
+
+    <!-- CANVAS 3D -->
+    <div id="canvas-container" class="absolute inset-0 z-0 bg-gradient-to-b from-slate-950 to-black"></div>
+
+    <!-- SIDEBAR CONTROLLI (Drawer su Mobile) -->
+    <div id="sidebar-container" class="absolute top-0 left-0 h-full w-full md:w-96 z-40 p-4 pointer-events-none flex flex-col transition-transform duration-300">
+        
+        <!-- Toggle Button per Mobile -->
+        <button id="toggle-sidebar" class="pointer-events-auto md:hidden mb-2 bg-indigo-600 text-white p-2 rounded-lg self-start shadow-lg flex items-center gap-2 text-xs font-bold uppercase">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            Menu Controlli
+        </button>
+
+        <div id="main-panel" class="glass-panel rounded-2xl p-5 pointer-events-auto flex-1 flex flex-col overflow-y-auto shadow-2xl border border-slate-700/50 relative">
+            
+            <!-- Header -->
+            <div class="mb-6 border-b border-slate-700 pb-4">
+                <h1 class="text-xl md:text-2xl font-black text-white tracking-tighter">Algebra<span class="text-indigo-400">Lab</span> 3D</h1>
+                <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-bold">Visualizzazione Geometrica</p>
+            </div>
+
+            <!-- Switch 2D/3D -->
+            <div class="mb-4">
+                <div class="grid grid-cols-2 gap-2 bg-slate-900/50 p-1 rounded-xl">
+                    <button id="btn-cat-2d" class="py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-lg flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                        Aree (2D)
+                    </button>
+                    <button id="btn-cat-3d" class="py-2 px-3 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800 flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        Volumi (3D)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selettore Modello -->
+            <div class="mb-6">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 block">Modello Matematico</label>
+                <select id="select-model" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 math-font shadow-inner outline-none">
+                    <!-- Popolato via JS -->
+                </select>
+            </div>
+
+            <!-- Controlli Slider -->
+            <div id="controls-area" class="space-y-4 mb-6 p-4 bg-slate-900/40 rounded-xl border border-slate-700/50"></div>
+
+            <!-- Legenda Colori -->
+            <div class="mb-4 grid grid-cols-2 gap-2 text-[9px] text-slate-400 font-mono uppercase font-bold">
+                <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-cyan-500 mr-2 shadow-[0_0_5px_#06b6d4]"></span>Termine A / x</div>
+                <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-pink-500 mr-2 shadow-[0_0_5px_#ec4899]"></span>Termine B / y</div>
+                <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-violet-500 mr-2 shadow-[0_0_5px_#8b5cf6]"></span>Misto (ab, xy)</div>
+                <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 shadow-[0_0_5px_#10b981]"></span>Unità / Fattore k</div>
+            </div>
+
+            <div class="mt-auto">
+                <div class="p-4 bg-gradient-to-br from-indigo-900/30 to-slate-900/50 border border-indigo-500/20 rounded-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-2 -mr-2 w-16 h-16 bg-indigo-500 blur-3xl opacity-20"></div>
+                    <h3 id="formula-display" class="text-sm font-bold text-indigo-200 mb-1 math-font relative z-10">Formula</h3>
+                    <p id="description-display" class="text-xs text-slate-300 leading-relaxed relative z-10 italic">Descrizione.</p>
+                </div>
+            </div>
+
+            <div class="mt-4 flex justify-between items-center pt-4 border-t border-slate-700">
+                <button id="btn-explode" class="text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-700 px-3 py-2 rounded transition border border-transparent hover:border-slate-600">
+                    <span class="text-base">💥</span> Esplodi
+                </button>
+                <button id="btn-labels" class="text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 text-cyan-400 hover:text-white hover:bg-cyan-900/30 px-3 py-2 rounded transition border border-cyan-500/30 bg-cyan-950/20">
+                    <span class="text-base">🏷️</span> Etichette
+                </button>
+            </div>
+            
+            <!-- Mobile Close Button (interno al pannello) -->
+            <button id="close-sidebar" class="md:hidden absolute top-2 right-2 text-slate-500 hover:text-white p-2">✕</button>
+        </div>
+    </div>
+
+    <div class="absolute bottom-4 left-4 z-10 pointer-events-none">
+        <div class="glass-panel px-4 py-2 rounded-full pointer-events-auto flex flex-col md:flex-row gap-2 md:gap-4 text-[10px] text-slate-500 font-bold uppercase tracking-widest shadow-lg">
+            <span>🖱️ Ruota: Sx / Touch</span>
+            <span>✋ Sposta: Dx / 2 Dita</span>
+            <span>🔍 Zoom: Scroll / Pinch</span>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- GESTIONE INTERFACCIA MOBILE ---
+        const sidebarContainer = document.getElementById('sidebar-container');
+        const mainPanel = document.getElementById('main-panel');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        const closeBtn = document.getElementById('close-sidebar');
+
+        // Su mobile nascondiamo il pannello all'avvio per mostrare il 3D
+        if(window.innerWidth < 768) {
+            mainPanel.classList.add('hidden');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            mainPanel.classList.remove('hidden');
+            toggleBtn.classList.add('hidden');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            mainPanel.classList.add('hidden');
+            toggleBtn.classList.remove('hidden');
+        });
+
+        // --- CONFIGURAZIONE THREE.JS ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x020617); // Slate 950
+        
+        // Grid helper più sottile
+        const gridHelper = new THREE.GridHelper(40, 40, 0x1e293b, 0x0f172a);
+        scene.add(gridHelper);
+
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(15, 15, 20);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Ottimizzazione prestazioni
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.08;
+
+        const ambLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight.position.set(10, 20, 10);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+        
+        // Luce colorata per atmosfera
+        const rimLight = new THREE.DirectionalLight(0x818cf8, 0.5); // Indigo light
+        rimLight.position.set(-10, 5, -5);
+        scene.add(rimLight);
+
+        const algebraGroup = new THREE.Group();
+        scene.add(algebraGroup);
+
+        // --- PALETTE COLORI ORFINI (Vibrante su scuro) ---
+        const PALETTE = {
+            primary: 0x06b6d4,    // Cyan (Termini base)
+            secondary: 0xec4899,  // Pink (Termini secondari)
+            mixed: 0x8b5cf6,      // Violet (Prodotti misti)
+            mixed2: 0xd946ef,     // Fuchsia (Prodotti misti complessi)
+            unit: 0x10b981,       // Emerald (Costanti/Unità)
+            negative: 0xe11d48,   // Rose (Termini negativi)
+            ghost: 0x94a3b8        // Slate (Wireframes)
+        };
+
+        const materials = {
+            primary: new THREE.MeshStandardMaterial({ color: PALETTE.primary, roughness: 0.3, metalness: 0.2 }),
+            secondary: new THREE.MeshStandardMaterial({ color: PALETTE.secondary, roughness: 0.3, metalness: 0.2 }),
+            mixed: new THREE.MeshStandardMaterial({ color: PALETTE.mixed, roughness: 0.3, metalness: 0.2 }),
+            mixed2: new THREE.MeshStandardMaterial({ color: PALETTE.mixed2, roughness: 0.3, metalness: 0.2 }),
+            unit: new THREE.MeshStandardMaterial({ color: PALETTE.unit, roughness: 0.4, metalness: 0.1 }),
+            negative: new THREE.MeshStandardMaterial({ color: PALETTE.negative, transparent: true, opacity: 0.2, roughness: 0.1, depthWrite: false }),
+            wire: new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 })
+        };
+
+        // --- STATE ---
+        const state = {
+            model: 'sq_bin_con',
+            params: { a: 3, b: 1, c: 1, x: 2, k: 2, y: 1.5 },
+            exploded: false,
+            showLabels: true
+        };
+
+        // --- FUNZIONI DI COSTRUZIONE ---
+        
+        function createLabelTexture(text, fontSize = 60) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = (text.length * fontSize * 0.7) + 60;
+            canvas.height = fontSize * 2;
+            
+            // Background pillola scura semitrasparente
+            ctx.fillStyle = "rgba(15, 23, 42, 0.8)"; 
+            ctx.roundRect(5, 5, canvas.width - 10, canvas.height - 10, 20);
+            ctx.fill();
+            
+            // Bordo accent
+            ctx.strokeStyle = "rgba(56, 189, 248, 0.5)"; // Sky blue
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.font = `bold ${fontSize}px 'JetBrains Mono', monospace`;
+            ctx.fillStyle = "#e2e8f0"; // Slate 200
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, canvas.width/2, canvas.height/2);
+            
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.minFilter = THREE.LinearFilter;
+            return tex;
+        }
+
+        function attachLabelToBlock(block, text, scaleMultiplier = 1.0) {
+            if(!text) return;
+            const tex = createLabelTexture(text);
+            const aspect = tex.image.width / tex.image.height;
+            const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
+            const sprite = new THREE.Sprite(mat);
+            
+            const params = block.geometry.parameters;
+            const zDim = params.depth;
+            const minFaceDim = Math.min(params.width, params.height);
+            let finalScale = minFaceDim * 0.6 * scaleMultiplier; 
+            finalScale = Math.max(0.4, Math.min(finalScale, 1.2));
+
+            sprite.scale.set(finalScale * aspect, finalScale, 1);
+            sprite.position.set(0, 0, zDim / 2 + 0.05);
+            sprite.renderOrder = 999;
+            block.add(sprite);
+            sprite.visible = state.showLabels;
+        }
+
+        function createBlock(w, h, d, matKey, x, y, z, labelText = "") {
+            const geom = new THREE.BoxGeometry(w, h, d);
+            const mesh = new THREE.Mesh(geom, materials[matKey]);
+            mesh.position.set(x, y, z);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            
+            const edges = new THREE.EdgesGeometry(geom);
+            const line = new THREE.LineSegments(edges, materials.wire);
+            mesh.add(line);
+
+            mesh.userData = { originalPos: new THREE.Vector3(x,y,z) };
+            algebraGroup.add(mesh);
+
+            if (labelText) attachLabelToBlock(mesh, labelText);
+            return mesh;
+        }
+
+        // --- GEOMETRIE 2D ---
+        function buildSqBinomial() {
+            const { a, b } = state.params; const d = 0.2;
+            createBlock(a, a, d, 'primary', a/2, a/2, 0, "a²");
+            createBlock(b, b, d, 'secondary', a + b/2, a + b/2, 0, "b²");
+            createBlock(b, a, d, 'mixed', a + b/2, a/2, 0, "ab");
+            createBlock(a, b, d, 'mixed', a/2, a + b/2, 0, "ab");
+        }
+
+        function buildSumDiff() {
+            const { a, b } = state.params;
+            const realB = Math.min(b, a * 0.9); const h = a - realB; const d = 0.2;
+            createBlock(a, h, d, 'primary', a/2, h/2, 0, "a(a-b)");
+            createBlock(realB, h, d, 'mixed', a + realB/2, h/2, 0, "b(a-b)");
+        }
+
+        function buildTrinomial() {
+            let { a, b, x } = state.params; a = Math.round(a); b = Math.round(b); const u = 1; const d = 0.2;
+            createBlock(x, x, d, 'primary', x/2, x/2, 0, "x²");
+            for(let i=0; i<a; i++) createBlock(u, x, d, 'mixed', x + u/2 + i*u, x/2, 0, "x");
+            for(let i=0; i<b; i++) createBlock(x, u, d, 'mixed', x/2, x + u/2 + i*u, 0, "x");
+            for(let i=0; i<a; i++) for(let j=0; j<b; j++) createBlock(u, u, d, 'unit', x + u/2 + i*u, x + u/2 + j*u, 0, (i===0 && j===0) ? "1" : "");
+        }
+
+        function buildRaccTotale() {
+            const { a, b, k } = state.params; const d = 0.2;
+            createBlock(a, k, d, 'mixed', a/2, k/2, 0, "ka");
+            createBlock(b, k, d, 'mixed2', a + b/2, k/2, 0, "kb");
+        }
+
+        function buildRaccParziale() {
+            const { a, b, x, y } = state.params; const d = 0.2;
+            createBlock(a, x, d, 'primary', a/2, x/2, 0, "ax");
+            createBlock(b, x, d, 'secondary', a + b/2, x/2, 0, "bx");
+            createBlock(a, y, d, 'mixed', a/2, x + y/2, 0, "ay");
+            createBlock(b, y, d, 'mixed2', a + b/2, x + y/2, 0, "by");
+        }
+
+        // --- GEOMETRIE 3D ---
+        function buildCubeBin() {
+            const { a, b } = state.params;
+            createBlock(a, a, a, 'primary', a/2, a/2, a/2, "a³");
+            createBlock(b, b, b, 'secondary', a + b/2, a + b/2, a + b/2, "b³");
+            createBlock(b, a, a, 'mixed', a + b/2, a/2, a/2, "a²b"); 
+            createBlock(a, b, a, 'mixed', a/2, a + b/2, a/2, "a²b"); 
+            createBlock(a, a, b, 'mixed', a/2, a/2, a + b/2, "a²b"); 
+            createBlock(a, b, b, 'mixed2', a/2, a + b/2, a + b/2, "ab²"); 
+            createBlock(b, a, b, 'mixed2', a + b/2, a/2, a + b/2, "ab²"); 
+            createBlock(b, b, a, 'mixed2', a + b/2, a + b/2, a/2, "ab²"); 
+        }
+
+        function buildProd3Bin() {
+            let { x, a, b, c } = state.params; a = Math.round(a); b = Math.round(b); c = Math.round(c);
+            createBlock(x, x, x, 'primary', x/2, x/2, x/2, "x³");
+            if(a > 0) createBlock(a, x, x, 'mixed', x + a/2, x/2, x/2, `ax²`); 
+            if(b > 0) createBlock(x, b, x, 'mixed', x/2, x + b/2, x/2, `bx²`); 
+            if(c > 0) createBlock(x, x, c, 'mixed', x/2, x/2, x + c/2, `cx²`); 
+            if(a > 0 && b > 0) createBlock(a, b, x, 'mixed2', x + a/2, x + b/2, x/2, "abx");
+            if(a > 0 && c > 0) createBlock(a, x, c, 'mixed2', x + a/2, x/2, x + c/2, "acx");
+            if(b > 0 && c > 0) createBlock(x, b, c, 'mixed2', x/2, x + b/2, x + c/2, "bcx");
+            if(a > 0 && b > 0 && c > 0) createBlock(a, b, c, 'unit', x + a/2, x + b/2, x + c/2, "abc");
+        }
+
+        function buildSumCubes() {
+            const { a, b } = state.params;
+            createBlock(a, a, a, 'primary', -a/2, 0, 0, "a³");
+            createBlock(b, b, b, 'secondary', a/2 + b/2 + 0.2, - (a-b)/2, 0, "b³"); 
+        }
+
+        function buildDiffCubes() {
+            const { a, b } = state.params;
+            const realB = Math.min(b, a * 0.8); 
+            createBlock(a, a, a-realB, 'primary', 0, 0, -(realB)/2, "a²(a-b)");
+            createBlock(a, a-realB, realB, 'mixed', 0, -(realB)/2, (a-realB)/2, "ab(a-b)");
+            createBlock(a-realB, realB, realB, 'secondary', -(realB)/2, (a-realB)/2, (a-realB)/2, "b²(a-b)");
+            createBlock(realB, realB, realB, 'negative', (a-realB)/2, (a-realB)/2, (a-realB)/2, "-b³");
+        }
+
+        // --- DEFINIZIONE MODELLI ---
+        const MODELS = [
+            { id: 'sq_bin_con', cat: '2d', name: 'Quadrato Binomio', desc: '(a+b)² = a² + 2ab + b²', formula: '(a+b)²' },
+            { id: 'sum_diff', cat: '2d', name: 'Somma per Differenza', desc: '(a+b)(a-b) = a² - b²', formula: '(a+b)(a-b)' },
+            { id: 'trin_not', cat: '2d', name: 'Trinomio Notevole', desc: 'x² + sx + p = (x+a)(x+b)', formula: '(x+a)(x+b)' },
+            { id: 'racc_tot', cat: '2d', name: 'Raccoglimento Totale', desc: 'ka + kb = k(a+b)', formula: 'k(a+b)' },
+            { id: 'racc_parz', cat: '2d', name: 'Raccoglimento Parziale', desc: 'ax + ay + bx + by = (a+b)(x+y)', formula: '(a+b)(x+y)' },
+            { id: 'cube_bin', cat: '3d', name: 'Cubo di Binomio', desc: '(a+b)³ = a³ + 3a²b + 3ab² + b³', formula: '(a+b)³' },
+            { id: 'prod_3_bin', cat: '3d', name: 'Prodotto 3 Binomi', desc: '(x+a)(x+b)(x+c) = x³ + ...', formula: '(x+a)(x+b)(x+c)' },
+            { id: 'sum_cubes', cat: '3d', name: 'Somma di Cubi', desc: 'a³ + b³ = (a+b)(a² - ab + b²)', formula: 'a³ + b³' },
+            { id: 'diff_cubes', cat: '3d', name: 'Differenza di Cubi', desc: 'a³ - b³ = (a-b)(a² + ab + b²)', formula: 'a³ - b³' }
+        ];
+
+        function updateScene() {
+            while(algebraGroup.children.length) algebraGroup.remove(algebraGroup.children[0]);
+            const m = state.model;
+            if (m === 'sq_bin_con') buildSqBinomial();
+            else if (m === 'sum_diff') buildSumDiff();
+            else if (m === 'trin_not') buildTrinomial();
+            else if (m === 'racc_tot') buildRaccTotale();
+            else if (m === 'racc_parz') buildRaccParziale();
+            else if (m === 'cube_bin') buildCubeBin();
+            else if (m === 'prod_3_bin') buildProd3Bin();
+            else if (m === 'sum_cubes') buildSumCubes();
+            else if (m === 'diff_cubes') buildDiffCubes();
+
+            // Centratura e preparazione esplosione
+            const box = new THREE.Box3().setFromObject(algebraGroup);
+            if(!box.isEmpty()){
+                const center = box.getCenter(new THREE.Vector3());
+                algebraGroup.children.forEach(child => {
+                    let dir = new THREE.Vector3().subVectors(child.position, center);
+                    if (dir.lengthSq() < 0.001) dir.set(0.0, 0.0, 1.0); 
+                    dir.normalize();
+                    child.userData.explodeDir = dir;
+                });
+                algebraGroup.position.sub(center);
+            }
+        }
+
+        function updateExplosion() {
+            const scalar = state.exploded ? 1.5 : 0;
+            algebraGroup.children.forEach(mesh => {
+                if(mesh.userData.explodeDir) {
+                    const target = mesh.userData.originalPos.clone().addScaledVector(mesh.userData.explodeDir, scalar);
+                    mesh.userData.targetPos = target;
+                }
+            });
+        }
+
+        // --- GESTIONE UI ---
+        const selectModel = document.getElementById('select-model');
+        const controlsArea = document.getElementById('controls-area');
+        
+        function renderUI() {
+            const is2d = document.getElementById('btn-cat-2d').classList.contains('bg-indigo-600');
+            const cat = is2d ? '2d' : '3d';
+            
+            selectModel.innerHTML = '';
+            MODELS.filter(m => m.cat === cat).forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id; opt.text = m.name;
+                selectModel.add(opt);
+            });
+            selectModel.value = state.model;
+
+            controlsArea.innerHTML = '';
+            const createSlider = (id, label, min, max, val, step=0.5) => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="flex justify-between text-[10px] text-indigo-300 font-bold mb-1 uppercase tracking-wide">
+                        <span>${label}</span><span id="val-${id}" class="text-white">${val}</span>
+                    </div>
+                    <input type="range" id="sld-${id}" min="${min}" max="${max}" step="${step}" value="${val}" class="w-full">
+                `;
+                controlsArea.appendChild(div);
+                div.querySelector('input').addEventListener('input', (e) => {
+                    state.params[id] = parseFloat(e.target.value);
+                    document.getElementById(`val-${id}`).innerText = state.params[id];
+                    updateScene();
+                    if(state.exploded) updateExplosion();
+                });
+            };
+
+            // Logica slider per modello
+            if(state.model === 'trin_not') {
+                createSlider('x', 'Var x', 2, 5, state.params.x);
+                createSlider('a', 'Num a', 1, 5, 2, 1);
+                createSlider('b', 'Num b', 1, 5, 3, 1);
+            } else if (state.model === 'racc_tot') {
+                createSlider('k', 'Fattore k', 1, 4, state.params.k);
+                createSlider('a', 'Lato a', 1, 4, state.params.a);
+                createSlider('b', 'Lato b', 1, 4, state.params.b);
+            } else if (state.model === 'racc_parz') {
+                createSlider('a', 'Lato a', 1, 4, state.params.a);
+                createSlider('b', 'Lato b', 1, 4, state.params.b);
+                createSlider('x', 'Lato x', 1, 4, state.params.x);
+                createSlider('y', 'Lato y', 1, 4, state.params.y);
+            } else if (state.model === 'prod_3_bin') {
+                createSlider('x', 'Var x', 1, 3, state.params.x);
+                createSlider('a', 'Cost a', 0, 3, 1, 1);
+                createSlider('b', 'Cost b', 0, 3, 1, 1);
+                createSlider('c', 'Cost c', 0, 3, 1, 1);
+            } else if (state.model === 'sum_cubes' || state.model === 'diff_cubes') {
+                createSlider('a', 'Lato A', 2, 5, state.params.a);
+                createSlider('b', 'Lato B', 1, 2, state.params.b);
+            } else {
+                createSlider('a', 'Lato A', 2, 6, state.params.a);
+                createSlider('b', 'Lato B', 0.5, 2, state.params.b);
+            }
+
+            const info = MODELS.find(m => m.id === state.model);
+            if(info) {
+                document.getElementById('formula-display').innerText = info.formula;
+                document.getElementById('description-display').innerText = info.desc;
+            }
+        }
+
+        const setCat = (is2d) => {
+            const btn2d = document.getElementById('btn-cat-2d');
+            const btn3d = document.getElementById('btn-cat-3d');
+            
+            if(is2d) {
+                btn2d.className = "py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-lg flex items-center justify-center gap-2";
+                btn3d.className = "py-2 px-3 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800 flex items-center justify-center gap-2";
+                state.model = 'sq_bin_con';
+            } else {
+                btn2d.className = "py-2 px-3 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800 flex items-center justify-center gap-2";
+                btn3d.className = "py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-lg flex items-center justify-center gap-2";
+                state.model = 'cube_bin';
+            }
+            state.exploded = false;
+            renderUI(); updateScene();
+        };
+
+        document.getElementById('btn-cat-2d').onclick = () => setCat(true);
+        document.getElementById('btn-cat-3d').onclick = () => setCat(false);
+
+        selectModel.onchange = (e) => {
+            state.model = e.target.value;
+            state.exploded = false;
+            document.getElementById('btn-explode').innerHTML = '<span class="text-base">💥</span> Esplodi';
+            renderUI(); updateScene();
+        };
+
+        document.getElementById('btn-explode').onclick = function() {
+            state.exploded = !state.exploded;
+            this.classList.toggle('bg-indigo-900/50');
+            this.innerHTML = state.exploded ? '<span class="text-base">↩️</span> Unisci' : '<span class="text-base">💥</span> Esplodi';
+            updateExplosion();
+        };
+
+        document.getElementById('btn-labels').onclick = function() {
+            state.showLabels = !state.showLabels;
+            this.classList.toggle('opacity-50');
+            algebraGroup.traverse(child => {
+                if(child.isSprite) child.visible = state.showLabels;
+            });
+        };
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            algebraGroup.children.forEach(mesh => {
+                if(mesh.userData.targetPos) mesh.position.lerp(mesh.userData.targetPos, 0.1);
+            });
+            renderer.render(scene, camera);
+        }
+
+        renderUI();
+        updateScene();
+        animate();
+
+    </script>
+</body>
+</html>
