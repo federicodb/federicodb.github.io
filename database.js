@@ -202,6 +202,49 @@ const db = [
         "icon": "🧪"
     },
     {
+        "title": "Albero di Pitagora: Frattali 3D",
+        "excerpt": "Generatore parametrico di alberi frattali. Visualizzazione simultanea 2D (Geometrica) e 3D (Estrusa) con controlli interattivi ed export STL. Include spiegazione dell",
+        "tags": [
+            "Matematica",
+            "Geometria",
+            "Frattali",
+            "Ricorsione",
+            "Stampa 3D",
+            "Pitagora",
+            "Algoritmi",
+            "Coding",
+            "1EL",
+            "2EL",
+            "3MEC",
+            "Mat:Geometria",
+            "Mat:Modellizzazione",
+            "EU:STEM",
+            "Lab"
+        ],
+        "url": "lezioni/albero_pitagorico_3d_gemini_001.html",
+        "date": "2025-12-08",
+        "icon": "📐"
+    },
+    {
+        "title": "Parabola Challenge: Disequazioni",
+        "excerpt": "Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino all",
+        "tags": [
+            "Matematica",
+            "Algebra",
+            "Disequazioni",
+            "Parabola",
+            "Scaffolding",
+            "3EL",
+            "4EL",
+            "Mat:Analisi",
+            "Mat:ProblemSolving",
+            "Gamification"
+        ],
+        "url": "lezioni/disequazioni grafiche 4el.html",
+        "date": "2025-12-08",
+        "icon": "📐"
+    },
+    {
         "title": "Math Underground: Mappa Funzioni",
         "excerpt": "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche (Dominio, Tipi, Proprietà).",
         "tags": [
