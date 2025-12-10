@@ -13,6 +13,24 @@ const db = [
         "icon": "📄"
     },
     {
+        "title": "Studio di Funzioni: Lab Analisi + AI",
+        "excerpt": "Suite completa per lo studio di funzioni reali: dominio, simmetrie, classificazione e composizione. Grafici interattivi e analisi in tempo reale powered by Gemini.",
+        "tags": [
+            "Matematica",
+            "Analisi",
+            "Funzioni",
+            "Studio di Funzione",
+            "Grafici",
+            "Dominio",
+            "AI",
+            "Gemini",
+            "Education"
+        ],
+        "url": "lezioni/functions_lab_008.html",
+        "date": "2025-12-10",
+        "icon": "📐"
+    },
+    {
         "title": "Scomposizione Polinomi (Memory)",
         "excerpt": "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).",
         "tags": [
