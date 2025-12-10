@@ -5,6 +5,14 @@
 
 const db = [
     {
+        "title": "Percent Lab",
+        "excerpt": "Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.",
+        "tags": [],
+        "url": "lezioni/percentuali_001.html",
+        "date": "2025-12-10",
+        "icon": "📄"
+    },
+    {
         "title": "Scomposizione Polinomi (Memory)",
         "excerpt": "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).",
         "tags": [
@@ -268,7 +276,7 @@ const db = [
     },
     {
         "title": "PIP",
-        "excerpt": "Terminale RobCo Industries. Simulatore avanzato con profili utente, difficoltà adattiva e classifiche.",
+        "excerpt": "Terminale Orfini Industries. Simulatore per lo studio della retta in forma esplicita, attraverso i parametri m e q.",
         "tags": [],
         "url": "lezioni/retta_fallout_001.html",
         "date": "2025-12-08",

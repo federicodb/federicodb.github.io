@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport ottimizzato per evitare lo zoom automatico e gestire la safe-area degli iPhone moderni -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Percent Lab - Matematica Laboratoriale</title>
+    <meta name="description" content="Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.">
+    
+    <!-- React & Tailwind -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap');
+        
+        /* --- CONFIGURAZIONE COLORI & TEMI --- */
+        :root {
+            --bg-body: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #0f172a;
+            --border: #e2e8f0;
+            --accent-primary: #4f46e5;
+            --accent-success: #10b981;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #000000; /* Nero assoluto per schermi OLED/AMOLED */
+            --bg-surface: #111827; /* Gray 900 */
+            --text-main: #f8fafc;
+            --border: #1f2937;
+            --accent-primary: #6366f1; /* Indigo 500 */
+            --accent-success: #34d399; /* Emerald 400 */
+        }
+
+        /* --- STRUTTURA BASE --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0; padding: 0;
+            /* Altezza dinamica per mobile (gestisce la barra indirizzi a scomparsa) */
+            height: 100dvh; 
+            width: 100vw;
+            overflow: hidden; /* Impedisce scroll elastico del body */
+            -webkit-tap-highlight-color: transparent; /* Rimuove flash blu su touch */
+        }
+
+        #root { height: 100%; width: 100%; }
+
+        /* --- UTILITY UI --- */
+        .glass {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 1rem;
+        }
+
+        /* Scrollbar nascosta ma funzionale */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- SLIDER MAGICO --- */
+        /* Nasconde l'aspetto di default */
+        input[type=range] { 
+            -webkit-appearance: none; 
+            background: transparent; 
+            width: 100%; 
+            cursor: pointer;
+            /* CRUCIALE: Impedisce allo scroll della pagina di attivarsi mentre si usa lo slider */
+            touch-action: none; 
+        }
+        
+        /* Thumb (il pallino) invisibile ma grande per il touch */
+        input[type=range]::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            height: 48px; width: 48px; /* Hit area grande (48px standard accessibilità) */
+            margin-top: -22px; /* Centratura verticale rispetto alla track */
+            opacity: 0; 
+        }
+        input[type=range]::-moz-range-thumb { 
+            height: 48px; width: 48px; 
+            border: none; opacity: 0; 
+        }
+
+        /* Animazioni */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-enter { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-pop { animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+
+        // --- COMPONENTI UI ATOMICI ---
+
+        const Icon = ({ path, className = "w-5 h-5" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d={path}/></svg>
+        );
+
+        const icons = {
+            chart: "M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z",
+            brain: "M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z",
+            swap: "M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4",
+            check: "M20 6L9 17l-5-5",
+            trophy: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6m0 0V3h12v1m0 0h1.5a2.5 2.5 0 0 1 0 5H18m-5 6v3a2 2 0 0 1-2 2h-1m4-5h3a2 2 0 0 1 2 2v1m-5-3a6 6 0 0 0-6-6M9 20h6",
+            home: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+        };
+
+        const formatNum = (n) => Number.isInteger(n) ? n : n.toFixed(1).replace('.', ',');
+
+        // --- COMPONENTE: SLIDER VISIVO ---
+        const SmartSlider = ({ value, onChange, min = 0, max = 100, step = 1 }) => {
+            // Calcolo percentuale per la larghezza della barra colorata
+            const percentage = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+            
+            return (
+                <div className="relative w-full h-12 flex items-center select-none group">
+                    {/* Track Background */}
+                    <div className="absolute w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        {/* Track Fill */}
+                        <div 
+                            className="h-full bg-indigo-500 transition-all duration-75 ease-out" 
+                            style={{ width: `${percentage}%` }}
+                        />
+                        
+                        {/* Tacche decorative */}
+                        <div className="absolute inset-0 w-full h-full flex justify-between px-1 opacity-20 pointer-events-none">
+                            {[0, 25, 50, 75, 100].map(t => (
+                                <div key={t} className="h-full w-px bg-current" style={{left: `${t}%`, position: 'absolute'}}></div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Thumb Visivo (Fake) */}
+                    <div 
+                        className="absolute h-7 w-7 bg-white rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-2 border-indigo-500 pointer-events-none transition-all duration-75 ease-out transform group-active:scale-110"
+                        style={{ left: `calc(${percentage}% - 14px)` }}
+                    ></div>
+
+                    {/* Input Reale (Invisibile ma con Hit-Box gigante) */}
+                    <input 
+                        type="range" 
+                        min={min} max={max} step={step} 
+                        value={value} 
+                        onChange={(e) => onChange(parseFloat(e.target.value))}
+                        className="absolute inset-0 w-full h-full z-10 opacity-0 touch-none"
+                    />
+                </div>
+            );
+        };
+
+        // --- VISTA 1: ESPLORATORE ---
+        const Visualizer = ({ base, setBase, perc, setPerc, isSwapped, setIsSwapped }) => {
+            const result = (base * perc) / 100;
+            
+            // Dati per Pie Chart SVG
+            const r = 40; 
+            const circ = 2 * Math.PI * r;
+            const offset = circ - (Math.min(100, perc) / 100) * circ;
+
+            return (
+                <div className="flex flex-col h-full gap-4">
+                    {/* CARD PRINCIPALE */}
+                    <div className="glass p-5 md:p-8 flex flex-col gap-6 relative overflow-hidden animate-enter">
+                        {/* Decorazione Sfondo */}
+                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                            <Icon path={icons.chart} className="w-32 h-32" />
+                        </div>
+
+                        {/* Header con Toggle Swap */}
+                        <div className="flex justify-between items-start z-10">
+                            <div>
+                                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Laboratorio</h2>
+                                <div className="text-3xl md:text-4xl font-black tracking-tight text-indigo-500">
+                                    {formatNum(result)}
+                                </div>
+                                <div className="text-xs md:text-sm font-medium opacity-70 mt-1">
+                                    {isSwapped 
+                                        ? <span><strong className="text-white">{base}%</strong> di {perc}</span>
+                                        : <span><strong className="text-white">{perc}%</strong> di {base}</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={() => setIsSwapped(!isSwapped)}
+                                className={`p-3 rounded-xl border transition-all active:scale-95 flex flex-col items-center gap-1
+                                    ${isSwapped ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'}`}
+                            >
+                                <Icon path={icons.swap} className="w-5 h-5" />
+                                <span className="text-[9px] font-bold uppercase">Inverti</span>
+                            </button>
+                        </div>
+
+                        {/* Visualizzazione Grafica (Pie + Slider) */}
+                        <div className="flex flex-col gap-6 mt-2 z-10">
+                            <div className="flex items-center gap-6">
+                                {/* Torta */}
+                                <div className="relative w-20 h-20 md:w-24 md:h-24 shrink-0 transition-all">
+                                    <svg className="w-full h-full transform -rotate-90">
+                                        <circle cx="50%" cy="50%" r={r} stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-200 dark:text-slate-800"/>
+                                        <circle cx="50%" cy="50%" r={r} stroke="currentColor" strokeWidth="8" fill="transparent" 
+                                            className="text-indigo-500 transition-all duration-300 ease-out"
+                                            strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" 
+                                        />
+                                    </svg>
+                                    <div className="absolute inset-0 flex items-center justify-center font-mono font-bold text-xs md:text-sm opacity-50">
+                                        {perc.toFixed(0)}%
+                                    </div>
+                                </div>
+
+                                {/* Controlli Slider */}
+                                <div className="flex-1">
+                                    <div className="flex justify-between mb-2">
+                                        <label className="text-xs font-bold uppercase opacity-60">Percentuale</label>
+                                        <span className="text-xs font-mono font-bold text-indigo-400">{perc.toFixed(1)}%</span>
+                                    </div>
+                                    <SmartSlider value={perc} onChange={setPerc} step={0.5} />
+                                    <div className="flex justify-between mt-1 px-1">
+                                        <button onClick={() => setPerc(Math.max(0, perc-1))} className="p-2 -m-2 text-slate-400 hover:text-white transition text-xl font-bold active:scale-90">-</button>
+                                        <button onClick={() => setPerc(Math.min(100, perc+1))} className="p-2 -m-2 text-slate-400 hover:text-white transition text-xl font-bold active:scale-90">+</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Input Base */}
+                            <div className="space-y-2 pt-4 border-t border-dashed border-slate-700">
+                                <label className="text-xs font-bold uppercase opacity-60 block">Valore Base (Totale)</label>
+                                <div className="flex gap-4 items-center">
+                                    <input 
+                                        type="number" 
+                                        inputMode="decimal"
+                                        value={base} 
+                                        onChange={(e) => setBase(Number(e.target.value))}
+                                        className="bg-slate-900/50 border border-slate-700 rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-indigo-500 transition-colors"
+                                    />
+                                    <div className="flex gap-1 shrink-0">
+                                        {[100, 200, 500].map(v => (
+                                            <button key={v} onClick={() => setBase(v)} className="px-3 py-2 text-xs font-bold bg-slate-800 rounded-md hover:bg-slate-700 transition border border-slate-700">
+                                                {v}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* TRUCCHI GRID */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-24 md:pb-0">
+                        {[
+                            {t: "10%", d: "Sposta virgola ←", f: "10% di 450 = 45", c: "border-emerald-500"},
+                            {t: "50%", d: "Dimezza il numero", f: "50% di 80 = 40", c: "border-blue-500"},
+                            {t: "25%", d: "Metà della metà", f: "Metà 40 è 20", c: "border-purple-500"},
+                            {t: "5%", d: "Metà del 10%", f: "10% è 8 → 5% è 4", c: "border-amber-500"},
+                            {t: "1%", d: "Sposta virgola ←←", f: "1% di 300 = 3", c: "border-pink-500"},
+                            {t: "Swap", d: "Inverti i numeri", f: "8% di 25 → 25% di 8", c: "border-indigo-500"}
+                        ].map((trick, i) => (
+                            <div key={i} className={`glass p-4 border-l-4 ${trick.c} bg-opacity-40 hover:bg-opacity-100 transition-all cursor-default`}>
+                                <div className="font-bold text-xs uppercase mb-1 opacity-80">{trick.t}</div>
+                                <div className="text-[11px] leading-tight opacity-60 mb-2">{trick.d}</div>
+                                <div className="bg-black/20 p-1.5 rounded text-[10px] font-mono text-center opacity-90">{trick.f}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- VISTA 2: QUIZ GAME ---
+        const QuizGame = ({ onBack }) => {
+            const [gameState, setGameState] = useState('playing'); // playing, feedback, end
+            const [qIndex, setQIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [input, setInput] = useState('');
+            const [question, setQuestion] = useState(null);
+            
+            const TOTAL_Q = 5;
+
+            // Generatore domande sicuro
+            const nextQuestion = () => {
+                const types = [
+                    { txt: (b, p) => `Il telefono ha ${b}mAh. È carico al ${p}%. Quanto rimane?`, calc: (b, p) => b * p / 100 },
+                    { txt: (b, p) => `Scarpe da ${b}€. Sconto del ${p}%. Quanto risparmi?`, calc: (b, p) => b * p / 100 },
+                    { txt: (b, p) => `${p}% di ${b} follower hanno messo like. Quanti like?`, calc: (b, p) => b * p / 100 },
+                    { txt: (b, p) => `Quanto fa il ${p}% di ${b}?`, calc: (b, p) => b * p / 100 } // Puro calcolo
+                ];
+                
+                // Logica per numeri "belli"
+                let b = Math.floor(Math.random() * 20 + 1) * 10; // 10, 20... 200
+                let p = [10, 20, 25, 50, 5, 1][Math.floor(Math.random() * 6)];
+                
+                // Ogni tanto un calcolo "invertito" facile (es. 4% di 50)
+                if (Math.random() > 0.7) {
+                    b = [25, 50][Math.floor(Math.random()*2)];
+                    p = Math.floor(Math.random() * 10) * 2; 
+                }
+
+                const t = types[Math.floor(Math.random() * types.length)];
+                setQuestion({ text: t.txt(b, p), ans: t.calc(b, p), base: b, perc: p });
+                setInput('');
+                setGameState('playing');
+            };
+
+            useEffect(() => { nextQuestion(); }, []);
+
+            const checkAnswer = (e) => {
+                e.preventDefault();
+                const userVal = parseFloat(input.replace(',', '.'));
+                if (isNaN(userVal)) return;
+
+                const isCorrect = Math.abs(userVal - question.ans) < 0.1;
+                if (isCorrect) setScore(s => s + 1);
+                
+                setGameState(isCorrect ? 'correct' : 'wrong');
+
+                setTimeout(() => {
+                    if (qIndex < TOTAL_Q - 1) {
+                        setQIndex(i => i + 1);
+                        nextQuestion();
+                    } else {
+                        setGameState('end');
+                    }
+                }, 1500);
+            };
+
+            if (gameState === 'end') {
+                return (
+                    <div className="flex flex-col items-center justify-center h-full text-center animate-pop p-6">
+                        <div className="text-6xl mb-6">🏆</div>
+                        <h2 className="text-3xl font-black mb-2 text-white">Quiz Terminato</h2>
+                        <p className="text-slate-400 mb-8">Punteggio finale: <strong className="text-indigo-400 text-xl">{score}/{TOTAL_Q}</strong></p>
+                        <button onClick={onBack} className="w-full max-w-xs py-4 bg-indigo-600 rounded-xl font-bold text-white shadow-lg shadow-indigo-500/30 active:scale-95 transition">
+                            Torna alla Dashboard
+                        </button>
+                    </div>
+                );
+            }
+
+            if (!question) return null;
+
+            return (
+                <div className="flex flex-col h-full max-w-md mx-auto p-4 justify-center animate-enter">
+                    {/* Progress */}
+                    <div className="flex gap-1 mb-8">
+                        {[...Array(TOTAL_Q)].map((_, i) => (
+                            <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < qIndex ? 'bg-indigo-500' : i === qIndex ? 'bg-white' : 'bg-slate-700'}`}></div>
+                        ))}
+                    </div>
+
+                    <div className="glass p-8 md:p-10 text-center border-t-4 border-indigo-500 relative bg-opacity-90 backdrop-blur-md">
+                         <div className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Domanda {qIndex + 1}</div>
+                         
+                         <h3 className="text-xl md:text-2xl font-bold mb-8 leading-snug min-h-[4rem] flex items-center justify-center">
+                             {question.text}
+                         </h3>
+
+                         <form onSubmit={checkAnswer} className="relative">
+                             <input 
+                                autoFocus
+                                type="number" step="0.01" inputMode="decimal"
+                                value={input} 
+                                onChange={e => setInput(e.target.value)}
+                                placeholder="?"
+                                disabled={gameState !== 'playing'}
+                                className={`w-full bg-slate-900 border-2 rounded-2xl py-4 text-center text-3xl font-bold outline-none transition-all
+                                    ${gameState === 'correct' ? 'border-emerald-500 text-emerald-500' : 
+                                      gameState === 'wrong' ? 'border-red-500 text-red-500' : 
+                                      'border-slate-700 focus:border-indigo-500'}`}
+                             />
+                             
+                             {gameState === 'playing' && input && (
+                                 <button type="submit" className="absolute right-3 top-3 bottom-3 aspect-square bg-indigo-600 rounded-xl flex items-center justify-center text-white animate-pop">
+                                     <Icon path={icons.check} />
+                                 </button>
+                             )}
+                         </form>
+
+                         <div className="h-8 mt-4 flex items-center justify-center text-sm font-bold">
+                             {gameState === 'correct' && <span className="text-emerald-400 animate-bounce">Grande! +1 Punto</span>}
+                             {gameState === 'wrong' && <span className="text-red-400">No! Era {formatNum(question.ans)}</span>}
+                         </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- APP CONTAINER ---
+        const App = () => {
+            const [view, setView] = useState('lab'); // lab, quiz
+            const [base, setBase] = useState(200);
+            const [perc, setPerc] = useState(25);
+            const [isSwapped, setIsSwapped] = useState(false);
+            const [theme, setTheme] = useState('dark');
+
+            // Toggle Tema
+            useEffect(() => {
+                document.documentElement.setAttribute('data-theme', theme);
+            }, [theme]);
+
+            return (
+                <div className="flex flex-col h-full overflow-hidden bg-body transition-colors duration-300">
+                    {/* Header Mobile-Friendly */}
+                    <header className="shrink-0 h-16 px-4 flex items-center justify-between border-b border-slate-700/50 backdrop-blur-md sticky top-0 z-50 bg-body/80">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-500/20">
+                                %
+                            </div>
+                            <h1 className="font-bold text-lg tracking-tight hidden md:block">Percent Lab</h1>
+                        </div>
+
+                        <div className="flex bg-slate-800/50 p-1 rounded-lg">
+                            <button onClick={() => setView('lab')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${view === 'lab' ? 'bg-white text-black shadow-sm' : 'text-slate-400'}`}>Lab</button>
+                            <button onClick={() => setView('quiz')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${view === 'quiz' ? 'bg-indigo-500 text-white shadow-sm' : 'text-slate-400'}`}>Quiz</button>
+                        </div>
+
+                        <button onClick={() => setTheme(t => t==='dark'?'light':'dark')} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-800 transition text-slate-400">
+                            {theme === 'dark' ? '☀️' : '🌙'}
+                        </button>
+                    </header>
+
+                    {/* Main Scrollable Area */}
+                    <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 no-scrollbar">
+                        <div className="max-w-4xl mx-auto h-full">
+                            {view === 'lab' ? (
+                                <Visualizer 
+                                    base={base} setBase={setBase} 
+                                    perc={perc} setPerc={setPerc}
+                                    isSwapped={isSwapped} setIsSwapped={setIsSwapped}
+                                />
+                            ) : (
+                                <QuizGame onBack={() => setView('lab')} />
+                            )}
+                        </div>
+                    </main>
+                    
+                    {/* Footer Minimal */}
+                    <footer className="text-center py-4 text-[10px] uppercase font-bold text-slate-600 shrink-0 safe-area-bottom">
+                         Open Source Education • {new Date().getFullYear()}
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
