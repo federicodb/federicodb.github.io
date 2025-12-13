@@ -1,9 +1,35 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-13 07:48:18
+   Data: 2025-12-13 11:26:27
 */
 
 const db = [
+    {
+        "title": "Tattoo Delta",
+        "date": "2025-12-13",
+        "tags": [
+            "Visual",
+            "Infografica"
+        ],
+        "description": "Risorsa didattica: Tattoo Delta.",
+        "excerpt": "Risorsa didattica: Tattoo Delta.",
+        "url": "content/infografiche/tattoo_delta.png",
+        "type": "infographic",
+        "icon": "🖼️"
+    },
+    {
+        "title": "Guida Al Mondo Delle Funzioni Matematiche",
+        "date": "2025-12-13",
+        "tags": [
+            "Visual",
+            "Infografica"
+        ],
+        "description": "Risorsa didattica: Guida Al Mondo Delle Funzioni Matematiche.",
+        "excerpt": "Risorsa didattica: Guida Al Mondo Delle Funzioni Matematiche.",
+        "url": "content/infografiche/Guida_al_Mondo_delle_Funzioni_Matematiche.pdf",
+        "type": "infographic",
+        "icon": "🖼️"
+    },
     {
         "title": "PIP",
         "excerpt": "Terminale Orfini Industries. Simulatore per lo studio della retta in forma esplicita (y=mx+q). Analizza pendenza e intercetta.",
@@ -34,7 +60,7 @@ const db = [
             "Strumenti"
         ],
         "date": "2025-12-12",
-        "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0",
+        "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0?showPreview=true&showAssistant=false&fullscreenApplet=true",
         "excerpt": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
         "type": "link",
         "icon": "🌐"
