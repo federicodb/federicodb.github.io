@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-13 07:32:05
+   Data: 2025-12-13 07:48:18
 */
 
 const db = [
@@ -34,7 +34,7 @@ const db = [
             "Strumenti"
         ],
         "date": "2025-12-12",
-        "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0?showPreview=true&showAssistant=true",
+        "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0",
         "excerpt": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
         "type": "link",
         "icon": "🌐"

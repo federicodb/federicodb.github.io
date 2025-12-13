@@ -638,15 +638,6 @@
                     // Gestione link vs modale
                     if (item.type === 'app' || !item.type) {
                         card.href = item.url;
-
-                    // 2. CASO SPECIALE "GEMINI" (Solo per me!): Nuova scheda
-                    // Controlliamo se il titolo contiene "AI Studio" o se nei tag c'è "Gemini"
-                    } else if (item.title.includes('Google AI Studio') || item.tags.includes('Gemini')) {
-                        card.href = item.url;
-                        card.target = "_blank";              // Apre in una nuova scheda
-                        card.rel = "noopener noreferrer";    // Sicurezza
-
-                    // 3. TUTTI GLI ALTRI MEDIA E LINK GENERICI: Apre il Modale
                     } else {
                         card.href = "#";
                         card.onclick = (e) => {
