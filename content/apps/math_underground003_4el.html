@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Math Underground: Mappa Funzioni</title>
+    <!-- Shared Orfini Design System -->
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    <meta name="description" content="Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche (Dominio, Tipi, Proprietà).">
+    <meta name="keywords" content="Matematica, Analisi, Funzioni, Dominio, Mappa, 4EL, 5EL, Mat:Analisi, Mat:Modellizzazione, EU:STEM, Lab">
+    <meta name="date" content="2025-12-06">
+
+    <!-- 2. FIX MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <title>Math Underground - Pure Black</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Fira+Code:wght@400;600&family=Noto+Serif:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* FONDO NERO PURO (AMOLED) */
+        body { margin: 0; padding: 0; }
+        
+        /* Metro Lines - Schematic Style */
+        .metro-path {
+            fill: none;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s;
+            filter: url(#glow);
+        }
+        .metro-path:hover { stroke-width: 10; cursor: pointer; opacity: 1 !important; z-index: 10; }
+        
+        /* Minor Branches (Dotted) */
+        .metro-path-minor {
+            fill: none;
+            stroke-width: 3;
+            stroke-dasharray: 6, 4;
+            opacity: 0.8;
+            filter: url(#glow);
+        }
+
+        /* Nodes */
+        .station-node {
+            fill: #000000; stroke-width: 3; r: 7; cursor: pointer; transition: all 0.3s;
+        }
+        .station-node:hover { r: 10; fill: white; }
+        
+        /* End Node Pill */
+        .node-pill {
+            fill: #111111; fill-opacity: 0.95; stroke-width: 2; rx: 14; transition: all 0.3s; cursor: pointer;
+        }
+        .group:hover .node-pill {
+            fill: #222222; stroke-width: 3; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+        }
+
+        /* Labels */
+        .map-label {
+            font-size: 12px; font-weight: 700; fill: #f8fafc; pointer-events: none;
+            text-transform: uppercase; letter-spacing: 0.05em; text-anchor: middle; dominant-baseline: middle;
+        }
+        
+        /* Questions */
+        .map-question-bg { fill: #000000; opacity: 0.95; rx: 4; stroke: #334155; stroke-width: 1; }
+        .map-question {
+            font-size: 11px; font-weight: 500; fill: #94a3b8; text-anchor: middle; font-style: italic; cursor: pointer; transition: fill 0.2s;
+        }
+        .map-question:hover { fill: #fff; }
+
+        /* UI Screens */
+        .screen {
+            position: absolute; inset: 0; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s;
+            background: #000000;
+        }
+        .screen.hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Grid Background adapted for Pure Black */
+        .bg-grid-chalk {
+            background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Datalist Ticks Styling support */
+        input[type=range] { position: relative; }
+        input[type=range]::-webkit-slider-runnable-track { cursor: pointer; }
+    </style>
+
+    <!-- Configurazione Tailwind con Colori Semantici -->
+    <script>
+        tailwind.config = {
+            darkMode: ["class", "[data-theme="dark"]"],
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--md-sys-color-background)',
+                        'on-background': 'var(--md-sys-color-on-background)',
+                        surface: 'var(--md-sys-color-surface)',
+                        'surface-container': 'var(--md-sys-color-surface-container)',
+                        'on-surface-variant': 'var(--md-sys-color-on-surface-variant)',
+                        'outline-variant': 'var(--md-sys-color-outline-variant)',
+                        primary: 'var(--md-sys-color-primary)',
+                        'on-primary': 'var(--md-sys-color-on-primary)',
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+<body class="h-full w-full text-slate-100 selection:bg-cyan-500 selection:text-white">
+
+    <!-- NAVIGAZIONE -->
+    <nav class="absolute top-0 left-0 w-full z-40 p-6 flex justify-between items-start pointer-events-none">
+        <div class="pointer-events-auto">
+            <h1 class="text-3xl font-black tracking-tighter uppercase text-on-background drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">
+                Math<span class="text-cyan-400">Underground</span>
+            </h1>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mt-1 ml-1 border-l-2 border-slate-700 pl-2">Blackboard Edition</p>
+        </div>
+    </nav>
+
+    <!-- SCHERMATA 1: LA MAPPA -->
+    <div id="screen-map" class="screen bg-grid-chalk flex items-center justify-center overflow-auto cursor-grab active:cursor-grabbing">
+        
+        <svg id="main-svg" viewBox="0 0 1600 900" class="w-full h-full min-w-[1000px]" preserveAspectRatio="xMidYMid slice">
+            
+            <defs>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <!-- *** START BRANCH (BIANCO E BEN VISIBILE) *** -->
+            <path d="M 150 450 L 300 450" class="metro-path" stroke="#ffffff" stroke-width="6" stroke-opacity="1" />
+            
+            <!-- RAMO ALGEBRICHE (BLU) -->
+            <path d="M 300 450 L 340 450 Q 360 450 360 430 L 360 320 Q 360 300 380 300 L 450 300 L 600 300" class="metro-path" stroke="#3b82f6" />
+            <path d="M 600 300 L 640 300 Q 660 300 660 280 L 660 220 Q 660 200 680 200 L 980 200" class="metro-path" stroke="#60a5fa" />
+            <path d="M 600 300 L 640 300 Q 660 300 660 320 L 660 380 Q 660 400 680 400 L 980 400" class="metro-path" stroke="#60a5fa" />
+
+            <!-- RAMO IRRAZIONALI (TEAL) -->
+            <path d="M 450 300 L 480 300 Q 500 300 500 320 L 500 530 Q 500 550 520 550 L 750 550" class="metro-path" stroke="#14b8a6" />
+            <path d="M 750 550 L 790 550 Q 810 550 810 530 L 810 520 Q 810 500 830 500 L 980 500" class="metro-path" stroke="#2dd4bf" />
+            <path d="M 750 550 L 790 550 Q 810 550 810 570 L 810 580 Q 810 600 830 600 L 980 600" class="metro-path" stroke="#2dd4bf" />
+
+            <!-- RAMO TRASCENDENTI (ROSSO/ORANGE/PINK) -->
+            <path d="M 300 450 L 340 450 Q 360 450 360 470 L 360 730 Q 360 750 380 750 L 550 750" class="metro-path" stroke="#ef4444" />
+            
+            <path d="M 550 750 L 580 750 Q 600 750 600 770 L 600 830 Q 600 850 620 850 L 700 850" class="metro-path" stroke="#f97316" />
+            <path d="M 700 850 L 740 850 Q 760 850 760 840 L 760 830 Q 760 820 780 820 L 980 820" class="metro-path" stroke="#fb923c" />
+            <path d="M 700 850 L 740 850 Q 760 850 760 860 L 760 870 Q 760 880 780 880 L 980 880" class="metro-path" stroke="#fb923c" />
+
+            <path d="M 550 750 L 580 750 Q 600 750 600 730 L 600 720 Q 600 700 620 700 L 700 700" class="metro-path" stroke="#db2777" />
+            <path d="M 700 700 L 740 700 Q 760 700 760 690 L 760 680 Q 760 670 780 670 L 980 670" class="metro-path" stroke="#f472b6" />
+            <path d="M 700 700 L 740 700 Q 760 700 760 710 L 760 720 Q 760 730 780 730 L 980 730" class="metro-path" stroke="#f472b6" />
+
+
+            <!-- LINEE IBRIDE -->
+            <path d="M 1100 500 L 1115 500 Q 1130 500 1130 515 L 1130 525 Q 1130 540 1145 540 L 1160 540" class="metro-path-minor" stroke="#fbbf24" />
+            <path d="M 1100 820 L 1115 820 Q 1130 820 1130 835 L 1130 835 Q 1130 850 1145 850 L 1160 850" class="metro-path-minor" stroke="#fbbf24" />
+
+
+            <!-- NODI GIUNZIONE -->
+            <g onclick="showJunctionInfo('alg_vs_tra')"><circle cx="300" cy="450" class="station-node" stroke="#3b82f6" /><rect x="235" y="415" width="130" height="24" class="map-question-bg" /><text x="300" y="431" class="map-question">Solo op. elementari?</text></g>
+            <g onclick="showJunctionInfo('rat_vs_irr')"><circle cx="450" cy="300" class="station-node" stroke="#3b82f6" /><rect x="390" y="265" width="120" height="24" class="map-question-bg" /><text x="450" y="281" class="map-question" fill="#60a5fa">Sotto radice?</text></g>
+            <g onclick="showJunctionInfo('int_vs_frac')"><circle cx="600" cy="300" class="station-node" stroke="#60a5fa" /><rect x="530" y="325" width="140" height="24" class="map-question-bg" /><text x="600" y="341" class="map-question" fill="#93c5fd">Al denominatore?</text></g>
+            <g onclick="showJunctionInfo('index_root')"><circle cx="750" cy="550" class="station-node" stroke="#14b8a6" /><rect x="690" y="575" width="120" height="24" class="map-question-bg" /><text x="750" y="591" class="map-question" fill="#5eead4">Indice n?</text></g>
+            <g onclick="showJunctionInfo('trans_type')"><circle cx="550" cy="750" class="station-node" stroke="#ef4444" /><rect x="480" y="775" width="140" height="24" class="map-question-bg" /><text x="550" y="791" class="map-question" fill="#fca5a5">Posizione incognita?</text></g>
+
+            <!-- *** START NODE (Fisso, senza animazione scala) *** -->
+            <g onclick="showJunctionInfo('start')" class="cursor-pointer group">
+                <circle cx="150" cy="450" r="40" fill="#000000" stroke="#fff" stroke-width="4" class="transition-colors" />
+                <text x="150" y="442" text-anchor="middle" fill="white" font-weight="900" font-size="14" style="font-family: 'Outfit', sans-serif;">START</text>
+                <text x="150" y="465" text-anchor="middle" fill="#94a3b8" font-size="14" style="font-family: 'Noto Serif', serif; font-style: italic;">y = f(x)</text>
+            </g>
+
+
+            <!-- CAPOLINEA -->
+            <g onclick="openDetails('poly')" class="group"><rect x="980" y="186" width="120" height="28" class="node-pill" stroke="#60a5fa" /><text x="1040" y="201" class="map-label">Intere</text><circle cx="980" cy="200" class="station-node" stroke="#60a5fa" /></g>
+            <g onclick="openDetails('frac')" class="group"><rect x="980" y="386" width="130" height="28" class="node-pill" stroke="#60a5fa" /><text x="1045" y="401" class="map-label">Frazionarie</text><circle cx="980" cy="400" class="station-node" stroke="#60a5fa" /></g>
+            <g onclick="openDetails('rootEven')" class="group"><rect x="980" y="486" width="120" height="28" class="node-pill" stroke="#2dd4bf" /><text x="1040" y="501" class="map-label">Indice Pari</text><circle cx="980" cy="500" class="station-node" stroke="#2dd4bf" /></g>
+            <g onclick="openDetails('rootOdd')" class="group"><rect x="980" y="586" width="130" height="28" class="node-pill" stroke="#2dd4bf" /><text x="1045" y="601" class="map-label">Indice Dispari</text><circle cx="980" cy="600" class="station-node" stroke="#2dd4bf" /></g>
+            
+            <g onclick="openDetails('sin')" class="group"><rect x="980" y="656" width="140" height="28" class="node-pill" stroke="#f472b6" /><text x="1050" y="671" class="map-label">Goniometriche</text><circle cx="980" cy="670" class="station-node" stroke="#f472b6" /></g>
+            <g onclick="openDetails('arcsin')" class="group"><rect x="980" y="716" width="100" height="28" class="node-pill" stroke="#f472b6" /><text x="1030" y="731" class="map-label">Inverse</text><circle cx="980" cy="730" class="station-node" stroke="#f472b6" /></g>
+            
+            <g onclick="openDetails('exp')" class="group"><rect x="980" y="806" width="130" height="28" class="node-pill" stroke="#fb923c" /><text x="1045" y="821" class="map-label">Esponenziali</text><circle cx="980" cy="820" class="station-node" stroke="#fb923c" /></g>
+            <g onclick="openDetails('log')" class="group"><rect x="980" y="866" width="130" height="28" class="node-pill" stroke="#fb923c" /><text x="1045" y="881" class="map-label">Logaritmiche</text><circle cx="980" cy="880" class="station-node" stroke="#fb923c" /></g>
+
+            <g onclick="openDetails('irrFrac')" class="group"><rect x="1160" y="525" width="120" height="30" rx="4" fill="#1e1b4b" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,2" /><text x="1220" y="540" class="map-label" style="fill:#fbbf24">Irraz. Fratta</text><circle cx="1160" cy="540" class="station-node" stroke="#fbbf24" r="5" /></g>
+            <g onclick="openDetails('transMixed')" class="group"><rect x="1160" y="835" width="120" height="30" rx="4" fill="#1e1b4b" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,2" /><text x="1220" y="850" class="map-label" style="fill:#fbbf24">Miste / Fratte</text><circle cx="1160" cy="850" class="station-node" stroke="#fbbf24" r="5" /></g>
+
+        </svg>
+
+        <!-- LEGENDA -->
+        <div class="absolute bottom-6 left-6 bg-zinc-900/90 border border-zinc-700 p-4 rounded-xl shadow-xl backdrop-blur-sm pointer-events-none">
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Legenda Linee</h3>
+            <div class="space-y-1.5 text-xs font-bold text-slate-300">
+                <div class="flex items-center"><span class="w-3 h-1 rounded-full bg-blue-500 mr-2 shadow-[0_0_5px_#3b82f6]"></span> Algebriche</div>
+                <div class="flex items-center"><span class="w-3 h-1 rounded-full bg-teal-400 mr-2 shadow-[0_0_5px_#2dd4bf]"></span> Irrazionali</div>
+                <div class="flex items-center"><span class="w-3 h-1 rounded-full bg-pink-500 mr-2 shadow-[0_0_5px_#f472b6]"></span> Goniometriche</div>
+                <div class="flex items-center"><span class="w-3 h-1 rounded-full bg-orange-500 mr-2 shadow-[0_0_5px_#fb923c]"></span> Trascendenti</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE GIUNZIONI -->
+    <div id="junction-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 bg-black/90 backdrop-blur-sm transition-all duration-300" onclick="closeJunctionInfo()">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 max-w-md w-full shadow-2xl relative transform transition-all scale-95" onclick="event.stopPropagation()">
+            <button onclick="closeJunctionInfo()" class="absolute top-4 right-4 text-slate-500 hover:text-white">✕</button>
+            <h3 id="j-title" class="text-2xl font-black text-cyan-400 mb-2 uppercase tracking-wide"></h3>
+            <p id="j-desc" class="text-slate-300 text-lg mb-6"></p>
+            <div class="bg-black/50 p-4 rounded-lg border-l-4 border-cyan-500">
+                <p id="j-question" class="text-cyan-100 font-medium italic text-sm"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHERMATA DETTAGLIO (LAYOUT MOBILE RIVISTO) -->
+    <div id="screen-detail" class="screen hidden-right bg-background flex flex-col z-50">
+        <!-- HEADER -->
+        <div class="bg-zinc-900 border-b border-zinc-800 px-6 py-4 flex items-center justify-between shadow-lg z-30 shrink-0">
+            <button onclick="closeDetails()" class="flex items-center text-xs font-bold text-slate-500 hover:text-white uppercase tracking-wide transition-colors group">
+                <span class="mr-2 group-hover:-translate-x-1 transition-transform">←</span> Mappa
+            </button>
+            <h2 id="detail-title" class="text-lg font-bold text-on-background uppercase tracking-wider text-shadow-glow"></h2>
+        </div>
+
+        <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+            <!-- CANVAS (Top su mobile, Left su desktop) -->
+            <div class="flex-1 relative bg-grid-chalk flex flex-col p-4 md:h-full h-[45%]">
+                <div class="flex-1 relative w-full h-full bg-zinc-900/50 rounded-2xl border border-zinc-800/50 shadow-inner overflow-hidden">
+                    <canvas id="detailChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- CONTROLLI E FORMULA (Bottom su mobile, Right su desktop) -->
+            <div class="w-full md:w-96 border-l border-zinc-800 bg-zinc-900 shadow-2xl z-20 flex flex-col md:h-full h-[55%]">
+                
+                <!-- FORMULA AREA (Sticky Header del pannello controlli) -->
+                <div class="bg-zinc-950 border-b border-zinc-800 p-4 shrink-0 shadow-lg relative z-10 flex items-center justify-center min-h-[80px]">
+                    <div id="detail-formula" class="text-xl md:text-2xl font-mono text-cyan-300 font-bold break-all text-center"></div>
+                </div>
+
+                <!-- SCROLLABLE CONTROLS -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-8">
+                    <div>
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center">
+                            <span class="w-1 h-3 bg-cyan-500 mr-2 rounded-full"></span> Analisi
+                        </h4>
+                        <p id="detail-desc" class="text-sm text-slate-300 leading-relaxed font-light mb-4"></p>
+                        <div class="bg-background p-3 rounded-lg border border-zinc-800">
+                            <h4 class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Esempio Reale</h4>
+                            <p id="detail-app" class="text-xs text-slate-400 font-mono"></p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center">
+                            <span class="w-1 h-3 bg-fuchsia-500 mr-2 rounded-full"></span> Parametri
+                        </h4>
+                        <div id="detail-controls" class="space-y-6 pb-8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.borderColor = '#1e293b';
+        Chart.defaults.font.family = "'Fira Code', monospace";
+
+        function getChartOptions(ranges) {
+            const r = ranges || { minX: -5, maxX: 5, minY: -5, maxY: 5 };
+            return {
+                responsive: true, maintainAspectRatio: false, animation: false, 
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: { type: 'linear', min: r.minX, max: r.maxX, grid: { color: (ctx) => ctx.tick.value === 0 ? '#475569' : '#1e293b', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 }, ticks: { color: '#94a3b8', font: {size: 10} }, border: { display: false } },
+                    y: { type: 'linear', min: r.minY, max: r.maxY, display: true, grid: { color: (ctx) => ctx.tick.value === 0 ? '#475569' : '#1e293b', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 }, ticks: { color: '#94a3b8', font: {size: 10} }, border: { display: false } }
+                }, 
+                plugins: { legend: { display: false } }
+            };
+        }
+
+        const junctionData = {
+            'alg_vs_tra': { title: "Divisione Fondamentale", desc: "Separiamo operazioni aritmetiche da quelle trascendenti.", question: "Operazioni solo +, -, *, /, potenze?" },
+            'rat_vs_irr': { title: "Radici o no?", desc: "Le radici cambiano il dominio drasticamente.", question: "C'è una radice sull'incognita?" },
+            'int_vs_frac': { title: "Denominatori", desc: "Il denominatore introduce rischi di divisione per zero.", question: "C'è la x al denominatore?" },
+            'index_root': { title: "Indice Pari/Dispari", desc: "Pari = vincolo di segno. Dispari = libertà.", question: "L'indice n è pari o dispari?" },
+            'trans_type': { title: "Tipo Trascendente", desc: "Incognita all'esponente o nell'argomento?", question: "Dove si trova la x?" },
+            'start': { title: "Start", desc: "Il punto di partenza.", question: "Pronti?" }
+        };
+
+        const detailData = {
+            'poly': { 
+                t: 'Intere (Polinomi)', l: 'y = {{a}}x^{{n}} - {{b}}',
+                color: '#60a5fa', // Blue
+                desc: 'Funzioni definite su tutto R. Non hanno asintoti verticali.', app: 'Traiettorie, curve di domanda/offerta.',
+                ranges: { minX: -4, maxX: 4, minY: -5, maxY: 5 },
+                p: { a: {val:0.5, min:-2, max:2, step:0.1, label:'Ampiezza'}, n: {val:3, min:1, max:5, step:1, label:'Grado'}, b: {val:0, min:-3, max:3, step:0.5, label:'Traslazione'} },
+                calc: (x,p)=>p.a*Math.pow(x,p.n) - p.b
+            },
+            'frac': { 
+                t: 'Razionali Fratte', l: 'y = \\frac{1}{x - {{x0}}}',
+                color: '#60a5fa', // Blue
+                desc: 'Il dominio esclude il valore che annulla il denominatore (Asintoto Verticale).', app: 'Resistenze in parallelo, ottica.',
+                ranges: { minX: -5, maxX: 5, minY: -5, maxY: 5 },
+                p: { x0: {val:1, min:-2, max:2, step:0.5, label:'Asintoto'} },
+                calc: (x,p)=>Math.abs(x-p.x0)<0.05?null:1/(x-p.x0)
+            },
+            'rootEven': { 
+                t: 'Irrazionali Pari', l: 'y = \\sqrt{x - {{x0}}}',
+                color: '#2dd4bf', // Teal
+                desc: 'Il radicando deve essere maggiore o uguale a zero.', app: 'Velocità di fuga, pendolo.',
+                ranges: { minX: -2, maxX: 6, minY: -1, maxY: 4 },
+                p: { x0: {val:0, min:-2, max:3, step:0.5, label:'Origine'} },
+                calc: (x,p)=>x<p.x0?null:Math.sqrt(x-p.x0)
+            },
+            'rootOdd': { 
+                t: 'Irrazionali Dispari', l: 'y = \\sqrt[3]{x}',
+                color: '#2dd4bf', // Teal
+                desc: 'Esistono anche per valori negativi di x. Hanno un flesso verticale nell\'origine.', app: 'Relazioni volumetriche.',
+                ranges: { minX: -5, maxX: 5, minY: -3, maxY: 3 },
+                p: { k: {val:1, min:0.5, max:2, step:0.1, label:'Scala'} },
+                calc: (x,p)=>(x>=0?Math.pow(x,1/3):-Math.pow(-x,1/3))*p.k
+            },
+            'sin': { 
+                t: 'Goniometriche', 
+                l: 'y = {{A}} \\{{type}}({{w}}x + {{phi}})',
+                color: '#f472b6', // Pink
+                desc: 'Funzioni periodiche fondamentali. La Tan ha asintoti. A = Ampiezza, w = Pulsazione, Phi = Fase.',
+                app: 'Corrente alternata (AC), segnali radio, analisi di Fourier.',
+                ranges: { minX: -7, maxX: 7, minY: -3, maxY: 3 },
+                p: { 
+                    type: {val:'sin', type:'select', options:['sin','cos','tan'], label:'Funzione'},
+                    A: {val:1, min:0.1, max:3, step:0.1, label:'Ampiezza (A)'},
+                    w: {val:1, min:0.5, max:3, step:0.1, label:'Pulsazione (w)'},
+                    phi: {val:0, min:-3.14, max:3.14, step:0.1, label:'Fase (phi)'}
+                },
+                calc: (x,p) => {
+                    let arg = p.w * x + p.phi;
+                    if(p.type === 'sin') return p.A * Math.sin(arg);
+                    if(p.type === 'cos') return p.A * Math.cos(arg);
+                    if(p.type === 'tan') {
+                        let y = p.A * Math.tan(arg);
+                        if(Math.abs(Math.cos(arg)) < 0.05 || Math.abs(y) > 10) return null;
+                        return y;
+                    }
+                }
+            },
+            
+            'exp': { 
+                t: 'Esponenziali', l: 'y = {{b}}^x',
+                color: '#fb923c', // Orange
+                desc: 'Osserva: per 0 < b < 1 decresce (batteri muoiono). Per b > 1 cresce (batteri si moltiplicano). A b=1 è piatta.',
+                app: 'Carica/scarica RC, crescita batterica, decadimento radioattivo.',
+                ranges: { minX: -3, maxX: 4, minY: -1, maxY: 10 },
+                p: { 
+                    b: {
+                        val:2, min:0.1, max:3, step:0.1, label:'Base (b)', 
+                        marks:[1] 
+                    } 
+                },
+                calc: (x,p) => Math.pow(p.b,x)
+            },
+
+            'log': { 
+                t: 'Logaritmiche', l: 'y = \\ln(x)',
+                color: '#fb923c', // Orange
+                desc: 'Crescita molto lenta. Esistono solo per x > 0.', app: 'Guadagno amplificatori (dB), entropia.',
+                ranges: { minX: -1, maxX: 8, minY: -3, maxY: 3 },
+                p: {}, calc: (x,p)=>x<=0?null:Math.log(x)
+            },
+            'arcsin': { 
+                t: 'Funzioni Inverse', l: 'y = \\{{type}}(x)',
+                color: '#f472b6', // Pink
+                desc: 'Arcsin/Arccos limitate [-1,1]. Arctan definita su R (fase).',
+                app: 'Fattore di potenza (cos fi), Diagrammi di Bode (fase).',
+                ranges: { minX: -4, maxX: 4, minY: -4, maxY: 4 },
+                p: {
+                    type: {val:'arcsin', type:'select', options:['arcsin','arccos','arctan'], label:'Funzione'}
+                },
+                calc: (x,p) => {
+                    if(p.type === 'arcsin') return Math.abs(x)>1 ? null : Math.asin(x);
+                    if(p.type === 'arccos') return Math.abs(x)>1 ? null : Math.acos(x);
+                    if(p.type === 'arctan') return Math.atan(x);
+                }
+            },
+            'irrFrac': {
+                t: 'Irrazionale Fratta', l: 'y = \\frac{\\sqrt{x+{{a}}}}{x-{{b}}}',
+                color: '#fbbf24', // Amber/Hybrid
+                desc: 'Unisce i problemi delle radici (x >= -a) e delle frazioni (x != b).', app: 'Fluidodinamica complessa.',
+                ranges: { minX: -5, maxX: 5, minY: -5, maxY: 5 },
+                p: { a: {val:2, min:0, max:4, step:1, label:'Radice'}, b: {val:1, min:-2, max:2, step:0.5, label:'Polo'} },
+                calc: (x,p) => { if (x + p.a < 0) return null; if (Math.abs(x - p.b) < 0.05) return null; return Math.sqrt(x + p.a) / (x - p.b); }
+            },
+            'transMixed': {
+                t: 'Trascendente Mista', l: 'y = \\frac{e^x}{x - {{k}}}',
+                color: '#fbbf24', // Amber/Hybrid
+                desc: 'Scontro tra un esponenziale e un asintoto.', app: 'Circuiti RLC, smorzamento critico.',
+                ranges: { minX: -4, maxX: 4, minY: -10, maxY: 10 },
+                p: { k: {val:0, min:-2, max:2, step:0.5, label:'Asintoto'} },
+                calc: (x,p) => Math.abs(x-p.k)<0.05?null : Math.exp(x)/(x-p.k)
+            }
+        };
+
+        let currentChart = null;
+
+        function showJunctionInfo(id) {
+            const d = junctionData[id]; if(!d) return;
+            document.getElementById('j-title').innerText = d.title;
+            document.getElementById('j-desc').innerText = d.desc;
+            document.getElementById('j-question').innerText = d.question;
+            const m = document.getElementById('junction-modal'); m.classList.remove('hidden');
+            setTimeout(()=>m.querySelector('div').classList.remove('scale-95'), 10);
+        }
+        function closeJunctionInfo() {
+            const m = document.getElementById('junction-modal'); m.querySelector('div').classList.add('scale-95');
+            setTimeout(()=>m.classList.add('hidden'), 200);
+        }
+
+        function openDetails(key) {
+            const d = detailData[key]; if(!d) return;
+            document.getElementById('screen-detail').classList.remove('hidden-right');
+            document.getElementById('detail-title').innerText = d.t;
+            renderDetail(d);
+        }
+        function closeDetails() { document.getElementById('screen-detail').classList.add('hidden-right'); }
+
+        function renderDetail(funcData) {
+            const pVals = {}; Object.keys(funcData.p).forEach(k=>pVals[k]=funcData.p[k].val);
+            updateMath(funcData.l, pVals);
+            document.getElementById('detail-desc').innerText = funcData.desc;
+            document.getElementById('detail-app').innerText = funcData.app;
+
+            const ctrls = document.getElementById('detail-controls'); ctrls.innerHTML='';
+            
+            Object.keys(funcData.p).forEach(k => {
+                const param = funcData.p[k];
+                const div = document.createElement('div');
+                div.className = "bg-zinc-900 p-4 rounded-xl border border-zinc-800";
+                
+                const header = document.createElement('div');
+                header.className = "flex justify-between text-[10px] font-bold mb-3 uppercase text-slate-400";
+                
+                if(param.type === 'select') {
+                    header.innerHTML = `<span>${param.label}</span>`;
+                    div.appendChild(header);
+                    
+                    const btnGroup = document.createElement('div');
+                    btnGroup.className = "flex bg-zinc-800 rounded-lg p-1 gap-1";
+                    
+                    param.options.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = `flex-1 py-1 px-2 rounded text-[10px] font-bold uppercase transition-colors ${param.val === opt ? 'bg-cyan-500 text-on-background shadow-lg' : 'text-slate-400 hover:text-slate-200'}`;
+                        btn.innerText = opt;
+                        btn.onclick = () => {
+                            param.val = opt;
+                            pVals[k] = opt;
+                            Array.from(btnGroup.children).forEach(c => c.className = "flex-1 py-1 px-2 rounded text-[10px] font-bold uppercase transition-colors text-slate-400 hover:text-slate-200");
+                            btn.className = "flex-1 py-1 px-2 rounded text-[10px] font-bold uppercase transition-colors bg-cyan-500 text-on-background shadow-lg";
+                            updateMath(funcData.l, pVals);
+                            draw(funcData);
+                        };
+                        btnGroup.appendChild(btn);
+                    });
+                    div.appendChild(btnGroup);
+                } else {
+                    header.innerHTML = `<span>${param.label}</span><span id="val-${k}" class="text-cyan-400 font-mono bg-cyan-950/30 px-2 rounded">${param.val.toFixed(1)}</span>`;
+                    div.appendChild(header);
+                    
+                    const s = document.createElement('input');
+                    s.type='range'; s.min=param.min; s.max=param.max; s.step=param.step; s.value=param.val;
+                    s.className = "accent-cyan-500 w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer";
+                    
+                    if(param.marks) {
+                        const listId = `list-${k}`;
+                        s.setAttribute('list', listId);
+                        const dl = document.createElement('datalist');
+                        dl.id = listId;
+                        param.marks.forEach(m => {
+                            const opt = document.createElement('option');
+                            opt.value = m;
+                            dl.appendChild(opt);
+                        });
+                        div.appendChild(dl);
+                    }
+
+                    s.oninput = (e) => {
+                        param.val = parseFloat(e.target.value);
+                        document.getElementById(`val-${k}`).innerText = param.val.toFixed(1);
+                        pVals[k]=param.val;
+                        updateMath(funcData.l, pVals);
+                        draw(funcData);
+                    };
+                    div.appendChild(s);
+                }
+                
+                ctrls.appendChild(div);
+            });
+
+            const ctx = document.getElementById('detailChart').getContext('2d');
+            if(currentChart) currentChart.destroy();
+            
+            // Use dynamic color from data object or default
+            const lineColor = funcData.color || '#22d3ee';
+
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: { datasets: [{ borderColor: lineColor, borderWidth: 3, pointRadius: 0, tension: 0.4, data: [] }] },
+                options: getChartOptions(funcData.ranges)
+            });
+            draw(funcData);
+        }
+
+        function draw(funcData) {
+            const pts = [];
+            const r = funcData.ranges || { minX: -5, maxX: 5 };
+            const step = (r.maxX - r.minX) / 400; 
+            const simpleP = {}; Object.keys(funcData.p).forEach(k=>simpleP[k]=funcData.p[k].val);
+
+            let prevY = null;
+            for(let x=r.minX; x<=r.maxX; x+=step) {
+                const y = funcData.calc(x, simpleP);
+                if (prevY !== null && y !== null && Math.abs(y - prevY) > 5) pts.push({x:x, y:null});
+                if(y === null || Math.abs(y) > (r.maxY || 10)*1.5) pts.push({x:x, y:null});
+                else pts.push({x:x, y:y});
+                prevY = y;
+            }
+            currentChart.data.datasets[0].data = pts;
+            currentChart.update();
+        }
+
+        function updateMath(latex, params) {
+            let s = latex;
+            Object.keys(params).forEach(k => {
+                let v = params[k]; 
+                if (typeof v === 'number') { if(v<0) v=`(${v})`; }
+                s = s.replace(new RegExp(`{{${k}}}`, 'g'), v);
+            });
+            s = s.replace(/ 1 \\/g, ' \\').replace(/ 1 x/g, ' x');
+            const el = document.getElementById('detail-formula');
+            el.innerHTML = `$$ ${s} $$`;
+            if(window.MathJax) MathJax.typesetPromise([el]);
+        }
+    </script>
+</body>
+</html>

@@ -3,12 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0061a4"> <!-- Colore barra Android/iOS -->
     
-    <!-- 1. META DATI -->
-    <title>Laboratorio Matematico Orfini Foligno</title>
-    <meta name="description" content="Hub digitale per la didattica laboratoriale della Matematica e Fisica. WebApp, simulazioni e giochi per l'Istituto Professionale Orfini.">
-    <meta name="keywords" content="Matematica, Fisica, Ed. Civica, Laboratorio, Orfini, Gamification, PBL, STEM, MeltingMath">
-    <meta name="date" content="2025-12-08">
+    <!-- 1. SEO PRIMARIO -->
+    <title>Laboratorio Matematico Orfini Foligno | MeltingMath</title>
+    <meta name="description" content="Hub digitale didattico dell'Ist. Professionale Orfini. Simulazioni interattive, 3D printing e risorse multimediali per Matematica e Fisica. Scuola Pubblica Open Source.">
+    <meta name="keywords" content="Matematica, Fisica, Laboratorio, Orfini, Foligno, MeltingMath, 3D Print, Didattica, Open Source, Scuola Pubblica">
+    <meta name="author" content="Prof. Federico DB">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://federicodb.github.io/">
+
+    <!-- 2. OPEN GRAPH / FACEBOOK / INSTAGRAM / WHATSAPP -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://federicodb.github.io/">
+    <meta property="og:title" content="Laboratorio Matematico Orfini | MeltingMath">
+    <meta property="og:description" content="Dove la Matematica diventa tangibile. Esplora simulazioni 3D, giochi e infografiche. Progetto Open Source della Scuola Pubblica.">
+    <meta property="og:image" content="https://federicodb.github.io/assets/social_share_cover.jpg"> <!-- TODO: Creare questa immagine -->
+    <meta property="og:locale" content="it_IT">
+    <meta property="og:site_name" content="Orfini Math Lab">
+
+    <!-- 3. TWITTER / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@meltingmath">
+    <meta name="twitter:creator" content="@meltingmath">
+    <meta name="twitter:title" content="Laboratorio Matematico Orfini">
+    <meta name="twitter:description" content="Didattica laboratoriale e creativa. Matematica, Stampa 3D e WebApp.">
+    <meta name="twitter:image" content="https://federicodb.github.io/assets/social_share_cover.jpg">
+
+    <!-- 4. SCHEMA.ORG JSON-LD (Per Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Laboratorio Matematico Orfini Foligno",
+      "url": "https://federicodb.github.io/",
+      "logo": "https://federicodb.github.io/assets/logo_orfini.png",
+      "sameAs": [
+        "https://instagram.com/meltingmath",
+        "https://github.com/federicodb"
+      ],
+      "description": "Hub digitale per la didattica laboratoriale della Matematica e Fisica.",
+      "founder": {
+        "@type": "Person",
+        "name": "Prof. Federico DB"
+      },
+      "nonProfitStatus": "PublicSchool"
+    }
+    </script>
     
     <!-- Three.js Import Map -->
     <script type="importmap">
@@ -296,12 +337,83 @@
             color: var(--md-sys-color-on-background); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
         }
 
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            z-index: 1000; opacity: 0; pointer-events: none;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .modal-container {
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-background);
+            width: 90%; max-width: 800px; max-height: 90vh;
+            border-radius: var(--md-shape-corner-large);
+            position: relative; overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .modal-container { transform: scale(1); }
+
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem;
+            background: rgba(0,0,0,0.5); border: none; color: white;
+            width: 32px; height: 32px; border-radius: 50%;
+            cursor: pointer; z-index: 10; font-weight: bold;
+        }
+        
+        .modal-content {
+            background: black; /* Per video/img */
+            min-height: 300px; display: flex; align-items: center; justify-content: center;
+            border-radius: var(--md-shape-corner-large) var(--md-shape-corner-large) 0 0;
+            overflow: hidden;
+        }
+
+        .modal-meta { padding: 1.5rem; }
+        .modal-meta h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
+        .modal-meta p { margin: 0; opacity: 0.8; line-height: 1.5; }
+
+        .type-badge {
+            font-size: 0.65rem; font-weight: 800; letter-spacing: 0.05em;
+            padding: 3px 6px; border-radius: 4px;
+            background: rgba(0,0,0,0.2); color: inherit;
+            margin-left: auto; align-self: center;
+        }
+
+        /* MARKDOWN STYLES */
+        .markdown-body { font-size: 1rem; line-height: 1.7; color: var(--md-sys-color-on-surface-variant); }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { 
+            color: var(--md-sys-color-on-background); margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 700; 
+        }
+        .markdown-body h1 { font-size: 1.8rem; border-bottom: 1px solid var(--md-sys-color-outline-variant); padding-bottom: 0.3em; }
+        .markdown-body h2 { font-size: 1.4rem; }
+        .markdown-body h3 { font-size: 1.2rem; }
+        .markdown-body ul, .markdown-body ol { padding-left: 1.5em; margin-bottom: 1em; }
+        .markdown-body li { margin-bottom: 0.3em; }
+        .markdown-body blockquote { 
+            border-left: 4px solid var(--md-sys-color-primary); 
+            background: var(--md-sys-color-surface-container-high);
+            padding: 0.5em 1em; margin: 1em 0; font-style: italic;
+        }
+        .markdown-body code { 
+            background: var(--md-sys-color-surface-container-high); 
+            padding: 0.2em 0.4em; border-radius: 4px; font-family: monospace; font-size: 0.9em;
+        }
+        .markdown-body ul.contains-task-list { list-style: none; padding-left: 0; }
+        .markdown-body input[type="checkbox"] { margin-right: 0.5em; transform: scale(1.2); cursor: pointer; }
+
         @media (max-width: 600px) {
             h1 { font-size: 1.5rem; }
             .grid { grid-template-columns: 1fr; }
             .footer-content { grid-template-columns: 1fr; }
         }
     </style>
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
@@ -323,6 +435,7 @@
     <div class="filters-container">
         <div class="filters" id="filterBar">
             <button class="chip active" onclick="applyFilter('all')">Tutti</button>
+            <button class="chip" onclick="applyFilter('Linkografia')" style="border-color:var(--md-sys-color-primary); color:var(--md-sys-color-primary); font-weight:800;">📚 Linkografia</button>
             <!-- Tags generati dinamicamente -->
         </div>
     </div>
@@ -391,17 +504,24 @@
         </div>
     </footer>
 
+    <!-- MODAL MULTIMEDIALE -->
+    <div id="media-modal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modal-content" class="modal-content">
+                <!-- Contenuto iniettato dinamicamente -->
+            </div>
+            <div id="modal-meta" class="modal-meta">
+                <!-- Titolo e info -->
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPT DATA (INLINE PER ANTEPRIMA) -->
     <script>
         const inlineDB = [
-            { title: "Math Underground: Mappa Funzioni", url: "math_underground003_4el.html", excerpt: "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche.", tags: ["Matematica", "Analisi", "Funzioni", "4EL"], date: "2025-12-06" },
-            { title: "Caccia all'Errore: Operazioni in Z", url: "memory_1el_numeri_004.html", excerpt: "Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette.", tags: ["Matematica", "Aritmetica", "1EL"], date: "2025-10-20" },
-            { title: "GonioMatch: Segnali Goniometrici", url: "gioco_sin_cos_01.html", excerpt: "Gioco Memory a tema 'Radar' per memorizzare gli angoli notevoli di Seno, Coseno e Tangente.", tags: ["Matematica", "Goniometria", "3MEC", "4EL"], date: "2025-12-08" },
-            { title: "Voto Consapevole: Simulatore Nash", url: "voto_consapevole_2.5.html", excerpt: "Simulazione interattiva sull'Equilibrio di Nash applicato ai voti scolastici.", tags: ["Ed. Civica", "Matematica", "3EL", "4EL"], date: "2025-10-01" },
-            { title: "Algebra Tiles 3D", url: "visualizzatore polinomi 2d 3d 001.html", excerpt: "Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi.", tags: ["Matematica", "Algebra", "1EL", "2EL", "2GP"], date: "2025-12-08" },
-            { title: "Math Invaders: MCD & mcm", url: "MCD_mcm_1el_001.html", excerpt: "Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. e m.c.m.", tags: ["Matematica", "Aritmetica", "1EL"], date: "2025-12-08" },
-            { title: "Scomposizione Polinomi (Memory)", url: "cards_polinomi_memory004.html", excerpt: "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni.", tags: ["Matematica", "Algebra", "1EL", "2EL", "2GP"], date: "2025-12-08" },
-            { title: "Laboratorio Frazioni", url: "fractions_lab_001.html", excerpt: "Simulatore interattivo per comprendere le operazioni tra frazioni attraverso modelli visivi.", tags: ["Matematica", "Aritmetica", "1EL", "2EL", "2GP"], date: "2025-12-08" }
+            { title: "Math Underground: Mappa Funzioni", url: "content/apps/math_underground003_4el.html", excerpt: "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche.", tags: ["Matematica", "Analisi", "Funzioni", "4EL"], date: "2025-12-06", type: "app" },
+            { title: "Caccia all'Errore: Operazioni in Z", url: "content/apps/memory_1el_numeri_004.html", excerpt: "Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette.", tags: ["Matematica", "Aritmetica", "1EL"], date: "2025-10-20", type: "app" }
         ];
     </script>
 
@@ -452,6 +572,9 @@
         ];
 
         function getSmartEmoji(item, prevEmoji) {
+            // Se l'item ha già un'icona definita dal builder, usala
+            if (item.icon && item.icon !== '📄') return item.icon;
+
             const keyString = (item.url + item.title).toLowerCase();
             let chosen = '📄';
             
@@ -486,6 +609,7 @@
             const sortedTags = Object.keys(tagCounts).sort((a,b) => tagCounts[b] - tagCounts[a]);
 
             sortedTags.forEach(tag => {
+                if(tag === 'Linkografia') return; // Skip, has static button
                 const btn = document.createElement('button');
                 btn.className = 'chip';
                 btn.innerText = tagCounts[tag] > 1 ? `${tag} (${tagCounts[tag]})` : tag;
@@ -509,7 +633,18 @@
                 if (filter === 'all' || item.tags.includes(filter)) {
                     count++;
                     const card = document.createElement('a');
-                    card.href = item.url; card.className = 'card';
+                    card.className = 'card';
+                    
+                    // Gestione link vs modale
+                    if (item.type === 'app' || !item.type) {
+                        card.href = item.url;
+                    } else {
+                        card.href = "#";
+                        card.onclick = (e) => {
+                            e.preventDefault();
+                            window.openModal(item);
+                        };
+                    }
                     
                     // Colore sequenziale basato sull'indice di visualizzazione per evitare clash
                     const colors = themeColors[count % themeColors.length];
@@ -522,10 +657,17 @@
                     const d = new Date(item.date);
                     const dateStr = !isNaN(d) ? `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}` : item.date;
                     const tagsHtml = item.tags.slice(0, 3).map(t => `<span class="tag-pill">#${t}</span>`).join('');
+                    
+                    // Etichetta tipo file (se non è app)
+                    const typeLabel = (item.type && item.type !== 'app') ? `<span class="type-badge">${item.type.toUpperCase()}</span>` : '';
 
                     card.innerHTML = `
                         <div class="card-header"><div class="card-emoji">${emoji}</div><div class="card-date">${dateStr}</div></div>
-                        <h3>${item.title}</h3><p>${item.excerpt}</p><div class="card-tags">${tagsHtml}</div>
+                        <h3>${item.title}</h3><p>${item.excerpt}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <div class="card-tags">${tagsHtml}</div>
+                            ${typeLabel}
+                        </div>
                     `;
                     grid.appendChild(card);
                 }
@@ -533,7 +675,79 @@
             emptyState.style.display = count === 0 ? 'block' : 'none';
         }
 
-        // --- 3. 3D WORD CLOUD (CONSTELLATION) ---
+        // --- 3. MODAL LOGIC ---
+        const modal = document.getElementById('media-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalMeta = document.getElementById('modal-meta');
+
+        window.openModal = function(item) {
+            modalContent.innerHTML = '';
+            modalMeta.innerHTML = `<h3>${item.title}</h3><p>${item.excerpt}</p>`;
+            
+            if (item.type === 'video') {
+                modalContent.innerHTML = `<video controls autoplay style="width:100%; border-radius:12px;"><source src="${item.url}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
+            } else if (item.type === 'audio') {
+                modalContent.innerHTML = `
+                    <div style="text-align:center; padding: 2rem;">
+                        <div style="font-size:4rem; margin-bottom:1rem;">🎧</div>
+                        <audio controls autoplay style="width:100%;"><source src="${item.url}" type="audio/mpeg">Il tuo browser non supporta l'audio.</audio>
+                    </div>`;
+            } else if (item.type === 'infographic' || item.type === 'image') {
+                modalContent.innerHTML = `<img src="${item.url}" alt="${item.title}" style="width:100%; height:auto; border-radius:8px; object-fit:contain;">`;
+            } else if (item.type === 'document') {
+                 modalContent.innerHTML = `<iframe src="${item.url}" style="width:100%; height:60vh; border:none; border-radius:8px;"></iframe>`;
+            } else if (item.type === 'note') {
+                // Fetch e renderizza Markdown
+                modalContent.innerHTML = '<div style="padding:2rem; text-align:center;">Caricamento appunti...</div>';
+                fetch(item.url)
+                    .then(r => r.text())
+                    .then(text => {
+                        // Rimuove Frontmatter (--- ... ---) per la visualizzazione
+                        const content = text.replace(/^---[\s\S]*?---/, '');
+                        const html = marked.parse(content);
+                        modalContent.innerHTML = `<div class="markdown-body" style="padding:2rem; width:100%; text-align:left;">${html}</div>`;
+                        
+                        // Rende le checkbox interattive (solo visivo)
+                        modalContent.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                            cb.disabled = false; // Abilita click
+                            cb.onclick = (e) => {
+                                // Feedback visivo immediato (es. colore)
+                                const li = e.target.closest('li');
+                                if(li) {
+                                    li.style.color = e.target.checked ? 'var(--md-sys-color-primary)' : 'inherit';
+                                    li.style.fontWeight = e.target.checked ? 'bold' : 'normal';
+                                }
+                            };
+                        });
+                    });
+            } else if (item.type === 'link') {
+                modalContent.innerHTML = `
+                    <div style="display:flex; flex-direction:column; width:100%; height:80vh;">
+                        <div style="padding:0.5rem; background:var(--md-sys-color-surface-container); border-bottom:1px solid var(--md-sys-color-outline-variant); text-align:right;">
+                            <a href="${item.url}" target="_blank" style="text-decoration:none; font-weight:bold; font-size:0.8rem; color:var(--md-sys-color-primary); display:inline-flex; align-items:center; gap:0.5rem;">
+                                <span>↗</span> Apri in una nuova scheda (Consigliato)
+                            </a>
+                        </div>
+                        <iframe src="${item.url}" style="flex-grow:1; width:100%; border:none;" allow="fullscreen"></iframe>
+                    </div>
+                `;
+            }
+
+            modal.classList.add('active');
+        }
+
+        window.closeModal = function() {
+            modal.classList.remove('active');
+            // Stoppa i media quando chiudi
+            modalContent.innerHTML = '';
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') window.closeModal();
+        });
+
+        // --- 4. 3D WORD CLOUD (CONSTELLATION) ---
         let scene, camera, renderer, controls, group;
         const fonts = [
             "bold 60px 'Inter', sans-serif",

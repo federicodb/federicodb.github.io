@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Simulazione CA: Fasori & Onde</title>
+    <!-- Shared Orfini Design System -->
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    <meta name="description" content="Laboratorio interattivo su Corrente Alternata. Visualizza in tempo reale la relazione tra Fasori rotanti, Onde sinusoidali, Sfasamento e Potenza.">
+    <meta name="keywords" content="Elettrotecnica, Fisica, Corrente Alternata, Fasori, Onde, 4EL, 5EL, Mat:Analisi, Mat:Modellizzazione, Ind:Strumentazione, Lab">
+    <meta name="date" content="2025-12-08">
+
+    <!-- 2. FIX MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <title>Simulazione Corrente Alternata</title>
+    <!-- CDN per Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CDN per p5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        /* 3. CSS FULLSCREEN ROBUSTO */
+        html, body { margin: 0; padding: 0; }
+
+        /* Contenitore scrollabile interno */
+        #app-scroller {
+            height: 100%; width: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 80px;
+        }
+
+        :root {
+            --color-bg: var(--md-sys-color-background);
+            --color-surface: var(--md-sys-color-surface);
+            --color-text-primary: var(--md-sys-color-on-background);
+            --color-text-secondary: var(--md-sys-color-on-surface-variant);
+            --color-axes: var(--md-sys-color-outline);
+            --color-border: var(--md-sys-color-outline-variant);
+            
+            /* Palette Elettrotecnica */
+            --color-sine: #d946ef;     /* Fucsia (Tensione V) */
+            --color-cosine: #8b5cf6;   /* Viola (Corrente I) */
+            --color-projection: #f472b6; 
+            --color-radius: #facc15;   
+            --color-glow: #fde047;     
+            
+            --color-switch-bg: var(--md-sys-color-surface-container-high);
+            --color-active-btn: var(--md-sys-color-primary);
+            --color-inactive-btn: var(--md-sys-color-surface-container);
+        }
+
+        .bg-surface { background-color: var(--color-surface); }
+        .text-secondary { color: var(--color-text-secondary); }
+        .border-custom { border-color: var(--color-border); }
+        
+        canvas { display: block; width: 100% !important; height: auto !important; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid var(--color-border); }
+        
+        .bulb-base { fill: var(--color-axes); }
+        .bulb-filament { fill: var(--color-glow); transition: opacity 0.05s; }
+        
+        /* Slider Custom */
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 0.5rem; background: var(--color-switch-bg); border-radius: 0.25rem; cursor: pointer; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: var(--color-sine); border-radius: 50%; border: 3px solid var(--color-surface); margin-top: -8px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: transparent; }
+
+        /* Grid Layout */
+        .grid-layout { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 1024px) { 
+            .grid-layout { 
+                grid-template-columns: 1fr 1fr; 
+                grid-template-areas: 
+                    "viz viz" 
+                    "controls info"; 
+            }
+            #viz-area { grid-area: viz; }
+            #controls-area { grid-area: controls; }
+            #info-area { grid-area: info; }
+        }
+
+        .unit-btn { background-color: var(--color-inactive-btn); transition: all 0.2s; font-size: 0.8rem; }
+        .unit-btn.active { background-color: var(--color-active-btn); color: white; font-weight: bold; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Configurazione Tailwind con Colori Semantici -->
+    <script>
+        tailwind.config = {
+            darkMode: ["class", "[data-theme="dark"]"],
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--md-sys-color-background)',
+                        'on-background': 'var(--md-sys-color-on-background)',
+                        surface: 'var(--md-sys-color-surface)',
+                        'surface-container': 'var(--md-sys-color-surface-container)',
+                        'on-surface-variant': 'var(--md-sys-color-on-surface-variant)',
+                        'outline-variant': 'var(--md-sys-color-outline-variant)',
+                        primary: 'var(--md-sys-color-primary)',
+                        'on-primary': 'var(--md-sys-color-on-primary)',
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+<body class="text-on-background">
+
+    <!-- Wrapper Scrollabile -->
+    <div id="app-scroller">
+        <div class="w-full max-w-7xl mx-auto p-4 md:p-6 pb-20">
+            
+            <header class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
+                <div>
+                    <h1 class="text-xl md:text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-purple-400">
+                        Simulazione CA
+                    </h1>
+                    <p class="text-xs md:text-sm text-gray-500">Fasori & Onde</p>
+                </div>
+                <a href="../index.html" class="text-xs font-bold text-gray-500 hover:text-white uppercase border border-gray-700 px-3 py-1.5 rounded transition">Esci</a>
+            </header>
+
+            <main class="grid-layout">
+                
+                <!-- VISUALIZZAZIONE -->
+                <div id="viz-area" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-surface p-4 rounded-xl shadow-2xl border border-gray-800">
+                    <div class="flex flex-col">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase mb-2 text-center">Diagramma Fasoriale</h3>
+                        <div id="circle-container" class="w-full aspect-square relative"></div>
+                    </div>
+                    <div class="flex flex-col">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase mb-2 text-center">Oscilloscopio (v, i)</h3>
+                        <div id="graph-container" class="w-full aspect-square md:aspect-auto md:h-full relative"></div>
+                    </div>
+                </div>
+
+                <!-- CONTROLLI -->
+                <div id="controls-area" class="bg-surface p-5 rounded-xl shadow-2xl border border-gray-800 space-y-6">
+                    <h2 class="text-lg font-bold border-b border-gray-700 pb-2 text-purple-400">Parametri Generatore</h2>
+                    
+                    <!-- Slider Ampiezza -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-bold text-gray-400 uppercase">Ampiezza ($V_m$)</label>
+                            <span class="text-xs font-mono text-fuchsia-400" id="val-amp">311.1 V</span>
+                        </div>
+                        <input type="range" id="amplitude-slider" min="100" max="400" value="311.1" step="0.1">
+                    </div>
+
+                    <!-- Slider Pulsazione -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-bold text-gray-400 uppercase">Pulsazione ($\omega$)</label>
+                            <span class="text-xs font-mono text-fuchsia-400" id="val-omega">100 rad/s</span>
+                        </div>
+                        <input type="range" id="omega-slider" min="50" max="628" value="100" step="1">
+                        <div class="text-[10px] text-gray-600 text-right mt-1">f ≈ 50 Hz</div>
+                    </div>
+
+                    <!-- Slider Fase -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-bold text-gray-400 uppercase">Sfasamento ($\phi$)</label>
+                            <span class="text-xs font-mono text-violet-400" id="val-phi">0 rad</span>
+                        </div>
+                        <input type="range" id="phase-slider" min="-1.57" max="1.57" value="0" step="0.01">
+                        <div class="flex justify-between text-[10px] text-gray-600 mt-1">
+                            <span>Capacitivo (-90°)</span>
+                            <span>Induttivo (+90°)</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button id="play-pause-btn" class="flex-1 bg-gray-700 hover:bg-gray-600 text-on-background font-bold py-3 rounded-lg transition flex items-center justify-center gap-2">
+                            <span>⏯</span> Start/Stop
+                        </button>
+                        <button id="reset-btn" class="px-4 bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-lg border border-gray-700">
+                            ↺
+                        </button>
+                    </div>
+                </div>
+
+                <!-- INFO & DIDATTICA -->
+                <div id="info-area" class="bg-surface p-5 rounded-xl shadow-2xl border border-gray-800 flex flex-col gap-6">
+                    
+                    <!-- Formule -->
+                    <div>
+                        <h2 class="text-lg font-bold border-b border-gray-700 pb-2 text-purple-400 mb-3">Analisi Analitica</h2>
+                        <div class="space-y-3 text-sm bg-black/40 p-3 rounded-lg border border-gray-800 font-mono text-gray-300">
+                            <div id="voltage-formula"></div>
+                            <div id="rms-formula"></div>
+                            <div id="freq-formula"></div>
+                        </div>
+                    </div>
+
+                    <!-- Lampadina -->
+                    <div class="flex items-center gap-4 bg-black/40 p-3 rounded-lg border border-gray-800">
+                        <div class="relative w-16 h-16 flex-shrink-0">
+                            <svg id="bulb-svg" viewBox="0 0 100 120" class="w-full h-full overflow-visible">
+                                <defs>
+                                    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+                                        <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                    </filter>
+                                </defs>
+                                <path d="M30,80 Q20,50 50,50 Q80,50 70,80" fill="none" stroke="#555" stroke-width="2"/>
+                                <circle cx="50" cy="50" r="30" fill="rgba(255,255,255,0.1)" stroke="#555"/>
+                                <path id="filament" d="M40,50 Q50,20 60,50" fill="none" stroke="var(--color-glow)" stroke-width="3" style="filter:url(#glow); opacity:0.2;"/>
+                                <rect x="35" y="80" width="30" height="20" fill="#444" rx="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-gray-400 uppercase">Potenza Istantanea</h4>
+                            <div id="power-info" class="text-xl font-mono text-yellow-400 font-bold">0 W</div>
+                            <p class="text-[10px] text-gray-500 italic">P = v(t) · i(t)</p>
+                        </div>
+                    </div>
+
+                    <!-- Legenda -->
+                    <div class="text-xs text-gray-400 leading-relaxed">
+                        <strong style="color:var(--color-sine)">● Tensione (v):</strong> La forza che spinge gli elettroni.<br>
+                        <strong style="color:var(--color-cosine)">● Corrente (i):</strong> Il flusso di elettroni (sfasato di $\phi$).
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAZIONE
+        let Vm = 311.1, Im = 10, omega = 100, phi = 0;
+        let time = 0, isAnimating = true;
+        const SPEED_FACTOR = 0.0003; // Rallentato per didattica
+        
+        // ELEMENTI DOM
+        const els = {
+            ampSlider: document.getElementById('amplitude-slider'),
+            omegaSlider: document.getElementById('omega-slider'),
+            phiSlider: document.getElementById('phase-slider'),
+            valAmp: document.getElementById('val-amp'),
+            valOmega: document.getElementById('val-omega'),
+            valPhi: document.getElementById('val-phi'),
+            btnPlay: document.getElementById('play-pause-btn'),
+            filament: document.getElementById('filament'),
+            powerInfo: document.getElementById('power-info')
+        };
+
+        // FUNZIONI FISICA
+        const getV = () => Vm * Math.sin(omega * time);
+        const getI = () => Im * Math.sin(omega * time - phi);
+
+        // P5.JS SKETCHES
+        const sketchCircle = (p) => {
+            p.setup = () => {
+                const c = document.getElementById('circle-container');
+                p.createCanvas(c.offsetWidth, c.offsetHeight).parent(c);
+            };
+
+            p.draw = () => {
+                if(!isAnimating && p.frameCount > 1) return; // Ottimizzazione: stop render se pausa
+                
+                p.background(23, 23, 23); // bg-surface
+                p.translate(p.width/2, p.height/2);
+                const r = p.min(p.width, p.height) * 0.35;
+
+                // Assi
+                p.stroke(60); p.strokeWeight(1);
+                p.line(-r*1.2, 0, r*1.2, 0); p.line(0, -r*1.2, 0, r*1.2);
+                p.noFill(); p.stroke(80); p.ellipse(0, 0, r*2);
+
+                // Fasore Tensione (V)
+                const angV = (omega * time) % (2*Math.PI);
+                const vx = r * Math.cos(angV);
+                const vy = -r * Math.sin(angV); // Y invertita in canvas
+
+                p.stroke(217, 70, 239); // Fucsia
+                p.strokeWeight(3);
+                p.line(0, 0, vx, vy);
+                p.fill(217, 70, 239); p.circle(vx, vy, 6);
+
+                // Proiezione V (Seno)
+                p.stroke(217, 70, 239, 100); p.strokeWeight(1); p.drawingContext.setLineDash([4, 4]);
+                p.line(vx, vy, vx, 0); p.line(vx, vy, 0, vy);
+                p.drawingContext.setLineDash([]);
+
+                // Fasore Corrente (I) - Scalato graficamente
+                const angI = (omega * time - phi) % (2*Math.PI);
+                const rI = r * 0.7; // Corrente più corta per distinguere
+                const ix = rI * Math.cos(angI);
+                const iy = -rI * Math.sin(angI);
+
+                p.stroke(139, 92, 246); // Viola
+                p.strokeWeight(3);
+                p.line(0, 0, ix, iy);
+                p.fill(139, 92, 246); p.circle(ix, iy, 6);
+
+                // Arco Sfasamento
+                if(Math.abs(phi) > 0.05) {
+                    p.noFill(); p.stroke(250, 204, 21); p.strokeWeight(2);
+                    p.arc(0, 0, r*0.4, r*0.4, -angV, -angI);
+                }
+            };
+            
+            p.windowResized = () => {
+                const c = document.getElementById('circle-container');
+                p.resizeCanvas(c.offsetWidth, c.offsetHeight);
+            }
+        };
+
+        const sketchGraph = (p) => {
+            p.setup = () => {
+                const c = document.getElementById('graph-container');
+                p.createCanvas(c.offsetWidth, c.offsetHeight).parent(c);
+            };
+
+            p.draw = () => {
+                if(!isAnimating && p.frameCount > 1) return;
+
+                p.background(23, 23, 23);
+                
+                const w = p.width; const h = p.height;
+                const cy = h/2;
+                
+                // Assi
+                p.stroke(60); p.strokeWeight(1);
+                p.line(0, cy, w, cy); p.line(30, 0, 30, h);
+
+                // Disegna Onde
+                const scaleY = h * 0.4 / 400; // Scala verticale fissa su max Vm
+                const points = 200;
+                
+                // Onda V
+                p.noFill(); p.stroke(217, 70, 239); p.strokeWeight(2);
+                p.beginShape();
+                for(let i=0; i<points; i++) {
+                    const x = 30 + (i/points) * (w-30);
+                    // Mappiamo x nel tempo relativo all'istante attuale per scorrimento
+                    // Oppure fisso: t_plot = i
+                    // Facciamo scorrere l'onda verso sinistra: (time + offset)
+                    const t_rel = time + (i/points) * (2*Math.PI/omega) * 2; // Mostra 2 periodi
+                    const y = cy - (Vm * Math.sin(omega * t_rel)) * scaleY; // y invertita
+                    // Nota: Per effetto scorrimento corretto, usiamo una finestra temporale fissa che si sposta
+                    // O meglio: disegnamo f(t) statica e spostiamo la fase?
+                    // Approccio semplice: Oscilloscopio triggerato (onda ferma che pulsa) o scorrimento?
+                    // Scorrimento:
+                    const phaseX = (i/points) * 4 * Math.PI; // 2 periodi
+                    const valV = Vm * Math.sin(phaseX - omega*time); // Scorrimento
+                    p.vertex(x, cy - valV * scaleY);
+                }
+                p.endShape();
+
+                // Onda I (Scalata per visibilità)
+                p.stroke(139, 92, 246);
+                p.beginShape();
+                for(let i=0; i<points; i++) {
+                    const x = 30 + (i/points) * (w-30);
+                    const phaseX = (i/points) * 4 * Math.PI;
+                    const valI = (Im * 20) * Math.sin(phaseX - omega*time - phi); // Im scalata x20 visiva
+                    p.vertex(x, cy - valI * scaleY);
+                }
+                p.endShape();
+                
+                // Label
+                p.noStroke(); p.fill(100); p.textSize(10);
+                p.text("t", w-10, cy+15);
+            };
+             p.windowResized = () => {
+                const c = document.getElementById('graph-container');
+                p.resizeCanvas(c.offsetWidth, c.offsetHeight);
+            }
+        };
+
+        // INIT P5
+        new p5(sketchCircle);
+        new p5(sketchGraph);
+
+        // ANIMATION LOOP
+        function loop() {
+            if(isAnimating) {
+                time += SPEED_FACTOR * (omega/100); // Velocità prop alla frequenza
+                updateUI();
+            }
+            requestAnimationFrame(loop);
+        }
+        
+        function updateUI() {
+            // Power Calculation
+            const v = getV();
+            const i = getI();
+            const p = v * i; // Potenza istantanea
+            
+            // Bulb Effect
+            const brightness = Math.abs(p) / (400 * 10); // Norm approx
+            els.filament.style.opacity = 0.2 + (brightness * 0.8);
+            els.powerInfo.innerText = Math.round(Math.abs(p)) + " W";
+            els.powerInfo.style.color = p > 0 ? '#facc15' : '#ef4444'; // Giallo se assorbe, Rosso se rigenera (reattiva)
+
+            // KaTeX Updates (Solo se cambiano i parametri, debounce o check diff sarebbe meglio, ma ok per ora)
+             if (window.katex) {
+                katex.render(`v(t) = ${Vm.toFixed(0)} \\sin(${omega} t) \\, \\text{V}`, document.getElementById('voltage-formula'));
+                katex.render(`V_{eff} = ${(Vm/Math.sqrt(2)).toFixed(1)} \\, \\text{V}`, document.getElementById('rms-formula'));
+                katex.render(`f = ${(omega/(2*Math.PI)).toFixed(1)} \\, \\text{Hz}`, document.getElementById('freq-formula'));
+            }
+        }
+
+        // EVENT LISTENERS
+        els.ampSlider.addEventListener('input', (e) => { Vm = parseFloat(e.target.value); els.valAmp.innerText = Vm.toFixed(1) + ' V'; });
+        els.omegaSlider.addEventListener('input', (e) => { omega = parseInt(e.target.value); els.valOmega.innerText = omega + ' rad/s'; });
+        els.phiSlider.addEventListener('input', (e) => { phi = parseFloat(e.target.value); els.valPhi.innerText = phi.toFixed(2) + ' rad'; });
+        
+        els.btnPlay.addEventListener('click', () => {
+            isAnimating = !isAnimating;
+            els.btnPlay.innerHTML = isAnimating ? '<span>⏸</span> Pausa' : '<span>▶</span> Riprendi';
+            els.btnPlay.classList.toggle('bg-red-600', isAnimating);
+            els.btnPlay.classList.toggle('bg-green-600', !isAnimating);
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            Vm = 311.1; omega = 100; phi = 0;
+            els.ampSlider.value = Vm; els.omegaSlider.value = omega; els.phiSlider.value = phi;
+            els.valAmp.innerText = "311.1 V"; els.valOmega.innerText = "100 rad/s"; els.valPhi.innerText = "0 rad";
+            updateUI();
+        });
+
+        // Start
+        loop();
+        // Trigger iniziale latex
+        updateUI();
+
+    </script>
+</body>
+</html>

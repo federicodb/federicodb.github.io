@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Sketch to Pattern: Arte Generativa</title>
+    <!-- Shared Orfini Design System -->
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    <meta name="description" content="Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.">
+    <meta name="keywords" content="Arte, Tecnologia, Coding, Creatività, Pattern, Geometria, Tinkering, Lab, EU:Digitale, EU:Culturale">
+    <meta name="date" content="2025-12-08">
+
+    <!-- 2. FIX MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Trasformatore di Disegno Live</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <style>
+        /* 3. CSS FULLSCREEN ROBUSTO */
+        html, body { margin: 0; padding: 0; }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%; /* Aspect Ratio 1:1 */
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            touch-action: none; /* Impedisce scroll mentre si disegna */
+        }
+
+        canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            cursor: crosshair;
+        }
+
+        /* Slider Custom */
+        input[type=range] { -webkit-appearance: none; background: transparent; height: 20px; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: #4f46e5; margin-top: -6px; cursor: pointer; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px;
+        }
+
+        /* Switch */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #4f46e5; }
+        input:checked + .slider:before { transform: translateX(20px); }
+    </style>
+
+    <!-- Configurazione Tailwind con Colori Semantici -->
+    <script>
+        tailwind.config = {
+            darkMode: ["class", "[data-theme="dark"]"],
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--md-sys-color-background)',
+                        'on-background': 'var(--md-sys-color-on-background)',
+                        surface: 'var(--md-sys-color-surface)',
+                        'surface-container': 'var(--md-sys-color-surface-container)',
+                        'on-surface-variant': 'var(--md-sys-color-on-surface-variant)',
+                        'outline-variant': 'var(--md-sys-color-outline-variant)',
+                        primary: 'var(--md-sys-color-primary)',
+                        'on-primary': 'var(--md-sys-color-on-primary)',
+                    }
+                }
+            }
+        }
+    </script>
+
+</head>
+<body class="text-gray-800 p-4 md:p-6 pb-20">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center bg-surface p-4 rounded-xl shadow-sm">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900">✍️ Sketch to Pattern</h1>
+                <p class="text-xs text-gray-500">Arte Generativa Live</p>
+            </div>
+            <a href="../index.html" class="text-xs font-bold text-gray-500 hover:text-gray-900 border border-gray-300 px-3 py-1.5 rounded transition">ESCI</a>
+        </div>
+
+        <!-- Canvas Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Input Canvas -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center px-1">
+                    <h2 class="text-sm font-bold text-gray-600 uppercase tracking-wide">Input: Disegno</h2>
+                    <button id="clearButton" class="text-xs text-red-500 hover:text-red-700 font-bold bg-red-50 px-2 py-1 rounded">CANCELLA</button>
+                </div>
+                <div class="canvas-wrapper border-2 border-dashed border-gray-300">
+                    <canvas id="drawingCanvas"></canvas>
+                    <div id="draw-hint" class="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400 text-sm italic opacity-50">
+                        Disegna qui...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Canvas -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center px-1">
+                    <h2 class="text-sm font-bold text-indigo-600 uppercase tracking-wide">Output: Pattern</h2>
+                    <div class="flex gap-2">
+                         <button id="downloadPNGButton" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-2 py-1 rounded hover:bg-indigo-100">PNG</button>
+                         <button id="downloadSVGButton" class="text-xs bg-green-50 text-green-600 font-bold px-2 py-1 rounded hover:bg-green-100">SVG</button>
+                    </div>
+                </div>
+                <div class="canvas-wrapper bg-surface shadow-lg" id="pattern-container">
+                    <canvas id="patternCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controlli -->
+        <div class="bg-surface p-6 rounded-xl shadow-lg border border-gray-100">
+            <h3 class="text-sm font-bold text-gray-900 mb-6 border-b pb-2">⚙️ Parametri Generativi</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Gruppo 1 -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-bold text-gray-500">Semplificazione Tratto</label>
+                            <span id="simplificationValue" class="text-xs font-mono bg-gray-100 px-1 rounded">1.5</span>
+                        </div>
+                        <input type="range" id="simplification" min="0.1" max="10" value="1.5" step="0.1" class="w-full">
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-bold text-gray-500">Distanza Punti</label>
+                            <span id="pointDistanceValue" class="text-xs font-mono bg-gray-100 px-1 rounded">5</span>
+                        </div>
+                        <input type="range" id="pointDistance" min="2" max="50" value="5" step="1" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Gruppo 2 -->
+                <div class="space-y-4">
+                     <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs font-bold text-gray-500">Densità Pattern</label>
+                            <span id="densityValue" class="text-xs font-mono bg-gray-100 px-1 rounded">30</span>
+                        </div>
+                        <input type="range" id="density" min="5" max="80" value="30" class="w-full">
+                    </div>
+                    
+                    <div class="flex items-center justify-between pt-4">
+                        <span class="text-sm font-medium text-gray-700">Tema Scuro</span>
+                        <label class="switch">
+                            <input type="checkbox" id="colorSchemeSwitch" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Gruppo 3 -->
+                <div class="space-y-4">
+                     <div class="flex items-center justify-between pt-1">
+                        <span class="text-sm font-medium text-gray-700">Riempi Sfondo</span>
+                        <label class="switch">
+                            <input type="checkbox" id="fillBackgroundSwitch" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+                        L'algoritmo usa la triangolazione di Delaunay sui punti semplificati del tuo disegno per generare spirali procedurali.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script>
+    (function() {
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const dCtx = drawingCanvas.getContext('2d');
+        const patternCanvas = document.getElementById('patternCanvas');
+        const pCtx = patternCanvas.getContext('2d');
+        const patternContainer = document.getElementById('pattern-container');
+        const drawHint = document.getElementById('draw-hint');
+
+        // UI Elements
+        const simplificationSlider = document.getElementById('simplification');
+        const simplificationValue = document.getElementById('simplificationValue');
+        const pointDistanceSlider = document.getElementById('pointDistance');
+        const pointDistanceValue = document.getElementById('pointDistanceValue');
+        const densitySlider = document.getElementById('density');
+        const densityValue = document.getElementById('densityValue');
+        const clearButton = document.getElementById('clearButton');
+        const fillBackgroundSwitch = document.getElementById('fillBackgroundSwitch');
+        const colorSchemeSwitch = document.getElementById('colorSchemeSwitch');
+        const downloadPNGButton = document.getElementById('downloadPNGButton');
+        const downloadSVGButton = document.getElementById('downloadSVGButton');
+
+        // State
+        let isDrawing = false;
+        let strokes = [];
+        let currentStroke = [];
+
+        let settings = {
+            simplification: parseFloat(simplificationSlider.value),
+            minPointDistance: parseInt(pointDistanceSlider.value),
+            density: parseInt(densitySlider.value),
+            fillBackground: fillBackgroundSwitch.checked,
+            isDarkMode: colorSchemeSwitch.checked,
+            snapRadius: 15,
+            closingTolerance: 20 
+        };
+
+        // Algoritmi Geometrici (Minificati per performance)
+        function getSqSegDist(p,p1,p2){let x=p1.x,y=p1.y,dx=p2.x-x,dy=p2.y-y;if(dx!==0||dy!==0){const t=((p.x-x)*dx+(p.y-y)*dy)/(dx*dx+dy*dy);if(t>1){x=p2.x;y=p2.y}else if(t>0){x+=dx*t;y+=dy*t}}dx=p.x-x;dy=p.y-y;return dx*dx+dy*dy}
+        function simplifyDouglasPeucker(points,sqTolerance){let len=points.length;if(len<=2)return points;let firstPoint=points[0],lastPoint=points[len-1],index=-1,maxSqDist=0;for(let i=1;i<len-1;i++){const sqDist=getSqSegDist(points[i],firstPoint,lastPoint);if(sqDist>maxSqDist){index=i;maxSqDist=sqDist}}if(maxSqDist>sqTolerance){const r1=simplifyDouglasPeucker(points.slice(0,index+1),sqTolerance);const r2=simplifyDouglasPeucker(points.slice(index),sqTolerance);return r1.slice(0,r1.length-1).concat(r2)}else{return[firstPoint,lastPoint]}}
+        function weldClosePoints(points,minSqDist){const w=[];for(const p1 of points){let bad=false;for(const p2 of w){if((p1.x-p2.x)**2+(p1.y-p2.y)**2<minSqDist){bad=true;break}}if(!bad)w.push(p1)}return w}
+        
+        function getPointInCanvas(e, cv=drawingCanvas) { 
+            const r = cv.getBoundingClientRect(); 
+            // Fix per touch/mouse unificato
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: (cx - r.left) / r.width * cv.width, y: (cy - r.top) / r.height * cv.height }; 
+        }
+        
+        function redrawLeftCanvas() {
+            dCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            dCtx.beginPath();
+            [...strokes, currentStroke].forEach(s => {
+                if(s.length < 2) return;
+                dCtx.moveTo(s[0].x, s[0].y);
+                for(let i=1; i<s.length; i++) dCtx.lineTo(s[i].x, s[i].y);
+            });
+            dCtx.stroke();
+        }
+
+        function startDrawing(e) { 
+            e.preventDefault(); // Previene scroll su mobile
+            isDrawing = true; 
+            drawHint.style.display = 'none';
+            currentStroke = [getPointInCanvas(e)]; 
+        }
+        
+        function draw(e) { 
+            if (!isDrawing) return; 
+            e.preventDefault(); 
+            const p = getPointInCanvas(e);
+            currentStroke.push(p); 
+            
+            // Disegno ottimizzato: solo l'ultimo segmento
+            if(currentStroke.length > 1) {
+                const prev = currentStroke[currentStroke.length-2];
+                dCtx.beginPath(); dCtx.moveTo(prev.x, prev.y); dCtx.lineTo(p.x, p.y); dCtx.stroke();
+            }
+            // Throttle update pattern (opzionale per performance, qui diretto)
+            // requestAnimationFrame(updatePatternCanvas); 
+        }
+        
+        function stopDrawing(e) { 
+            if (!isDrawing) return; 
+            e.preventDefault();
+            isDrawing = false; 
+            if (currentStroke.length > 1) strokes.push(currentStroke); 
+            currentStroke = []; 
+            updatePatternCanvas(); 
+        }
+        
+        function updatePatternCanvas() {
+            const bgColor = settings.isDarkMode ? '#111827' : '#FFFFFF';
+            const lineColor = settings.isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)';
+            
+            patternContainer.className = `canvas-wrapper shadow-lg overflow-hidden ${settings.isDarkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} border`;
+            pCtx.fillStyle = bgColor;
+            pCtx.fillRect(0, 0, patternCanvas.width, patternCanvas.height);
+
+            let allPoints = [];
+            strokes.forEach(s => allPoints.push(...simplifyDouglasPeucker(s, settings.simplification ** 2)));
+            let finalPoints = weldClosePoints(allPoints, settings.minPointDistance ** 2);
+
+            // Bounding box filler
+            if (settings.fillBackground) {
+                const w = patternCanvas.width, h = patternCanvas.height;
+                finalPoints.push({x:0,y:0},{x:w,y:0},{x:0,y:h},{x:w,y:h});
+            }
+
+            if (finalPoints.length < 3) return;
+
+            try {
+                const delaunay = d3.Delaunay.from(finalPoints.map(p => [p.x, p.y]));
+                pCtx.strokeStyle = lineColor;
+                pCtx.lineWidth = 1;
+
+                for (let i = 0; i < delaunay.triangles.length; i += 3) {
+                    const t0 = delaunay.triangles[i], t1 = delaunay.triangles[i+1], t2 = delaunay.triangles[i+2];
+                    const p0 = finalPoints[t0], p1 = finalPoints[t1], p2 = finalPoints[t2];
+                    
+                    // Disegna Triangolo
+                    pCtx.beginPath(); pCtx.moveTo(p0.x,p0.y); pCtx.lineTo(p1.x,p1.y); pCtx.lineTo(p2.x,p2.y); pCtx.closePath(); pCtx.stroke();
+                    
+                    // Disegna Spirale
+                    drawSpiral(pCtx, [{x:p0.x,y:p0.y},{x:p1.x,y:p1.y},{x:p2.x,y:p2.y}], settings.density);
+                }
+            } catch (e) { console.warn("Triangulation error", e); }
+        }
+
+        function drawSpiral(ctx, v, density) {
+            let [v1, v2, v3] = v;
+            const step = 1.0 / density;
+            // Alterna direzione spirale in base a parità coordinate (effetto pattern)
+            const cw = (Math.floor(v1.x) + Math.floor(v1.y)) % 2 === 0;
+            const t = cw ? 1.0 - step : step;
+
+            ctx.beginPath();
+            ctx.moveTo(v1.x, v1.y);
+            
+            for (let i = 0; i < 50; i++) { // Limit iterations for performance
+                // Area troppo piccola = stop
+                if (Math.abs((v1.x*(v2.y-v3.y) + v2.x*(v3.y-v1.y) + v3.x*(v1.y-v2.y))/2) < 0.5) break;
+                
+                const n1 = { x: v1.x + (v2.x - v1.x) * t, y: v1.y + (v2.y - v1.y) * t };
+                const n2 = { x: v2.x + (v3.x - v2.x) * t, y: v2.y + (v3.y - v2.y) * t };
+                const n3 = { x: v3.x + (v1.x - v3.x) * t, y: v3.y + (v1.y - v3.y) * t };
+                
+                ctx.lineTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.lineTo(n3.x, n3.y);
+                v1=n1; v2=n2; v3=n3;
+            }
+            ctx.stroke();
+        }
+        
+        function setupCanvases() { 
+            const dRect = drawingCanvas.parentElement.getBoundingClientRect(); 
+            // Risoluzione Retina
+            const dpr = window.devicePixelRatio || 1;
+            drawingCanvas.width = dRect.width * dpr; drawingCanvas.height = dRect.height * dpr; 
+            patternCanvas.width = dRect.width * dpr; patternCanvas.height = dRect.height * dpr;
+            
+            // Scale context
+            dCtx.scale(dpr, dpr); pCtx.scale(dpr, dpr);
+            
+            // Logical size for styles
+            drawingCanvas.style.width = dRect.width + 'px'; drawingCanvas.style.height = dRect.height + 'px';
+            patternCanvas.style.width = dRect.width + 'px'; patternCanvas.style.height = dRect.height + 'px';
+
+            dCtx.strokeStyle = "#4f46e5"; dCtx.lineWidth = 2; dCtx.lineCap = "round"; dCtx.lineJoin = "round"; 
+            
+            // Fix dimensioning issues: internal drawing logic uses canvas width/height props which are now scaled
+            // Dobbiamo adattare i punti o la logica di disegno, ma per semplicità qui manteniamo le coordinate logiche
+            // resettando la trasformazione per la logica geometrica interna che lavora sui pixel raw
+            dCtx.setTransform(1, 0, 0, 1, 0, 0); pCtx.setTransform(1, 0, 0, 1, 0, 0);
+            // Re-scale internal drawing resolution to match visual size (so coordinates match mouse pos)
+            drawingCanvas.width = dRect.width; drawingCanvas.height = dRect.height;
+            patternCanvas.width = dRect.width; patternCanvas.height = dRect.height;
+            dCtx.strokeStyle = "#4f46e5"; dCtx.lineWidth = 2; 
+
+            redrawLeftCanvas(); updatePatternCanvas(); 
+        }
+
+        function handleSettingsChange() {
+            settings.simplification = parseFloat(simplificationSlider.value); simplificationValue.textContent = settings.simplification.toFixed(1);
+            settings.minPointDistance = parseInt(pointDistanceSlider.value); pointDistanceValue.textContent = settings.minPointDistance;
+            settings.density = parseInt(densitySlider.value); densityValue.textContent = settings.density;
+            settings.fillBackground = fillBackgroundSwitch.checked;
+            settings.isDarkMode = colorSchemeSwitch.checked;
+            updatePatternCanvas();
+        }
+        
+        function clearAll() { 
+            strokes = []; currentStroke = []; 
+            dCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height); 
+            updatePatternCanvas(); 
+            drawHint.style.display = 'flex';
+        }
+
+        function downloadPNG() { const link = document.createElement('a'); link.download = 'pattern.png'; link.href = patternCanvas.toDataURL('image/png'); link.click(); }
+        
+        // Listeners
+        const events = [['pointerdown', startDrawing], ['pointermove', draw], ['pointerup', stopDrawing], ['pointerleave', stopDrawing]];
+        events.forEach(([e, f]) => drawingCanvas.addEventListener(e, f));
+        
+        [simplificationSlider, pointDistanceSlider, densitySlider, fillBackgroundSwitch, colorSchemeSwitch].forEach(el => el.addEventListener('input', handleSettingsChange));
+        clearButton.addEventListener('click', clearAll);
+        downloadPNGButton.addEventListener('click', downloadPNG);
+        
+        // Init
+        window.addEventListener('resize', () => setTimeout(setupCanvases, 100)); // Debounce resize
+        // Delay setup to ensure layout is done
+        setTimeout(setupCanvases, 100);
+    })();
+    </script>
+</body>
+</html>
