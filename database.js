@@ -1,9 +1,18 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-13 11:26:27
+   Data: 2025-12-13 11:44:38
 */
 
 const db = [
+    {
+        "title": "Mercatore Lab",
+        "excerpt": "Laboratorio Proiezioni",
+        "tags": [],
+        "date": "2025-12-13",
+        "url": "content/apps/mercatore_correzione_001_gemini.html",
+        "type": "app",
+        "icon": "🌍"
+    },
     {
         "title": "Tattoo Delta",
         "date": "2025-12-13",
@@ -264,28 +273,6 @@ const db = [
         "url": "content/apps/MCD_mcm_1el_001.html",
         "type": "app",
         "icon": "🔢"
-    },
-    {
-        "title": "Mappe & Distorsioni: Mercatore",
-        "excerpt": "Laboratorio interattivo sulle proiezioni cartografiche. Analizza visivamente la distorsione delle aree (Groenlandia vs Africa) nella proiezione di Mercatore spostando le nazioni sulla griglia.",
-        "tags": [
-            "Matematica",
-            "Geografia",
-            "Proiezioni",
-            "Mercatore",
-            "Coordinate",
-            "Scala",
-            "1EL",
-            "2EL",
-            "Mat:Geometria",
-            "Mat:Modellizzazione",
-            "EU:STEM",
-            "Lab"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/mercatore_correzione_001_gemini.html",
-        "type": "app",
-        "icon": "🌍"
     },
     {
         "title": "AlgebraLab 3D: Geometria dei Polinomi",
