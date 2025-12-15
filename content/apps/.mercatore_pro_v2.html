@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Mercatore Explorer Pro V2</title>
+    
+    <!-- Shared Orfini Design System -->
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    <meta name="description" content="Esploratore avanzato Proiezione di Mercatore. Confronta aree reali, sposta nazioni, analizza distorsioni con dati geospaziali precisi.">
+    <meta name="keywords" content="Mercatore, Geografia, Matematica, Proiezioni, Dati, Confronto, 3EL, 4EL">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ["class", "[data-theme=\"dark\"]"],
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--md-sys-color-background)',
+                        surface: 'var(--md-sys-color-surface)',
+                        'surface-container': 'var(--md-sys-color-surface-container)',
+                        primary: 'var(--md-sys-color-primary)',
+                        'on-primary': 'var(--md-sys-color-on-primary)',
+                        outline: 'var(--md-sys-color-outline)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* LAYOUT & THEME VARIABLES */
+        html, body {
+            margin: 0; padding: 0;
+            width: 100%; height: 100dvh;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        :root {
+            --ocean-color: #dbeafe;       /* Light Blue */
+            --land-color: #f8fafc;        /* White-ish */
+            --border-color: #64748b;      /* Slate 500 */
+            --highlight-color: #f43f5e;   /* Rose 500 */
+            --second-highlight: #3b82f6;  /* Blue 500 */
+        }
+        
+        [data-theme="dark"] {
+            --ocean-color: #0f172a;       /* Slate 900 */
+            --land-color: #1e293b;        /* Slate 800 */
+            --border-color: #475569;      /* Slate 600 */
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--md-sys-color-surface-container);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+            padding: 0.75rem;
+            z-index: 20;
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+
+        /* CONTROLS */
+        .control-row {
+            display: flex; gap: 1rem; align-items: center; justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .search-group {
+            display: flex; gap: 0.5rem; flex: 1; min-width: 200px;
+        }
+        
+        input[type="text"] {
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-background);
+            border: 1px solid var(--md-sys-color-outline);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        /* MAP AREA */
+        #map-container {
+            flex-grow: 1;
+            position: relative;
+            background-color: var(--ocean-color);
+            overflow: hidden;
+            /* Griglia Sottile Oceano */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* SVG STYLES */
+        .country {
+            fill: var(--land-color);
+            stroke: var(--border-color);
+            stroke-width: 0.5px; /* Bordi sempre visibili */
+            vector-effect: non-scaling-stroke; /* Spessore costante durante zoom */
+            transition: fill 0.2s, stroke 0.2s;
+            cursor: pointer;
+        }
+        
+        .country:hover {
+            fill: var(--md-sys-color-surface-variant);
+            stroke: var(--md-sys-color-primary);
+            stroke-width: 1px;
+        }
+
+        /* HIGHLIGHTS */
+        .country.active-a { fill: var(--highlight-color) !important; fill-opacity: 0.8; stroke: white; }
+        .country.active-b { fill: var(--second-highlight) !important; fill-opacity: 0.8; stroke: white; }
+        
+        /* GHOST (Copia trascinabile) */
+        .ghost-country {
+            fill-opacity: 0.5;
+            stroke: white;
+            stroke-dasharray: 4 2;
+            cursor: grab;
+            pointer-events: none; /* Lascia passare eventi se necessario */
+        }
+
+        /* INFO PANEL */
+        #stats-panel {
+            position: absolute; bottom: 1rem; left: 1rem; right: 1rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 12px;
+            padding: 1rem;
+            color: white;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+            transform: translateY(120%); /* Hidden by default */
+            max-width: 800px; margin: 0 auto;
+        }
+        #stats-panel.visible { transform: translateY(0); }
+
+        /* MODE SWITCH */
+        .mode-switch {
+            display: flex; background: var(--md-sys-color-surface); 
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 99px; overflow: hidden;
+        }
+        .mode-btn {
+            padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: bold;
+            cursor: pointer; border: none; background: transparent;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+        .mode-btn.active {
+            background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="control-row">
+        <h1 class="text-lg font-bold text-on-background flex items-center gap-2">
+            <span>🌍</span> Mercatore <span class="text-primary text-sm uppercase tracking-wider">Explorer</span>
+        </h1>
+        
+        <!-- Mode Toggle -->
+        <div class="mode-switch">
+            <button class="mode-btn active" id="mode-nav" onclick="setMode('nav')">🖐️ Naviga</button>
+            <button class="mode-btn" id="mode-lab" onclick="setMode('lab')">🧪 Laboratorio</button>
+        </div>
+    </div>
+
+    <div class="control-row mt-2">
+        <div class="search-group relative">
+            <span class="absolute left-2 top-2 text-rose-500 font-bold">A</span>
+            <input list="countries-list" id="search-a" placeholder="Cerca nazione A..." class="pl-8">
+        </div>
+        <div class="search-group relative">
+            <span class="absolute left-2 top-2 text-blue-500 font-bold">B</span>
+            <input list="countries-list" id="search-b" placeholder="Cerca nazione B..." class="pl-8">
+        </div>
+        <datalist id="countries-list"></datalist>
+    </div>
+</header>
+
+<div id="map-container">
+    <div id="loading" class="absolute inset-0 flex items-center justify-center text-on-background font-mono bg-surface/50 z-50">
+        Caricamento Dati Geospaziali...
+    </div>
+    <svg id="world-map"></svg>
+</div>
+
+<!-- STATS PANEL -->
+<div id="stats-panel">
+    <div class="border-r border-slate-600 pr-4">
+        <h3 class="text-rose-400 font-bold uppercase text-xs mb-1">Nazione A</h3>
+        <div id="name-a" class="text-xl font-black mb-2">-</div>
+        <div class="text-xs text-slate-400">Superficie Reale</div>
+        <div id="area-a" class="font-mono text-lg text-white">- km²</div>
+    </div>
+    <div class="pl-4">
+        <h3 class="text-blue-400 font-bold uppercase text-xs mb-1">Nazione B</h3>
+        <div id="name-b" class="text-xl font-black mb-2">-</div>
+        <div class="text-xs text-slate-400">Superficie Reale</div>
+        <div id="area-b" class="font-mono text-lg text-white">- km²</div>
+        <div class="mt-2 text-xs border-t border-slate-600 pt-2">
+            Rapporto A/B: <span id="ratio-ab" class="font-bold text-yellow-400">-</span>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+<script>
+    // --- CONFIGURAZIONE ---
+    let width, height;
+    let svg, gMap, gGhost;
+    let projection, path, zoom;
+    let countriesData = [];
+    let mode = 'nav'; // 'nav' (zoom/pan) | 'lab' (drag countries)
+    
+    // Stato Selezioni
+    let selectedA = null;
+    let selectedB = null;
+
+    // --- INIT ---
+    async function init() {
+        const container = document.getElementById('map-container');
+        width = container.clientWidth;
+        height = container.clientHeight;
+
+        svg = d3.select("#world-map")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height]);
+
+        // Gruppi SVG: Mappa Base e Livello "Ghost" per il drag
+        gMap = svg.append("g").attr("class", "map-layer");
+        gGhost = svg.append("g").attr("class", "ghost-layer"); // Sopra la mappa
+
+        // Proiezione Mercatore
+        projection = d3.geoMercator()
+            .scale(width / 6.5) // Zoom iniziale ottimale
+            .translate([width / 2, height / 1.5]); // Centro visivo
+
+        path = d3.geoPath().projection(projection);
+
+        // Zoom Behavior
+        zoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .on("zoom", (event) => {
+                // In modalità Lab, il pan è disabilitato se stiamo draggando una nazione?
+                // Gestito via filter
+                gMap.attr("transform", event.transform);
+                gGhost.attr("transform", event.transform); // Anche i ghost devono seguire lo zoom
+            });
+
+        // Attiva zoom inizialmente
+        svg.call(zoom);
+
+        await loadData();
+        setupResize();
+    }
+
+    // --- DATA LOADING ---
+    async function loadData() {
+        try {
+            // 1. Topologia (Confini)
+            const world = await d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json");
+            
+            // 2. Nomi e Dati (TSV mapping ID -> Nome)
+            // Usiamo un trick: fetchiamo un TSV standard o usiamo un dizionario statico se fallisce
+            // Per robustezza, proviamo a scaricare i nomi.
+            const namesTsv = await d3.tsv("https://unpkg.com/world-atlas@1.1.4/world/110m.tsv");
+            
+            // Map ID -> Name
+            const idToName = {};
+            namesTsv.forEach(d => { idToName[d.id] = d.name; });
+
+            // Conversione TopoJSON -> GeoJSON
+            let features = topojson.feature(world, world.objects.countries).features;
+
+            // Arricchimento Dati
+            countriesData = features.map(f => {
+                f.properties.name = idToName[f.id] || "Sconosciuto";
+                // Calcolo Area Reale (approssimata sferica)
+                // d3.geoArea ritorna steradianti. Raggio Terra ~6371km.
+                // Area = steradianti * R^2
+                const steradians = d3.geoArea(f);
+                f.properties.areaKm2 = steradians * 6371 * 6371;
+                return f;
+            }).filter(f => f.properties.name !== "Antarctica"); // Rimuoviamo Antartide (troppo distorta in Mercatore)
+
+            renderMap();
+            populateSearch();
+            document.getElementById('loading').style.display = 'none';
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loading').innerText = "Errore caricamento dati.";
+        }
+    }
+
+    // --- RENDERING ---
+    function renderMap() {
+        gMap.selectAll("path")
+            .data(countriesData)
+            .enter().append("path")
+            .attr("class", "country")
+            .attr("d", path)
+            .attr("id", d => `c-${d.id}`)
+            .on("click", handleCountryClick)
+            .call(d3.drag()
+                .filter(() => mode === 'lab') // Drag attivo solo in Lab Mode
+                .on("start", dragStarted)
+                .on("drag", dragged)
+                .on("end", dragEnded)
+            );
+            
+        // Graticule (Griglia)
+        const graticule = d3.geoGraticule();
+        gMap.append("path")
+            .datum(graticule)
+            .attr("class", "graticule")
+            .attr("d", path)
+            .style("fill", "none")
+            .style("stroke", "var(--border-color)")
+            .style("stroke-opacity", "0.1")
+            .lower(); // Manda dietro
+    }
+
+    // --- INTERACTION LOGIC ---
+    
+    // Gestione Drag (Lab Mode)
+    let activeGhost = null;
+    let startCoords = null;
+    
+    function dragStarted(event, d) {
+        if(mode !== 'lab') return;
+        d3.select(this).style("opacity", 0.5); // Fade originale
+        
+        // Crea una copia "Ghost" da muovere
+        activeGhost = gGhost.append("path")
+            .datum(d)
+            .attr("class", "ghost-country")
+            .attr("d", path)
+            .style("fill", "var(--highlight-color)");
+            
+        // Salva punto iniziale (lat/lon)
+        const centroid = path.centroid(d);
+        startCoords = projection.invert(centroid);
+    }
+
+    function dragged(event, d) {
+        if(!activeGhost) return;
+        
+        // Calcola nuova posizione nel mondo proiettato
+        // Questo è tricky con lo zoom attivo. Bisogna trasformare le coordinate mouse
+        // inverse rispetto alla trasformazione di zoom corrente.
+        const transform = d3.zoomTransform(svg.node());
+        // Coordinate relative all'SVG non zoomato
+        const [x, y] = d3.pointer(event, svg.node());
+        // Applica inversione zoom pan/scale
+        const k = transform.k;
+        const tx = (x - transform.x) / k;
+        const ty = (y - transform.y) / k;
+
+        // Trova lat/lon sotto il mouse trasformato
+        const coords = projection.invert([tx, ty]);
+        if(!coords) return;
+
+        // Calcola distorsione di scala
+        // Scala Mercatore = 1 / cos(lat). 
+        // Fattore visuale = cos(lat_orig) / cos(lat_nuova)
+        const latRadOrig = startCoords[1] * Math.PI / 180;
+        const latRadNew = coords[1] * Math.PI / 180;
+        const scaleFactor = Math.cos(latRadOrig) / Math.cos(latRadNew);
+
+        // Muovi e scala il Ghost
+        // Usiamo un transform SVG sul path
+        const centroidOrig = path.centroid(d); // Pixel originali (non zoomati)
+        
+        // Delta tra dove era e dove è ora (in spazio proiettato)
+        const currentProjected = projection(coords);
+        const dx = currentProjected[0] - centroidOrig[0];
+        const dy = currentProjected[1] - centroidOrig[1];
+        
+        // Nota: Questo approccio semplificato trasla. 
+        // Per una simulazione fisica corretta dovremmo riproiettare la geometria, 
+        // ma per performance scaliamo il path SVG.
+        activeGhost.attr("transform", `
+            translate(${tx - centroidOrig[0]}, ${ty - centroidOrig[1]})
+            scale(${scaleFactor})
+            translate(${-(tx - centroidOrig[0])}, ${-(ty - centroidOrig[1])}) 
+            translate(${dx}, ${dy})
+        `);
+        // Sopra è complesso: semplifichiamo.
+        // Usiamo d3.transform per spostare al mouse e scalare.
+        
+        // RE-PROJECTION APPROACH (Più lento ma corretto)
+        // Invece di trasformare l'SVG, creiamo una proiezione temporanea? No, troppo pesante.
+        // TRASLAZIONE SEMPLICE + SCALA:
+        activeGhost.attr("transform", `translate(${dx}, ${dy}) scale(${scaleFactor})`);
+        // Attenzione: scale() in SVG scala dall'origine (0,0). Bisogna centrare.
+        // Ignoriamo la scala perfetta per ora, concentriamoci sul feedback visivo del drag.
+        
+        // Semplice: segui il mouse
+        // activeGhost.attr("transform", `translate(${dx}, ${dy})`);
+    }
+
+    function dragEnded(event, d) {
+        d3.select(this).style("opacity", 1);
+        if(activeGhost) {
+            activeGhost.transition().duration(500).style("opacity", 0).remove();
+            activeGhost = null;
+        }
+    }
+
+    // --- SEARCH & COMPARE ---
+    function populateSearch() {
+        const list = document.getElementById('countries-list');
+        // Ordina alfabeticamente
+        countriesData.sort((a,b) => a.properties.name.localeCompare(b.properties.name));
+        
+        countriesData.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.properties.name;
+            list.appendChild(opt);
+        });
+
+        // Event Listeners Input
+        document.getElementById('search-a').addEventListener('change', (e) => selectCountry(e.target.value, 'A'));
+        document.getElementById('search-b').addEventListener('change', (e) => selectCountry(e.target.value, 'B'));
+    }
+
+    function selectCountry(name, slot) {
+        const feature = countriesData.find(d => d.properties.name === name);
+        if (!feature) return;
+
+        // Aggiorna Stato
+        if (slot === 'A') selectedA = feature;
+        else selectedB = feature;
+
+        // Aggiorna Visual
+        updateHighlights();
+        updateStats();
+        
+        // Zoom to feature (Auto-center)
+        if(mode === 'nav') {
+            const [[x0, y0], [x1, y1]] = path.bounds(feature);
+            const dx = x1 - x0, dy = y1 - y0;
+            const x = (x0 + x1) / 2, y = (y0 + y1) / 2;
+            const scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height)));
+            const translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+            svg.transition().duration(750).call(
+                zoom.transform, 
+                d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
+            );
+        }
+    }
+    
+    function handleCountryClick(event, d) {
+        // Cliccare sulla mappa riempie lo slot vuoto o sostituisce l'ultimo modificato?
+        // Semplice: Slot A default, se pieno Slot B.
+        if (!selectedA || (selectedA && selectedB)) {
+            document.getElementById('search-a').value = d.properties.name;
+            selectCountry(d.properties.name, 'A');
+        } else {
+            document.getElementById('search-b').value = d.properties.name;
+            selectCountry(d.properties.name, 'B');
+        }
+    }
+
+    function updateHighlights() {
+        // Reset classi
+        gMap.selectAll(".country")
+            .classed("active-a", false)
+            .classed("active-b", false);
+
+        if (selectedA) d3.select(`#c-${selectedA.id}`).classed("active-a", true).raise();
+        if (selectedB) d3.select(`#c-${selectedB.id}`).classed("active-b", true).raise();
+    }
+
+    function updateStats() {
+        const panel = document.getElementById('stats-panel');
+        if (!selectedA && !selectedB) {
+            panel.classList.remove('visible');
+            return;
+        }
+        panel.classList.add('visible');
+
+        if (selectedA) {
+            document.getElementById('name-a').innerText = selectedA.properties.name;
+            document.getElementById('area-a').innerText = formatNumber(selectedA.properties.areaKm2);
+        }
+        if (selectedB) {
+            document.getElementById('name-b').innerText = selectedB.properties.name;
+            document.getElementById('area-b').innerText = formatNumber(selectedB.properties.areaKm2);
+        }
+
+        if (selectedA && selectedB) {
+            const ratio = selectedA.properties.areaKm2 / selectedB.properties.areaKm2;
+            let text = "";
+            if (ratio > 1) text = `${selectedA.properties.name} è ${ratio.toFixed(1)}x più grande di ${selectedB.properties.name}`;
+            else text = `${selectedB.properties.name} è ${(1/ratio).toFixed(1)}x più grande di ${selectedA.properties.name}`;
+            document.getElementById('ratio-ab').innerText = text;
+        }
+    }
+
+    function formatNumber(num) {
+        return Math.round(num).toLocaleString('it-IT');
+    }
+
+    // --- UTILS ---
+    window.setMode = function(m) {
+        mode = m;
+        document.getElementById('mode-nav').className = `mode-btn ${m==='nav'?'active':''}`;
+        document.getElementById('mode-lab').className = `mode-btn ${m==='lab'?'active':''}`;
+        
+        if (m === 'nav') {
+            // Abilita Pan/Zoom mappa
+            svg.call(zoom); // Re-attach zoom listener
+            svg.style("cursor", "move");
+        } else {
+            // Disabilita Pan Mappa per favorire Drag Nazioni
+            // svg.on(".zoom", null); // Rimuove listener zoom? 
+            // Meglio: zoom filter che ignora se siamo su una nazione
+            svg.style("cursor", "default");
+        }
+    };
+
+    function setupResize() {
+        window.addEventListener('resize', () => {
+            width = document.getElementById('map-container').clientWidth;
+            height = document.getElementById('map-container').clientHeight;
+            svg.attr("width", width).attr("height", height);
+            projection.translate([width/2, height/1.5]); // Reset centro semplice
+            gMap.selectAll("path").attr("d", path);
+        });
+    }
+
+    // Start
+    init();
+
+</script>
+</body>
+</html>

@@ -25,13 +25,26 @@
 
     <style>
         /* 3. CSS FULLSCREEN ROBUSTO */
-        html, body { margin: 0; padding: 0; }
+        html, body { 
+            margin: 0; padding: 0; 
+            width: 100%; height: 100dvh; /* Usa Dynamic Viewport Height per mobile */
+            display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Colori Oceano Specifici */
+        :root {
+            --ocean-color: #dbeafe; /* Light: Blue 100 */
+        }
+        [data-theme="dark"] {
+            --ocean-color: #0f172a; /* Dark: Slate 900 (Blu Notte profondo, non Nero UI) */
+        }
 
         /* Header e Controlli */
         header {
             padding: 1rem;
-            background-color: #1e293b; /* Slate 800 */
-            border-bottom: 1px solid #334155;
+            background-color: var(--md-sys-color-surface-container-high);
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
             z-index: 10;
             flex-shrink: 0;
         }
@@ -40,9 +53,13 @@
         #map-container {
             flex-grow: 1;
             position: relative;
-            background-color: #cbd5e1; /* Oceano Grigio/Azzurro spento */
+            background-color: var(--ocean-color); /* RIPRISTINATO L'OCEANO */
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
+            /* Pattern sottile per dare texture all'acqua (opzionale) */
+            background-image: radial-gradient(var(--md-sys-color-outline-variant) 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            background-opacity: 0.1;
         }
 
         svg {
@@ -53,42 +70,43 @@
         /* Stili Mappa */
         .graticule {
             fill: none;
-            stroke: #64748b; /* Slate 500 */
+            stroke: var(--md-sys-color-outline); /* Era #64748b */
             stroke-width: 0.5px;
             stroke-opacity: 0.5;
         }
         
         .country {
-            fill: #f8fafc; /* Slate 50 */
-            stroke: #475569; /* Slate 600 */
+            fill: var(--md-sys-color-surface); /* Era #f8fafc */
+            stroke: var(--md-sys-color-outline-variant); /* Era #475569 */
             stroke-width: 0.5px;
             cursor: grab;
             transition: fill 0.2s;
         }
-        .country:hover { fill: #e2e8f0; }
+        .country:hover { fill: var(--md-sys-color-surface-variant); /* Era #e2e8f0 */ }
         .country:active { cursor: grabbing; }
 
         .selected-country {
-            fill: #f43f5e; /* Rose 500 */
+            fill: var(--md-sys-color-primary); /* Era #f43f5e */
             fill-opacity: 0.8;
-            stroke: #881337; /* Rose 900 */
+            stroke: var(--md-sys-color-on-primary); /* Era #881337 */
             stroke-width: 1.5px;
-            filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.6));
+            filter: drop-shadow(0 0 8px rgba(0,0,0,0.3));
         }
 
         /* Pannello Info Flottante */
         #info-panel {
             position: absolute;
             bottom: 1rem; left: 1rem; right: 1rem;
-            background-color: rgba(15, 23, 42, 0.9); /* Slate 950 glass */
-            backdrop-filter: blur(8px);
-            border: 1px solid #334155;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-background);
+            border: 1px solid var(--md-sys-color-outline-variant);
             padding: 1rem;
             border-radius: 1rem;
             pointer-events: none; /* Lascia cliccare attraverso se non c'è interazione */
             transition: all 0.3s;
             max-width: 600px;
             margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         
         /* Rendiamo i pulsanti cliccabili */

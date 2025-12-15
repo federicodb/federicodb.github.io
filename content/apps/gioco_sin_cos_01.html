@@ -315,15 +315,22 @@
 
         // --- APP COMPONENT ---
         function App() {
-            // Theme managed globally
+            // Theme managed globally but forcing Light for readability
             const [view, setView] = useState('menu');
             const [nick, setNick] = useState(localStorage.getItem('gm_nick') || '');
             const [userAvatar, setUserAvatar] = useState(localStorage.getItem('gm_avatar') || AVATARS[0]);
             const [lvl, setLvl] = useState(1);
+            const [scaffoldMode, setScaffoldMode] = useState(false); // NEW
             const [lb, setLb] = useState([]);
 
             const [cards, setCards] = useState([]);
             const [moves, setMoves] = useState(0);
+            
+            // Force Light Theme
+            useEffect(() => {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.documentElement.classList.remove('dark');
+            }, []);
             const [score, setScore] = useState(0);
             const [accumulatedScore, setAccumulatedScore] = useState(0);
 
@@ -456,6 +463,19 @@
                             </div>
                             <div className="flex-1 overflow-y-auto p-6 space-y-8 scroller">
                                 <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">ID Operatore</label><div className="flex gap-2"><button onClick={() => { const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length; setUserAvatar(AVATARS[nextIdx]); localStorage.setItem('gm_avatar', AVATARS[nextIdx]); }} className="bg-surface-container hover:bg-outline-variant cursor-pointer text-2xl w-14 h-14 flex items-center justify-center rounded-lg border-2 border-outline-variant transition-all active:scale-95">{userAvatar}</button><input value={nick} onChange={e => setNick(e.target.value)} placeholder="NOME IN CODICE..." className="w-full bg-surface-container rounded-lg px-4 font-bold text-on-background border-2 border-transparent focus:border-radar-500 focus:bg-surface outline-none transition-all uppercase placeholder-on-surface-variant" /></div></div>
+                                
+                                {/* SCAFFOLDING TOGGLE (Radar Style) */}
+                                <button onClick={() => setScaffoldMode(!scaffoldMode)} className={`w-full flex items-center justify-between p-3 rounded-lg border-2 transition-all ${scaffoldMode ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/20' : 'border-outline-variant bg-surface'}`}>
+                                    <div className="flex items-center gap-3">
+                                        <div className={`text-xl ${scaffoldMode ? 'text-radar-600' : 'text-on-surface-variant'}`}>👻</div>
+                                        <div className="text-left">
+                                            <div className="font-bold text-xs uppercase tracking-widest text-on-background">Ghost Signal</div>
+                                            <div className="text-[9px] font-mono text-on-surface-variant">Trace Persistence</div>
+                                        </div>
+                                    </div>
+                                    <div className={`w-3 h-3 rounded-full border ${scaffoldMode ? 'bg-radar-500 border-radar-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'border-outline-variant'}`} />
+                                </button>
+
                                 <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">Protocollo</label><div className="grid gap-2">{LEVELS.map(l => (<button key={l.id} onClick={() => setLvl(l.id)} className={`text-left p-3 rounded-lg border-2 transition-all flex justify-between items-center group ${lvl === l.id ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/30 dark:border-radar-500' : 'border-outline-variant hover:border-radar-500/50 bg-surface'}`}><div><div className={`font-bold text-sm ${lvl === l.id ? 'text-primary' : 'text-on-surface-variant'}`}>{l.label}</div><div className="text-[10px] opacity-60 font-mono">{l.desc}</div></div>{lvl === l.id && <div className="text-primary animate-pulse">{Icons.Check}</div>}</button>))}</div></div>
                                 <div className="bg-surface-container rounded-xl border border-outline-variant p-4"><div className="flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant"><div className="text-yellow-500">{Icons.Trophy}</div><span className="font-bold text-[10px] uppercase tracking-widest text-on-surface-variant">Top Signals</span></div><div className="max-h-48 overflow-y-auto scroller space-y-2 font-sans">{lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 font-mono">NO DATA LOGGED</div>}{lb.map((row, i) => (<div key={i} className="flex justify-between items-center text-xs p-2 bg-surface rounded border border-outline-variant shadow-sm"><div className="flex gap-2 items-center"><span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i < 3 ? 'bg-yellow-100 text-yellow-700' : 'bg-surface-container text-on-surface-variant'}`}>{i + 1}</span><span className="text-base leading-none">{row.avatar || '👤'}</span><span className="font-bold text-on-background truncate max-w-[80px] uppercase">{row.name}</span></div><div className="text-right"><div className="text-primary font-bold">{row.score}</div><div className="text-[9px] text-on-surface-variant font-mono">{row.moves}mv</div></div></div>))}</div></div>
                             </div>
@@ -493,8 +513,10 @@
                         <main className="flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center relative">
                             <div className={`grid gap-3 md:gap-4 w-full max-w-6xl h-full max-h-full ${gridClass}`}>
                                 {cards.map(card => {
-                                    const isGhostMode = LEVELS.find(l => l.id === lvl).ghost;
-                                    const showGhostContent = isGhostMode && card.seen;
+                                    // LOGICA GHOST / SCAFFOLDING
+                                    const isTrainingGhost = LEVELS.find(l => l.id === lvl).ghost;
+                                    const showGhostContent = (isTrainingGhost || scaffoldMode) && card.seen;
+                                    
                                     const isFaceUp = card.isFlipped || card.isMatched;
                                     let borderStyle = card.cardType === 'q' ? 'border-dashed' : 'border-solid';
                                     let flipperStyle = `bg-surface border-outline-variant ${borderStyle}`;
@@ -506,7 +528,16 @@
                                         <div key={card.id} onClick={() => handleCardClick(card.id)} className="perspective-1000 relative cursor-pointer w-full h-full min-h-0 group select-none">
                                             <div className={`flipper w-full h-full shadow-md rounded-lg border-2 transition-all duration-300 ${flipperStyle} ${isFaceUp ? 'flipped' : 'hover:border-radar-400 hover:shadow-lg hover:-translate-y-0.5'}`}>
                                                 <div className="face face-front rounded-lg overflow-hidden bg-surface">
-                                                    {showGhostContent ? (<div className="opacity-40 w-full h-full flex items-center justify-center p-1"><MathText txt={card.content} className="text-xs md:text-sm text-on-surface-variant" /></div>) : (<div className="flex flex-col items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity"><span className="text-3xl md:text-5xl filter grayscale group-hover:grayscale-0 transition-all duration-300">{card.emoji}</span><div className="mt-2 w-8 h-1 bg-surface-container rounded-full group-hover:bg-radar-200 dark:group-hover:bg-radar-800 transition-colors"></div></div>)}
+                                                    {showGhostContent ? (
+                                                        <div className="opacity-50 w-full h-full flex items-center justify-center p-1 blur-[0.5px]">
+                                                            <MathText txt={card.content} className="text-xs md:text-sm text-on-surface-variant font-bold" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                                                            <span className="text-3xl md:text-5xl filter grayscale group-hover:grayscale-0 transition-all duration-300">{card.emoji}</span>
+                                                            <div className="mt-2 w-8 h-1 bg-surface-container rounded-full group-hover:bg-radar-200 dark:group-hover:bg-radar-800 transition-colors"></div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="face face-back p-2 rounded-lg bg-surface/50 backdrop-blur-sm">
                                                     <div className={`w-full h-full flex items-center justify-center text-center ${backContentStyle}`}><MathText txt={card.content} className={`font-bold tracking-tight break-words w-full ${card.content.length > 10 ? 'text-lg' : 'text-2xl md:text-3xl'}`} /></div>

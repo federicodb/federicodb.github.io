@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-15 09:12:29
+   Data: 2025-12-15 15:44:24
 */
 
 const db = [
@@ -15,7 +15,8 @@ const db = [
         "excerpt": "Risorsa didattica: Tattoo Delta.",
         "url": "content/infografiche/tattoo_delta.png",
         "type": "infographic",
-        "icon": "🖼️"
+        "icon": "🖼️",
+        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
     },
     {
         "title": "Guida Al Mondo Delle Funzioni Matematiche",
@@ -266,28 +267,6 @@ const db = [
         "icon": "🔢"
     },
     {
-        "title": "Mappe & Distorsioni: Mercatore",
-        "excerpt": "Laboratorio interattivo sulle proiezioni cartografiche. Analizza visivamente la distorsione delle aree (Groenlandia vs Africa) nella proiezione di Mercatore spostando le nazioni sulla griglia.",
-        "tags": [
-            "Matematica",
-            "Geografia",
-            "Proiezioni",
-            "Mercatore",
-            "Coordinate",
-            "Scala",
-            "1EL",
-            "2EL",
-            "Mat:Geometria",
-            "Mat:Modellizzazione",
-            "EU:STEM",
-            "Lab"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/mercatore_correzione_001_gemini.html",
-        "type": "app",
-        "icon": "🌍"
-    },
-    {
         "title": "AlgebraLab 3D: Geometria dei Polinomi",
         "excerpt": "Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.",
         "tags": [
@@ -374,6 +353,28 @@ const db = [
         "url": "content/apps/visualizzatore polinomi 2d 3d 001.html",
         "type": "app",
         "icon": "🧱"
+    },
+    {
+        "title": "Mappe & Distorsioni: Mercatore",
+        "excerpt": "Laboratorio interattivo sulle proiezioni cartografiche. Analizza visivamente la distorsione delle aree (Groenlandia vs Africa) nella proiezione di Mercatore spostando le nazioni sulla griglia.",
+        "tags": [
+            "Matematica",
+            "Geografia",
+            "Proiezioni",
+            "Mercatore",
+            "Coordinate",
+            "Scala",
+            "1EL",
+            "2EL",
+            "Mat:Geometria",
+            "Mat:Modellizzazione",
+            "EU:STEM",
+            "Lab"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/mercatore_correzione_001_gemini_worksproperly.html",
+        "type": "app",
+        "icon": "🌍"
     },
     {
         "title": "Math Underground: Mappa Funzioni",

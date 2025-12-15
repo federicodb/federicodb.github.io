@@ -313,14 +313,21 @@
         };
 
         function App() {
-            // Theme managed globally by orfini-shared.js
+            // Theme managed globally by orfini-shared.js but we prefer Light for readability here
             const [view, setView] = useState('menu');
             const [nick, setNick] = useState(localStorage.getItem('fm_nick') || '');
             const [userAvatar, setUserAvatar] = useState(localStorage.getItem('fm_avatar') || AVATARS[0]);
             const [lvl, setLvl] = useState(1);
+            const [scaffoldMode, setScaffoldMode] = useState(false); // NEW: Scaffolding State
             const [lb, setLb] = useState([]);
             const [cards, setCards] = useState([]);
             const [moves, setMoves] = useState(0);
+            
+            // Force Light Theme on Mount
+            useEffect(() => {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.documentElement.classList.remove('dark');
+            }, []);
             const [score, setScore] = useState(0);
             const [accumulatedScore, setAccumulatedScore] = useState(0);
             const [flipped, setFlipped] = useState([]);
@@ -452,6 +459,19 @@
                             </div>
                             <div className="flex-1 overflow-y-auto p-6 space-y-8 scroller">
                                 <div className="space-y-2"><label className="text-xs font-bold uppercase text-slate-400">Identità Studente</label><div className="flex gap-2"><button onClick={() => { const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length; setUserAvatar(AVATARS[nextIdx]); localStorage.setItem('fm_avatar', AVATARS[nextIdx]); }} className="bg-indigo-50 hover:bg-indigo-100 cursor-pointer text-2xl w-12 h-12 flex items-center justify-center rounded-xl select-none transition-colors dark:bg-slate-700 dark:hover:bg-slate-600">{userAvatar}</button><input value={nick} onChange={e => setNick(e.target.value)} placeholder="Il tuo nome..." className="w-full bg-slate-100 rounded-xl px-4 font-bold text-slate-700 focus:ring-2 ring-indigo-200 outline-none transition-all dark:bg-slate-700 dark:text-white dark:placeholder-slate-400" /></div></div>
+                                
+                                {/* SCAFFOLDING TOGGLE */}
+                                <button onClick={() => setScaffoldMode(!scaffoldMode)} className={`w-full flex items-center justify-between p-3 rounded-xl border-2 transition-all ${scaffoldMode ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20' : 'border-slate-200'}`}>
+                                    <div className="flex items-center gap-2">
+                                        <div className={`text-lg ${scaffoldMode ? 'text-teal-600' : 'text-slate-400'}`}>👻</div>
+                                        <div className="text-left">
+                                            <div className="font-bold text-xs uppercase text-slate-700 dark:text-slate-200">Scaffolding</div>
+                                            <div className="text-[10px] text-slate-500">Mostra testo carte viste</div>
+                                        </div>
+                                    </div>
+                                    <div className={`w-4 h-4 rounded-full border ${scaffoldMode ? 'bg-teal-500 border-teal-500' : 'border-slate-300'}`} />
+                                </button>
+
                                 <div className="space-y-2"><label className="text-xs font-bold uppercase text-slate-400">Missione</label><div className="grid gap-2">{LEVELS.map(l => (<button key={l.id} onClick={() => setLvl(l.id)} className={`text-left p-3 rounded-xl border-2 transition-all flex justify-between items-center ${lvl === l.id ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:border-indigo-500' : 'border-slate-200 hover:border-indigo-200 hover:bg-white dark:border-slate-600 dark:hover:bg-slate-700 dark:hover:border-slate-500'}`}><div><div className="font-bold text-sm">{l.label}</div><div className="text-[10px] opacity-60">{l.desc}</div></div>{lvl === l.id && <div className="text-indigo-600 dark:text-indigo-400">{Icons.Check}</div>}</button>))}</div></div>
                                 <div className="bg-background rounded-2xl border border-slate-200 p-4 dark:bg-slate-700/50 dark:border-slate-600"><div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-600"><div className="text-yellow-500">{Icons.Trophy}</div><span className="font-bold text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Hall of Fame</span></div><div className="max-h-40 overflow-y-auto scroller space-y-2">{lb.length === 0 && <div className="text-xs text-center py-4 opacity-40">Nessun dato</div>}{lb.map((row, i) => (<div key={i} className="flex justify-between items-center text-xs p-2 bg-surface rounded-lg shadow-sm dark:bg-slate-800 dark:shadow-none"><div className="flex gap-2 items-center"><span className={`w-4 h-4 rounded-full flex items-center justify-center font-mono font-bold ${i < 3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'}`}>{i + 1}</span><span className="text-lg leading-none">{row.avatar || '👤'}</span><span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200">{row.name}</span></div><div className="flex flex-col items-end"><div className="text-indigo-600 font-bold dark:text-indigo-400">{row.score}pt</div><div className="text-[9px] text-slate-400 font-mono">{row.moves} / {row.minMoves || '-'}</div></div></div>))}</div></div>
                             </div>
@@ -499,8 +519,12 @@
                         <main className="flex-1 p-2 overflow-hidden flex items-center justify-center bg-slate-100 dark:bg-black relative">
                             <div className={`grid gap-2 w-full h-full max-w-5xl ${gridClass}`}>
                                 {cards.map(card => {
-                                    const isGhostMode = LEVELS.find(l => l.id === lvl).ghost;
-                                    const showGhostContent = isGhostMode && card.seen;
+                                    // LOGICA SCAFFOLDING AGGIORNATA
+                                    // Il "ghost mode" dei livelli originali (Training) è sempre attivo se lvl=0
+                                    // Il "scaffoldMode" manuale si somma a questo.
+                                    const isTrainingGhost = LEVELS.find(l => l.id === lvl).ghost; 
+                                    const showGhostContent = (isTrainingGhost || scaffoldMode) && card.seen;
+                                    
                                     const isFaceUp = card.isFlipped || card.isMatched;
                                     
                                     let flipperStyle = "bg-surface border-slate-200 dark:bg-slate-800 dark:border-slate-700"; 
@@ -513,7 +537,7 @@
                                             <div className={`flipper w-full h-full shadow-sm rounded-xl border-2 transition-all duration-300 ${flipperStyle} ${isFaceUp ? 'flipped' : 'hover:border-indigo-300 hover:-translate-y-1 dark:hover:border-indigo-500'}`}>
                                                 <div className="face face-front rounded-xl flex items-center justify-center bg-transparent">
                                                     {showGhostContent ? (
-                                                        <div className="opacity-50 w-full h-full flex items-center justify-center p-1 text-slate-800 dark:text-slate-200">
+                                                        <div className="opacity-60 w-full h-full flex items-center justify-center p-1 text-slate-800 dark:text-slate-200 blur-[0.5px]">
                                                              <MathText txt={card.content} className="text-xs" />
                                                         </div>
                                                     ) : (

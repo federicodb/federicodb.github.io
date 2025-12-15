@@ -260,6 +260,21 @@ def main():
                      timestamp = os.path.getmtime(file_path)
                      meta["date"] = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
 
+                # --- NEW: Thumbnail Linking ---
+                # Cerca se esiste una thumbnail generata automaticamente
+                base_name = os.path.splitext(filename)[0]
+                thumb_rel_path = f"content/assets/thumbnails/{base_name}.jpg"
+                if os.path.exists(thumb_rel_path):
+                    meta["thumbnail"] = thumb_rel_path
+                # ------------------------------
+
+                # --- NEW: Data Consistency Check ---
+                if not meta.get("tags"):
+                    print(f"  ⚠️  WARNING: Tags mancanti per '{filename}'")
+                if not meta.get("excerpt") and not meta.get("description"):
+                    print(f"  ⚠️  WARNING: Descrizione mancante per '{filename}'")
+                # -----------------------------------
+
                 items.append(meta)
                 print(f"  ✅ Indicizzato [{content_type}]: {meta['title']}")
 

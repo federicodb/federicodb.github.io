@@ -55,22 +55,51 @@ def standardize_file(file_path):
     if "cdn.tailwindcss.com" in content and "tailwind.config" not in content:
         content = content.replace("</head>", TAILWIND_CONFIG + "\n</head>")
 
-    # 4. Rimozione Stili Hardcoded dannosi
-    # Rimuove body { background-color: ... }
-    content = re.sub(r'body\s*\{[^}]*background-color:\s*#[0-9a-fA-F]+;[^}]*\}', 'body { margin: 0; padding: 0; }', content)
-    content = re.sub(r'html,\s*body\s*\{[^}]*background-color:\s*#[0-9a-fA-F]+;[^}]*\}', 'html, body { margin: 0; padding: 0; width: 100%; height: 100%; }', content)
+    # 4. Rimozione Stili Hardcoded dannosi (SOLO background-color, preservando flex/layout)
+    # Rimuove solo la riga 'background-color: ...;' dentro i blocchi style, preservando il resto
+    # Questo evita di cancellare 'display: flex' o altre proprietà custom aggiunte manualmente.
+    content = re.sub(r'(body\s*\{[^}]*)background-color:\s*#[0-9a-fA-F]+;\s*', r'\1', content)
+    content = re.sub(r'(html,\s*body\s*\{[^}]*)background-color:\s*#[0-9a-fA-F]+;\s*', r'\1', content)
 
     # 5. Sostituzioni CSS Tailwind di base (Best Effort)
     # Sostituisce bg-black/bg-slate-50 con variabili semantiche
     replacements = {
+        # Backgrounds
         'bg-black': 'bg-background',
         'bg-white': 'bg-surface',
+        'bg-slate-50': 'bg-background',
+        'bg-slate-100': 'bg-surface-container',
+        'bg-slate-200': 'bg-surface-variant',
+        'bg-slate-800': 'bg-surface-container-high',
+        'bg-slate-900': 'bg-surface',
+        'bg-slate-950': 'bg-background',
+        'bg-gray-50': 'bg-background',
+        'bg-gray-100': 'bg-surface-container',
+        'bg-gray-900': 'bg-surface',
+        'bg-zinc-900': 'bg-surface',
+        'bg-neutral-900': 'bg-surface',
+        
+        # Text
         'text-white': 'text-on-background',
         'text-black': 'text-on-background',
-        'bg-slate-50': 'bg-background',
-        'bg-neutral-900': 'bg-surface',
+        'text-slate-50': 'text-on-primary',
+        'text-slate-200': 'text-on-surface-variant',
+        'text-slate-300': 'text-on-surface-variant',
+        'text-slate-400': 'text-outline-variant',
+        'text-slate-500': 'text-outline-variant',
+        'text-slate-800': 'text-on-background',
+        'text-slate-900': 'text-on-background',
+        'text-gray-900': 'text-on-background',
+        'text-neutral-200': 'text-on-surface-variant',
+        
+        # Borders
+        'border-slate-200': 'border-outline-variant',
+        'border-slate-700': 'border-outline-variant',
         'border-neutral-800': 'border-outline-variant',
-        'text-neutral-200': 'text-on-surface-variant'
+        
+        # Semantic Accents (Opzionale - da valutare caso per caso)
+        # 'bg-rose-500': 'bg-primary', 
+        # 'bg-blue-600': 'bg-primary'
     }
     
     for old, new in replacements.items():

@@ -646,6 +646,12 @@
                         card.target = "_blank";              // Apre in una nuova scheda
                         card.rel = "noopener noreferrer";    // Sicurezza
 
+                    // 2.1 CASO PDF: Apre sempre in nuova scheda (Presentazioni, Infografiche PDF)
+                    } else if (item.url.toLowerCase().endsWith('.pdf')) {
+                        card.href = item.url;
+                        card.target = "_blank";
+                        card.rel = "noopener noreferrer";
+
                     // 3. TUTTI GLI ALTRI MEDIA E LINK GENERICI: Apre il Modale
                     } else {
                         card.href = "#";

@@ -411,10 +411,9 @@
 
             scene = new THREE.Scene();
             
-            // Colore sfondo dinamico dalla pagina (CSS variable)
-            const style = getComputedStyle(document.body);
-            const bgColor = style.getPropertyValue('background-color').trim();
-            scene.background = new THREE.Color(bgColor || 0x111111);
+            // Inizializza il colore di sfondo della scena e registra per l'aggiornamento dinamico
+            updateSceneBackground();
+            window.addEventListener('themeChanged', updateSceneBackground);
 
             view1Elem = document.querySelector('#view1');
             view2Elem = document.querySelector('#view2');
@@ -456,6 +455,14 @@
 
             generateTrees();
             animate();
+        }
+
+        function updateSceneBackground() {
+            const style = getComputedStyle(document.body);
+            const bgColor = style.getPropertyValue('--md-sys-color-background').trim();
+            if (bgColor) {
+                scene.background = new THREE.Color(bgColor);
+            }
         }
 
         function bindInput(id, valId, paramKey, decimals, suffix='') {
