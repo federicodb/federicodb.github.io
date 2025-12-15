@@ -39,7 +39,7 @@
     // Init
     window.addEventListener('DOMContentLoaded', () => {
         syncTheme();
-        injectBackButton();
+        // injectBackButton(); // Disabilitato su richiesta: usare tasto back del browser
     });
 
     // Ascolta cambiamenti storage (se utente cambia tema in un'altra tab)
