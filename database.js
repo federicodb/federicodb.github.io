@@ -1,34 +1,9 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-18 02:22:30
+   Data: 2025-12-18 09:31:46
 */
 
 const db = [
-    {
-        "title": "The Vector Artist | Geometria Analitica v3.3",
-        "excerpt": "Attività per l",
-        "tags": [
-            "Matematica",
-            "Retta",
-            "Parallelismo",
-            "Perpendicolarità",
-            "Punto",
-            "Piano Cartesiano",
-            "Forma Implicita",
-            "Forma Esplicita",
-            "1EL",
-            "2EL",
-            "Mat:Calcolo",
-            "EU:ImparareImparare",
-            "Gamification",
-            "Geometria Analitica",
-            "Modello Lineare"
-        ],
-        "date": "2025-12-18",
-        "url": "content/apps/vector_designer_retta_2GP_001.html",
-        "type": "app",
-        "icon": "📐"
-    },
     {
         "title": "C.E. Match",
         "excerpt": "Gioco Memory per allenare il riconoscimento delle condizioni di esistenza di frazioni algebriche).",
