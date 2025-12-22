@@ -38,30 +38,110 @@ def get_thumb_path(file_path):
     name, _ = os.path.splitext(filename)
     return os.path.join(THUMB_DIR, f"{name}.jpg")
 
+def get_semantic_selector(filename):
+    """Restituisce un selettore CSS specifico basato sul nome del file."""
+    fname = filename.lower()
+    
+    # --- REGOLE SPECIFICHE UTENTE ---
+    if "percent" in fname:
+        # La card principale "glass" contiene la visualizzazione
+        return [".glass", ".relative.w-full.h-12", "#root"]
+        
+    if "voto" in fname:
+        # Tension bar o container principale
+        return ["#tension-bar", ".tension-container", ".meter", "main"]
+        
+    if "underground" in fname:
+        # Mappa SVG
+        return ["svg", "#subway-map", ".map-container"]
+        
+    if "tart" in fname:
+        # Tavola pitagorica
+        return ["table", ".grid-container", "#grid"]
+        
+    if "gonio" in fname:
+        # Briefing card iniziale
+        return [".card", ".modal", "#briefing", ".intro-box"]
+        
+    if "funzion" in fname:
+        # Grafico JSXGraph o canvas
+        return [".jxgbox", "#box", "#function-plot", ".graph-container"]
+
+    # --- REGOLE GENERALI ---
+    if "venn" in fname or "insiemi" in fname:
+        return ["#venn-container", ".venn-diagram", "svg"]
+    if "frazioni" in fname or "fraction" in fname:
+        return [".pie-chart", ".fraction-visual", "svg"]
+    if "algebra" in fname or "polinomi" in fname:
+        return ["#algebra-tiles", ".tiles-area", "canvas"]
+    if "sketch" in fname or "albero" in fname or "simulazione" in fname or "invaders" in fname or "mcd" in fname or "attrattori" in fname:
+        return ["canvas", "#game-canvas"]
+    
+    # Selettori Generici "High Value"
+    return ["main", "#app", "#root", ".container", "svg", "canvas"]
+
 def generate_app_thumbnail(file_path, thumb_path):
     if not HAS_PLAYWRIGHT: return False
     
-    print(f"📸 Snapshot App: {os.path.basename(file_path)}...")
+    filename = os.path.basename(file_path)
+    print(f"📸 Snapshot App (Semantic): {filename}...")
+    
     try:
         abs_path = os.path.abspath(file_path)
         url = f"file://{abs_path}"
         
         with sync_playwright() as p:
-            # Lancia browser headless
+            # Lancia browser headless con viewport HD
             browser = p.chromium.launch(headless=True)
-            page = browser.new_page(viewport={'width': 1200, 'height': 800}) # Risoluzione alta per screenshot
+            page = browser.new_page(viewport={'width': 1280, 'height': 800})
             
-            # Vai alla pagina
             page.goto(url)
+            try:
+                page.wait_for_load_state('networkidle', timeout=5000)
+            except:
+                pass
             
-            # Attendi caricamento network
-            # page.wait_for_load_state('networkidle')
+            # --- SMART INTERACTION ---
+            # Muovi mouse al centro per attivare eventuali hover/p5.js
+            page.mouse.move(640, 400)
+            page.mouse.down()
+            page.wait_for_timeout(200)
+            page.mouse.up()
             
-            # Attesa esplicita per animazioni (Three.js start, etc.)
+            # Attesa rendering
             page.wait_for_timeout(WAIT_TIME)
             
-            # Screenshot
-            page.screenshot(path=thumb_path, quality=80, type='jpeg')
+            # --- SEMANTIC CAPTURE STRATEGY ---
+            screenshot_done = False
+            
+            # 1. Cerca Selettori Semantici Specifici
+            target_selectors = get_semantic_selector(filename)
+            
+            # Aggiungi Canvas e Scene Container come fallback prioritari
+            target_selectors.extend(['canvas', '#scene-container'])
+            
+            for selector in target_selectors:
+                if screenshot_done: break
+                
+                elements = page.locator(selector).all()
+                for el in elements:
+                    if el.is_visible():
+                        # Controllo dimensioni minime per evitare icone o elementi vuoti
+                        bbox = el.bounding_box()
+                        if bbox and bbox['width'] > 100 and bbox['height'] > 100:
+                            print(f"   -> Target Semantico rilevato: '{selector}' ({int(bbox['width'])}x{int(bbox['height'])})")
+                            try:
+                                el.screenshot(path=thumb_path, quality=85, type='jpeg')
+                                screenshot_done = True
+                                break
+                            except Exception as e:
+                                print(f"      Errore capture '{selector}': {e}")
+            
+            # 2. Fallback: Full Page (Se nessun elemento specifico è valido)
+            if not screenshot_done:
+                print("   -> Fallback: Full Page.")
+                page.screenshot(path=thumb_path, quality=80, type='jpeg')
+                
             browser.close()
             
         # Resize post-processo

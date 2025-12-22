@@ -562,11 +562,11 @@
                         )}
                         {view === 'final' && (
                             <div className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95 font-mono">
-                                <div className="text-center text-on-background border border-slate-700 p-10 rounded-3xl bg-slate-900">
+                                <div className="text-center text-on-background border border-outline-variant p-10 rounded-3xl bg-surface">
                                     <div className="text-6xl mb-6">{score > 1000 ? '📡' : '📉'}</div>
                                     <h2 className="text-6xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">{score}</h2>
                                     <p className="text-sm text-radar-400 mb-8 font-bold uppercase tracking-[0.3em]">Risultato Finale</p>
-                                    <button onClick={saveAndExit} className="px-10 py-4 bg-surface text-slate-900 rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">RIAVVIA SISTEMA</button>
+                                    <button onClick={saveAndExit} className="px-10 py-4 bg-surface text-on-background rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">RIAVVIA SISTEMA</button>
                                 </div>
                             </div>
                         )}

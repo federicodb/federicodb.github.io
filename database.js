@@ -1,16 +1,14 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-18 09:34:05
+   Data: 2025-12-22 14:23:44
 */
 
 const db = [
     {
-        "title": "C.E. Match",
-        "excerpt": "Gioco Memory per allenare il riconoscimento delle condizioni di esistenza di frazioni algebriche).",
+        "title": "Scomposizione Polinomi",
+        "excerpt": "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).",
         "tags": [
             "Matematica",
-            "Frazioni Algebriche",
-            "Condizioni di Esistenza",
             "Algebra",
             "Polinomi",
             "Scomposizioni",
@@ -21,41 +19,97 @@ const db = [
             "EU:ImparareImparare",
             "Gamification"
         ],
-        "date": "2025-12-16",
-        "url": "content/apps/card_frazioni_algebriche_005.html",
+        "date": "2025-12-21",
+        "url": "content/apps/cards_polinomi_memory004.html",
         "type": "app",
-        "icon": "🧱"
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/cards_polinomi_memory004.jpg"
     },
     {
-        "title": "Tattoo Delta",
-        "date": "2025-12-13",
+        "title": "C.E. Match",
+        "excerpt": "Gioco Memory sul riconoscimento delle condizioni di esistenza di frazioni algebriche.",
         "tags": [
-            "Visual",
-            "Infografica"
+            "Matematica",
+            "Algebra",
+            "Polinomi",
+            "Scomposizioni",
+            "Prodotti Notevoli",
+            "1EL",
+            "2EL",
+            "Mat:Calcolo",
+            "EU:ImparareImparare",
+            "Gamification"
         ],
-        "description": "Risorsa didattica: Tattoo Delta.",
-        "excerpt": "Risorsa didattica: Tattoo Delta.",
-        "url": "content/infografiche/tattoo_delta.png",
-        "type": "infographic",
+        "date": "2025-12-21",
+        "url": "content/apps/card_frazioni_algebriche_005.html",
+        "type": "app",
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.jpg"
+    },
+    {
+        "date": "2025-12-20",
+        "description": "Risorsa: Tattoo Delta",
+        "tags": [
+            "Gallery",
+            "Immagine"
+        ],
+        "title": "Tattoo Delta",
+        "excerpt": "Risorsa: Tattoo Delta",
+        "url": "content/images/tattoo_delta.png",
+        "type": "image",
         "icon": "🖼️",
         "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
     },
     {
-        "title": "Guida Al Mondo Delle Funzioni Matematiche",
-        "date": "2025-12-13",
+        "date": "2025-12-20",
+        "description": "Risorsa: Guida Al Mondo Delle Funzioni Matematiche",
         "tags": [
-            "Visual",
-            "Infografica"
+            "Infografica",
+            "Visual"
         ],
-        "description": "Risorsa didattica: Guida Al Mondo Delle Funzioni Matematiche.",
-        "excerpt": "Risorsa didattica: Guida Al Mondo Delle Funzioni Matematiche.",
-        "url": "content/infografiche/Guida_al_Mondo_delle_Funzioni_Matematiche.pdf",
+        "title": "Guida Al Mondo Delle Funzioni Matematiche",
+        "excerpt": "Risorsa: Guida Al Mondo Delle Funzioni Matematiche",
+        "url": "content/infografiche/guida_al_mondo_delle_funzioni_matematiche.pdf",
         "type": "infographic",
-        "icon": "🖼️"
+        "icon": "🖼️",
+        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.jpg"
+    },
+    {
+        "date": "2025-12-20",
+        "description": "Risorsa: Decodifica La Matematica",
+        "tags": [
+            "Infografica",
+            "Visual"
+        ],
+        "title": "Decodifica La Matematica",
+        "excerpt": "Risorsa: Decodifica La Matematica",
+        "url": "content/infografiche/decodifica_la_matematica.pdf",
+        "type": "infographic",
+        "icon": "🖼️",
+        "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.jpg"
+    },
+    {
+        "date": "2025-12-20",
+        "description": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "tags": [
+            "1EL",
+            "Calcolo",
+            "Espressioni",
+            "Infografica",
+            "PEMDAS",
+            "Potenze",
+            "Visual"
+        ],
+        "title": "Errori Comuni - Potenze, Espressioni",
+        "excerpt": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "url": "content/infografiche/errori_comuni02.png",
+        "type": "infographic",
+        "icon": "🖼️",
+        "thumbnail": "content/assets/thumbnails/errori_comuni02.jpg"
     },
     {
         "title": "PIP",
-        "excerpt": "Terminale Orfini Industries. Simulatore per lo studio della retta in forma esplicita (y=mx+q). Analizza pendenza e intercetta.",
+        "excerpt": "Terminale didattico Orfini Industries. Simulatore open source per lo studio della retta (y=mx+q).",
         "tags": [
             "Matematica",
             "Geometria Analitica",
@@ -64,29 +118,48 @@ const db = [
             "2 punti",
             "Gamification",
             "Fallout",
-            "3EL"
+            "3MEC",
+            "4EL"
         ],
         "date": "2025-12-12",
-        "url": "content/apps/retta_fallout_001.html",
+        "url": "content/apps/retta_fallout_002.html",
         "type": "app",
-        "icon": "📐"
+        "icon": "📐",
+        "thumbnail": "content/assets/thumbnails/retta_fallout_002.jpg"
     },
     {
-        "title": "Google AI Studio: Assistant",
+        "date": "2025-12-12",
         "description": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
         "tags": [
             "AI",
-            "Google",
-            "Gemini",
             "Assistant",
+            "Gemini",
+            "Google",
             "Linkografia",
             "Strumenti"
         ],
-        "date": "2025-12-12",
+        "title": "Google AI Studio: Assistant",
         "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0?showPreview=true&showAssistant=false&fullscreenApplet=true",
         "excerpt": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
         "type": "link",
         "icon": "🌐"
+    },
+    {
+        "title": "Percent Lab",
+        "excerpt": "Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.",
+        "tags": [
+            "Matematica",
+            "Aritmetica",
+            "Percentuali",
+            "Calcolo Mentale",
+            "1EL",
+            "Gamification"
+        ],
+        "date": "2025-12-10",
+        "url": "content/apps/percentuali_001.html",
+        "type": "app",
+        "icon": "🍰",
+        "thumbnail": "content/assets/thumbnails/percentuali_001.jpg"
     },
     {
         "title": "Studio di Funzioni: Lab Analisi + AI",
@@ -105,23 +178,93 @@ const db = [
         "date": "2025-12-10",
         "url": "content/apps/functions_lab_008.html",
         "type": "app",
-        "icon": "📈"
+        "icon": "📈",
+        "thumbnail": "content/assets/thumbnails/functions_lab_008.jpg"
     },
     {
-        "title": "Percent Lab",
-        "excerpt": "Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.",
+        "title": "Math Invaders: MCD & mcm",
+        "excerpt": "Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. (Massimo Comune Divisore) e m.c.m. (Minimo Comune Multiplo).",
         "tags": [
             "Matematica",
             "Aritmetica",
-            "Percentuali",
-            "Calcolo Mentale",
+            "MCD",
+            "mcm",
             "1EL",
+            "Mat:Calcolo",
+            "Mat:ProblemSolving",
+            "Gamification",
+            "EU:STEM"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/mcd_mcm_new_003.html",
+        "type": "app",
+        "icon": "🔢",
+        "thumbnail": "content/assets/thumbnails/mcd_mcm_new_003.jpg"
+    },
+    {
+        "title": "Laboratorio Frazioni: Operazioni Visive",
+        "excerpt": "Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.",
+        "tags": [
+            "Matematica",
+            "Aritmetica",
+            "Frazioni",
+            "Numeri Razionali",
+            "1EL",
+            "2EL",
+            "Mat:Calcolo",
+            "Mat:Modellizzazione",
+            "EU:STEM",
+            "Lab"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/fractions_lab_001.html",
+        "type": "app",
+        "icon": "🍰",
+        "thumbnail": "content/assets/thumbnails/fractions_lab_001.jpg"
+    },
+    {
+        "title": "Algebra Tiles 3D: Scomposizione",
+        "excerpt": "Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include esportazione STL per la stampa 3D dei kit didattici.",
+        "tags": [
+            "Matematica",
+            "Algebra",
+            "Polinomi",
+            "Geometria",
+            "Stampa 3D",
+            "1EL",
+            "2EL",
+            "Mat:Geometria",
+            "Mat:Modellizzazione",
+            "Ind:Strumentazione",
+            "EU:STEM",
+            "Lab"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/visualizzatore polinomi 2d 3d 001.html",
+        "type": "app",
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.jpg"
+    },
+    {
+        "title": "GonioMatch: Segnali Goniometrici",
+        "excerpt": "Gioco Memory a tema Radar per memorizzare gli angoli notevoli di Seno, Coseno e Tangente.",
+        "tags": [
+            "Matematica",
+            "Goniometria",
+            "Trigonometria",
+            "Funzioni",
+            "Angoli",
+            "3MEC",
+            "4EL",
+            "Mat:Analisi",
+            "Lab",
             "Gamification"
         ],
-        "date": "2025-12-10",
-        "url": "content/apps/percentuali_001.html",
+        "date": "2025-12-08",
+        "url": "content/apps/gioco_sin_cos_01.html",
         "type": "app",
-        "icon": "🍰"
+        "icon": "📈",
+        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.jpg"
     },
     {
         "title": "Albero di Pitagora: Frattali 3D",
@@ -146,147 +289,8 @@ const db = [
         "date": "2025-12-08",
         "url": "content/apps/albero_pitagorico_3d_gemini_001.html",
         "type": "app",
-        "icon": "📐"
-    },
-    {
-        "title": "Scomposizione Polinomi (Memory)",
-        "excerpt": "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).",
-        "tags": [
-            "Matematica",
-            "Algebra",
-            "Polinomi",
-            "Scomposizioni",
-            "Prodotti Notevoli",
-            "1EL",
-            "2EL",
-            "Mat:Calcolo",
-            "EU:ImparareImparare",
-            "Gamification"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/cards_polinomi_memory004.html",
-        "type": "app",
-        "icon": "🧱"
-    },
-    {
-        "title": "Simulazione CA: Fasori & Onde",
-        "excerpt": "Laboratorio interattivo su Corrente Alternata. Visualizza in tempo reale la relazione tra Fasori rotanti, Onde sinusoidali, Sfasamento e Potenza.",
-        "tags": [
-            "Elettrotecnica",
-            "Fisica",
-            "Corrente Alternata",
-            "Fasori",
-            "Onde",
-            "4EL",
-            "5EL",
-            "Mat:Analisi",
-            "Mat:Modellizzazione",
-            "Ind:Strumentazione",
-            "Lab"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/corrente_4el_sincos.html",
-        "type": "app",
-        "icon": "⚡"
-    },
-    {
-        "title": "Parabola Challenge: Disequazioni",
-        "excerpt": "Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino all",
-        "tags": [
-            "Matematica",
-            "Algebra",
-            "Disequazioni",
-            "Parabola",
-            "Scaffolding",
-            "3EL",
-            "4EL",
-            "Mat:Analisi",
-            "Mat:ProblemSolving",
-            "Gamification"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/disequazioni grafiche 4el.html",
-        "type": "app",
-        "icon": "🧱"
-    },
-    {
-        "title": "Laboratorio Frazioni: Operazioni Visive",
-        "excerpt": "Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.",
-        "tags": [
-            "Matematica",
-            "Aritmetica",
-            "Frazioni",
-            "Numeri Razionali",
-            "1EL",
-            "2EL",
-            "Mat:Calcolo",
-            "Mat:Modellizzazione",
-            "EU:STEM",
-            "Lab"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/fractions_lab_001.html",
-        "type": "app",
-        "icon": "🍰"
-    },
-    {
-        "title": "GonioMatch: Segnali Goniometrici",
-        "excerpt": "Gioco Memory a tema Radar per memorizzare gli angoli notevoli di Seno, Coseno e Tangente.",
-        "tags": [
-            "Matematica",
-            "Goniometria",
-            "Trigonometria",
-            "Funzioni",
-            "Angoli",
-            "3MEC",
-            "4EL",
-            "Mat:Analisi",
-            "Lab",
-            "Gamification"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/gioco_sin_cos_01.html",
-        "type": "app",
-        "icon": "📈"
-    },
-    {
-        "title": "Logic Lab: Insiemi & Venn",
-        "excerpt": "Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.",
-        "tags": [
-            "Matematica",
-            "Logica",
-            "Insiemi",
-            "Diagrammi di Venn",
-            "1EL",
-            "2EL",
-            "Mat:Logica",
-            "Mat:Modellizzazione",
-            "EU:STEM",
-            "Lab"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/insiemi004.html",
-        "type": "app",
-        "icon": "🔴"
-    },
-    {
-        "title": "Math Invaders: MCD & mcm",
-        "excerpt": "Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. (Massimo Comune Divisore) e m.c.m. (Minimo Comune Multiplo).",
-        "tags": [
-            "Matematica",
-            "Aritmetica",
-            "MCD",
-            "mcm",
-            "1EL",
-            "Mat:Calcolo",
-            "Mat:ProblemSolving",
-            "Gamification",
-            "EU:STEM"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/MCD_mcm_1el_001.html",
-        "type": "app",
-        "icon": "🔢"
+        "icon": "📐",
+        "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.jpg"
     },
     {
         "title": "AlgebraLab 3D: Geometria dei Polinomi",
@@ -309,27 +313,51 @@ const db = [
         "date": "2025-12-08",
         "url": "content/apps/scomp_3d_grafica_002.html",
         "type": "app",
-        "icon": "🧱"
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.jpg"
     },
     {
-        "title": "Sketch to Pattern: Arte Generativa",
-        "excerpt": "Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.",
+        "title": "Parabola Challenge: Disequazioni",
+        "excerpt": "Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino all",
         "tags": [
-            "Arte",
-            "Tecnologia",
-            "Coding",
-            "Creatività",
-            "Pattern",
-            "Geometria",
-            "Tinkering",
-            "Lab",
-            "EU:Digitale",
-            "EU:Culturale"
+            "Matematica",
+            "Algebra",
+            "Disequazioni",
+            "Parabola",
+            "Scaffolding",
+            "3EL",
+            "4EL",
+            "Mat:Analisi",
+            "Mat:ProblemSolving",
+            "Gamification"
         ],
         "date": "2025-12-08",
-        "url": "content/apps/sketch_to_pattern_gemini_005.html",
+        "url": "content/apps/disequazioni grafiche 4el.html",
         "type": "app",
-        "icon": "📐"
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.jpg"
+    },
+    {
+        "title": "Simulazione CA: Fasori & Onde",
+        "excerpt": "Laboratorio interattivo su Corrente Alternata. Visualizza in tempo reale la relazione tra Fasori rotanti, Onde sinusoidali, Sfasamento e Potenza.",
+        "tags": [
+            "Elettrotecnica",
+            "Fisica",
+            "Corrente Alternata",
+            "Fasori",
+            "Onde",
+            "4EL",
+            "5EL",
+            "Mat:Analisi",
+            "Mat:Modellizzazione",
+            "Ind:Strumentazione",
+            "Lab"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/corrente_4el_sincos.html",
+        "type": "app",
+        "icon": "⚡",
+        "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.jpg"
     },
     {
         "title": "Esploratore Numerico: Pitagora & Tartaglia",
@@ -352,29 +380,50 @@ const db = [
         "date": "2025-12-08",
         "url": "content/apps/tavola_tart_canva0003.html",
         "type": "app",
-        "icon": "📐"
+        "icon": "📐",
+        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.jpg"
     },
     {
-        "title": "Algebra Tiles 3D: Scomposizione",
-        "excerpt": "Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include esportazione STL per la stampa 3D dei kit didattici.",
+        "title": "Sketch to Pattern: Arte Generativa",
+        "excerpt": "Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.",
+        "tags": [
+            "Arte",
+            "Tecnologia",
+            "Coding",
+            "Creatività",
+            "Pattern",
+            "Geometria",
+            "Tinkering",
+            "Lab",
+            "EU:Digitale",
+            "EU:Culturale"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/sketch_to_pattern_gemini_005.html",
+        "type": "app",
+        "icon": "📐",
+        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.jpg"
+    },
+    {
+        "title": "Logic Lab: Insiemi & Venn",
+        "excerpt": "Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.",
         "tags": [
             "Matematica",
-            "Algebra",
-            "Polinomi",
-            "Geometria",
-            "Stampa 3D",
+            "Logica",
+            "Insiemi",
+            "Diagrammi di Venn",
             "1EL",
             "2EL",
-            "Mat:Geometria",
+            "Mat:Logica",
             "Mat:Modellizzazione",
-            "Ind:Strumentazione",
             "EU:STEM",
             "Lab"
         ],
         "date": "2025-12-08",
-        "url": "content/apps/visualizzatore polinomi 2d 3d 001.html",
+        "url": "content/apps/insiemi004.html",
         "type": "app",
-        "icon": "🧱"
+        "icon": "🔴",
+        "thumbnail": "content/assets/thumbnails/insiemi004.jpg"
     },
     {
         "title": "Mappe & Distorsioni: Mercatore",
@@ -396,7 +445,8 @@ const db = [
         "date": "2025-12-08",
         "url": "content/apps/mercatore_correzione_001_gemini_worksproperly.html",
         "type": "app",
-        "icon": "🌍"
+        "icon": "🌍",
+        "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.jpg"
     },
     {
         "title": "Math Underground: Mappa Funzioni",
@@ -417,7 +467,8 @@ const db = [
         "date": "2025-12-06",
         "url": "content/apps/math_underground003_4el.html",
         "type": "app",
-        "icon": "📈"
+        "icon": "📈",
+        "thumbnail": "content/assets/thumbnails/math_underground003_4el.jpg"
     },
     {
         "title": "Chaos Lab: Sistemi Dinamici",
@@ -441,7 +492,8 @@ const db = [
         "date": "2025-10-24",
         "url": "content/apps/attrattori_001_dec25.html",
         "type": "app",
-        "icon": "📈"
+        "icon": "📈",
+        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.jpg"
     },
     {
         "title": "Caccia all'Errore: Operazioni in Z",
@@ -462,7 +514,8 @@ const db = [
         "date": "2025-10-20",
         "url": "content/apps/memory_1el_numeri_004.html",
         "type": "app",
-        "icon": "🔢"
+        "icon": "🔢",
+        "thumbnail": "content/assets/thumbnails/memory_1el_numeri_004.jpg"
     },
     {
         "title": "Voto Consapevole: Simulatore Nash",
@@ -484,6 +537,7 @@ const db = [
         "date": "2025-10-01",
         "url": "content/apps/voto_consapevole_2.5.html",
         "type": "app",
-        "icon": "⚖️"
+        "icon": "⚖️",
+        "thumbnail": "content/assets/thumbnails/voto_consapevole_2.5.jpg"
     }
 ];

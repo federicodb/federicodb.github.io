@@ -309,7 +309,7 @@
         // --- UI COMPONENTS ---
         const MathInput = ({ value, onChange, placeholder, label="f(x)", onMagicClick }) => (
             <div className="relative group flex items-center w-full input-glass border border-slate-300 dark:border-slate-700 rounded-xl focus-within:border-indigo-500 dark:focus-within:border-neon-blue focus-within:ring-1 focus-within:ring-indigo-500/50 transition-all duration-200 overflow-hidden shadow-sm">
-                <div className="px-3 py-3 bg-slate-100 dark:bg-white/5 border-r border-slate-200 dark:border-slate-700 flex items-center justify-center select-none min-w-[50px]">
+                <div className="px-3 py-3 bg-surface-container dark:bg-white/5 border-r border-outline-variant dark:border-slate-700 flex items-center justify-center select-none min-w-[50px]">
                     <span className="font-mono font-bold text-lg text-indigo-600 dark:text-neon-blue italic tracking-tight">
                         {label}=
                     </span>
@@ -318,7 +318,7 @@
                     type="text"
                     value={value}
                     onChange={onChange}
-                    className="flex-1 bg-transparent border-none outline-none px-3 py-3 font-mono text-lg text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 w-full min-w-0"
+                    className="flex-1 bg-transparent border-none outline-none px-3 py-3 font-mono text-lg text-on-background dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-600 w-full min-w-0"
                     placeholder={placeholder}
                     spellCheck="false"
                     autoComplete="off"
@@ -326,7 +326,7 @@
                 {onMagicClick && (
                     <button 
                         onClick={onMagicClick}
-                        className="p-3 hover:bg-indigo-50 dark:hover:bg-white/10 text-indigo-500 dark:text-neon-blue transition-colors border-l border-slate-200 dark:border-slate-700 group/magic"
+                        className="p-3 hover:bg-indigo-50 dark:hover:bg-white/10 text-indigo-500 dark:text-neon-blue transition-colors border-l border-outline-variant dark:border-slate-700 group/magic"
                         title="Genera con AI"
                     >
                         <Icon name="sparkles" size={20} className="group-hover/magic:animate-sparkle" />
@@ -361,8 +361,8 @@
 
             if (!visible || !data) return null;
             return (
-                <div className="absolute top-4 right-4 w-72 bg-white/90 dark:bg-black/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xl z-10 text-xs font-mono transition-all duration-300 animate-fadeIn max-h-[80vh] overflow-y-auto hide-scrollbar">
-                    <h4 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-2">
+                <div className="absolute top-4 right-4 w-72 bg-white/90 dark:bg-black/80 backdrop-blur-md border border-outline-variant dark:border-slate-800 rounded-2xl p-4 shadow-xl z-10 text-xs font-mono transition-all duration-300 animate-fadeIn max-h-[80vh] overflow-y-auto hide-scrollbar">
+                    <h4 className="font-bold text-on-background dark:text-white mb-2 flex items-center justify-between border-b border-outline-variant dark:border-slate-700 pb-2">
                         <span className="flex items-center gap-2"><Icon name="activity" size={14} className="text-indigo-600 dark:text-neon-blue"/> ANALISI VISTA</span>
                         <button 
                             onClick={handleAskAI} 
@@ -381,16 +381,16 @@
                         
                         <div className="flex justify-between">
                             <span>Intercetta Y:</span>
-                            <span className="text-slate-900 dark:text-white">{data.yIntercept !== null ? data.yIntercept.toFixed(2) : 'N/A'}</span>
+                            <span className="text-on-background dark:text-white">{data.yIntercept !== null ? data.yIntercept.toFixed(2) : 'N/A'}</span>
                         </div>
 
                         <div>
                             <span className="block mb-1">Zeri (approssimati):</span>
                             <div className="flex flex-wrap gap-1">
                                 {data.zeros.length > 0 ? data.zeros.slice(0, 3).map((z, i) => (
-                                    <span key={i} className="bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-900 dark:text-white">{z.toFixed(2)}</span>
-                                )) : <span className="text-slate-400">-</span>}
-                                {data.zeros.length > 3 && <span className="text-slate-400">...</span>}
+                                    <span key={i} className="bg-surface-variant dark:bg-slate-800 px-1.5 py-0.5 rounded text-on-background dark:text-white">{z.toFixed(2)}</span>
+                                )) : <span className="text-outline-variant">-</span>}
+                                {data.zeros.length > 3 && <span className="text-outline-variant">...</span>}
                             </div>
                         </div>
 
@@ -406,7 +406,7 @@
                     </div>
 
                     {aiExplanation && (
-                        <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 animate-fadeIn">
+                        <div className="mt-3 pt-3 border-t border-outline-variant dark:border-slate-700 animate-fadeIn">
                             <div className="flex items-center gap-2 mb-1 text-indigo-600 dark:text-neon-purple font-bold">
                                 <Icon name="bot" size={14}/> Tutor AI
                             </div>
@@ -604,7 +604,7 @@
             }, [sliderX, funcs]);
 
             return (
-                <div className="flex flex-col h-full w-full bg-surface dark:bg-surface-container rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden relative">
+                <div className="flex flex-col h-full w-full bg-surface dark:bg-surface-container rounded-2xl border border-outline-variant dark:border-slate-800 shadow-sm overflow-hidden relative">
                     <AnalysisPanel data={analysisData} visible={showAnalysis} currentFunctionStr={currentFunctionStr} />
                     
                     <div ref={containerRef} className="flex-1 w-full relative overflow-hidden cursor-crosshair touch-none select-none"
@@ -703,10 +703,10 @@
                                 </g>
                             )}
                         </svg>
-                        <button className="absolute bottom-12 right-2 bg-surface dark:bg-surface-container p-2 rounded-lg shadow-lg border dark:border-slate-700 text-slate-500 hover:text-indigo-600 transition" onClick={() => setView({ xMin: -10, xMax: 10, yMin: -10, yMax: 10 })}><Icon name="maximize" size={16} /></button>
+                        <button className="absolute bottom-12 right-2 bg-surface dark:bg-surface-container p-2 rounded-lg shadow-lg border dark:border-slate-700 text-outline-variant hover:text-indigo-600 transition" onClick={() => setView({ xMin: -10, xMax: 10, yMin: -10, yMax: 10 })}><Icon name="maximize" size={16} /></button>
                     </div>
                     {enableSlider && (
-                        <div className="p-2 bg-slate-100 dark:bg-black/40 border-t dark:border-slate-800 flex gap-2 text-xs font-mono font-bold text-slate-500 items-center shrink-0">
+                        <div className="p-2 bg-surface-container dark:bg-black/40 border-t dark:border-slate-800 flex gap-2 text-xs font-mono font-bold text-outline-variant items-center shrink-0">
                             <span className="w-8 text-right">{view.xMin.toFixed(1)}</span>
                             <input type="range" min={view.xMin} max={view.xMax} step={(view.xMax-view.xMin)/500} value={sliderX} onChange={handleSlider} className="flex-1 accent-indigo-600 dark:accent-neon-blue" />
                             <span className="w-8">{view.xMax.toFixed(1)}</span>
@@ -750,7 +750,7 @@
 
             return (
                 <div className="flex flex-col h-full gap-4 relative">
-                    <div className="bg-surface dark:bg-surface-container p-3 md:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shrink-0 shadow-sm flex flex-col gap-3">
+                    <div className="bg-surface dark:bg-surface-container p-3 md:p-4 rounded-2xl border border-outline-variant dark:border-slate-800 shrink-0 shadow-sm flex flex-col gap-3">
                         <MathInput 
                             value={ex} 
                             onChange={e=>setEx(e.target.value)} 
@@ -758,7 +758,7 @@
                             onMagicClick={() => setMagicModalOpen(true)}
                         />
                         <div className="flex gap-2 overflow-x-auto hide-scrollbar w-full pb-1">
-                            {['sin(x)','exp(x)','1/x','abs(x)', 'x^2', 'sqrt(x)'].map(f=><button key={f} onClick={()=>setEx(f)} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-mono font-bold hover:bg-indigo-100 dark:hover:bg-slate-700 transition whitespace-nowrap">{f}</button>)}
+                            {['sin(x)','exp(x)','1/x','abs(x)', 'x^2', 'sqrt(x)'].map(f=><button key={f} onClick={()=>setEx(f)} className="px-3 py-1.5 rounded-lg bg-surface-container dark:bg-slate-800 text-xs font-mono font-bold hover:bg-indigo-100 dark:hover:bg-slate-700 transition whitespace-nowrap">{f}</button>)}
                         </div>
                     </div>
                     <div className="flex-1 min-h-0 relative"><GraphEngine funcs={[{fn}]} showAnalysis={true} currentFunctionStr={ex} /></div>
@@ -766,19 +766,19 @@
                     {/* MAGIC MODAL */}
                     {magicModalOpen && (
                         <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm animate-fadeIn">
-                            <div className="bg-surface dark:bg-surface-container border border-slate-200 dark:border-slate-700 p-6 rounded-2xl shadow-2xl w-full max-w-sm">
+                            <div className="bg-surface dark:bg-surface-container border border-outline-variant dark:border-slate-700 p-6 rounded-2xl shadow-2xl w-full max-w-sm">
                                 <h3 className="text-xl font-bold mb-2 flex items-center gap-2 dark:text-white">
                                     <Icon name="sparkles" className="text-indigo-500 dark:text-neon-blue"/> Genera con AI
                                 </h3>
-                                <p className="text-sm text-slate-500 mb-4">Descrivi a parole la funzione che vuoi vedere.</p>
+                                <p className="text-sm text-outline-variant mb-4">Descrivi a parole la funzione che vuoi vedere.</p>
                                 <textarea 
                                     value={magicPrompt}
                                     onChange={e => setMagicPrompt(e.target.value)}
                                     placeholder="Es: Una funzione che oscilla e poi scende..."
-                                    className="w-full bg-slate-100 dark:bg-black/30 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-sm mb-4 min-h-[100px] outline-none focus:border-indigo-500 transition-colors dark:text-white"
+                                    className="w-full bg-surface-container dark:bg-black/30 border border-outline-variant dark:border-slate-700 rounded-xl p-3 text-sm mb-4 min-h-[100px] outline-none focus:border-indigo-500 transition-colors dark:text-white"
                                 />
                                 <div className="flex gap-2 justify-end">
-                                    <button onClick={() => setMagicModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">Annulla</button>
+                                    <button onClick={() => setMagicModalOpen(false)} className="px-4 py-2 rounded-lg text-sm font-bold text-outline-variant hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">Annulla</button>
                                     <button 
                                         onClick={handleMagicGenerate} 
                                         disabled={magicLoading}
@@ -804,7 +804,7 @@
                     <div className="lg:w-72 flex flex-col gap-4 shrink-0 overflow-y-auto">
                         <div className="bg-surface dark:bg-surface-container p-4 rounded-2xl border dark:border-slate-800 shadow-sm">
                             <h3 className="font-bold text-sm mb-3 dark:text-white uppercase tracking-wider">Simmetria</h3>
-                            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-lg mb-4">
+                            <div className="flex bg-surface-container dark:bg-slate-900 p-1 rounded-lg mb-4">
                                 {['pari','dispari'].map(k=><button key={k} onClick={()=>{setM(k); setEx(k==='pari'?'x^2':'x^3')}} className={`flex-1 py-1.5 rounded-md font-bold text-xs capitalize transition ${m===k?'bg-white dark:bg-slate-700 shadow text-indigo-600 dark:text-neon-blue':'text-slate-500'}`}>{k}</button>)}
                             </div>
                             <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-100 dark:border-indigo-800/50 mb-4">
@@ -827,7 +827,7 @@
                 <div className="flex flex-col h-full gap-4">
                     <div className="bg-surface dark:bg-surface-container p-4 rounded-2xl border dark:border-slate-800 shrink-0 shadow-sm flex flex-col md:flex-row items-center gap-4">
                         <div className="flex-1 w-full"><MathInput value={ex} onChange={e=>setEx(e.target.value)} label="f(x)" /></div>
-                        <div className="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg border dark:border-slate-700 whitespace-nowrap">
+                        <div className="text-xs text-outline-variant bg-surface-container dark:bg-slate-800 px-3 py-2 rounded-lg border dark:border-slate-700 whitespace-nowrap">
                             <strong>DOMINIO:</strong> Linee verdi = Esiste. 💀 = Punti critici.
                         </div>
                     </div>
@@ -843,7 +843,7 @@
                 <div className="flex flex-col h-full gap-4">
                     <div className="bg-surface dark:bg-surface-container p-4 rounded-2xl border dark:border-slate-800 shrink-0 shadow-sm flex flex-col md:flex-row items-center gap-4">
                         <div className="flex-1 w-full"><MathInput value={ex} onChange={e=>setEx(e.target.value)} label="f(x)" /></div>
-                        <div className="text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg border dark:border-slate-700 whitespace-nowrap">
+                        <div className="text-xs text-outline-variant bg-surface-container dark:bg-slate-800 px-3 py-2 rounded-lg border dark:border-slate-700 whitespace-nowrap">
                             <span className="text-neon-green font-bold">POS</span> / <span className="text-neon-red font-bold">NEG</span>. ✨ = Zeri.
                         </div>
                     </div>
@@ -885,7 +885,7 @@
                 <div className="flex flex-col h-full gap-4">
                     <div className="bg-surface dark:bg-surface-container p-4 rounded-2xl border dark:border-slate-800 flex flex-col md:flex-row justify-center items-center gap-4 shadow-sm shrink-0">
                         <div className="w-full md:w-1/3"><MathInput value={i} onChange={e=>setI(e.target.value)} label="g(x)" placeholder="Interna" /></div>
-                        <Icon name="arrow-right" className="text-slate-400 rotate-90 md:rotate-0"/>
+                        <Icon name="arrow-right" className="text-outline-variant rotate-90 md:rotate-0"/>
                         <div className="w-full md:w-1/3"><MathInput value={o} onChange={e=>setO(e.target.value)} label="f(...)" placeholder="Esterna" /></div>
                     </div>
                     <div className="flex-1 min-h-0 relative rounded-2xl border dark:border-slate-800 overflow-hidden bg-surface dark:bg-amoled">
@@ -915,10 +915,10 @@
 
             return (
                 <div className="flex h-full flex-col lg:flex-row bg-background dark:bg-surface-container transition-colors duration-500">
-                    <aside className={`fixed lg:relative inset-y-0 left-0 z-50 w-64 shrink-0 bg-surface dark:bg-surface-container border-r border-slate-200 dark:border-slate-800 transform transition-transform duration-300 ${menuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 shadow-2xl lg:shadow-none flex flex-col`}>
+                    <aside className={`fixed lg:relative inset-y-0 left-0 z-50 w-64 shrink-0 bg-surface dark:bg-surface-container border-r border-outline-variant dark:border-slate-800 transform transition-transform duration-300 ${menuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 shadow-2xl lg:shadow-none flex flex-col`}>
                         <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                            <h1 className="text-xl font-black text-slate-900 dark:text-white">Matematica<span className="text-indigo-600 dark:text-neon-blue">Lab</span></h1>
-                            <button onClick={()=>setMenuOpen(false)} className="lg:hidden text-slate-500"><Icon name="x" /></button>
+                            <h1 className="text-xl font-black text-on-background dark:text-white">Matematica<span className="text-indigo-600 dark:text-neon-blue">Lab</span></h1>
+                            <button onClick={()=>setMenuOpen(false)} className="lg:hidden text-outline-variant"><Icon name="x" /></button>
                         </div>
                         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                             {MENU.map(i=>(
@@ -929,16 +929,14 @@
                             ))}
                         </nav>
                         <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                             <a href="../index.html" className="text-xs font-bold text-slate-400 hover:text-indigo-500 flex items-center gap-2">
-                                <Icon name="arrow-left" size={14}/> ESCI
-                            </a>
+                             
                         </div>
                     </aside>
 
                     <main className="flex-1 flex flex-col overflow-hidden relative w-full h-full min-w-0">
-                        <div className="lg:hidden h-14 bg-surface dark:bg-surface-container border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-10 shrink-0">
+                        <div className="lg:hidden h-14 bg-surface dark:bg-surface-container border-b border-outline-variant dark:border-slate-800 flex items-center justify-between px-4 z-10 shrink-0">
                             <span className="font-bold dark:text-white flex items-center gap-2 text-sm"><Icon name={MENU.find(m=>m.id===page).icon} size={18}/> {MENU.find(m=>m.id===page).label}</span>
-                            <button onClick={()=>setMenuOpen(true)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg"><Icon name="menu" className="dark:text-white"/></button>
+                            <button onClick={()=>setMenuOpen(true)} className="p-2 bg-surface-container dark:bg-slate-800 rounded-lg"><Icon name="menu" className="dark:text-white"/></button>
                         </div>
                         
                         <div className="flex-1 bg-background dark:bg-black/50 overflow-hidden relative p-2 md:p-4">

@@ -9,9 +9,9 @@
     <script src="../assets/js/orfini-shared.js"></script>
  -->
 
-    <meta name="description" content="Gioco Memory per allenare il riconoscimento delle condizioni di esistenza di frazioni algebriche).">
-    <meta name="keywords" content="Matematica, Frazioni Algebriche, Condizioni di Esistenza, Algebra, Polinomi, Scomposizioni, Prodotti Notevoli, 1EL, 2EL, Mat:Calcolo, EU:ImparareImparare, Gamification">
- 
+ <meta name="description" content="Gioco Memory sul riconoscimento delle condizioni di esistenza di frazioni algebriche.">
+ <meta name="keywords" content="Matematica, Algebra, Polinomi, Scomposizioni, Prodotti Notevoli, 1EL, 2EL, Mat:Calcolo, EU:ImparareImparare, Gamification">
+
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,8 +22,18 @@
             darkMode: 'class',
             theme: {
                 extend: {
+                    colors: {
+                        background: 'var(--bg-app)',
+                        'on-background': 'var(--text-app)',
+                        surface: 'var(--surface)',
+                        'surface-container': 'var(--surface-container)',
+                        'outline-variant': 'var(--border)',
+                        primary: 'var(--primary)',
+                        secondary: 'var(--secondary)',
+                    },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['"Exo 2"', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace'],
                         math: ['Noto Serif', 'serif'],
                     }
                 }
@@ -41,19 +51,54 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Serif:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Fira+Code:wght@400&family=Noto+Serif:wght@700&display=swap');
         
+        :root {
+            /* Light Mode Defaults */
+            --bg-app: #f8fafc;
+            --text-app: #0f172a;
+            --surface: #ffffff;
+            --surface-container: #f1f5f9;
+            --border: #cbd5e1;
+            --primary: #00bcd4;
+            --secondary: #ff4081;
+        }
+
+        :root[class~="dark"], .dark {
+            /* Dark Mode - Index Match */
+            --bg-app: #050510;
+            --text-app: #ffffff;
+            --surface: rgba(10, 20, 40, 0.6);
+            --surface-container: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.15);
+            --primary: #00bcd4;
+            --secondary: #ff4081;
+        }
+
         body { 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Exo 2', sans-serif; 
             overflow: hidden;
             height: 100vh;
             width: 100vw;
             touch-action: manipulation;
             -webkit-user-select: none;
             user-select: none;
+            background-color: var(--bg-app);
+            color: var(--text-app);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
         
+        /* --- SCROLLBARS (Index Style) --- */
+        * { 
+            box-sizing: border-box; 
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
         /* --- 3D ENGINE --- */
         .perspective-1000 { perspective: 1000px; }
         
@@ -86,14 +131,6 @@
 
         /* Tipografia Matematica */
         .font-math { font-family: 'Noto Serif', serif; }
-        
-        /* Nascondi scrollbar ma mantieni funzionalità */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Scrollbar personalizzata */
-        .scroller::-webkit-scrollbar { width: 4px; }
-        .scroller::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -108,7 +145,7 @@
 
         const AVATARS = ['👨‍🚀', '👩‍🔬', '🥷', '🧙‍♂️', '🧛‍♀️', '🧜‍♂️', '🧚‍♀️', '🧞‍♂️', '🦸‍♀️', '🦹‍♂️', '🕵️‍♀️', '🧑‍🎨'];
 
-        // EMOJI AD ALTO CONTRASTO (Oggetti, Cibo, Simboli)
+        // EMOJI AD ALTO CONTRASTO
         const EMOJI_POOL = [
             '🚀','💎','🌶️','🍄','🎱','🎸','🌵','🔥','⚡','🌈','🪐','🧩',
             '🎲','🎯','🎨','🎭','🎪','🎡','🎢','🎃','🎄','🎈','🎁','🏆',
@@ -116,14 +153,14 @@
         ];
 
         const PAIR_COLORS = [
-            'bg-rose-50 text-rose-950 border-rose-300 dark:bg-rose-900/30 dark:text-rose-100 dark:border-rose-500',
-            'bg-orange-50 text-orange-950 border-orange-300 dark:bg-orange-900/30 dark:text-orange-100 dark:border-orange-500',
-            'bg-amber-50 text-amber-950 border-amber-300 dark:bg-amber-900/30 dark:text-amber-100 dark:border-amber-500',
-            'bg-emerald-50 text-emerald-950 border-emerald-300 dark:bg-emerald-900/30 dark:text-emerald-100 dark:border-emerald-500',
-            'bg-cyan-50 text-cyan-950 border-cyan-300 dark:bg-cyan-900/30 dark:text-cyan-100 dark:border-cyan-500',
-            'bg-blue-50 text-blue-950 border-blue-300 dark:bg-blue-900/30 dark:text-blue-100 dark:border-blue-500',
-            'bg-violet-50 text-violet-950 border-violet-300 dark:bg-violet-900/30 dark:text-violet-100 dark:border-violet-500',
-            'bg-fuchsia-50 text-fuchsia-950 border-fuchsia-300 dark:bg-fuchsia-900/30 dark:text-fuchsia-100 dark:border-fuchsia-500',
+            'bg-rose-50 text-rose-950 border-rose-300 dark:bg-rose-900/40 dark:text-rose-100 dark:border-rose-500',
+            'bg-orange-50 text-orange-950 border-orange-300 dark:bg-orange-900/40 dark:text-orange-100 dark:border-orange-500',
+            'bg-amber-50 text-amber-950 border-amber-300 dark:bg-amber-900/40 dark:text-amber-100 dark:border-amber-500',
+            'bg-emerald-50 text-emerald-950 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-100 dark:border-emerald-500',
+            'bg-cyan-50 text-cyan-950 border-cyan-300 dark:bg-cyan-900/40 dark:text-cyan-100 dark:border-cyan-500',
+            'bg-blue-50 text-blue-950 border-blue-300 dark:bg-blue-900/40 dark:text-blue-100 dark:border-blue-500',
+            'bg-violet-50 text-violet-950 border-violet-300 dark:bg-violet-900/40 dark:text-violet-100 dark:border-violet-500',
+            'bg-fuchsia-50 text-fuchsia-950 border-fuchsia-300 dark:bg-fuchsia-900/40 dark:text-fuchsia-100 dark:border-fuchsia-500',
         ];
 
         const LEVELS = [
@@ -143,12 +180,12 @@
         };
 
         const BRIEFING_ITEMS = [
-            { title: "Denominatore Lineare", tex: "\\begin{gathered} \\dfrac{1}{x-a} \\\\ \\downarrow \\\\ x \\neq a \\end{gathered}", color: "border-outline-variant bg-surface dark:bg-slate-800 dark:border-slate-600" },
-            { title: "Raccoglimento Totale", tex: "\\begin{gathered} \\dfrac{1}{x(x-a)} \\\\ \\downarrow \\\\ x \\neq 0, x \\neq a \\end{gathered}", color: "border-outline-variant bg-surface dark:bg-slate-800 dark:border-slate-600" },
-            { title: "Differenza di Quadrati", tex: "\\begin{gathered} \\dfrac{1}{x^2-a^2} \\\\ \\downarrow \\\\ x \\neq \\pm a \\end{gathered}", color: "border-outline-variant bg-surface dark:bg-slate-800 dark:border-slate-600" },
-            { title: "Quadrato di Binomio", tex: "\\begin{gathered} \\dfrac{1}{(x-a)^2} \\\\ \\downarrow \\\\ x \\neq a \\end{gathered}", color: "border-outline-variant bg-surface dark:bg-slate-800 dark:border-slate-600" },
-            { title: "Trinomio Speciale", tex: "\\begin{gathered} \\dfrac{1}{x^2+Sx+P} \\\\ \\downarrow \\\\ (x+a)(x+b) \\\\ \\downarrow \\\\ x \\neq -a, x \\neq -b \\end{gathered}", color: "border-outline-variant bg-surface dark:bg-slate-800 dark:border-slate-600" },
-            { title: "Trappola (Irriducibile)", tex: "\\begin{gathered} \\dfrac{1}{x^2+a^2} \\\\ \\downarrow \\\\ \\forall x \\in \\mathbb{R} \\end{gathered}", color: "border-red-200 bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800" },
+            { title: "Denominatore Lineare", tex: "\\dfrac{1}{x-a} \\rightarrow x \\neq a", color: "border-outline-variant bg-surface dark:bg-white/5" },
+            { title: "Raccoglimento Totale", tex: "\\dfrac{1}{x(x-a)} \\rightarrow x \\neq 0, a", color: "border-outline-variant bg-surface dark:bg-white/5" },
+            { title: "Differenza di Quadrati", tex: "\\dfrac{1}{x^2-a^2} \\rightarrow x \\neq \\pm a", color: "border-outline-variant bg-surface dark:bg-white/5" },
+            { title: "Quadrato di Binomio", tex: "\\dfrac{1}{(x-a)^2} \\rightarrow x \\neq a", color: "border-outline-variant bg-surface dark:bg-white/5" },
+            { title: "Trinomio Speciale", tex: "\\dfrac{1}{x^2+Sx+P} \\rightarrow x \\neq -a, -b", color: "border-outline-variant bg-surface dark:bg-white/5" },
+            { title: "Trappola (Irriducibile)", tex: "\\dfrac{1}{x^2+a^2} \\rightarrow \\forall x \\in \\mathbb{R}", color: "border-red-200 bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800" },
         ];
 
         // --- ICONE SVG ---
@@ -184,7 +221,7 @@
             },
             common: () => {
                 const a = getRandomInt(1, 6);
-                return { poly: mkFrac(`x^2 - ${a}x`), fact: `x \\neq 0, x \\neq ${a}`, type: "common" };
+                return { poly: mkFrac(`x^2 - ${a}x`), fact: `x \\neq 0, ${a}`, type: "common" };
             },
             diffSq: () => {
                 const a = getRandomInt(1, 5);
@@ -208,7 +245,7 @@
                 const termKnown = prod > 0 ? `+${prod}` : `${prod}`;
                 const resA = -1 * a * sA;
                 const resB = -1 * b * sB;
-                return { poly: mkFrac(`x^2 ${termX} ${termKnown}`), fact: `x \\neq ${resA}, x \\neq ${resB}`, type: "trinom" };
+                return { poly: mkFrac(`x^2 ${termX} ${termKnown}`), fact: `x \\neq ${resA}, ${resB}`, type: "trinom" };
             }
         };
 
@@ -309,6 +346,8 @@
             const [userAvatar, setUserAvatar] = useState(localStorage.getItem('ce_avatar') || AVATARS[0]);
             const [lvl, setLvl] = useState(1);
             const [lb, setLb] = useState([]);
+            // Scaffolding State
+            const [scaffolding, setScaffolding] = useState(localStorage.getItem('ce_scaffolding') === 'true');
 
             const [cards, setCards] = useState([]);
             const [moves, setMoves] = useState(0);
@@ -323,10 +362,13 @@
             const [timeLeft, setTimeLeft] = useState(0);
 
             useEffect(() => {
+                const root = document.documentElement;
                 if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
+                    root.classList.add('dark');
+                    root.setAttribute('data-theme', 'dark');
                 } else {
-                    document.documentElement.classList.remove('dark');
+                    root.classList.remove('dark');
+                    root.setAttribute('data-theme', 'light');
                 }
                 localStorage.setItem('ce_theme', theme);
             }, [theme]);
@@ -339,6 +381,11 @@
                     localStorage.setItem('ce_avatar', rnd);
                 }
             }, [view]);
+
+            // Persist Scaffolding
+            useEffect(() => {
+                localStorage.setItem('ce_scaffolding', scaffolding);
+            }, [scaffolding]);
 
             // Calcolo Punteggio Dinamico
             useEffect(() => {
@@ -476,14 +523,14 @@
             // --- RENDER UI ---
             if (view === 'menu') {
                 return (
-                    <div className="flex h-screen w-screen bg-background text-on-background dark:bg-slate-900 dark:text-slate-100">
-                        <aside className="w-full md:w-1/3 max-w-md bg-surface border-r border-outline-variant flex flex-col shadow-xl z-20 h-full dark:bg-slate-800 dark:border-slate-700">
-                            <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                    <div className="flex h-screen w-screen bg-background text-on-background">
+                        <aside className="w-full md:w-1/3 max-w-md bg-surface border-r border-outline-variant flex flex-col shadow-xl z-20 h-full">
+                            <div className="p-6 border-b border-outline-variant flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-3xl font-black text-on-background dark:text-white tracking-tight">C.E. Match <span className="text-indigo-600 text-lg">v2</span></h1>
+                                    <h1 className="text-3xl font-black text-on-background tracking-tight">C.E. Match <span className="text-primary text-lg">v2</span></h1>
                                     <p className="text-xs text-outline-variant uppercase font-bold tracking-widest mt-1">Dominio Frazioni Algebriche</p>
                                 </div>
-                                <button onClick={toggleTheme} className="p-2 rounded-full bg-surface-container text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                <button onClick={toggleTheme} className="p-2 rounded-full bg-surface-container text-primary hover:bg-outline-variant transition-colors">
                                     {theme === 'light' ? Icons.Moon : Icons.Sun}
                                 </button>
                             </div>
@@ -496,46 +543,51 @@
                                             const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length;
                                             setUserAvatar(AVATARS[nextIdx]);
                                             localStorage.setItem('ce_avatar', AVATARS[nextIdx]);
-                                        }} className="bg-indigo-50 hover:bg-indigo-100 cursor-pointer text-2xl w-12 h-12 flex items-center justify-center rounded-xl select-none transition-colors dark:bg-slate-700 dark:hover:bg-slate-600">
+                                        }} className="bg-surface-container hover:bg-outline-variant cursor-pointer text-2xl w-12 h-12 flex items-center justify-center rounded-xl select-none transition-colors border border-outline-variant">
                                             {userAvatar}
                                         </button>
-                                        <input value={nick} onChange={e => setNick(e.target.value)} placeholder="Il tuo nome..." className="w-full bg-surface-container rounded-xl px-4 font-bold text-slate-700 focus:ring-2 ring-indigo-200 outline-none transition-all dark:bg-slate-700 dark:text-white dark:placeholder-slate-400"/>
+                                        <input value={nick} onChange={e => setNick(e.target.value)} placeholder="Il tuo nome..." className="w-full bg-surface-container rounded-xl px-4 font-bold text-on-background focus:ring-2 ring-primary outline-none transition-all border border-outline-variant"/>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase text-outline-variant">Difficoltà</label>
+                                    <div className="flex justify-between items-end">
+                                        <label className="text-xs font-bold uppercase text-outline-variant">Configurazione</label>
+                                        <button onClick={() => setScaffolding(!scaffolding)} className={`text-[10px] px-2 py-0.5 rounded-full border transition-all ${scaffolding ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' : 'bg-surface-container text-outline-variant border-transparent'}`}>
+                                            SCAFFOLDING {scaffolding ? 'ON' : 'OFF'}
+                                        </button>
+                                    </div>
                                     <div className="grid gap-2">
                                         {LEVELS.map(l => (
                                             <button key={l.id} onClick={() => setLvl(l.id)}
-                                                className={`text-left p-3 rounded-xl border-2 transition-all flex justify-between items-center ${lvl === l.id ? 'border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 dark:border-indigo-500' : 'border-slate-200 hover:border-indigo-200 hover:bg-white dark:border-slate-600 dark:hover:bg-slate-700 dark:hover:border-slate-500'}`}
+                                                className={`text-left p-3 rounded-xl border-2 transition-all flex justify-between items-center ${lvl === l.id ? 'border-primary bg-surface-container' : 'border-outline-variant hover:border-primary hover:bg-surface-container'}`}
                                             >
                                                 <div>
-                                                    <div className="font-bold text-sm">{l.label}</div>
-                                                    <div className="text-[10px] opacity-60">{l.desc}</div>
+                                                    <div className="font-bold text-sm text-on-background">{l.label}</div>
+                                                    <div className="text-[10px] opacity-60 text-on-background">{l.desc}</div>
                                                 </div>
-                                                {lvl === l.id && <div className="text-indigo-600 dark:text-indigo-400">{Icons.Check}</div>}
+                                                {lvl === l.id && <div className="text-primary">{Icons.Check}</div>}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
                                 
-                                <div className="bg-background rounded-2xl border border-outline-variant p-4 dark:bg-slate-700/50 dark:border-slate-600">
-                                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant dark:border-slate-600">
+                                <div className="bg-background rounded-2xl border border-outline-variant p-4">
+                                    <div className="flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant">
                                         <div className="text-yellow-500">{Icons.Trophy}</div>
-                                        <span className="font-bold text-xs uppercase tracking-wide text-outline-variant dark:text-slate-400">Hall of Fame</span>
+                                        <span className="font-bold text-xs uppercase tracking-wide text-outline-variant">Hall of Fame</span>
                                     </div>
                                     <div className="max-h-40 overflow-y-auto scroller space-y-2">
-                                        {lb.length === 0 && <div className="text-xs text-center py-4 opacity-40">Nessun dato</div>}
+                                        {lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 text-on-background">Nessun dato</div>}
                                         {lb.map((row, i) => (
-                                            <div key={i} className="flex justify-between items-center text-xs p-2 bg-surface rounded-lg shadow-sm dark:bg-slate-800 dark:shadow-none">
+                                            <div key={i} className="flex justify-between items-center text-xs p-2 bg-surface rounded-lg shadow-sm border border-outline-variant">
                                                 <div className="flex gap-2 items-center">
-                                                    <span className={`w-4 h-4 rounded-full flex items-center justify-center font-mono font-bold ${i<3 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-slate-100 text-outline-variant dark:bg-slate-700 dark:text-slate-400'}`}>{i+1}</span>
+                                                    <span className={`w-4 h-4 rounded-full flex items-center justify-center font-mono font-bold ${i<3 ? 'bg-yellow-100 text-yellow-700' : 'bg-surface-container text-outline-variant'}`}>{i+1}</span>
                                                     <span className="text-lg leading-none">{row.avatar || '👤'}</span>
-                                                    <span className="font-bold text-slate-700 truncate max-w-[80px] dark:text-slate-200">{row.name}</span>
+                                                    <span className="font-bold text-on-background truncate max-w-[80px]">{row.name}</span>
                                                 </div>
                                                 <div className="flex flex-col items-end">
-                                                    <div className="text-indigo-600 font-bold dark:text-indigo-400">{row.score}pt</div>
+                                                    <div className="text-primary font-bold">{row.score}pt</div>
                                                     <div className="text-[9px] text-outline-variant font-mono">
                                                         {row.moves} / {row.minMoves || '-'}
                                                     </div>
@@ -546,22 +598,22 @@
                                 </div>
                             </div>
 
-                            <div className="p-6 border-t border-slate-100 dark:border-slate-700">
-                                <button onClick={() => startGame(false)} className="w-full py-4 bg-surface hover:bg-slate-800 text-on-background rounded-xl font-bold shadow-xl active:scale-95 transition-all flex justify-center gap-2 dark:bg-indigo-600 dark:hover:bg-indigo-500">
+                            <div className="p-6 border-t border-outline-variant">
+                                <button onClick={() => startGame(false)} className="w-full py-4 bg-primary hover:opacity-90 text-on-background rounded-xl font-bold shadow-xl active:scale-95 transition-all flex justify-center gap-2">
                                     INIZIA {Icons.Play}
                                 </button>
                             </div>
                         </aside>
 
-                        <main className="hidden md:flex flex-1 bg-surface-container items-center justify-center relative overflow-hidden dark:bg-slate-900">
+                        <main className="hidden md:flex flex-1 bg-background items-center justify-center relative overflow-hidden">
                              <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] dark:opacity-[0.05] dark:invert"></div>
                              <div className="w-full max-w-7xl p-4 md:p-8">
-                                <div className="bg-surface p-6 md:p-10 rounded-3xl shadow-2xl border border-outline-variant h-full flex flex-col dark:bg-slate-800 dark:border-slate-700">
+                                <div className="bg-surface p-6 md:p-10 rounded-3xl shadow-2xl border border-outline-variant h-full flex flex-col">
                                     <div className="flex items-center gap-4 mb-6 md:mb-8 shrink-0">
-                                        <div className="p-4 bg-indigo-100 text-indigo-600 rounded-2xl dark:bg-indigo-900/50 dark:text-indigo-300">{Icons.Book}</div>
+                                        <div className="p-4 bg-surface-container text-primary rounded-2xl">{Icons.Book}</div>
                                         <div>
-                                            <h2 className="text-2xl md:text-3xl font-black text-on-background dark:text-white">BRIEFING C.E.</h2>
-                                            <p className="text-outline-variant font-medium dark:text-slate-400">Analisi delle singolarità</p>
+                                            <h2 className="text-2xl md:text-3xl font-black text-on-background">BRIEFING C.E.</h2>
+                                            <p className="text-outline-variant font-medium">Analisi delle singolarità</p>
                                         </div>
                                     </div>
                                     <div className="space-y-6 flex-1 overflow-y-auto scroller pr-2">
@@ -573,13 +625,13 @@
                                             </div>
                                         </div>
                                         <div className="space-y-4">
-                                            <h3 className="font-bold text-outline-variant text-xs uppercase tracking-widest border-b border-slate-100 pb-2 dark:border-slate-700">Database Pattern</h3>
+                                            <h3 className="font-bold text-outline-variant text-xs uppercase tracking-widest border-b border-outline-variant pb-2">Database Pattern</h3>
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                                 {BRIEFING_ITEMS.map((item, idx) => (
-                                                    <div key={idx} className={`p-3 rounded-xl border-2 transition-colors flex flex-col justify-center min-h-[120px] overflow-hidden w-full ${item.color}`}>
-                                                        <div className="text-[10px] font-bold opacity-50 mb-1 uppercase tracking-wider text-center dark:text-slate-300 dark:opacity-70">{item.title}</div>
-                                                        <div className="w-full overflow-x-auto no-scrollbar flex justify-center">
-                                                            <MathText txt={item.tex} className="text-[0.65rem] sm:text-xs text-slate-700 whitespace-nowrap dark:text-slate-200"/>
+                                                    <div key={idx} className={`p-3 rounded-xl border-2 transition-colors flex flex-col justify-center min-h-[120px] w-full ${item.color}`}>
+                                                        <div className="text-[10px] font-bold opacity-50 mb-1 uppercase tracking-wider text-center text-on-background">{item.title}</div>
+                                                        <div className="w-full flex justify-center flex-wrap">
+                                                            <MathText txt={item.tex} className="text-base text-on-background"/>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -605,8 +657,8 @@
                 else gridClass = "grid-cols-4"; 
 
                 return (
-                    <div className="h-screen w-screen flex flex-col bg-surface-container overflow-hidden dark:bg-slate-900">
-                        <header className="h-16 bg-surface shadow-sm flex items-center justify-between px-4 z-20 shrink-0 border-b border-outline-variant dark:bg-slate-800 dark:border-slate-700">
+                    <div className="h-screen w-screen flex flex-col bg-background overflow-hidden">
+                        <header className="h-16 bg-surface shadow-sm flex items-center justify-between px-4 z-20 shrink-0 border-b border-outline-variant">
                             <div className="flex items-center gap-4">
                                 <button onClick={() => setView('menu')} className="text-xs font-bold text-outline-variant hover:text-red-500 uppercase tracking-wider transition-colors">ESCI</button>
                                 {isRush && (
@@ -617,7 +669,7 @@
                                 {!isRush && (
                                     <div className="flex flex-col">
                                         <span className="text-[10px] font-bold text-outline-variant uppercase leading-none">Punti</span>
-                                        <span className="text-xl font-mono font-bold text-indigo-600 leading-none dark:text-indigo-400">{score}</span>
+                                        <span className="text-xl font-mono font-bold text-primary leading-none">{score}</span>
                                     </div>
                                 )}
                             </div>
@@ -625,37 +677,39 @@
                                 <div className={`absolute top-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl border-2 flex items-center gap-3 animate-bounce z-50 bg-surface ${matchMsg.color || 'border-indigo-100'} dark:bg-slate-800 dark:border-slate-600`}>
                                     <div className="bg-green-100 text-green-600 rounded-full p-1 dark:bg-green-900 dark:text-green-300">{Icons.Check}</div>
                                     <div className="text-left">
-                                        <div className="font-black text-on-background text-sm dark:text-white">{matchMsg.text}</div>
-                                        <div className="text-xs font-bold text-outline-variant uppercase dark:text-slate-300">{matchMsg.sub}</div>
+                                        <div className="font-black text-on-background text-sm">{matchMsg.text}</div>
+                                        <div className="text-xs font-bold text-outline-variant uppercase">{matchMsg.sub}</div>
                                     </div>
                                 </div>
                             )}
                         </header>
-                        <main className="flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center bg-surface-container dark:bg-slate-900">
+                        <main className="flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center bg-background">
                             <div className={`grid gap-3 w-full max-w-6xl h-full max-h-full ${gridClass}`}>
                                 {cards.map(card => {
-                                    const isGhostMode = LEVELS.find(l => l.id === lvl).ghost;
-                                    const showGhostContent = isGhostMode && card.seen;
+                                    // LOGICA SCAFFOLDING
+                                    // Se scaffolding è attivo, usiamo la proprietà 'ghost' del livello O forziamo true se vogliamo che sia sempre attivo col tasto.
+                                    // Interpretazione richiesta: il tasto "scaffolding" attiva la modalità ghost (vedere le carte girate) 
+                                    const showGhostContent = (card.seen && scaffolding); 
                                     const isFaceUp = card.isFlipped || card.isMatched;
                                     
-                                    let flipperStyle = "bg-surface border-outline-variant dark:bg-slate-800 dark:border-slate-700"; 
+                                    let flipperStyle = "bg-surface border-outline-variant"; 
                                     if (card.isMatched) {
                                         flipperStyle = `${card.color} border-solid`;
                                     } else if (card.cardType === 'fraction') {
-                                        flipperStyle = "bg-surface border-slate-300 border-solid dark:bg-slate-800 dark:border-slate-500";
+                                        flipperStyle = "bg-surface border-slate-300 border-solid dark:border-slate-500";
                                     } else {
-                                        flipperStyle = "bg-background border-slate-400 border-dashed dark:bg-slate-900 dark:border-slate-500";
+                                        flipperStyle = "bg-background border-slate-400 border-dashed dark:border-slate-500";
                                     }
 
                                     return (
                                         <div key={card.id} onClick={() => handleCardClick(card.id)} className="perspective-1000 relative cursor-pointer w-full h-full min-h-0 group">
                                             <div className={`flipper w-full h-full shadow-sm rounded-xl border-2 transition-all duration-500
                                                 ${flipperStyle}
-                                                ${isFaceUp ? 'flipped' : 'hover:border-indigo-300 hover:-translate-y-1 dark:hover:border-indigo-500'}
+                                                ${isFaceUp ? 'flipped' : 'hover:border-primary hover:-translate-y-1'}
                                             `}>
                                                 <div className="face face-front rounded-xl overflow-hidden flex items-center justify-center bg-transparent">
                                                     {showGhostContent ? (
-                                                        <div className="opacity-60 w-full h-full flex items-center justify-center p-2 text-on-background dark:text-slate-200">
+                                                        <div className="opacity-60 w-full h-full flex items-center justify-center p-2 text-on-background">
                                                              <MathText txt={card.content} className="" />
                                                         </div>
                                                     ) : (
@@ -665,7 +719,7 @@
                                                     )}
                                                 </div>
                                                 <div className="face face-back p-1 rounded-xl flex items-center justify-center bg-transparent">
-                                                    <div className="w-full h-full flex items-center justify-center text-center text-on-background dark:text-slate-100">
+                                                    <div className="w-full h-full flex items-center justify-center text-center text-on-background">
                                                         <MathText 
                                                             txt={card.content} 
                                                             className="font-black tracking-tight break-words w-full" 
@@ -680,17 +734,17 @@
                         </main>
                         {view === 'win' && (
                             <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
-                                <div className="bg-surface p-8 rounded-3xl shadow-2xl text-center max-w-md w-full relative overflow-hidden dark:bg-slate-800">
-                                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
-                                    <h2 className="text-4xl font-black text-on-background mb-2 dark:text-white">OTTIMO LAVORO!</h2>
-                                    <p className="text-outline-variant mb-8 dark:text-slate-400">C.E. Identificate. Punti: <strong className="text-indigo-600 dark:text-indigo-400">{score}</strong></p>
+                                <div className="bg-surface p-8 rounded-3xl shadow-2xl text-center max-w-md w-full relative overflow-hidden border border-outline-variant">
+                                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-secondary"></div>
+                                    <h2 className="text-4xl font-black text-on-background mb-2">OTTIMO LAVORO!</h2>
+                                    <p className="text-outline-variant mb-8">C.E. Identificate. Punti: <strong className="text-primary">{score}</strong></p>
                                     <div className="space-y-3">
                                         <button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-2xl font-black shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2">
                                             {Icons.Zap} RADDOPPIA (RUSH)
                                         </button>
-                                        <p className="text-xs text-outline-variant italic dark:text-slate-500">Trova {cards.length/2} coppie in {isRush ? RUSH_MEM_TIME + RUSH_PLAY_TIME : 'tempo libero'}.</p>
-                                        <div className="h-px bg-surface-container my-4 dark:bg-slate-700"></div>
-                                        <button onClick={saveAndExit} className="w-full py-3 bg-surface border-2 border-outline-variant text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-colors dark:bg-slate-700 dark:text-slate-200 dark:border-slate-600 dark:hover:bg-slate-600">
+                                        <p className="text-xs text-outline-variant italic">Trova {cards.length/2} coppie in {isRush ? RUSH_MEM_TIME + RUSH_PLAY_TIME : 'tempo libero'}.</p>
+                                        <div className="h-px bg-surface-container my-4"></div>
+                                        <button onClick={saveAndExit} className="w-full py-3 bg-surface border-2 border-outline-variant text-on-background rounded-2xl font-bold hover:bg-surface-container transition-colors">
                                             SALVA E ESCI
                                         </button>
                                     </div>

@@ -14,6 +14,7 @@ BASE_URL = "https://federicodb.github.io/"
 # Mappa delle cartelle ai tipi di contenuto
 TYPE_MAP = {
     "apps": "app",
+    "studio_appz": "app",
     "video": "video",
     "audio": "audio",
     "infografiche": "infographic",
@@ -196,6 +197,9 @@ def main():
 
     # Scansione ricorsiva
     for root, dirs, files in os.walk(CONTENT_DIR):
+        # Modifica in-place della lista dirs per escludere cartelle nascoste dal walk
+        dirs[:] = [d for d in dirs if not d.startswith('.')]
+
         # Determina la categoria basandosi sulla cartella genitore diretta
         folder_name = os.path.basename(root)
         

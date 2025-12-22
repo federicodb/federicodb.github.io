@@ -1,57 +1,18 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0061a4"> <!-- Colore barra Android/iOS -->
-    
-    <!-- 1. SEO PRIMARIO -->
-    <title>Laboratorio Matematico Orfini Foligno | MeltingMath</title>
-    <meta name="description" content="Hub digitale didattico dell'Ist. Professionale Orfini. Simulazioni interattive, 3D printing e risorse multimediali per Matematica e Fisica. Scuola Pubblica Open Source.">
-    <meta name="keywords" content="Matematica, Fisica, Laboratorio, Orfini, Foligno, MeltingMath, 3D Print, Didattica, Open Source, Scuola Pubblica">
-    <meta name="author" content="Prof. Federico DB">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://federicodb.github.io/">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Laboratorio Matematico Orfini | Immersive Hub</title>
 
-    <!-- 2. OPEN GRAPH / FACEBOOK / INSTAGRAM / WHATSAPP -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://federicodb.github.io/">
-    <meta property="og:title" content="Laboratorio Matematico Orfini | MeltingMath">
-    <meta property="og:description" content="Dove la Matematica diventa tangibile. Esplora simulazioni 3D, giochi e infografiche. Progetto Open Source della Scuola Pubblica.">
-    <meta property="og:image" content="https://federicodb.github.io/assets/social_share_cover.jpg"> <!-- TODO: Creare questa immagine -->
-    <meta property="og:locale" content="it_IT">
-    <meta property="og:site_name" content="Orfini Math Lab">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Amatic+SC:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Oswald:wght@500&family=Permanent+Marker&family=Playfair+Display:ital,wght@1,600&family=Press+Start+2P&family=Righteous&family=Space+Mono:ital,wght@0,700;1,700&family=Inter:wght@400;700&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
 
-    <!-- 3. TWITTER / X -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@meltingmath">
-    <meta name="twitter:creator" content="@meltingmath">
-    <meta name="twitter:title" content="Laboratorio Matematico Orfini">
-    <meta name="twitter:description" content="Didattica laboratoriale e creativa. Matematica, Stampa 3D e WebApp.">
-    <meta name="twitter:image" content="https://federicodb.github.io/assets/social_share_cover.jpg">
-
-    <!-- 4. SCHEMA.ORG JSON-LD (Per Google) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      "name": "Laboratorio Matematico Orfini Foligno",
-      "url": "https://federicodb.github.io/",
-      "logo": "https://federicodb.github.io/assets/logo_orfini.png",
-      "sameAs": [
-        "https://instagram.com/meltingmath",
-        "https://github.com/federicodb"
-      ],
-      "description": "Hub digitale per la didattica laboratoriale della Matematica e Fisica.",
-      "founder": {
-        "@type": "Person",
-        "name": "Prof. Federico DB"
-      },
-      "nonProfitStatus": "PublicSchool"
-    }
-    </script>
-    
-    <!-- Three.js Import Map -->
     <script type="importmap">
         {
             "imports": {
@@ -60,911 +21,665 @@
             }
         }
     </script>
-
-    <!-- Font Collection per la Cloud -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fira+Code:wght@500&family=Inter:wght@400;700;900&family=Pacifico&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
-
-    <style>
-        /* --- MATERIAL DESIGN 3 TOKENS --- */
-        :root {
-            /* Palette Material 3 (Base) */
-            --md-sys-color-background: #fdfcff;
-            --md-sys-color-on-background: #1a1c1e;
-            --md-sys-color-surface: #fdfcff;
-            --md-sys-color-surface-container: #f0f4f8; 
-            --md-sys-color-surface-container-high: #e2e8f0;
-            --md-sys-color-surface-variant: #e1e2ec;
-            --md-sys-color-on-surface-variant: #44474f;
-            
-            --md-sys-color-primary: #0061a4;
-            --md-sys-color-on-primary: #ffffff;
-            --md-sys-color-secondary-container: #dbe4f9;
-            --md-sys-color-on-secondary-container: #171c22;
-            
-            --md-sys-color-outline: #74777f;
-            --md-sys-color-outline-variant: #c4c7c5;
-
-            /* Spaziature e Forme */
-            --md-shape-corner-large: 24px;
-            --md-shape-corner-medium: 16px;
-            --md-shape-corner-full: 999px;
-            
-            /* Palette Dinamica Card */
-            --card-blue: #d3e3fd; --card-on-blue: #041e49;
-            --card-green: #c4eed0; --card-on-green: #07210e;
-            --card-red: #f9dedc; --card-on-red: #410e0b;
-            --card-yellow: #fdf2b4; --card-on-yellow: #261d00;
-            --card-purple: #e9ddff; --card-on-purple: #21005d;
-            --card-teal: #bce9eb; --card-on-teal: #001f20;
-
-            /* Brand Colors */
-            --instagram-grad: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-        }
-
-        [data-theme="dark"] {
-            --md-sys-color-background: #000000; /* AMOLED Black */
-            --md-sys-color-on-background: #e2e2e6;
-            --md-sys-color-surface: #111111;
-            --md-sys-color-surface-container: #1c1c1c; 
-            --md-sys-color-surface-container-high: #2d2d2d;
-            --md-sys-color-surface-variant: #44474f;
-            --md-sys-color-on-surface-variant: #c4c7c5;
-            
-            --md-sys-color-primary: #9ecaff;
-            --md-sys-color-on-primary: #003258;
-            --md-sys-color-secondary-container: #33445a;
-            --md-sys-color-on-secondary-container: #dbe4f9;
-            
-            --md-sys-color-outline: #8e918f;
-            --md-sys-color-outline-variant: #444746;
-
-            /* Palette Dark */
-            --card-blue: #0842a0; --card-on-blue: #d3e3fd;
-            --card-green: #0f5223; --card-on-green: #c4eed0;
-            --card-red: #93000a; --card-on-red: #ffdad6;
-            --card-yellow: #5d4200; --card-on-yellow: #fff392;
-            --card-purple: #55339e; --card-on-purple: #e9ddff;
-            --card-teal: #004f50; --card-on-teal: #bce9eb;
-        }
-
-        /* --- RESET & TYPOGRAPHY --- */
-        html { scroll-behavior: smooth; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--md-sys-color-background);
-            color: var(--md-sys-color-on-background);
-            font-family: 'Inter', sans-serif;
-            min-height: 100dvh;
-            display: flex; flex-direction: column;
-            transition: background-color 0.4s cubic-bezier(0.2, 0, 0, 1), color 0.4s;
-            overflow-x: hidden;
-        }
-
-        /* --- HEADER & HERO --- */
-        header { padding: 2rem 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
-
-        .top-bar {
-            display: flex; 
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        h1 {
-            font-family: 'Inter', sans-serif;
-            font-size: clamp(2rem, 6vw, 4rem); /* Responsive Huge Title */
-            font-weight: 900; 
-            line-height: 1; 
-            margin: 0 0 0.5rem 0;
-            letter-spacing: -2px;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, var(--md-sys-color-on-background) 30%, var(--md-sys-color-primary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        
-        .subtitle {
-            font-size: 1rem; 
-            color: var(--md-sys-color-outline); 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
-
-        .theme-btn {
-            position: absolute;
-            top: 0; right: 0;
-            width: 48px; height: 48px; border-radius: 50%;
-            border: 1px solid var(--md-sys-color-outline-variant);
-            background: transparent; color: var(--md-sys-color-on-background);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s; font-size: 1.2rem;
-        }
-        .theme-btn:hover { background-color: var(--md-sys-color-surface-container-high); transform: rotate(15deg); }
-
-        @media (max-width: 768px) {
-            .theme-btn { position: relative; margin-left: auto; margin-bottom: 1rem; top: auto; right: auto; }
-            .top-bar { align-items: stretch; text-align: center; }
-        }
-
-        /* --- 3D CLOUD CONTAINER --- */
-        #cloud-wrapper {
-            width: 100%; height: 320px; /* Altezza aumentata per il 3D */
-            background-color: transparent; /* Sfondo trasparente per ereditare dal body o impostato via JS */
-            border-radius: var(--md-shape-corner-large);
-            margin-bottom: 2rem;
-            position: relative; overflow: hidden;
-            /* box-shadow rimosso per integrarsi con lo sfondo */
-            padding: 0; cursor: grab;
-        }
-        #cloud-wrapper:active { cursor: grabbing; }
-        
-        #cloud-overlay {
-            position: absolute; bottom: 15px; right: 20px;
-            pointer-events: none; opacity: 0.5;
-            font-size: 0.7rem; color: var(--md-sys-color-outline);
-            text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
-        }
-
-        /* --- FILTRI --- */
-        .filters-container {
-            position: sticky; top: 0; z-index: 50;
-            background: var(--md-sys-color-background);
-            padding: 0.5rem 0 1rem;
-            border-bottom: 1px solid var(--md-sys-color-outline-variant);
-            margin-bottom: 1.5rem;
-            opacity: 0.98;
-        }
-
-        .filters {
-            display: flex; gap: 0.5rem; overflow-x: auto;
-            padding: 0 1.5rem; max-width: 1200px; margin: 0 auto;
-            scrollbar-width: none; -webkit-overflow-scrolling: touch;
-        }
-        .filters::-webkit-scrollbar { display: none; }
-
-        .chip {
-            background-color: var(--md-sys-color-surface);
-            border: 1px solid var(--md-sys-color-outline-variant);
-            color: var(--md-sys-color-on-background);
-            padding: 0.5rem 1rem; border-radius: 8px;
-            font-size: 0.85rem; font-weight: 500;
-            white-space: nowrap; cursor: pointer; user-select: none;
-            transition: all 0.2s;
-        }
-        .chip:hover { background-color: var(--md-sys-color-surface-container-high); }
-        .chip.active {
-            background-color: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            border-color: var(--md-sys-color-primary);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-
-        /* --- GRIGLIA CARD --- */
-        main { padding: 0 1.5rem 4rem; max-width: 1200px; margin: 0 auto; flex: 1; width: 100%; }
-
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;
-        }
-
-        .card {
-            background-color: var(--card-bg, var(--md-sys-color-surface-container));
-            color: var(--card-fg, var(--md-sys-color-on-background));
-            border-radius: var(--md-shape-corner-large);
-            padding: 1.5rem; text-decoration: none;
-            display: flex; flex-direction: column;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
-            position: relative; overflow: hidden;
-            border: 1px solid transparent;
-        }
-        @media (hover: hover) {
-            .card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 12px 24px -8px rgba(0,0,0,0.3); z-index: 10; }
-        }
-
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-        .card-emoji { font-size: 3rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: transform 0.3s; }
-        .card:hover .card-emoji { transform: scale(1.1) rotate(5deg); }
-        
-        .card-date {
-            font-size: 0.75rem; font-weight: 600; opacity: 0.6;
-            background: rgba(0,0,0,0.1); padding: 4px 8px; border-radius: 6px;
-            font-family: monospace;
-        }
-        [data-theme="dark"] .card-date { background: rgba(255,255,255,0.1); }
-
-        .card h3 { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.5rem 0; line-height: 1.2; letter-spacing: -0.01em; }
-        .card p { font-size: 0.95rem; opacity: 0.8; margin: 0 0 1.5rem 0; line-height: 1.5; flex-grow: 1; font-weight: 400; }
-        .card-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: auto; }
-        .tag-pill {
-            font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 50px;
-            background-color: rgba(255,255,255,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* --- FOOTER --- */
-        .site-footer {
-            background-color: var(--md-sys-color-surface-container);
-            border-top: 1px solid var(--md-sys-color-outline-variant);
-            padding: 3rem 1.5rem; margin-top: auto;
-        }
-        
-        .footer-content {
-            max-width: 1200px; margin: 0 auto;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-section h4 {
-            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;
-            color: var(--md-sys-color-primary); margin-bottom: 1rem; font-weight: 800;
-        }
-
-        .footer-section p {
-            font-size: 0.95rem; line-height: 1.6; color: var(--md-sys-color-on-surface-variant); margin-bottom: 1rem;
-        }
-
-        .footer-link {
-            display: inline-flex; items-center; gap: 0.5rem;
-            color: var(--md-sys-color-on-background); text-decoration: none;
-            font-weight: 600; font-size: 0.95rem; transition: color 0.2s;
-        }
-        .footer-link:hover { color: var(--md-sys-color-primary); }
-
-        .mm-card {
-            background: var(--md-sys-color-surface);
-            border: 1px solid var(--md-sys-color-outline-variant);
-            border-radius: var(--md-shape-corner-medium);
-            padding: 1.5rem; display: flex; align-items: center; gap: 1rem;
-            transition: transform 0.2s; text-decoration: none; color: inherit;
-        }
-        .mm-card:hover { transform: translateY(-3px); border-color: #d62976; }
-        
-        .mm-icon {
-            width: 48px; height: 48px; border-radius: 12px;
-            background: var(--instagram-grad);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-size: 1.5rem; flex-shrink: 0;
-        }
-
-        #empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--md-sys-color-outline); }
-        #reset-filter {
-            display: none; margin: 0 0 1rem auto; background: none; border: 1px solid var(--md-sys-color-outline);
-            color: var(--md-sys-color-on-background); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
-        }
-
-        /* --- MODAL STYLES --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-            z-index: 1000; opacity: 0; pointer-events: none;
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-        .modal-container {
-            background: var(--md-sys-color-surface);
-            color: var(--md-sys-color-on-background);
-            width: 90%; max-width: 800px; max-height: 90vh;
-            border-radius: var(--md-shape-corner-large);
-            position: relative; overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex; flex-direction: column;
-        }
-        .modal-overlay.active .modal-container { transform: scale(1); }
-
-        .modal-close {
-            position: absolute; top: 1rem; right: 1rem;
-            background: rgba(0,0,0,0.5); border: none; color: white;
-            width: 32px; height: 32px; border-radius: 50%;
-            cursor: pointer; z-index: 10; font-weight: bold;
-        }
-        
-        .modal-content {
-            background: black; /* Per video/img */
-            min-height: 300px; display: flex; align-items: center; justify-content: center;
-            border-radius: var(--md-shape-corner-large) var(--md-shape-corner-large) 0 0;
-            overflow: hidden;
-        }
-
-        .modal-meta { padding: 1.5rem; }
-        .modal-meta h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
-        .modal-meta p { margin: 0; opacity: 0.8; line-height: 1.5; }
-
-        .type-badge {
-            font-size: 0.65rem; font-weight: 800; letter-spacing: 0.05em;
-            padding: 3px 6px; border-radius: 4px;
-            background: rgba(0,0,0,0.2); color: inherit;
-            margin-left: auto; align-self: center;
-        }
-
-        /* MARKDOWN STYLES */
-        .markdown-body { font-size: 1rem; line-height: 1.7; color: var(--md-sys-color-on-surface-variant); }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { 
-            color: var(--md-sys-color-on-background); margin-top: 1.5em; margin-bottom: 0.5em; font-weight: 700; 
-        }
-        .markdown-body h1 { font-size: 1.8rem; border-bottom: 1px solid var(--md-sys-color-outline-variant); padding-bottom: 0.3em; }
-        .markdown-body h2 { font-size: 1.4rem; }
-        .markdown-body h3 { font-size: 1.2rem; }
-        .markdown-body ul, .markdown-body ol { padding-left: 1.5em; margin-bottom: 1em; }
-        .markdown-body li { margin-bottom: 0.3em; }
-        .markdown-body blockquote { 
-            border-left: 4px solid var(--md-sys-color-primary); 
-            background: var(--md-sys-color-surface-container-high);
-            padding: 0.5em 1em; margin: 1em 0; font-style: italic;
-        }
-        .markdown-body code { 
-            background: var(--md-sys-color-surface-container-high); 
-            padding: 0.2em 0.4em; border-radius: 4px; font-family: monospace; font-size: 0.9em;
-        }
-        .markdown-body ul.contains-task-list { list-style: none; padding-left: 0; }
-        .markdown-body input[type="checkbox"] { margin-right: 0.5em; transform: scale(1.2); cursor: pointer; }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 1.5rem; }
-            .grid { grid-template-columns: 1fr; }
-            .footer-content { grid-template-columns: 1fr; }
-        }
-    </style>
-    <!-- Marked.js for Markdown Rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-</head>
-<body>
-
-    <header>
-        <div class="top-bar">
-            <h1>Laboratorio Matematico<br>Orfini Foligno</h1>
-            <p class="subtitle">Didattica Interattiva Open Source</p>
-            <button class="theme-btn" onclick="toggleTheme()" aria-label="Cambia tema">
-                <span id="theme-icon">🌙</span>
-            </button>
-        </div>
-        
-        <div id="cloud-wrapper">
-            <!-- Three.js Canvas will be injected here -->
-            <div id="cloud-overlay">Ruota &bull; Zooma &bull; Esplora</div>
-        </div>
-    </header>
-
-    <div class="filters-container">
-        <div class="filters" id="filterBar">
-            <button class="chip active" onclick="applyFilter('all')">Tutti</button>
-            <button class="chip" onclick="applyFilter('Linkografia')" style="border-color:var(--md-sys-color-primary); color:var(--md-sys-color-primary); font-weight:800;">📚 Linkografia</button>
-            <!-- Tags generati dinamicamente -->
-        </div>
-    </div>
-
-    <main>
-        <div style="display: flex; justify-content: flex-end;">
-            <button id="reset-filter" onclick="applyFilter('all')">✕ Rimuovi Filtri</button>
-        </div>
-
-        <div class="grid" id="grid">
-            <!-- Cards generate dinamicamente -->
-        </div>
-        
-        <div id="empty-state">
-            <div style="font-size:3rem; margin-bottom:1rem; opacity:0.5;">🔭</div>
-            <p>Nessuna attività trovata per questo filtro.</p>
-        </div>
-    </main>
-
-    <!-- FOOTER INFORMATIVO -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            
-            <!-- SEZIONE CHI SONO -->
-            <div class="footer-section">
-                <h4>Chi Sono</h4>
-                <p>
-                    Sono il <strong>Prof. Federico DB</strong>, docente di Matematica presso l'Istituto Professionale Orfini di Foligno. 
-                    Il mio obiettivo è trasformare l'astrazione della Matematica in esperienza tangibile.
-                </p>
-                <p>
-                    Ogni studente deve poter "toccare" i concetti scientifici per comprenderli davvero.
-                </p>
-            </div>
-
-            <!-- SEZIONE METODOLOGIA -->
-            <div class="footer-section">
-                <h4>Note Metodologiche</h4>
-                <p>
-                    Questo laboratorio segue le linee guida della <strong>Riforma degli Istituti Professionali (D.Lgs 61/2017)</strong>.
-                </p>
-                <ul style="padding-left: 1rem; color: var(--md-sys-color-on-surface-variant); font-size: 0.9rem; line-height: 1.6;">
-                    <li><strong>PBL:</strong> Apprendimento basato su progetti reali.</li>
-                    <li><strong>Gamification:</strong> L'errore è parte del gioco, non un fallimento.</li>
-                    <li><strong>Open Source:</strong> Codice accessibile e modificabile.</li>
-                </ul>
-            </div>
-
-            <!-- SEZIONE MELTINGMATH -->
-            <div class="footer-section">
-                <h4>Social & Community</h4>
-                <a href="https://instagram.com/meltingmath" target="_blank" class="mm-card">
-                    <div class="mm-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                    </div>
-                    <div>
-                        <div style="font-weight: 800; font-size: 1rem; color: var(--md-sys-color-primary);">MeltingMath</div>
-                        <div style="font-size: 0.8rem; color: var(--md-sys-color-outline);">Segui il progetto su Instagram</div>
-                    </div>
-                </a>
-            </div>
-
-        </div>
-        <div style="text-align: center; margin-top: 2rem; font-size: 0.75rem; color: var(--md-sys-color-outline);">
-            &copy; 2025 Laboratorio Matematico Orfini Foligno - Engineered by Orfini Math Lab Architect
-        </div>
-    </footer>
-
-    <!-- MODAL MULTIMEDIALE -->
-    <div id="media-modal" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-container" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeModal()">✕</button>
-            <div id="modal-content" class="modal-content">
-                <!-- Contenuto iniettato dinamicamente -->
-            </div>
-            <div id="modal-meta" class="modal-meta">
-                <!-- Titolo e info -->
-            </div>
-        </div>
-    </div>
-
-    <!-- SCRIPT DATA (INLINE PER ANTEPRIMA) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script>
-        const inlineDB = [
-            { title: "Math Underground: Mappa Funzioni", url: "content/apps/math_underground003_4el.html", excerpt: "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche.", tags: ["Matematica", "Analisi", "Funzioni", "4EL"], date: "2025-12-06", type: "app" },
-            { title: "Caccia all'Errore: Operazioni in Z", url: "content/apps/memory_1el_numeri_004.html", excerpt: "Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette.", tags: ["Matematica", "Aritmetica", "1EL"], date: "2025-10-20", type: "app" }
-        ];
+        window.addEventListener('load', () => {
+            if (typeof katex === 'undefined') {
+                console.error("[MathEngine] CRITICAL: KaTeX library failed to load from CDN.");
+            } else {
+                console.log("[MathEngine] KaTeX Ready.");
+            }
+        });
     </script>
-
     <script src="database.js"></script>
 
-    <!-- APP LOGIC (MODULE) -->
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-        // --- 1. CONFIGURAZIONE TEMA E DATA ---
-        const html = document.documentElement;
-        const themeIcon = document.getElementById('theme-icon');
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        
-        const safeData = (typeof db !== 'undefined') ? db : inlineDB;
-        
-        // Globale per accessibilità
-        window.toggleTheme = () => {
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-            themeIcon.innerText = next === 'dark' ? '☀️' : '🌙';
-            if(window.rebuildCloud) window.rebuildCloud();
-        };
-        html.setAttribute('data-theme', savedTheme);
-        themeIcon.innerText = savedTheme === 'dark' ? '☀️' : '🌙';
-
-        // Mappa Emoji estesa
-        const specificEmojiMap = {
-            'voto': '⚖️', 'nash': '🧠', 'memory': '🧩', 'polinomi': '🧱',
-            'underground': '🚇', 'mercatore': '🌍', 'corrente': '⚡',
-            'goniomatch': '📡', 'tavola': '🔢', 'insiemi': '🔴', 
-            'frazioni': '🍰', 'sketch': '🎨', 'invaders': '👾', 
-            'caccia': '💣', 'algebra tiles': '🟦', 'scomposizione': '➗'
-        };
-        
-        const fallbackEmojis = ['📐', '✏️', '🖥️', '🎲', '🚀', '💡', '🔍'];
-
-        const themeColors = [
-            { bg: 'var(--card-blue)', fg: 'var(--card-on-blue)' },
-            { bg: 'var(--card-green)', fg: 'var(--card-on-green)' },
-            { bg: 'var(--card-purple)', fg: 'var(--card-on-purple)' },
-            { bg: 'var(--card-red)', fg: 'var(--card-on-red)' },
-            { bg: 'var(--card-teal)', fg: 'var(--card-on-teal)' },
-            { bg: 'var(--card-yellow)', fg: 'var(--card-on-yellow)' }
-        ];
-
-        function getSmartEmoji(item, prevEmoji) {
-            // Se l'item ha già un'icona definita dal builder, usala
-            if (item.icon && item.icon !== '📄') return item.icon;
-
-            const keyString = (item.url + item.title).toLowerCase();
-            let chosen = '📄';
-            
-            // 1. Cerca match specifico
-            for (const [key, emo] of Object.entries(specificEmojiMap)) {
-                if (keyString.includes(key)) { chosen = emo; break; }
-            }
-            
-            // 2. Fallback per categoria
-            if (chosen === '📄') {
-                if (item.tags.some(t => t.includes('Fisica'))) chosen = '⚛️';
-                else if (item.tags.some(t => t.includes('Matematica'))) chosen = '📐';
-            }
-
-            // 3. Controllo duplicato adiacente
-            if (chosen === prevEmoji) {
-                // Prendi una random dai fallback se collidono
-                chosen = fallbackEmojis[Math.floor(Math.random() * fallbackEmojis.length)];
-            }
-            return chosen;
+    <style>
+        :root {
+            --primary: #00bcd4;
+            --secondary: #ff4081;
+            --bg-dark: #050510;
+            --glass: rgba(10, 20, 40, 0.75);
+            --glass-solid: rgba(10, 20, 40, 0.95);
+            --border: rgba(255, 255, 255, 0.1);
+            --font-ui: 'Inter', sans-serif;
         }
 
-        // --- 2. FILTRI E GRIGLIA ---
-        const filterBar = document.getElementById('filterBar');
-        const grid = document.getElementById('grid');
-        const emptyState = document.getElementById('empty-state');
-        const resetBtn = document.getElementById('reset-filter');
-
-        function initFilters() {
-            const tagCounts = {};
-            safeData.forEach(item => item.tags.forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
-            const sortedTags = Object.keys(tagCounts).sort((a,b) => tagCounts[b] - tagCounts[a]);
-
-            sortedTags.forEach(tag => {
-                if(tag === 'Linkografia') return; // Skip, has static button
-                const btn = document.createElement('button');
-                btn.className = 'chip';
-                btn.innerText = tagCounts[tag] > 1 ? `${tag} (${tagCounts[tag]})` : tag;
-                btn.onclick = () => window.applyFilter(tag);
-                filterBar.appendChild(btn);
-            });
+        /* --- 3D TAG FONTS --- */
+        .font-1 {
+            font-family: 'Caveat', cursive !important;
+            font-size: 1.3em;
         }
 
-        window.applyFilter = function(filter) {
-            grid.innerHTML = '';
-            let count = 0;
-            let prevEmoji = '';
-            
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            const activeBtn = Array.from(document.querySelectorAll('.chip')).find(c => c.innerText.startsWith(filter === 'all' ? 'Tutti' : filter));
-            if(activeBtn) activeBtn.classList.add('active');
-            
-            resetBtn.style.display = filter === 'all' ? 'none' : 'block';
-
-            safeData.forEach((item, index) => {
-                if (filter === 'all' || item.tags.includes(filter)) {
-                    count++;
-                    const card = document.createElement('a');
-                    card.className = 'card';
-                    
-                    // Gestione link vs modale
-                    if (item.type === 'app' || !item.type) {
-                        card.href = item.url;
-
-                    // 2. CASO SPECIALE "GEMINI" (Solo per me!): Nuova scheda
-                    // Controlliamo se il titolo contiene "AI Studio" o se nei tag c'è "Gemini"
-                    } else if (item.title.includes('Google AI Studio') || item.tags.includes('Gemini')) {
-                        card.href = item.url;
-                        card.target = "_blank";              // Apre in una nuova scheda
-                        card.rel = "noopener noreferrer";    // Sicurezza
-
-                    // 2.1 CASO PDF: Apre sempre in nuova scheda (Presentazioni, Infografiche PDF)
-                    } else if (item.url.toLowerCase().endsWith('.pdf')) {
-                        card.href = item.url;
-                        card.target = "_blank";
-                        card.rel = "noopener noreferrer";
-
-                    // 3. TUTTI GLI ALTRI MEDIA E LINK GENERICI: Apre il Modale
-                    } else {
-                        card.href = "#";
-                        card.onclick = (e) => {
-                            e.preventDefault();
-                            window.openModal(item);
-                        };
-                    }
-                    
-                    // Colore sequenziale basato sull'indice di visualizzazione per evitare clash
-                    const colors = themeColors[count % themeColors.length];
-                    card.style.setProperty('--card-bg', colors.bg); 
-                    card.style.setProperty('--card-fg', colors.fg);
-                    
-                    const emoji = getSmartEmoji(item, prevEmoji);
-                    prevEmoji = emoji; // Aggiorna per il prossimo ciclo
-
-                    const d = new Date(item.date);
-                    const dateStr = !isNaN(d) ? `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}` : item.date;
-                    const tagsHtml = item.tags.slice(0, 3).map(t => `<span class="tag-pill">#${t}</span>`).join('');
-                    
-                    // Etichetta tipo file (se non è app)
-                    const typeLabel = (item.type && item.type !== 'app') ? `<span class="type-badge">${item.type.toUpperCase()}</span>` : '';
-
-                    card.innerHTML = `
-                        <div class="card-header"><div class="card-emoji">${emoji}</div><div class="card-date">${dateStr}</div></div>
-                        <h3>${item.title}</h3><p>${item.excerpt}</p>
-                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                            <div class="card-tags">${tagsHtml}</div>
-                            ${typeLabel}
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                }
-            });
-            emptyState.style.display = count === 0 ? 'block' : 'none';
+        .font-2 {
+            font-family: 'Space Mono', monospace !important;
+            letter-spacing: -0.05em;
+            font-weight: 700;
         }
 
-        // --- 3. MODAL LOGIC ---
-        const modal = document.getElementById('media-modal');
-        const modalContent = document.getElementById('modal-content');
-        const modalMeta = document.getElementById('modal-meta');
+        .font-3 {
+            font-family: 'Abril Fatface', serif !important;
+        }
 
-        window.openModal = function(item) {
-            modalContent.innerHTML = '';
-            modalMeta.innerHTML = `<h3>${item.title}</h3><p>${item.excerpt}</p>`;
-            
-            if (item.type === 'video') {
-                modalContent.innerHTML = `<video controls autoplay style="width:100%; border-radius:12px;"><source src="${item.url}" type="video/mp4">Il tuo browser non supporta il video.</video>`;
-            } else if (item.type === 'audio') {
-                modalContent.innerHTML = `
-                    <div style="text-align:center; padding: 2rem;">
-                        <div style="font-size:4rem; margin-bottom:1rem;">🎧</div>
-                        <audio controls autoplay style="width:100%;"><source src="${item.url}" type="audio/mpeg">Il tuo browser non supporta l'audio.</audio>
-                    </div>`;
-            } else if (item.type === 'infographic' || item.type === 'image') {
-                modalContent.innerHTML = `<img src="${item.url}" alt="${item.title}" style="width:100%; height:auto; border-radius:8px; object-fit:contain;">`;
-            } else if (item.type === 'document') {
-                 modalContent.innerHTML = `<iframe src="${item.url}" style="width:100%; height:60vh; border:none; border-radius:8px;"></iframe>`;
-            } else if (item.type === 'note') {
-                // Fetch e renderizza Markdown
-                modalContent.innerHTML = '<div style="padding:2rem; text-align:center;">Caricamento appunti...</div>';
-                fetch(item.url)
-                    .then(r => r.text())
-                    .then(text => {
-                        // Rimuove Frontmatter (--- ... ---) per la visualizzazione
-                        const content = text.replace(/^---[\s\S]*?---/, '');
-                        const html = marked.parse(content);
-                        modalContent.innerHTML = `<div class="markdown-body" style="padding:2rem; width:100%; text-align:left;">${html}</div>`;
-                        
-                        // Rende le checkbox interattive (solo visivo)
-                        modalContent.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                            cb.disabled = false; // Abilita click
-                            cb.onclick = (e) => {
-                                // Feedback visivo immediato (es. colore)
-                                const li = e.target.closest('li');
-                                if(li) {
-                                    li.style.color = e.target.checked ? 'var(--md-sys-color-primary)' : 'inherit';
-                                    li.style.fontWeight = e.target.checked ? 'bold' : 'normal';
-                                }
-                            };
-                        });
-                    });
-            } else if (item.type === 'link') {
-                modalContent.innerHTML = `
-                    <div style="display:flex; flex-direction:column; width:100%; height:80vh;">
-                        <div style="padding:0.5rem; background:var(--md-sys-color-surface-container); border-bottom:1px solid var(--md-sys-color-outline-variant); text-align:right;">
-                            <a href="${item.url}" target="_blank" style="text-decoration:none; font-weight:bold; font-size:0.8rem; color:var(--md-sys-color-primary); display:inline-flex; align-items:center; gap:0.5rem;">
-                                <span>↗</span> Apri in una nuova scheda (Consigliato)
-                            </a>
-                        </div>
-                        <iframe src="${item.url}" style="flex-grow:1; width:100%; border:none;" allow="fullscreen"></iframe>
+        .font-4 {
+            font-family: 'Permanent Marker', cursive !important;
+            transform: rotate(-2deg);
+        }
+
+        .font-5 {
+            font-family: 'Righteous', cursive !important;
+        }
+
+        .font-6 {
+            font-family: 'Cinzel', serif !important;
+            font-weight: 700;
+        }
+
+        .font-7 {
+            font-family: 'Amatic SC', cursive !important;
+            font-size: 1.5em;
+            font-weight: 700;
+        }
+
+        .font-8 {
+            font-family: 'Oswald', sans-serif !important;
+            text-transform: uppercase;
+        }
+
+        .font-9 {
+            font-family: 'Press Start 2P', cursive !important;
+            font-size: 0.7em;
+            color: #0f0;
+        }
+
+        .font-10 {
+            font-family: 'Playfair Display', serif !important;
+            font-style: italic;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--bg-dark);
+            font-family: var(--font-ui);
+            color: white;
+            width: 100vw;
+            height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        #scene-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            outline: none;
+            touch-action: none;
+        }
+
+        /* --- HUD --- */
+        #ui-hud {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem;
+        }
+
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: auto;
+        }
+
+        .hud-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .brand-orfini {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 0.8;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .brand-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--primary);
+            letter-spacing: 0.3em;
+            margin-top: 0.4rem;
+        }
+
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: white;
+            width: 42px;
+            height: 44px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            pointer-events: auto;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            color: black;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2.5;
+        }
+
+        #btn-tags {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            font-size: 1.4rem;
+            pointer-events: auto;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
+        }
+
+        /* --- OVERLAYS --- */
+        .overlay-full {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(5, 5, 15, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .overlay-full.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--glass-solid);
+            border: 1px solid var(--border);
+            width: 95%;
+            max-width: 900px;
+            margin: auto;
+            border-radius: 32px;
+            padding: 3rem;
+            position: relative;
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .overlay-full.active .modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .manifesto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .manifesto-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .manifesto-item h4 {
+            color: var(--primary);
+            margin: 0 0 0.5rem 0;
+            font-family: 'Syne', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .manifesto-item p {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #aaa;
+            margin: 0;
+        }
+
+        /* --- SEARCH GRID --- */
+        .list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 5rem;
+        }
+
+        #content-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            background: var(--glass-solid);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s;
+        }
+
+        #content-panel.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .panel-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* CARDS */
+        .project-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 320px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .card-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            filter: blur(10px) saturate(0);
+            opacity: 0.3;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-content-wrap {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            margin: 0.5rem 0;
+            color: #fff;
+        }
+
+        .project-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #bbb;
+            flex-grow: 1;
+        }
+
+        .mini-tag {
+            font-family: 'Space Mono';
+            font-size: 0.7rem;
+            padding: 6px 12px;
+            background: rgba(0, 188, 212, 0.1);
+            color: var(--primary);
+            border-radius: 50px;
+            margin: 0 6px 6px 0;
+            display: inline-block;
+        }
+
+        /* Tag Content for 3D Nodes */
+        .tag-content {
+            display: inline-block;
+            font-weight: 700;
+            color: white;
+            padding: 4px 8px;
+            white-space: nowrap;
+            cursor: pointer;
+            pointer-events: auto;
+            will-change: transform, opacity;
+            transition: color 0.2s;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            backface-visibility: hidden;
+        }
+
+        /* .tag-content:hover managed by GalaxyScene.js for synced zoom/glow */
+
+        /* --- MATH DEBRIS TRANSITION STYLES --- */
+        /* --- MATH DEBRIS HIGH FIDELITY --- */
+        .math-debris {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            will-change: transform, opacity;
+            contain: layout style;
+        }
+
+        .debris-hex {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+        }
+
+        .debris-sym {
+            position: relative;
+            z-index: 1;
+            color: #fff;
+            white-space: nowrap;
+            transition: opacity 0.3s;
+            text-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
+            font-family: 'KaTeX_Main', serif;
+            will-change: opacity, transform;
+        }
+
+        @media (max-width: 600px) {
+            .list-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="scene-container"></div>
+
+    <div id="ui-hud">
+        <div class="hud-header">
+            <div class="brand-container">
+                <div class="brand-orfini">ORFINI</div>
+                <div class="brand-sub">MATH GALAXY</div>
+            </div>
+            <div class="hud-actions">
+                <button class="btn-icon" id="btn-about" title="Manifesto Didattico">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="4 17 10 11 4 5"></polyline>
+                        <line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                </button>
+                <button class="btn-icon" id="btn-search" title="Cerca Argomenti">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+                <button class="btn-icon" id="btn-reset" title="Reset Camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"></path>
+                        <path d="M3 3v9h9"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <button id="btn-tags" title="Mappa Tag">#</button>
+
+    <!-- MANIFESTO MODAL -->
+    <div id="about-overlay" class="overlay-full">
+        <div class="modal-card">
+            <button class="close-btn" id="btn-close-about"
+                style="position: absolute; top: 1.5rem; right: 1.5rem;">×</button>
+
+            <header style="text-align: center; margin-bottom: 3rem;">
+                <div
+                    style="width:100px; height:100px; background:linear-gradient(135deg, var(--primary), var(--secondary)); border-radius:24px; margin:0 auto 1.5rem; display:flex; align-items:center; justify-content:center; font-size:2.5rem; box-shadow: 0 10px 30px rgba(0,188,212,0.3);">
+                    👨‍🚀</div>
+                <h2 style="margin:0; font-family:'Syne'; font-size:2.5rem; font-weight:800;">Prof. Federico DB</h2>
+                <div
+                    style="font-family:'Space Mono'; color:var(--primary); font-size:0.9rem; text-transform:uppercase; letter-spacing:3px;">
+                    Creative Coder & Designer Didattico</div>
+            </header>
+
+            <div style="line-height:1.8; color:#eee;">
+                <p
+                    style="font-size:1.2rem; color:#fff; font-weight:600; margin-bottom:2rem; border-left:4px solid var(--secondary); padding-left:1.5rem;">
+                    "Trasformare il caos creativo in strumenti concreti, accessibili ed esteticamente coerenti."
+                </p>
+
+                <p>Benvenuti nell'hub del <strong>Laboratorio Matematico Orfini</strong>. Un ecosistema basato sulla
+                    didattica laboratoriale e l'integrazione tecnologica.</p>
+
+                <div class="manifesto-grid">
+                    <div class="manifesto-item">
+                        <h4>Gamification</h4>
+                        <p>Meccaniche di gioco, punti e feedback per potenziare la memoria di lavoro attraverso esercizi
+                            brevi e ripetizione spaziata.</p>
                     </div>
-                `;
-            }
+                    <div class="manifesto-item">
+                        <h4>Problem Based Learning</h4>
+                        <p>Matematica applicata a casi studio reali e progetti guidati (PBL) per sviluppare il pensiero
+                            critico.</p>
+                    </div>
+                    <div class="manifesto-item">
+                        <h4>Visualizzazione 3D</h4>
+                        <p>Grafici interattivi, animazioni e modelli 3D parametrici per rendere tangibili concetti
+                            astratti.</p>
+                    </div>
+                    <div class="manifesto-item">
+                        <h4>Didattica Inclusiva</h4>
+                        <p>Supporti multisensoriali e strumenti digitali personalizzati per studenti con DSA/ADHD.</p>
+                    </div>
+                    <div class="manifesto-item">
+                        <h4>Pensiero Computazionale</h4>
+                        <p>Algoritmi, pseudocodice e logica di programmazione integrati in UDA moderne e
+                            multidisciplinari.</p>
+                    </div>
+                    <div class="manifesto-item">
+                        <h4>AI Generativa</h4>
+                        <p>Utilizzo strategico dell'AI per la creazione di contenuti e il perfezionamento dei processi
+                            iterativi.</p>
+                    </div>
+                    <div class="manifesto-item">
+                        <h4>Cultura Locale</h4>
+                        <p>Unione tra riferimenti globali tecnologici e radici del territorio umbro in un linguaggio
+                            esteticamente coerente.</p>
+                    </div>
+                    <div class="manifesto-item">
+                        <h4>Metacognizione</h4>
+                        <p>Approccio ironico e riflessivo per stimolare l'autovalutazione e la consapevolezza del
+                            proprio apprendimento.</p>
+                    </div>
+                </div>
+            </div>
 
-            modal.classList.add('active');
+            <footer
+                style="margin-top: 3rem; text-align: center; padding-top: 2rem; border-top: 1px solid var(--border);">
+                <a href="https://instagram.com/meltingmath" target="_blank" class="btn-icon"
+                    style="display:inline-flex; width:auto; padding:0 20px; border-radius:12px; text-decoration:none; gap:10px;">
+                    <span>📸</span> Segui @meltingmath
+                </a>
+            </footer>
+        </div>
+    </div>
+
+    <!-- SEARCH OVERLAY -->
+    <div id="list-overlay" class="overlay-full">
+        <div style="width:100%; max-width:800px; margin-bottom:2rem; display:flex; gap:1rem;">
+            <input type="text" id="search-input" placeholder="Cerca algoritmi o concetti..."
+                style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:1.2rem; border-radius:16px; outline:none; font-size:1.2rem;">
+            <button class="btn-icon" id="btn-close-search" style="width:60px; height:60px;">×</button>
+        </div>
+        <div class="list-grid" id="full-list-grid"></div>
+    </div>
+
+    <aside id="content-panel">
+        <div class="panel-header">
+            <div id="panel-title-text"
+                style="font-size:1.8rem; font-weight:800; font-family:'Syne'; color:var(--primary);">Tag</div>
+            <button class="close-btn" id="btn-close-panel">×</button>
+        </div>
+        <div class="panel-scroll" id="results-container"></div>
+    </aside>
+
+    <div id="media-modal" class="overlay-full">
+        <div id="modal-box" style="width:95%; max-width:1100px;"></div>
+    </div>
+
+    <script type="module">
+        import { GalaxyScene } from './content/assets/js/modules/GalaxyScene.js';
+        import { UIManager } from './content/assets/js/modules/UIManager.js';
+
+        function getUniqueTags(data) {
+            const counts = {};
+            data.forEach(item => item.tags.forEach(tag => counts[tag] = (counts[tag] || 0) + 1));
+            return Object.keys(counts).map(tag => ({ text: tag, count: counts[tag] }));
         }
 
-        window.closeModal = function() {
-            modal.classList.remove('active');
-            // Stoppa i media quando chiudi
-            modalContent.innerHTML = '';
-        }
-
-        // Close on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') window.closeModal();
-        });
-
-        // --- 4. 3D WORD CLOUD (CONSTELLATION) ---
-        let scene, camera, renderer, controls, group;
-        const fonts = [
-            "bold 60px 'Inter', sans-serif",
-            "bold 60px 'Fira Code', monospace", 
-            "60px 'Pacifico', cursive",
-            "bold 60px 'Bangers', cursive",
-            "italic 60px 'Playfair Display', serif"
-        ];
-
-        function createTextTexture(text, sizeFactor, index) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const font = fonts[Math.floor(Math.random() * fonts.length)];
-            
-            ctx.font = font;
-            const metrics = ctx.measureText(text);
-            const w = metrics.width + 40;
-            const h = 100;
-            
-            canvas.width = w; canvas.height = h;
-            
-            // Random Color vivid - High Contrast for Dark Mode
-            const isDark = html.getAttribute('data-theme') === 'dark';
-            
-            // Use index to influence hue for nearby color grouping, plus some randomness
-            const baseHue = (index * 137.5) % 360; // Golden angle distribution for hues
-            const hue = (baseHue + Math.random() * 30 - 15) % 360; 
-            
-            // High Lightness and Saturation for contrast against dark background
-            const lightness = isDark ? '75%' : '40%'; 
-            const saturation = isDark ? '85%' : '70%';
-            const color = `hsl(${hue}, ${saturation}, ${lightness})`;
-
-            ctx.font = font;
-            ctx.fillStyle = color;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(text, w/2, h/2);
-            
-            const tex = new THREE.CanvasTexture(canvas);
-            tex.minFilter = THREE.LinearFilter;
-            return { tex, ratio: w/h };
-        }
-
-        function init3DCloud() {
-            const container = document.getElementById('cloud-wrapper');
-            if(!container) return;
-            container.innerHTML = '<div id="cloud-overlay">Ruota &bull; Zooma &bull; Esplora</div>';
-
-            const w = container.offsetWidth;
-            const h = container.offsetHeight;
-
-            scene = new THREE.Scene();
-            // Colore sfondo dinamico dalla pagina (CSS variable)
-            const style = getComputedStyle(document.body);
-            const bgColor = style.getPropertyValue('--md-sys-color-surface-container').trim();
-            scene.background = new THREE.Color(bgColor || (html.getAttribute('data-theme') === 'dark' ? 0x000000 : 0xf0f4f8));
-            scene.fog = new THREE.FogExp2(scene.background, 0.002);
-
-            camera = new THREE.PerspectiveCamera(50, w/h, 1, 1000);
-            
-            // IMMERSIVE VIEW: Camera at CENTER, Orbit Enabled
-            camera.position.set(0, 0, 0.1); 
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(w, h);
-            container.appendChild(renderer.domElement);
-
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 0.5;
-            controls.enableZoom = true;
-            controls.enablePan = false; 
-            
-            // Invert controls for "looking around" feel from inside
-            controls.rotateSpeed = -0.5;
-
-            group = new THREE.Group();
-            scene.add(group);
-
-            // Analisi Dati
-            const tagCounts = {};
-            safeData.forEach(item => item.tags.forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
-            const tags = Object.keys(tagCounts);
-            const maxCount = Math.max(...Object.values(tagCounts));
-            const minCount = Math.min(...Object.values(tagCounts));
-
-            // Fibonacci Sphere Algorithm per distribuzione uniforme
-            const phi = Math.PI * (3 - Math.sqrt(5)); // Golden Angle
-            const n = tags.length;
-            const radius = 90; // Raggio della sfera
-
-            tags.forEach((tag, i) => {
-                const y = 1 - (i / (n - 1)) * 2; // y va da 1 a -1
-                const radiusAtY = Math.sqrt(1 - y * y); // raggio al livello y
-                const theta = phi * i; // Golden angle increment
-
-                const x = Math.cos(theta) * radiusAtY;
-                const z = Math.sin(theta) * radiusAtY;
-
-                // Calcolo Dimensione
-                const count = tagCounts[tag];
-                const normalized = (count - minCount) / (maxCount - minCount || 1); 
-                const scale = 20 + (normalized * 25); 
-
-                const { tex, ratio } = createTextTexture(tag, scale, i);
-                const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
-                const sprite = new THREE.Sprite(mat);
-                
-                sprite.scale.set(scale * ratio, scale, 1);
-                sprite.position.set(x * radius, y * radius, z * radius);
-                
-                // Salva dati per interazione
-                sprite.userData = { tag: tag };
-                group.add(sprite);
-            });
-
-            // Costellazione (Linee)
-            const lineMat = new THREE.LineBasicMaterial({ 
-                color: html.getAttribute('data-theme') === 'dark' ? 0xffffff : 0x000000, 
-                transparent: true, opacity: 0.1 
-            });
-            
-            const lineGeo = new THREE.BufferGeometry();
-            const linePos = [];
-
-            // Collega ogni nodo ai 2 vicini più prossimi
-            for(let i=0; i<group.children.length; i++) {
-                const posA = group.children[i].position;
-                let neighbors = [];
-                
-                for(let j=0; j<group.children.length; j++) {
-                    if(i===j) continue;
-                    const dist = posA.distanceTo(group.children[j].position);
-                    neighbors.push({ idx: j, dist: dist });
-                }
-                neighbors.sort((a,b) => a.dist - b.dist);
-                
-                // Prendi i primi 2 vicini
-                for(let k=0; k<Math.min(2, neighbors.length); k++) {
-                    const posB = group.children[neighbors[k].idx].position;
-                    linePos.push(posA.x, posA.y, posA.z);
-                    linePos.push(posB.x, posB.y, posB.z);
-                }
-            }
-            lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
-            const lines = new THREE.LineSegments(lineGeo, lineMat);
-            group.add(lines);
-
-            // Raycaster per click
-            const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2();
-
-            renderer.domElement.addEventListener('click', (event) => {
-                const rect = renderer.domElement.getBoundingClientRect();
-                mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-                mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-                
-                raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.intersectObjects(group.children.filter(c => c.isSprite));
-                
-                if(intersects.length > 0) {
-                    const tag = intersects[0].object.userData.tag;
-                    window.applyFilter(tag);
-                    window.scrollTo({ top: filterBar.offsetTop - 80, behavior: 'smooth' });
-                }
-            });
-
-            animate();
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-
-        window.rebuildCloud = () => {
-            const el = document.getElementById('cloud-wrapper');
-            if(el) { 
-                el.innerHTML = ''; 
-                init3DCloud(); 
-            }
-        };
-
-        // --- INIT ---
         window.addEventListener('load', () => {
-            initFilters();
-            window.applyFilter('all');
-            setTimeout(init3DCloud, 100);
-        });
+            const initApp = () => {
+                try {
+                    const galaxyData = getUniqueTags(db);
+                    const app3D = new GalaxyScene('scene-container', galaxyData, db, (nodeData) => ui.openPanel(nodeData.text));
+                    const ui = new UIManager(db, app3D);
 
-        window.addEventListener('resize', () => {
-            if(camera && renderer) {
-                const c = document.getElementById('cloud-wrapper');
-                camera.aspect = c.offsetWidth / c.offsetHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(c.offsetWidth, c.offsetHeight);
+                    document.getElementById('btn-search').onclick = () => ui.toggleSearch();
+                    document.getElementById('btn-close-search').onclick = () => ui.closeSearch();
+                    document.getElementById('btn-reset').onclick = () => app3D.resetCamera();
+                    document.getElementById('btn-close-panel').onclick = () => ui.closePanel();
+
+                    const aboutEl = document.getElementById('about-overlay');
+                    document.getElementById('btn-about').onclick = () => aboutEl.classList.add('active');
+                    document.getElementById('btn-close-about').onclick = () => aboutEl.classList.remove('active');
+
+                    document.getElementById('btn-tags').onclick = () => {
+                        const allTags = getUniqueTags(db).sort((a, b) => b.count - a.count);
+                        const container = document.getElementById('results-container');
+                        container.innerHTML = '';
+                        document.getElementById('panel-title-text').innerText = 'Esplora Mappa';
+                        const cloud = document.createElement('div');
+                        Object.assign(cloud.style, { display: 'flex', flexWrap: 'wrap', gap: '10px' });
+                        allTags.forEach(t => {
+                            const btn = document.createElement('button');
+                            btn.className = 'mini-tag';
+                            Object.assign(btn.style, { cursor: 'pointer', border: '1px solid var(--border)', padding: '10px 20px', borderRadius: '12px', fontSize: '0.9rem', background: 'rgba(255,255,255,0.05)', color: '#fff' });
+                            btn.innerHTML = `#${t.text} <small style="opacity:0.5; margin-left:5px;">${t.count}</small>`;
+                            btn.onclick = () => ui.openPanel(t.text);
+                            cloud.appendChild(btn);
+                        });
+                        container.appendChild(cloud);
+                        document.getElementById('content-panel').classList.add('active');
+                    };
+
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape') {
+                            ui.closeSearch(); ui.closePanel(); ui.closeModal();
+                            aboutEl.classList.remove('active');
+                        }
+                    });
+
+                    document.getElementById('media-modal').onclick = () => ui.closeModal();
+                    document.getElementById('modal-box').onclick = (e) => e.stopPropagation();
+                } catch (err) {
+                    console.error("Hub Init Failure:", err);
+                }
+            };
+
+            // Check for KaTeX before starting
+            if (typeof katex === 'undefined') {
+                const checkKatex = setInterval(() => {
+                    if (typeof katex !== 'undefined') {
+                        clearInterval(checkKatex);
+                        initApp();
+                    }
+                }, 50);
+            } else {
+                initApp();
             }
         });
-
     </script>
 </body>
+
 </html>

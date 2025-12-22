@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>PIP-MATH 3000: Vector Edition</title>
+    <!-- Shared Orfini Design System -->
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    
+    <meta name="description" content="Terminale didattico Orfini Industries. Simulatore open source per lo studio della retta (y=mx+q).">
+    <meta name="keywords" content="Matematica, Geometria Analitica, Retta, Pendenza, 2 punti, Gamification, Fallout, 3MEC, 4EL">
+    <meta name="date" content="2025-12-12">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Share Tech Mono (Più tecnico, meno pixelato) -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <!-- Configurazione Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'vec-bg': '#0a0c10',
+                        'vec-panel': '#14181f',
+                        'vec-primary': '#00ff9d', /* Cyan/Green moderno */
+                        'vec-secondary': '#00bcd4',
+                        'vec-amber': '#ffb300',
+                        'vec-red': '#ff4444',
+                        'vec-dim': 'rgba(0, 255, 157, 0.1)',
+                    },
+                    fontFamily: {
+                        'tech': ['"Share Tech Mono"', 'monospace'],
+                    },
+                    boxShadow: {
+                        'neon': '0 0 5px theme("colors.vec-primary"), 0 0 20px theme("colors.vec-primary")',
+                        'neon-amber': '0 0 5px theme("colors.vec-amber"), 0 0 20px theme("colors.vec-amber")',
+                        'glass': 'inset 0 0 20px rgba(255,255,255,0.05)',
+                        'panel-depth': '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+                    },
+                    backgroundImage: {
+                        'metal': 'linear-gradient(145deg, #1a1e26, #0f1216)',
+                        'display-grad': 'linear-gradient(180deg, rgba(0,20,10,0.8) 0%, rgba(0,10,5,0.95) 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            color: #00ff9d;
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden; /* App-like feel */
+        }
+
+        /* Gestione Scrollbar fine */
+        .custom-scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: #00bcd4 #0a0c10; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #0a0c10; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #00bcd4; border-radius: 3px; }
+
+        /* Vettoriale UI Elements */
+        .vector-panel {
+            background: linear-gradient(160deg, #1c222b 0%, #11141a 100%);
+            border: 1px solid rgba(0, 255, 157, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .vector-btn {
+            background: linear-gradient(180deg, #232d38 0%, #181e26 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #a0aab5;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vector-btn::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(255,255,255,0.05), transparent);
+            opacity: 0; transition: opacity 0.2s;
+        }
+
+        .vector-btn:hover:not(:disabled) {
+            border-color: #00ff9d;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .vector-btn:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
+        
+        .vector-btn.active {
+            background: linear-gradient(180deg, #004d40 0%, #00251a 100%);
+            border-color: #00ff9d;
+            color: #00ff9d;
+            box-shadow: inset 0 0 10px rgba(0, 255, 157, 0.3);
+            font-weight: bold;
+        }
+
+        /* Display Inputs */
+        .vfd-input {
+            background: #05070a;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            color: #00ff9d;
+            font-family: 'Share Tech Mono', monospace;
+            text-align: center;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            transition: all 0.3s;
+        }
+        .vfd-input:focus {
+            border-color: #00ff9d;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.15), inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .vfd-input::placeholder { color: #1f2937; }
+
+        /* Canvas Container Stylization */
+        .scope-container {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            background: radial-gradient(circle at center, #0d1117 0%, #000 120%);
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        
+        /* Griglia SVG decorativa sopra il background ma sotto il canvas se necessario, 
+           ma qui usiamo il canvas per tutto per performance */
+        
+        /* Animazioni */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .cursor-grab { cursor: grab; }
+        .cursor-grabbing { cursor: grabbing; }
+
+        /* SVG Icons colors */
+        .svg-icon { stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+</head>
+<body class="h-[100dvh] flex flex-col font-tech text-gray-300">
+
+    <!-- APP WRAPPER -->
+    <div id="app-container" class="w-full max-w-[1600px] mx-auto p-2 sm:p-4 h-full flex flex-col gap-4">
+
+        <!-- 1. INTRO SCREEN -->
+        <div id="view-intro" class="absolute inset-0 z-50 bg-[#050608] flex items-center justify-center">
+            <div class="vector-panel p-10 w-full max-w-md text-center space-y-8 fade-in mx-4 border-t-4 border-vec-primary">
+                <div class="space-y-1">
+                    <h1 class="text-6xl font-bold tracking-widest text-on-background drop-shadow-[0_0_10px_rgba(0,255,157,0.5)]">PIP-MATH (Personal Information Processor))</h1>
+                    <div class="text-xl text-vec-primary tracking-[0.4em] uppercase font-bold">Vector Edition</div>
+                </div>
+                
+                <div class="space-y-4 text-left">
+                    <label class="block text-sm text-gray-500 font-bold uppercase tracking-wider ml-1">Identificativo Agente</label>
+                    <input type="text" id="login-name" class="vfd-input w-full text-3xl py-4 uppercase font-bold tracking-widest" placeholder="NOME..." onkeydown="if(event.key==='Enter') APP.login()">
+                </div>
+
+                <button onclick="APP.login()" class="vector-btn w-full py-4 text-2xl font-bold tracking-wider text-on-background bg-vec-primary/10 border-vec-primary hover:bg-vec-primary hover:text-black">
+                    INIZIALIZZA
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. GAME INTERFACE -->
+        <div id="view-game" class="hidden flex-col h-full gap-3 fade-in">
+            
+            <!-- TOP BAR -->
+            <header class="vector-panel p-3 flex flex-wrap justify-between items-center shrink-0 gap-4 bg-vec-panel">
+                <div class="flex items-center gap-4">
+                    <!-- Modern SVG Logo Icon -->
+                    <div class="w-10 h-10 rounded flex items-center justify-center bg-vec-primary/10 border border-vec-primary text-vec-primary shadow-[0_0_15px_rgba(0,255,157,0.2)]">
+                        <svg width="24" height="24" viewBox="0 0 24 24" class="svg-icon"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-wider text-on-background leading-none">PIP-MATH</h1>
+                        <div class="text-xs text-vec-primary font-bold tracking-widest" id="player-display">AGENTE: ???</div>
+                    </div>
+                </div>
+                
+                <!-- HUD Stats -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-black/40 border border-gray-800 rounded px-4 py-1 flex flex-col items-center min-w-[80px]">
+                        <span class="text-[10px] text-gray-500 uppercase font-bold">Target</span>
+                        <span id="q-counter" class="text-xl font-bold text-on-background">1/5</span>
+                    </div>
+                    <div class="bg-black/40 border border-gray-800 rounded px-4 py-1 flex flex-col items-center min-w-[100px]">
+                        <span class="text-[10px] text-gray-500 uppercase font-bold">Punteggio</span>
+                        <span id="xp-display" class="text-xl font-bold text-vec-amber">0</span>
+                    </div>
+                    <button onclick="APP.logout()" class="vector-btn w-10 h-10 flex items-center justify-center text-vec-red border-vec-red/30 hover:bg-vec-red hover:text-white ml-2" title="Logout">
+                        <svg width="20" height="20" viewBox="0 0 24 24" class="svg-icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- MAIN WORKSPACE -->
+            <main class="flex-grow flex flex-col lg:flex-row gap-4 overflow-hidden">
+                
+                <!-- LEFT: VISUALIZER (Graph) -->
+                <div class="flex-grow flex flex-col gap-2 relative min-h-[40vh] lg:h-auto">
+                    <!-- Toolbar (Floating inside container or above) -->
+                    <div class="flex justify-between items-center px-1">
+                        <div class="flex gap-2">
+                            <button onclick="APP.setGameMode('game1')" id="btn-mode-game1" class="vector-btn px-4 py-1 text-sm font-bold">ANALISI</button>
+                            <button onclick="APP.setGameMode('game2')" id="btn-mode-game2" class="vector-btn px-4 py-1 text-sm font-bold">2 PUNTI</button>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <button onclick="APP.toggleScaffold()" id="btn-scaffold" class="vector-btn w-8 h-8 flex items-center justify-center rounded-full" title="Toggle Hints">
+                                <svg width="16" height="16" viewBox="0 0 24 24" class="svg-icon"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            </button>
+                             <div class="relative">
+                                <select id="diff-select" onchange="APP.setDifficulty(this.value)" class="bg-black/50 border border-gray-700 text-vec-primary text-xs py-1 pl-2 pr-6 rounded outline-none appearance-none cursor-pointer hover:border-vec-primary transition-colors uppercase font-bold h-8">
+                                    <option value="easy">RECLUTA</option>
+                                    <option value="normal" selected>VETERANO</option>
+                                    <option value="hard">ESPERTO</option>
+                                </select>
+                                <svg class="w-3 h-3 absolute right-2 top-2.5 text-gray-500 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Container -->
+                    <div class="scope-container flex-grow relative w-full h-full bg-[#0d1117]">
+                        <!-- Canvas -->
+                        <canvas id="main-canvas" class="block w-full h-full cursor-grab active:cursor-grabbing z-10 relative"></canvas>
+                        
+                        <!-- Overlay UI Controls -->
+                        <div class="absolute bottom-4 right-4 z-20 flex gap-2">
+                             <button onclick="APP.adjustZoom(-0.1)" class="vector-btn w-10 h-10 bg-black/80 backdrop-blur rounded-full shadow-lg" title="Zoom Out">
+                                <svg width="20" height="20" viewBox="0 0 24 24" class="svg-icon m-auto"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </button>
+                            <button onclick="APP.resetView()" class="vector-btn w-10 h-10 bg-black/80 backdrop-blur rounded-full text-vec-primary shadow-lg" title="Reset View">
+                                <svg width="20" height="20" viewBox="0 0 24 24" class="svg-icon m-auto"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                            </button>
+                            <button onclick="APP.adjustZoom(0.1)" class="vector-btn w-10 h-10 bg-black/80 backdrop-blur rounded-full shadow-lg" title="Zoom In">
+                                <svg width="20" height="20" viewBox="0 0 24 24" class="svg-icon m-auto"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Info Overlay -->
+                        <div id="scaffold-overlay" class="absolute top-4 left-4 z-20 bg-black/80 border-l-4 border-vec-primary px-4 py-2 text-sm text-gray-300 font-bold backdrop-blur-sm pointer-events-none rounded-r">
+                        </div>
+                        
+                        <!-- Coords Overlay -->
+                        <div id="coords-overlay" class="absolute bottom-4 left-4 z-20 flex flex-col gap-2 pointer-events-none"></div>
+
+                        <!-- Status Notification -->
+                        <div id="status-overlay" class="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-[2px] hidden transition-opacity">
+                            <div id="status-text" class="text-5xl font-black text-on-background px-8 py-4 border-2 border-white/20 bg-black/80 shadow-[0_0_50px_rgba(0,255,157,0.3)] transform -rotate-2">
+                                DATA UPLOADED
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: CONTROL DECK -->
+                <div class="lg:w-96 shrink-0 flex flex-col gap-4 custom-scroll">
+                    
+                    <div class="vector-panel p-6 flex flex-col gap-6 bg-[#11141a]">
+                        <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                            <h3 class="text-xl font-bold text-on-background tracking-widest flex items-center gap-2">
+                                <svg width="20" height="20" viewBox="0 0 24 24" class="svg-icon text-vec-primary"><polyline points="4 17 10 11 14 16 20 6"/><line x1="20" y1="6" x2="20" y2="24"/></svg>
+                                INPUT DATI
+                            </h3>
+                            <span id="multiplier-display" class="bg-vec-primary/10 text-vec-primary px-2 py-1 rounded text-xs font-bold border border-vec-primary/20">x1.0</span>
+                        </div>
+                        
+                        <!-- Pendenza -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-end">
+                                <label class="text-sm font-bold text-gray-400">PENDENZA (m)</label>
+                                <span class="text-[10px] text-gray-600 font-mono">y = mx + q</span>
+                            </div>
+                            <div class="relative">
+                                <input type="text" id="input-m" class="vfd-input w-full text-4xl py-3 font-bold text-vec-primary" placeholder="0" oninput="APP.handleInput(this, 'hint-m')" onkeydown="if(event.key==='Enter') document.getElementById('input-q').focus()">
+                                <div id="hint-m" class="absolute right-2 bottom-2 text-xs text-vec-amber font-mono pointer-events-none"></div>
+                            </div>
+                        </div>
+
+                        <!-- Intercetta -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-end">
+                                <label class="text-sm font-bold text-gray-400">INTERCETTA (q)</label>
+                                <span class="text-[10px] text-gray-600 font-mono">Punto (0, q)</span>
+                            </div>
+                            <div class="relative">
+                                <input type="text" id="input-q" class="vfd-input w-full text-4xl py-3 font-bold text-vec-secondary" placeholder="0" oninput="APP.handleInput(this, 'hint-q')" onkeydown="if(event.key==='Enter') APP.checkSolution()">
+                                <div id="hint-q" class="absolute right-2 bottom-2 text-xs text-vec-amber font-mono pointer-events-none"></div>
+                            </div>
+                        </div>
+
+                        <button onclick="APP.checkSolution()" class="vector-btn w-full py-4 text-xl font-black mt-2 bg-vec-primary text-on-background border-none hover:bg-white hover:text-black shadow-[0_0_20px_rgba(0,255,157,0.3)]">
+                            ESEGUI CALCOLO
+                        </button>
+                    </div>
+
+                    <!-- System Log -->
+                    <div class="vector-panel p-4 flex-grow min-h-[150px] font-mono text-sm bg-black/50 border-gray-800 text-gray-400">
+                        <div class="text-xs uppercase text-gray-600 font-bold mb-2 border-b border-gray-800 pb-1">System Log</div>
+                        <div class="flex gap-2">
+                            <span class="text-vec-primary">➜</span>
+                            <span id="system-log">In attesa di input...</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 3. SUMMARY MODAL -->
+    <div id="view-summary" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden fade-in">
+        <div class="vector-panel p-8 w-full max-w-lg text-center relative border border-vec-amber/50 shadow-2xl">
+            <h2 class="text-4xl font-black text-on-background mb-2 tracking-wider">MISSIONE COMPIUTA</h2>
+            <div class="h-0.5 bg-gradient-to-r from-transparent via-vec-amber to-transparent w-full mb-8"></div>
+            
+            <div class="mb-8">
+                <div class="text-sm text-gray-400 font-bold uppercase tracking-wider mb-2">Totale Esperienza</div>
+                <div id="summary-xp" class="text-7xl font-bold text-vec-amber drop-shadow-[0_0_15px_rgba(255,179,0,0.5)]">0</div>
+            </div>
+
+            <div class="grid gap-3">
+                <button onclick="APP.nextRound()" class="vector-btn w-full py-4 text-xl font-bold text-on-background bg-vec-amber hover:bg-white hover:scale-[1.02]">PROSSIMO LIVELLO</button>
+                <button onclick="APP.showLeaderboard()" class="vector-btn w-full py-3 text-lg border-gray-700 hover:border-white">CLASSIFICA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. LEADERBOARD MODAL -->
+    <div id="view-lb" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md hidden p-4">
+        <div class="vector-panel p-0 w-full max-w-3xl max-h-[80vh] flex flex-col relative overflow-hidden">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-[#11141a]">
+                <h2 class="text-2xl font-bold text-on-background tracking-widest flex gap-2 items-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" class="svg-icon text-vec-amber"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                    ARCHIVIO
+                </h2>
+                <button onclick="APP.closeLeaderboard()" class="text-gray-500 hover:text-white transition-colors">
+                    <svg width="24" height="24" viewBox="0 0 24 24" class="svg-icon"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            
+            <div class="overflow-y-auto flex-grow custom-scroll bg-[#0a0c10]">
+                <table class="w-full text-left font-mono text-sm">
+                    <thead class="text-xs text-gray-500 bg-[#11141a] sticky top-0 z-10 shadow-lg">
+                        <tr>
+                            <th class="py-3 pl-6 font-bold uppercase">Agente</th>
+                            <th class="hidden sm:table-cell font-bold uppercase">Modulo</th>
+                            <th class="font-bold uppercase">Diff</th>
+                            <th class="text-right pr-6 font-bold uppercase">XP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lb-body" class="divide-y divide-gray-800">
+                        <!-- JS Injected -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="p-4 border-t border-gray-800 bg-[#11141a] flex justify-between items-center">
+                <button onclick="APP.clearLeaderboard()" class="text-xs text-vec-red hover:underline font-bold uppercase tracking-wider opacity-60 hover:opacity-100">RESET DB</button>
+                <button onclick="APP.closeLeaderboard()" class="vector-btn px-6 py-2 text-sm font-bold">CHIUDI</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGICA APPLICAZIONE -->
+    <script>
+        const Utils = {
+            parse: (input) => {
+                if (!input) return null;
+                let clean = String(input).replace(/\s/g, '').replace(',', '.');
+                if (clean === '') return null;
+                if (clean.includes('/')) {
+                    const parts = clean.split('/');
+                    if (parts.length === 2) {
+                        const num = parseFloat(parts[0]);
+                        const den = parseFloat(parts[1]);
+                        if (!isNaN(num) && !isNaN(den) && den !== 0) return num / den;
+                    }
+                    return null;
+                }
+                const val = parseFloat(clean);
+                return isNaN(val) ? null : val;
+            },
+            randomInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
+            randomFloat: (min, max) => (Math.random() * (max - min) + min).toFixed(1)
+        };
+
+        const APP = {
+            player: '', sessionXP: 0, roundXP: 0, qCount: 1, maxQ: 5,
+            mode: 'game1', difficulty: 'normal', scaffold: true,
+            view: { zoom: 1, panX: 0, panY: 0, isDragging: false, lastMouseX: 0, lastMouseY: 0 },
+            target: { m: 1, q: 0, points: [] }, user: { m: '', q: '' },
+            canvas: null, ctx: null, lbKey: 'pip_lb_vector',
+
+            init: function() {
+                this.canvas = document.getElementById('main-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                
+                // Eventi Navigazione
+                const container = this.canvas.parentElement;
+                container.addEventListener('mousedown', this.startDrag.bind(this));
+                window.addEventListener('mousemove', this.doDrag.bind(this));
+                window.addEventListener('mouseup', this.stopDrag.bind(this));
+                container.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
+                
+                container.addEventListener('touchstart', (e) => this.startDrag(e.touches[0]), {passive: false});
+                window.addEventListener('touchmove', (e) => { if(this.view.isDragging) this.doDrag(e.touches[0]); }, {passive: false});
+                window.addEventListener('touchend', this.stopDrag.bind(this));
+
+                const savedUser = localStorage.getItem('pip_user');
+                if(savedUser) {
+                    this.player = savedUser;
+                    document.getElementById('login-name').value = this.player;
+                    this.showGame();
+                }
+
+                window.addEventListener('resize', () => requestAnimationFrame(() => this.draw()));
+            },
+
+            // --- VIEW LOGIC ---
+            startDrag: function(e) {
+                this.view.isDragging = true;
+                this.view.lastMouseX = e.clientX;
+                this.view.lastMouseY = e.clientY;
+                this.canvas.classList.add('cursor-grabbing');
+            },
+            doDrag: function(e) {
+                if(!this.view.isDragging) return;
+                const dx = e.clientX - this.view.lastMouseX;
+                const dy = e.clientY - this.view.lastMouseY;
+                this.view.lastMouseX = e.clientX;
+                this.view.lastMouseY = e.clientY;
+                this.view.panX += dx;
+                this.view.panY += dy;
+                this.draw();
+            },
+            stopDrag: function() {
+                this.view.isDragging = false;
+                this.canvas.classList.remove('cursor-grabbing');
+            },
+            handleWheel: function(e) {
+                e.preventDefault();
+                this.adjustZoom(e.deltaY > 0 ? -0.1 : 0.1);
+            },
+            adjustZoom: function(delta) {
+                const newZoom = Math.max(0.2, Math.min(5.0, this.view.zoom + delta));
+                this.view.zoom = newZoom;
+                this.draw();
+            },
+            resetView: function() {
+                this.view.zoom = 1; this.view.panX = 0; this.view.panY = 0;
+                this.draw();
+            },
+
+            // --- GAME LOGIC ---
+            login: function() {
+                const name = document.getElementById('login-name').value.trim().toUpperCase();
+                if(name) {
+                    this.player = name;
+                    localStorage.setItem('pip_user', name);
+                    this.sessionXP = 0;
+                    this.qCount = 1;
+                    this.showGame();
+                }
+            },
+            logout: function() { localStorage.removeItem('pip_user'); location.reload(); },
+            
+            showGame: function() {
+                document.getElementById('view-intro').classList.add('hidden');
+                document.getElementById('view-game').classList.remove('hidden');
+                document.getElementById('view-game').classList.add('flex');
+                document.getElementById('player-display').innerText = `AGENTE: ${this.player}`;
+                setTimeout(() => this.generateProblem(), 100);
+            },
+
+            setGameMode: function(m) {
+                this.mode = m;
+                document.getElementById('btn-mode-game1').classList.toggle('active', m === 'game1');
+                document.getElementById('btn-mode-game2').classList.toggle('active', m === 'game2');
+                this.qCount = 1; this.roundXP = 0;
+                this.updateRoundUI();
+                this.log(m === 'game1' ? "MODALITÀ ANALISI COEFFICIENTI" : "MODALITÀ 2 PUNTI");
+                this.generateProblem();
+            },
+            setDifficulty: function(d) {
+                this.difficulty = d;
+                this.updateMultiplierDisplay();
+                this.log(`DIFFICOLTÀ IMPOSTATA: ${d.toUpperCase()}`);
+                this.generateProblem();
+            },
+            toggleScaffold: function() {
+                this.scaffold = !this.scaffold;
+                const btn = document.getElementById('btn-scaffold');
+                if(this.scaffold) {
+                    btn.classList.add('active');
+                    btn.classList.add('text-vec-primary');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.remove('text-vec-primary');
+                }
+                this.updateMultiplierDisplay();
+                this.updateOverlays();
+                this.draw();
+            },
+            getMultiplier: function() {
+                let m = 1.0;
+                if(this.difficulty === 'easy') m = 0.5;
+                if(this.difficulty === 'hard') m = 2.0;
+                if(!this.scaffold) m += 0.5;
+                return m;
+            },
+            updateMultiplierDisplay: function() {
+                document.getElementById('multiplier-display').innerText = `x${this.getMultiplier().toFixed(1)}`;
+            },
+            updateRoundUI: function() {
+                document.getElementById('q-counter').innerText = `${this.qCount}/${this.maxQ}`;
+                document.getElementById('xp-display').innerText = this.sessionXP;
+            },
+
+            generateProblem: function() {
+                document.getElementById('input-m').value = '';
+                document.getElementById('input-q').value = '';
+                document.getElementById('hint-m').innerText = '';
+                document.getElementById('hint-q').innerText = '';
+                this.user = { m: '', q: '' };
+                this.hideStatus();
+                this.updateRoundUI();
+                this.resetView();
+
+                let m, q, x1, y1, x2, y2;
+                if(this.difficulty === 'easy') {
+                    const mPool = [-1, 0, 1, 2]; m = mPool[Utils.randomInt(0, mPool.length-1)]; q = Utils.randomInt(-3, 3);
+                    x1 = Utils.randomInt(-3, 3); x2 = Utils.randomInt(-3, 3);
+                } else if(this.difficulty === 'normal') {
+                    const mPool = [-2, -1, -0.5, 0.5, 1, 2, 3]; m = mPool[Utils.randomInt(0, mPool.length-1)]; q = Utils.randomInt(-5, 5);
+                    x1 = Utils.randomInt(-5, 5); x2 = Utils.randomInt(-5, 5);
+                } else {
+                    m = parseFloat(Utils.randomFloat(-3, 3)); q = parseFloat(Utils.randomFloat(-5, 5));
+                    x1 = Utils.randomFloat(-6, 6); x2 = Utils.randomFloat(-6, 6);
+                }
+
+                if(this.mode === 'game1') {
+                    this.target = { m, q, points: [] };
+                    this.log("NUOVO TARGET: DETERMINARE PARAMETRI");
+                } else {
+                    while(Math.abs(x1 - x2) < 1) { 
+                        if(this.difficulty === 'hard') x2 = Utils.randomFloat(-6, 6); else x2 = Utils.randomInt(-5, 5);
+                    }
+                    if(this.difficulty !== 'hard') {
+                        y1 = Utils.randomInt(-5, 5); y2 = Utils.randomInt(-5, 5);
+                        m = (y2 - y1) / (x2 - x1); q = y1 - m * x1;
+                    } else {
+                        y1 = m * x1 + q; y2 = m * x2 + q;
+                    }
+                    this.target = { m, q, points: [{x:Number(x1), y:Number(y1)}, {x:Number(x2), y:Number(y2)}] };
+                    this.log("NUOVO TARGET: TRACCIARE RETTA DAI PUNTI");
+                }
+                this.updateOverlays();
+                this.draw();
+            },
+
+            handleInput: function(el, hintId) {
+                if(el.id === 'input-m') this.user.m = el.value;
+                if(el.id === 'input-q') this.user.q = el.value;
+                
+                const val = Utils.parse(el.value);
+                const hintEl = document.getElementById(hintId);
+                if (val !== null && el.value.includes('/')) hintEl.innerText = `≈ ${val.toFixed(2)}`;
+                else hintEl.innerText = '';
+                this.draw();
+            },
+
+            checkSolution: function() {
+                const um = Utils.parse(this.user.m);
+                const uq = Utils.parse(this.user.q);
+                
+                if (um === null || uq === null) {
+                    this.showStatus('error', 'INPUT NON VALIDO');
+                    return;
+                }
+                const tolerance = this.difficulty === 'hard' ? 0.1 : 0.05;
+                const mOk = Math.abs(um - this.target.m) < tolerance;
+                const qOk = Math.abs(uq - this.target.q) < tolerance;
+
+                if(mOk && qOk) {
+                    const pts = Math.round((this.mode==='game1'?100:150) * this.getMultiplier());
+                    this.sessionXP += pts;
+                    this.showStatus('success', `TARGET ACQUISITO (+${pts})`);
+                    this.log(`SUCCESSO. DATI CONFERMATI.`);
+                    setTimeout(() => {
+                        this.qCount++;
+                        if(this.qCount > this.maxQ) this.endRound(); else this.generateProblem();
+                    }, 1500);
+                } else {
+                    this.showStatus('error', 'DISALLINEAMENTO');
+                    this.log("ERRORE: Parametri non corrispondenti.");
+                    setTimeout(() => this.hideStatus(), 1500);
+                }
+            },
+
+            endRound: function() {
+                document.getElementById('summary-xp').innerText = this.sessionXP;
+                document.getElementById('view-summary').classList.remove('hidden');
+                document.getElementById('view-summary').classList.add('fade-in');
+                this.saveToLeaderboard(this.sessionXP);
+            },
+            nextRound: function() {
+                document.getElementById('view-summary').classList.add('hidden');
+                this.qCount = 1; this.generateProblem();
+            },
+            log: function(msg) {
+                const el = document.getElementById('system-log');
+                el.innerText = msg;
+                el.classList.remove('text-gray-400');
+                el.classList.add('text-white');
+                setTimeout(()=>el.classList.add('text-gray-400'), 500);
+            },
+            
+            // --- LEADERBOARD ---
+            saveToLeaderboard: function(score) {
+                let lb = JSON.parse(localStorage.getItem(this.lbKey) || '[]');
+                lb.push({
+                    name: this.player,
+                    mode: this.mode === 'game1' ? 'ANALISI' : '2 PUNTI',
+                    diff: this.difficulty.toUpperCase(),
+                    xp: score,
+                    date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                });
+                if(lb.length > 50) lb = lb.slice(-50);
+                localStorage.setItem(this.lbKey, JSON.stringify(lb));
+            },
+            showLeaderboard: function() {
+                const lb = JSON.parse(localStorage.getItem(this.lbKey) || '[]');
+                const tbody = document.getElementById('lb-body');
+                tbody.innerHTML = '';
+                lb.sort((a,b) => b.xp - a.xp);
+
+                if(lb.length === 0) tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-gray-500">Nessun dato registrato.</td></tr>';
+                else {
+                    lb.forEach(row => {
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-3 pl-6 font-bold text-vec-primary">${row.name}</td>
+                                <td class="hidden sm:table-cell text-gray-400">${row.mode}</td>
+                                <td class="text-xs font-bold text-gray-500">${row.diff}</td>
+                                <td class="text-right pr-6 font-bold text-on-background">${row.xp}</td>
+                            </tr>`;
+                    });
+                }
+                document.getElementById('view-summary').classList.add('hidden');
+                document.getElementById('view-lb').classList.remove('hidden');
+            },
+            closeLeaderboard: function() {
+                document.getElementById('view-lb').classList.add('hidden');
+                if(this.qCount > this.maxQ) document.getElementById('view-summary').classList.remove('hidden');
+            },
+            clearLeaderboard: function() {
+                if(confirm("Cancellare storico?")) { localStorage.removeItem(this.lbKey); this.showLeaderboard(); }
+            },
+
+            // --- VISUALS ---
+            updateOverlays: function() {
+                const cOverlay = document.getElementById('coords-overlay');
+                if(this.mode === 'game2' && this.scaffold) {
+                    cOverlay.classList.remove('hidden');
+                    cOverlay.innerHTML = this.target.points.map((p, i) => `
+                        <div class="bg-black/90 text-vec-amber border-l-2 border-vec-amber px-2 py-1 text-xs font-bold font-mono shadow">
+                            ${i===0?'A':'B'}: <span class="text-on-background">(${parseFloat(p.x.toFixed(2))}, ${parseFloat(p.y.toFixed(2))})</span>
+                        </div>
+                    `).join('');
+                } else cOverlay.classList.add('hidden');
+
+                const sOverlay = document.getElementById('scaffold-overlay');
+                if(this.scaffold) {
+                    sOverlay.classList.remove('hidden');
+                    if(this.mode === 'game1') sOverlay.innerHTML = `ANALISI: <span class="text-gray-400">m = Δy / Δx</span>`;
+                    else sOverlay.innerHTML = `FORMULA: <span class="text-gray-400">m = (yB-yA) / (xB-xA)</span>`;
+                } else sOverlay.classList.add('hidden');
+            },
+
+            showStatus: function(type, msg) {
+                const el = document.getElementById('status-overlay');
+                const txt = document.getElementById('status-text');
+                el.classList.remove('hidden');
+                
+                if(type === 'success') {
+                    txt.style.borderColor = '#00ff9d';
+                    txt.style.color = '#00ff9d';
+                    txt.style.boxShadow = '0 0 50px rgba(0,255,157,0.3)';
+                } else {
+                    txt.style.borderColor = '#ff4444';
+                    txt.style.color = '#ff4444';
+                    txt.style.boxShadow = '0 0 50px rgba(255,68,68,0.3)';
+                }
+                txt.innerText = msg;
+            },
+            hideStatus: function() { document.getElementById('status-overlay').classList.add('hidden'); },
+
+            // --- VECTOR DRAWING ENGINE ---
+            draw: function() {
+                if(!this.canvas) return;
+                const rect = this.canvas.parentElement.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                
+                if (this.canvas.width !== Math.floor(rect.width * dpr) || this.canvas.height !== Math.floor(rect.height * dpr)) {
+                    this.canvas.width = rect.width * dpr; this.canvas.height = rect.height * dpr;
+                }
+                
+                const ctx = this.ctx;
+                const lw = this.canvas.width; const lh = this.canvas.height;
+                
+                // Clear (Transparent for CSS background)
+                ctx.clearRect(0, 0, lw, lh);
+
+                let baseRange = 8;
+                if(this.difficulty === 'easy') baseRange = 5;
+                if(this.difficulty === 'hard') baseRange = 12;
+
+                const minDim = Math.min(lw, lh);
+                const padding = 60 * dpr;
+                const scale = (minDim - padding * 2) / (baseRange * 2) * this.view.zoom;
+                const cx = (lw / 2) + this.view.panX * dpr;
+                const cy = (lh / 2) + this.view.panY * dpr;
+
+                const toPx = (x) => cx + x * scale;
+                const toPy = (y) => cy - y * scale;
+
+                const xMin = Math.floor((0 - cx) / scale) - 1;
+                const xMax = Math.ceil((lw - cx) / scale) + 1;
+                const yMin = Math.floor((0 - cy) / -scale) + 1;
+                const yMax = Math.ceil((lh - cy) / -scale) - 1;
+                const logicYMin = Math.min(yMin, yMax);
+                const logicYMax = Math.max(yMin, yMax);
+
+                // GRID (Vector Style - Thin & Crisp)
+                ctx.lineWidth = 1; // 1px hairline
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.1)"; // Very subtle white lines
+                ctx.beginPath();
+                for(let i = xMin; i <= xMax; i++) { const x = toPx(i); ctx.moveTo(x, 0); ctx.lineTo(x, lh); }
+                for(let i = logicYMin - 2; i <= logicYMax + 2; i++) { const y = toPy(i); ctx.moveTo(0, y); ctx.lineTo(lw, y); }
+                ctx.stroke();
+
+                // AXES (Brighter)
+                ctx.lineWidth = 2 * dpr;
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+                ctx.beginPath();
+                ctx.moveTo(cx, 0); ctx.lineTo(cx, lh);
+                ctx.moveTo(0, cy); ctx.lineTo(lw, cy);
+                ctx.stroke();
+
+                // NUMBERS (Clean Sans)
+                if(scale > 25 * dpr) {
+                    ctx.font = `600 ${12 * dpr}px 'Share Tech Mono', monospace`;
+                    ctx.fillStyle = "rgba(0, 255, 157, 0.7)";
+                    ctx.textAlign = "center"; ctx.textBaseline = "top";
+                    const step = scale < 40 * dpr ? 2 : 1;
+                    
+                    for(let i = xMin; i <= xMax; i+=step) {
+                        if(i===0) continue;
+                        ctx.fillText(i, toPx(i), cy + (8 * dpr));
+                    }
+                    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+                    for(let i = logicYMin - 2; i <= logicYMax + 2; i+=step) {
+                        if(i===0) continue;
+                        ctx.fillText(i, cx - (8 * dpr), toPy(i));
+                    }
+                }
+
+                // TARGET (Laser Green)
+                const xStart = xMin - 5; const xEnd = xMax + 5;
+                if(this.mode === 'game1') {
+                    ctx.save();
+                    ctx.strokeStyle = "#00ff9d";
+                    ctx.lineWidth = 3 * dpr;
+                    ctx.shadowBlur = 15 * dpr; // GLOW
+                    ctx.shadowColor = "#00ff9d";
+                    ctx.beginPath();
+                    ctx.moveTo(toPx(xStart), toPy(this.target.m * xStart + this.target.q));
+                    ctx.lineTo(toPx(xEnd), toPy(this.target.m * xEnd + this.target.q));
+                    ctx.stroke();
+                    ctx.restore();
+                } else {
+                    this.target.points.forEach((p, i) => {
+                        // Point Glow
+                        ctx.fillStyle = "rgba(255, 179, 0, 0.2)";
+                        ctx.beginPath(); ctx.arc(toPx(p.x), toPy(p.y), 15 * dpr, 0, Math.PI*2); ctx.fill();
+                        
+                        // Point Center
+                        ctx.shadowBlur = 10 * dpr; ctx.shadowColor = "#ffb300";
+                        ctx.fillStyle = "#ffb300";
+                        ctx.beginPath(); ctx.arc(toPx(p.x), toPy(p.y), 5 * dpr, 0, Math.PI*2); ctx.fill();
+                        ctx.shadowBlur = 0;
+
+                        // Label
+                        ctx.font = `bold ${14 * dpr}px 'Share Tech Mono'`;
+                        ctx.fillStyle = "white";
+                        ctx.fillText(i===0?"A":"B", toPx(p.x)+(12*dpr), toPy(p.y)-(12*dpr));
+                    });
+                }
+
+                // USER LINE (Amber Laser)
+                if(this.user.m !== "" || this.user.q !== "") {
+                    const um = Utils.parse(this.user.m);
+                    const uq = Utils.parse(this.user.q);
+                    if (um !== null && uq !== null) {
+                        ctx.save();
+                        ctx.strokeStyle = "#ffb300";
+                        ctx.lineWidth = 3 * dpr;
+                        ctx.shadowBlur = 15 * dpr;
+                        ctx.shadowColor = "#ffb300";
+                        ctx.beginPath();
+                        ctx.moveTo(toPx(xStart), toPy(um * xStart + uq));
+                        ctx.lineTo(toPx(xEnd), toPy(um * xEnd + uq));
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            }
+        };
+
+        window.onload = () => APP.init();
+    </script>
+</body>
+</html>

@@ -42,32 +42,6 @@ html, body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Bottone "Torna Indietro" Flottante Standard */
-.orfini-back-btn {
-    position: fixed;
-    top: 1rem; left: 1rem;
-    z-index: 9999;
-    background-color: var(--md-sys-color-surface-container);
-    color: var(--md-sys-color-on-background);
-    border: 1px solid var(--md-sys-color-outline);
-    padding: 0.5rem 1rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    display: flex; align-items: center; gap: 0.5rem;
-    transition: transform 0.2s, background-color 0.2s;
-    opacity: 0.8;
-}
-
-.orfini-back-btn:hover {
-    transform: translateY(-2px);
-    opacity: 1;
-    background-color: var(--md-sys-color-surface-container-high);
-}
-
 /* Accessibilità: Focus Ring Visibile */
 :focus-visible {
     outline: 3px solid var(--md-sys-color-primary);

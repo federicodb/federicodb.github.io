@@ -155,7 +155,7 @@
             return (
                 <div className="relative w-full h-12 flex items-center select-none group">
                     {/* Track Background */}
-                    <div className="absolute w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div className="absolute w-full h-3 bg-surface-variant dark:bg-slate-700 rounded-full overflow-hidden">
                         {/* Track Fill */}
                         <div 
                             className="h-full bg-indigo-500 transition-all duration-75 ease-out" 
@@ -209,7 +209,7 @@
                         {/* Header con Toggle Swap */}
                         <div className="flex justify-between items-start z-10">
                             <div>
-                                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Laboratorio</h2>
+                                <h2 className="text-sm font-bold uppercase tracking-wider text-outline-variant dark:text-slate-400 mb-1">Laboratorio</h2>
                                 <div className="text-3xl md:text-4xl font-black tracking-tight text-indigo-500">
                                     {formatNum(result)}
                                 </div>
@@ -224,7 +224,7 @@
                             <button 
                                 onClick={() => setIsSwapped(!isSwapped)}
                                 className={`p-3 rounded-xl border transition-all active:scale-95 flex flex-col items-center gap-1
-                                    ${isSwapped ? 'bg-indigo-600 border-indigo-500 text-on-background shadow-lg shadow-indigo-500/20' : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white'}`}
+                                    ${isSwapped ? 'bg-indigo-600 border-indigo-500 text-on-background shadow-lg shadow-indigo-500/20' : 'bg-slate-800 border-outline-variant text-outline-variant hover:text-white'}`}
                             >
                                 <Icon path={icons.swap} className="w-5 h-5" />
                                 <span className="text-[9px] font-bold uppercase">Inverti</span>
@@ -237,7 +237,7 @@
                                 {/* Torta */}
                                 <div className="relative w-20 h-20 md:w-24 md:h-24 shrink-0 transition-all">
                                     <svg className="w-full h-full transform -rotate-90">
-                                        <circle cx="50%" cy="50%" r={r} stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-200 dark:text-slate-800"/>
+                                        <circle cx="50%" cy="50%" r={r} stroke="currentColor" strokeWidth="8" fill="transparent" className="text-on-surface-variant dark:text-slate-800"/>
                                         <circle cx="50%" cy="50%" r={r} stroke="currentColor" strokeWidth="8" fill="transparent" 
                                             className="text-indigo-500 transition-all duration-300 ease-out"
                                             strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" 
@@ -256,14 +256,14 @@
                                     </div>
                                     <SmartSlider value={perc} onChange={setPerc} step={0.5} />
                                     <div className="flex justify-between mt-1 px-1">
-                                        <button onClick={() => setPerc(Math.max(0, perc-1))} className="p-2 -m-2 text-slate-400 hover:text-white transition text-xl font-bold active:scale-90">-</button>
-                                        <button onClick={() => setPerc(Math.min(100, perc+1))} className="p-2 -m-2 text-slate-400 hover:text-white transition text-xl font-bold active:scale-90">+</button>
+                                        <button onClick={() => setPerc(Math.max(0, perc-1))} className="p-2 -m-2 text-outline-variant hover:text-white transition text-xl font-bold active:scale-90">-</button>
+                                        <button onClick={() => setPerc(Math.min(100, perc+1))} className="p-2 -m-2 text-outline-variant hover:text-white transition text-xl font-bold active:scale-90">+</button>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Input Base */}
-                            <div className="space-y-2 pt-4 border-t border-dashed border-slate-700">
+                            <div className="space-y-2 pt-4 border-t border-dashed border-outline-variant">
                                 <label className="text-xs font-bold uppercase opacity-60 block">Valore Base (Totale)</label>
                                 <div className="flex gap-4 items-center">
                                     <input 
@@ -271,11 +271,11 @@
                                         inputMode="decimal"
                                         value={base} 
                                         onChange={(e) => setBase(Number(e.target.value))}
-                                        className="bg-slate-900/50 border border-slate-700 rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-indigo-500 transition-colors"
+                                        className="bg-slate-900/50 border border-outline-variant rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-indigo-500 transition-colors"
                                     />
                                     <div className="flex gap-1 shrink-0">
                                         {[100, 200, 500].map(v => (
-                                            <button key={v} onClick={() => setBase(v)} className="px-3 py-2 text-xs font-bold bg-slate-800 rounded-md hover:bg-slate-700 transition border border-slate-700">
+                                            <button key={v} onClick={() => setBase(v)} className="px-3 py-2 text-xs font-bold bg-surface-container-high rounded-md hover:bg-slate-700 transition border border-outline-variant">
                                                 {v}
                                             </button>
                                         ))}
@@ -368,7 +368,7 @@
                     <div className="flex flex-col items-center justify-center h-full text-center animate-pop p-6">
                         <div className="text-6xl mb-6">🏆</div>
                         <h2 className="text-3xl font-black mb-2 text-on-background">Quiz Terminato</h2>
-                        <p className="text-slate-400 mb-8">Punteggio finale: <strong className="text-indigo-400 text-xl">{score}/{TOTAL_Q}</strong></p>
+                        <p className="text-outline-variant mb-8">Punteggio finale: <strong className="text-indigo-400 text-xl">{score}/{TOTAL_Q}</strong></p>
                         <button onClick={onBack} className="w-full max-w-xs py-4 bg-indigo-600 rounded-xl font-bold text-on-background shadow-lg shadow-indigo-500/30 active:scale-95 transition">
                             Torna alla Dashboard
                         </button>
@@ -388,7 +388,7 @@
                     </div>
 
                     <div className="glass p-8 md:p-10 text-center border-t-4 border-indigo-500 relative bg-opacity-90 backdrop-blur-md">
-                         <div className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-4">Domanda {qIndex + 1}</div>
+                         <div className="text-xs font-bold uppercase tracking-widest text-outline-variant mb-4">Domanda {qIndex + 1}</div>
                          
                          <h3 className="text-xl md:text-2xl font-bold mb-8 leading-snug min-h-[4rem] flex items-center justify-center">
                              {question.text}
@@ -402,7 +402,7 @@
                                 onChange={e => setInput(e.target.value)}
                                 placeholder="?"
                                 disabled={gameState !== 'playing'}
-                                className={`w-full bg-slate-900 border-2 rounded-2xl py-4 text-center text-3xl font-bold outline-none transition-all
+                                className={`w-full bg-surface border-2 rounded-2xl py-4 text-center text-3xl font-bold outline-none transition-all
                                     ${gameState === 'correct' ? 'border-emerald-500 text-emerald-500' : 
                                       gameState === 'wrong' ? 'border-red-500 text-red-500' : 
                                       'border-slate-700 focus:border-indigo-500'}`}
@@ -453,9 +453,7 @@
                             <button onClick={() => setView('quiz')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${view === 'quiz' ? 'bg-indigo-500 text-on-background shadow-sm' : 'text-slate-400'}`}>Quiz</button>
                         </div>
 
-                        <button onClick={() => setTheme(t => t==='dark'?'light':'dark')} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-800 transition text-slate-400">
-                            {theme === 'dark' ? '☀️' : '🌙'}
-                        </button>
+                        {/* Theme Toggle Removed */}
                     </header>
 
                     {/* Main Scrollable Area */}

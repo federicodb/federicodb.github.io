@@ -146,7 +146,7 @@
             <h1 class="text-lg md:text-xl font-bold text-on-background flex items-center gap-2">
                 <span>🌍</span> Proiezione di Mercatore
             </h1>
-            <p class="text-xs text-slate-400 hidden sm:block">Laboratorio di Distorsione Cartografica</p>
+            <p class="text-xs text-outline-variant hidden sm:block">Laboratorio di Distorsione Cartografica</p>
         </div>
         <!-- Button removed -->
     </header>
@@ -159,30 +159,30 @@
     <div id="info-panel">
         <div id="tutorial-text">
             <h2 class="text-sm font-bold text-on-background mb-1 uppercase tracking-wider text-center sm:text-left">Istruzioni</h2>
-            <p class="text-xs text-slate-300 leading-relaxed text-center sm:text-left">
+            <p class="text-xs text-on-surface-variant leading-relaxed text-center sm:text-left">
                 Tocca una nazione e <strong>trascinala</strong> verso i poli o l'equatore.
                 Osserva come la sua area cambia per mantenere la scala locale corretta della proiezione.
-                <br><span class="text-slate-500 italic">(La Groenlandia sembra enorme al Polo, ma è piccola all'Equatore!)</span>
+                <br><span class="text-outline-variant italic">(La Groenlandia sembra enorme al Polo, ma è piccola all'Equatore!)</span>
             </p>
         </div>
 
-        <div id="stats-display" class="hidden mt-3 pt-3 border-t border-slate-700">
+        <div id="stats-display" class="hidden mt-3 pt-3 border-t border-outline-variant">
             <div class="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                    <span class="block text-slate-500 uppercase text-[10px]">Latitudine Orig.</span>
+                    <span class="block text-outline-variant uppercase text-[10px]">Latitudine Orig.</span>
                     <span id="lat-orig" class="data-value">0°</span>
                 </div>
                 <div>
-                    <span class="block text-slate-500 uppercase text-[10px]">Latitudine Attuale</span>
+                    <span class="block text-outline-variant uppercase text-[10px]">Latitudine Attuale</span>
                     <span id="lat-curr" class="data-value">0°</span>
                 </div>
                 <div class="col-span-2">
-                    <span class="block text-slate-500 uppercase text-[10px]">Distorsione Area (Scala Apparente)</span>
+                    <span class="block text-outline-variant uppercase text-[10px]">Distorsione Area (Scala Apparente)</span>
                     <div class="w-full bg-slate-700 h-2 rounded-full mt-1 overflow-hidden">
                         <div id="dist-bar" class="bg-rose-500 h-full transition-all duration-100" style="width: 0%"></div>
                     </div>
                     <div class="flex justify-between mt-1">
-                        <span class="text-[10px] text-slate-500">Reale (100%)</span>
+                        <span class="text-[10px] text-outline-variant">Reale (100%)</span>
                         <span id="dist-val" class="data-value text-rose-400">100%</span>
                     </div>
                 </div>
