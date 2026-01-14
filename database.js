@@ -1,9 +1,33 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-22 14:23:44
+   Data: 2026-01-14 15:24:25
 */
 
 const db = [
+    {
+        "title": "Math Invaders: Quantum Ops v27",
+        "excerpt": "Impariamo il significato concreto di Minimo COmune Multiplo e di Massimo COmune DIvisore, attraverso un gioco retro.",
+        "tags": [
+            "Matematica",
+            "MCD",
+            "mcm",
+            "gamification",
+            "1EL",
+            "2EL",
+            "2GP",
+            "Calcolo",
+            "Aritmetica",
+            "Sincronizzazione",
+            "ottimizzazione",
+            "prodotto",
+            "fattori"
+        ],
+        "date": "2026-01-14",
+        "url": "content/apps/mcd_mcm_new_003.html",
+        "type": "app",
+        "icon": "🔢",
+        "thumbnail": "content/assets/thumbnails/mcd_mcm_new_003.jpg"
+    },
     {
         "title": "Scomposizione Polinomi",
         "excerpt": "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).",
@@ -180,26 +204,6 @@ const db = [
         "type": "app",
         "icon": "📈",
         "thumbnail": "content/assets/thumbnails/functions_lab_008.jpg"
-    },
-    {
-        "title": "Math Invaders: MCD & mcm",
-        "excerpt": "Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. (Massimo Comune Divisore) e m.c.m. (Minimo Comune Multiplo).",
-        "tags": [
-            "Matematica",
-            "Aritmetica",
-            "MCD",
-            "mcm",
-            "1EL",
-            "Mat:Calcolo",
-            "Mat:ProblemSolving",
-            "Gamification",
-            "EU:STEM"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/mcd_mcm_new_003.html",
-        "type": "app",
-        "icon": "🔢",
-        "thumbnail": "content/assets/thumbnails/mcd_mcm_new_003.jpg"
     },
     {
         "title": "Laboratorio Frazioni: Operazioni Visive",
