@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    <title>Math Invaders: Quantum Ops v27</title>
+    <!-- 1. META DATI PER CATALOGAZIONE -->
+    <title>Math Invaders: MCD & mcm</title>
+    <!-- Shared Orfini Design System -->
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    <meta name="description"
+        content="Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. (Massimo Comune Divisore) e m.c.m. (Minimo Comune Multiplo).">
+    <meta name="keywords"
+        content="Matematica, Aritmetica, MCD, mcm, 1EL, Mat:Calcolo, Mat:ProblemSolving, Gamification, EU:STEM">
+    <meta name="date" content="2025-12-08">
     <!-- Shared Orfini Design System -->
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
     <script src="../assets/js/orfini-shared.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#020617">
-    <meta name="description"
-        content="Impariamo il significato concreto di Minimo COmune Multiplo e di Massimo COmune DIvisore, attraverso un gioco retro.">
-    <meta name="keywords"
-        content="Matematica, MCD, mcm, gamification, 1EL, 2EL, 2GP, Calcolo, Aritmetica, Sincronizzazione, ottimizzazione, prodotto, fattori">
-   
-    
+
     <!-- LIBRARIES -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -26,23 +34,38 @@
             --c-bg: #020617;
             --glass: rgba(8, 12, 28, 0.95);
         }
-        
+
         /* 1. NO SCROLLBARS FIX - STRICT */
-        html, body { 
-            background-color: var(--c-bg); color: white; 
-            font-family: 'Inter', sans-serif; 
-            overflow: hidden; 
-            width: 100%; height: 100%;
-            margin: 0; padding: 0;
-            position: fixed; /* Lock body */
+        html,
+        body {
+            background-color: var(--c-bg);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            position: fixed;
+            /* Lock body */
         }
-        
+
         #canvas-container {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
         }
-        
-        .font-pixel { font-family: 'Press Start 2P', cursive; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .font-pixel {
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
 
         .panel-glass {
             background: var(--glass);
@@ -58,30 +81,74 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
-        .btn-cyber:hover:not(:disabled) { border-color: var(--c-neon); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); transform: translateY(-1px); }
-        .btn-cyber:active:not(:disabled) { transform: translateY(1px); }
-        .btn-cyber:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-        
+
+        .btn-cyber:hover:not(:disabled) {
+            border-color: var(--c-neon);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-cyber:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .btn-cyber:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
         .btn-cyber.active {
             background: rgba(6, 182, 212, 0.15);
             border-color: var(--c-neon);
             box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.15);
         }
 
-        .difficulty-btn { transition: all 0.2s; }
-        .difficulty-btn.active { background-color: #0891b2; color: white; border-color: #22d3ee; box-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
-        .difficulty-btn.inactive { background: transparent; color: #94a3b8; border-color: #334155; }
-
-        input:focus { outline: none; border-color: var(--c-neon); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); }
-        
-        /* Utility to hide scrollbar but keep functionality if needed internally */
-        .custom-scroll::-webkit-scrollbar { width: 0px; }
-        
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 10px #22c55e; border-color: #22c55e; }
-            50% { box-shadow: 0 0 30px #4ade80; border-color: #4ade80; }
+        .difficulty-btn {
+            transition: all 0.2s;
         }
-        .animate-pulse-glow { animation: pulse-glow 1.5s infinite; }
+
+        .difficulty-btn.active {
+            background-color: #0891b2;
+            color: white;
+            border-color: #22d3ee;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+        }
+
+        .difficulty-btn.inactive {
+            background: transparent;
+            color: #94a3b8;
+            border-color: #334155;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--c-neon);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        /* Utility to hide scrollbar but keep functionality if needed internally */
+        .custom-scroll::-webkit-scrollbar {
+            width: 0px;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px #22c55e;
+                border-color: #22c55e;
+            }
+
+            50% {
+                box-shadow: 0 0 30px #4ade80;
+                border-color: #4ade80;
+            }
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 1.5s infinite;
+        }
     </style>
 
     <!-- Configurazione Tailwind con Colori Semantici -->
@@ -106,18 +173,23 @@
     </script>
 
 </head>
+
 <body class="h-full w-full flex flex-col relative">
 
     <div id="canvas-container"></div>
-    <div id="timeline-bar" class="absolute bottom-0 left-0 h-1.5 bg-gradient-to-r from-cyan-400 to-purple-500 z-10 transition-all duration-[100ms] w-0 shadow-[0_0_10px_#22d3ee]"></div>
+    <div id="timeline-bar"
+        class="absolute bottom-0 left-0 h-1.5 bg-gradient-to-r from-cyan-400 to-purple-500 z-10 transition-all duration-[100ms] w-0 shadow-[0_0_10px_#22d3ee]">
+    </div>
 
     <!-- UI LAYER -->
     <div class="relative z-10 flex flex-col h-full pointer-events-none">
-        
+
         <!-- HEADER -->
-        <header id="main-header" class="h-14 flex items-center justify-between px-6 panel-glass pointer-events-auto shrink-0 border-b border-white/10 z-50">
+        <header id="main-header"
+            class="h-14 flex items-center justify-between px-6 panel-glass pointer-events-auto shrink-0 border-b border-white/10 z-50">
             <div class="flex items-center gap-4">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-700 flex items-center justify-center shadow-lg border border-white/10">
+                <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-700 flex items-center justify-center shadow-lg border border-white/10">
                     <span class="font-pixel text-[10px] text-on-background">MI</span>
                 </div>
                 <div class="flex flex-col">
@@ -126,71 +198,113 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-6 mr-16">
                 <div class="flex flex-col items-end group">
-                    <label class="text-[8px] text-outline-variant font-bold group-hover:text-cyan-400 transition-colors">PILOT ID</label>
-                    <input type="text" id="player-input" class="bg-transparent border-b border-outline-variant text-right font-mono text-xs font-bold w-32 uppercase text-on-background placeholder-slate-600 focus:border-cyan-500 transition-all" placeholder="NAME..." maxlength="12">
+                    <label
+                        class="text-[8px] text-outline-variant font-bold group-hover:text-cyan-400 transition-colors">PILOT
+                        ID</label>
+                    <input type="text" id="player-input"
+                        class="bg-transparent border-b border-outline-variant text-right font-mono text-xs font-bold w-32 uppercase text-on-background placeholder-slate-600 focus:border-cyan-500 transition-all"
+                        placeholder="NAME..." maxlength="12">
                 </div>
                 <div class="flex flex-col items-end">
                     <label class="text-[8px] text-outline-variant font-bold">SCORE</label>
-                    <span id="score-display" class="font-mono text-lg text-yellow-400 font-bold leading-none drop-shadow-md">0000</span>
+                    <span id="score-display"
+                        class="font-mono text-lg text-yellow-400 font-bold leading-none drop-shadow-md">0000</span>
                 </div>
             </div>
         </header>
 
+        <!-- NARRATIVE DISPLAY -->
+        <div id="narrative-display"
+            class="absolute top-24 left-1/2 -translate-x-1/2 z-40 pointer-events-none transition-opacity duration-1000 opacity-0 bg-black/80 backdrop-blur-md border border-cyan-500/50 px-6 py-3 rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+            <p id="narrative-text"
+                class="font-pixel text-xs text-cyan-300 tracking-widest text-center uppercase shadow-black drop-shadow-md">
+                SYSTEM INITIALIZED</p>
+        </div>
+
         <!-- MAIN CONTENT -->
         <main class="flex-1 relative pointer-events-auto flex flex-col justify-center overflow-hidden">
-            
+
             <!-- MENU -->
-            <div id="view-menu" class="absolute inset-0 flex items-center justify-center p-4 transition-all duration-500">
+            <div id="view-menu"
+                class="absolute inset-0 flex items-center justify-center p-4 transition-all duration-500">
                 <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-4 h-[85vh]">
-                    
+
                     <!-- Left: Control Panel -->
-                    <div class="lg:col-span-8 panel-glass rounded-2xl p-6 flex flex-col relative overflow-hidden shadow-2xl border border-white/10">
+                    <div
+                        class="lg:col-span-8 panel-glass rounded-2xl p-6 flex flex-col relative overflow-hidden shadow-2xl border border-white/10">
                         <!-- BG Deco -->
-                        <div class="absolute -top-32 -right-32 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-                        
+                        <div
+                            class="absolute -top-32 -right-32 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none">
+                        </div>
+
                         <div class="flex justify-between items-center mb-4">
                             <h2 class="font-pixel text-xs text-on-surface-variant flex items-center gap-3">
-                                <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_10px_#22d3ee]"></span> 
+                                <span
+                                    class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_10px_#22d3ee]"></span>
                                 MISSION SETUP
                             </h2>
-                            <div class="text-[9px] text-outline-variant font-mono border border-outline-variant px-3 py-1 rounded-full bg-slate-900/50">SESSION: 3 ROUNDS</div>
+                            <div
+                                class="text-[9px] text-outline-variant font-mono border border-outline-variant px-3 py-1 rounded-full bg-slate-900/50">
+                                SESSION: 3 ROUNDS</div>
                         </div>
 
                         <!-- Mode Selection -->
                         <div class="grid grid-cols-2 gap-3 mb-4">
-                            <button onclick="App.setMode('mcm')" id="btn-mode-mcm" class="btn-cyber p-4 rounded-xl text-left group active border-2 border-transparent">
-                                <div class="font-bold text-sm text-on-background mb-1 group-hover:text-cyan-300 transition-colors">SYNC (m.c.m.)</div>
+                            <button onclick="App.setMode('mcm')" id="btn-mode-mcm"
+                                class="btn-cyber p-4 rounded-xl text-left group active border-2 border-transparent">
+                                <div
+                                    class="font-bold text-sm text-on-background mb-1 group-hover:text-cyan-300 transition-colors">
+                                    SYNC (m.c.m.)</div>
                                 <div class="text-[9px] text-outline-variant font-mono">Alignment Cycles</div>
                             </button>
-                            <button onclick="App.setMode('mcd')" id="btn-mode-mcd" class="btn-cyber p-4 rounded-xl text-left group border-2 border-transparent">
-                                <div class="font-bold text-sm text-on-background mb-1 group-hover:text-pink-300 transition-colors">OPTIMIZE (M.C.D.)</div>
+                            <button onclick="App.setMode('mcd')" id="btn-mode-mcd"
+                                class="btn-cyber p-4 rounded-xl text-left group border-2 border-transparent">
+                                <div
+                                    class="font-bold text-sm text-on-background mb-1 group-hover:text-pink-300 transition-colors">
+                                    OPTIMIZE (M.C.D.)</div>
                                 <div class="text-[9px] text-outline-variant font-mono">Slicing Logic</div>
                             </button>
                         </div>
 
                         <!-- Scenarios -->
                         <div class="flex-1 overflow-y-auto custom-scroll pr-1">
-                            <h3 class="text-[9px] font-bold text-outline-variant uppercase tracking-widest mb-2 sticky top-0 bg-[#020617]/90 backdrop-blur py-1 z-10">Environment</h3>
+                            <h3
+                                class="text-[9px] font-bold text-outline-variant uppercase tracking-widest mb-2 sticky top-0 bg-[#020617]/90 backdrop-blur py-1 z-10">
+                                Environment</h3>
                             <div id="scenarios-mcm" class="grid grid-cols-3 gap-2 pb-1">
-                                <button onclick="App.setScenario('planets')" id="scen-planets" class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 active border-outline-variant hover:border-cyan-500/50 min-h-[100px]">
+                                <button onclick="App.setScenario('planets')" id="scen-planets"
+                                    class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 active border-outline-variant hover:border-cyan-500/50 min-h-[100px]">
                                     <span class="text-2xl filter drop-shadow-lg">🪐</span>
                                     <span class="text-[8px] font-bold text-on-surface-variant">COSMIC</span>
                                 </button>
-                                <button onclick="App.setScenario('invaders')" id="scen-invaders" class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-outline-variant hover:border-cyan-500/50 min-h-[100px]">
+                                <button onclick="App.setScenario('invaders')" id="scen-invaders"
+                                    class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-outline-variant hover:border-cyan-500/50 min-h-[100px]">
                                     <span class="text-2xl filter drop-shadow-lg">👾</span>
                                     <span class="text-[8px] font-bold text-on-surface-variant">INVADERS</span>
                                 </button>
-                                <button onclick="App.setScenario('prison')" id="scen-prison" class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-outline-variant hover:border-cyan-500/50 min-h-[100px]">
+                                <button onclick="App.setScenario('prison')" id="scen-prison"
+                                    class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-outline-variant hover:border-cyan-500/50 min-h-[100px]">
                                     <span class="text-2xl filter drop-shadow-lg">⛓️</span>
                                     <span class="text-[8px] font-bold text-on-surface-variant">PRISON</span>
                                 </button>
                             </div>
-                            <div id="scenarios-mcd" class="grid grid-cols-1 gap-2 pb-1 hidden">
-                                <button onclick="App.setScenario('pizza')" id="scen-pizza" class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-outline-variant hover:border-pink-500/50 min-h-[100px]">
-                                    <span class="text-3xl filter drop-shadow-lg">🍕</span>
-                                    <span class="text-[8px] font-bold text-on-surface-variant">PIZZA AL TAGLIO</span>
+                            <div id="scenarios-mcd" class="grid grid-cols-3 gap-2 pb-1 hidden">
+                                <button onclick="App.setScenario('rect')" id="scen-rect"
+                                    class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 active border-outline-variant hover:border-cyan-500/50 min-h-[100px]">
+                                    <span class="text-2xl filter drop-shadow-lg">💠</span>
+                                    <span class="text-[8px] font-bold text-on-surface-variant">CYBER RECT</span>
+                                </button>
+                                <button onclick="App.setScenario('box')" id="scen-box"
+                                    class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-outline-variant hover:border-orange-500/50 min-h-[100px]">
+                                    <span class="text-2xl filter drop-shadow-lg">📦</span>
+                                    <span class="text-[8px] font-bold text-on-surface-variant">CARGO BOX</span>
+                                </button>
+                                <button onclick="App.setScenario('grid')" id="scen-grid"
+                                    class="btn-cyber p-3 rounded-xl flex flex-col items-center justify-center gap-2 border-outline-variant hover:border-green-500/50 min-h-[100px]">
+                                    <span class="text-2xl filter drop-shadow-lg">📡</span>
+                                    <span class="text-[8px] font-bold text-on-surface-variant">SPY GRID</span>
                                 </button>
                             </div>
                         </div>
@@ -198,11 +312,15 @@
                         <!-- Footer -->
                         <div class="mt-4 pt-4 border-t border-white/10 flex gap-3 items-center">
                             <div class="flex p-1 rounded-xl bg-black/40 border border-slate-700/50 backdrop-blur-sm">
-                                <button onclick="App.setLevel(0)" id="lvl-0" class="px-4 py-2 text-[9px] font-bold rounded-lg transition-all bg-cyan-600 text-on-background shadow-lg">RECRUIT</button>
-                                <button onclick="App.setLevel(1)" id="lvl-1" class="px-4 py-2 text-[9px] font-bold rounded-lg transition-all text-outline-variant hover:text-white">VETERAN</button>
-                                <button onclick="App.setLevel(2)" id="lvl-2" class="px-4 py-2 text-[9px] font-bold rounded-lg transition-all text-outline-variant hover:text-white">LEGEND</button>
+                                <button onclick="App.setLevel(0)" id="lvl-0"
+                                    class="px-4 py-2 text-[9px] font-bold rounded-lg transition-all bg-cyan-600 text-on-background shadow-lg">RECRUIT</button>
+                                <button onclick="App.setLevel(1)" id="lvl-1"
+                                    class="px-4 py-2 text-[9px] font-bold rounded-lg transition-all text-outline-variant hover:text-white">VETERAN</button>
+                                <button onclick="App.setLevel(2)" id="lvl-2"
+                                    class="px-4 py-2 text-[9px] font-bold rounded-lg transition-all text-outline-variant hover:text-white">LEGEND</button>
                             </div>
-                            <button onclick="App.startSession()" id="btn-start" disabled class="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-on-background font-pixel text-[10px] py-3 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button onclick="App.startSession()" id="btn-start" disabled
+                                class="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-on-background font-bold tracking-[0.2em] text-xs py-3 rounded-xl shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed border border-white/10 uppercase">
                                 INITIALIZE <span class="group-hover:translate-x-1 transition-transform">▶</span>
                             </button>
                         </div>
@@ -220,78 +338,108 @@
             </div>
 
             <!-- VIEW: GAME HUD -->
-            <div id="view-game" class="absolute inset-0 pointer-events-none hidden flex flex-col justify-between p-4 z-20">
+            <div id="view-game"
+                class="absolute inset-0 pointer-events-none hidden flex flex-col justify-between p-4 z-20">
                 <div class="flex justify-between items-start">
-                    <div id="timer-hud" class="panel-glass px-4 py-2 rounded-xl border border-cyan-500/30 hidden flex flex-col items-end backdrop-blur-xl">
-                        <div class="text-[8px] text-cyan-400 font-bold uppercase tracking-widest mb-0.5">SIMULATION T</div>
-                        <div class="font-mono text-2xl text-on-background font-bold tabular-nums drop-shadow" id="timer-val">00.00</div>
+                    <div id="timer-hud"
+                        class="panel-glass px-4 py-2 rounded-xl border border-cyan-500/30 hidden flex flex-col items-end backdrop-blur-xl">
+                        <div class="text-[8px] text-cyan-400 font-bold uppercase tracking-widest mb-0.5">SIMULATION T
+                        </div>
+                        <div class="font-mono text-2xl text-on-background font-bold tabular-nums drop-shadow"
+                            id="timer-val">00.00</div>
                     </div>
-                    
+
                     <div class="flex flex-col items-end gap-2 pointer-events-auto">
-                        <div class="bg-cyan-900/40 border border-cyan-500/50 px-3 py-1 rounded text-[9px] font-mono text-cyan-200">
+                        <div
+                            class="bg-cyan-900/40 border border-cyan-500/50 px-3 py-1 rounded text-[9px] font-mono text-cyan-200">
                             RND <span id="round-display" class="text-on-background font-bold">1</span>/3
                         </div>
-                        <button id="btn-abort" onclick="App.endSession(true)" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-[9px] font-bold backdrop-blur transition-colors">
+                        <button id="btn-abort" onclick="App.endSession(true)"
+                            class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-[9px] font-bold backdrop-blur transition-colors">
                             ABORT
                         </button>
                     </div>
                 </div>
 
-                <div id="result-banner" class="hidden absolute top-24 left-0 right-0 flex justify-center pointer-events-none z-30">
-                    <div class="bg-black/60 backdrop-blur-xl border-y border-green-500/50 py-4 px-12 text-center animate-in slide-in-from-top fade-in zoom-in duration-500 shadow-[0_0_50px_rgba(34,197,94,0.3)]">
+                <div id="result-banner"
+                    class="hidden absolute top-24 left-0 right-0 flex justify-center pointer-events-none z-30">
+                    <div
+                        class="bg-black/60 backdrop-blur-xl border-y border-green-500/50 py-4 px-12 text-center animate-in slide-in-from-top fade-in zoom-in duration-500 shadow-[0_0_50px_rgba(34,197,94,0.3)]">
                         <h2 class="font-pixel text-xl text-green-400 mb-1 drop-shadow">OPTIMAL SOLUTION</h2>
-                        <p class="font-mono text-[9px] text-on-background tracking-[0.2em] uppercase">Visual Analysis Complete</p>
+                        <p class="font-mono text-[9px] text-on-background tracking-[0.2em] uppercase">Visual Analysis
+                            Complete</p>
                     </div>
                 </div>
 
-                <div id="controls-bar" class="pointer-events-auto panel-glass rounded-2xl p-3 flex items-center justify-between gap-4 border border-white/10 transition-transform duration-300 backdrop-blur-xl shadow-2xl">
+                <div id="controls-bar"
+                    class="pointer-events-auto panel-glass rounded-2xl p-3 flex items-center justify-between gap-4 border border-white/10 transition-transform duration-300 backdrop-blur-xl shadow-2xl">
                     <div class="flex items-center gap-3 overflow-hidden flex-1">
                         <div class="flex flex-col min-w-0 flex-1">
-                            <span class="text-[8px] text-cyan-400 font-bold uppercase tracking-widest mb-0.5 pl-1">VARIABLES</span>
-                            <div id="problem-display" class="flex gap-2 font-mono text-lg font-bold text-on-background overflow-x-auto custom-scroll pb-1"></div>
+                            <span
+                                class="text-[8px] text-cyan-400 font-bold uppercase tracking-widest mb-0.5 pl-1">VARIABLES</span>
+                            <div id="problem-display"
+                                class="flex gap-2 font-mono text-lg font-bold text-on-background overflow-x-auto custom-scroll pb-1">
+                            </div>
                         </div>
                         <div class="h-8 w-px bg-white/10 mx-1"></div>
-                        <button onclick="App.toggleLab()" class="btn-cyber px-3 py-1.5 rounded-lg border border-slate-600 text-on-surface-variant text-[9px] font-bold hover:text-white shrink-0">🧪 LAB</button>
+                        <button onclick="App.toggleLab()"
+                            class="btn-cyber px-3 py-1.5 rounded-lg border border-slate-600 text-on-surface-variant text-[9px] font-bold hover:text-white shrink-0">🧪
+                            LAB</button>
                     </div>
                     <div id="action-area" class="flex items-center gap-2 shrink-0">
                         <div class="relative group">
-                            <span class="absolute -top-2 left-2 text-[7px] text-outline-variant font-bold bg-[#0f172a] px-1">INPUT</span>
+                            <span
+                                class="absolute -top-2 left-2 text-[7px] text-outline-variant font-bold bg-[#0f172a] px-1">INPUT</span>
                             <!-- 2. WIDER INPUT FIXED -->
-                            <input type="number" id="game-input" class="bg-[#020617] border border-slate-600 text-on-background font-pixel text-lg w-40 py-2.5 px-2 text-center focus:border-cyan-500 rounded-lg shadow-inner">
+                            <input type="number" id="game-input"
+                                class="bg-[#020617] border border-slate-600 text-on-background font-pixel text-lg w-40 py-2.5 px-2 text-center focus:border-cyan-500 rounded-lg shadow-inner">
                         </div>
-                        <button onclick="App.fire()" class="bg-gradient-to-br from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-on-background font-pixel text-[9px] px-5 py-3 rounded-lg shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-105 active:scale-95">EXECUTE</button>
+                        <button onclick="App.fire()"
+                            class="bg-gradient-to-br from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-on-background font-pixel text-[9px] px-5 py-3 rounded-lg shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-105 active:scale-95">EXECUTE</button>
                     </div>
-                    <button id="btn-continue" onclick="App.nextRound()" class="hidden bg-green-600 hover:bg-green-500 text-on-background font-pixel text-[10px] px-8 py-3 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.5)] animate-pulse-glow transform hover:scale-105 transition-all border border-green-400">NEXT ▶</button>
+                    <button id="btn-continue" onclick="App.nextRound()"
+                        class="hidden bg-green-600 hover:bg-green-500 text-on-background font-pixel text-[10px] px-8 py-3 rounded-xl shadow-[0_0_30px_rgba(34,197,94,0.5)] animate-pulse-glow transform hover:scale-105 transition-all border border-green-400">NEXT
+                        ▶</button>
                 </div>
             </div>
 
             <!-- MODAL: FINAL RESULT -->
-            <div id="feedback-modal" class="absolute inset-0 flex items-center justify-center bg-black/90 backdrop-blur-xl pointer-events-auto hidden z-50 transition-opacity duration-300">
-                <div class="panel-glass p-8 rounded-2xl text-center border border-outline-variant shadow-2xl max-w-sm w-full animate-in fade-in zoom-in duration-300 relative overflow-hidden">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-cyan-500/20 rounded-full blur-[50px] pointer-events-none"></div>
+            <div id="feedback-modal"
+                class="absolute inset-0 flex items-center justify-center bg-black/90 backdrop-blur-xl pointer-events-auto hidden z-50 transition-opacity duration-300">
+                <div
+                    class="panel-glass p-8 rounded-2xl text-center border border-outline-variant shadow-2xl max-w-sm w-full animate-in fade-in zoom-in duration-300 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-cyan-500/20 rounded-full blur-[50px] pointer-events-none">
+                    </div>
                     <div id="fb-icon" class="text-6xl mb-4 relative z-10 drop-shadow-lg"></div>
                     <h2 id="fb-title" class="font-pixel text-lg mb-2 text-on-background relative z-10"></h2>
                     <div class="bg-slate-900/50 p-3 rounded-xl border border-white/5 mb-6 backdrop-blur relative z-10">
                         <p id="fb-sub" class="font-mono text-xs text-on-surface-variant"></p>
                     </div>
-                    <button id="fb-btn" onclick="App.endSession()" class="w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-cyan-700 hover:to-blue-700 text-on-background font-bold py-3 rounded-xl text-xs tracking-[0.2em] border border-white/10 hover:border-cyan-400 transition-all shadow-lg relative z-10">
+                    <button id="fb-btn" onclick="App.endSession()"
+                        class="w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-cyan-700 hover:to-blue-700 text-on-background font-bold py-3 rounded-xl text-xs tracking-[0.2em] border border-white/10 hover:border-cyan-400 transition-all shadow-lg relative z-10">
                         RETURN TO BASE
                     </button>
                 </div>
             </div>
 
             <!-- UTILS: FACTOR LAB -->
-            <div id="view-lab" class="hidden absolute top-20 left-4 panel-glass p-4 rounded-xl w-60 z-50 border border-cyan-500/20 shadow-2xl backdrop-blur-xl">
+            <div id="view-lab"
+                class="hidden absolute top-20 left-4 panel-glass p-4 rounded-xl w-60 z-50 border border-cyan-500/20 shadow-2xl backdrop-blur-xl">
                 <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
                     <span class="font-pixel text-[9px] text-cyan-400">PRIME ANALYZER</span>
-                    <button onclick="App.toggleLab()" class="text-outline-variant hover:text-white transition-colors">✕</button>
+                    <button onclick="App.toggleLab()"
+                        class="text-outline-variant hover:text-white transition-colors">✕</button>
                 </div>
                 <div class="grid grid-cols-4 gap-2 mb-3" id="lab-buttons"></div>
                 <div class="bg-black/60 p-2 rounded-lg text-right font-mono border border-white/5 shadow-inner">
-                    <div id="lab-hist" class="text-[9px] text-outline-variant h-3 overflow-hidden text-ellipsis whitespace-nowrap mb-1"></div>
+                    <div id="lab-hist"
+                        class="text-[9px] text-outline-variant h-3 overflow-hidden text-ellipsis whitespace-nowrap mb-1">
+                    </div>
                     <div id="lab-res" class="text-lg text-on-background font-bold tracking-widest">1</div>
                 </div>
-                <button onclick="Lab.reset()" class="w-full mt-2 text-[9px] font-bold text-red-400 hover:text-red-300 hover:bg-red-900/20 py-2 rounded transition-colors">RESET</button>
+                <button onclick="Lab.reset()"
+                    class="w-full mt-2 text-[9px] font-bold text-red-400 hover:text-red-300 hover:bg-red-900/20 py-2 rounded transition-colors">RESET</button>
             </div>
         </main>
     </div>
@@ -308,99 +456,117 @@
                 { id: 2, mult: 2.5, count: 4, maxP: 19, range: [10, 40] }
             ],
             sprites: {
-                ship: [ [0,0,0,1,0,0,0], [0,0,1,1,1,0,0], [0,1,1,1,1,1,0], [1,1,1,1,1,1,1], [1,0,0,0,0,0,1] ],
-                boss: [ [0,0,0,0,1,1,1,1,1,0,0,0,0], [0,0,1,1,1,1,1,1,1,1,1,0,0], [0,1,1,0,1,1,1,1,1,0,1,1,0], [1,1,1,1,1,1,1,1,1,1,1,1,1], [1,0,1,1,0,1,1,1,0,1,1,0,1], [0,0,0,1,0,0,1,0,0,1,0,0,0] ],
-                bunker: [ [1,1,1,1] ] 
+                ship: [[0, 0, 0, 1, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1, 1], [1, 0, 0, 0, 0, 0, 1]],
+                boss: [[0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0], [0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1], [0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0]],
+                bunker: [[1, 1, 1, 1]]
             }
         };
 
         var Store = {
             user: "", score: 0, mode: "mcm", scenario: "planets", level: CONFIG.levels[0], status: "MENU",
             round: 1, maxRounds: 3,
-            history: [], problem: { nums: [], target: 0, w:0, h:0, d:0 },
+            history: [], problem: { nums: [], target: 0, w: 0, h: 0, d: 0 },
             sim: { t: 0, vT: 0, duration: 10, matrixActive: false },
             result: { win: false, val: 0 }
         };
 
         var MathUtils = {
-            gcd: (a,b) => b===0 ? a : MathUtils.gcd(b, a%b),
-            lcm: (a,b) => (a*b) / MathUtils.gcd(a,b),
+            gcd: (a, b) => b === 0 ? a : MathUtils.gcd(b, a % b),
+            lcm: (a, b) => (a * b) / MathUtils.gcd(a, b),
+            getFactors: (nums) => {
+                const max = Math.max(...nums);
+                const factors = new Set();
+                for (let i = 2; i <= max; i++) {
+                    if (nums.every(n => n % i === 0)) factors.add(i);
+                }
+                return Array.from(factors).sort((a, b) => a - b);
+            },
             genNumbers: (count, levelId) => {
                 let nums = []; let attempts = 0;
-                const pool = levelId === 0 ? [...CONFIG.primes.slice(0,5), 4, 6, 8, 9, 10, 12, 14, 15] : [...CONFIG.primes, ...CONFIG.composites];
-                while(attempts++ < 100) {
+                // Recruit: Small primes + basic composites.
+                // Veteran/Legend: Larger pool.
+                let pool = [];
+                if (levelId === 0) pool = [2, 3, 4, 5, 6, 8, 9, 10, 12, 14, 15];
+                else if (levelId === 1) pool = [...CONFIG.primes.slice(0, 10), ...CONFIG.composites.slice(0, 15)];
+                else pool = [...CONFIG.primes, ...CONFIG.composites, 24, 30, 36, 40, 42, 48, 50, 60];
+
+                while (attempts++ < 100) {
                     nums = [];
-                    for(let i=0; i<count; i++) {
+                    for (let i = 0; i < count; i++) {
                         const n = pool[Math.floor(Math.random() * pool.length)];
-                        if(!nums.includes(n)) nums.push(n);
+                        if (!nums.includes(n)) nums.push(n);
                     }
-                    if(nums.length < count) continue;
-                    nums.sort((a,b)=>a-b);
+                    if (nums.length < count) continue;
+                    nums.sort((a, b) => a - b);
                     const key = nums.join(',');
-                    if(!Store.history.includes(key)) {
+                    if (!Store.history.includes(key)) {
                         Store.history.push(key);
-                        if(Store.history.length > 5) Store.history.shift();
+                        if (Store.history.length > 5) Store.history.shift();
                         return nums;
                     }
                 }
-                return nums.length ? nums : [2, 3];
+                return nums.length ? nums : [2, 4, 6];
             },
             genDims: (levelId) => {
-                const base = Math.floor(Math.random() * (levelId+2)) + 2; 
-                const m1 = Math.floor(Math.random() * 5) + 2;
-                let m2 = Math.floor(Math.random() * 5) + 2;
-                while(m2 === m1) m2 = Math.floor(Math.random() * 5) + 2; 
-                return { w: base*m1, h: base*m2 };
-            },
-            getFactors: (nums) => {
-                const factors = new Set();
-                nums.forEach(n => {
-                    let temp = n;
-                    for(let i=2; i<=temp; i++) while(temp%i===0) { factors.add(i); temp/=i; }
-                });
-                return Array.from(factors).sort((a,b)=>a-b);
+                // Difficulty Scaling
+                // Recruit: Common Factor 2-5. Multipliers 1-4. (e.g. 2*3=6, 2*4=8)
+                // Veteran: Common Factor 4-9. Multipliers 2-6.
+                // Legend: Common Factor 7-15. Multipliers 3-8.
+                let minBase, maxBase, maxMult;
+                if (levelId === 0) { minBase = 2; maxBase = 5; maxMult = 4; }
+                else if (levelId === 1) { minBase = 4; maxBase = 9; maxMult = 6; }
+                else { minBase = 7; maxBase = 15; maxMult = 8; }
+
+                const base = Math.floor(Math.random() * (maxBase - minBase + 1)) + minBase;
+                const m1 = Math.floor(Math.random() * maxMult) + 1;
+                let m2 = Math.floor(Math.random() * maxMult) + 1;
+                while (m2 === m1) m2 = Math.floor(Math.random() * maxMult) + 1;
+
+                if (Store.mode === 'mcd' && Store.scenario === 'box') {
+                    let m3 = Math.floor(Math.random() * maxMult) + 1;
+                    while (m3 === m1 || m3 === m2) m3 = Math.floor(Math.random() * maxMult) + 1;
+                    return { w: base * m1, h: base * m2, d: base * m3 };
+                }
+                return { w: base * m1, h: base * m2, d: 0 };
+                return Array.from(factors).sort((a, b) => a - b);
             }
         };
 
         function createSpriteTexture(data, colorStr) {
             const canvas = document.createElement('canvas');
             const h = data.length; const w = data[0].length;
-            const scale = 32; 
+            const scale = 32;
             canvas.width = w * scale; canvas.height = h * scale;
             const ctx = canvas.getContext('2d');
             ctx.fillStyle = colorStr;
-            for(let y=0; y<h; y++) for(let x=0; x<w; x++) if(data[y][x]) ctx.fillRect(x*scale, y*scale, scale, scale);
+            for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (data[y][x]) ctx.fillRect(x * scale, y * scale, scale, scale);
             ctx.shadowBlur = 15; ctx.shadowColor = colorStr;
             return new THREE.CanvasTexture(canvas);
         }
 
         function generateHexStars() {
-            const c = document.createElement('canvas'); c.width = 128; c.height = 128;
+            const c = document.createElement('canvas'); c.width = 64; c.height = 64;
             const ctx = c.getContext('2d');
-            ctx.strokeStyle = '#00f3ff'; ctx.lineWidth = 4;
-            const r = 40, cx = 64, cy = 64;
-            ctx.beginPath();
-            for(let i=0; i<6; i++) {
-                const a = (i * 60 - 30) * Math.PI / 180;
-                const x = cx + r * Math.cos(a); const y = cy + r * Math.sin(a);
-                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-            }
-            ctx.closePath(); ctx.stroke();
-            const g = ctx.createRadialGradient(cx,cy,0, cx,cy,r);
-            g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(1, 'rgba(0,243,255,0)');
-            ctx.fillStyle = g; ctx.fill();
+            // Bokeh/Glow Effect: multiple soft radial gradients
+            const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            g.addColorStop(0, 'rgba(255, 255, 255, 1)'); // Hot core
+            g.addColorStop(0.2, 'rgba(200, 255, 255, 0.8)');
+            g.addColorStop(0.5, 'rgba(0, 243, 255, 0.3)'); // Cyan glow
+            g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(32, 32, 32, 0, Math.PI * 2); ctx.fill();
             return c;
         }
 
         function generateSunGlow() {
             const c = document.createElement('canvas'); c.width = 512; c.height = 512;
             const ctx = c.getContext('2d');
-            const g = ctx.createRadialGradient(256,256,0, 256,256,256);
-            g.addColorStop(0, 'rgba(255, 215, 0, 1)'); 
+            const g = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+            g.addColorStop(0, 'rgba(255, 215, 0, 1)');
             g.addColorStop(0.2, 'rgba(255, 140, 0, 0.8)');
             g.addColorStop(0.5, 'rgba(255, 69, 0, 0.2)');
             g.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = g; ctx.fillRect(0,0,512,512);
+            ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 512);
             return c;
         }
 
@@ -408,49 +574,49 @@
             scene: null, camera: null, renderer: null, meshes: {}, particles: [], trail: [],
             init: () => {
                 const el = document.getElementById('canvas-container');
-                if(!el) return;
-                
+                if (!el) return;
+
                 Scene.scene = new THREE.Scene();
                 // LIGHTER FOG FOR VISIBILITY
-                Scene.scene.fog = new THREE.FogExp2(0x020617, 0.005); 
-                Scene.camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 2000);
+                Scene.scene.fog = new THREE.FogExp2(0x020617, 0.005);
+                Scene.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
                 Scene.camera.position.set(0, 20, 50);
-                
+
                 Scene.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
                 Scene.renderer.setSize(window.innerWidth, window.innerHeight);
                 Scene.renderer.shadowMap.enabled = true;
                 Scene.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                 el.appendChild(Scene.renderer.domElement);
-                
-                Scene.scene.add(new THREE.AmbientLight(0x404040, 2)); 
-                
-                const sunLight = new THREE.PointLight(0xffd700, 3, 2000); 
-                sunLight.position.set(0, 0, 0); 
+
+                Scene.scene.add(new THREE.AmbientLight(0x404040, 2));
+
+                const sunLight = new THREE.PointLight(0xffd700, 3, 2000);
+                sunLight.position.set(0, 0, 0);
                 sunLight.castShadow = true;
-                sunLight.shadow.mapSize.width = 2048; 
+                sunLight.shadow.mapSize.width = 2048;
                 sunLight.shadow.mapSize.height = 2048;
                 sunLight.shadow.bias = -0.0001;
                 Scene.scene.add(sunLight); Scene.meshes.sunLight = sunLight;
-                
-                const rim = new THREE.DirectionalLight(0x00f3ff, 0.5); 
+
+                const rim = new THREE.DirectionalLight(0x00f3ff, 0.5);
                 rim.position.set(-50, 20, 50); Scene.scene.add(rim);
 
                 // 3. CONSTELLATIONS (Lines between stars)
-                const starsCount = 2000;
+                const starsCount = 5000;
                 const posArray = new Float32Array(starsCount * 3);
                 const sizesArray = new Float32Array(starsCount);
-                for(let i=0; i<starsCount; i++) {
-                    posArray[i*3] = (Math.random() - 0.5) * 1500; 
-                    posArray[i*3+1] = (Math.random() - 0.5) * 1000; 
-                    posArray[i*3+2] = -100 - Math.random() * 1000;
+                for (let i = 0; i < starsCount; i++) {
+                    posArray[i * 3] = (Math.random() - 0.5) * 4000;  // Wider X for wide screens
+                    posArray[i * 3 + 1] = (Math.random() - 0.5) * 2500; // Taller Y
+                    posArray[i * 3 + 2] = -100 - Math.random() * 1000;
                     sizesArray[i] = Math.random() * 15;
                 }
                 const starsGeo = new THREE.BufferGeometry();
                 starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
                 starsGeo.setAttribute('size', new THREE.BufferAttribute(sizesArray, 1));
-                
+
                 const hexTex = new THREE.CanvasTexture(generateHexStars());
-                const starsMat = new THREE.PointsMaterial({ size: 12, map: hexTex, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
+                const starsMat = new THREE.PointsMaterial({ size: 18, map: hexTex, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true });
                 const starMesh = new THREE.Points(starsGeo, starsMat);
                 Scene.scene.add(starMesh);
                 Scene.meshes.stars = starMesh;
@@ -458,15 +624,15 @@
                 // Constellation lines
                 const lineGeo = new THREE.BufferGeometry();
                 const linePos = [];
-                for(let i=0; i<300; i++) {
-                     const idx1 = Math.floor(Math.random() * starsCount);
-                     const idx2 = Math.floor(Math.random() * starsCount);
-                     const p1 = new THREE.Vector3(posArray[idx1*3], posArray[idx1*3+1], posArray[idx1*3+2]);
-                     const p2 = new THREE.Vector3(posArray[idx2*3], posArray[idx2*3+1], posArray[idx2*3+2]);
-                     if(p1.distanceTo(p2) < 200) {
-                         linePos.push(p1.x, p1.y, p1.z);
-                         linePos.push(p2.x, p2.y, p2.z);
-                     }
+                for (let i = 0; i < 300; i++) {
+                    const idx1 = Math.floor(Math.random() * starsCount);
+                    const idx2 = Math.floor(Math.random() * starsCount);
+                    const p1 = new THREE.Vector3(posArray[idx1 * 3], posArray[idx1 * 3 + 1], posArray[idx1 * 3 + 2]);
+                    const p2 = new THREE.Vector3(posArray[idx2 * 3], posArray[idx2 * 3 + 1], posArray[idx2 * 3 + 2]);
+                    if (p1.distanceTo(p2) < 200) {
+                        linePos.push(p1.x, p1.y, p1.z);
+                        linePos.push(p2.x, p2.y, p2.z);
+                    }
                 }
                 lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
                 const lineMat = new THREE.LineBasicMaterial({ color: 0x00f3ff, transparent: true, opacity: 0.08 });
@@ -475,72 +641,93 @@
                 Scene.meshes.constellations = constel;
 
                 window.addEventListener('resize', () => {
-                    Scene.camera.aspect = window.innerWidth/window.innerHeight;
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+                    Scene.camera.aspect = w / h;
                     Scene.camera.updateProjectionMatrix();
-                    Scene.renderer.setSize(window.innerWidth, window.innerHeight);
+                    Scene.renderer.setSize(w, h);
+
+                    // Responsive Camera Z for Planets Mode to keep Target (x=65) visible
+                    if (Store.scenario === 'planets') {
+                        const baseZ = 90;
+                        // If width is small, pull back. 
+                        // ~1400px width -> Z=90. ~700px -> Z=160
+                        const factor = Math.max(1, 1400 / w);
+                        Scene.camera.position.z = baseZ * factor;
+                        Scene.camera.position.y = 50 * factor;
+                    }
                 });
                 Scene.loop();
             },
             clear: () => {
                 const keep = ['stars', 'sunLight', 'constellations'];
                 const toRemove = [];
-                Scene.scene.traverse(o => { if((o.isMesh || o.isGroup || o.isLine) && !o.isPoints && !keep.includes(o.uuid) && o !== Scene.meshes.constellations) toRemove.push(o); });
+                Scene.scene.traverse(o => { if ((o.isMesh || o.isGroup || o.isLine) && !o.isPoints && !keep.includes(o.uuid) && o !== Scene.meshes.constellations) toRemove.push(o); });
                 toRemove.forEach(o => {
-                    if(o.geometry) o.geometry.dispose();
-                    if(o.material) { if(Array.isArray(o.material)) o.material.forEach(m=>m.dispose()); else o.material.dispose(); }
+                    if (o.geometry) o.geometry.dispose();
+                    if (o.material) { if (Array.isArray(o.material)) o.material.forEach(m => m.dispose()); else o.material.dispose(); }
                     Scene.scene.remove(o);
                 });
-                Scene.trail = []; 
+                Scene.trail = [];
             },
             loop: () => {
-                if(!Scene.renderer) return;
+                if (!Scene.renderer) return;
                 requestAnimationFrame(Scene.loop);
-                
-                // Slow Parallax
-                if(Scene.meshes.stars) Scene.meshes.stars.rotation.z += 0.00005;
-                if(Scene.meshes.constellations) Scene.meshes.constellations.rotation.z += 0.00005;
 
-                if(Store.status === 'MENU') {
+                // Slow Parallax
+                if (Scene.meshes.stars) Scene.meshes.stars.rotation.z += 0.00005;
+                if (Scene.meshes.constellations) Scene.meshes.constellations.rotation.z += 0.00005;
+
+
+                if (Store.status === 'MENU') {
                     // 4. Slow Movement
-                    Scene.camera.position.x = Math.sin(Date.now()*0.00005) * 40;
-                    Scene.camera.position.z = Math.cos(Date.now()*0.00005) * 80;
-                    Scene.camera.lookAt(0,0,0);
+                    Scene.camera.position.x = Math.sin(Date.now() * 0.00005) * 40;
+                    Scene.camera.position.z = Math.cos(Date.now() * 0.00005) * 80;
+                    Scene.camera.lookAt(0, 0, 0);
                 }
 
-                if(Store.status === 'SIM' || Store.status === 'RESULT_VIEW') {
-                    const vT = Store.sim.vT; 
+                if (Store.status === 'SIM' || Store.status === 'RESULT_VIEW') {
+                    const vT = Store.sim.vT;
                     const isFastPhase = !Store.sim.matrixActive;
 
-                    if(Store.mode === 'mcm' && Scene.meshes.groups) {
+                    if (Store.mode === 'mcm' && Scene.meshes.groups) {
                         Scene.meshes.groups.forEach((g, i) => {
                             const p = Store.problem.nums[i];
-                            const isHighFreq = (Store.problem.target / p) > 25; 
+                            const isHighFreq = (Store.problem.target / p) > 25;
 
-                            if(Store.scenario === 'planets') {
+                            if (Store.scenario === 'planets') {
+                                // ORBIT MOVEMENT
+                                const angle = (vT / p) * Math.PI * 2;
+                                g.position.x = Math.cos(angle) * g.userData.radius;
+                                g.position.z = Math.sin(angle) * g.userData.radius;
+
+                                // TRAIL PARTICLES (Robust Visualization)
+                                if (vT > 0 && Math.random() > 0.3) {
+                                    const trailP = {
+                                        mesh: new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5), new THREE.MeshBasicMaterial({ color: g.userData.color, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false })),
+                                        vel: new THREE.Vector3((Math.random() - 0.5) * 0.1, (Math.random() - 0.5) * 0.1, (Math.random() - 0.5) * 0.1),
+                                        life: 1.0,
+                                        decay: 0.008 // Extended Life (1/4 orbit approx)
+                                    };
+                                    trailP.mesh.position.copy(g.position);
+                                    trailP.mesh.lookAt(Scene.camera.position); // Always face cam
+                                    Scene.scene.add(trailP.mesh);
+                                    Scene.particles.push(trailP);
+                                }
+
+                                // HIGHLIGHT
                                 if (isHighFreq && isFastPhase) {
-                                    // 2. TRAIL EFFECT: Planet becomes semi-transparent and ring glows
-                                    g.material.opacity = 0.6; // Semi-transparent
-                                    g.material.transparent = true;
-                                    // Calculate accurate position even in fast phase, but visual trail handles the look
-                                    const angle = (vT / p) * Math.PI * 2;
-                                    g.position.x = Math.cos(angle) * g.userData.radius;
-                                    g.position.z = Math.sin(angle) * g.userData.radius;
-                                    // Highlight orbit
-                                    // (Assuming sibling ring is at index+1 in build loop... handled via emissive trick or just visual blur)
+                                    g.material.opacity = 0.6;
                                 } else {
                                     g.material.opacity = 1.0;
-                                    g.material.transparent = false;
-                                    const angle = (vT / p) * Math.PI * 2;
-                                    g.position.x = Math.cos(angle) * g.userData.radius;
-                                    g.position.z = Math.sin(angle) * g.userData.radius;
                                 }
-                            } else if(Store.scenario === 'invaders') {
-                                const amp = 20; 
+                            } else if (Store.scenario === 'invaders') {
+                                const amp = 20;
                                 if (isHighFreq && isFastPhase) {
                                     // QUANTUM BLUR (Smear)
-                                    g.position.x = 0; 
+                                    g.position.x = 0;
                                     g.scale.x = 25; // Wide smear
-                                    if(g.children[0].material) g.children.forEach(c=>{
+                                    if (g.children[0].material) g.children.forEach(c => {
                                         c.material.transparent = true;
                                         c.material.opacity = 0.3;
                                     });
@@ -549,58 +736,75 @@
                                     const phase = (vT / p) * Math.PI * 2;
                                     g.position.x = Math.sin(phase) * amp;
                                     g.scale.x = 1;
-                                    if(g.children[0].material) g.children.forEach(c=>{
+                                    if (g.children[0].material) g.children.forEach(c => {
                                         c.material.transparent = false;
                                         c.material.opacity = 1.0;
                                     });
                                 }
-                            } else if(Store.scenario === 'prison') {
+                            } else if (Store.scenario === 'prison') {
                                 g.rotation.z = (vT / p) * Math.PI * 2;
                             }
                         });
-                    } else if(Store.mode === 'mcd' && Scene.meshes.main) {
+                    } else if (Store.mode === 'mcd' && Scene.meshes.main) {
                         Scene.meshes.main.rotation.y += 0.002;
                     }
                 }
-                
+
                 // PARTICLES
-                if(Scene.particles.length > 0) {
-                    for(let i=Scene.particles.length-1; i>=0; i--) {
+                if (Scene.particles.length > 0) {
+                    for (let i = Scene.particles.length - 1; i >= 0; i--) {
                         let p = Scene.particles[i];
                         p.mesh.position.add(p.vel);
-                        p.life -= 0.02;
+                        p.life -= (p.decay || 0.02);
                         p.mesh.scale.multiplyScalar(0.9);
-                        if(p.life <= 0) {
+                        p.mesh.material.opacity = p.life * 0.6; // Fade out
+                        if (p.life <= 0) {
+                            p.mesh.geometry.dispose();
+                            p.mesh.material.dispose();
                             Scene.scene.remove(p.mesh);
-                            Scene.particles.splice(i,1);
+                            Scene.particles.splice(i, 1);
                         }
                     }
                 }
 
-                if(Store.status === 'RESULT_VIEW' && Store.result.win) {
-                    if(Store.scenario === 'prison' && Scene.meshes.ball) {
-                        if(!Scene.meshes.ball.userData.vel) Scene.meshes.ball.userData.vel = 0;
+                if (Store.status === 'RESULT_VIEW' && Store.result.win) {
+                    if (Store.scenario === 'prison' && Scene.meshes.ball) {
+                        if (!Scene.meshes.ball.userData.vel) Scene.meshes.ball.userData.vel = 0;
                         Scene.meshes.ball.userData.vel += 0.05;
-                        Scene.meshes.ball.position.x += Scene.meshes.ball.userData.vel; 
+                        Scene.meshes.ball.position.x += Scene.meshes.ball.userData.vel;
                     }
-                    if(Store.scenario === 'invaders' && Scene.meshes.beam) {
-                        if(Scene.trail.length < 25) {
-                            const segment = Scene.meshes.beam.clone();
-                            segment.position.y = -22 + (Scene.trail.length * 3);
-                            segment.material = Scene.meshes.beam.material.clone();
-                            segment.material.opacity = 0.2 + (Scene.trail.length/25)*0.8;
-                            Scene.scene.add(segment);
-                            Scene.trail.push(segment);
+                    if (Store.scenario === 'invaders' && Scene.meshes.beam) {
+                        const beam = Scene.meshes.beam;
+                        if (!beam.userData.active && !beam.userData.hit) {
+                            beam.userData.active = true;
+                            beam.position.y = -20; // Start at nose
+                            beam.visible = true;
                         }
-                        Scene.trail.forEach(s => { s.position.y += 1.5; s.material.opacity -= 0.02; });
-                        
-                        if(Scene.trail.length > 15 && Scene.meshes.boss && Scene.meshes.boss.visible) {
-                            Scene.meshes.boss.visible = false; 
-                            App.spawnExplosion(Scene.meshes.boss.position);
+                        if (beam.userData.active) {
+                            beam.position.y += 3.0; // Fast Projectile
+
+                            // Spawn particles at tail (beam height 18 -> tail is y-9)
+                            if (Math.random() > 0.2) {
+                                const p = {
+                                    mesh: new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.8, side: THREE.DoubleSide })),
+                                    vel: new THREE.Vector3((Math.random() - 0.5) * 1, -1, (Math.random() - 0.5) * 1),
+                                    life: 0.5, decay: 0.05
+                                };
+                                p.mesh.position.set(beam.position.x, beam.position.y - 8, beam.position.z + (Math.random() - 0.5) * 2);
+                                Scene.scene.add(p.mesh); Scene.particles.push(p);
+                            }
+
+                            if (beam.position.y >= 20) { // Hit Boss (approx pos)
+                                beam.userData.active = false;
+                                beam.userData.hit = true;
+                                beam.visible = false;
+                                App.spawnExplosion(new THREE.Vector3(0, 25, 0));
+                                if (Scene.meshes.boss) Scene.meshes.boss.visible = false;
+                            }
                         }
                     }
                     // Laser Line in Planets
-                    if(Store.scenario === 'planets' && Scene.meshes.alignLine) {
+                    if (Store.scenario === 'planets' && Scene.meshes.alignLine) {
                         Scene.meshes.alignLine.material.opacity = Math.min(1, Scene.meshes.alignLine.material.opacity + 0.05);
                     }
                 }
@@ -608,96 +812,113 @@
             }
         };
 
+        function generateSunGlow() {
+            const c = document.createElement('canvas'); c.width = 512; c.height = 512;
+            const ctx = c.getContext('2d');
+            const g = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+            g.addColorStop(0, 'rgba(255, 215, 0, 0.6)'); // Reduced max brightness
+            g.addColorStop(0.2, 'rgba(255, 140, 0, 0.15)'); // Damped
+            g.addColorStop(0.5, 'rgba(255, 69, 0, 0.1)'); // Fades faster
+            g.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 512);
+            return c;
+        }
+
         var Build = {
             mcm: () => {
                 Scene.clear(); Scene.meshes.groups = [];
                 const nums = Store.problem.nums; const colors = CONFIG.colors;
-                
-                if(Store.scenario === 'planets') {
-                    Scene.camera.position.set(0, 50, 90); Scene.camera.lookAt(0,0,0);
-                    const sun = new THREE.Mesh(new THREE.SphereGeometry(6,32,32), new THREE.MeshBasicMaterial({color:0xffd700}));
-                    const glowMat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(generateSunGlow()), color: 0xffaa00, transparent:true, blending:THREE.AdditiveBlending });
-                    const glow = new THREE.Sprite(glowMat); glow.scale.set(80,80,1); sun.add(glow);
+
+                if (Store.scenario === 'planets') {
+                    Scene.camera.position.set(0, 50, 90); Scene.camera.lookAt(0, 0, 0);
+                    const sun = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffd700 }));
+                    // FIX: depthWrite: false to prevent occluding orbits behind
+                    const glowMat = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(generateSunGlow()), color: 0xffaa00, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+                    const glow = new THREE.Sprite(glowMat); glow.scale.set(80, 80, 1); sun.add(glow);
                     Scene.scene.add(sun);
-                    
-                    const target = new THREE.Mesh(new THREE.SphereGeometry(3,32,32), new THREE.MeshStandardMaterial({color:0x888888, roughness:0.5}));
+
+                    const target = new THREE.Mesh(new THREE.SphereGeometry(3, 32, 32), new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.5 }));
                     target.position.set(65, 0, 0); target.receiveShadow = true;
                     Scene.scene.add(target);
-                    
-                    const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(65,0,0)]);
-                    const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({color:0x00ff00, transparent:true, opacity:0, linewidth:3}));
+
+                    const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(65, 0, 0)]);
+                    const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0, linewidth: 3 }));
                     Scene.scene.add(line); Scene.meshes.alignLine = line;
 
-                    nums.forEach((n,i) => {
-                        const size = 1.5 + (i * 0.5); 
-                        const r = 18 + i * 11; const c = colors[i%colors.length];
-                        const p = new THREE.Mesh(new THREE.SphereGeometry(size,32,32), new THREE.MeshStandardMaterial({color:c}));
-                        p.userData = { radius: r };
+                    nums.forEach((n, i) => {
+                        const size = 1.5 + (i * 0.5);
+                        const r = 18 + i * 11; const c = colors[i % colors.length];
+                        const p = new THREE.Mesh(new THREE.SphereGeometry(size, 32, 32), new THREE.MeshStandardMaterial({ color: c }));
+                        p.userData = { radius: r, color: c };
+                        p.position.set(r, 0, 0); // Force Initial Alignment
                         p.castShadow = true; p.receiveShadow = true;
-                        
+
                         // Permanent Orbit Ring
-                        const t = new THREE.Mesh(new THREE.RingGeometry(r-0.2,r+0.2,128), new THREE.MeshBasicMaterial({color:c, side:THREE.DoubleSide, transparent:true, opacity:0.4, blending:THREE.AdditiveBlending}));
-                        t.rotation.x = Math.PI/2;
-                        
+                        const t = new THREE.Mesh(new THREE.RingGeometry(r - 0.2, r + 0.2, 128), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending, depthWrite: false }));
+                        t.rotation.x = Math.PI / 2;
+
                         Scene.scene.add(p); Scene.scene.add(t); Scene.meshes.groups.push(p);
                     });
-                } 
-                else if(Store.scenario === 'invaders') {
-                    Scene.camera.position.set(0, 20, 70); Scene.camera.lookAt(0,0,0);
+                }
+                else if (Store.scenario === 'invaders') {
+                    Scene.camera.position.set(0, 20, 90); Scene.camera.lookAt(0, 0, 0); // Pulled back slightly
                     const shipTex = createSpriteTexture(CONFIG.sprites.ship, '#00f3ff');
-                    const ship = new THREE.Mesh(new THREE.PlaneGeometry(8,6), new THREE.MeshBasicMaterial({ map: shipTex, transparent:true, side:THREE.DoubleSide }));
+                    const ship = new THREE.Mesh(new THREE.PlaneGeometry(8, 6), new THREE.MeshBasicMaterial({ map: shipTex, transparent: true, side: THREE.DoubleSide }));
                     ship.position.y = -25; Scene.scene.add(ship);
-                    
-                    const bossTex = createSpriteTexture(CONFIG.sprites.boss, '#FFB59D');
-                    const boss = new THREE.Mesh(new THREE.PlaneGeometry(16,10), new THREE.MeshBasicMaterial({ map: bossTex, transparent:true, side:THREE.DoubleSide }));
-                    boss.position.y = 25; Scene.scene.add(boss); Scene.meshes.boss = boss;
-                    
-                    const beam = new THREE.Mesh(new THREE.BoxGeometry(1, 4, 1), new THREE.MeshBasicMaterial({color: 0x00ff00, transparent:true, opacity:0.8}));
-                    beam.visible = false; 
-                    Scene.meshes.beam = beam;
 
-                    const totalH = 40; 
+                    const bossTex = createSpriteTexture(CONFIG.sprites.boss, '#FFB59D');
+                    const boss = new THREE.Mesh(new THREE.PlaneGeometry(16, 10), new THREE.MeshBasicMaterial({ map: bossTex, transparent: true, side: THREE.DoubleSide }));
+                    boss.position.y = 25; Scene.scene.add(boss); Scene.meshes.boss = boss;
+
+                    // LASER BEAM (3x ship height approx => 18)
+                    const beam = new THREE.Mesh(new THREE.PlaneGeometry(2, 18), new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.9, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
+                    beam.visible = false;
+                    beam.userData = { active: false, hit: false };
+                    Scene.meshes.beam = beam;
+                    Scene.scene.add(beam);
+
+                    const totalH = 40;
                     const stepY = totalH / nums.length;
-                    
-                    nums.forEach((n,i) => {
-                        const y = -10 + i * stepY; 
-                        const c = colors[i%colors.length];
+
+                    nums.forEach((n, i) => {
+                        const y = -10 + i * stepY;
+                        const c = colors[i % colors.length];
                         const g = new THREE.Group();
                         // Flat Neon Bars (1.0 height)
-                        const mat = new THREE.MeshBasicMaterial({ color:c });
+                        const mat = new THREE.MeshBasicMaterial({ color: c });
                         const left = new THREE.Mesh(new THREE.PlaneGeometry(24, 1.0), mat); left.position.x = -16;
                         const right = new THREE.Mesh(new THREE.PlaneGeometry(24, 1.0), mat); right.position.x = 16;
                         g.add(left); g.add(right); g.position.y = y;
                         Scene.scene.add(g); Scene.meshes.groups.push(g);
                     });
-                } 
-                else if(Store.scenario === 'prison') {
-                    Scene.camera.position.set(0,0,80); Scene.camera.lookAt(0,0,0);
-                    const ball = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), new THREE.MeshStandardMaterial({color:0xE6E1E5, emissive:0xE6E1E5, emissiveIntensity:0.8}));
+                }
+                else if (Store.scenario === 'prison') {
+                    Scene.camera.position.set(0, 0, 80); Scene.camera.lookAt(0, 0, 0);
+                    const ball = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), new THREE.MeshStandardMaterial({ color: 0xE6E1E5, emissive: 0xE6E1E5, emissiveIntensity: 0.8 }));
                     Scene.scene.add(ball); Scene.meshes.ball = ball;
-                    
+
                     const maxR = 30; const step = maxR / nums.length;
-                    
-                    nums.forEach((n,i) => {
-                        const r = 10 + i * step; 
+
+                    nums.forEach((n, i) => {
+                        const r = 10 + i * step;
                         const c = colors[i % colors.length];
-                        const gap = 0.6; 
-                        const geo = new THREE.TorusGeometry(r, 1.2, 4, 64, Math.PI*2 - 0.7); 
-                        geo.rotateZ(0.35); 
-                        const w = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:c})); 
+                        const gap = 0.6;
+                        const geo = new THREE.TorusGeometry(r, 1.2, 4, 64, Math.PI * 2 - 0.7);
+                        geo.rotateZ(0.35);
+                        const w = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: c }));
                         Scene.scene.add(w); Scene.meshes.groups.push(w);
                     });
                 }
             },
             mcd: () => {
-                Scene.clear(); Scene.camera.position.set(0, 45, 45); Scene.camera.lookAt(0,0,0);
-                const {w,h} = Store.problem; 
+                Scene.clear(); Scene.camera.position.set(0, 45, 45); Scene.camera.lookAt(0, 0, 0);
+                const { w, h } = Store.problem;
                 const maxDim = Math.max(w, h);
                 const scale = 35 / maxDim;
                 const vW = w * scale; const vH = h * scale;
-                const geo = new THREE.BoxGeometry(vW, 1, vH); 
+                const geo = new THREE.BoxGeometry(vW, 1, vH);
                 const col = 0xFFB59D; // Secondary Color
-                const mat = new THREE.MeshStandardMaterial({ color:col, roughness:0.9 });
+                const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.9 });
                 const m = new THREE.Mesh(geo, mat);
                 m.receiveShadow = true;
                 m.userData = { w: vW, h: vH, realW: w, realH: h };
@@ -707,18 +928,18 @@
 
         function createMCDGrid(cut) {
             const m = Scene.meshes.main;
-            if(!m) return new THREE.Group();
+            if (!m) return new THREE.Group();
             const { w, h, realW, realH } = m.userData;
             const stepX = (cut / realW) * w;
             const stepZ = (cut / realH) * h;
             const group = new THREE.Group();
             const mat = new THREE.LineBasicMaterial({ color: 0x5D1900, transparent: true, opacity: 0.8, linewidth: 2 });
-            for(let x = -w/2 + stepX; x < w/2 - 0.01; x += stepX) {
-                const pts = [new THREE.Vector3(x, 0.6, -h/2), new THREE.Vector3(x, 0.6, h/2)];
+            for (let x = -w / 2 + stepX; x < w / 2 - 0.01; x += stepX) {
+                const pts = [new THREE.Vector3(x, 0.6, -h / 2), new THREE.Vector3(x, 0.6, h / 2)];
                 group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
             }
-            for(let z = -h/2 + stepZ; z < h/2 - 0.01; z += stepZ) {
-                const pts = [new THREE.Vector3(-w/2, 0.6, z), new THREE.Vector3(w/2, 0.6, z)];
+            for (let z = -h / 2 + stepZ; z < h / 2 - 0.01; z += stepZ) {
+                const pts = [new THREE.Vector3(-w / 2, 0.6, z), new THREE.Vector3(w / 2, 0.6, z)];
                 group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
             }
             return group;
@@ -727,56 +948,59 @@
         var App = {
             scenariosSequence: ['planets', 'invaders', 'prison'],
             init: () => {
-                try { Store.user = localStorage.getItem('mi_user') || ""; } catch(e){ Store.user="GUEST"; }
-                
+                try { Store.user = localStorage.getItem('mi_user') || ""; } catch (e) { Store.user = "GUEST"; }
+
                 const inp = document.getElementById('player-input');
-                if(inp) inp.value = Store.user;
+                if (inp) inp.value = Store.user;
                 App.checkInput();
-                if(inp) inp.addEventListener('input', e => {
-                    Store.user = e.target.value.toUpperCase(); 
-                    try { localStorage.setItem('mi_user', Store.user); } catch(e){}
+                if (inp) inp.addEventListener('input', e => {
+                    Store.user = e.target.value.toUpperCase();
+                    try { localStorage.setItem('mi_user', Store.user); } catch (e) { }
                     App.checkInput();
                 });
-                
+
                 App.elTimeline = document.getElementById('timeline-bar');
                 App.elTimer = document.getElementById('timer-val');
                 App.renderLeaderboard();
-                
+
                 const lab = document.getElementById('view-lab');
-                if(lab) lab.classList.add('hidden');
-                
+                if (lab) lab.classList.add('hidden');
+
                 Scene.init();
             },
-            checkInput: () => { 
+            checkInput: () => {
                 const btn = document.getElementById('btn-start');
-                if(btn) btn.disabled = Store.user.length < 3; 
+                if (btn) btn.disabled = Store.user.length < 3;
             },
             setMode: (m) => {
                 Store.mode = m;
-                document.getElementById('btn-mode-mcm').classList.toggle('active', m==='mcm');
-                document.getElementById('btn-mode-mcd').classList.toggle('active', m==='mcd');
-                document.getElementById('scenarios-mcm').classList.toggle('hidden', m!=='mcm');
-                document.getElementById('scenarios-mcd').classList.toggle('hidden', m!=='mcd');
-                App.setScenario(m==='mcm'?'planets':'pizza');
+                document.getElementById('btn-mode-mcm').classList.toggle('active', m === 'mcm');
+                document.getElementById('btn-mode-mcd').classList.toggle('active', m === 'mcd');
+                document.getElementById('scenarios-mcm').classList.toggle('hidden', m !== 'mcm');
+                document.getElementById('scenarios-mcd').classList.toggle('hidden', m !== 'mcd');
+                App.setScenario(m === 'mcm' ? 'planets' : 'rect');
             },
             setScenario: (s) => {
                 Store.scenario = s;
                 document.querySelectorAll('[id^="scen-"]').forEach(b => b.classList.remove('active', 'border-cyan-500'));
                 const btn = document.getElementById(`scen-${s}`);
-                if(btn) btn.classList.add('active', 'border-cyan-500');
+                if (btn) btn.classList.add('active', 'border-cyan-500');
             },
             setLevel: (id) => {
                 Store.level = CONFIG.levels[id];
-                [0,1,2].forEach(i => {
+                const activeClass = "px-4 py-2 text-[9px] font-bold rounded-lg transition-all bg-cyan-600 text-on-background shadow-lg shadow-cyan-500/50 scale-105";
+                const inactiveClass = "px-4 py-2 text-[9px] font-bold rounded-lg transition-all text-outline-variant hover:text-white hover:bg-white/5";
+
+                [0, 1, 2].forEach(i => {
                     const b = document.getElementById(`lvl-${i}`);
-                    if(b) b.className = `md-segment-btn ${i===id?'active':''}`;
+                    if (b) b.className = i === id ? activeClass : inactiveClass;
                 });
             },
             spawnExplosion: (pos) => {
-                for(let i=0; i<40; i++) {
+                for (let i = 0; i < 40; i++) {
                     const p = {
-                        mesh: new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:0xFFB59D})),
-                        vel: new THREE.Vector3((Math.random()-0.5)*3, (Math.random()-0.5)*3, (Math.random()-0.5)*3),
+                        mesh: new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0xFFB59D })),
+                        vel: new THREE.Vector3((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3),
                         life: 1.0
                     };
                     p.mesh.position.copy(pos);
@@ -787,12 +1011,23 @@
             startSession: () => {
                 Store.score = 0; Store.round = 1;
                 document.getElementById('score-display').innerText = "0000";
+
+                // Build Sequence based on selection
+                if (Store.mode === 'mcm') {
+                    Store.activeSequence = ['planets', 'invaders', 'prison'];
+                } else {
+                    const all = ['rect', 'box', 'grid'];
+                    const start = Store.scenario;
+                    Store.activeSequence = [start, ...all.filter(s => s !== start)];
+                }
+
                 App.startRound();
             },
             startRound: () => {
                 Store.status = 'GAME';
-                if(Store.mode === 'mcm') Store.scenario = App.scenariosSequence[(Store.round - 1) % 3];
-                
+                // Use the built sequence
+                Store.scenario = Store.activeSequence ? Store.activeSequence[Store.round - 1] : Store.scenario;
+
                 document.getElementById('view-menu').classList.add('hidden');
                 document.getElementById('view-game').classList.remove('hidden');
                 document.getElementById('game-input').value = '';
@@ -800,64 +1035,69 @@
                 document.getElementById('action-area').classList.remove('hidden');
                 document.getElementById('btn-continue').classList.add('hidden');
                 document.getElementById('round-display').innerText = Store.round;
-                if(App.elTimeline) App.elTimeline.style.width = '0%';
-                
+                if (App.elTimeline) App.elTimeline.style.width = '0%';
+
                 const lab = document.getElementById('view-lab');
-                if(lab) lab.classList.add('hidden');
+                if (lab) lab.classList.add('hidden');
                 resetLab();
-                
-                if(Store.mode === 'mcm') {
+
+                if (Store.mode === 'mcm') {
                     Store.problem.nums = MathUtils.genNumbers(Store.level.count, Store.level.id);
                     Store.problem.target = Store.problem.nums.reduce(MathUtils.lcm);
                     document.getElementById('timer-hud').classList.remove('hidden');
                 } else {
                     const dims = MathUtils.genDims(Store.level.id);
-                    Store.problem.w = dims.w; Store.problem.h = dims.h; Store.problem.nums=[dims.w, dims.h];
-                    Store.problem.target = MathUtils.gcd(dims.w, dims.h);
+                    Store.problem.w = dims.w; Store.problem.h = dims.h; Store.problem.nums = [dims.w, dims.h];
+                    if (dims.d) Store.problem.d = dims.d; // Box mode
+                    if (Store.scenario === 'box') Store.problem.nums.push(dims.d);
+
+                    Store.problem.target = MathUtils.gcd(dims.w, MathUtils.gcd(dims.h, dims.d || dims.h));
+                    // Fix: Ensure target is never 1 if possible for better visuals, but math is math.
+
                     document.getElementById('timer-hud').classList.add('hidden');
                 }
                 const allFactors = MathUtils.getFactors(Store.problem.nums);
-                document.getElementById('lab-buttons').innerHTML = allFactors.map(p => 
+                document.getElementById('lab-buttons').innerHTML = allFactors.map(p =>
                     `<button onclick="Lab.add(${p})" class="bg-[#252538] hover:bg-[#80D8FF] text-[#E6E1E5] hover:text-[#003645] text-xs h-8 rounded font-bold transition-colors">${p}</button>`).join('');
                 document.getElementById('problem-display').innerHTML = Store.problem.nums.map((n, i) => {
-                    const label = Store.mode === 'mcd' ? ['W','H'][i]+':' : 'T'+(i+1)+':';
-                    const col = Store.scenario === 'prison' ? `#${CONFIG.colors[i%CONFIG.colors.length].toString(16).padStart(6,'0')}` : 'text-[#80D8FF]';
+                    const label = Store.mode === 'mcd' ? (Store.scenario === 'box' ? ['W', 'H', 'D'][i] : ['W', 'H'][i]) + ':' : 'T' + (i + 1) + ':';
+                    const col = Store.scenario === 'prison' ? `#${CONFIG.colors[i % CONFIG.colors.length].toString(16).padStart(6, '0')}` : 'text-[#80D8FF]';
                     const colStyle = Store.scenario === 'prison' ? `style="color:${col}"` : `class="${col}"`;
                     return `<div class="flex flex-col items-center bg-[#252538] px-3 py-1 rounded border border-[#49454F]"><span class="text-[8px] text-[#CAC4D0]">${label}</span><span ${colStyle} class="font-bold">${n}</span></div>`;
                 }).join('');
-                
-                if(Scene.camera) {
-                    Scene.camera.aspect = window.innerWidth/window.innerHeight;
+
+                if (Scene.camera) {
+                    Scene.camera.aspect = window.innerWidth / window.innerHeight;
                     Scene.camera.updateProjectionMatrix();
                     Scene.renderer.setSize(window.innerWidth, window.innerHeight);
                 }
 
-                if(Store.mode === 'mcm') Build.mcm(); else Build.mcd();
+                if (Store.mode === 'mcm') Build.mcm(); else Build.mcd();
             },
             fire: () => {
                 const val = parseInt(document.getElementById('game-input').value);
-                if(!val) return;
-                
-                const lab = document.getElementById('view-lab');
-                if(lab) lab.classList.add('hidden');
+                if (!val) return;
 
-                if(Store.mode === 'mcm') {
+                const lab = document.getElementById('view-lab');
+                if (lab) lab.classList.add('hidden');
+
+                if (Store.mode === 'mcm') {
                     Store.status = 'SIM'; Store.sim.t = 0; Store.sim.target = val; Store.sim.vT = 0;
-                    Store.sim.matrixActive = false; 
-                    
-                    const dur = 10000; 
-                    const fastDur = 7000; 
-                    const slowDur = 3000; 
+                    Store.sim.matrixActive = false;
+
+                    const dur = 10000;
+                    const fastDur = 7000;
+                    const slowDur = 3000;
                     const startT = Date.now();
-                    const warpPoint = Math.max(0, val - 3); 
-                    
+                    const warpPoint = Math.max(0, val - 3);
+
                     const loop = () => {
-                        if(Store.status !== 'SIM') return;
+                        if (Store.status !== 'SIM') return;
                         const el = Date.now() - startT;
-                        const prog = Math.min(el/dur, 1);
-                        Store.sim.t = prog * val; 
-                        
-                        if(el < fastDur) {
+                        const prog = Math.min(el / dur, 1);
+                        Store.sim.t = prog * val;
+
+                        if (el < fastDur) {
                             Store.sim.vT = (el / fastDur) * warpPoint;
                             Store.sim.matrixActive = false;
                         } else {
@@ -865,43 +1105,44 @@
                             const p2 = (el - fastDur) / slowDur;
                             const ease = p2 < 0.5 ? 2 * p2 * p2 : 1 - Math.pow(-2 * p2 + 2, 2) / 2;
                             Store.sim.vT = warpPoint + ease * (val - warpPoint);
-                            Store.sim.matrixActive = true; 
+                            Store.sim.matrixActive = true;
                         }
-                        
-                        if(App.elTimer) App.elTimer.innerText = Store.sim.vT.toFixed(2);
-                        if(App.elTimeline) App.elTimeline.style.width = Math.min((el/dur)*100, 100) + '%';
-                        
-                        if(el >= dur) App.showResult(val===Store.problem.target, val);
+
+                        if (App.elTimer) App.elTimer.innerText = Store.sim.vT.toFixed(2);
+                        if (App.elTimeline) App.elTimeline.style.width = Math.min((el / dur) * 100, 100) + '%';
+
+                        if (el >= dur) App.showResult(val === Store.problem.target, val);
                         else requestAnimationFrame(loop);
                     };
                     loop();
-                } else App.showResult(val===Store.problem.target, val);
+                } else App.showResult(val === Store.problem.target, val);
             },
             showResult: (win, val) => {
                 Store.status = 'RESULT_VIEW'; Store.result = { win, val };
-                if(win) {
+                if (win) {
                     const pts = Math.floor(100 * Store.level.mult);
                     Store.score += pts;
-                    document.getElementById('score-display').innerText = Store.score.toString().padStart(4,'0');
+                    document.getElementById('score-display').innerText = Store.score.toString().padStart(4, '0');
                     document.getElementById('result-banner').classList.remove('hidden');
                     document.getElementById('action-area').classList.add('hidden');
                     document.getElementById('btn-continue').classList.remove('hidden');
-                    
-                    if(Store.mode === 'mcd' && Scene.meshes.main) {
-                        Scene.meshes.main.add(createMCDGrid(val));
+
+                    if (Store.mode === 'mcd' && Scene.meshes.main) {
+                        const anim = createMCDGrid(val);
+                        if (anim) Scene.meshes.main.add(anim);
                     }
-                    if(Store.mode === 'mcm' && Store.scenario === 'planets' && Scene.meshes.alignLine) {
-                        Scene.meshes.alignLine.material.opacity = 1; 
+                    if (Store.mode === 'mcm' && Store.scenario === 'planets' && Scene.meshes.alignLine) {
+                        Scene.meshes.alignLine.material.opacity = 1;
                     }
                 } else App.endRound(false);
             },
             nextRound: () => {
-                if(Store.round < Store.maxRounds) { Store.round++; App.startRound(); } else App.endSession(false);
+                if (Store.round < Store.maxRounds) { Store.round++; App.startRound(); } else App.endSession(false);
             },
             endRound: (aborted) => { App.endSession(aborted); },
             endSession: (aborted) => {
                 const lab = document.getElementById('view-lab');
-                if(lab) lab.classList.add('hidden');
+                if (lab) lab.classList.add('hidden');
                 resetLab();
 
                 document.getElementById('result-banner').classList.add('hidden');
@@ -912,12 +1153,12 @@
                 const title = document.getElementById('fb-title');
                 const sub = document.getElementById('fb-sub');
                 const btn = document.getElementById('fb-btn');
-                if(Store.round === Store.maxRounds && win) {
+                if (Store.round === Store.maxRounds && win) {
                     icon.innerText = "🎓"; title.innerText = "SESSION COMPLETE"; title.className = "font-brand text-xl mb-2 text-[#6AD48B]";
                     sub.innerHTML = `FINAL SCORE: <span class="text-on-background font-bold">${Store.score}</span>`;
                     btn.innerText = "SAVE & EXIT";
                     btn.onclick = () => { App.saveData(); App.showMenu(); };
-                } else if(!win) {
+                } else if (!win) {
                     icon.innerText = "💥"; title.innerText = "MISSION FAILED"; title.className = "font-brand text-xl mb-2 text-[#F2B8B5]";
                     sub.innerHTML = `TARGET WAS: <span class="text-on-background font-bold">${Store.problem.target}</span>`;
                     btn.innerText = "RETRY";
@@ -926,9 +1167,9 @@
             },
             saveData: () => {
                 let lb = [];
-                try { lb = JSON.parse(localStorage.getItem('mi_lb')||'[]'); } catch(e){}
-                lb.push({n: Store.user, s: Store.score}); lb.sort((a,b)=>b.s-a.s);
-                try { localStorage.setItem('mi_lb', JSON.stringify(lb.slice(0,10))); } catch(e){}
+                try { lb = JSON.parse(localStorage.getItem('mi_lb') || '[]'); } catch (e) { }
+                lb.push({ n: Store.user, s: Store.score }); lb.sort((a, b) => b.s - a.s);
+                try { localStorage.setItem('mi_lb', JSON.stringify(lb.slice(0, 10))); } catch (e) { }
             },
             showMenu: () => {
                 Store.status = 'MENU';
@@ -940,19 +1181,289 @@
             },
             renderLeaderboard: () => {
                 let lb = [];
-                try { lb = JSON.parse(localStorage.getItem('mi_lb')||'[]'); } catch(e){}
-                document.getElementById('leaderboard-list').innerHTML = lb.slice(0,5).map((e,i) => 
+                try { lb = JSON.parse(localStorage.getItem('mi_lb') || '[]'); } catch (e) { }
+                document.getElementById('leaderboard-list').innerHTML = lb.slice(0, 5).map((e, i) =>
                     `<div class="flex justify-between items-center bg-[#252538] p-3 rounded-lg border border-[#49454F]">
-                        <div class="flex items-center gap-3"><span class="text-xs font-bold text-[#80D8FF]">#${i+1}</span><span class="font-code text-[10px] text-on-background">${e.n}</span></div>
+                        <div class="flex items-center gap-3"><span class="text-xs font-bold text-[#80D8FF]">#${i + 1}</span><span class="font-code text-[10px] text-on-background">${e.n}</span></div>
                         <span class="font-code text-xs text-[#FFB59D] font-bold">${e.s}</span>
                     </div>`).join('');
             },
-            toggleLab: () => document.getElementById('view-lab').classList.toggle('hidden')
+            toggleLab: () => document.getElementById('view-lab').classList.toggle('hidden'),
+
+            showNarrative: (msg) => {
+                const el = document.getElementById('narrative-display');
+                const txt = document.getElementById('narrative-text');
+                if (!el || !txt) return;
+                txt.innerText = msg;
+                el.classList.remove('opacity-0', '-translate-y-4');
+                setTimeout(() => el.classList.add('opacity-0', '-translate-y-4'), 4000);
+            }
         };
 
-        var Lab = { f: [], add: n => { Lab.f.push(n); Lab.upd(); }, reset: () => { Lab.f = []; Lab.upd(); }, upd: () => { document.getElementById('lab-hist').innerText = Lab.f.join(' × '); document.getElementById('lab-res').innerText = Lab.f.length ? Lab.f.reduce((a,b)=>a*b) : 1; } };
-        window.resetLab = Lab.reset; 
+        // VISUALS
+        var Build = {
+            mcm: () => {
+                Scene.clear();
+                Scene.camera.position.set(0, 45, 45); Scene.camera.lookAt(0, 0, 0);
+                const { nums } = Store.problem;
+                const maxNum = Math.max(...nums);
+                const scale = 35 / maxNum;
+
+                if (Store.scenario === 'planets') {
+                    App.showNarrative("ALIGNING ORBITAL PATHS...");
+                    const colors = [0x80D8FF, 0xFFB59D, 0xCCEEFF, 0xFFD700, 0x98FB98];
+                    nums.forEach((n, i) => {
+                        const radius = n * scale / 2;
+                        const geo = new THREE.SphereGeometry(radius, 32, 32);
+                        const mat = new THREE.MeshStandardMaterial({ color: colors[i % colors.length], roughness: 0.7, metalness: 0.1 });
+                        const planet = new THREE.Mesh(geo, mat);
+                        planet.position.set(0, 0, 0);
+                        planet.userData = { initialRadius: radius, orbitSpeed: 0.001 * (maxNum / n), orbitAngle: Math.random() * Math.PI * 2 };
+                        Scene.scene.add(planet);
+                        Scene.meshes[`planet${i}`] = planet;
+                    });
+                    const sunGeo = new THREE.SphereGeometry(maxNum * scale / 10, 32, 32);
+                    const sunMat = new THREE.MeshBasicMaterial({ color: 0xFFD700 });
+                    const sun = new THREE.Mesh(sunGeo, sunMat);
+                    Scene.scene.add(sun);
+                    Scene.meshes.sun = sun;
+
+                    const lineMat = new THREE.LineBasicMaterial({ color: 0x00FF00, transparent: true, opacity: 0.2 });
+                    const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(maxNum * scale * 1.5, 0, 0)]);
+                    const alignLine = new THREE.Line(lineGeo, lineMat);
+                    Scene.scene.add(alignLine);
+                    Scene.meshes.alignLine = alignLine;
+
+                } else if (Store.scenario === 'invaders') {
+                    App.showNarrative("ENEMY FLEET DETECTED. SYNC FIRE RATE.");
+                    const colors = [0x80D8FF, 0xFFB59D, 0xCCEEFF, 0xFFD700, 0x98FB98];
+                    nums.forEach((n, i) => {
+                        const size = n * scale / 2;
+                        const geo = new THREE.BoxGeometry(size, size, size);
+                        const mat = new THREE.MeshStandardMaterial({ color: colors[i % colors.length], roughness: 0.5, metalness: 0.5 });
+                        const invader = new THREE.Mesh(geo, mat);
+                        invader.position.set((i - (nums.length - 1) / 2) * (maxNum * scale / 2), 0, 0);
+                        invader.userData = { initialY: invader.position.y, floatSpeed: 0.01 + Math.random() * 0.02, floatOffset: Math.random() * Math.PI * 2 };
+                        Scene.scene.add(invader);
+                        Scene.meshes[`invader${i}`] = invader;
+                    });
+                } else if (Store.scenario === 'prison') {
+                    App.showNarrative("SECURITY BREACH. CALCULATING WEAK POINTS.");
+                    const colors = CONFIG.colors.map(c => new THREE.Color(c));
+                    const cellWidth = maxNum * scale / 2;
+                    const cellHeight = maxNum * scale / 2;
+                    const cellDepth = maxNum * scale / 2;
+
+                    nums.forEach((n, i) => {
+                        const barCount = n;
+                        const barSpacing = cellWidth / (barCount + 1);
+                        const barThickness = cellWidth / (barCount * 5);
+
+                        const cellGroup = new THREE.Group();
+                        cellGroup.position.x = (i - (nums.length - 1) / 2) * (cellWidth * 1.5);
+
+                        const floorGeo = new THREE.PlaneGeometry(cellWidth, cellDepth);
+                        const floorMat = new THREE.MeshStandardMaterial({ color: 0x333333, side: THREE.DoubleSide });
+                        const floor = new THREE.Mesh(floorGeo, floorMat);
+                        floor.rotation.x = -Math.PI / 2;
+                        floor.position.y = -cellHeight / 2;
+                        cellGroup.add(floor);
+
+                        const ceiling = new THREE.Mesh(floorGeo, floorMat);
+                        ceiling.rotation.x = Math.PI / 2;
+                        ceiling.position.y = cellHeight / 2;
+                        cellGroup.add(ceiling);
+
+                        const wallGeo = new THREE.PlaneGeometry(cellWidth, cellHeight);
+                        const wallMat = new THREE.MeshStandardMaterial({ color: 0x444444, side: THREE.DoubleSide });
+                        const backWall = new THREE.Mesh(wallGeo, wallMat);
+                        backWall.position.z = -cellDepth / 2;
+                        cellGroup.add(backWall);
+
+                        const barMat = new THREE.MeshStandardMaterial({ color: colors[i % colors.length], metalness: 0.8, roughness: 0.3 });
+                        for (let j = 0; j < barCount; j++) {
+                            const barGeo = new THREE.BoxGeometry(barThickness, cellHeight, barThickness);
+                            const bar = new THREE.Mesh(barGeo, barMat);
+                            bar.position.set(-cellWidth / 2 + barSpacing * (j + 1), 0, cellDepth / 2);
+                            cellGroup.add(bar);
+                        }
+                        Scene.scene.add(cellGroup);
+                        Scene.meshes[`cell${i}`] = cellGroup;
+                    });
+                }
+            },
+            mcd: () => {
+                Scene.clear();
+                // Fix: Remove SunLight from MCM mode if present, to avoid internal yellow reflections
+                if (Scene.meshes.sunLight) { Scene.scene.remove(Scene.meshes.sunLight); delete Scene.meshes.sunLight; }
+
+                Scene.camera.position.set(0, 45, 45); Scene.camera.lookAt(0, 0, 0);
+                const { w, h, d } = Store.problem;
+                const maxDim = Math.max(w, h, d || 1);
+                const scale = 35 / maxDim;
+                const vW = w * scale; const vH = h * scale; const vD = d ? d * scale : vH;
+
+                if (Store.scenario === 'rect') {
+                    App.showNarrative("SECTOR ANALYSIS: OPTIMIZE AREA CUTS");
+                    const geo = new THREE.PlaneGeometry(vW, vH);
+                    const mat = new THREE.MeshBasicMaterial({ color: 0x001122, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+                    const m = new THREE.Mesh(geo, mat); m.rotation.x = -Math.PI / 2;
+                    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0x00f3ff }));
+                    m.add(edges);
+                    m.receiveShadow = true;
+                    m.userData = { w: vW, h: vH, realW: w, realH: h };
+                    Scene.scene.add(m); Scene.meshes.main = m;
+                }
+                else if (Store.scenario === 'box') {
+                    App.showNarrative("CARGO BAY: MAXIMIZE STORAGE DENSITY");
+                    Scene.camera.position.set(40, 40, 40); Scene.camera.lookAt(0, 0, 0);
+                    // Standard Mapping: Width->X, Height->Y, Depth->Z
+                    const geo = new THREE.BoxGeometry(vW, vH, vD);
+
+                    // JELLY GLOW MATERIAL
+                    const mat = new THREE.MeshPhysicalMaterial({
+                        color: 0xff0044,      // Base Red
+                        emissive: 0xaa0022,   // Strong Red Glow
+                        emissiveIntensity: 0.4,
+                        transmission: 0.9,    // Jelly-like transparency
+                        opacity: 1,
+                        metalness: 0,
+                        roughness: 0.1,       // Wet/Shiny
+                        thickness: 3,         // Refraction volume
+                        clearcoat: 1.0,
+                        clearcoatRoughness: 0,
+                        side: THREE.DoubleSide
+                    });
+                    const box = new THREE.Mesh(geo, mat);
+
+                    // White outer edges for definition
+                    const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 }));
+                    box.add(edges);
+
+                    box.userData = { w: vW, h: vH, d: vD, realW: w, realH: h, realD: d };
+                    Scene.scene.add(box); Scene.meshes.main = box;
+                }
+                else if (Store.scenario === 'grid') {
+                    App.showNarrative("SIGNAL TRIANGULATION: ESTABLISH NODES");
+                    Scene.camera.position.set(0, 60, 0); Scene.camera.lookAt(0, 0, 0);
+
+                    const border = new THREE.LineSegments(
+                        new THREE.EdgesGeometry(new THREE.PlaneGeometry(vW, vH)),
+                        new THREE.LineBasicMaterial({ color: 0x00ff00, linewidth: 2 })
+                    );
+                    border.rotation.x = -Math.PI / 2;
+                    border.userData = { w: vW, h: vH, realW: w, realH: h };
+
+                    const bg = new THREE.Mesh(new THREE.PlaneGeometry(vW, vH), new THREE.MeshBasicMaterial({ color: 0x002200, transparent: true, opacity: 0.2, side: THREE.DoubleSide }));
+                    bg.position.z = -0.05;
+                    border.add(bg);
+
+                    Scene.scene.add(border); Scene.meshes.main = border;
+                }
+            }
+        };
+
+        var Lab = { f: [], add: n => { Lab.f.push(n); Lab.upd(); }, reset: () => { Lab.f = []; Lab.upd(); }, upd: () => { document.getElementById('lab-hist').innerText = Lab.f.join(' × '); document.getElementById('lab-res').innerText = Lab.f.length ? Lab.f.reduce((a, b) => a * b) : 1; } };
+        window.resetLab = Lab.reset;
         window.onload = App.init;
+
+        function createMCDGrid(cut) {
+            const m = Scene.meshes.main;
+            if (!m) return new THREE.Group();
+            const { w, h, d, realW, realH, realD } = m.userData;
+            const group = new THREE.Group();
+
+            if (Store.scenario === 'rect') {
+                const segsX = Math.round(realW / cut);
+                const stepX = w / segsX;
+                const segsZ = Math.round(realH / cut);
+                const stepZ = h / segsZ;
+
+                const mat = new THREE.LineBasicMaterial({ color: 0x00f3ff, transparent: true, opacity: 0.8, linewidth: 2 });
+
+                // Vertical Lines
+                for (let i = 1; i < segsX; i++) {
+                    const x = -w / 2 + i * stepX;
+                    const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x, -h / 2, 0.05), new THREE.Vector3(x, h / 2, 0.05)]), mat);
+                    group.add(l);
+                }
+                // Horizontal Lines
+                for (let i = 1; i < segsZ; i++) {
+                    const y = -h / 2 + i * stepZ;
+                    const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-w / 2, y, 0.05), new THREE.Vector3(w / 2, y, 0.05)]), mat);
+                    group.add(l);
+                }
+            }
+            else if (Store.scenario === 'box') {
+                const segsX = Math.round(realW / cut);
+                const stepX = w / segsX;
+                const segsY = Math.round(realH / cut);
+                const stepY = h / segsY;
+                const segsZ = Math.round(realD / cut);
+                const stepZ = d / segsZ;
+
+                // Material for the wire cuts (LINES ONLY)
+                const lineMat = new THREE.LineBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 1, depthWrite: true, linewidth: 2 });
+
+                // Helper to create outline of a plane
+                const createCut = (dx, dy, x, y, z, rotAxis) => {
+                    const g = new THREE.PlaneGeometry(dx, dy);
+                    const e = new THREE.EdgesGeometry(g);
+                    const l = new THREE.LineSegments(e, lineMat);
+
+                    if (rotAxis === 'x') l.rotation.x = Math.PI / 2;
+                    if (rotAxis === 'y') l.rotation.y = Math.PI / 2;
+                    l.position.set(x, y, z);
+
+                    group.add(l);
+                };
+
+                // 1. Cuts perpendicular to X-axis (YZ planes).
+                if (segsX > 1) {
+                    for (let i = 1; i < segsX; i++) {
+                        const x = -w / 2 + i * stepX;
+                        createCut(d, h, x, 0, 0, 'y');
+                    }
+                }
+
+                // 2. Cuts perpendicular to Y-axis (XZ planes).
+                if (segsY > 1) {
+                    for (let i = 1; i < segsY; i++) {
+                        const y = -h / 2 + i * stepY;
+                        createCut(w, d, 0, y, 0, 'x');
+                    }
+                }
+
+                // 3. Cuts perpendicular to Z-axis (XY planes).
+                if (segsZ > 1) {
+                    for (let i = 1; i < segsZ; i++) {
+                        const z = -d / 2 + i * stepZ;
+                        createCut(w, h, 0, 0, z, '');
+                    }
+                }
+            }
+            else if (Store.scenario === 'grid') {
+                const segsX = Math.round(realW / cut);
+                const stepX = w / segsX;
+                const segsZ = Math.round(realH / cut);
+                const stepZ = h / segsZ;
+
+                const geo = new THREE.SphereGeometry(0.5, 16, 16);
+                const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+                for (let i = 0; i <= segsX; i++) {
+                    const x = -w / 2 + i * stepX;
+                    for (let j = 0; j <= segsZ; j++) {
+                        const y = -h / 2 + j * stepZ;
+                        const dot = new THREE.Mesh(geo, mat);
+                        dot.position.set(x, y, 0);
+                        group.add(dot);
+                    }
+                }
+            }
+            return group;
+        }
     </script>
 </body>
+
 </html>
