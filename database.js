@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2025-12-22 14:21:48
+   Data: 2026-03-03 17:29:50
 */
 
 const db = [
@@ -48,39 +48,6 @@ const db = [
     },
     {
         "date": "2025-12-20",
-        "description": "Risorsa: Tattoo Delta",
-        "tags": [
-            "Gallery",
-            "Immagine"
-        ],
-        "title": "Tattoo Delta",
-        "excerpt": "Risorsa: Tattoo Delta",
-        "url": "content/images/tattoo_delta.png",
-        "type": "image",
-        "icon": "🖼️",
-        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
-    },
-    {
-        "date": "2025-12-20",
-        "description": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
-        "tags": [
-            "1EL",
-            "Calcolo",
-            "Espressioni",
-            "Infografica",
-            "PEMDAS",
-            "Potenze",
-            "Visual"
-        ],
-        "title": "Errori Comuni - Potenze, Espressioni",
-        "excerpt": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
-        "url": "content/infografiche/errori_comuni02.png",
-        "type": "infographic",
-        "icon": "🖼️",
-        "thumbnail": "content/assets/thumbnails/errori_comuni02.jpg"
-    },
-    {
-        "date": "2025-12-20",
         "description": "Risorsa: Guida Al Mondo Delle Funzioni Matematiche",
         "tags": [
             "Infografica",
@@ -108,6 +75,56 @@ const db = [
         "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.jpg"
     },
     {
+        "date": "2025-12-20",
+        "description": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "tags": [
+            "1EL",
+            "Calcolo",
+            "Espressioni",
+            "Infografica",
+            "PEMDAS",
+            "Potenze",
+            "Visual"
+        ],
+        "title": "Errori Comuni - Potenze, Espressioni",
+        "excerpt": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "url": "content/infografiche/errori_comuni02.png",
+        "type": "infographic",
+        "icon": "🖼️",
+        "thumbnail": "content/assets/thumbnails/errori_comuni02.jpg"
+    },
+    {
+        "date": "2025-12-20",
+        "description": "Risorsa: Tattoo Delta",
+        "tags": [
+            "Gallery",
+            "Immagine"
+        ],
+        "title": "Tattoo Delta",
+        "excerpt": "Risorsa: Tattoo Delta",
+        "url": "content/images/tattoo_delta.png",
+        "type": "image",
+        "icon": "🖼️",
+        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
+    },
+    {
+        "date": "2025-12-12",
+        "description": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
+        "tags": [
+            "AI",
+            "Assistant",
+            "Gemini",
+            "Google",
+            "Linkografia",
+            "Strumenti"
+        ],
+        "title": "Google AI Studio: Assistant",
+        "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0?showPreview=true&showAssistant=false&fullscreenApplet=true",
+        "excerpt": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
+        "type": "link",
+        "icon": "🌐"
+    },
+    {
         "title": "PIP",
         "excerpt": "Terminale didattico Orfini Industries. Simulatore open source per lo studio della retta (y=mx+q).",
         "tags": [
@@ -126,23 +143,6 @@ const db = [
         "type": "app",
         "icon": "📐",
         "thumbnail": "content/assets/thumbnails/retta_fallout_002.jpg"
-    },
-    {
-        "date": "2025-12-12",
-        "description": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
-        "tags": [
-            "AI",
-            "Assistant",
-            "Gemini",
-            "Google",
-            "Linkografia",
-            "Strumenti"
-        ],
-        "title": "Google AI Studio: Assistant",
-        "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0?showPreview=true&showAssistant=false&fullscreenApplet=true",
-        "excerpt": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
-        "type": "link",
-        "icon": "🌐"
     },
     {
         "title": "Percent Lab",
@@ -429,26 +429,6 @@ const db = [
         "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.jpg"
     },
     {
-        "title": "Math Invaders: MCD & mcm",
-        "excerpt": "Videogioco arcade in pixel-art per allenare il calcolo mentale di M.C.D. (Massimo Comune Divisore) e m.c.m. (Minimo Comune Multiplo).",
-        "tags": [
-            "Matematica",
-            "Aritmetica",
-            "MCD",
-            "mcm",
-            "1EL",
-            "Mat:Calcolo",
-            "Mat:ProblemSolving",
-            "Gamification",
-            "EU:STEM"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/mcd_mcm_new_003.html",
-        "type": "app",
-        "icon": "🔢",
-        "thumbnail": "content/assets/thumbnails/mcd_mcm_new_003.jpg"
-    },
-    {
         "title": "Math Underground: Mappa Funzioni",
         "excerpt": "Mappa concettuale interattiva in stile metropolitana per esplorare la classificazione delle funzioni analitiche (Dominio, Tipi, Proprietà).",
         "tags": [
@@ -469,6 +449,24 @@ const db = [
         "type": "app",
         "icon": "📈",
         "thumbnail": "content/assets/thumbnails/math_underground003_4el.jpg"
+    },
+    {
+        "title": "Math Invaders",
+        "excerpt": "Attività interattiva.",
+        "tags": [
+            "Matematica",
+            "Aritmetica",
+            "MCD",
+            "mcm",
+            "1EL",
+            "Mat:Calcolo",
+            "Gamification",
+            "Videogioco"
+        ],
+        "date": "2025-12-02",
+        "url": "content/apps/MCD_mcm_1el_001.html",
+        "type": "app",
+        "icon": "🔢"
     },
     {
         "title": "Chaos Lab: Sistemi Dinamici",

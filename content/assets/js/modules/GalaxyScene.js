@@ -425,7 +425,7 @@ export class GalaxyScene {
                 for (let j = i + 1; j < nodes.length; j++) {
                     const n1 = nodes[i], n2 = nodes[j];
                     const dx = n1.x - n2.x, dy = n1.y - n2.y, dz = n1.z - n2.z;
-                    const d2 = dx * dx + dy * dy + dz * dz + 1.0;
+                    const d2 = dx * dx + dy * dy + dz * dz + 100.0; // Softened singularity
                     const force = repulsion / d2;
 
                     const d = Math.sqrt(d2);
@@ -460,6 +460,14 @@ export class GalaxyScene {
                 n.vx -= n.x * centerGrav;
                 n.vy -= n.y * centerGrav;
                 n.vz -= n.z * centerGrav;
+
+                // Prevent explosions (NaN / Infinity velocity)
+                const vMag = Math.sqrt(n.vx * n.vx + n.vy * n.vy + n.vz * n.vz);
+                if (vMag > 50) {
+                    n.vx = (n.vx / vMag) * 50;
+                    n.vy = (n.vy / vMag) * 50;
+                    n.vz = (n.vz / vMag) * 50;
+                }
 
                 // Move
                 n.x += n.vx * dt;

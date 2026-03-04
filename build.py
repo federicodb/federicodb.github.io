@@ -273,8 +273,10 @@ def main():
                 # ------------------------------
 
                 # --- NEW: Data Consistency Check ---
+                if "tags" not in meta or meta["tags"] is None:
+                    meta["tags"] = []
                 if not meta.get("tags"):
-                    print(f"  ⚠️  WARNING: Tags mancanti per '{filename}'")
+                    print(f"  ⚠️  WARNING: Tags mancanti o vuoti per '{filename}'")
                 if not meta.get("excerpt") and not meta.get("description"):
                     print(f"  ⚠️  WARNING: Descrizione mancante per '{filename}'")
                 # -----------------------------------

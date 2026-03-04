@@ -103,8 +103,9 @@ def standardize_file(file_path):
         is_dirty = True
         print(f"  🧹 Removed Deep Home Link: {os.path.basename(file_path)}")
 
-    # --- PHASE 2: INJECTION (Run only if needed) ---
-    
+    # --- PHASE 2: INJECTION (DISABILITATA) ---
+    # Per evitare doppi inclusioni e sovrascritture distruttive dei temi custom
+    '''
     if "orfini-shared.css" not in content:
         print(f"🔧 Standardizzazione (Inject): {os.path.basename(file_path)}")
         
@@ -122,51 +123,24 @@ def standardize_file(file_path):
     else:
         if is_dirty:
             print(f"🔧 Standardizzazione (Cleanup Only): {os.path.basename(file_path)}")
+    '''
 
-    # 4. Rimozione Stili Hardcoded dannosi (SOLO background-color)
-    new_content = re.sub(r'(body\s*\{[^}]*)background-color:\s*#[0-9a-fA-F]+;\s*', r'\1', content)
-    new_content = re.sub(r'(html,\s*body\s*\{[^}]*)background-color:\s*#[0-9a-fA-F]+;\s*', r'\1', new_content)
+    # 4. Rimozione Stili Hardcoded dannosi (DISABILITATA)
+    # (DISATTIVATA per preservare "background-color" custom come gli sfondi AMOLED)
+    # new_content = re.sub(r'(body\s*\{[^}]*)background-color:\s*#[0-9a-fA-F]+;\s*', r'\1', content)
+    # new_content = re.sub(r'(html,\s*body\s*\{[^}]*)background-color:\s*#[0-9a-fA-F]+;\s*', r'\1', new_content)
     
-    if new_content != content:
-        content = new_content
-        is_dirty = True
+    # if new_content != content:
+    #     content = new_content
+    #     is_dirty = True
 
-    # 5. Sostituzioni CSS Tailwind di base
+    # 5. Sostituzioni CSS Tailwind di base (DISABILITATA)
+    # (DISATTIVATA: le classi originali Tailwind scelte dal creatore devono rimanere tali x fedeltà)
     replacements = {
-        # Backgrounds
-        'bg-black': 'bg-background',
-        'bg-white': 'bg-surface',
-        'bg-slate-50': 'bg-background',
-        'bg-slate-100': 'bg-surface-container',
-        'bg-slate-200': 'bg-surface-variant',
-        'bg-slate-800': 'bg-surface-container-high',
-        'bg-slate-900': 'bg-surface',
-        'bg-slate-950': 'bg-background',
-        'bg-gray-50': 'bg-background',
-        'bg-gray-100': 'bg-surface-container',
-        'bg-gray-900': 'bg-surface',
-        'bg-zinc-900': 'bg-surface',
-        'bg-neutral-900': 'bg-surface',
-        
-        # Text
-        'text-white': 'text-on-background',
-        'text-black': 'text-on-background',
-        'text-slate-50': 'text-on-primary',
-        'text-slate-200': 'text-on-surface-variant',
-        'text-slate-300': 'text-on-surface-variant',
-        'text-slate-400': 'text-outline-variant',
-        'text-slate-500': 'text-outline-variant',
-        'text-slate-800': 'text-on-background',
-        'text-slate-900': 'text-on-background',
-        'text-gray-900': 'text-on-background',
-        'text-neutral-200': 'text-on-surface-variant',
-        
-        # Borders
-        'border-slate-200': 'border-outline-variant',
-        'border-slate-700': 'border-outline-variant',
-        'border-neutral-800': 'border-outline-variant',
+        # Dizionario svuotato per sicurezza.
     }
     
+    '''
     for old, new in replacements.items():
         if old in content:
             new_c = content.replace(f'"' + old + '"', f'"' + new + '"')
@@ -176,6 +150,7 @@ def standardize_file(file_path):
             if new_c != content:
                 content = new_c
                 is_dirty = True
+    '''
 
     if is_dirty:
         with open(file_path, 'w', encoding='utf-8') as f:
