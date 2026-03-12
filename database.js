@@ -1,9 +1,31 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-03-03 17:29:50
+   Data: 2026-03-12 11:35:11
 */
 
 const db = [
+    {
+        "title": "Game Theory Lab 2.5 🎲",
+        "excerpt": "Attività interattiva.",
+        "tags": [
+            "Ed. Civica",
+            "Matematica",
+            "Teoria dei Giochi",
+            "Equilibrio di Nash",
+            "Cittadinanza",
+            "3EL",
+            "4EL",
+            "5EL",
+            "Civ:Costituzione",
+            "EU:Cittadinanza",
+            "Mat:Modellizzazione",
+            "Mat:Dati"
+        ],
+        "date": "2026-03-12",
+        "url": "content/apps/voto_cosapevole.2.5.html",
+        "type": "app",
+        "icon": "🎮"
+    },
     {
         "title": "Scomposizione Polinomi",
         "excerpt": "Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).",
@@ -514,28 +536,5 @@ const db = [
         "type": "app",
         "icon": "🔢",
         "thumbnail": "content/assets/thumbnails/memory_1el_numeri_004.jpg"
-    },
-    {
-        "title": "Voto Consapevole: Simulatore Nash",
-        "excerpt": "Simulazione interattiva su Equilibrio di Nash applicato ai voti scolastici. Esplora il conflitto tra interesse individuale (voto alto) e bene comune.",
-        "tags": [
-            "Ed. Civica",
-            "Matematica",
-            "Teoria dei Giochi",
-            "Equilibrio di Nash",
-            "Cittadinanza",
-            "3EL",
-            "4EL",
-            "5EL",
-            "Civ:Costituzione",
-            "EU:Cittadinanza",
-            "Mat:Modellizzazione",
-            "Mat:Dati"
-        ],
-        "date": "2025-10-01",
-        "url": "content/apps/voto_consapevole_2.5.html",
-        "type": "app",
-        "icon": "⚖️",
-        "thumbnail": "content/assets/thumbnails/voto_consapevole_2.5.jpg"
     }
 ];
