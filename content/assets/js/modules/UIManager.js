@@ -2,7 +2,7 @@ export class UIManager {
     constructor(db, sceneApp) {
         this.db = db;
         this.sceneApp = sceneApp; // Riferimento alla scena 3D per bloccare i controlli
-        
+
         // State
         this.state = {
             isSearchOpen: false,
@@ -60,7 +60,7 @@ export class UIManager {
     toggleSearch() {
         this.state.isSearchOpen = !this.state.isSearchOpen;
         const el = this.els.searchOverlay;
-        
+
         if (this.state.isSearchOpen) {
             el.classList.add('active');
             this.els.searchInput.value = '';
@@ -77,14 +77,14 @@ export class UIManager {
     }
 
     closeSearch() {
-        if(this.state.isSearchOpen) this.toggleSearch();
+        if (this.state.isSearchOpen) this.toggleSearch();
     }
 
     openPanel(tag) {
         this.state.isPanelOpen = true;
         this.els.panelTitle.innerText = `Tag: ${tag}`;
         this.els.sidePanel.classList.add('active');
-        
+
         const items = this.db.filter(item => item.tags.includes(tag));
         this.els.resultsContainer.innerHTML = '';
         items.forEach(item => {
@@ -92,7 +92,7 @@ export class UIManager {
             this.els.resultsContainer.appendChild(card);
         });
 
-        this.closeSearch(); 
+        this.closeSearch();
     }
 
     closePanel() {
@@ -113,8 +113,8 @@ export class UIManager {
         if (!term) {
             this.state.filteredItems = this.db;
         } else {
-            this.state.filteredItems = this.db.filter(item => 
-                item.title.toLowerCase().includes(term) || 
+            this.state.filteredItems = this.db.filter(item =>
+                item.title.toLowerCase().includes(term) ||
                 item.tags.some(t => t.toLowerCase().includes(term))
             );
         }
@@ -150,7 +150,7 @@ export class UIManager {
         this.els.listGrid.appendChild(fragment);
         this.els.listGrid.appendChild(this.sentinel);
         this.state.renderedCount += nextBatch.length;
-        
+
         this.observer.disconnect();
         if (this.state.renderedCount < total) this.observer.observe(this.sentinel);
     }
@@ -167,8 +167,8 @@ export class UIManager {
 
     createCardDOM(item) {
         const el = document.createElement('div');
-        el.className = 'project-card'; 
-        
+        el.className = 'project-card';
+
         const hash = this.hashString(item.title);
         const hue = (hash % 360);
         el.style.backgroundColor = `hsla(${hue}, 30%, 15%, 0.8)`;
@@ -186,13 +186,15 @@ export class UIManager {
                 <div style="margin-top:auto;">${tagsHtml}</div>
             </div>
         `;
-        
+
         el.onclick = () => this.handleItemClick(item);
         return el;
     }
 
     handleItemClick(item) {
-        if (item.type === 'app' || !item.type) {
+        if (item.url.startsWith('http')) {
+            window.open(item.url, '_blank');
+        } else if (item.type === 'app' || !item.type) {
             window.location.href = item.url;
         } else if (item.url.endsWith('.pdf')) {
             window.open(item.url, '_blank');
@@ -207,12 +209,12 @@ export class UIManager {
         if (item.type === 'video') content = `<video controls autoplay style="width:100%; border-radius:16px;"><source src="${item.url}" type="video/mp4"></video>`;
         else if (item.type === 'image' || item.type === 'infographic') content = `<img src="${item.url}" style="max-width:100%; max-height:85vh; border-radius:16px; display:block; margin:auto;">`;
         else content = `<iframe src="${item.url}" style="width:100%; height:80vh; border:none; border-radius:16px; background:white;"></iframe>`;
-        
+
         this.els.modalBox.innerHTML = content;
         this.els.modal.classList.add('active');
         // Interaction stays ENABLED
     }
-    
+
     closeModal() {
         this.els.modal.classList.remove('active');
         this.els.modalBox.innerHTML = '';
