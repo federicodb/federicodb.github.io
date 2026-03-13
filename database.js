@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-03-12 11:35:11
+   Data: 2026-03-13 15:07:04
 */
 
 const db = [
@@ -21,7 +21,7 @@ const db = [
             "Mat:Modellizzazione",
             "Mat:Dati"
         ],
-        "date": "2026-03-12",
+        "date": "2026-03-13",
         "url": "content/apps/voto_cosapevole.2.5.html",
         "type": "app",
         "icon": "🎮"
@@ -141,7 +141,7 @@ const db = [
             "Strumenti"
         ],
         "title": "Google AI Studio: Assistant",
-        "url": "https://aistudio.google.com/apps/drive/1Zn8oTzyTqmaqs6tW7u0w0Lgvp6mS9_p0?showPreview=true&showAssistant=false&fullscreenApplet=true",
+        "url": "https://ais-pre-evi2uqxownrirtwtzubadt-238287108414.europe-west2.run.app/",
         "excerpt": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
         "type": "link",
         "icon": "🌐"
