@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimbolicMath Lab - OLED Lavagna Elettronica</title>
+    <meta name="description" content="Risolutore simbolico e interattivo per disequazioni frazionarie e sistemi matematici. Integra un tutor socratico passo passo per l'apprendimento guidato.">
+    <meta name="keywords" content="2EL, 4EL, 2GP, 3MEC, algebra, disequazioni, sistemi, frazionarie, tutor, risolutore, logica">
+    <meta name="date" content="2026-04-02">
+    
+    <!-- Nerdamer: Motore di calcolo simbolico -->
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"></script>
+    
+    <!-- KaTeX: Rendering matematico -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --surface-color: #0d0d0d;
+            --surface-hover: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent-color: #00e5ff;
+            --accent-glow: rgba(0, 229, 255, 0.2);
+            --error-color: #ff3366;
+            --success-color: #00e676;
+            --warning-color: #ffc400;
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Fira Code', Consolas, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 5px; border: 2px solid var(--bg-color); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            flex-shrink: 0;
+            width: 100%;
+            padding: 1.5vh 2vw;
+            text-align: center;
+            background: linear-gradient(180deg, var(--surface-color) 0%, var(--bg-color) 100%);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 2px;
+        }
+
+        h1 span {
+            color: var(--accent-color);
+            text-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .home-button {
+            position: absolute;
+            top: 2.2vh;
+            left: 3vw;
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .home-button:hover {
+            background-color: var(--surface-hover);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: scale(1.08);
+        }
+
+        .home-button svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        nav {
+            flex-shrink: 0;
+            display: flex;
+            gap: 1.5vw;
+            width: 100%;
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 2vh 3vw;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1.5vh;
+            background-color: var(--surface-color);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        .tab-btn:hover {
+            background-color: var(--surface-hover);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background-color: rgba(0, 229, 255, 0.08);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        main {
+            flex-grow: 1;
+            width: 100%;
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 0 3vw 3vh 3vw;
+            overflow: hidden;
+        }
+
+        .panel {
+            display: none;
+            height: 100%;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .panel.active {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 3vw;
+            height: 100%;
+        }
+
+        #tab-tutor.active {
+            display: flex;
+            justify-content: center;
+        }
+
+        #tab-tutor .result-card {
+            width: 100%;
+            max-width: 1200px;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-card {
+            background-color: var(--surface-color);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            height: fit-content;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-family: var(--font-mono);
+            transition: all 0.3s;
+            appearance: none;
+        }
+
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23aaaaaa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
+            padding-right: 48px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        button.action-btn {
+            padding: 14px 28px;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            align-self: flex-start;
+        }
+
+        button.action-btn:hover {
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: scale(1.02);
+        }
+
+        button.action-btn:disabled {
+            background-color: var(--border-color);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result-card {
+            background-color: var(--surface-color);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            height: 100%;
+            overflow-y: auto; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-block {
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .step-block:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+            flex-grow: 1; 
+        }
+
+        .step-title {
+            color: var(--accent-color);
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-title::before {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .math-display {
+            font-size: 1.3rem;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow-x: auto;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .svg-wrapper {
+            width: 100%;
+            flex-grow: 1;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            margin-top: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .svg-wrapper svg {
+            max-height: 100%;
+            max-width: 100%;
+            height: auto;
+            width: 100%; 
+        }
+
+        /* Gestione Modal Overlay (Lavagna interattiva a pieno schermo) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            width: 90vw;
+            height: 85vh;
+            background: var(--surface-color);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 1001;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: var(--error-color);
+        }
+
+        .modal-graph-container {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logic-box {
+            background-color: rgba(0, 229, 255, 0.05);
+            border-left: 4px solid var(--accent-color);
+            padding: 16px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 12px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .logic-box.intersection {
+            background-color: rgba(0, 230, 118, 0.05);
+            border-left-color: var(--success-color);
+        }
+
+        .tutor-dialogue {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid #b794f6;
+            padding: 24px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.15rem;
+        }
+
+        .tutor-feedback {
+            margin-top: 12px;
+            font-size: 1.05rem;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .tutor-feedback.error {
+            display: block;
+            background-color: rgba(255, 51, 102, 0.1);
+            color: var(--error-color);
+            border-left: 3px solid var(--error-color);
+        }
+
+        .tutor-feedback.success {
+            display: block;
+            background-color: rgba(0, 230, 118, 0.1);
+            color: var(--success-color);
+            border-left: 3px solid var(--success-color);
+        }
+
+        .empty-state {
+            color: var(--text-secondary);
+            text-align: center;
+            font-style: italic;
+            padding: 100px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            font-size: 1.2rem;
+        }
+
+        .error-text {
+            color: var(--error-color);
+            font-size: 1.1rem;
+            padding: 20px;
+            background: rgba(255, 51, 102, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid var(--error-color);
+        }
+
+        @media (max-width: 900px) {
+            body { overflow: auto; height: auto; }
+            .panel.active { display: flex; flex-direction: column; }
+            .result-card { overflow-y: visible; min-height: 50vh; }
+            nav { flex-direction: column; padding: 16px; }
+            .tab-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../../index.html" class="home-button" title="Torna alla Home">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </a>
+        <h1>Disequazioni Frazionarie <span>vs</span> Sistemi</h1>
+        <div class="subtitle">Risolutore simbolico ed esploratore grafico avanzato</div>
+    </header>
+
+    <nav>
+        <button class="tab-btn active" onclick="switchTab('tab-frazionaria')">Disequazione Frazionaria</button>
+        <button class="tab-btn" onclick="switchTab('tab-sistema')">Sistema di Disequazioni</button>
+        <button class="tab-btn" onclick="switchTab('tab-tutor')" style="border-color: #b794f6; color: #b794f6;">Tutor Interattivo</button>
+    </nav>
+
+    <main>
+        <!-- PANNELLO: DISEQUAZIONE FRAZIONARIA -->
+        <section id="tab-frazionaria" class="panel active">
+            <div class="input-card">
+                <div class="input-group">
+                    <label for="num">Numeratore N(x)</label>
+                    <input type="text" id="num" placeholder="es. x^2 - 4" value="x^2 - 4" oninput="debounce(evaluateFractional, 500)()" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="input-group">
+                    <label for="den">Denominatore D(x)</label>
+                    <input type="text" id="den" placeholder="es. x^2 - 5x + 6" value="x^2 - 5x + 6" oninput="debounce(evaluateFractional, 500)()" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="input-group">
+                    <label for="fraz-verso">Verso della disequazione</label>
+                    <select id="fraz-verso" onchange="evaluateFractional()">
+                        <option value=">">Maggiore (> 0)</option>
+                        <option value=">=">Maggiore o uguale (≥ 0)</option>
+                        <option value="<">Minore (< 0)</option>
+                        <option value="<=">Minore o uguale (≤ 0)</option>
+                    </select>
+                </div>
+                <div id="mini-graph-fraz" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end;"></div>
+            </div>
+
+            <div class="result-card" id="res-frazionaria"></div>
+        </section>
+
+        <!-- PANNELLO: SISTEMA -->
+        <section id="tab-sistema" class="panel">
+            <div class="input-card">
+                <div class="input-group">
+                    <label for="eq1">Prima Disequazione S₁</label>
+                    <input type="text" id="eq1" placeholder="es. x^2 - 1 > 0" value="x^2 - 1 > 0" oninput="debounce(evaluateSystem, 500)()" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="input-group">
+                    <label for="eq2">Seconda Disequazione S₂</label>
+                    <input type="text" id="eq2" placeholder="es. x - 2 < 0" value="x - 2 < 0" oninput="debounce(evaluateSystem, 500)()" autocomplete="off" spellcheck="false">
+                </div>
+                <div id="mini-graph-sist" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-end;"></div>
+            </div>
+
+            <div class="result-card" id="res-sistema"></div>
+        </section>
+
+        <!-- PANNELLO: TUTOR SOCRATICO -->
+        <section id="tab-tutor" class="panel">
+            <div class="result-card" id="res-tutor"></div>
+        </section>
+    </main>
+
+    <!-- OVERLAY MODALE PER GRAFICI -->
+    <div id="graph-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal" onclick="closeModal(event)">&times;</button>
+            <div style="font-size: 1.5rem; font-weight: bold; color: var(--accent-color); position: absolute; top: 20px; left: 20px;">Esplorazione Grafica Dettagliata</div>
+            <div id="modal-graph-container" class="modal-graph-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const subMap = {'0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉'};
+        function toSub(idx) {
+            return idx.toString().split('').map(c => subMap[c] || c).join('');
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => { clearTimeout(timeout); func(...args); };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if(tabId === 'tab-frazionaria') evaluateFractional();
+            if(tabId === 'tab-sistema') evaluateSystem();
+            if(tabId === 'tab-tutor') initTutor();
+        }
+
+        function renderMath(elementId, htmlContent) {
+            const el = document.getElementById(elementId);
+            if(htmlContent) el.innerHTML = htmlContent;
+            renderMathInElement(el, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        }
+
+        function openGraphModal(funcs, capisaldi, checkFn) {
+            const modal = document.getElementById('graph-modal');
+            modal.classList.add('active');
+            drawPlot('modal-graph-container', funcs, capisaldi, checkFn, true);
+        }
+
+        function closeModal(e) {
+            if (e) e.stopPropagation();
+            const modal = document.getElementById('graph-modal');
+            modal.classList.remove('active');
+            document.getElementById('modal-graph-container').innerHTML = ''; 
+        }
+
+        function parseInequality(str) {
+            const match = str.match(/(.*)(>=|<=|>|<)(.*)/);
+            if (!match) return null;
+            return { poly: `(${match[1]}) - (${match[3]})`, op: match[2] };
+        }
+
+        function checkMathEquivalence(input, expected, requiresFactor = false) {
+            try {
+                if(requiresFactor && !input.includes('(') && expected.includes('(')) return false;
+                let diff = nerdamer(`simplify( (${input}) - (${expected}) )`).text();
+                return diff === '0';
+            } catch(e) { return false; }
+        }
+
+        function extractFactors(polyStr) {
+            try {
+                let factored = nerdamer(`factor(${polyStr})`).text();
+                let factors = [];
+                let current = "";
+                let depth = 0;
+                
+                for(let i=0; i<factored.length; i++) {
+                    let char = factored[i];
+                    if(char === '(') depth++;
+                    else if(char === ')') depth--;
+                    
+                    if(char === '*' && depth === 0) {
+                        if(current) factors.push(current);
+                        current = "";
+                    } else {
+                        current += char;
+                    }
+                }
+                if(current) factors.push(current);
+                
+                let validFactors = factors.filter(f => {
+                    if (f.includes('x')) return true;
+                    try { if (parseFloat(nerdamer(f).evaluate().text()) < 0) return true; } catch(e) {}
+                    return false;
+                });
+                return validFactors.length > 0 ? validFactors : [polyStr];
+            } catch(e) { return [polyStr]; }
+        }
+
+        function formatLogicPart(intv) {
+            if (intv.isLeftInf && intv.isRightInf) return "x \\in \\mathbb{R}";
+            if (intv.isLeftInf) return `x ${intv.rightInc ? '\\le' : '<'} ${intv.rightSym}`;
+            if (intv.isRightInf) return `x ${intv.leftInc ? '\\ge' : '>'} ${intv.leftSym}`;
+            return `${intv.leftSym} ${intv.leftInc ? '\\le' : '<'} x ${intv.rightInc ? '\\le' : '<'} ${intv.rightSym}`;
+        }
+
+        function buildSolutionIntervals(capisaldi, intervalSigns, targetCondition, checkPointFn) {
+            let partsInt = [];
+            let partsLog = [];
+            let currentInterval = null;
+
+            for(let i=0; i<intervalSigns.length; i++) {
+                let isTrue = (intervalSigns[i] === targetCondition);
+                
+                if (isTrue) {
+                    if (!currentInterval) {
+                        let isLeftInf = (i === 0);
+                        let leftSym = isLeftInf ? "" : capisaldi[i-1].sym;
+                        let leftInc = isLeftInf ? false : checkPointFn(capisaldi[i-1].val);
+                        let leftBound = isLeftInf ? "]-\\infty" : (leftInc ? `[${leftSym}` : `]${leftSym}`);
+
+                        let isRightInf = (i === intervalSigns.length - 1);
+                        let rightSym = isRightInf ? "" : capisaldi[i].sym;
+                        let rightInc = isRightInf ? false : checkPointFn(capisaldi[i].val);
+                        let rightBound = isRightInf ? "+\\infty[" : (rightInc ? `${rightSym}]` : `${rightSym}[`);
+
+                        currentInterval = { left: leftBound, right: rightBound, isLeftInf, isRightInf, leftSym, rightSym, leftInc, rightInc };
+                    } else {
+                        let sepCap = capisaldi[i-1];
+                        if (checkPointFn(sepCap.val)) {
+                            let isRightInf = (i === intervalSigns.length - 1);
+                            currentInterval.isRightInf = isRightInf;
+                            currentInterval.rightSym = isRightInf ? "" : capisaldi[i].sym;
+                            currentInterval.rightInc = isRightInf ? false : checkPointFn(capisaldi[i].val);
+                            currentInterval.right = isRightInf ? "+\\infty[" : (currentInterval.rightInc ? `${currentInterval.rightSym}]` : `${currentInterval.rightSym}[`);
+                        } else {
+                            partsInt.push(`${currentInterval.left}; ${currentInterval.right}`);
+                            partsLog.push(formatLogicPart(currentInterval));
+
+                            let isRightInf = (i === intervalSigns.length - 1);
+                            let rightSym = isRightInf ? "" : capisaldi[i].sym;
+                            let rightInc = isRightInf ? false : checkPointFn(capisaldi[i].val);
+
+                            currentInterval = {
+                                left: `]${sepCap.sym}`,
+                                right: isRightInf ? "+\\infty[" : (rightInc ? `${rightSym}]` : `${rightSym}[`),
+                                isLeftInf: false, isRightInf, leftSym: sepCap.sym, rightSym, leftInc: false, rightInc
+                            };
+                        }
+                    }
+                } else {
+                    if (currentInterval) {
+                        partsInt.push(`${currentInterval.left}; ${currentInterval.right}`);
+                        partsLog.push(formatLogicPart(currentInterval));
+                        currentInterval = null;
+                    }
+                }
+            }
+            if (currentInterval) {
+                partsInt.push(`${currentInterval.left}; ${currentInterval.right}`);
+                partsLog.push(formatLogicPart(currentInterval));
+            }
+            
+            capisaldi.forEach((cap, i) => {
+                let leftTrue = i === 0 ? intervalSigns[0] === targetCondition : intervalSigns[i] === targetCondition;
+                let rightTrue = i === intervalSigns.length - 1 ? intervalSigns[intervalSigns.length - 1] === targetCondition : intervalSigns[i+1] === targetCondition;
+                
+                if (!leftTrue && !rightTrue && checkPointFn(cap.val)) {
+                    partsInt.push(`\\{${cap.sym}\\}`);
+                    partsLog.push(`x = ${cap.sym}`);
+                }
+            });
+
+            if(partsInt.length === 0) return { interval: "\\emptyset", logic: "\\nexists x \\in \\mathbb{R}" };
+            if(partsLog.length === 1 && partsLog[0] === "x \\in \\mathbb{R}") return { interval: "]-\\infty; +\\infty[", logic: "\\forall x \\in \\mathbb{R}" };
+            
+            return { interval: partsInt.join(" \\cup "), logic: partsLog.join(" \\lor ") };
+        }
+
+        // --- MOTORE SCHEMATICO VETTORIALE (SEGNI E SISTEMI) ---
+        function createDiagram(capisaldi, rows, type) {
+            let svgW = 1000; 
+            let rowSpacing = 70; // Aumentata la spaziatura per pulizia visiva
+            let svgH = rows.length * rowSpacing + 90;
+            let startX = 140;
+            let endX = 900;
+            let spacing = capisaldi.length > 0 ? (endX - startX) / (capisaldi.length + 1) : (endX - startX);
+
+            let svg = `<div class="svg-wrapper"><svg viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="xMidYMid meet">`;
+
+            svg += `<defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-secondary)" /></marker></defs>`;
+            svg += `<line x1="${startX-40}" y1="40" x2="${endX+40}" y2="40" stroke="var(--text-secondary)" stroke-width="2" marker-end="url(#arrow)" />`;
+
+            let xCoords = [];
+            capisaldi.forEach((cap, i) => {
+                let x = startX + spacing * (i + 1);
+                xCoords.push(x);
+                svg += `<line x1="${x}" y1="30" x2="${x}" y2="${svgH-15}" stroke="var(--border-color)" stroke-width="1.5" stroke-dasharray="6,4" />`;
+                
+                // Etichetta asse caposaldo nel diagramma (incapsulata per anti-overlap)
+                let texSym = "";
+                try { texSym = nerdamer(cap.sym).toTeX(); } catch(e) { texSym = cap.sym; }
+                svg += `<foreignObject x="${x - 40}" y="10" width="80" height="25" style="overflow:visible; pointer-events:none;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
+                        <div style="color:var(--text-primary); font-size:16px; font-weight:bold; background: rgba(0,0,0,0.7); padding: 0px 4px; border-radius: 4px;">
+                            $${texSym}$
+                        </div>
+                    </div>
+                </foreignObject>`;
+
+                svg += `<line x1="${x}" y1="35" x2="${x}" y2="45" stroke="var(--text-primary)" stroke-width="2" />`;
+            });
+
+            rows.forEach((row, rowIndex) => {
+                let y = 100 + rowIndex * rowSpacing;
+                
+                svg += `<text x="${startX - 30}" y="${y+6}" fill="var(--text-primary)" font-size="18" text-anchor="end" font-weight="bold">${row.label}</text>`;
+
+                let intervalsCount = capisaldi.length + 1;
+                for(let i = 0; i < intervalsCount; i++) {
+                    let x1 = (i === 0) ? startX - 40 : xCoords[i-1];
+                    let x2 = (i === intervalsCount - 1) ? endX + 40 : xCoords[i];
+                    let midX = (x1 + x2) / 2;
+                    let val = row.intervals[i];
+
+                    if (type === 'fraz') {
+                        if (val === '+') {
+                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="var(--success-color)" stroke-width="3" stroke-linecap="round" />`;
+                            svg += `<text x="${midX}" y="${y-12}" fill="var(--success-color)" font-size="24" text-anchor="middle" font-weight="bold">+</text>`;
+                        } else if (val === '-') {
+                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="var(--error-color)" stroke-width="2" stroke-dasharray="8,6" />`;
+                            svg += `<text x="${midX}" y="${y-12}" fill="var(--error-color)" font-size="30" text-anchor="middle" font-weight="bold">-</text>`;
+                        }
+                    } else if (type === 'sist') {
+                        if (val === true) {
+                            let color = row.isResult ? 'var(--accent-color)' : 'var(--success-color)';
+                            let strokeW = row.isResult ? '5' : '3';
+                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="${strokeW}" stroke-linecap="round" />`;
+                        } else {
+                            if (!row.isResult) {
+                                svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="var(--border-color)" stroke-width="1.5" />`;
+                            }
+                        }
+                    }
+                }
+
+                if (row.evalFn) {
+                    capisaldi.forEach((cap, i) => {
+                        let cx = xCoords[i];
+                        let leftTrue = i === 0 ? false : row.intervals[i];
+                        let rightTrue = i === capisaldi.length ? false : row.intervals[i+1];
+                        
+                        if (type === 'fraz' || leftTrue || rightTrue || row.evalFn(cap.val)) {
+                            let isInc = row.evalFn(cap.val);
+                            let fill = isInc ? "var(--text-primary)" : "var(--bg-color)";
+                            let stroke = "var(--text-primary)";
+                            if (type === 'sist') stroke = row.isResult ? "var(--accent-color)" : "var(--success-color)";
+                            
+                            svg += `<circle cx="${cx}" cy="${y}" r="6" fill="${fill}" stroke="${stroke}" stroke-width="2.5" />`;
+                        }
+                    });
+                }
+            });
+
+            svg += `</svg></div>`;
+            return svg;
+        }
+
+        // --- MOTORE GRAFICO ANALITICO CARTESIANO ---
+        function drawPlot(containerId, funcs, capisaldi, checkFn, isModal = false) {
+            let svgW = isModal ? 800 : 400; 
+            let svgH = isModal ? 440 : 220;
+            let scale = isModal ? 2 : 1;
+            
+            let minX = -5, maxX = 5;
+            if (capisaldi && capisaldi.length > 0) {
+                let span = capisaldi[capisaldi.length - 1].val - capisaldi[0].val;
+                if (span === 0) span = 4;
+                minX = capisaldi[0].val - span * 0.3 - 1;
+                maxX = capisaldi[capisaldi.length - 1].val + span * 0.3 + 1;
+            }
+
+            let pointsN = isModal ? 500 : 250;
+            let dx = (maxX - minX) / pointsN;
+            
+            let curves = [];
+            
+            funcs.forEach((f, idx) => {
+                try {
+                    let fn = nerdamer(f.expr).buildFunction(['x']);
+                    let raw_pts = [];
+                    for(let i=0; i<=pointsN; i++) {
+                        let x = minX + i*dx;
+                        try {
+                            let y = fn(x);
+                            if (typeof y === 'number' && !isNaN(y)) {
+                                raw_pts.push({x, y});
+                            }
+                        }catch(e){}
+                    }
+                    
+                    // Rilevamento vertici matematici per scalatura perfetta
+                    let extrema = [];
+                    for (let i = 1; i < raw_pts.length - 1; i++) {
+                        let y0 = raw_pts[i-1].y;
+                        let y1 = raw_pts[i].y;
+                        let y2 = raw_pts[i+1].y;
+                        if ((y1 < y0 && y1 < y2) || (y1 > y0 && y1 > y2)) {
+                            extrema.push(y1);
+                        }
+                    }
+                    
+                    let refY = 0;
+                    if (extrema.length > 0) {
+                        refY = Math.max(...extrema.map(Math.abs));
+                    } else {
+                        let validY = raw_pts.map(p => p.y).filter(y => Math.abs(y) < 1000);
+                        if (validY.length > 0) refY = Math.max(...validY.map(Math.abs));
+                    }
+                    
+                    if (refY < 0.001) refY = 1; 
+
+                    let amplitude = 1.0 - (idx * 0.15); 
+                    if (amplitude < 0.6) amplitude = 0.6;
+                    if (f.thick) amplitude = 1.0; 
+
+                    let pts = [];
+                    for(let i=0; i<raw_pts.length; i++) {
+                        let p = raw_pts[i];
+                        let y_norm = (p.y / refY) * amplitude;
+                        
+                        if (y_norm > 1.5) y_norm = 1.5;
+                        if (y_norm < -1.5) y_norm = -1.5;
+                        
+                        pts.push({x: p.x, y_norm: y_norm, rawY: p.y});
+                    }
+
+                    curves.push({ label: f.label, pts: pts, dashPattern: f.dashPattern, thick: f.thick, refY: refY });
+                }catch(e){}
+            });
+            
+            function mapX(x) { return (20*scale) + (x - minX)/(maxX - minX) * (svgW - 40*scale); }
+            
+            let zeroY = svgH / 2;
+            function mapY(y_norm) {
+                return zeroY - y_norm * (zeroY - 20*scale);
+            }
+            
+            let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 100%; flex-grow: 1; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(0,0,0,0.3); margin-top: 10px; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);">`;
+            
+            svg += `<defs><linearGradient id="gradSign${containerId}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${svgH}">`;
+            svg += `<stop offset="0%" stop-color="var(--success-color)" />`;
+            svg += `<stop offset="50%" stop-color="var(--success-color)" />`;
+            svg += `<stop offset="50%" stop-color="var(--error-color)" />`;
+            svg += `<stop offset="100%" stop-color="var(--error-color)" />`;
+            svg += `</linearGradient></defs>`;
+            
+            svg += `<line x1="${10*scale}" y1="${zeroY}" x2="${svgW-10*scale}" y2="${zeroY}" stroke="var(--text-secondary)" stroke-dasharray="${4*scale},${4*scale}" stroke-width="${1.5*scale}" opacity="0.7" />`;
+            
+            let lastTextEnd = -100;
+            capisaldi.forEach(c => {
+                let cx = mapX(c.val);
+                let isInc = checkFn ? checkFn(c.val) : false;
+                let fill = isInc ? "var(--accent-color)" : "var(--bg-color)";
+                svg += `<circle cx="${cx}" cy="${zeroY}" r="${5*scale}" fill="${fill}" stroke="var(--accent-color)" stroke-width="${2*scale}" />`;
+                
+                let ty = zeroY + 12*scale;
+                if (cx < lastTextEnd + 50*scale) ty += 22*scale; 
+                
+                let texSym = "";
+                try { texSym = nerdamer(c.sym).toTeX(); } catch(e) { texSym = c.sym; }
+
+                // Etichetta caposaldo cartesiano anti-overlap (badge HTML)
+                svg += `<foreignObject x="${cx - 40*scale}" y="${ty}" width="${80*scale}" height="${30*scale}" style="overflow:visible; pointer-events:none;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
+                        <div style="color:var(--text-primary); font-size:${12*scale}px; font-weight:bold; background: rgba(0,0,0,0.7); padding: 2px ${6*scale}px; border-radius: ${4*scale}px; border: 1px solid rgba(255,255,255,0.1);">
+                            $${texSym}$
+                        </div>
+                    </div>
+                </foreignObject>`;
+                lastTextEnd = cx;
+            });
+
+            curves.forEach(c => {
+                if(c.pts.length === 0) return;
+                let d = "";
+                let lastDrawnX = -100;
+                
+                for(let i=0; i<c.pts.length; i++) {
+                    let pt = c.pts[i];
+                    let isJump = false;
+                    
+                    if (i > 0) {
+                        let prevRaw = c.pts[i-1].rawY;
+                        let currRaw = pt.rawY;
+                        if (Math.abs(currRaw - prevRaw) > c.refY * 1.5 && (currRaw * prevRaw < 0)) {
+                            isJump = true; 
+                        }
+                    }
+                    
+                    if (isJump) {
+                        d += ' M ' + mapX(pt.x) + ',' + mapY(pt.y_norm);
+                        lastDrawnX = pt.x;
+                        continue; 
+                    }
+
+                    if (d === "" || pt.x - lastDrawnX > dx * 1.5) {
+                        d += (d ? " " : "") + 'M ' + mapX(pt.x) + ',' + mapY(pt.y_norm);
+                    } else {
+                        d += ' L ' + mapX(pt.x) + ',' + mapY(pt.y_norm);
+                    }
+                    lastDrawnX = pt.x;
+                }
+                
+                let dash = c.dashPattern ? `stroke-dasharray="${c.dashPattern.split(',').map(n => n*scale).join(',')}"` : '';
+                let strokeW = c.thick ? 2.5*scale : 1.5*scale;
+                let opacity = c.thick ? '1' : '0.9';
+                svg += `<path d="${d}" fill="none" stroke="url(#gradSign${containerId})" stroke-width="${strokeW}" opacity="${opacity}" ${dash} stroke-linecap="round" stroke-linejoin="round" />`;
+                
+                let iLbl = Math.floor(c.pts.length * (c.thick ? 0.70 : 0.80)); 
+                let ptL = c.pts[iLbl];
+                if (ptL && Math.abs(ptL.y_norm) < 1.3) {
+                    let ly = mapY(ptL.y_norm);
+                    let lx = mapX(ptL.x);
+                    let fw = c.thick ? "bold" : "normal";
+                    let fs = c.thick ? 14*scale : 12*scale;
+                    
+                    // Etichetta funzione anti-overlap scavalca le linee
+                    svg += `<foreignObject x="${lx - 50*scale}" y="${ly - 40*scale}" width="${100*scale}" height="${40*scale}" style="overflow:visible; pointer-events:none;">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
+                            <div style="color:var(--text-primary); font-size:${fs}px; font-weight:${fw}; background: var(--surface-color); border: 1px solid var(--border-color); padding: ${2*scale}px ${6*scale}px; border-radius: ${8*scale}px; box-shadow: 0 ${2*scale}px ${8*scale}px rgba(0,0,0,0.8);">
+                                ${c.label}
+                            </div>
+                        </div>
+                    </foreignObject>`;
+                }
+            });
+            
+            svg += '</svg>';
+            
+            let el = document.getElementById(containerId);
+            if (el) {
+                el.innerHTML = svg;
+                if (!isModal) {
+                    el.style.cursor = 'pointer';
+                    el.innerHTML += `<div style="position:absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); padding: 5px; border-radius: 5px; color: var(--text-secondary); pointer-events:none; border: 1px solid rgba(255,255,255,0.2);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    </div>`;
+                    el.style.position = 'relative';
+                    el.onclick = function() {
+                        openGraphModal(funcs, capisaldi, checkFn);
+                    };
+                }
+                renderMathInElement(el, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        function checkFrazPoint(numRaw, denRaw, op, val) {
+            try {
+                let n = parseFloat(nerdamer(numRaw).sub('x', val).evaluate().text());
+                let d = parseFloat(nerdamer(denRaw).sub('x', val).evaluate().text());
+                if (Math.abs(d) < 1e-7) return false;
+                let res = n / d;
+                if (op === '>') return res > 1e-7;
+                if (op === '>=') return res >= -1e-7;
+                if (op === '<') return res < -1e-7;
+                if (op === '<=') return res <= 1e-7;
+            } catch(e) { return false; }
+            return false;
+        }
+
+        function evaluateFractional() {
+            const numRaw = document.getElementById('num').value.trim() || '0';
+            const denRaw = document.getElementById('den').value.trim() || '1';
+            const verso = document.getElementById('fraz-verso').value;
+
+            try {
+                const nFact = nerdamer(`factor(${numRaw})`);
+                const dFact = nerdamer(`factor(${denRaw})`);
+                
+                const nRoots = nerdamer.solveEquations(`${numRaw}=0`, 'x');
+                const dRoots = nerdamer.solveEquations(`${denRaw}=0`, 'x');
+
+                let capisaldi = [];
+                [...nRoots, ...dRoots].forEach(r => {
+                    let sym = r.toString();
+                    try {
+                        let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
+                        if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
+                            capisaldi.push({sym: sym, val: val});
+                        }
+                    } catch(e) {}
+                });
+                capisaldi.sort((a, b) => a.val - b.val);
+
+                let testPoints = [];
+                if (capisaldi.length === 0) testPoints.push(0);
+                else {
+                    testPoints.push(capisaldi[0].val - 1);
+                    for(let i = 0; i < capisaldi.length - 1; i++) {
+                        testPoints.push((capisaldi[i].val + capisaldi[i+1].val) / 2);
+                    }
+                    testPoints.push(capisaldi[capisaldi.length - 1].val + 1);
+                }
+
+                let nFactors = extractFactors(numRaw);
+                let dFactors = extractFactors(denRaw);
+                
+                let diagramRows = [];
+                
+                nFactors.forEach((f, idx) => {
+                    let row = { label: nFactors.length > 1 ? `N${toSub(idx+1)}` : 'N(x)', intervals: [] };
+                    testPoints.forEach(tp => {
+                        try {
+                            let val = parseFloat(nerdamer(f).sub('x', tp).evaluate().text());
+                            row.intervals.push(val >= 0 ? '+' : '-');
+                        } catch(e) { row.intervals.push('+'); }
+                    });
+                    diagramRows.push(row);
+                });
+
+                dFactors.forEach((f, idx) => {
+                    let row = { label: dFactors.length > 1 ? `D${toSub(idx+1)}` : 'D(x)', intervals: [] };
+                    testPoints.forEach(tp => {
+                        try {
+                            let val = parseFloat(nerdamer(f).sub('x', tp).evaluate().text());
+                            row.intervals.push(val > 0 ? '+' : '-');
+                        } catch(e) { row.intervals.push('+'); }
+                    });
+                    diagramRows.push(row);
+                });
+
+                let checkFn = (val) => checkFrazPoint(numRaw, denRaw, verso, val);
+                let rowRes = {label: 'Segno', intervals: [], isResult: true, evalFn: checkFn};
+                
+                testPoints.forEach(tp => {
+                    try {
+                        let n_val = parseFloat(nerdamer(numRaw).sub('x', tp).evaluate().text());
+                        let d_val = parseFloat(nerdamer(denRaw).sub('x', tp).evaluate().text());
+                        rowRes.intervals.push((n_val / d_val) >= 0 ? '+' : '-');
+                    } catch(e) { rowRes.intervals.push('+'); }
+                });
+                diagramRows.push(rowRes);
+
+                let legendHTML = `<div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.95rem; line-height: 1.4;">`;
+                if(nFactors.length > 1) legendHTML += `<strong>Fattori N:</strong> ` + nFactors.map((f,i) => `N${toSub(i+1)}(x) = $${nerdamer(f).toTeX()}$`).join('; ') + `<br>`;
+                if(dFactors.length > 1) legendHTML += `<strong>Fattori D:</strong> ` + dFactors.map((f,i) => `D${toSub(i+1)}(x) = $${nerdamer(f).toTeX()}$`).join('; ');
+                legendHTML += `</div>`;
+
+                let targetSign = (verso === '>' || verso === '>=') ? '+' : '-';
+                let solutions = buildSolutionIntervals(capisaldi, rowRes.intervals, targetSign, checkFn);
+
+                let html = `
+                    <div class="step-block">
+                        <div class="step-title">Forma Normale e Scomposizione</div>
+                        <div class="math-display">$$\\frac{${nFact.toTeX()}}{${dFact.toTeX()}} ${verso === '>=' ? '\\ge' : verso === '<=' ? '\\le' : verso} 0$$</div>
+                    </div>
+                    <div class="step-block">
+                        <div class="step-title">Studio del Segno e Diagramma Logico</div>
+                        ${(nFactors.length > 1 || dFactors.length > 1) ? legendHTML : ''}
+                        ${createDiagram(capisaldi, diagramRows, 'fraz')}
+                    </div>
+                    <div class="step-block">
+                        <div class="step-title">Insieme delle Soluzioni</div>
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <div class="math-display" style="flex: 1; margin-bottom: 0; font-size: 1.1rem;">$$S = ${solutions.interval}$$</div>
+                            <div class="math-display" style="flex: 1; margin-bottom: 0; color: var(--accent-color); font-size: 1.25rem;">$$${solutions.logic}$$</div>
+                        </div>
+                    </div>
+                `;
+                renderMath('res-frazionaria', html);
+
+                if (document.getElementById('mini-graph-fraz')) {
+                    drawPlot('mini-graph-fraz', [
+                        { expr: numRaw, label: '$y=N(x)$', dashPattern: '8,6' },
+                        { expr: denRaw, label: '$y=D(x)$', dashPattern: '8,6,2,6' },
+                        { expr: `(${numRaw})/(${denRaw})`, label: '$y=\\frac{N(x)}{D(x)}$', thick: true, dashPattern: '' }
+                    ], capisaldi, checkFn);
+                }
+            } catch (e) {
+                renderMath('res-frazionaria', `<div class="error-text">Espressione non ben formata. Verificare la correttezza formale del polinomio immesso.</div>`);
+                if (document.getElementById('mini-graph-fraz')) document.getElementById('mini-graph-fraz').innerHTML = '';
+            }
+        }
+
+        function checkSysPoint(poly, op, val) {
+            try {
+                let res = parseFloat(nerdamer(poly).sub('x', val).evaluate().text());
+                if (op === '>') return res > 1e-7;
+                if (op === '>=') return res >= -1e-7;
+                if (op === '<') return res < -1e-7;
+                if (op === '<=') return res <= 1e-7;
+            } catch(e) { return false; }
+            return false;
+        }
+
+        function evaluateSystem() {
+            const eq1Raw = document.getElementById('eq1').value.trim();
+            const eq2Raw = document.getElementById('eq2').value.trim();
+
+            if (!eq1Raw || !eq2Raw) {
+                document.getElementById('res-sistema').innerHTML = '<div class="empty-state">Inserire dati validi in tutti i campi.</div>';
+                return;
+            }
+
+            const ineq1 = parseInequality(eq1Raw);
+            const ineq2 = parseInequality(eq2Raw);
+
+            if (!ineq1 || !ineq2) {
+                document.getElementById('res-sistema').innerHTML = `<div class="error-text">Operatori relazionali non validi. (Uso richiesto: >, <, >=, <=)</div>`;
+                return;
+            }
+
+            try {
+                const roots1 = nerdamer.solveEquations(`${ineq1.poly}=0`, 'x');
+                const roots2 = nerdamer.solveEquations(`${ineq2.poly}=0`, 'x');
+
+                let capisaldi = [];
+                [...roots1, ...roots2].forEach(r => {
+                    let sym = r.toString();
+                    try {
+                        let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
+                        if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) capisaldi.push({sym: sym, val: val});
+                    } catch(e) {}
+                });
+                capisaldi.sort((a, b) => a.val - b.val);
+
+                let testPoints = [];
+                if (capisaldi.length === 0) testPoints.push(0);
+                else {
+                    testPoints.push(capisaldi[0].val - 1);
+                    for(let i = 0; i < capisaldi.length - 1; i++) testPoints.push((capisaldi[i].val + capisaldi[i+1].val) / 2);
+                    testPoints.push(capisaldi[capisaldi.length - 1].val + 1);
+                }
+
+                let rowS1 = {label: 'S₁', intervals: [], evalFn: (v) => checkSysPoint(ineq1.poly, ineq1.op, v)};
+                let rowS2 = {label: 'S₂', intervals: [], evalFn: (v) => checkSysPoint(ineq2.poly, ineq2.op, v)};
+                let checkFn = (val) => { return checkSysPoint(ineq1.poly, ineq1.op, val) && checkSysPoint(ineq2.poly, ineq2.op, val); };
+                let rowRes = {label: 'S₁ ∩ S₂', intervals: [], isResult: true, evalFn: checkFn};
+
+                testPoints.forEach(tp => {
+                    try {
+                        let s1_val = checkSysPoint(ineq1.poly, ineq1.op, tp);
+                        let s2_val = checkSysPoint(ineq2.poly, ineq2.op, tp);
+                        rowS1.intervals.push(s1_val);
+                        rowS2.intervals.push(s2_val);
+                        rowRes.intervals.push(s1_val && s2_val);
+                    } catch(e) {
+                        rowS1.intervals.push(false); rowS2.intervals.push(false); rowRes.intervals.push(false);
+                    }
+                });
+
+                let solutions = buildSolutionIntervals(capisaldi, rowRes.intervals, true, checkFn);
+
+                let html = `
+                    <div class="step-block">
+                        <div class="step-title">Diagramma di Intersezione (AND)</div>
+                        ${createDiagram(capisaldi, [rowS1, rowS2, rowRes], 'sist')}
+                    </div>
+                    <div class="step-block">
+                        <div class="step-title">Insieme delle Soluzioni</div>
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <div class="math-display" style="flex: 1; margin-bottom: 0; font-size: 1.1rem;">$$S = ${solutions.interval}$$</div>
+                            <div class="math-display" style="flex: 1; margin-bottom: 0; color: var(--accent-color); font-size: 1.25rem;">$$${solutions.logic}$$</div>
+                        </div>
+                    </div>
+                `;
+                renderMath('res-sistema', html);
+
+                if (document.getElementById('mini-graph-sist')) {
+                    drawPlot('mini-graph-sist', [
+                        { expr: ineq1.poly, label: '$y=S_1(x)$', dashPattern: '8,6' },
+                        { expr: ineq2.poly, label: '$y=S_2(x)$', dashPattern: '8,6,2,6' }
+                    ], capisaldi, checkFn);
+                }
+            } catch (e) {
+                renderMath('res-sistema', `<div class="error-text">Calcolo fallito. Verificare l'espressione algebrica.</div>`);
+                if (document.getElementById('mini-graph-sist')) document.getElementById('mini-graph-sist').innerHTML = '';
+            }
+        }
+
+        // --- MOTORE TUTOR SOCRATICO PROCEDURALE ---
+        let currentTutorProblemData = null;
+        let currentTutorStep = 0;
+
+        function generateRandomProblem() {
+            function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+            
+            if (Math.random() > 0.5) {
+                let a = randInt(1, 5);
+                let A = randInt(1, 4);
+                let B = randInt(1, 4) * (Math.random() > 0.5 ? 1 : -1);
+                
+                let a2 = a * a;
+                let signStr = B > 0 ? '+' : '-';
+                let absB = Math.abs(B);
+                let mathStr = `$$\\frac{${A}}{x^2 - ${a2}} ${signStr} \\frac{${absB}}{x - ${a}} \\ge 0$$`;
+                
+                let expNumRaw = `${A} + (${B})*(x + ${a})`;
+                let expNum = nerdamer(expNumRaw).expand().text();
+                
+                return {
+                    title: "Somma di frazioni (Diff. Quadrati)",
+                    mathStr: mathStr,
+                    verso: ">=",
+                    steps: [
+                        {
+                            type: "factor",
+                            question: `Iniziamo analizzando i denominatori: $D_1 = x^2 - ${a2}$ e $D_2 = x - ${a}$. Scomponi $D_1$ in termini lineari.`,
+                            expected: `(x-${a})*(x+${a})`,
+                            reqFactor: true,
+                            hint: `Ricorda la somma per differenza: $A^2 - B^2 = (A-B)(A+B)$. Qui il quadrato è $${a2}$.`
+                        },
+                        {
+                            type: "mcm",
+                            question: `Bene! Ora i denominatori sono $(x-${a})(x+${a})$ e $(x-${a})$. Qual è il minimo comune multiplo?`,
+                            expected: `(x-${a})*(x+${a})`,
+                            reqFactor: false,
+                            hint: "Il m.c.m. include i fattori comuni e non comuni, presi una sola volta col massimo esponente."
+                        },
+                        {
+                            type: "num",
+                            question: `Svolgi il calcolo al numeratore: l'espressione è $${A} ${signStr} ${absB}(x + ${a})$. Scrivi il nuovo polinomio numeratore.`,
+                            expected: expNum,
+                            reqFactor: false,
+                            hint: `Moltiplica ${B} per $x$ e per ${a}, poi raggruppa il termine noto con ${A}.`
+                        }
+                    ],
+                    finalNum: expNum,
+                    finalDen: `x^2 - ${a2}`,
+                    ce: [a, -a]
+                };
+            } else {
+                let r1 = randInt(1, 4);
+                let r2 = r1 + randInt(1, 3);
+                let S = r1 + r2;
+                let P = r1 * r2;
+                let B = randInt(1, 3) * (Math.random() > 0.5 ? 1 : -1);
+                
+                let signStr = B > 0 ? '+' : '-';
+                let absB = Math.abs(B);
+                let extDen = `x^2 - ${S}x + ${P}`;
+                
+                let mathStr = `$$\\frac{1}{${extDen}} ${signStr} \\frac{${absB}}{x - ${r1}} < 0$$`;
+                let expNumRaw = `1 + (${B})*(x - ${r2})`;
+                let expNum = nerdamer(expNumRaw).expand().text();
+                
+                return {
+                    title: "Somma di frazioni (Trinomio Notevole)",
+                    mathStr: mathStr,
+                    verso: "<",
+                    steps: [
+                        {
+                            type: "factor",
+                            question: `Il primo denominatore è $x^2 - ${S}x + ${P}$. Trova le due radici e scomponilo nella forma $(x-r_1)(x-r_2)$.`,
+                            expected: `(x-${r1})*(x-${r2})`,
+                            reqFactor: true,
+                            hint: `Cerca due numeri la cui somma sia $${S}$ e prodotto $${P}$.`
+                        },
+                        {
+                            type: "mcm",
+                            question: `Ok! I denominatori sono $(x-${r1})(x-${r2})$ e $(x-${r1})$. Qual è il minimo comune multiplo?`,
+                            expected: `(x-${r1})*(x-${r2})`,
+                            reqFactor: false,
+                            hint: "Combina i fattori evitando duplicati inutili."
+                        },
+                        {
+                            type: "num",
+                            question: `Determina il nuovo numeratore sommando $1$ con $${B}(x - ${r2})$. Scrivilo nella forma semplificata.`,
+                            expected: expNum,
+                            reqFactor: false,
+                            hint: `Escludendo il denominatore, distribuisci ${B} e raggruppa.`
+                        }
+                    ],
+                    finalNum: expNum,
+                    finalDen: extDen,
+                    ce: [r1, r2]
+                };
+            }
+        }
+
+        function initTutor() {
+            currentTutorProblemData = generateRandomProblem();
+            currentTutorStep = 0;
+            renderTutor();
+        }
+
+        function renderTutor() {
+            const prob = currentTutorProblemData;
+            let html = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div class="step-title" style="margin:0;">Modulo Guidato: ${prob.title}</div>
+                    <button class="action-btn" style="padding: 10px 20px; font-size: 1rem;" onclick="initTutor()">Cambia Esercizio</button>
+                </div>
+                <div class="math-display" style="text-align: center; font-size: 1.8rem; padding: 30px;">${prob.mathStr}</div>
+                <div id="tutor-steps-container"></div>
+            `;
+            document.getElementById('res-tutor').innerHTML = html;
+            renderMathInElement(document.getElementById('res-tutor'), {delimiters: [{left: '$$', right: '$$', display: true}]});
+            
+            appendNextTutorStep();
+        }
+
+        function appendNextTutorStep() {
+            const prob = currentTutorProblemData;
+            if (currentTutorStep >= prob.steps.length) {
+                concludeTutorProblem();
+                return;
+            }
+
+            const step = prob.steps[currentTutorStep];
+            const container = document.getElementById('tutor-steps-container');
+            
+            const stepHtml = `
+                <div class="tutor-dialogue" id="tutor-step-${currentTutorStep}">
+                    <div style="font-weight: bold; color: #b794f6; margin-bottom: 12px; font-size: 1.2rem;">Tutor:</div>
+                    <div style="margin-bottom: 20px;">${step.question}</div>
+                    <div class="input-group">
+                        <input type="text" id="tutor-input-${currentTutorStep}" placeholder="Inserisci la tua risposta analitica..." autocomplete="off" spellcheck="false" style="border-color: #b794f6;">
+                    </div>
+                    <button class="action-btn" id="tutor-btn-${currentTutorStep}" style="margin-top: 20px; background-color: #b794f6;" onclick="verifyTutorStep(${currentTutorStep})">Verifica Risposta</button>
+                    <div class="tutor-feedback error" id="tutor-err-${currentTutorStep}"></div>
+                    <div class="tutor-feedback success" id="tutor-succ-${currentTutorStep}"></div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', stepHtml);
+            renderMathInElement(document.getElementById(`tutor-step-${currentTutorStep}`), {delimiters: [{left: '$', right: '$', display: false}]});
+        }
+
+        function verifyTutorStep(stepIndex) {
+            const prob = currentTutorProblemData;
+            const step = prob.steps[stepIndex];
+            const inputVal = document.getElementById(`tutor-input-${stepIndex}`).value.trim();
+            const errDiv = document.getElementById(`tutor-err-${stepIndex}`);
+            const succDiv = document.getElementById(`tutor-succ-${stepIndex}`);
+            const btn = document.getElementById(`tutor-btn-${stepIndex}`);
+            const inputEl = document.getElementById(`tutor-input-${stepIndex}`);
+
+            if(!inputVal) return;
+
+            if (checkMathEquivalence(inputVal, step.expected, step.reqFactor)) {
+                errDiv.style.display = 'none';
+                succDiv.innerHTML = "<strong>Ottimo!</strong> Il passaggio è logicamente corretto.";
+                succDiv.style.display = 'block';
+                btn.style.display = 'none';
+                inputEl.disabled = true;
+                
+                currentTutorStep++;
+                setTimeout(() => {
+                    appendNextTutorStep();
+                }, 600);
+            } else {
+                succDiv.style.display = 'none';
+                errDiv.innerHTML = `L'espressione non è equivalente o non è nella forma richiesta.<br><br><strong>Suggerimento:</strong> ${step.hint}`;
+                errDiv.style.display = 'block';
+                renderMathInElement(errDiv, {delimiters: [{left: '$', right: '$', display: false}]});
+            }
+        }
+
+        function concludeTutorProblem() {
+            const prob = currentTutorProblemData;
+            const container = document.getElementById('tutor-steps-container');
+            
+            const conclusHtml = `
+                <div class="step-block" style="margin-top: 50px; animation: fadeIn 0.8s;">
+                    <div class="step-title">Conclusione ed Esplorazione Grafica</div>
+                    <div style="font-size: 1.1rem; margin-bottom: 20px;">La disequazione è stata ridotta alla forma normale equivalente, pronta per l'analisi dei segni:</div>
+                    <div class="math-display">$$\\frac{${nerdamer(prob.finalNum).toTeX()}}{${nerdamer(prob.finalDen).toTeX()}} ${prob.verso === '>=' ? '\\ge' : prob.verso === '<=' ? '\\le' : prob.verso} 0$$</div>
+                    <div id="tutor-final-diagram"></div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', conclusHtml);
+            renderMathInElement(container, {delimiters: [{left: '$$', right: '$$', display: true}]});
+            
+            drawTutorDiagram(prob.finalNum, prob.finalDen, prob.verso, prob.ce);
+        }
+
+        function drawTutorDiagram(numRaw, denRaw, verso, ceArray = []) {
+            try {
+                const nRoots = nerdamer.solveEquations(`${numRaw}=0`, 'x');
+                const dRoots = nerdamer.solveEquations(`${denRaw}=0`, 'x');
+
+                let capisaldi = [];
+                [...nRoots, ...dRoots].forEach(r => {
+                    let sym = r.toString();
+                    try {
+                        let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
+                        if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
+                            capisaldi.push({sym: sym, val: val});
+                        }
+                    } catch(e) {}
+                });
+                
+                ceArray.forEach(val => {
+                    if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
+                        capisaldi.push({sym: val.toString(), val: val, isCE: true});
+                    }
+                });
+
+                capisaldi.sort((a, b) => a.val - b.val);
+
+                let testPoints = [];
+                if (capisaldi.length === 0) testPoints.push(0);
+                else {
+                    testPoints.push(capisaldi[0].val - 1);
+                    for(let i = 0; i < capisaldi.length - 1; i++) {
+                        testPoints.push((capisaldi[i].val + capisaldi[i+1].val) / 2);
+                    }
+                    testPoints.push(capisaldi[capisaldi.length - 1].val + 1);
+                }
+
+                let rowN = {label: 'N(x)', intervals: []};
+                let rowD = {label: 'D(x)', intervals: []};
+                
+                testPoints.forEach(tp => {
+                    let n_val = parseFloat(nerdamer(numRaw).sub('x', tp).evaluate().text());
+                    let d_val = parseFloat(nerdamer(denRaw).sub('x', tp).evaluate().text());
+                    rowN.intervals.push(n_val >= 0 ? '+' : '-');
+                    rowD.intervals.push(d_val > 0 ? '+' : '-');
+                });
+
+                let checkFn = (val) => {
+                    if (ceArray.includes(val)) return false; 
+                    return checkFrazPoint(numRaw, denRaw, verso, val);
+                };
+
+                let rowRes = {label: 'Segno', intervals: [], isResult: true, evalFn: checkFn};
+                testPoints.forEach(tp => {
+                    let n_val = parseFloat(nerdamer(numRaw).sub('x', tp).evaluate().text());
+                    let d_val = parseFloat(nerdamer(denRaw).sub('x', tp).evaluate().text());
+                    rowRes.intervals.push((n_val / d_val) >= 0 ? '+' : '-');
+                });
+
+                let targetSign = (verso === '>' || verso === '>=') ? '+' : '-';
+                let solutions = buildSolutionIntervals(capisaldi, rowRes.intervals, targetSign, checkFn);
+
+                let diagHtml = `
+                    ${createDiagram(capisaldi, [rowN, rowD, rowRes], 'fraz')}
+                    <div style="display: flex; gap: 20px; align-items: center; margin-top: 10px;">
+                        <div class="math-display" style="flex: 1; margin: 0; font-size: 1.1rem;">$$S = ${solutions.interval}$$</div>
+                        <div class="math-display" style="flex: 1; margin: 0; color: var(--accent-color); font-size: 1.25rem;">$$${solutions.logic}$$</div>
+                    </div>
+                `;
+                renderMath('tutor-final-diagram', diagHtml);
+            } catch(e) {
+                document.getElementById('tutor-final-diagram').innerHTML = `<div class="error-text">Errore nel tracciamento del grafico.</div>`;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            evaluateFractional();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esploratore Polinomiale</title>
+    <meta name="description" content="Esploratore interattivo per polinomi, grafico dinamico e scomposizione. Utile per visualizzare operazioni polinomiali con grafici e analisi visiva integrata.">
+    <meta name="keywords" content="2EL, 4EL, 2GP, 3MEC, algebra, scomposizione, grafico, equazioni frazionarie, funzioni frazionarie, polinomi">
+    <meta name="date" content="2026-04-02">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Motore Numerico per il Rendering Vettoriale -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    
+    <!-- Motore Simbolico per Scomposizione e Semplificazione -->
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    
+    <!-- Tipografia Matematica -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
+    
+    <!-- Libreria Grafica -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-oled: #000000;
+            --bg-panel: #0a0a0a;
+            --bg-surface: #111111;
+            --border-color: #1f1f1f;
+            --border-hover: #333333;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            
+            --color-p: #00e5ff;
+            --color-q: #ff0055;
+            --color-res: #00ff88;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-oled);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .mono { font-family: 'Share Tech Mono', monospace; }
+
+        /* HEADER E INPUT */
+        .control-panel {
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            z-index: 20;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--text-muted);
+        }
+
+        .input-label {
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .input-field {
+            flex: 1;
+            background: transparent;
+            color: var(--text-main);
+            border: none;
+            padding: 10px 16px;
+            outline: none;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+        }
+
+        .select-op {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+            outline: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        .select-op:hover { border-color: var(--border-hover); }
+
+        /* AREA MATEMATICA E SPAZIATURA */
+        .math-section {
+            background-color: var(--bg-oled);
+            border-bottom: 1px solid var(--border-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 15;
+            min-height: 180px;
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .math-display {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            width: 100%;
+            text-align: center;
+        }
+
+        .ce-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-hover);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease;
+        }
+
+        .ce-box.hidden {
+            display: none;
+        }
+
+        /* Correzione KaTeX per dark mode */
+        .katex .frac-line { border-bottom-color: currentColor; }
+        .katex .sqrt-line { border-top-color: currentColor; }
+
+        /* TOOLBAR GRAFICA */
+        .toolbar {
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            z-index: 10;
+        }
+
+        .toggle-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: currentColor;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+
+        .toggle-btn.active {
+            color: var(--text-main);
+            border-color: var(--btn-color);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 8px rgba(255,255,255,0.05);
+        }
+
+        .toggle-btn.active::before {
+            background-color: var(--btn-color);
+            opacity: 1;
+            box-shadow: 0 0 8px var(--btn-color);
+        }
+
+        .divider {
+            width: 1px;
+            height: 24px;
+            background-color: var(--border-color);
+            margin: 0 8px;
+        }
+
+        .action-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        /* AREA GRAFICA */
+        .graph-wrapper {
+            flex: 1;
+            position: relative;
+            background-color: var(--bg-oled);
+            overflow: hidden;
+        }
+
+        .grid-line { stroke: #111111; stroke-width: 1; }
+        .axis-line { stroke: #333333; stroke-width: 1.5; }
+        .axis-tick text { font-size: 11px; fill: #555555; font-family: 'Share Tech Mono', monospace; }
+
+        /* ERROR TOAST */
+        .error-toast {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 0, 85, 0.1);
+            border: 1px solid var(--color-q);
+            color: var(--color-q);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+            z-index: 30;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Controlli Superiori -->
+    <header class="control-panel">
+        <div class="input-wrapper">
+            <div class="input-label" style="color: var(--color-p);">P(x)</div>
+            <input type="text" id="inputP" class="input-field" value="x^3 - x" autocomplete="off" spellcheck="false">
+        </div>
+
+        <select id="operation" class="select-op">
+            <option value="add">Somma (+)</option>
+            <option value="sub">Sottrazione (−)</option>
+            <option value="mul">Moltiplicazione (×)</option>
+            <option value="div" selected>Divisione (÷)</option>
+        </select>
+
+        <div class="input-wrapper">
+            <div class="input-label" style="color: var(--color-q);">Q(x)</div>
+            <input type="text" id="inputQ" class="input-field" value="x^2 - 1" autocomplete="off" spellcheck="false">
+        </div>
+    </header>
+
+    <!-- Rendering Matematico: Logica separata e spaziata -->
+    <section class="math-section">
+        <div id="math-output" class="math-display"></div>
+        <div id="ce-output" class="ce-box hidden"></div>
+    </section>
+
+    <!-- Toolbar Controlli Grafico -->
+    <div class="toolbar">
+        <button class="toggle-btn active" data-layer="p" style="--btn-color: var(--color-p)">Polinomio P(x)</button>
+        <button class="toggle-btn active" data-layer="q" style="--btn-color: var(--color-q)">Polinomio Q(x)</button>
+        <button class="toggle-btn active" data-layer="res" style="--btn-color: var(--color-res)">Curva Risultato R(x)</button>
+        
+        <div class="divider"></div>
+        
+        <button id="resetViewBtn" class="action-btn">◎ Centra Vista</button>
+    </div>
+
+    <!-- Area Rendering Grafico (D3) -->
+    <main class="graph-wrapper" id="graph-container">
+        <div id="error-toast" class="error-toast mono">⚠ Errore di sintassi analitica</div>
+    </main>
+
+    <script>
+        // Stato di visualizzazione layer
+        const layers = { p: true, q: true, res: true };
+
+        // Variabili stato matematico (Math.js)
+        let currentNodeP = null;
+        let currentNodeQ = null;
+        let currentResNode = null;
+        let currentIsDiv = false;
+
+        // Configurazione dominio
+        const baseDomainX = [-10, 10];
+        const baseDomainY = [-15, 15];
+
+        // Referenze DOM
+        const inputP = document.getElementById('inputP');
+        const inputQ = document.getElementById('inputQ');
+        const operation = document.getElementById('operation');
+        const mathOutput = document.getElementById('math-output');
+        const ceOutput = document.getElementById('ce-output');
+        const errorToast = document.getElementById('error-toast');
+        const graphContainer = document.getElementById('graph-container');
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+
+        // Inizializzazione SVG D3.js
+        const svg = d3.select("#graph-container").append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .style("cursor", "crosshair");
+
+        const g = svg.append("g");
+        const axesGroup = g.append("g").attr("class", "axes-layer");
+        const pathsGroup = g.append("g").attr("class", "paths-layer");
+
+        let width, height, xScaleOriginal, yScaleOriginal, currentXScale, currentYScale;
+
+        // Comportamento Zoom & Pan
+        const zoomBehavior = d3.zoom()
+            .scaleExtent([0.01, 1000])
+            .on("zoom", handleZoom);
+
+        svg.call(zoomBehavior);
+
+        function resize() {
+            width = graphContainer.clientWidth;
+            height = graphContainer.clientHeight;
+            
+            xScaleOriginal = d3.scaleLinear().domain(baseDomainX).range([0, width]);
+            yScaleOriginal = d3.scaleLinear().domain(baseDomainY).range([height, 0]);
+            
+            const transform = d3.zoomTransform(svg.node());
+            currentXScale = transform.rescaleX(xScaleOriginal);
+            currentYScale = transform.rescaleY(yScaleOriginal);
+
+            drawAxes();
+            drawPaths();
+        }
+
+        window.addEventListener('resize', resize);
+
+        function handleZoom(event) {
+            currentXScale = event.transform.rescaleX(xScaleOriginal);
+            currentYScale = event.transform.rescaleY(yScaleOriginal);
+            drawAxes();
+            drawPaths();
+        }
+
+        function triggerSwooshReset() {
+            svg.transition()
+                .duration(1200)
+                .ease(d3.easeElasticOut.amplitude(1.2).period(0.4))
+                .call(zoomBehavior.transform, d3.zoomIdentity);
+        }
+
+        // Gestione Toggle Buttons
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const layerId = e.currentTarget.getAttribute('data-layer');
+                layers[layerId] = !layers[layerId];
+                
+                if (layers[layerId]) {
+                    e.currentTarget.classList.add('active');
+                } else {
+                    e.currentTarget.classList.remove('active');
+                }
+                drawPaths();
+            });
+        });
+
+        function drawAxes() {
+            axesGroup.selectAll("*").remove();
+
+            const xTicks = currentXScale.ticks(width / 100);
+            const yTicks = currentYScale.ticks(height / 80);
+
+            // Griglia
+            axesGroup.append("g").selectAll("line").data(xTicks).enter().append("line")
+                .attr("class", "grid-line")
+                .attr("x1", d => currentXScale(d)).attr("x2", d => currentXScale(d))
+                .attr("y1", 0).attr("y2", height);
+
+            axesGroup.append("g").selectAll("line").data(yTicks).enter().append("line")
+                .attr("class", "grid-line")
+                .attr("y1", d => currentYScale(d)).attr("y2", d => currentYScale(d))
+                .attr("x1", 0).attr("x2", width);
+
+            // Assi Principali
+            const yZero = currentYScale(0);
+            if (yZero >= 0 && yZero <= height) {
+                axesGroup.append("line")
+                    .attr("class", "axis-line")
+                    .attr("x1", 0).attr("x2", width)
+                    .attr("y1", yZero).attr("y2", yZero);
+            }
+
+            const xZero = currentXScale(0);
+            if (xZero >= 0 && xZero <= width) {
+                axesGroup.append("line")
+                    .attr("class", "axis-line")
+                    .attr("x1", xZero).attr("x2", xZero)
+                    .attr("y1", 0).attr("y2", height);
+            }
+
+            // Etichette
+            const xAxisText = axesGroup.append("g").attr("class", "axis-tick");
+            xTicks.forEach(t => {
+                if (Math.abs(t) < 0.001) return;
+                xAxisText.append("text")
+                    .attr("x", currentXScale(t))
+                    .attr("y", Math.min(Math.max(currentYScale(0) + 16, 16), height - 8))
+                    .attr("text-anchor", "middle")
+                    .text(t);
+            });
+
+            const yAxisText = axesGroup.append("g").attr("class", "axis-tick");
+            yTicks.forEach(t => {
+                if (Math.abs(t) < 0.001) return;
+                yAxisText.append("text")
+                    .attr("y", currentYScale(t) + 4)
+                    .attr("x", Math.min(Math.max(currentXScale(0) - 8, 8), width - 24))
+                    .attr("text-anchor", "end")
+                    .text(t);
+            });
+        }
+
+        function generatePathData(node, qNode = null, isDiv = false) {
+            const data = [];
+            let prevY = null;
+            const compiled = node.compile();
+            const qCompiled = qNode ? qNode.compile() : null;
+            
+            const domainX = currentXScale.domain();
+            const rangeY = Math.abs(currentYScale.domain()[1] - currentYScale.domain()[0]);
+            const resolution = (domainX[1] - domainX[0]) / 1000;
+            const asymptoteThreshold = rangeY * 1.5;
+
+            for (let x = domainX[0]; x <= domainX[1]; x += resolution) {
+                try {
+                    let y = compiled.evaluate({ x: x });
+                    let defined = true;
+
+                    if (Math.abs(y) > 1e6 || isNaN(y) || !isFinite(y)) {
+                        defined = false;
+                    }
+
+                    if (prevY !== null && Math.abs(y - prevY) > asymptoteThreshold) {
+                        defined = false;
+                    }
+
+                    if (isDiv && qCompiled) {
+                        let qVal = qCompiled.evaluate({ x: x });
+                        if (Math.abs(qVal) < 0.01) {
+                            defined = false;
+                        }
+                    }
+
+                    data.push({ x: x, y: y, defined: defined });
+                    prevY = defined ? y : null;
+                } catch (e) {
+                    data.push({ x: x, y: 0, defined: false });
+                }
+            }
+            return data;
+        }
+
+        function findApproximateRoots(node) {
+            const roots = [];
+            const compiled = node.compile();
+            let prevY = null;
+            let prevX = null;
+            
+            for (let x = -100; x <= 100; x += 0.05) {
+                try {
+                    let y = compiled.evaluate({ x: x });
+                    if (prevY !== null && Math.sign(y) !== Math.sign(prevY)) {
+                        let rootX = prevX - prevY * (x - prevX) / (y - prevY);
+                        roots.push(Math.round(rootX * 100) / 100);
+                    } else if (Math.abs(y) < 1e-6) {
+                        roots.push(Math.round(x * 100) / 100);
+                    }
+                    prevY = y;
+                    prevX = x;
+                } catch (e) {}
+            }
+            return roots.filter((item, pos, ary) => !pos || Math.abs(item - ary[pos - 1]) > 0.05);
+        }
+
+        function recalculateMath() {
+            try {
+                const strP = inputP.value.trim();
+                const strQ = inputQ.value.trim();
+                const op = operation.value;
+
+                if (!strP || !strQ) return;
+
+                // Elaborazione simbolica formale (Nerdamer)
+                const nP = nerdamer(strP);
+                const nQ = nerdamer(strQ);
+
+                let opSymbol = "";
+                let exprStr = "";
+
+                if (op === 'add') {
+                    exprStr = `(${strP}) + (${strQ})`;
+                    opSymbol = "+";
+                } else if (op === 'sub') {
+                    exprStr = `(${strP}) - (${strQ})`;
+                    opSymbol = "-";
+                } else if (op === 'mul') {
+                    exprStr = `(${strP}) * (${strQ})`;
+                    opSymbol = "\\cdot";
+                } else if (op === 'div') {
+                    exprStr = `(${strP}) / (${strQ})`;
+                    opSymbol = "/";
+                }
+
+                const nRes = nerdamer(exprStr);
+                
+                // Ricerca di fattori per scomposizione
+                const factPTex = nerdamer(`factor(${strP})`).toTeX();
+                const factQTex = nerdamer(`factor(${strQ})`).toTeX();
+                const factResTex = nerdamer(`factor(${exprStr})`).toTeX();
+                
+                // Ricerca della forma elementare più semplice
+                const simpResTex = nerdamer(`simplify(${exprStr})`).toTeX();
+
+                // Compilazione numerica veloce per rendering grafico (Math.js)
+                currentNodeP = math.parse(strP);
+                currentNodeQ = math.parse(strQ);
+                currentResNode = math.parse(exprStr);
+                currentIsDiv = (op === 'div');
+
+                // Strutturazione LaTeX
+                const pTex = nP.toTeX();
+                const qTex = nQ.toTeX();
+                const resTex = nRes.toTeX();
+                
+                // Mostra il passaggio di scomposizione solo se genera una modifica formale
+                const pStep = (pTex !== factPTex) ? `\\xrightarrow{\\text{Scomp.}} ${factPTex}` : '';
+                const qStep = (qTex !== factQTex) ? `\\xrightarrow{\\text{Scomp.}} ${factQTex}` : '';
+
+                let latexExpression = `\\begin{aligned} `;
+                latexExpression += `P(x) &= ${pTex} ${pStep} \\\\ `;
+                latexExpression += `Q(x) &= ${qTex} ${qStep} \\\\ `;
+                latexExpression += `\\\\[-0.5em] `;
+
+                if (currentIsDiv) {
+                    latexExpression += `R(x) &= \\frac{P(x)}{Q(x)} `;
+                    
+                    // Se P(x) o Q(x) sono scomponibili, mostra la frazione scomposta
+                    if (pTex !== factPTex || qTex !== factQTex) {
+                        latexExpression += `= \\frac{${factPTex}}{${factQTex}} `;
+                    }
+                    
+                    latexExpression += `\\xrightarrow{\\text{Sempl.}} ${simpResTex}`;
+                    
+                    // Condizioni di esistenza
+                    const rootsQ = findApproximateRoots(currentNodeQ);
+                    let ceLatex = "";
+                    if (rootsQ.length > 0) {
+                        ceLatex = `x \\neq ` + rootsQ.join(`, \\; x \\neq `);
+                    } else {
+                        ceLatex = `\\forall x \\in \\mathbb{R}`;
+                    }
+                    
+                    katex.render(`\\text{C.E.: } ${ceLatex}`, ceOutput, { throwOnError: false, displayMode: false });
+                    ceOutput.classList.remove('hidden');
+
+                } else {
+                    latexExpression += `R(x) &= P(x) ${opSymbol} Q(x) = ${resTex} `;
+                    
+                    if (resTex !== factResTex && simpResTex !== factResTex) {
+                        latexExpression += `\\xrightarrow{\\text{Scomp.}} ${factResTex} `;
+                    }
+                    
+                    latexExpression += `\\xrightarrow{\\text{Sempl.}} ${simpResTex}`;
+                    ceOutput.classList.add('hidden');
+                }
+                latexExpression += ` \\end{aligned}`;
+
+                katex.render(latexExpression, mathOutput, { throwOnError: false, displayMode: true });
+                errorToast.style.display = 'none';
+
+                drawPaths();
+
+            } catch (error) {
+                errorToast.style.display = 'block';
+            }
+        }
+
+        function drawPaths() {
+            if (!currentNodeP || !currentNodeQ || !currentResNode) return;
+
+            pathsGroup.selectAll(".curve").remove();
+
+            const lineGenerator = d3.line()
+                .defined(d => d.defined)
+                .x(d => currentXScale(d.x))
+                .y(d => currentYScale(d.y));
+
+            if (layers.p) {
+                const dataP = generatePathData(currentNodeP);
+                pathsGroup.append("path")
+                    .attr("class", "curve")
+                    .datum(dataP)
+                    .attr("fill", "none")
+                    .attr("stroke", "var(--color-p)")
+                    .attr("stroke-width", 1.5)
+                    .attr("stroke-dasharray", "4,6")
+                    .attr("opacity", 0.6)
+                    .attr("d", lineGenerator);
+            }
+
+            if (layers.q) {
+                const dataQ = generatePathData(currentNodeQ);
+                pathsGroup.append("path")
+                    .attr("class", "curve")
+                    .datum(dataQ)
+                    .attr("fill", "none")
+                    .attr("stroke", "var(--color-q)")
+                    .attr("stroke-width", 1.5)
+                    .attr("stroke-dasharray", "4,6")
+                    .attr("opacity", 0.6)
+                    .attr("d", lineGenerator);
+            }
+
+            if (layers.res) {
+                const dataRes = generatePathData(currentResNode, currentNodeQ, currentIsDiv);
+                pathsGroup.append("path")
+                    .attr("class", "curve")
+                    .datum(dataRes)
+                    .attr("fill", "none")
+                    .attr("stroke", "var(--color-res)")
+                    .attr("stroke-width", 2.5)
+                    .attr("stroke-linecap", "round")
+                    .attr("stroke-linejoin", "round")
+                    .attr("filter", "url(#glow)")
+                    .attr("d", lineGenerator);
+            }
+        }
+
+        // Filtro Glow SVG
+        const defs = svg.append("defs");
+        const filter = defs.append("filter").attr("id", "glow");
+        filter.append("feGaussianBlur").attr("stdDeviation", "2").attr("result", "coloredBlur");
+        const feMerge = filter.append("feMerge");
+        feMerge.append("feMergeNode").attr("in", "coloredBlur");
+        feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+        // Listeners
+        inputP.addEventListener('input', recalculateMath);
+        inputQ.addEventListener('input', recalculateMath);
+        operation.addEventListener('change', recalculateMath);
+        
+        document.getElementById('resetViewBtn').addEventListener('click', () => {
+            recalculateMath();
+            triggerSwooshReset();
+        });
+
+        // Init
+        resize();
+        recalculateMath();
+        triggerSwooshReset();
+
+    </script>
+</body>
+</html>

@@ -1,9 +1,50 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-03-13 15:07:04
+   Data: 2026-04-02 22:28:01
 */
 
 const db = [
+    {
+        "title": "Esploratore Polinomiale",
+        "excerpt": "Esploratore interattivo per polinomi, grafico dinamico e scomposizione. Utile per visualizzare operazioni polinomiali con grafici e analisi visiva integrata.",
+        "tags": [
+            "2EL",
+            "4EL",
+            "2GP",
+            "3MEC",
+            "algebra",
+            "scomposizione",
+            "grafico",
+            "equazioni frazionarie",
+            "funzioni frazionarie",
+            "polinomi"
+        ],
+        "date": "2026-04-02",
+        "url": "content/apps/operazioni_polinomi_graph.html",
+        "type": "app",
+        "icon": "🧱"
+    },
+    {
+        "title": "SimbolicMath Lab",
+        "excerpt": "Risolutore simbolico e interattivo per disequazioni frazionarie e sistemi matematici. Integra un tutor socratico passo passo per l",
+        "tags": [
+            "2EL",
+            "4EL",
+            "2GP",
+            "3MEC",
+            "algebra",
+            "disequazioni",
+            "sistemi",
+            "frazionarie",
+            "tutor",
+            "risolutore",
+            "logica"
+        ],
+        "date": "2026-04-02",
+        "url": "content/apps/disequazioni_frazionarie_vs_sistemi.html",
+        "type": "app",
+        "icon": "🧱"
+    },
     {
         "title": "Game Theory Lab 2.5 🎲",
         "excerpt": "Attività interattiva.",
