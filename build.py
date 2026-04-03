@@ -81,18 +81,18 @@ def extract_html_meta(file_path):
         title = title.split("-")[0].strip()
         
         # 2. Descrizione
-        desc_match = re.search(r'<meta\s+name=["\']description["\']\s+content=["\'](.*?)["\']', content, re.IGNORECASE)
-        description = html.unescape(desc_match.group(1)) if desc_match else "Attività interattiva."
+        desc_match = re.search(r'<meta\s+name=["\']description["\']\s+content=(["\'])(.*?)\1', content, re.IGNORECASE)
+        description = html.unescape(desc_match.group(2)) if desc_match else "Attività interattiva."
         
         # 3. Tags
-        tags_match = re.search(r'<meta\s+name=["\']keywords["\']\s+content=["\'](.*?)["\']', content, re.IGNORECASE)
-        tags_str = tags_match.group(1) if tags_match else ""
+        tags_match = re.search(r'<meta\s+name=["\']keywords["\']\s+content=(["\'])(.*?)\1', content, re.IGNORECASE)
+        tags_str = tags_match.group(2) if tags_match else ""
         tags = [t.strip() for t in tags_str.split(',') if t.strip()]
         
         # 4. Data
-        date_match = re.search(r'<meta\s+name=["\']date["\']\s+content=["\'](.*?)["\']', content, re.IGNORECASE)
+        date_match = re.search(r'<meta\s+name=["\']date["\']\s+content=(["\'])(.*?)\1', content, re.IGNORECASE)
         if date_match:
-            date_str = date_match.group(1)
+            date_str = date_match.group(2)
         else:
             timestamp = os.path.getmtime(file_path)
             date_str = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')

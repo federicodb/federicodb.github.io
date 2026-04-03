@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-02 22:31:18
+   Data: 2026-04-03 17:30:51
 */
 
 const db = [
@@ -25,8 +25,8 @@ const db = [
         "icon": "🧱"
     },
     {
-        "title": "SimbolicMath Lab",
-        "excerpt": "Risolutore simbolico e interattivo per disequazioni frazionarie e sistemi matematici. Integra un tutor socratico passo passo per l",
+        "title": "Sistemi di disequazioni vs disequazioni frazionarie",
+        "excerpt": "Risolutore simbolico e interattivo per disequazioni frazionarie e sistemi matematici. Integra un tutor socratico passo passo per l'apprendimento guidato.",
         "tags": [
             "2EL",
             "4EL",
@@ -311,7 +311,7 @@ const db = [
     },
     {
         "title": "Albero di Pitagora: Frattali 3D",
-        "excerpt": "Generatore parametrico di alberi frattali. Visualizzazione simultanea 2D (Geometrica) e 3D (Estrusa) con controlli interattivi ed export STL. Include spiegazione dell",
+        "excerpt": "Generatore parametrico di alberi frattali. Visualizzazione simultanea 2D (Geometrica) e 3D (Estrusa) con controlli interattivi ed export STL. Include spiegazione dell'algoritmo ricorsivo.",
         "tags": [
             "Matematica",
             "Geometria",
@@ -361,7 +361,7 @@ const db = [
     },
     {
         "title": "Parabola Challenge: Disequazioni",
-        "excerpt": "Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino all",
+        "excerpt": "Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino all'input testuale libero.",
         "tags": [
             "Matematica",
             "Algebra",
