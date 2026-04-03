@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Phi Geometric Generator - Dimostrazione Incommensurabilità</title>
+    <title>PHI is irrational</title>
     <meta name="description" content="Esplorazione interattiva 2D/3D del modulo aureo (Phi). Simulatore WebGL per dimostrare l'incommensurabilità attraverso le proiezioni concentriche della spirale.">
     <meta name="keywords" content="matematica, phi, geometria, WebGL, 3d, spirale, incommensurabilità, frattali">
     <meta name="date" content="2026-04-03">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}]});"></script>
     <style>
         :root {
             --bg-color: #000000;
@@ -254,12 +258,12 @@
 
     <div id="ui-layer">
         <div class="panel">
-            <h1>Modulo &Phi;</h1>
+            <h1 style="font-size: 1.6rem; margin-bottom: 5px;">\(\Phi \text{ is irrational}\)</h1>
             <p class="subtitle">Dimostrazione d'incommensurabilità</p>
 
             <div class="control-group">
                 <div class="control-header">
-                    <span>Proiezione Sferica</span>
+                    <span>Morfologia 2D &rarr; Sfera Completa</span>
                     <span id="val-sphere">0%</span>
                 </div>
                 <input type="range" id="slider-sphere" min="0" max="1" step="0.01" value="0">
@@ -267,10 +271,18 @@
 
             <div class="control-group">
                 <div class="control-header">
+                    <span style="color: var(--accent);">Freq. Latitudine (Meridiani)</span>
+                    <span id="val-meridian" style="color: var(--accent);">0.0</span>
+                </div>
+                <input type="range" id="slider-meridian" min="0" max="2" step="0.01" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
                     <span>Avanzamento Tempo</span>
                     <span id="val-time">0.0</span>
                 </div>
-                <input type="range" id="slider-time" min="0" max="500" step="0.1" value="0">
+                <input type="range" id="slider-time" min="0" max="1000" step="0.1" value="0">
             </div>
 
             <div class="control-group">
@@ -278,15 +290,15 @@
                     <span>Velocità Animazione</span>
                     <span id="val-speed">1.0x</span>
                 </div>
-                <input type="range" id="slider-speed" min="0.1" max="3" step="0.1" value="1">
+                <input type="range" id="slider-speed" min="0.1" max="4" step="0.1" value="1.0">
             </div>
 
             <div class="control-group">
                 <div class="control-header">
                     <span>Densità Traccia</span>
-                    <span id="val-density">20</span>
+                    <span id="val-density">30</span>
                 </div>
-                <input type="range" id="slider-density" min="2" max="60" step="1" value="20">
+                <input type="range" id="slider-density" min="5" max="80" step="1" value="30">
             </div>
 
             <div class="button-row">
@@ -331,7 +343,6 @@
         Interazione: Orbita (Tasto SX) | Pan (Tasto DX) | Zoom (Rotellina)
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
@@ -340,18 +351,20 @@
         const PHI = (1 + Math.sqrt(5)) / 2;
         const R_INNER = 2.0; 
         const R_OUTER = R_INNER * PHI;
-        const MAX_TRACES = 60000; // Incrementato per supportare altissime densità
-        const CURVE_SEGMENTS = 12; // Suddivisione per curvare le rette nello spazio
+        const R_S = 3.0; // Raggio unificato della sfera 3D
+        const MAX_TRACES = 80000; 
+        const CURVE_SEGMENTS = 16; // Aumentato per curvature geodetiche fluide
         
         // --- STATO DELL'APP ---
-        let timeStep = 0.05; // Densità iniziale (corrisponde a 20 linee per unità di tempo)
+        let timeStep = 1.0 / 30.0; 
         let scene, camera, renderer, controls;
         let isPlaying = true;
         let globalTime = 0;
         let speedMultiplier = 1.0;
         let fadeRate = 0.0;
         let hueSpeed = 0.0;
-        let sphereProjection = 0.0;
+        let sphereMorph = 0.0; 
+        let latFreq = 0.0; 
         let lastComputedTime = 0;
         
         // Elementi Geometrici
@@ -360,8 +373,9 @@
         let traceGeometry, traceMaterial, traceMesh;
         let matCircleInner, matCircleOuter;
         
-        // Buffer Dati
-        let tracePositions, traceTimes, traceTypes;
+        // Buffer Dati 
+        let tracePositions2D, tracePositions3D; 
+        let traceTimes, traceTypes;
         let currentTraceCount = 0;
 
         // Palette
@@ -369,12 +383,11 @@
         let cOuter = new THREE.Color('#ff00ff');
         let cTrace = new THREE.Color('#ffffff');
 
-        // Uniformi condivise per la proiezione
+        // Uniformi
         const transformUniforms = {
-            uSphere: { value: 0.0 }
+            uMorph: { value: 0.0 }
         };
 
-        // Uniformi per lo shader traccia
         const traceUniforms = {
             uTime: { value: 0.0 },
             uFadeRate: { value: 0.0 },
@@ -383,7 +396,7 @@
             uColorInner: { value: new THREE.Color('#00ffff') },
             uColorOuter: { value: new THREE.Color('#ff00ff') },
             uColorTrace: { value: new THREE.Color('#ffffff') },
-            uSphere: transformUniforms.uSphere
+            uMorph: transformUniforms.uMorph
         };
 
         // --- ELEMENTI UI ---
@@ -393,6 +406,7 @@
         const sliderFade = document.getElementById('slider-fade');
         const sliderHue = document.getElementById('slider-hue');
         const sliderSphere = document.getElementById('slider-sphere');
+        const sliderMeridian = document.getElementById('slider-meridian');
         
         const valTime = document.getElementById('val-time');
         const valSpeed = document.getElementById('val-speed');
@@ -400,57 +414,11 @@
         const valFade = document.getElementById('val-fade');
         const valHue = document.getElementById('val-hue');
         const valSphere = document.getElementById('val-sphere');
+        const valMeridian = document.getElementById('val-meridian');
         
         const btnPlay = document.getElementById('btn-play');
         const btnReset = document.getElementById('btn-reset');
         
-        // --- FUNZIONI DI PROIEZIONE ---
-        // Deformazione isometrica (Inflate): avvolge il piano 2D in una sfera
-        const projectionShaderCode = `
-            #define R_OUTER_CONST 3.2360679
-            #define R_LIMIT (R_OUTER_CONST * 1.25)
-
-            vec3 projectInflate(vec2 pos2D, float tSphere) {
-                float r = length(pos2D);
-                // theta_max va da quasi 0 (piano piatto) a PI (sfera chiusa)
-                float theta_max = mix(0.0001, 3.14159265, tSphere);
-                float Rs = R_LIMIT / theta_max;
-                
-                if (r < 0.0001) {
-                    float zOff = Rs * (1.0 - cos(theta_max * 0.5));
-                    return vec3(0.0, 0.0, -zOff);
-                }
-                
-                float theta = r * (theta_max / R_LIMIT);
-                float px = Rs * sin(theta) * (pos2D.x / r);
-                float py = Rs * sin(theta) * (pos2D.y / r);
-                
-                float zOffset = Rs * (1.0 - cos(theta_max * 0.5));
-                float pz = Rs * (1.0 - cos(theta)) - zOffset;
-                
-                return vec3(px, py, pz);
-            }
-        `;
-
-        function projectInflateJS(x, y, tSphere) {
-            const L = R_OUTER * 1.25; // R_LIMIT esteso per non far collassare l'orbita esterna
-            const r = Math.sqrt(x*x + y*y);
-            const theta_max = 0.0001 + (Math.PI - 0.0001) * tSphere;
-            const Rs = L / theta_max;
-            const zOffset = Rs * (1.0 - Math.cos(theta_max * 0.5));
-            
-            if (r < 0.0001) {
-                return { x: 0, y: 0, z: -zOffset };
-            }
-            
-            const theta = r * (theta_max / L);
-            const px = Rs * Math.sin(theta) * (x / r);
-            const py = Rs * Math.sin(theta) * (y / r);
-            const pz = Rs * (1.0 - Math.cos(theta)) - zOffset;
-            
-            return { x: px, y: py, z: pz };
-        }
-
         window.onload = function() {
             initThree();
             initUI();
@@ -482,64 +450,89 @@
         }
 
         function createGeometry() {
-            // Materiale per le orbite di riferimento con calcolo shader per il morphing sferico
+            // Materiale guide orbite
             const createCircleMaterial = (colorUniform) => new THREE.ShaderMaterial({
-                uniforms: { uSphere: transformUniforms.uSphere, uColor: { value: colorUniform } },
+                uniforms: { uMorph: transformUniforms.uMorph, uColor: { value: colorUniform } },
                 transparent: true,
-                opacity: 0.3,
+                opacity: 0.2,
                 blending: THREE.AdditiveBlending,
                 vertexShader: `
-                    uniform float uSphere;
-                    ${projectionShaderCode}
+                    attribute vec3 aPos3D;
+                    uniform float uMorph;
                     void main() {
-                        vec3 pos3D = projectInflate(position.xy, uSphere);
-                        pos3D *= mix(1.0, 1.8, uSphere); // Compensazione di scala visiva
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos3D, 1.0);
+                        vec3 finalPos = mix(position, aPos3D, uMorph);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
                     }
                 `,
                 fragmentShader: `
                     uniform vec3 uColor;
-                    void main() { gl_FragColor = vec4(uColor, 0.3); }
+                    uniform float uMorph;
+                    void main() { 
+                        float alpha = 0.2 * (1.0 - uMorph * 0.5); // Sfumano leggermente nel 3D, ma restano visibili
+                        if(alpha <= 0.01) discard;
+                        gl_FragColor = vec4(uColor, alpha); 
+                    }
                 `
             });
 
             matCircleInner = createCircleMaterial(cInner);
             matCircleOuter = createCircleMaterial(cOuter);
 
-            const matPointInner = new THREE.MeshBasicMaterial({ color: cInner });
-            const matPointOuter = new THREE.MeshBasicMaterial({ color: cOuter });
+            // Generazione guide 2D e 3D integrate per permettere al Vertex Shader di fare il morph
+            const ptsInner2D = [], ptsInner3D = [];
+            const ptsOuter2D = [], ptsOuter3D = [];
+            
+            for(let i=0; i<=128; i++) {
+                const a = (i/128) * Math.PI * 2;
+                // Sistema Interno: sul piano equatoriale
+                ptsInner2D.push(R_INNER * Math.cos(a), R_INNER * Math.sin(a), 0);
+                ptsInner3D.push(R_S * Math.cos(a), R_S * Math.sin(a), 0);
+                
+                // Sistema Esterno: ruotato come meridiano nel 3D
+                ptsOuter2D.push(R_OUTER * Math.cos(a), R_OUTER * Math.sin(a), 0);
+                ptsOuter3D.push(R_S * Math.cos(a), 0, R_S * Math.sin(a)); // Rotazione a 90° su X
+            }
 
-            const geoInner = new THREE.BufferGeometry().setFromPoints(new THREE.Path().absarc(0, 0, R_INNER, 0, Math.PI * 2).getSpacedPoints(128));
-            const geoOuter = new THREE.BufferGeometry().setFromPoints(new THREE.Path().absarc(0, 0, R_OUTER, 0, Math.PI * 2).getSpacedPoints(128));
+            const geoInner = new THREE.BufferGeometry();
+            geoInner.setAttribute('position', new THREE.Float32BufferAttribute(ptsInner2D, 3));
+            geoInner.setAttribute('aPos3D', new THREE.Float32BufferAttribute(ptsInner3D, 3));
+
+            const geoOuter = new THREE.BufferGeometry();
+            geoOuter.setAttribute('position', new THREE.Float32BufferAttribute(ptsOuter2D, 3));
+            geoOuter.setAttribute('aPos3D', new THREE.Float32BufferAttribute(ptsOuter3D, 3));
 
             innerCircle = new THREE.LineLoop(geoInner, matCircleInner);
             outerCircle = new THREE.LineLoop(geoOuter, matCircleOuter);
             scene.add(innerCircle);
             scene.add(outerCircle);
 
+            const matPointInner = new THREE.MeshBasicMaterial({ color: cInner });
+            const matPointOuter = new THREE.MeshBasicMaterial({ color: cOuter });
             const geoPoint = new THREE.SphereGeometry(0.1, 16, 16);
             pointB = new THREE.Mesh(geoPoint, matPointInner);
             pointP = new THREE.Mesh(geoPoint, matPointOuter);
             scene.add(pointB);
             scene.add(pointP);
 
-            // Inizializzazione Buffer Traccia (Linee suddivise in segmenti per curvarsi)
+            // Buffer Tracce Generatrici
             traceGeometry = new THREE.BufferGeometry();
-            tracePositions = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 6); 
+            tracePositions2D = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 6); 
+            tracePositions3D = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 6); 
             traceTimes = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 2); 
             traceTypes = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 2); 
             
-            traceGeometry.setAttribute('position', new THREE.BufferAttribute(tracePositions, 3));
+            traceGeometry.setAttribute('position', new THREE.BufferAttribute(tracePositions2D, 3)); 
+            traceGeometry.setAttribute('aPos3D', new THREE.BufferAttribute(tracePositions3D, 3));
             traceGeometry.setAttribute('aTime', new THREE.BufferAttribute(traceTimes, 1));
             traceGeometry.setAttribute('aType', new THREE.BufferAttribute(traceTypes, 1));
             
-            // ShaderMaterial Traccia
             traceMaterial = new THREE.ShaderMaterial({
                 uniforms: traceUniforms,
                 transparent: true,
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
                 vertexShader: `
+                    attribute vec3 aPos3D;
                     attribute float aTime;
                     attribute float aType;
                     varying vec3 vColor;
@@ -549,7 +542,7 @@
                     uniform float uFadeRate;
                     uniform float uBaseOpacity;
                     uniform float uHueSpeed;
-                    uniform float uSphere;
+                    uniform float uMorph;
                     
                     uniform vec3 uColorInner;
                     uniform vec3 uColorOuter;
@@ -559,8 +552,6 @@
                         vec3 rgb = clamp(abs(mod(c.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
                         return c.z + c.y * (rgb - 0.5) * (1.0 - abs(2.0 * c.z - 1.0));
                     }
-
-                    ${projectionShaderCode}
 
                     void main() {
                         float age = max(0.0, uTime - aTime);
@@ -577,10 +568,10 @@
                         
                         vColor = mix(baseNodeColor, activeTraceColor, 0.7);
                         
-                        vec3 pos3D = projectInflate(position.xy, uSphere);
-                        pos3D *= mix(1.0, 1.8, uSphere); // Compensazione di scala visiva
+                        // Morphing lineare tra le rette del piano 2D e le geodetiche della sfera 3D
+                        vec3 finalPos = mix(position, aPos3D, uMorph);
                         
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos3D, 1.0);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
                     }
                 `,
                 fragmentShader: `
@@ -600,7 +591,6 @@
         }
 
         function initUI() {
-            // Colori
             document.getElementById('col-inner').addEventListener('input', (e) => {
                 cInner.set(e.target.value);
                 matCircleInner.uniforms.uColor.value.copy(cInner);
@@ -619,15 +609,19 @@
                 traceUniforms.uColorTrace.value.copy(cTrace);
             });
 
-            // Sliders Spaziali
             sliderSphere.addEventListener('input', (e) => {
-                sphereProjection = parseFloat(e.target.value);
-                transformUniforms.uSphere.value = sphereProjection;
-                valSphere.textContent = Math.round(sphereProjection * 100) + "%";
+                sphereMorph = parseFloat(e.target.value);
+                transformUniforms.uMorph.value = sphereMorph;
+                valSphere.textContent = Math.round(sphereMorph * 100) + "%";
                 updatePositions(globalTime);
             });
 
-            // Sliders Effetti
+            sliderMeridian.addEventListener('input', (e) => {
+                latFreq = parseFloat(e.target.value);
+                valMeridian.textContent = latFreq.toFixed(2);
+                rebuildTraceBuffer(0, globalTime); 
+            });
+
             sliderFade.addEventListener('input', (e) => {
                 fadeRate = parseFloat(e.target.value);
                 traceUniforms.uFadeRate.value = fadeRate;
@@ -638,7 +632,7 @@
                 const density = parseInt(e.target.value);
                 timeStep = 1.0 / density;
                 valDensity.textContent = density;
-                rebuildTraceBuffer(0, globalTime); // Ricalcola tutto il pattern con la nuova risoluzione
+                rebuildTraceBuffer(0, globalTime); 
             });
 
             sliderHue.addEventListener('input', (e) => {
@@ -647,7 +641,6 @@
                 valHue.textContent = hueSpeed === 0 ? "Off" : hueSpeed.toFixed(2);
             });
 
-            // Playback
             btnPlay.addEventListener('click', () => {
                 isPlaying = !isPlaying;
                 btnPlay.textContent = isPlaying ? "Pausa" : "Play";
@@ -683,32 +676,46 @@
         }
 
         function getPositionsAtTime(t) {
-            const thetaB = t;
-            const thetaP = t * PHI; 
-            return {
-                bX: Math.cos(thetaB) * R_INNER,
-                bY: Math.sin(thetaB) * R_INNER,
-                pX: Math.cos(thetaP) * R_OUTER,
-                pY: Math.sin(thetaP) * R_OUTER
-            };
+            const lonB2D = t;
+            const lonP2D = t * PHI; 
+            
+            // 1. Coordinate nel Piano 2D Originale
+            const B2D = new THREE.Vector3(R_INNER * Math.cos(lonB2D), R_INNER * Math.sin(lonB2D), 0);
+            const P2D = new THREE.Vector3(R_OUTER * Math.cos(lonP2D), R_OUTER * Math.sin(lonP2D), 0);
+
+            // 2. Coordinate sulla Sfera 3D Pura
+            const latB = latFreq === 0 ? 0 : Math.sin(t * latFreq) * (Math.PI / 2);
+            const latP = latFreq === 0 ? 0 : Math.sin(t * PHI * latFreq) * (Math.PI / 2);
+
+            // Particella Base: Orbita equatoriale + deviazione latitudine
+            const B3D = new THREE.Vector3(
+                R_S * Math.cos(latB) * Math.cos(lonB2D),
+                R_S * Math.cos(latB) * Math.sin(lonB2D),
+                R_S * Math.sin(latB)
+            );
+
+            // Particella Esterna: Orbita di base calcolata...
+            const P_base = new THREE.Vector3(
+                R_S * Math.cos(latP) * Math.cos(lonP2D),
+                R_S * Math.cos(latP) * Math.sin(lonP2D),
+                R_S * Math.sin(latP)
+            );
+            // ...poi ruotata di 90° attorno all'asse X per divenire un meridiano (o un pattern sferico completo)
+            const P3D = new THREE.Vector3(P_base.x, -P_base.z, P_base.y);
+
+            return { B2D, P2D, B3D, P3D };
         }
 
         function updatePositions(t) {
             const pos = getPositionsAtTime(t);
-            const pb = projectInflateJS(pos.bX, pos.bY, sphereProjection);
-            const pp = projectInflateJS(pos.pX, pos.pY, sphereProjection);
-            
-            const scale = 1.0 + 0.8 * sphereProjection;
-            pointB.position.set(pb.x * scale, pb.y * scale, pb.z * scale);
-            pointP.position.set(pp.x * scale, pp.y * scale, pp.z * scale);
+            pointB.position.lerpVectors(pos.B2D, pos.B3D, sphereMorph);
+            pointP.position.lerpVectors(pos.P2D, pos.P3D, sphereMorph);
         }
 
         function addTraceSegment(t) {
             if (currentTraceCount >= MAX_TRACES) return;
 
-            const pos = getPositionsAtTime(t);
-            const bX = pos.bX, bY = pos.bY;
-            const pX = pos.pX, pY = pos.pY;
+            const { B2D, P2D, B3D, P3D } = getPositionsAtTime(t);
 
             let offsetPos = currentTraceCount * CURVE_SEGMENTS * 6;
             let offsetTime = currentTraceCount * CURVE_SEGMENTS * 2;
@@ -717,13 +724,36 @@
                 const f1 = i / CURVE_SEGMENTS;
                 const f2 = (i + 1) / CURVE_SEGMENTS;
 
-                tracePositions[offsetPos++] = bX + (pX - bX) * f1;
-                tracePositions[offsetPos++] = bY + (pY - bY) * f1;
-                tracePositions[offsetPos++] = 0;
+                // Calcolo Rette (2D)
+                const pt2D_1 = new THREE.Vector3().lerpVectors(B2D, P2D, f1);
+                const pt2D_2 = new THREE.Vector3().lerpVectors(B2D, P2D, f2);
 
-                tracePositions[offsetPos++] = bX + (pX - bX) * f2;
-                tracePositions[offsetPos++] = bY + (pY - bY) * f2;
-                tracePositions[offsetPos++] = 0;
+                // Calcolo Geodetiche (3D): Forzando l'interpolazione a riposare sempre sul guscio sferico di raggio R_S
+                const chord1 = new THREE.Vector3().lerpVectors(B3D, P3D, f1);
+                if (chord1.lengthSq() < 0.001) chord1.copy(B3D);
+                const pt3D_1 = chord1.normalize().multiplyScalar(R_S);
+
+                const chord2 = new THREE.Vector3().lerpVectors(B3D, P3D, f2);
+                if (chord2.lengthSq() < 0.001) chord2.copy(B3D);
+                const pt3D_2 = chord2.normalize().multiplyScalar(R_S);
+
+                // Scrittura nel Buffer 2D
+                tracePositions2D[offsetPos]   = pt2D_1.x;
+                tracePositions2D[offsetPos+1] = pt2D_1.y;
+                tracePositions2D[offsetPos+2] = pt2D_1.z;
+
+                tracePositions2D[offsetPos+3] = pt2D_2.x;
+                tracePositions2D[offsetPos+4] = pt2D_2.y;
+                tracePositions2D[offsetPos+5] = pt2D_2.z;
+
+                // Scrittura nel Buffer 3D
+                tracePositions3D[offsetPos]   = pt3D_1.x;
+                tracePositions3D[offsetPos+1] = pt3D_1.y;
+                tracePositions3D[offsetPos+2] = pt3D_1.z;
+
+                tracePositions3D[offsetPos+3] = pt3D_2.x;
+                tracePositions3D[offsetPos+4] = pt3D_2.y;
+                tracePositions3D[offsetPos+5] = pt3D_2.z;
 
                 traceTimes[offsetTime] = t;
                 traceTimes[offsetTime+1] = t;
@@ -731,6 +761,7 @@
                 traceTypes[offsetTime] = f1; 
                 traceTypes[offsetTime+1] = f2; 
 
+                offsetPos += 6;
                 offsetTime += 2;
             }
 
@@ -747,6 +778,7 @@
             
             traceGeometry.setDrawRange(0, currentTraceCount * CURVE_SEGMENTS * 2);
             traceGeometry.attributes.position.needsUpdate = true;
+            traceGeometry.attributes.aPos3D.needsUpdate = true;
             traceGeometry.attributes.aTime.needsUpdate = true;
             traceGeometry.attributes.aType.needsUpdate = true;
             lastComputedTime = toTime;

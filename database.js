@@ -1,11 +1,11 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-03 18:43:56
+   Data: 2026-04-03 19:07:02
 */
 
 const db = [
     {
-        "title": "Phi Geometric Generator",
+        "title": "PHI is irrational",
         "excerpt": "Esplorazione interattiva 2D/3D del modulo aureo (Phi). Simulatore WebGL per dimostrare l'incommensurabilità attraverso le proiezioni concentriche della spirale.",
         "tags": [
             "matematica",
