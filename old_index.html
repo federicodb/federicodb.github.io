@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Laboratorio Matematico Orfini | Immersive Hub</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -182,20 +183,11 @@
             pointer-events: auto;
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            .btn-icon:hover {
-                background: var(--primary);
-                color: black;
-                border-color: var(--primary);
-                transform: translateY(-2px);
-            }
-        }
-
-        .btn-icon:active {
+        .btn-icon:hover {
             background: var(--primary);
             color: black;
             border-color: var(--primary);
-            transform: scale(0.95);
+            transform: translateY(-2px);
         }
 
         .btn-icon svg {
@@ -226,17 +218,6 @@
             box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            #btn-tags:hover {
-                transform: scale(1.1);
-                box-shadow: 0 6px 20px rgba(255, 64, 129, 0.6);
-            }
-        }
-
-        #btn-tags:active {
-            transform: scale(0.95);
-        }
-
         /* --- OVERLAYS --- */
         .overlay-full {
             position: fixed;
@@ -249,18 +230,15 @@
             justify-content: flex-start;
             flex-direction: column;
             opacity: 0;
-            visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+            transition: all 0.4s ease;
             overflow-y: auto;
             padding: 2rem;
         }
 
         .overlay-full.active {
             opacity: 1;
-            visibility: visible;
             pointer-events: auto;
-            transition: opacity 0.4s ease, visibility 0s linear 0s;
         }
 
         .modal-card {
@@ -335,17 +313,14 @@
             display: flex;
             flex-direction: column;
             opacity: 0;
-            visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s, visibility 0s linear 0.4s;
+            transition: all 0.4s;
         }
 
         #content-panel.active {
             opacity: 1;
-            visibility: visible;
             pointer-events: auto;
             transform: translate(-50%, -50%) scale(1);
-            transition: opacity 0.4s ease, transform 0.4s, visibility 0s linear 0s;
         }
 
         .close-btn {
@@ -389,17 +364,10 @@
             cursor: pointer;
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            .project-card:hover {
-                border-color: var(--primary);
-                transform: translateY(-5px);
-                background: rgba(255, 255, 255, 0.06);
-            }
-        }
-
-        .project-card:active {
+        .project-card:hover {
             border-color: var(--primary);
-            transform: scale(0.98);
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .card-bg {
@@ -495,34 +463,10 @@
         @media (max-width: 600px) {
             .list-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
             }
 
             .modal-card {
-                padding: 1.5rem 1rem;
-                border-radius: 20px;
-            }
-
-            .manifesto-grid {
-                grid-template-columns: 1fr;
-            }
-
-            #content-panel {
-                width: 95%;
-                max-height: 90vh;
-            }
-
-            .panel-header {
                 padding: 1.5rem;
-            }
-
-            .panel-scroll {
-                padding: 1.5rem;
-            }
-
-            #search-input {
-                font-size: 1rem;
-                padding: 1rem;
             }
         }
     </style>
@@ -725,10 +669,8 @@
 
             // Check for KaTeX before starting
             if (typeof katex === 'undefined') {
-                let attempts = 0;
                 const checkKatex = setInterval(() => {
-                    attempts++;
-                    if (typeof katex !== 'undefined' || attempts > 30) { // Max 1.5 secondi
+                    if (typeof katex !== 'undefined') {
                         clearInterval(checkKatex);
                         initApp();
                     }
