@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-03 19:07:02
+   Data: 2026-04-03 19:35:59
 */
 
 const db = [
@@ -21,6 +21,25 @@ const db = [
         "url": "content/apps/phi_is_irrational_01.html",
         "type": "app",
         "icon": "📐"
+    },
+    {
+        "title": "Il metodo di esaustione",
+        "excerpt": "Visualizzazione parametrica del limite delle aree di poligoni regolari al crescere del numero dei lati per approssimare l'area del cerchio.",
+        "tags": [
+            "matematica",
+            "geometria",
+            "archimede",
+            "esaustione",
+            "limiti",
+            "pi greco",
+            "poligoni",
+            "p5js",
+            "area"
+        ],
+        "date": "2026-04-03",
+        "url": "content/apps/esaustione_01.html",
+        "type": "app",
+        "icon": "📈"
     },
     {
         "title": "Esploratore Polinomiale",

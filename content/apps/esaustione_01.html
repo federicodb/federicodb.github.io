@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Il metodo di esaustione</title>
+    <meta name="description" content="Visualizzazione parametrica del limite delle aree di poligoni regolari al crescere del numero dei lati per approssimare l'area del cerchio.">
+    <meta name="keywords" content="matematica, geometria, archimede, esaustione, limiti, pi greco, poligoni, p5js, area">
+    <meta name="date" content="2026-04-03">
+    
+    <!-- Tailwind CSS per il layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX per il rendering delle formule matematiche -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- p5.js per il rendering grafico parametrico -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        body {
+            background-color: #0a0a0a;
+            color: #eeeeee;
+            font-family: 'Lora', serif;
+            margin: 0;
+            overflow: hidden; /* Previene scroll barre su layout dashboard */
+        }
+
+        .math-text {
+            font-family: 'KaTeX_Math', 'Lora', serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(30, 30, 30, 0.8);
+            color: #ffffff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .home-button:hover {
+            background-color: #58C4DD;
+            color: #000;
+            box-shadow: 0 0 15px #58C4DD;
+            transform: scale(1.08);
+        }
+
+        .home-button svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Colori Stile 3B1B */
+        .color-inscribed { color: #58C4DD; }
+        .color-circumscribed { color: #E7C620; }
+        .color-circle { color: #FFFFFF; }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            margin-top: -7px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+            transition: transform 0.1s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #444;
+            border-radius: 2px;
+        }
+
+        button {
+            transition: all 0.2s ease-in-out;
+        }
+        button:hover {
+            background-color: #333;
+        }
+        
+        /* Pannello Canvas Responsive */
+        #canvas-container {
+            position: relative;
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+        }
+        
+        /* Fix per mantenere l'aspect ratio isometrico nel p5.js canvas */
+        #canvas-container canvas {
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body class="h-[100dvh] w-screen flex flex-col md:flex-row p-3 md:p-4 gap-4 box-border">
+
+    <a href="../../index.html" class="home-button" title="Torna alla Home">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </a>
+
+    <!-- Pannello Grafico (Elastico, occupa lo spazio rimanente) -->
+    <div class="flex-1 flex justify-center items-center rounded-2xl border border-gray-800 shadow-2xl overflow-hidden min-h-[40vh] md:min-h-0" id="canvas-container">
+        <!-- Il canvas p5.js verrà iniettato qui -->
+    </div>
+
+    <!-- Pannello Controlli e Formule (Dashboard Sidebar) -->
+    <div class="w-full md:w-[420px] flex flex-col gap-6 p-6 bg-[#161616] rounded-2xl border border-gray-800 shadow-2xl overflow-y-auto shrink-0">
+        
+        <!-- Intestazione -->
+        <div class="border-b border-gray-800 pb-4">
+            <h1 class="text-2xl font-semibold mb-2 tracking-wide">Il metodo di esaustione</h1>
+            <p class="text-gray-400 text-sm leading-relaxed">
+                Visualizzazione parametrica del limite delle aree di poligoni regolari al crescere del numero dei lati.
+            </p>
+        </div>
+
+        <!-- Controlli Interattivi -->
+        <div class="space-y-4 bg-[#1e1e1e] p-5 rounded-xl border border-gray-700/50">
+            <div class="flex justify-between items-center">
+                <span class="text-base text-gray-300">Numero di lati: <span id="n-val" class="font-bold text-white text-lg ml-1">3</span></span>
+                <button id="toggle-anim" class="px-4 py-1.5 border border-gray-500 rounded-md text-sm bg-transparent hover:border-white hover:text-white text-gray-300">
+                    Pausa
+                </button>
+            </div>
+            <div class="pt-2">
+                <input type="range" id="n-slider" min="3" max="60" value="3" step="1">
+            </div>
+        </div>
+
+        <!-- Cruscotto Formule e Dati -->
+        <div class="flex flex-col gap-3 mt-2 flex-1">
+            
+            <!-- Poligono Inscritto -->
+            <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800/80 flex flex-col gap-2">
+                <div class="flex justify-between items-center">
+                    <span class="color-inscribed font-semibold text-sm uppercase tracking-wider">Inscritto</span>
+                    <span id="area-ins" class="font-mono text-base color-inscribed">0.00000</span>
+                </div>
+                <div class="text-gray-400 text-sm overflow-x-auto pb-1">
+                    \[ A_{ins} = n \frac{r^2}{2} \sin\left(\frac{2\pi}{n}\right) \]
+                </div>
+            </div>
+
+            <!-- Cerchio (Costante) -->
+            <div class="bg-[#1e1e1e] p-4 rounded-xl border border-gray-700/80 shadow-[0_0_15px_rgba(255,255,255,0.03)] flex flex-col gap-2 relative z-10">
+                <div class="flex justify-between items-center">
+                    <span class="color-circle font-bold text-sm uppercase tracking-wider">Cerchio</span>
+                    <span id="area-cir" class="font-mono text-lg font-bold color-circle">0.00000</span>
+                </div>
+                <div class="text-gray-300 text-sm overflow-x-auto pb-1">
+                    \[ A_{cerchio} = \pi r^2 \]
+                </div>
+            </div>
+
+            <!-- Poligono Circoscritto -->
+            <div class="bg-gray-900/60 p-4 rounded-xl border border-gray-800/80 flex flex-col gap-2">
+                <div class="flex justify-between items-center">
+                    <span class="color-circumscribed font-semibold text-sm uppercase tracking-wider">Circoscritto</span>
+                    <span id="area-circ" class="font-mono text-base color-circumscribed">0.00000</span>
+                </div>
+                <div class="text-gray-400 text-sm overflow-x-auto pb-1">
+                    \[ A_{circ} = n r^2 \tan\left(\frac{\pi}{n}\right) \]
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Inizializzazione di KaTeX per la tipografia matematica
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError : false
+            });
+        });
+
+        let raggioDisplay;
+        let numLati = 3;
+        let isAnimating = true;
+        let frameCounter = 0;
+        
+        // Elementi DOM
+        const slider = document.getElementById('n-slider');
+        const valDisplay = document.getElementById('n-val');
+        const btnToggle = document.getElementById('toggle-anim');
+        const spanAreaIns = document.getElementById('area-ins');
+        const spanAreaCir = document.getElementById('area-cir');
+        const spanAreaCirc = document.getElementById('area-circ');
+
+        function setup() {
+            let container = document.getElementById('canvas-container');
+            let canvas = createCanvas(container.clientWidth, container.clientHeight);
+            canvas.parent('canvas-container');
+            
+            // Gestione Interazioni
+            slider.addEventListener('input', (e) => {
+                numLati = parseInt(e.target.value);
+                isAnimating = false;
+                btnToggle.innerText = 'Riproduci';
+                updateUI();
+                redraw();
+            });
+
+            btnToggle.addEventListener('click', () => {
+                isAnimating = !isAnimating;
+                btnToggle.innerText = isAnimating ? 'Pausa' : 'Riproduci';
+                if(isAnimating && numLati >= 60) {
+                    numLati = 3;
+                    slider.value = numLati;
+                }
+            });
+
+            noLoop(); // Disattiva il draw loop continuo standard, gestito tramite setInterval
+
+            // Engine Animazione
+            setInterval(() => {
+                if(isAnimating) {
+                    frameCounter++;
+                    if(frameCounter % 30 === 0) { 
+                        if(numLati < 60) {
+                            numLati++;
+                            slider.value = numLati;
+                            updateUI();
+                            redraw();
+                        } else {
+                            isAnimating = false;
+                            btnToggle.innerText = 'Riproduci';
+                        }
+                    }
+                }
+            }, 1000/60);
+            
+            updateUI();
+            redraw();
+        }
+
+        // Adatta dinamicamente il canvas in caso di ridimensionamento della finestra
+        function windowResized() {
+            let container = document.getElementById('canvas-container');
+            resizeCanvas(container.clientWidth, container.clientHeight);
+            redraw();
+        }
+
+        function draw() {
+            clear(); // Pulisce il canvas preservando il CSS background
+
+            translate(width / 2, height / 2);
+
+            // Calcolo dinamico del raggio per garantire la visibilità totale anche per n=3.
+            // Per n=3, raggioCircoscritto = raggio / cos(60°) = 2 * raggio.
+            // Impostiamo il raggio massimo in modo che 2 * raggioDisplay sia poco meno della metà della dimensione minima del canvas.
+            let minDim = min(width, height);
+            raggioDisplay = minDim * 0.22; 
+
+            let verticesIns = [];
+            let verticesCirc = [];
+            
+            let raggioCirc = raggioDisplay / cos(PI / numLati);
+
+            for (let i = 0; i < numLati; i++) {
+                let angolo = map(i, 0, numLati, 0, TWO_PI) - HALF_PI; // Rotazione di -90° per vertice in alto
+                
+                // Vettori
+                verticesIns.push(createVector(raggioDisplay * cos(angolo), raggioDisplay * sin(angolo)));
+                verticesCirc.push(createVector(raggioCirc * cos(angolo), raggioCirc * sin(angolo)));
+            }
+
+            // --- Geometria: Poligono Circoscritto (Sfondo) ---
+            drawingContext.shadowBlur = 20;
+            drawingContext.shadowColor = 'rgba(231, 198, 32, 0.4)';
+            stroke('#E7C620');
+            strokeWeight(2);
+            fill(231, 198, 32, 25);
+            beginShape();
+            for (let v of verticesCirc) vertex(v.x, v.y);
+            endShape(CLOSE);
+
+            // --- Geometria: Cerchio Costante ---
+            drawingContext.shadowBlur = 15;
+            drawingContext.shadowColor = 'rgba(255, 255, 255, 0.6)';
+            stroke(255);
+            strokeWeight(2.5);
+            noFill();
+            circle(0, 0, raggioDisplay * 2);
+
+            // --- Geometria: Poligono Inscritto (Primo Piano) ---
+            drawingContext.shadowBlur = 20;
+            drawingContext.shadowColor = 'rgba(88, 196, 221, 0.5)';
+            stroke('#58C4DD');
+            strokeWeight(2);
+            fill(88, 196, 221, 60);
+            beginShape();
+            for (let v of verticesIns) vertex(v.x, v.y);
+            endShape(CLOSE);
+            
+            // --- Linee Radiali per struttura ---
+            drawingContext.shadowBlur = 0;
+            stroke(255, 255, 255, 40);
+            strokeWeight(1);
+            for (let v of verticesCirc) { // Traccia dal centro fino al perimetro circoscritto
+                line(0, 0, v.x, v.y);
+            }
+        }
+
+        function updateUI() {
+            valDisplay.innerText = numLati;
+
+            // Raggio analitico fissato a 1 per il calcolo delle aree teoriche
+            let r = 1; 
+            
+            let areaCirconferenza = Math.PI * Math.pow(r, 2);
+            let areaInscritto = numLati * (Math.pow(r, 2) / 2) * Math.sin(2 * Math.PI / numLati);
+            let areaCircoscritto = numLati * Math.pow(r, 2) * Math.tan(Math.PI / numLati);
+
+            spanAreaCir.innerText = areaCirconferenza.toFixed(5);
+            spanAreaIns.innerText = areaInscritto.toFixed(5);
+            spanAreaCirc.innerText = areaCircoscritto.toFixed(5);
+        }
+    </script>
+</body>
+</html>
