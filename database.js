@@ -1,9 +1,27 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-03 17:30:51
+   Data: 2026-04-03 18:43:56
 */
 
 const db = [
+    {
+        "title": "Phi Geometric Generator",
+        "excerpt": "Esplorazione interattiva 2D/3D del modulo aureo (Phi). Simulatore WebGL per dimostrare l'incommensurabilità attraverso le proiezioni concentriche della spirale.",
+        "tags": [
+            "matematica",
+            "phi",
+            "geometria",
+            "WebGL",
+            "3d",
+            "spirale",
+            "incommensurabilità",
+            "frattali"
+        ],
+        "date": "2026-04-03",
+        "url": "content/apps/phi_is_irrational_01.html",
+        "type": "app",
+        "icon": "📐"
+    },
     {
         "title": "Esploratore Polinomiale",
         "excerpt": "Esploratore interattivo per polinomi, grafico dinamico e scomposizione. Utile per visualizzare operazioni polinomiali con grafici e analisi visiva integrata.",

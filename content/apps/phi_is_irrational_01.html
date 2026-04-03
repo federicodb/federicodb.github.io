@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Phi Geometric Generator - Dimostrazione Incommensurabilità</title>
+    <meta name="description" content="Esplorazione interattiva 2D/3D del modulo aureo (Phi). Simulatore WebGL per dimostrare l'incommensurabilità attraverso le proiezioni concentriche della spirale.">
+    <meta name="keywords" content="matematica, phi, geometria, WebGL, 3d, spirale, incommensurabilità, frattali">
+    <meta name="date" content="2026-04-03">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --panel-bg: rgba(10, 10, 12, 0.85);
+            --text-main: #e0e0e0;
+            --accent: #00ffff;
+            --border-radius: 8px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--panel-bg);
+            color: var(--accent);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .home-button:hover {
+            background-color: var(--accent);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent);
+            transform: scale(1.08);
+        }
+
+        .home-button svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 340px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            pointer-events: none;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            pointer-events: auto;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .panel::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+
+        h1 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p.subtitle {
+            margin: 0 0 20px 0;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .control-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 16px;
+            width: 8px;
+            border-radius: 4px;
+            background: var(--accent);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .color-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            flex: 1;
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        button.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        #info-overlay {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            text-align: right;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <a href="../../index.html" class="home-button" title="Torna alla Home">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </a>
+
+    <div id="ui-layer">
+        <div class="panel">
+            <h1>Modulo &Phi;</h1>
+            <p class="subtitle">Dimostrazione d'incommensurabilità</p>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <span>Proiezione Sferica</span>
+                    <span id="val-sphere">0%</span>
+                </div>
+                <input type="range" id="slider-sphere" min="0" max="1" step="0.01" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <span>Avanzamento Tempo</span>
+                    <span id="val-time">0.0</span>
+                </div>
+                <input type="range" id="slider-time" min="0" max="500" step="0.1" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <span>Velocità Animazione</span>
+                    <span id="val-speed">1.0x</span>
+                </div>
+                <input type="range" id="slider-speed" min="0.1" max="3" step="0.1" value="1">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <span>Densità Traccia</span>
+                    <span id="val-density">20</span>
+                </div>
+                <input type="range" id="slider-density" min="2" max="60" step="1" value="20">
+            </div>
+
+            <div class="button-row">
+                <button id="btn-play" class="active">Pausa</button>
+                <button id="btn-reset">Reset</button>
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <span>Decadimento (Fade-out)</span>
+                    <span id="val-fade">Off</span>
+                </div>
+                <input type="range" id="slider-fade" min="0" max="1" step="0.01" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <span>Ciclo Cromatico (Tonalità)</span>
+                    <span id="val-hue">Off</span>
+                </div>
+                <input type="range" id="slider-hue" min="0" max="3" step="0.05" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="color-row">
+                    <span>Sistema Interno (r=1)</span>
+                    <input type="color" id="col-inner" value="#00ffff">
+                </div>
+                <div class="color-row">
+                    <span>Sistema Esterno (R=&Phi;)</span>
+                    <input type="color" id="col-outer" value="#ff00ff">
+                </div>
+                <div class="color-row">
+                    <span>Traccia (Base)</span>
+                    <input type="color" id="col-trace" value="#ffffff">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="info-overlay">
+        Interazione: Orbita (Tasto SX) | Pan (Tasto DX) | Zoom (Rotellina)
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // --- COSTANTI MATEMATICHE ---
+        const PHI = (1 + Math.sqrt(5)) / 2;
+        const R_INNER = 2.0; 
+        const R_OUTER = R_INNER * PHI;
+        const MAX_TRACES = 60000; // Incrementato per supportare altissime densità
+        const CURVE_SEGMENTS = 12; // Suddivisione per curvare le rette nello spazio
+        
+        // --- STATO DELL'APP ---
+        let timeStep = 0.05; // Densità iniziale (corrisponde a 20 linee per unità di tempo)
+        let scene, camera, renderer, controls;
+        let isPlaying = true;
+        let globalTime = 0;
+        let speedMultiplier = 1.0;
+        let fadeRate = 0.0;
+        let hueSpeed = 0.0;
+        let sphereProjection = 0.0;
+        let lastComputedTime = 0;
+        
+        // Elementi Geometrici
+        let innerCircle, outerCircle;
+        let pointB, pointP;
+        let traceGeometry, traceMaterial, traceMesh;
+        let matCircleInner, matCircleOuter;
+        
+        // Buffer Dati
+        let tracePositions, traceTimes, traceTypes;
+        let currentTraceCount = 0;
+
+        // Palette
+        let cInner = new THREE.Color('#00ffff');
+        let cOuter = new THREE.Color('#ff00ff');
+        let cTrace = new THREE.Color('#ffffff');
+
+        // Uniformi condivise per la proiezione
+        const transformUniforms = {
+            uSphere: { value: 0.0 }
+        };
+
+        // Uniformi per lo shader traccia
+        const traceUniforms = {
+            uTime: { value: 0.0 },
+            uFadeRate: { value: 0.0 },
+            uBaseOpacity: { value: 0.15 },
+            uHueSpeed: { value: 0.0 },
+            uColorInner: { value: new THREE.Color('#00ffff') },
+            uColorOuter: { value: new THREE.Color('#ff00ff') },
+            uColorTrace: { value: new THREE.Color('#ffffff') },
+            uSphere: transformUniforms.uSphere
+        };
+
+        // --- ELEMENTI UI ---
+        const sliderTime = document.getElementById('slider-time');
+        const sliderSpeed = document.getElementById('slider-speed');
+        const sliderDensity = document.getElementById('slider-density');
+        const sliderFade = document.getElementById('slider-fade');
+        const sliderHue = document.getElementById('slider-hue');
+        const sliderSphere = document.getElementById('slider-sphere');
+        
+        const valTime = document.getElementById('val-time');
+        const valSpeed = document.getElementById('val-speed');
+        const valDensity = document.getElementById('val-density');
+        const valFade = document.getElementById('val-fade');
+        const valHue = document.getElementById('val-hue');
+        const valSphere = document.getElementById('val-sphere');
+        
+        const btnPlay = document.getElementById('btn-play');
+        const btnReset = document.getElementById('btn-reset');
+        
+        // --- FUNZIONI DI PROIEZIONE ---
+        // Deformazione isometrica (Inflate): avvolge il piano 2D in una sfera
+        const projectionShaderCode = `
+            #define R_OUTER_CONST 3.2360679
+            #define R_LIMIT (R_OUTER_CONST * 1.25)
+
+            vec3 projectInflate(vec2 pos2D, float tSphere) {
+                float r = length(pos2D);
+                // theta_max va da quasi 0 (piano piatto) a PI (sfera chiusa)
+                float theta_max = mix(0.0001, 3.14159265, tSphere);
+                float Rs = R_LIMIT / theta_max;
+                
+                if (r < 0.0001) {
+                    float zOff = Rs * (1.0 - cos(theta_max * 0.5));
+                    return vec3(0.0, 0.0, -zOff);
+                }
+                
+                float theta = r * (theta_max / R_LIMIT);
+                float px = Rs * sin(theta) * (pos2D.x / r);
+                float py = Rs * sin(theta) * (pos2D.y / r);
+                
+                float zOffset = Rs * (1.0 - cos(theta_max * 0.5));
+                float pz = Rs * (1.0 - cos(theta)) - zOffset;
+                
+                return vec3(px, py, pz);
+            }
+        `;
+
+        function projectInflateJS(x, y, tSphere) {
+            const L = R_OUTER * 1.25; // R_LIMIT esteso per non far collassare l'orbita esterna
+            const r = Math.sqrt(x*x + y*y);
+            const theta_max = 0.0001 + (Math.PI - 0.0001) * tSphere;
+            const Rs = L / theta_max;
+            const zOffset = Rs * (1.0 - Math.cos(theta_max * 0.5));
+            
+            if (r < 0.0001) {
+                return { x: 0, y: 0, z: -zOffset };
+            }
+            
+            const theta = r * (theta_max / L);
+            const px = Rs * Math.sin(theta) * (x / r);
+            const py = Rs * Math.sin(theta) * (y / r);
+            const pz = Rs * (1.0 - Math.cos(theta)) - zOffset;
+            
+            return { x: px, y: py, z: pz };
+        }
+
+        window.onload = function() {
+            initThree();
+            initUI();
+            animate();
+        };
+
+        function initThree() {
+            const container = document.getElementById('canvas-container');
+
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 15);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = false;
+
+            createGeometry();
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function createGeometry() {
+            // Materiale per le orbite di riferimento con calcolo shader per il morphing sferico
+            const createCircleMaterial = (colorUniform) => new THREE.ShaderMaterial({
+                uniforms: { uSphere: transformUniforms.uSphere, uColor: { value: colorUniform } },
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending,
+                vertexShader: `
+                    uniform float uSphere;
+                    ${projectionShaderCode}
+                    void main() {
+                        vec3 pos3D = projectInflate(position.xy, uSphere);
+                        pos3D *= mix(1.0, 1.8, uSphere); // Compensazione di scala visiva
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos3D, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 uColor;
+                    void main() { gl_FragColor = vec4(uColor, 0.3); }
+                `
+            });
+
+            matCircleInner = createCircleMaterial(cInner);
+            matCircleOuter = createCircleMaterial(cOuter);
+
+            const matPointInner = new THREE.MeshBasicMaterial({ color: cInner });
+            const matPointOuter = new THREE.MeshBasicMaterial({ color: cOuter });
+
+            const geoInner = new THREE.BufferGeometry().setFromPoints(new THREE.Path().absarc(0, 0, R_INNER, 0, Math.PI * 2).getSpacedPoints(128));
+            const geoOuter = new THREE.BufferGeometry().setFromPoints(new THREE.Path().absarc(0, 0, R_OUTER, 0, Math.PI * 2).getSpacedPoints(128));
+
+            innerCircle = new THREE.LineLoop(geoInner, matCircleInner);
+            outerCircle = new THREE.LineLoop(geoOuter, matCircleOuter);
+            scene.add(innerCircle);
+            scene.add(outerCircle);
+
+            const geoPoint = new THREE.SphereGeometry(0.1, 16, 16);
+            pointB = new THREE.Mesh(geoPoint, matPointInner);
+            pointP = new THREE.Mesh(geoPoint, matPointOuter);
+            scene.add(pointB);
+            scene.add(pointP);
+
+            // Inizializzazione Buffer Traccia (Linee suddivise in segmenti per curvarsi)
+            traceGeometry = new THREE.BufferGeometry();
+            tracePositions = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 6); 
+            traceTimes = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 2); 
+            traceTypes = new Float32Array(MAX_TRACES * CURVE_SEGMENTS * 2); 
+            
+            traceGeometry.setAttribute('position', new THREE.BufferAttribute(tracePositions, 3));
+            traceGeometry.setAttribute('aTime', new THREE.BufferAttribute(traceTimes, 1));
+            traceGeometry.setAttribute('aType', new THREE.BufferAttribute(traceTypes, 1));
+            
+            // ShaderMaterial Traccia
+            traceMaterial = new THREE.ShaderMaterial({
+                uniforms: traceUniforms,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                vertexShader: `
+                    attribute float aTime;
+                    attribute float aType;
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    
+                    uniform float uTime;
+                    uniform float uFadeRate;
+                    uniform float uBaseOpacity;
+                    uniform float uHueSpeed;
+                    uniform float uSphere;
+                    
+                    uniform vec3 uColorInner;
+                    uniform vec3 uColorOuter;
+                    uniform vec3 uColorTrace;
+
+                    vec3 hsl2rgb(vec3 c) {
+                        vec3 rgb = clamp(abs(mod(c.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+                        return c.z + c.y * (rgb - 0.5) * (1.0 - abs(2.0 * c.z - 1.0));
+                    }
+
+                    ${projectionShaderCode}
+
+                    void main() {
+                        float age = max(0.0, uTime - aTime);
+                        float fadeFactor = uFadeRate > 0.0 ? max(0.0, 1.0 - (age * uFadeRate)) : 1.0;
+                        vAlpha = uBaseOpacity * fadeFactor;
+                        
+                        vec3 baseNodeColor = mix(uColorInner, uColorOuter, aType);
+                        
+                        vec3 activeTraceColor = uColorTrace;
+                        if (uHueSpeed > 0.0) {
+                            float h = fract(aTime * uHueSpeed * 0.01);
+                            activeTraceColor = hsl2rgb(vec3(h, 0.8, 0.6));
+                        }
+                        
+                        vColor = mix(baseNodeColor, activeTraceColor, 0.7);
+                        
+                        vec3 pos3D = projectInflate(position.xy, uSphere);
+                        pos3D *= mix(1.0, 1.8, uSphere); // Compensazione di scala visiva
+                        
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos3D, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vColor;
+                    varying float vAlpha;
+                    
+                    void main() {
+                        if (vAlpha <= 0.01) discard; 
+                        gl_FragColor = vec4(vColor, vAlpha);
+                    }
+                `
+            });
+
+            traceMesh = new THREE.LineSegments(traceGeometry, traceMaterial);
+            scene.add(traceMesh);
+            traceGeometry.setDrawRange(0, 0);
+        }
+
+        function initUI() {
+            // Colori
+            document.getElementById('col-inner').addEventListener('input', (e) => {
+                cInner.set(e.target.value);
+                matCircleInner.uniforms.uColor.value.copy(cInner);
+                pointB.material.color.copy(cInner);
+                traceUniforms.uColorInner.value.copy(cInner);
+                document.documentElement.style.setProperty('--accent', e.target.value);
+            });
+            document.getElementById('col-outer').addEventListener('input', (e) => {
+                cOuter.set(e.target.value);
+                matCircleOuter.uniforms.uColor.value.copy(cOuter);
+                pointP.material.color.copy(cOuter);
+                traceUniforms.uColorOuter.value.copy(cOuter);
+            });
+            document.getElementById('col-trace').addEventListener('input', (e) => {
+                cTrace.set(e.target.value);
+                traceUniforms.uColorTrace.value.copy(cTrace);
+            });
+
+            // Sliders Spaziali
+            sliderSphere.addEventListener('input', (e) => {
+                sphereProjection = parseFloat(e.target.value);
+                transformUniforms.uSphere.value = sphereProjection;
+                valSphere.textContent = Math.round(sphereProjection * 100) + "%";
+                updatePositions(globalTime);
+            });
+
+            // Sliders Effetti
+            sliderFade.addEventListener('input', (e) => {
+                fadeRate = parseFloat(e.target.value);
+                traceUniforms.uFadeRate.value = fadeRate;
+                valFade.textContent = fadeRate === 0 ? "Off" : fadeRate.toFixed(2);
+            });
+
+            sliderDensity.addEventListener('input', (e) => {
+                const density = parseInt(e.target.value);
+                timeStep = 1.0 / density;
+                valDensity.textContent = density;
+                rebuildTraceBuffer(0, globalTime); // Ricalcola tutto il pattern con la nuova risoluzione
+            });
+
+            sliderHue.addEventListener('input', (e) => {
+                hueSpeed = parseFloat(e.target.value);
+                traceUniforms.uHueSpeed.value = hueSpeed;
+                valHue.textContent = hueSpeed === 0 ? "Off" : hueSpeed.toFixed(2);
+            });
+
+            // Playback
+            btnPlay.addEventListener('click', () => {
+                isPlaying = !isPlaying;
+                btnPlay.textContent = isPlaying ? "Pausa" : "Play";
+                btnPlay.classList.toggle('active', isPlaying);
+            });
+
+            btnReset.addEventListener('click', resetSystem);
+
+            sliderSpeed.addEventListener('input', (e) => {
+                speedMultiplier = parseFloat(e.target.value);
+                valSpeed.textContent = speedMultiplier.toFixed(1) + "x";
+            });
+
+            sliderTime.addEventListener('input', (e) => {
+                const targetTime = parseFloat(e.target.value);
+                if(isPlaying) {
+                    isPlaying = false;
+                    btnPlay.textContent = "Play";
+                    btnPlay.classList.remove('active');
+                }
+                updateSystemToTime(targetTime);
+            });
+        }
+
+        function resetSystem() {
+            globalTime = 0;
+            lastComputedTime = 0;
+            currentTraceCount = 0;
+            traceGeometry.setDrawRange(0, 0);
+            traceUniforms.uTime.value = 0;
+            updatePositions(0);
+            updateUIState();
+        }
+
+        function getPositionsAtTime(t) {
+            const thetaB = t;
+            const thetaP = t * PHI; 
+            return {
+                bX: Math.cos(thetaB) * R_INNER,
+                bY: Math.sin(thetaB) * R_INNER,
+                pX: Math.cos(thetaP) * R_OUTER,
+                pY: Math.sin(thetaP) * R_OUTER
+            };
+        }
+
+        function updatePositions(t) {
+            const pos = getPositionsAtTime(t);
+            const pb = projectInflateJS(pos.bX, pos.bY, sphereProjection);
+            const pp = projectInflateJS(pos.pX, pos.pY, sphereProjection);
+            
+            const scale = 1.0 + 0.8 * sphereProjection;
+            pointB.position.set(pb.x * scale, pb.y * scale, pb.z * scale);
+            pointP.position.set(pp.x * scale, pp.y * scale, pp.z * scale);
+        }
+
+        function addTraceSegment(t) {
+            if (currentTraceCount >= MAX_TRACES) return;
+
+            const pos = getPositionsAtTime(t);
+            const bX = pos.bX, bY = pos.bY;
+            const pX = pos.pX, pY = pos.pY;
+
+            let offsetPos = currentTraceCount * CURVE_SEGMENTS * 6;
+            let offsetTime = currentTraceCount * CURVE_SEGMENTS * 2;
+
+            for (let i = 0; i < CURVE_SEGMENTS; i++) {
+                const f1 = i / CURVE_SEGMENTS;
+                const f2 = (i + 1) / CURVE_SEGMENTS;
+
+                tracePositions[offsetPos++] = bX + (pX - bX) * f1;
+                tracePositions[offsetPos++] = bY + (pY - bY) * f1;
+                tracePositions[offsetPos++] = 0;
+
+                tracePositions[offsetPos++] = bX + (pX - bX) * f2;
+                tracePositions[offsetPos++] = bY + (pY - bY) * f2;
+                tracePositions[offsetPos++] = 0;
+
+                traceTimes[offsetTime] = t;
+                traceTimes[offsetTime+1] = t;
+
+                traceTypes[offsetTime] = f1; 
+                traceTypes[offsetTime+1] = f2; 
+
+                offsetTime += 2;
+            }
+
+            currentTraceCount++;
+        }
+
+        function rebuildTraceBuffer(fromTime, toTime) {
+            if (fromTime === 0) currentTraceCount = 0;
+            
+            const start = Math.floor(fromTime / timeStep) * timeStep;
+            for (let t = start; t <= toTime; t += timeStep) {
+                addTraceSegment(t);
+            }
+            
+            traceGeometry.setDrawRange(0, currentTraceCount * CURVE_SEGMENTS * 2);
+            traceGeometry.attributes.position.needsUpdate = true;
+            traceGeometry.attributes.aTime.needsUpdate = true;
+            traceGeometry.attributes.aType.needsUpdate = true;
+            lastComputedTime = toTime;
+        }
+
+        function updateSystemToTime(targetTime) {
+            if (targetTime < lastComputedTime) {
+                rebuildTraceBuffer(0, targetTime);
+            } else if (targetTime > lastComputedTime) {
+                rebuildTraceBuffer(lastComputedTime, targetTime);
+            }
+            
+            globalTime = targetTime;
+            traceUniforms.uTime.value = globalTime;
+            updatePositions(globalTime);
+            updateUIState();
+        }
+
+        function updateUIState() {
+            sliderTime.value = globalTime;
+            valTime.textContent = globalTime.toFixed(1);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+
+            if (isPlaying) {
+                const maxT = parseFloat(sliderTime.max);
+                const dt = (0.016 * speedMultiplier) * 10; 
+                
+                if (globalTime < maxT) {
+                    updateSystemToTime(globalTime + dt);
+                } else {
+                    isPlaying = false;
+                    btnPlay.textContent = "Play";
+                    btnPlay.classList.remove('active');
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>
