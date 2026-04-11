@@ -1,9 +1,32 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-03 19:35:59
+   Data: 2026-04-11 18:00:31
 */
 
 const db = [
+    {
+        "title": "PixelGrid",
+        "excerpt": "Attività interattiva.",
+        "tags": [
+            "ita",
+            "g",
+            "parabola",
+            "equazioni di secondo grado",
+            "modellizzazione",
+            "3MEC",
+            "4EL",
+            "fattorizzazione",
+            "algebra",
+            "scomposizione",
+            "polinomi",
+            "prodotti notevoli",
+            "quadratiche"
+        ],
+        "date": "2026-04-11",
+        "url": "content/apps/eq_2_gr_teoria_giochi_01.html",
+        "type": "app",
+        "icon": "🧱"
+    },
     {
         "title": "PHI is irrational",
         "excerpt": "Esplorazione interattiva 2D/3D del modulo aureo (Phi). Simulatore WebGL per dimostrare l'incommensurabilità attraverso le proiezioni concentriche della spirale.",

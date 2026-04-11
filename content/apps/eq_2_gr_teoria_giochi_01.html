@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelGrid - Math Lab</title>
+    <meta name="keywords" content="ita, g, parabola, equazioni di secondo grado, modellizzazione, 3MEC, 4EL, fattorizzazione, algebra, scomposizione, polinomi, prodotti notevoli, quadratiche">
+    
+    <!-- Librerie UI e Icone -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Libreria Calcolo Simbolico (Nerdamer) -->
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"></script>
+
+    <!-- Libreria Grafica Vettoriale Esatta (JSXGraph) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+
+    <style>
+        /* Animazioni Vettoriali e Background */
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 15s infinite alternate; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, visibility;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Stili Custom e Glassmorphism */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        section { scroll-margin-top: 140px; }
+
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .locked-section {
+            filter: blur(8px);
+            opacity: 0.4;
+            pointer-events: none;
+            user-select: none;
+            transition: all 1s ease;
+        }
+        .unlocked-section {
+            filter: blur(0px);
+            opacity: 1;
+            pointer-events: auto;
+            user-select: auto;
+        }
+
+        /* Override JSXGraph: No sfondi, No bordi, Testo chiaro */
+        .jxgbox { background-color: transparent !important; border: none !important; }
+        .JXGtext { color: #cbd5e1 !important; font-family: ui-sans-serif, system-ui, sans-serif !important;}
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans selection:bg-indigo-500/30 overflow-x-hidden">
+
+    <!-- Pulsante Home -->
+    <a href="../../index.html" class="fixed bottom-6 right-6 w-14 h-14 bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 hover:text-white hover:scale-110 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all z-[100]" title="Torna alla Home">
+        <svg viewBox="0 0 24 24" class="w-6 h-6" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </a>
+
+
+    <!-- Background SVG Animato -->
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <svg class="absolute w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+        <div class="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-indigo-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[50vw] h-[50vw] bg-fuchsia-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-[50vw] h-[50vw] bg-emerald-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <!-- SCHERMATA DI INIZIALIZZAZIONE -->
+    <div id="login-view" class="min-h-screen flex flex-col items-center justify-center p-4 relative z-10 transition-opacity duration-500 pt-12 pb-12">
+        <div class="max-w-4xl w-full p-8 rounded-3xl glass-panel shadow-2xl fade-in-section is-visible">
+            <div class="flex justify-center mb-6">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <i data-lucide="cpu" class="text-white w-10 h-10"></i>
+                </div>
+            </div>
+            <h1 class="text-4xl font-black text-center text-white mb-2 tracking-tight">PixelGrid Lab</h1>
+            <p class="text-center text-slate-400 mb-8">Inizializzazione ambiente strategico. Selezionare lo scenario e configurare i parametri operativi.</p>
+            
+            <form id="login-form" class="space-y-8">
+                <div>
+                    <label class="block text-sm font-bold text-slate-300 mb-4 uppercase tracking-wider">1. Selezione Scenario Operativo</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="scenario" value="A" class="peer sr-only" required checked>
+                            <div class="glass-card p-6 rounded-2xl peer-checked:border-blue-500 peer-checked:bg-blue-500/20 peer-checked:shadow-[0_0_20px_rgba(59,130,246,0.3)] text-center h-full">
+                                <i data-lucide="layers" class="w-8 h-8 text-blue-400 mx-auto mb-3"></i>
+                                <h3 class="font-bold text-white mb-1">Manifattura Additiva</h3>
+                                <p class="text-xs text-slate-400">Progettazione parametrica 3D e calibrazione firmware.</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="scenario" value="B" class="peer sr-only" required>
+                            <div class="glass-card p-6 rounded-2xl peer-checked:border-emerald-500 peer-checked:bg-emerald-500/20 peer-checked:shadow-[0_0_20px_rgba(16,185,129,0.3)] text-center h-full">
+                                <i data-lucide="leaf" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
+                                <h3 class="font-bold text-white mb-1">Ingegneria Botanica</h3>
+                                <p class="text-xs text-slate-400">Sintesi risorse e calcolo traiettorie d'irrigazione.</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="scenario" value="C" class="peer sr-only" required>
+                            <div class="glass-card p-6 rounded-2xl peer-checked:border-fuchsia-500 peer-checked:bg-fuchsia-500/20 peer-checked:shadow-[0_0_20px_rgba(217,70,239,0.3)] text-center h-full">
+                                <i data-lucide="monitor-play" class="w-8 h-8 text-fuchsia-400 mx-auto mb-3"></i>
+                                <h3 class="font-bold text-white mb-1">Creative Coding</h3>
+                                <p class="text-xs text-slate-400">Debugging strutturale e mapping ottico laser.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-300 mb-2 uppercase tracking-wider">2. ID Operatore</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5"></i>
+                            <input required id="input-name" type="text" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="Identificativo univoco" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-300 mb-2 uppercase tracking-wider">3. Coalizione (Gruppo)</label>
+                        <div class="relative">
+                            <i data-lucide="users" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5"></i>
+                            <input required id="input-group" type="text" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" placeholder="Identificativo coalizione" />
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 mt-8 rounded-xl bg-white text-slate-950 font-black text-lg hover:bg-indigo-400 hover:text-white transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)]">
+                    AVVIA SIMULAZIONE E PROCEDURA GENERATIVA
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- INTERFACCIA OPERATIVA -->
+    <div id="app-view" class="hidden min-h-screen relative z-10">
+        
+        <!-- Dashboard Superiore Sticky -->
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-slate-800">
+            <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div id="nav-icon-container" class="w-10 h-10 rounded-lg bg-indigo-500/20 border border-indigo-500/50 flex items-center justify-center">
+                        <i data-lucide="cpu" id="nav-icon" class="text-indigo-400 w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div id="display-name" class="text-sm font-bold text-white"></div>
+                        <div id="display-group" class="text-xs text-slate-400 font-mono"></div>
+                    </div>
+                </div>
+                
+                <div class="hidden lg:flex items-center gap-6 bg-slate-900/50 px-6 py-2 rounded-full border border-slate-700">
+                    <a href="#intro" class="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Istruzioni</a>
+                    <a href="#fase1" class="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Fase 1</a>
+                    <a href="#fase2" class="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Fase 2</a>
+                    <a href="#debriefing" id="nav-debrief" class="text-sm font-semibold text-slate-600 transition-colors pointer-events-none"><i data-lucide="lock" class="inline w-3 h-3 mr-1"></i>Debriefing</a>
+                </div>
+
+                <div class="flex items-center gap-4 sm:gap-6">
+                    <!-- Voltmetro Analogico -->
+                    <div class="flex flex-col items-center" title="Bilancio Rischio/Sicurezza (Bonus vs Malus)">
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Telemetria Strategica</span>
+                        <svg viewBox="0 0 100 50" class="w-16 h-8 overflow-visible">
+                            <defs>
+                                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#f43f5e" /> <!-- Rosso -->
+                                    <stop offset="50%" stop-color="#eab308" /> <!-- Giallo -->
+                                    <stop offset="100%" stop-color="#10b981" /> <!-- Verde -->
+                                </linearGradient>
+                            </defs>
+                            <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#gaugeGrad)" stroke-width="8" stroke-linecap="round"/>
+                            <g id="needle-group" style="transform-origin: 50px 50px; transition: transform 0.5s ease-out; transform: rotate(0deg);">
+                                <circle cx="50" cy="50" r="4" fill="#cbd5e1" />
+                                <polygon points="48,50 52,50 50,15" fill="#cbd5e1" />
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="flex flex-col items-center bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-700 transition-all duration-300" id="timer-container">
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Timer Sessione</span>
+                        <div id="timer-display" class="text-xl font-mono font-black text-white flex items-center gap-2">
+                            <i data-lucide="timer" class="w-4 h-4 text-fuchsia-400"></i> 10:00
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Payoff (F)</span>
+                        <div id="score-display" class="flex items-center gap-2 text-xl font-black text-emerald-400 font-mono transition-transform duration-300">
+                            <i data-lucide="trophy" class="w-5 h-5"></i> 0
+                        </div>
+                    </div>
+                    <button id="btn-logout" class="text-xs text-slate-500 hover:text-white underline underline-offset-4 hidden sm:block">Termina</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="pt-32 px-4 max-w-4xl mx-auto pb-32 space-y-32">
+            
+            <!-- SEZIONE 0: ISTRUZIONI -->
+            <section id="intro" class="fade-in-section">
+                <div class="text-center mb-12">
+                    <h1 id="scenario-title" class="text-5xl md:text-6xl font-black text-white tracking-tighter mb-6">Scenario</h1>
+                    <p id="scenario-lore" class="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">Configurazione logica del sistema.</p>
+                </div>
+
+                <div class="p-8 rounded-3xl glass-card border border-slate-700">
+                    <h2 class="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                        <i data-lucide="book-open" class="text-amber-400 w-6 h-6"></i> Protocolli di Esecuzione
+                    </h2>
+                    <div class="space-y-6 text-slate-300 leading-relaxed text-sm sm:text-base">
+                        <p>Il seguente ambiente valuta l'efficienza esecutiva delle procedure logico-matematiche sotto condizioni di interdipendenza strategica.</p>
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            <div class="p-6 bg-slate-900/80 rounded-2xl border border-slate-800">
+                                <h3 class="text-lg font-bold text-indigo-400 mb-3">Dinamiche Decisionali</h3>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong class="text-white">Metriche Payoff:</strong> La massimizzazione delle risorse dipende dalla correttezza procedurale e dalla sintesi rapida.</li>
+                                    <li><strong class="text-white">Telemetria (Voltmetro):</strong> Traccia lo scostamento tra utilità generata (ottimizzazioni, bonus) e penalità assorbite (errori, override).</li>
+                                </ul>
+                            </div>
+                            <div class="p-6 bg-slate-900/80 rounded-2xl border border-slate-800">
+                                <h3 class="text-lg font-bold text-rose-400 mb-3">Vincoli Strutturali</h3>
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Limite iterazioni:</strong> Massimo 2 tentativi per modulo.</li>
+                                    <li>Errore critico: <span class="text-rose-400 font-bold">-200 F</span>. Override analitico: <span class="text-cyan-400 font-bold">-300 F</span>.</li>
+                                    <li>L'esaurimento dei cicli forza il ricorso alle procedure estese, generando latenza (-60s sul timer globale).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-12 animate-bounce">
+                    <a href="#fase1" class="text-slate-500 hover:text-white"><i data-lucide="chevron-down" class="mx-auto w-10 h-10"></i></a>
+                </div>
+            </section>
+
+            <!-- SEZIONE 1: AZIONE INDIVIDUALE -->
+            <section id="fase1" class="fade-in-section">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-xl font-bold">1</div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-white tracking-tight">Fase 1: Sintesi Individuale</h2>
+                        <p class="text-slate-400">Risoluzione formale delle espressioni assegnate e determinazione dei nodi (radici).</p>
+                    </div>
+                </div>
+                <div id="equations-container" class="grid gap-6">
+                    <!-- Generazione procedurale via JS -->
+                </div>
+            </section>
+
+            <!-- SEZIONE 2: AZIONE DI COALIZIONE -->
+            <section id="fase2" class="fade-in-section">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-xl font-bold">2</div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-white tracking-tight">Fase 2: Interazione Spaziale</h2>
+                        <p class="text-slate-400">Calibrazione del modello parametrico ed estrazione dei coefficienti di coalizione.</p>
+                    </div>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-slate-900/50 border border-slate-800 mb-6">
+                    <h4 class="text-lg font-bold text-slate-300 mb-4 uppercase tracking-wider">Parametri Strutturali Generati</h4>
+                    <p id="scenario-boss" class="text-xl text-white leading-relaxed font-medium">
+                        <!-- Boss description -->
+                    </p>
+                    <div id="phase2-specs" class="mt-6 p-6 rounded-2xl bg-black/50 font-mono text-sm text-slate-400 border-l-4 border-l-indigo-500">
+                        <!-- Specs -->
+                    </div>
+                </div>
+
+                <!-- Input Matematico Fase 2 -->
+                <div id="phase2-math-container" class="p-8 rounded-3xl glass-card mb-6 relative overflow-hidden">
+                    <h3 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <i data-lucide="function-square" class="text-fuchsia-400"></i> Sintesi del Modello Analitico
+                    </h3>
+                    <p class="text-sm text-slate-400 mb-6">Determinare il formalismo algebrico finale per vincolare la curva ai parametri imposti. <br/>Max 2 tentativi. Errori: -200 F. Override parziale: -400 F.</p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center gap-4 mb-4">
+                        <span class="text-3xl font-mono text-white font-bold">y =</span>
+                        <input type="text" id="input-phase2-eq" class="flex-1 w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-4 font-mono text-lg text-white focus:outline-none focus:border-fuchsia-500" placeholder="Inserire funzione estesa...">
+                        <button id="btn-verify-phase2" onclick="verifyPhase2Math()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold transition-colors shadow-lg">Esegui Convalida</button>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mt-2">
+                        <div id="phase2-attempts-text" class="text-xs font-bold text-slate-500">Tentativi rimanenti: 2/2</div>
+                        <button onclick="hintPhase2Math()" id="btn-hint-phase2" class="text-xs px-4 py-2 rounded-lg bg-slate-800 text-cyan-400 hover:bg-slate-700 flex items-center gap-2 transition-colors">
+                            <i data-lucide="lightbulb" class="w-4 h-4"></i> Richiedi Override Analitico (-400 F)
+                        </button>
+                    </div>
+                    <div id="hint-text-phase2" class="hidden mt-4 p-4 rounded-lg bg-cyan-900/30 border border-cyan-800 text-sm text-cyan-300 font-mono"></div>
+                    
+                    <!-- Fallback / Forced Solution -->
+                    <div id="phase2-forced" class="hidden mt-6 p-6 bg-rose-900/20 border border-rose-500/50 rounded-xl">
+                        <p class="text-rose-400 font-bold mb-2">Protocollo di sicurezza attivato. Sviluppo manuale richiesto.</p>
+                        <p id="forced-text-phase2" class="text-slate-300 text-sm mb-4">La procedura esige l'identificazione esatta dell'apertura 'a'. Calcolare e inserire il valore relativo.</p>
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono">a =</span>
+                            <input type="text" id="input-forced-a" class="w-32 bg-slate-800 border border-slate-600 rounded px-2 py-1 font-mono text-center text-white" placeholder="Valore...">
+                            <button onclick="verifyForcedPhase2()" class="px-4 py-2 bg-rose-600 rounded text-white font-bold text-sm">Sincronizza (-1000 F)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shapley Value -->
+                <div id="phase2-shapley-container" class="locked-section p-8 rounded-3xl bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700 relative">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <i data-lucide="network" class="text-indigo-400"></i> Calcolo Marginale (Valore di Shapley)
+                    </h3>
+                    <p class="text-sm text-slate-400 mb-6">Modello archiviato. Dichiarare i ratei di cooperazione per sbloccare la distribuzione delle risorse (Payoff).</p>
+                    <div class="space-y-4 mb-8" id="coalition-checks">
+                        <label class="flex items-center gap-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700 cursor-pointer hover:bg-slate-800 transition-colors">
+                            <input type="checkbox" id="chk-1" class="w-5 h-5 rounded bg-slate-900 border-slate-600 text-indigo-500 focus:ring-indigo-500" />
+                            <span class="text-white font-medium">Formulazione logica: annullamento costante c=0 dall'origine (+1500 F)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700 cursor-pointer hover:bg-slate-800 transition-colors">
+                            <input type="checkbox" id="chk-2" class="w-5 h-5 rounded bg-slate-900 border-slate-600 text-indigo-500 focus:ring-indigo-500" />
+                            <span class="text-white font-medium">Modellizzazione strutturale: impiego dell'equazione fattorizzata (+2500 F)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-4 rounded-xl bg-slate-800/50 border border-slate-700 cursor-pointer hover:bg-slate-800 transition-colors">
+                            <input type="checkbox" id="chk-3" class="w-5 h-5 rounded bg-slate-900 border-slate-600 text-indigo-500 focus:ring-indigo-500" />
+                            <span class="text-white font-medium">Esecuzione procedurale: estrazione scalare del coefficiente direttivo (+1000 F)</span>
+                        </label>
+                    </div>
+                    <button id="btn-complete-phase2" onclick="completePhase2Shapley()" class="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-lg shadow-lg transition-all transform hover:scale-[1.02]">
+                        Acquisisci Vettore Payoff
+                    </button>
+                    <div id="phase2-result" class="hidden mt-6 p-6 rounded-xl border text-center"></div>
+                </div>
+            </section>
+
+            <!-- SEZIONE 3: DEBRIEFING E MATRICI -->
+            <section id="debriefing" class="locked-section fade-in-section">
+                <div class="text-center mb-16">
+                    <h1 class="text-5xl font-black text-white tracking-tighter mb-4"><i data-lucide="unlock" class="inline w-12 h-12 mr-4 text-emerald-400"></i>Debriefing Analitico</h1>
+                    <p class="text-xl text-slate-400">Elaborazione finale dell'Equilibrio Strategico e archiviazione dati.</p>
+                </div>
+
+                <!-- Report Dinamico -->
+                <div id="final-report-section" class="p-10 rounded-3xl bg-gradient-to-br from-indigo-900/40 to-fuchsia-900/20 border border-indigo-500/30 text-center mb-12 shadow-[0_0_40px_rgba(99,102,241,0.1)]">
+                    <!-- Popolato via JS -->
+                </div>
+
+                <div class="space-y-12">
+                    <div class="p-8 rounded-3xl glass-card border border-slate-700">
+                        <h3 class="text-2xl font-bold text-amber-400 mb-6 border-b border-slate-800 pb-4">Matrice I: Induzione del Rischio (Fase 1)</h3>
+                        <p class="text-slate-300 mb-6 leading-relaxed">
+                            Analisi della propensione al rischio sotto regime non-cooperativo. La massimizzazione della resa (F) richiede affidabilità esecutiva; il ricorso a procedure estese modera l'errore al costo di una penalità temporale fissa.
+                        </p>
+                        
+                        <div class="overflow-x-auto rounded-xl border border-slate-700 mb-6">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-800">
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Vettore di Scelta</th>
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Massimale (Payoff)</th>
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Tolleranza (Errore Singolo)</th>
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Esito Critico</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-slate-800/30">
+                                        <td class="p-4 border-b border-slate-700 font-bold text-emerald-400">Determinazione Fluida (Mentale)</td>
+                                        <td class="p-4 border-b border-slate-700">Ottimale (+1000 F)</td>
+                                        <td class="p-4 border-b border-slate-700">-200 F (margine di recupero)</td>
+                                        <td class="p-4 border-b border-slate-700">Procedura d'ufficio obbligatoria</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4 border-b border-slate-700 font-bold text-amber-400">Implementazione Seriale (Formula/Hint)</td>
+                                        <td class="p-4 border-b border-slate-700">Calmierato (+500 F)</td>
+                                        <td class="p-4 border-b border-slate-700">Oneri fiscali garantiti (-300F / -60s)</td>
+                                        <td class="p-4 border-b border-slate-700">N/A (Algoritmo deterministico)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="p-8 rounded-3xl glass-card border border-slate-700">
+                        <h3 class="text-2xl font-bold text-fuchsia-400 mb-6 border-b border-slate-800 pb-4">Matrice II: Dinamica di Coalizione (Fase 2)</h3>
+                        <p class="text-slate-300 mb-6 leading-relaxed">
+                            Rilevazione dei flussi di interdipendenza. Il Valore di Shapley premia l'apporto effettivo; il disimpegno tattico (Free-Riding) compromette l'estrazione delle risorse collettive limitando il nodo al solo punteggio di base.
+                        </p>
+                        
+                        <div class="overflow-x-auto rounded-xl border border-slate-700 mb-6">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-800">
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Paradigma Comportamentale</th>
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Effetto sul Carico di Rete</th>
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Utilità Globale</th>
+                                        <th class="p-4 border-b border-slate-700 text-white font-bold">Quota Marginale Individuale</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-slate-800/30">
+                                        <td class="p-4 border-b border-slate-700 font-bold text-indigo-400">Cooperazione Strutturata</td>
+                                        <td class="p-4 border-b border-slate-700">Frazionato sui vettori attivi</td>
+                                        <td class="p-4 border-b border-slate-700">Sinergia e superamento task</td>
+                                        <td class="p-4 border-b border-slate-700">Proporzionale (+1000/2500 F)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-4 border-b border-slate-700 font-bold text-rose-400">Astensione (Free-Riding)</td>
+                                        <td class="p-4 border-b border-slate-700">Saturazione dei vettori adiacenti</td>
+                                        <td class="p-4 border-b border-slate-700">Aumento probabilità di stallo</td>
+                                        <td class="p-4 border-b border-slate-700">Intercettazione nulla (0 F)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Classifica Permanente -->
+                    <div class="p-8 rounded-3xl glass-card border border-slate-700 mt-12">
+                        <h3 class="text-2xl font-bold text-yellow-400 mb-6 border-b border-slate-800 pb-4">Classifica Operatori (Leaderboard Globale)</h3>
+                        <div id="leaderboard-container" class="overflow-x-auto rounded-xl border border-slate-700">
+                            <!-- Popolato via JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modale Time Up -->
+    <div id="timeup-modal" class="hidden fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center">
+        <div class="bg-slate-900 p-8 rounded-3xl border border-rose-500 text-center max-w-md w-full shadow-[0_0_50px_rgba(244,63,94,0.3)]">
+            <i data-lucide="alarm-clock" class="w-16 h-16 text-rose-500 mx-auto mb-4"></i>
+            <h2 class="text-3xl font-black text-white mb-2">Interruzione Flusso</h2>
+            <p class="text-slate-300 mb-6">Timer esaurito. Il sistema impone la transizione alla diagnostica di debriefing.</p>
+            <button onclick="document.getElementById('timeup-modal').classList.add('hidden')" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl w-full">Archivia e Analizza</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATI SCENARI E ASSET GLOBALI ---
+        const EMOJIS = ['🦊', '👽', '👾', '🤖', '👻', '🎃', '⭐', '🍄', '🔥', '💎', '🚀', '🍉', '🍕', '🕹️'];
+        const scenarioConfig = {
+            A: { title: "Manifattura Additiva", icon: "cpu", color: "text-blue-400", bg: "bg-blue-500/20", border: "border-blue-500/50", lore: "Laboratorio di prototipazione. Richiesta calibrazione firmware e design parametrico." },
+            B: { title: "Ingegneria Botanica", icon: "leaf", color: "text-emerald-400", bg: "bg-emerald-500/20", border: "border-emerald-500/50", lore: "Riqualificazione ambientale. Sintesi elementi e calcolo fluidodinamico." },
+            C: { title: "Creative Coding", icon: "monitor-play", color: "text-fuchsia-400", bg: "bg-fuchsia-500/20", border: "border-fuchsia-500/50", lore: "Sviluppo interfacce interattive. Debugging e profilazione ottica." }
+        };
+
+        // --- STATO APPLICAZIONE ---
+        let state = {
+            user: '', group: '', scenarioKey: 'A',
+            score: 0, bonus: 0, malus: 0,
+            timer: 600, timerInterval: null, // 10 Minuti
+            phase1Complete: false, phase2MathSolved: false, phase2Complete: false,
+            phase2Attempts: 0, phase2HintUsed: false,
+            equations: [],
+            phase2Params: { x_end: 10, x_obs: 4, y_obs: 8 },
+            savedToLeaderboard: false
+        };
+
+        function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function formatPoly(a, b, c) {
+            let res = "x²";
+            if (b === 1) res += " + x"; else if (b === -1) res += " - x";
+            else if (b > 0) res += ` + ${b}x`; else if (b < 0) res += ` - ${Math.abs(b)}x`;
+            if (c > 0) res += ` + ${c}`; else if (c < 0) res += ` - ${Math.abs(c)}`;
+            return res + " = 0";
+        }
+
+        function generateScenario() {
+            // Fase 1
+            let eqs = [];
+            let k1 = rand(2, 9);
+            eqs.push({ id: 0, type: 'Raccoglimento', expr: `x^2 - ${k1}*x`, display: `x² - ${k1}x = 0`, a: 1, b: -k1, c: 0, roots: [0, k1], validStr: [`x(x-${k1})=0`, `(x-${k1})x=0`], hintUsed: false, showDelta: false, solved: false, score: 0, attempts: 0 });
+            
+            let k2 = rand(2, 9);
+            eqs.push({ id: 1, type: 'Differenza di Quadrati', expr: `x^2 - ${k2*k2}`, display: `x² - ${k2*k2} = 0`, a: 1, b: 0, c: -(k2*k2), roots: [k2, -k2], validStr: [`(x-${k2})(x+${k2})=0`, `(x+${k2})(x-${k2})=0`], hintUsed: false, showDelta: false, solved: false, score: 0, attempts: 0 });
+            
+            let r3a = rand(1, 5), r3b = rand(1, 5);
+            let b3 = -(r3a + r3b), c3 = r3a * r3b;
+            eqs.push({ id: 2, type: 'Trinomio Speciale', expr: `x^2 + (${b3})*x + ${c3}`, display: formatPoly(1, b3, c3), a: 1, b: b3, c: c3, roots: [r3a, r3b], validStr: [`(x-${r3a})(x-${r3b})=0`, `(x-${r3b})(x-${r3a})=0`], hintUsed: false, showDelta: false, solved: false, score: 0, attempts: 0 });
+            
+            let k4 = rand(2, 7);
+            eqs.push({ id: 3, type: 'Quadrato di Binomio', expr: `x^2 + ${2*k4}*x + ${k4*k4}`, display: formatPoly(1, 2*k4, k4*k4), a: 1, b: 2*k4, c: k4*k4, roots: [-k4, -k4], validStr: [`(x+${k4})^2=0`, `(x+${k4})(x+${k4})=0`], hintUsed: false, showDelta: false, solved: false, score: 0, attempts: 0 });
+            
+            let r5a = rand(2, 6), r5b = -rand(2, 6);
+            let b5 = -(r5a + r5b), c5 = r5a * r5b;
+            let strR5a = r5a < 0 ? `(x+${-r5a})` : `(x-${r5a})`;
+            let strR5b = r5b < 0 ? `(x+${-r5b})` : `(x-${r5b})`;
+            eqs.push({ id: 4, type: 'Trinomio Speciale', expr: `x^2 + (${b5})*x + ${c5}`, display: formatPoly(1, b5, c5), a: 1, b: b5, c: c5, roots: [r5a, r5b], validStr: [`${strR5a}${strR5b}=0`, `${strR5b}${strR5a}=0`], hintUsed: false, showDelta: false, solved: false, score: 0, attempts: 0 });
+            state.equations = eqs;
+
+            // Fase 2 Parametri Generativi Randomizzati
+            let x_end = rand(10, 20);
+            let x_obs = rand(3, x_end - 3);
+            let y_obs = rand(5, 15);
+            state.phase2Params = { x_end, x_obs, y_obs };
+        }
+
+        function getBossDescription(key) {
+            const p = state.phase2Params;
+            if(key === 'A') return `Sviluppare un ponte strutturale a campata unica alto ${p.y_obs}mm (ingranaggio ostacolante a ${p.x_obs}mm) con punto d'ancoraggio finale a ${p.x_end}mm dall'origine.`;
+            if(key === 'B') return `Calibrare un getto idrico capace di bypassare un contenimento di ${p.y_obs}m (distante ${p.x_obs}m) centrando il target a ${p.x_end}m.`;
+            if(key === 'C') return `Elaborare le direttrici vettoriali di un fascio ottico eludendo la barriera alta ${p.y_obs}u (posta a x=${p.x_obs}) in modo da collidere con il sensore a coordinate (${p.x_end}, 0).`;
+            return '';
+        }
+
+        // --- CORE & SETUP ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            setupScrollObserver();
+            
+            const saved = localStorage.getItem('pixelGridState_v4');
+            if(saved) {
+                state = { ...state, ...JSON.parse(saved) };
+                if(state.user && !state.savedToLeaderboard) startSession();
+                else if(state.user && state.savedToLeaderboard) {
+                    // Sessione già chiusa
+                    document.getElementById('login-view').classList.add('hidden');
+                    document.getElementById('app-view').classList.remove('hidden');
+                    unlockDebriefingForce();
+                }
+            }
+
+            document.getElementById('login-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                state.user = document.getElementById('input-name').value;
+                state.group = document.getElementById('input-group').value;
+                state.scenarioKey = document.querySelector('input[name="scenario"]:checked').value;
+                
+                generateScenario();
+                state.savedToLeaderboard = false;
+                saveState();
+                startSession();
+            });
+
+            document.getElementById('btn-logout').addEventListener('click', () => {
+                localStorage.removeItem('pixelGridState_v4');
+                location.reload();
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        });
+
+        function saveState() { localStorage.setItem('pixelGridState_v4', JSON.stringify(state)); }
+
+        function startSession() {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('app-view').classList.remove('hidden');
+            
+            const scen = scenarioConfig[state.scenarioKey];
+            document.getElementById('display-name').innerText = state.user;
+            document.getElementById('display-group').innerText = state.group;
+            
+            const navIconContainer = document.getElementById('nav-icon-container');
+            navIconContainer.className = `w-10 h-10 rounded-lg flex items-center justify-center ${scen.bg} ${scen.border}`;
+            navIconContainer.innerHTML = `<i data-lucide="${scen.icon}" class="${scen.color} w-5 h-5"></i>`;
+            
+            document.getElementById('scenario-title').innerText = scen.title;
+            document.getElementById('scenario-lore').innerText = scen.lore;
+            
+            const bossText = getBossDescription(state.scenarioKey);
+            document.getElementById('scenario-boss').innerText = bossText;
+            
+            const p = state.phase2Params;
+            document.getElementById('phase2-specs').innerHTML = `Origine: (0, 0) <br/> Nodo Intermedio: (${p.x_obs}, ${p.y_obs}) <br/> Target Primario: (${p.x_end}, 0) <br/> Assioma di Riferimento: y = ax² + bx + c`;
+
+            updateScoreDisplay();
+            renderEquations();
+            restorePhase2UI();
+            checkPhase1Completion();
+            checkDebriefUnlock();
+
+            // Setup Timer
+            clearInterval(state.timerInterval);
+            updateTimerUI();
+            state.timerInterval = setInterval(() => {
+                if (state.phase1Complete && state.phase2Complete) {
+                    clearInterval(state.timerInterval);
+                    return;
+                }
+                
+                if(state.timer > 0) {
+                    state.timer--;
+                    updateTimerUI();
+                    if(state.timer % 5 === 0) saveState();
+                } else {
+                    clearInterval(state.timerInterval);
+                    document.getElementById('timeup-modal').classList.remove('hidden');
+                    unlockDebriefingForce();
+                }
+            }, 1000);
+
+            setTimeout(() => { lucide.createIcons(); setupScrollObserver(); }, 100);
+            window.scrollTo(0,0);
+        }
+
+        // --- SISTEMA RISORSE E VOLTMETRO ---
+        function updateScoreDisplay() {
+            const el = document.getElementById('score-display');
+            el.innerHTML = `<i data-lucide="trophy" class="w-5 h-5"></i> ${state.score}`;
+            lucide.createIcons();
+
+            let ratio = 0.5;
+            let totalActivity = state.bonus + Math.abs(state.malus);
+            if (totalActivity > 0) {
+                ratio = state.bonus / totalActivity;
+            }
+            let angle = (ratio - 0.5) * 180;
+            const needle = document.getElementById('needle-group');
+            if (needle) {
+                needle.style.transform = `rotate(${angle}deg)`;
+            }
+        }
+
+        function addScore(points) { state.score += points; state.bonus += points; }
+        function subtractScore(points) { state.score -= points; state.malus -= points; }
+
+        function updateTimerUI() {
+            const m = Math.floor(state.timer / 60).toString().padStart(2, '0');
+            const s = (state.timer % 60).toString().padStart(2, '0');
+            const el = document.getElementById('timer-display');
+            el.innerHTML = `<i data-lucide="timer" class="w-4 h-4 ${state.timer < 180 ? 'text-rose-500 animate-pulse' : 'text-fuchsia-400'}"></i> ${m}:${s}`;
+            lucide.createIcons();
+        }
+
+        function applyTimePenalty(seconds) {
+            state.timer = Math.max(0, state.timer - seconds);
+            updateTimerUI();
+            const container = document.getElementById('timer-container');
+            container.classList.add('border-rose-500', 'bg-rose-500/20', 'shake');
+            setTimeout(() => container.classList.remove('border-rose-500', 'bg-rose-500/20', 'shake'), 600);
+        }
+
+        // --- FASE 1: RENDERING E GRAFICI ---
+        function renderEquations() {
+            const container = document.getElementById('equations-container');
+            container.innerHTML = '';
+            
+            state.equations.forEach(eq => {
+                const isSolved = eq.solved;
+                const borderClass = isSolved 
+                    ? (eq.score > 0 ? 'border-emerald-500 bg-emerald-500/10' : 'border-amber-500 bg-amber-500/10') 
+                    : 'border-slate-700 bg-slate-800/50 hover:border-indigo-500';
+
+                let contentHtml = '';
+                if (isSolved) {
+                    const statusText = eq.score >= 700 
+                        ? `<span class="text-emerald-400">Architettura analitica validata. +${eq.score} F</span>` 
+                        : `<span class="text-amber-400">Modulo di recupero attivato. +${eq.score} F</span>`;
+                    contentHtml = `<div class="mt-4 text-sm font-medium bg-black/40 p-4 rounded-xl border border-slate-700">${statusText} <br> Output consolidato: <span class="font-mono text-white ml-2">${eq.validStr[0]}</span> <br> Mapping intersezioni: <span class="font-mono text-white ml-2">x₁=${eq.roots[0]}, x₂=${eq.roots[1]}</span></div>`;
+                } else if (!eq.showDelta) {
+                    const attemptsLeft = 2 - (eq.attempts || 0);
+                    contentHtml = `
+                        <div class="flex flex-col gap-3 mt-4 bg-slate-900 border border-slate-600 rounded-xl p-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-400 font-bold font-mono">Fattorizzazione:</span>
+                                <input type="text" id="eq-fact-${eq.id}" class="flex-1 bg-slate-800 border border-slate-600 rounded px-3 py-2 font-mono text-white focus:outline-none focus:border-indigo-500" placeholder="Inserisci struttura (esplicita le parentesi)...">
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-slate-400 font-bold font-mono">Radici:</span>
+                                <input type="number" id="eq-r1-${eq.id}" class="w-24 bg-slate-800 border border-slate-600 rounded px-2 py-2 font-mono text-white focus:outline-none focus:border-indigo-500 text-center" placeholder="Radice 1">
+                                <input type="number" id="eq-r2-${eq.id}" class="w-24 bg-slate-800 border border-slate-600 rounded px-2 py-2 font-mono text-white focus:outline-none focus:border-indigo-500 text-center" placeholder="Radice 2">
+                            </div>
+                        </div>
+                        <button onclick="verifyFast(${eq.id})" class="mt-3 w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors">Esegui Routine di Controllo</button>
+                        
+                        <div class="flex justify-between items-center mt-3">
+                            <div class="text-xs font-bold ${attemptsLeft === 1 ? 'text-rose-400' : 'text-slate-500'}">Cicli disponibili: ${attemptsLeft}/2</div>
+                            <button onclick="showHint(${eq.id})" id="btn-hint-${eq.id}" class="text-xs px-4 py-2 rounded-lg bg-slate-800 text-cyan-400 hover:bg-slate-700 flex items-center gap-2 transition-colors ${eq.hintUsed ? 'opacity-50 pointer-events-none' : ''}">
+                                <i data-lucide="cpu" class="w-4 h-4"></i> Richiedi Scansione Simbolica (-300 F)
+                            </button>
+                        </div>
+                        <div id="hint-text-${eq.id}" class="${eq.hintUsed ? '' : 'hidden'} mt-3 p-3 rounded-lg bg-cyan-900/30 border border-cyan-800 text-sm text-cyan-300 font-mono">${eq.hintUsed ? eq.hintMsg : ''}</div>
+                    `;
+                } else {
+                    contentHtml = `
+                        <div class="flex flex-col gap-3 mt-4 p-5 bg-slate-900/80 rounded-xl border border-rose-500/50">
+                            <p class="text-sm font-bold text-rose-400 mb-2"><i data-lucide="shield-alert" class="inline w-4 h-4 mr-1"></i> Override forzato. Estrazione coefficienti scalari richiesta.</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="number" id="eq-${eq.id}-a" placeholder="Var 'a'" class="bg-slate-800 border border-slate-600 rounded px-2 py-2 font-mono text-center text-white">
+                                <input type="number" id="eq-${eq.id}-b" placeholder="Var 'b'" class="bg-slate-800 border border-slate-600 rounded px-2 py-2 font-mono text-center text-white">
+                                <input type="number" id="eq-${eq.id}-c" placeholder="Var 'c'" class="bg-slate-800 border border-slate-600 rounded px-2 py-2 font-mono text-center text-white">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 mt-1">
+                                <input type="number" id="eq-${eq.id}-x1" placeholder="Radice 1" class="bg-slate-800 border border-slate-600 rounded px-2 py-2 font-mono text-center text-white">
+                                <input type="number" id="eq-${eq.id}-x2" placeholder="Radice 2" class="bg-slate-800 border border-slate-600 rounded px-2 py-2 font-mono text-center text-white">
+                            </div>
+                            <button onclick="verifyDelta(${eq.id})" class="mt-2 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition-colors">Bypassa ed Esegui (-60s)</button>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML += `
+                    <div id="eq-card-${eq.id}" class="p-6 rounded-3xl glass-card transition-all ${borderClass}">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="text-2xl font-mono font-bold text-white">${eq.display}</h4>
+                                    ${isSolved ? `<i data-lucide="check-circle-2" class="w-6 h-6 ${eq.score === 500 ? 'text-amber-400' : 'text-emerald-400'}"></i>` : ''}
+                                </div>
+                                ${contentHtml}
+                            </div>
+                            <div class="md:w-48 md:h-32 w-full h-40 bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shrink-0 relative">
+                                <div id="jxgbox-${eq.id}" class="jxgbox w-full h-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+            setTimeout(drawGraphs, 100);
+        }
+
+        function drawGraphs() {
+            state.equations.forEach(eq => {
+                const boxId = `jxgbox-${eq.id}`;
+                if (!document.getElementById(boxId)) return;
+                document.getElementById(boxId).innerHTML = '';
+
+                const rootMin = Math.min(...eq.roots);
+                const rootMax = Math.max(...eq.roots);
+                const xv = -eq.b / (2 * eq.a);
+                const yv = eq.a * xv * xv + eq.b * xv + eq.c;
+                
+                const paddingX = Math.max(2, (rootMax - rootMin) * 0.4);
+                const paddingY = Math.max(5, Math.abs(yv) * 0.3);
+
+                const board = JXG.JSXGraph.initBoard(boxId, {
+                    boundingbox: [rootMin - paddingX, Math.max(0, yv) + paddingY, rootMax + paddingX, Math.min(0, yv) - paddingY],
+                    axis: false,
+                    showNavigation: false,
+                    showCopyright: false
+                });
+
+                board.create('axis', [[0,0], [1,0]], {
+                    ticks: {visible: false}, name: '', withLabel: false, strokeColor: '#475569'
+                });
+                
+                board.create('functiongraph', [function(x){ return eq.a*x*x + eq.b*x + eq.c; }], {
+                    strokeColor: '#a855f7', strokeWidth: 2
+                });
+
+                const e1 = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+                let e2 = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+                
+                board.create('text', [eq.roots[0], 0, e1], {fontSize: 20, anchorX: 'middle', anchorY: 'middle'});
+                if(eq.roots[0] !== eq.roots[1]) {
+                    board.create('text', [eq.roots[1], 0, e2], {fontSize: 20, anchorX: 'middle', anchorY: 'middle'});
+                }
+            });
+        }
+
+        function verifyFast(id) {
+            const eq = state.equations[id];
+            
+            let rawVal = document.getElementById(`eq-fact-${id}`).value.replace(/[\s\*]/g, '').toLowerCase();
+            if(rawVal && !rawVal.endsWith('=0')) rawVal += '=0'; 
+            
+            let r1 = parseInt(document.getElementById(`eq-r1-${id}`).value);
+            let r2 = parseInt(document.getElementById(`eq-r2-${id}`).value);
+            
+            if (isNaN(r2)) r2 = r1; 
+            if (isNaN(r1)) r1 = r2;
+
+            const rootsOk = (r1 === eq.roots[0] && r2 === eq.roots[1]) || (r1 === eq.roots[1] && r2 === eq.roots[0]);
+            const factOk = eq.validStr.includes(rawVal);
+            
+            if (rootsOk && factOk) {
+                eq.solved = true;
+                eq.score = eq.hintUsed ? 700 : 1000;
+                addScore(eq.score);
+                saveState();
+                updateScoreDisplay();
+                renderEquations();
+                checkPhase1Completion();
+            } else {
+                eq.attempts = (eq.attempts || 0) + 1;
+                subtractScore(200); 
+                
+                if (eq.attempts >= 2) {
+                    eq.showDelta = true;
+                } else {
+                    triggerError(`eq-card-${id}`);
+                }
+                saveState();
+                updateScoreDisplay();
+                renderEquations();
+            }
+        }
+
+        function showHint(id) {
+            let eq = state.equations[id];
+            if(eq.hintUsed) return;
+            let rootsStr = nerdamer.solve(eq.expr + ' = 0', 'x').toString();
+            eq.hintMsg = `Esito scanner vettoriale: intercept rilevati = ${rootsStr}. Generare formato equivalente [ (x-x₁)(x-x₂)=0 ]`;
+            eq.hintUsed = true;
+            subtractScore(300); 
+            updateScoreDisplay();
+            saveState();
+            renderEquations();
+        }
+
+        function verifyDelta(id) {
+            const eq = state.equations[id];
+            const a = parseInt(document.getElementById(`eq-${id}-a`).value);
+            const b = parseInt(document.getElementById(`eq-${id}-b`).value);
+            const c = parseInt(document.getElementById(`eq-${id}-c`).value);
+            const x1 = parseInt(document.getElementById(`eq-${id}-x1`).value);
+            const x2 = parseInt(document.getElementById(`eq-${id}-x2`).value);
+
+            const rootsOk = (x1 === eq.roots[0] && x2 === eq.roots[1]) || (x1 === eq.roots[1] && x2 === eq.roots[0]);
+            const abcOk = (a === eq.a && b === eq.b && c === eq.c);
+
+            if (abcOk && rootsOk) {
+                eq.solved = true;
+                eq.score = 500;
+                addScore(500);
+                applyTimePenalty(60);
+                saveState();
+                updateScoreDisplay();
+                renderEquations();
+                checkPhase1Completion();
+            } else {
+                triggerError(`eq-card-${id}`);
+            }
+        }
+
+        function checkPhase1Completion() {
+            state.phase1Complete = state.equations.every(e => e.solved);
+            saveState();
+            checkDebriefUnlock();
+        }
+
+        // --- FASE 2: MATEMATICA E SHAPLEY ---
+        function verifyPhase2Math() {
+            if(state.phase2MathSolved) return;
+            
+            const input = document.getElementById('input-phase2-eq').value;
+            if(!input.trim()) return;
+
+            try {
+                const p = state.phase2Params;
+                // Target formula: a = y_obs / (x_obs * (x_obs - x_end)) -> y = a*x*(x - x_end)
+                const targetExpr = `(${p.y_obs}/(${p.x_obs}*(${p.x_obs}-${p.x_end})))*x*(x-${p.x_end})`;
+                const diff = nerdamer(`simplify((${input}) - (${targetExpr}))`).text();
+                
+                if(diff === '0' || diff === '0.0') {
+                    state.phase2MathSolved = true;
+                    addScore(state.phase2HintUsed ? 1500 : 2000);
+                    saveState();
+                    updateScoreDisplay();
+                    restorePhase2UI();
+                } else {
+                    handlePhase2Error();
+                }
+            } catch(e) {
+                handlePhase2Error();
+            }
+        }
+
+        function handlePhase2Error() {
+            state.phase2Attempts++;
+            subtractScore(200);
+            updateScoreDisplay();
+            
+            if(state.phase2Attempts >= 2) {
+                document.getElementById('phase2-forced').classList.remove('hidden');
+                document.getElementById('input-phase2-eq').disabled = true;
+                document.getElementById('btn-verify-phase2').disabled = true;
+                
+                const p = state.phase2Params;
+                document.getElementById('forced-text-phase2').innerHTML = `Il modello parametrico rispetta la struttura y = a*x*(x - ${p.x_end}). Elaborare la variabile 'a' in transizione per (${p.x_obs}, ${p.y_obs}).`;
+            } else {
+                triggerError('phase2-math-container');
+            }
+            document.getElementById('phase2-attempts-text').innerText = `Cicli operativi: ${2 - state.phase2Attempts}/2`;
+            document.getElementById('phase2-attempts-text').classList.add('text-rose-400');
+            saveState();
+        }
+
+        function hintPhase2Math() {
+            if(state.phase2HintUsed || state.phase2MathSolved) return;
+            state.phase2HintUsed = true;
+            subtractScore(400);
+            updateScoreDisplay();
+            saveState();
+            
+            const p = state.phase2Params;
+            const hintBox = document.getElementById('hint-text-phase2');
+            hintBox.innerHTML = `Vettori d'appoggio: Ostacolo in (${p.x_obs}, ${p.y_obs}), base target in (${p.x_end}, 0). Assumere l'identità algebrica y = a*x*(x - ${p.x_end}). Esplicitare la derivazione di 'a'.`;
+            hintBox.classList.remove('hidden');
+            document.getElementById('btn-hint-phase2').classList.add('opacity-50', 'pointer-events-none');
+        }
+
+        function verifyForcedPhase2() {
+            const userA = document.getElementById('input-forced-a').value;
+            const p = state.phase2Params;
+            const exactA = `${p.y_obs}/(${p.x_obs}*(${p.x_obs}-${p.x_end}))`;
+
+            try {
+                const diff = nerdamer(`simplify((${userA}) - (${exactA}))`).text();
+                if (diff === '0' || diff === '0.0') {
+                    state.phase2MathSolved = true;
+                    addScore(500); 
+                    applyTimePenalty(60);
+                    saveState();
+                    updateScoreDisplay();
+                    restorePhase2UI();
+                } else {
+                    triggerError('phase2-forced');
+                }
+            } catch(e) {
+                triggerError('phase2-forced');
+            }
+        }
+
+        function restorePhase2UI() {
+            if(state.phase2HintUsed) {
+                document.getElementById('hint-text-phase2').classList.remove('hidden');
+                document.getElementById('btn-hint-phase2').classList.add('opacity-50', 'pointer-events-none');
+            }
+
+            if(state.phase2MathSolved) {
+                document.getElementById('phase2-math-container').classList.add('border-emerald-500', 'bg-emerald-900/10');
+                document.getElementById('input-phase2-eq').disabled = true;
+                document.getElementById('btn-verify-phase2').classList.add('hidden');
+                document.getElementById('btn-hint-phase2').classList.add('hidden');
+                document.getElementById('phase2-forced').classList.add('hidden');
+                document.getElementById('phase2-attempts-text').innerHTML = `<span class="text-emerald-400">Modulo Strutturale Certificato.</span>`;
+
+                const shapleyContainer = document.getElementById('phase2-shapley-container');
+                shapleyContainer.classList.remove('locked-section');
+                shapleyContainer.classList.add('unlocked-section', 'shadow-[0_0_30px_rgba(99,102,241,0.2)]');
+            }
+
+            if(state.phase2Complete) {
+                const inputs = document.querySelectorAll('#coalition-checks input');
+                inputs.forEach(i => { i.disabled = true; i.parentElement.classList.add('opacity-50'); });
+                document.getElementById('btn-complete-phase2').classList.add('hidden');
+                
+                const res = document.getElementById('phase2-result');
+                res.classList.remove('hidden');
+                let isLurker = Array.from(inputs).every(i => !i.checked);
+
+                if(isLurker) {
+                    res.className = "mt-6 p-6 rounded-xl border border-rose-500 bg-rose-500/10 text-center";
+                    res.innerHTML = `<h4 class="text-xl font-bold text-rose-400 mb-2">Prevenzione Free-Riding</h4><p class="text-slate-300">Nessun tracciato di cooperazione riscontrato. Tasso di Payoff Marginale ridotto a Zero.</p>`;
+                } else {
+                    res.className = "mt-6 p-6 rounded-xl border border-emerald-500 bg-emerald-500/10 text-center";
+                    res.innerHTML = `<h4 class="text-xl font-bold text-emerald-400 mb-2">Quota Marginale Distribuita</h4><p class="text-slate-300">Risorse di coalizione ripartite secondo algoritmo logico.</p>`;
+                }
+            }
+        }
+
+        function completePhase2Shapley() {
+            if(!state.phase2MathSolved || state.phase2Complete) return;
+
+            const c1 = document.getElementById('chk-1').checked;
+            const c2 = document.getElementById('chk-2').checked;
+            const c3 = document.getElementById('chk-3').checked;
+
+            let added = 0;
+            if(c1) added += 1500;
+            if(c2) added += 2500;
+            if(c3) added += 1000;
+            if(!c1 && !c2 && !c3) { added = 0; }
+
+            addScore(added);
+            state.phase2Complete = true;
+            saveState();
+            updateScoreDisplay();
+            restorePhase2UI();
+            checkDebriefUnlock();
+            
+            setTimeout(() => document.getElementById('debriefing').scrollIntoView({behavior: 'smooth'}), 1000);
+        }
+
+        // --- GESTIONE DEBRIEFING E LEADERBOARD ---
+        function checkDebriefUnlock() {
+            if(state.phase1Complete && state.phase2Complete) {
+                processEndSession();
+            }
+        }
+
+        function unlockDebriefingForce() {
+            processEndSession();
+        }
+
+        function processEndSession() {
+            document.getElementById('debriefing').classList.remove('locked-section');
+            document.getElementById('debriefing').classList.add('unlocked-section');
+            
+            const navLink = document.getElementById('nav-debrief');
+            navLink.classList.remove('text-slate-600', 'pointer-events-none');
+            navLink.classList.add('text-emerald-400', 'animate-pulse');
+            navLink.innerHTML = '<i data-lucide="unlock" class="inline w-4 h-4 mr-1"></i>Debriefing';
+            lucide.createIcons();
+            
+            if(!state.savedToLeaderboard) {
+                saveToLeaderboard();
+                state.savedToLeaderboard = true;
+                saveState();
+            }
+
+            renderDebriefing();
+        }
+
+        function saveToLeaderboard() {
+            let leaderboard = JSON.parse(localStorage.getItem('pixelGridLeaderboard') || '[]');
+            leaderboard.push({
+                user: state.user,
+                group: state.group,
+                score: state.score,
+                date: new Date().toLocaleDateString('it-IT') + ' ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })
+            });
+            leaderboard.sort((a, b) => b.score - a.score);
+            localStorage.setItem('pixelGridLeaderboard', JSON.stringify(leaderboard));
+        }
+
+        function renderDebriefing() {
+            const reportSection = document.getElementById('final-report-section');
+            
+            let errors = state.equations.reduce((acc, eq) => acc + eq.attempts, 0);
+            let hints = state.equations.reduce((acc, eq) => acc + (eq.hintUsed ? 1 : 0), 0);
+            let deltas = state.equations.reduce((acc, eq) => acc + (eq.showDelta ? 1 : 0), 0);
+            
+            let phase1Profile = "Comportamento Moderato/Equilibrato";
+            if (errors > 2 && deltas === 0) phase1Profile = "Propenso al Rischio (Alta tolleranza ad errori seriali)";
+            else if (hints > 2 || deltas > 0) phase1Profile = "Prudenziale (Protezione strategica via Hint/Routine certe)";
+            else if (errors === 0 && hints === 0) phase1Profile = "Comportamento Dominante (Massima ottimizzazione esecutiva)";
+
+            let coopProfile = "Deficit Dati / Non Valutato";
+            if (state.phase2Complete) {
+                const c1 = document.getElementById('chk-1').checked;
+                const c2 = document.getElementById('chk-2').checked;
+                const c3 = document.getElementById('chk-3').checked;
+                let sum = c1 + c2 + c3;
+                if (sum === 3) coopProfile = "Operatore Collaborativo (Estrazione massima del Payoff Marginale)";
+                else if (sum > 0) coopProfile = "Operatore Misto (Cooperazione limitata o circoscritta)";
+                else coopProfile = "Free-Rider Assoluto (Indice di passività strategica registrato)";
+            }
+
+            if(reportSection) {
+                reportSection.innerHTML = `
+                    <h2 class="text-3xl font-black text-white mb-4">Analisi Parametrica e Performance</h2>
+                    <div class="text-6xl font-mono font-bold ${state.score > 5000 ? 'text-emerald-400' : 'text-amber-400'} mb-2">${state.score} F</div>
+                    <p class="text-slate-400 font-medium uppercase tracking-widest mb-8">Risorse Complessive Immagazzinate</p>
+                    
+                    <div class="grid sm:grid-cols-2 gap-4 text-left">
+                        <div class="bg-black/30 p-6 rounded-xl border border-indigo-500/20">
+                            <div class="text-sm text-indigo-400 font-bold mb-2">IDENTIFICAZIONE STRATEGICA INDIVIDUALE</div>
+                            <div class="text-lg text-white">${phase1Profile}</div>
+                            <div class="text-xs text-slate-500 mt-2">Iterazioni errate: ${errors} | Sub-routine (Hint): ${hints} | Ricalcoli (Delta): ${deltas}</div>
+                        </div>
+                        <div class="bg-black/30 p-6 rounded-xl border border-fuchsia-500/20">
+                            <div class="text-sm text-fuchsia-400 font-bold mb-2">PROFILAZIONE DINAMICA DI RETE (SHAPLEY)</div>
+                            <div class="text-lg text-white">${coopProfile}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Soluzioni Phase 1
+            const container = document.getElementById('solutions-grid');
+            if(container) {
+                container.innerHTML = '';
+                state.equations.forEach(eq => {
+                    container.innerHTML += `
+                        <div class="p-6 rounded-2xl bg-black/40 border border-slate-800">
+                            <div class="text-lg font-mono text-white mb-2">${eq.display}</div>
+                            <div class="text-emerald-400 font-mono mb-1 text-xl">${eq.validStr[0]}</div>
+                            <div class="text-cyan-400 font-mono mb-2 text-sm">x₁=${eq.roots[0]}, x₂=${eq.roots[1]}</div>
+                            <div class="text-xs text-slate-500 uppercase tracking-wide">Algoritmo di Riferimento: <span class="text-indigo-300 font-bold">${eq.type}</span></div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Render Leaderboard
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const lbContainer = document.getElementById('leaderboard-container');
+            if(!lbContainer) return;
+            
+            let leaderboard = JSON.parse(localStorage.getItem('pixelGridLeaderboard') || '[]');
+            
+            if(leaderboard.length === 0) {
+                lbContainer.innerHTML = '<p class="text-center text-slate-400 py-8">Nessun dato registrato nei server.</p>';
+                return;
+            }
+
+            let html = `
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800">
+                            <th class="p-4 border-b border-slate-700 text-white font-bold">#</th>
+                            <th class="p-4 border-b border-slate-700 text-white font-bold">Identificativo</th>
+                            <th class="p-4 border-b border-slate-700 text-white font-bold">Coalizione</th>
+                            <th class="p-4 border-b border-slate-700 text-white font-bold text-right">Payoff Registrato (F)</th>
+                            <th class="p-4 border-b border-slate-700 text-white font-bold text-right">Log Temporale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            leaderboard.slice(0, 15).forEach((entry, i) => {
+                const isCurrent = (entry.user === state.user && entry.score === state.score);
+                html += `
+                    <tr class="${isCurrent ? 'bg-indigo-900/30' : 'bg-slate-800/30'} hover:bg-slate-700/50 transition-colors">
+                        <td class="p-4 border-b border-slate-700 text-slate-300 font-bold">${i + 1}</td>
+                        <td class="p-4 border-b border-slate-700 text-white">${entry.user} ${isCurrent ? '<span class="ml-2 text-xs bg-indigo-500 text-white px-2 py-1 rounded">TU</span>' : ''}</td>
+                        <td class="p-4 border-b border-slate-700 text-slate-400">${entry.group}</td>
+                        <td class="p-4 border-b border-slate-700 text-emerald-400 font-mono font-bold text-right">${entry.score}</td>
+                        <td class="p-4 border-b border-slate-700 text-slate-500 font-mono text-xs text-right">${entry.date}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            lbContainer.innerHTML = html;
+        }
+
+        // --- UTILS ---
+        function triggerError(id) {
+            const el = document.getElementById(id);
+            if(el) {
+                el.classList.add('shake', 'border-rose-500', 'shadow-[0_0_20px_rgba(244,63,94,0.4)]');
+                setTimeout(() => el.classList.remove('shake', 'border-rose-500', 'shadow-[0_0_20px_rgba(244,63,94,0.4)]'), 500);
+            }
+        }
+
+        function setupScrollObserver() {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        document.querySelectorAll('nav a').forEach(a => a.classList.remove('text-white'));
+                        const activeLink = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+                        if(activeLink) activeLink.classList.add('text-white');
+                    }
+                });
+            }, { threshold: 0.15 });
+            document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
+        }
+
+    </script>
+</body>
+</html>
