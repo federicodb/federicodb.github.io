@@ -33,6 +33,7 @@
         });
     </script>
     <script src="database.js?v=4"></script>
+    <script src="database_verifiche.js?v=4"></script>
 
     <style>
         :root {
@@ -104,277 +105,165 @@
 
         body {
             margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
             background: var(--bg-dark);
             font-family: var(--font-ui);
             color: white;
             width: 100vw;
-            height: 100dvh;
+            min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
+            scroll-behavior: smooth;
         }
 
-        #scene-container {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            outline: none;
-            touch-action: none;
+        /* --- NAVIGATION --- */
+        #main-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--glass-solid);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
         }
 
-        /* --- HUD --- */
-        #ui-hud {
-            position: absolute;
-            inset: 0;
-            z-index: 10;
-            pointer-events: none;
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .brand-container {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 1.5rem;
-        }
-
-        .hud-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            pointer-events: auto;
-        }
-
-        .hud-actions {
-            display: flex;
-            gap: 0.8rem;
-            align-items: center;
         }
 
         .brand-orfini {
             font-family: 'Syne', sans-serif;
-            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: -0.02em;
-            line-height: 0.8;
+            line-height: 1;
             color: #fff;
             text-transform: uppercase;
         }
 
         .brand-sub {
             font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--primary);
-            letter-spacing: 0.3em;
-            margin-top: 0.4rem;
+            letter-spacing: 0.25em;
+            margin-top: 0.2rem;
         }
 
-        .btn-icon {
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            background: transparent;
+            border: none;
+            color: #bbb;
+            font-family: var(--font-ui);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover, .nav-tab:focus-visible {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            outline: none;
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            background: rgba(0, 188, 212, 0.1);
+        }
+
+        .nav-search {
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        #search-input {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border);
             color: white;
-            width: 42px;
-            height: 44px;
+            padding: 0.8rem 1.2rem 0.8rem 2.8rem;
             border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
+            outline: none;
+            font-size: 0.95rem;
+            width: 280px;
             transition: all 0.3s;
-            pointer-events: auto;
+            font-family: var(--font-ui);
         }
 
-        @media (hover: hover) and (pointer: fine) {
-            .btn-icon:hover {
-                background: var(--primary);
-                color: black;
-                border-color: var(--primary);
-                transform: translateY(-2px);
-            }
-        }
-
-        .btn-icon:active {
-            background: var(--primary);
-            color: black;
+        #search-input:focus {
             border-color: var(--primary);
-            transform: scale(0.95);
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .btn-icon svg {
-            width: 20px;
-            height: 20px;
-            stroke-width: 2.5;
-        }
-
-        #btn-tags {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 50;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--secondary);
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            font-size: 1.4rem;
-            pointer-events: auto;
-            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-            #btn-tags:hover {
-                transform: scale(1.1);
-                box-shadow: 0 6px 20px rgba(255, 64, 129, 0.6);
-            }
-        }
-
-        #btn-tags:active {
-            transform: scale(0.95);
-        }
-
-        /* --- OVERLAYS --- */
-        .overlay-full {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            background: rgba(5, 5, 15, 0.95);
-            backdrop-filter: blur(20px);
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            stroke: #888;
             pointer-events: none;
-            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
-            overflow-y: auto;
-            padding: 2rem;
         }
 
-        .overlay-full.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-            transition: opacity 0.4s ease, visibility 0s linear 0s;
-        }
-
-        .modal-card {
-            background: var(--glass-solid);
-            border: 1px solid var(--border);
-            width: 95%;
-            max-width: 900px;
-            margin: auto;
-            border-radius: 32px;
-            padding: 3rem;
+        /* --- HERO SECTION --- */
+        #hero {
             position: relative;
-            transform: scale(0.9) translateY(30px);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .overlay-full.active .modal-card {
-            transform: scale(1) translateY(0);
-        }
-
-        .manifesto-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .manifesto-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1.5rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .manifesto-item h4 {
-            color: var(--primary);
-            margin: 0 0 0.5rem 0;
-            font-family: 'Syne', sans-serif;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        .manifesto-item p {
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: #aaa;
-            margin: 0;
-        }
-
-        /* --- SEARCH GRID --- */
-        .list-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
+            height: clamp(250px, 40vh, 500px);
             width: 100%;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+            background: #000;
+        }
+
+        #scene-container {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            outline: none;
+            touch-action: none;
+        }
+
+        /* --- RIMOSSA HERO OVERLAY, VISIONE E MANIFESTO (Design pulito) --- */
+
+        /* --- GRID & CARDS --- */
+        #main-content {
             max-width: 1400px;
             margin: 0 auto;
-            padding-bottom: 5rem;
+            padding: 4rem 2rem;
+            min-height: 50vh;
         }
 
-        #content-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 90%;
-            max-width: 800px;
-            max-height: 85vh;
-            background: var(--glass-solid);
-            border: 1px solid var(--border);
-            border-radius: 32px;
-            z-index: 60;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s, visibility 0s linear 0.4s;
+        .list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+            gap: 24px;
+            width: 100%;
         }
 
-        #content-panel.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-            transform: translate(-50%, -50%) scale(1);
-            transition: opacity 0.4s ease, transform 0.4s, visibility 0s linear 0s;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 2.5rem;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .panel-header {
-            padding: 2rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .panel-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        /* CARDS */
         .project-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
@@ -384,32 +273,46 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 320px;
-            transition: all 0.3s;
-            cursor: pointer;
+            min-height: 350px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+
+        .project-card:focus-within {
+            outline: 2px solid var(--primary);
+            outline-offset: 4px;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         @media (hover: hover) and (pointer: fine) {
             .project-card:hover {
                 border-color: var(--primary);
                 transform: translateY(-5px);
-                background: rgba(255, 255, 255, 0.06);
+                background: rgba(255, 255, 255, 0.05);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             }
-        }
-
-        .project-card:active {
-            border-color: var(--primary);
-            transform: scale(0.98);
+            .project-card:hover .card-cta {
+                background: var(--primary);
+                color: #000;
+                border-color: var(--primary);
+            }
         }
 
         .card-bg {
             position: absolute;
             inset: 0;
             z-index: 0;
-            filter: blur(10px) saturate(0);
-            opacity: 0.3;
+            filter: blur(8px) saturate(0.5);
+            opacity: 0.15;
             background-size: cover;
             background-position: center;
+            transition: opacity 0.5s, filter 0.5s;
+        }
+        
+        .project-card:hover .card-bg {
+            opacity: 0.3;
+            filter: blur(2px) saturate(1);
         }
 
         .card-content-wrap {
@@ -420,32 +323,114 @@
             flex-direction: column;
         }
 
+        .card-date {
+            font-size: 0.75rem;
+            color: #888;
+            font-family: 'Space Mono', monospace;
+            margin-bottom: auto;
+        }
+
         .project-card h3 {
             font-family: 'Syne', sans-serif;
             font-size: 1.6rem;
             margin: 0.5rem 0;
             color: #fff;
+            line-height: 1.2;
         }
 
         .project-card p {
-            font-size: 1rem;
+            font-size: 0.95rem;
             line-height: 1.6;
             color: #bbb;
             flex-grow: 1;
+            margin: 1rem 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .mini-tag {
-            font-family: 'Space Mono';
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-tag {
+            font-family: 'Space Mono', monospace;
             font-size: 0.7rem;
-            padding: 6px 12px;
+            padding: 6px 10px;
             background: rgba(0, 188, 212, 0.1);
             color: var(--primary);
+            border: 1px solid transparent;
             border-radius: 50px;
-            margin: 0 6px 6px 0;
-            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 2; /* sopre al click della card intera per non triggerarla */
         }
 
-        /* Tag Content for 3D Nodes */
+        .filter-tag:hover, .filter-tag:focus-visible {
+            background: var(--primary);
+            color: #000;
+            outline: none;
+        }
+
+        .card-cta {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            text-align: center;
+            background: transparent;
+            color: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: var(--font-ui);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 1;
+        }
+
+
+
+        /* --- OVERLAYS --- */
+        .overlay-full {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(5, 5, 15, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .overlay-full.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* --- MATH DEBRIS TEXT (Legacy needed for galaxy 3D texts) --- */
+        .font-1 { font-family: 'Caveat', cursive !important; font-size: 1.3em; }
+        .font-2 { font-family: 'Space Mono', monospace !important; font-weight: 700; }
+        .font-3 { font-family: 'Abril Fatface', serif !important; }
+        .font-4 { font-family: 'Permanent Marker', cursive !important; transform: rotate(-2deg); }
+        .font-5 { font-family: 'Righteous', cursive !important; }
+        .font-6 { font-family: 'Cinzel', serif !important; font-weight: 700; }
+        .font-7 { font-family: 'Amatic SC', cursive !important; font-size: 1.5em; font-weight: 700; }
+        .font-8 { font-family: 'Oswald', sans-serif !important; text-transform: uppercase; }
+        .font-9 { font-family: 'Press Start 2P', cursive !important; font-size: 0.7em; color: #0f0; }
+        .font-10 { font-family: 'Playfair Display', serif !important; font-style: italic; }
+
         .tag-content {
             display: inline-block;
             font-weight: 700;
@@ -460,10 +445,6 @@
             backface-visibility: hidden;
         }
 
-        /* .tag-content:hover managed by GalaxyScene.js for synced zoom/glow */
-
-        /* --- MATH DEBRIS TRANSITION STYLES --- */
-        /* --- MATH DEBRIS HIGH FIDELITY --- */
         .math-debris {
             display: flex;
             align-items: center;
@@ -472,7 +453,6 @@
             will-change: transform, opacity;
             contain: layout style;
         }
-
         .debris-hex {
             position: absolute;
             width: 6px;
@@ -480,7 +460,6 @@
             background: rgba(255, 255, 255, 0.3);
             clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
         }
-
         .debris-sym {
             position: relative;
             z-index: 1;
@@ -492,37 +471,43 @@
             will-change: opacity, transform;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            .nav-links {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                scrollbar-width: none; /* Hide scrollbar Firefox */
+            }
+            .nav-links::-webkit-scrollbar {
+                display: none; /* Hide scrollbar Chrome/Safari */
+            }
+            .nav-tab {
+                white-space: nowrap;
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+            }
+            #main-nav {
+                padding: 1rem;
+            }
+            .brand-orfini {
+                font-size: 1.2rem;
+            }
+            #search-input {
+                width: 100%;
+            }
             .list-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
             }
-
-            .modal-card {
-                padding: 1.5rem 1rem;
-                border-radius: 20px;
+            #hero {
+                height: clamp(200px, 30vh, 350px);
             }
-
-            .manifesto-grid {
-                grid-template-columns: 1fr;
-            }
-
-            #content-panel {
-                width: 95%;
-                max-height: 90vh;
-            }
-
-            .panel-header {
-                padding: 1.5rem;
-            }
-
-            .panel-scroll {
-                padding: 1.5rem;
-            }
-
-            #search-input {
-                font-size: 1rem;
-                padding: 1rem;
+            #main-content {
+                padding: 2rem 1rem;
             }
         }
     </style>
@@ -530,190 +515,92 @@
 
 <body>
 
-    <div id="scene-container"></div>
-
-    <div id="ui-hud">
-        <div class="hud-header">
+    <nav id="main-nav">
+        <div class="nav-content">
             <div class="brand-container">
                 <div class="brand-orfini">ORFINI</div>
-                <div class="brand-sub">MATH GALAXY</div>
+                <div class="brand-sub">MATH LAB</div>
             </div>
-            <div class="hud-actions">
-                <button class="btn-icon" id="btn-about" title="Manifesto Didattico">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <polyline points="4 17 10 11 4 5"></polyline>
-                        <line x1="12" y1="19" x2="20" y2="19"></line>
-                    </svg>
-                </button>
-                <button class="btn-icon" id="btn-search" title="Cerca Argomenti">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </button>
-                <button class="btn-icon" id="btn-reset" title="Reset Camera">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"></path>
-                        <path d="M3 3v9h9"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <button id="btn-tags" title="Mappa Tag">#</button>
-
-    <!-- MANIFESTO MODAL -->
-    <div id="about-overlay" class="overlay-full">
-        <div class="modal-card">
-            <button class="close-btn" id="btn-close-about"
-                style="position: absolute; top: 1.5rem; right: 1.5rem;">×</button>
-
-            <header style="text-align: center; margin-bottom: 3rem;">
-                <div
-                    style="width:100px; height:100px; background:linear-gradient(135deg, var(--primary), var(--secondary)); border-radius:24px; margin:0 auto 1.5rem; display:flex; align-items:center; justify-content:center; font-size:2.5rem; box-shadow: 0 10px 30px rgba(0,188,212,0.3);">
-                    👨‍🚀</div>
-                <h2 style="margin:0; font-family:'Syne'; font-size:2.5rem; font-weight:800;">Prof. Federico DB</h2>
-                <div
-                    style="font-family:'Space Mono'; color:var(--primary); font-size:0.9rem; text-transform:uppercase; letter-spacing:3px;">
-                    Creative Coder & Designer Didattico</div>
-            </header>
-
-            <div style="line-height:1.8; color:#eee;">
-                <p
-                    style="font-size:1.2rem; color:#fff; font-weight:600; margin-bottom:2rem; border-left:4px solid var(--secondary); padding-left:1.5rem;">
-                    "Trasformare il caos creativo in strumenti concreti, accessibili ed esteticamente coerenti."
-                </p>
-
-                <p>Benvenuti nell'hub del <strong>Laboratorio Matematico Orfini</strong>. Un ecosistema basato sulla
-                    didattica laboratoriale e l'integrazione tecnologica.</p>
-
-                <div class="manifesto-grid">
-                    <div class="manifesto-item">
-                        <h4>Gamification</h4>
-                        <p>Meccaniche di gioco, punti e feedback per potenziare la memoria di lavoro attraverso esercizi
-                            brevi e ripetizione spaziata.</p>
-                    </div>
-                    <div class="manifesto-item">
-                        <h4>Problem Based Learning</h4>
-                        <p>Matematica applicata a casi studio reali e progetti guidati (PBL) per sviluppare il pensiero
-                            critico.</p>
-                    </div>
-                    <div class="manifesto-item">
-                        <h4>Visualizzazione 3D</h4>
-                        <p>Grafici interattivi, animazioni e modelli 3D parametrici per rendere tangibili concetti
-                            astratti.</p>
-                    </div>
-                    <div class="manifesto-item">
-                        <h4>Didattica Inclusiva</h4>
-                        <p>Supporti multisensoriali e strumenti digitali personalizzati per studenti con DSA/ADHD.</p>
-                    </div>
-                    <div class="manifesto-item">
-                        <h4>Pensiero Computazionale</h4>
-                        <p>Algoritmi, pseudocodice e logica di programmazione integrati in UDA moderne e
-                            multidisciplinari.</p>
-                    </div>
-                    <div class="manifesto-item">
-                        <h4>AI Generativa</h4>
-                        <p>Utilizzo strategico dell'AI per la creazione di contenuti e il perfezionamento dei processi
-                            iterativi.</p>
-                    </div>
-                    <div class="manifesto-item">
-                        <h4>Cultura Locale</h4>
-                        <p>Unione tra riferimenti globali tecnologici e radici del territorio umbro in un linguaggio
-                            esteticamente coerente.</p>
-                    </div>
-                    <div class="manifesto-item">
-                        <h4>Metacognizione</h4>
-                        <p>Approccio ironico e riflessivo per stimolare l'autovalutazione e la consapevolezza del
-                            proprio apprendimento.</p>
-                    </div>
-                </div>
-            </div>
-
-            <footer
-                style="margin-top: 3rem; text-align: center; padding-top: 2rem; border-top: 1px solid var(--border);">
-                <a href="https://instagram.com/meltingmath" target="_blank" class="btn-icon"
-                    style="display:inline-flex; width:auto; padding:0 20px; border-radius:12px; text-decoration:none; gap:10px;">
-                    <span>📸</span> Segui @meltingmath
+            <div class="nav-links">
+                <button class="nav-tab active" data-category="all">Tutti</button>
+                <button class="nav-tab" data-category="arcade">Gamification & Sfide</button>
+                <button class="nav-tab" data-category="memory">Carte & Memory</button>
+                <button class="nav-tab" data-category="sim">Simulatori 3D/WebGL</button>
+                <a href="verifiche.html" class="nav-tab" style="color: var(--primary); border: 1px solid rgba(0, 188, 212, 0.3); margin-left: 0.5rem; display: flex; align-items: center; gap: 5px;">
+                    <span>Archivio Verifiche</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                 </a>
-            </footer>
+                <button class="nav-tab" id="btn-bio" style="color: var(--secondary); font-weight: 800; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 0.5rem; padding-left: 1rem;">d::b</button>
+            </div>
+            <div class="nav-search">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-input" placeholder="Cerca attività, argomenti, software..." aria-label="Cerca contenuti">
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- SEARCH OVERLAY -->
-    <div id="list-overlay" class="overlay-full">
-        <div style="width:100%; max-width:800px; margin-bottom:2rem; display:flex; gap:1rem;">
-            <input type="text" id="search-input" placeholder="Cerca algoritmi o concetti..."
-                style="flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:white; padding:1.2rem; border-radius:16px; outline:none; font-size:1.2rem;">
-            <button class="btn-icon" id="btn-close-search" style="width:60px; height:60px;">×</button>
-        </div>
-        <div class="list-grid" id="full-list-grid"></div>
-    </div>
+    <header id="hero" role="banner">
+        <div id="scene-container"></div>
+    </header>
 
-    <aside id="content-panel">
-        <div class="panel-header">
-            <div id="panel-title-text"
-                style="font-size:1.8rem; font-weight:800; font-family:'Syne'; color:var(--primary);">Tag</div>
-            <button class="close-btn" id="btn-close-panel">×</button>
-        </div>
-        <div class="panel-scroll" id="results-container"></div>
-    </aside>
+    <main id="main-content">
+        <div class="list-grid" id="full-list-grid" role="region" aria-live="polite"></div>
+    </main>
+
+
 
     <div id="media-modal" class="overlay-full">
-        <div id="modal-box" style="width:95%; max-width:1100px;"></div>
+        <div id="modal-box" style="width:95%; max-width:1100px; margin: auto;"></div>
     </div>
 
     <script type="module">
-        import { GalaxyScene } from './content/assets/js/modules/GalaxyScene.js?v=4';
-        import { UIManager } from './content/assets/js/modules/UIManager.js?v=4';
+        import { GalaxyScene } from './content/assets/js/modules/GalaxyScene.js?v=5';
+        import { UIManager } from './content/assets/js/modules/UIManager.js?v=5';
 
         function getUniqueTags(data) {
             const counts = {};
-            data.forEach(item => item.tags.forEach(tag => counts[tag] = (counts[tag] || 0) + 1));
-            return Object.keys(counts).map(tag => ({ text: tag, count: counts[tag] }));
+            const tagMap = {};
+            
+            // Regex per escludere date (formati dd-mm-yy, dd/mm/yy, ecc.)
+            const datePattern = /\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/;
+            const yearPattern = /202\d/;
+
+            data.forEach(item => {
+                const tags = item.tags || [];
+                tags.forEach(tag => {
+                    const key = String(tag).trim().toLowerCase();
+                    if(!key || key.length < 2) return;
+                    
+                    // Salta se è una data
+                    if(datePattern.test(key) || yearPattern.test(key)) return;
+
+                    counts[key] = (counts[key] || 0) + 1;
+                    if(!tagMap[key]) tagMap[key] = tag.trim(); 
+                });
+            });
+            return Object.keys(counts).map(key => ({ text: tagMap[key], count: counts[key] }));
         }
 
         window.addEventListener('load', () => {
             const initApp = () => {
                 try {
-                    const galaxyData = getUniqueTags(db);
-                    const app3D = new GalaxyScene('scene-container', galaxyData, db, (nodeData) => ui.openPanel(nodeData.text));
+                    const allData = db;
+                    const galaxyData = getUniqueTags(allData);
+                    
+                    const app3D = new GalaxyScene('scene-container', galaxyData, allData, (nodeData) => {
+                        const input = document.getElementById('search-input');
+                        input.value = nodeData.text;
+                        input.dispatchEvent(new Event('input'));
+                        document.getElementById('main-content').scrollIntoView({behavior: 'smooth', block: 'start'});
+                    });
+                    
                     const ui = new UIManager(db, app3D);
 
-                    document.getElementById('btn-search').onclick = () => ui.toggleSearch();
-                    document.getElementById('btn-close-search').onclick = () => ui.closeSearch();
-                    document.getElementById('btn-reset').onclick = () => app3D.resetCamera();
-                    document.getElementById('btn-close-panel').onclick = () => ui.closePanel();
-
-                    const aboutEl = document.getElementById('about-overlay');
-                    document.getElementById('btn-about').onclick = () => aboutEl.classList.add('active');
-                    document.getElementById('btn-close-about').onclick = () => aboutEl.classList.remove('active');
-
-                    document.getElementById('btn-tags').onclick = () => {
-                        const allTags = getUniqueTags(db).sort((a, b) => b.count - a.count);
-                        const container = document.getElementById('results-container');
-                        container.innerHTML = '';
-                        document.getElementById('panel-title-text').innerText = 'Esplora Mappa';
-                        const cloud = document.createElement('div');
-                        Object.assign(cloud.style, { display: 'flex', flexWrap: 'wrap', gap: '10px' });
-                        allTags.forEach(t => {
-                            const btn = document.createElement('button');
-                            btn.className = 'mini-tag';
-                            Object.assign(btn.style, { cursor: 'pointer', border: '1px solid var(--border)', padding: '10px 20px', borderRadius: '12px', fontSize: '0.9rem', background: 'rgba(255,255,255,0.05)', color: '#fff' });
-                            btn.innerHTML = `#${t.text} <small style="opacity:0.5; margin-left:5px;">${t.count}</small>`;
-                            btn.onclick = () => ui.openPanel(t.text);
-                            cloud.appendChild(btn);
-                        });
-                        container.appendChild(cloud);
-                        document.getElementById('content-panel').classList.add('active');
-                    };
-
                     document.addEventListener('keydown', (e) => {
-                        if (e.key === 'Escape') {
-                            ui.closeSearch(); ui.closePanel(); ui.closeModal();
-                            aboutEl.classList.remove('active');
-                        }
+                        if (e.key === 'Escape') ui.closeModal();
                     });
 
                     document.getElementById('media-modal').onclick = () => ui.closeModal();
@@ -728,7 +615,7 @@
                 let attempts = 0;
                 const checkKatex = setInterval(() => {
                     attempts++;
-                    if (typeof katex !== 'undefined' || attempts > 30) { // Max 1.5 secondi
+                    if (typeof katex !== 'undefined' || attempts > 30) {
                         clearInterval(checkKatex);
                         initApp();
                     }

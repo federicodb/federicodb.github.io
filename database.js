@@ -1,9 +1,33 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-12 09:20:14
+   Data: 2026-04-12 13:01:15
 */
 
 const db = [
+    {
+        "title": "Game Theory Lab 2.5 🎲",
+        "excerpt": "Attività interattiva.",
+        "tags": [
+            "Ed. Civica",
+            "Matematica",
+            "Teoria dei Giochi",
+            "Equilibrio di Nash",
+            "Cittadinanza",
+            "3EL",
+            "4EL",
+            "5EL",
+            "Civ:Costituzione",
+            "EU:Cittadinanza",
+            "Mat:Modellizzazione",
+            "Mat:Dati"
+        ],
+        "date": "2026-04-12",
+        "url": "content/apps/voto_cosapevole.2.5.html",
+        "type": "app",
+        "icon": "🎮",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.jpg"
+    },
     {
         "title": "PixelGrid",
         "excerpt": "Attività interattiva.",
@@ -22,10 +46,11 @@ const db = [
             "prodotti notevoli",
             "quadratiche"
         ],
-        "date": "2026-04-11",
+        "date": "2026-04-12",
         "url": "content/apps/eq_2_gr_teoria_giochi_01.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/eq_2_gr_teoria_giochi_01.jpg"
     },
     {
@@ -39,12 +64,14 @@ const db = [
             "3d",
             "spirale",
             "incommensurabilità",
-            "frattali"
+            "frattali",
+            "Trasversale"
         ],
         "date": "2026-04-03",
         "url": "content/apps/phi_is_irrational_01.html",
         "type": "app",
         "icon": "📐",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.jpg"
     },
     {
@@ -59,12 +86,14 @@ const db = [
             "pi greco",
             "poligoni",
             "p5js",
-            "area"
+            "area",
+            "5EL"
         ],
         "date": "2026-04-03",
         "url": "content/apps/esaustione_01.html",
         "type": "app",
         "icon": "📈",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/esaustione_01.jpg"
     },
     {
@@ -86,6 +115,7 @@ const db = [
         "url": "content/apps/operazioni_polinomi_graph.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.jpg"
     },
     {
@@ -108,30 +138,8 @@ const db = [
         "url": "content/apps/disequazioni_frazionarie_vs_sistemi.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.jpg"
-    },
-    {
-        "title": "Game Theory Lab 2.5 🎲",
-        "excerpt": "Attività interattiva.",
-        "tags": [
-            "Ed. Civica",
-            "Matematica",
-            "Teoria dei Giochi",
-            "Equilibrio di Nash",
-            "Cittadinanza",
-            "3EL",
-            "4EL",
-            "5EL",
-            "Civ:Costituzione",
-            "EU:Cittadinanza",
-            "Mat:Modellizzazione",
-            "Mat:Dati"
-        ],
-        "date": "2026-03-13",
-        "url": "content/apps/voto_cosapevole.2.5.html",
-        "type": "app",
-        "icon": "🎮",
-        "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.jpg"
     },
     {
         "title": "Scomposizione Polinomi",
@@ -152,6 +160,7 @@ const db = [
         "url": "content/apps/cards_polinomi_memory004.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "memory",
         "thumbnail": "content/assets/thumbnails/cards_polinomi_memory004.jpg"
     },
     {
@@ -173,68 +182,42 @@ const db = [
         "url": "content/apps/card_frazioni_algebriche_005.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "memory",
         "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.jpg"
     },
     {
-        "date": "2025-12-20",
-        "description": "Risorsa: Guida Al Mondo Delle Funzioni Matematiche",
+        "title": "Decodifica Matematica",
+        "excerpt": "Argomenti: Decodifica, Matematica",
         "tags": [
-            "Infografica",
-            "Visual"
+            "Matematica",
+            "Decodifica",
+            "Trasversale"
         ],
-        "title": "Guida Al Mondo Delle Funzioni Matematiche",
-        "excerpt": "Risorsa: Guida Al Mondo Delle Funzioni Matematiche",
-        "url": "content/infografiche/guida_al_mondo_delle_funzioni_matematiche.pdf",
-        "type": "infographic",
-        "icon": "🖼️",
-        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.jpg"
-    },
-    {
-        "date": "2025-12-20",
-        "description": "Risorsa: Decodifica La Matematica",
-        "tags": [
-            "Infografica",
-            "Visual"
-        ],
-        "title": "Decodifica La Matematica",
-        "excerpt": "Risorsa: Decodifica La Matematica",
+        "date": "2025-12-15",
+        "group_ref": "decodifica matematica",
+        "version_label": "Versione Unica",
         "url": "content/infografiche/decodifica_la_matematica.pdf",
         "type": "infographic",
         "icon": "🖼️",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.jpg"
     },
     {
-        "date": "2025-12-20",
-        "description": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "title": "Errori Comuni02",
+        "excerpt": "Argomenti: Errori, Comuni02",
         "tags": [
-            "1EL",
-            "Calcolo",
-            "Espressioni",
-            "Infografica",
-            "PEMDAS",
-            "Potenze",
-            "Visual"
+            "Comuni02",
+            "Errori",
+            "Trasversale"
         ],
-        "title": "Errori Comuni - Potenze, Espressioni",
-        "excerpt": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "date": "2025-12-15",
+        "group_ref": "errori comuni02",
+        "version_label": "Versione Unica",
         "url": "content/infografiche/errori_comuni02.png",
         "type": "infographic",
         "icon": "🖼️",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/errori_comuni02.jpg"
-    },
-    {
-        "date": "2025-12-20",
-        "description": "Risorsa: Tattoo Delta",
-        "tags": [
-            "Gallery",
-            "Immagine"
-        ],
-        "title": "Tattoo Delta",
-        "excerpt": "Risorsa: Tattoo Delta",
-        "url": "content/images/tattoo_delta.png",
-        "type": "image",
-        "icon": "🖼️",
-        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
     },
     {
         "date": "2025-12-12",
@@ -245,13 +228,50 @@ const db = [
             "Gemini",
             "Google",
             "Linkografia",
-            "Strumenti"
+            "Strumenti",
+            "Trasversale"
         ],
         "title": "Google AI Studio: Assistant",
         "url": "https://ais-pre-evi2uqxownrirtwtzubadt-238287108414.europe-west2.run.app/",
         "excerpt": "Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.",
         "type": "link",
-        "icon": "🌐"
+        "icon": "🌐",
+        "game_type": "standard"
+    },
+    {
+        "title": "Guida Mondo Delle Funzioni Matematiche",
+        "excerpt": "Argomenti: Guida, Mondo, Delle",
+        "tags": [
+            "Delle",
+            "Mondo",
+            "Guida",
+            "Trasversale"
+        ],
+        "date": "2025-12-12",
+        "group_ref": "guida mondo delle funzioni matematiche",
+        "version_label": "Versione Unica",
+        "url": "content/infografiche/guida_al_mondo_delle_funzioni_matematiche.pdf",
+        "type": "infographic",
+        "icon": "🖼️",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.jpg"
+    },
+    {
+        "title": "Tattoo Delta",
+        "excerpt": "Argomenti: Tattoo, Delta",
+        "tags": [
+            "Tattoo",
+            "Delta",
+            "Trasversale"
+        ],
+        "date": "2025-12-12",
+        "group_ref": "tattoo delta",
+        "version_label": "Versione Unica",
+        "url": "content/images/tattoo_delta.png",
+        "type": "image",
+        "icon": "🖼️",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
     },
     {
         "title": "PIP",
@@ -271,6 +291,7 @@ const db = [
         "url": "content/apps/retta_fallout_002.html",
         "type": "app",
         "icon": "📐",
+        "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/retta_fallout_002.jpg"
     },
     {
@@ -288,6 +309,7 @@ const db = [
         "url": "content/apps/percentuali_001.html",
         "type": "app",
         "icon": "🍰",
+        "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/percentuali_001.jpg"
     },
     {
@@ -302,12 +324,14 @@ const db = [
             "Dominio",
             "AI",
             "Gemini",
-            "Education"
+            "Education",
+            "4EL"
         ],
         "date": "2025-12-10",
         "url": "content/apps/functions_lab_008.html",
         "type": "app",
         "icon": "📈",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/functions_lab_008.jpg"
     },
     {
@@ -329,6 +353,7 @@ const db = [
         "url": "content/apps/fractions_lab_001.html",
         "type": "app",
         "icon": "🍰",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/fractions_lab_001.jpg"
     },
     {
@@ -352,6 +377,7 @@ const db = [
         "url": "content/apps/visualizzatore polinomi 2d 3d 001.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.jpg"
     },
     {
@@ -373,6 +399,7 @@ const db = [
         "url": "content/apps/gioco_sin_cos_01.html",
         "type": "app",
         "icon": "📈",
+        "game_type": "memory",
         "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.jpg"
     },
     {
@@ -399,6 +426,7 @@ const db = [
         "url": "content/apps/albero_pitagorico_3d_gemini_001.html",
         "type": "app",
         "icon": "📐",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.jpg"
     },
     {
@@ -423,6 +451,7 @@ const db = [
         "url": "content/apps/scomp_3d_grafica_002.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.jpg"
     },
     {
@@ -444,6 +473,7 @@ const db = [
         "url": "content/apps/disequazioni grafiche 4el.html",
         "type": "app",
         "icon": "🧱",
+        "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.jpg"
     },
     {
@@ -466,6 +496,7 @@ const db = [
         "url": "content/apps/corrente_4el_sincos.html",
         "type": "app",
         "icon": "⚡",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.jpg"
     },
     {
@@ -490,6 +521,7 @@ const db = [
         "url": "content/apps/tavola_tart_canva0003.html",
         "type": "app",
         "icon": "📐",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.jpg"
     },
     {
@@ -505,12 +537,14 @@ const db = [
             "Tinkering",
             "Lab",
             "EU:Digitale",
-            "EU:Culturale"
+            "EU:Culturale",
+            "Trasversale"
         ],
         "date": "2025-12-08",
         "url": "content/apps/sketch_to_pattern_gemini_005.html",
         "type": "app",
         "icon": "📐",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.jpg"
     },
     {
@@ -532,6 +566,7 @@ const db = [
         "url": "content/apps/insiemi004.html",
         "type": "app",
         "icon": "🔴",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/insiemi004.jpg"
     },
     {
@@ -555,6 +590,7 @@ const db = [
         "url": "content/apps/mercatore_correzione_001_gemini_worksproperly.html",
         "type": "app",
         "icon": "🌍",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.jpg"
     },
     {
@@ -577,6 +613,7 @@ const db = [
         "url": "content/apps/math_underground003_4el.html",
         "type": "app",
         "icon": "📈",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/math_underground003_4el.jpg"
     },
     {
@@ -596,6 +633,7 @@ const db = [
         "url": "content/apps/MCD_mcm_1el_001.html",
         "type": "app",
         "icon": "🔢",
+        "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.jpg"
     },
     {
@@ -621,6 +659,7 @@ const db = [
         "url": "content/apps/attrattori_001_dec25.html",
         "type": "app",
         "icon": "📈",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.jpg"
     },
     {
@@ -643,6 +682,7 @@ const db = [
         "url": "content/apps/memory_1el_numeri_004.html",
         "type": "app",
         "icon": "🔢",
+        "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/memory_1el_numeri_004.jpg"
     }
 ];

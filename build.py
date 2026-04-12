@@ -3,6 +3,7 @@ import json
 import re
 from datetime import datetime
 import html
+import subprocess
 
 # --- CONFIGURAZIONE ---
 CONTENT_DIR = "content"
@@ -19,6 +20,7 @@ TYPE_MAP = {
     "audio": "audio",
     "infografiche": "infographic",
     "documents": "document",
+    "verifiche": "document",
     "images": "image",
     "notes": "note",
     "links": "link"
@@ -187,6 +189,65 @@ def get_icon_for_type(content_type, tags=[], title=""):
     
     return "🧩" # Icona di default per app generiche
 
+def get_game_type(content_type, tags=[], title="", excerpt=""):
+    """ Assegna deterministica del target UX (arcade, memory, sim, document) da usare nel frontend UI. """
+    search_corpus = set([t.lower() for t in tags] + [w.lower() for w in title.split()] + [w.lower() for w in excerpt.split()])
+    
+    if content_type == "document" or any(k in search_corpus for k in ['verifica', 'pdf', 'prova', 'test']):
+        return "document"
+        
+    # Matching Memory/Carte
+    if any(k in search_corpus for k in ['memory', 'match', 'carte', 'card', 'puzzle']):
+        return "memory"
+        
+    # Matching Arcade/Videogiocoso
+    if any(k in search_corpus for k in ['gamification', 'videogioco', 'gioco', 'challenge', 'sfida', 'arcade']):
+        return "arcade"
+        
+    # Matching Simulatori & WebGL
+    if any(k in search_corpus for k in ['3d', 'webgl', 'simulatore', 'simulazione', 'laboratorio', 'simulazioni']):
+        return "sim"
+        
+    # Fallback standard
+    return "standard"
+
+def infer_classes_from_competencies(tags):
+    """ Estrapola target espliciti (1EL, 2EL, 3MEC, 4EL, 5EL) in base all'argomento. """
+    has_class = False
+    for t in tags:
+        # Checka se c'è già una classe dichiarata o un livello macro
+        if re.match(r'^[1-5][A-Z]{2,3}$', t, re.IGNORECASE) or t.lower() in ['biennio', 'triennio', 'trasversale'] or "/" in t:
+            has_class = True
+            break
+            
+    if has_class:
+        return tags
+        
+    tags_lower = [t.lower() for t in tags]
+    
+    # Dizionari Argomenti -> Indirizzi (Riforma Tecnici/Professionali)
+    # Classi 1/2 (Basi, Algebra, Polinomi, Insiemistica)
+    base_kw = ['aritmetica', 'calcolo', 'frazioni', 'insiemi', 'potenze', 'polinomi', 'scomposizion', 'mcd', 'mcm', 'algebra']
+    # Classe 3 (Geometria analitica base)
+    terza_kw = ['retta', 'parabola', 'geometria analitica']
+    # Classe 4 (Funzioni, Goniometria, Elettrotecnica in Alternata)
+    quarta_kw = ['funzioni', 'studio di funzione', 'dominio', 'disequazioni', 'fasori', 'onda', 'goniometria', 'trigonometria', 'seno', 'coseno']
+    # Classe 5 (Analisi, Sistemi Dinamici, Caos)
+    quinta_kw = ['limiti', 'derivate', 'caos', 'sistemi dinamici', 'attrattori', 'integrali']
+    
+    if any(k in t for k in quinta_kw for t in tags_lower):
+        tags.append("5EL")
+    elif any(k in t for k in quarta_kw for t in tags_lower):
+        tags.append("4EL")
+    elif any(k in t for k in terza_kw for t in tags_lower):
+        tags.append("3MEC")
+    elif any(k in t for k in base_kw for t in tags_lower):
+        tags.append("1EL/2EL")
+    elif len(tags) > 0:
+        tags.append("Trasversale")
+        
+    return tags
+
 def main():
     if not os.path.exists(CONTENT_DIR):
         print(f"❌ Errore: Cartella '{CONTENT_DIR}' non trovata.")
@@ -197,17 +258,19 @@ def main():
 
     # Scansione ricorsiva
     for root, dirs, files in os.walk(CONTENT_DIR):
-        # Modifica in-place della lista dirs per escludere cartelle nascoste dal walk
-        dirs[:] = [d for d in dirs if not d.startswith('.')]
+        # Modifica in-place della lista dirs per escludere cartelle nascoste e assets dal walk
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d != 'assets']
 
-        # Determina la categoria basandosi sulla cartella genitore diretta
-        folder_name = os.path.basename(root)
+        # Determina la categoria basandosi sul percorso
+        path_parts = root.split(os.sep)
+        content_type = "unknown"
+        for part in reversed(path_parts):
+            if part in TYPE_MAP:
+                content_type = TYPE_MAP[part]
+                break
         
-        # Salta la root 'content' se ci sono file sparsi, o gestiscili come generici
-        if folder_name == CONTENT_DIR:
+        if root == CONTENT_DIR:
             continue
-            
-        content_type = TYPE_MAP.get(folder_name, "unknown")
         
         for filename in files:
             file_path = os.path.join(root, filename)
@@ -249,8 +312,113 @@ def main():
                 elif content_type != "app" and content_type != "note":
                     # Per media files, cerca il JSON sidecar
                     meta = extract_sidecar_meta(file_path)
+                    
+                    # Strategia avanzata: Estrazione testo reale dal PDF
+                    extracted_text = ""
+                    try:
+                        result = subprocess.run(["pdftotext", file_path, "-"], capture_output=True, text=True, timeout=5)
+                        extracted_text = result.stdout
+                    except Exception as e:
+                        print(f"  ⚠️ Errore pdftotext su {filename}: {e}")
+
+                    # --- PARSING AVANZATO FILENAME ---
+                    # Esempi: 2GP___verifica_31_marzo_2026_fila_A.pdf, verifica 2gp 24 feb 2026_fila A.pdf
+                    fn_clean = filename.lower().replace("___", " ").replace("_", " ").replace("-", " ")
+                    
+                    found_class = None
+                    class_match = re.search(r'\b([1-5][a-z]{2,3})\b', fn_clean)
+                    if class_match:
+                        found_class = class_match.group(1).upper()
+                    
+                    # Estrazione Data (anno opzionale)
+                    months_it = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 
+                                 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre',
+                                 'gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic']
+                    month_pattern = "|".join(months_it)
+                    date_match = re.search(rf'(\d{{1,2}})\s*({month_pattern})\s*(\d{{4}})?', fn_clean)
+                    
+                    day, month, year = "", "", ""
+                    file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
+                    
+                    if date_match:
+                        day, month, year = date_match.groups()
+                        if not year: year = str(file_mtime.year) 
+                        # Normalizza mese
+                        for m in ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic']:
+                            if month.startswith(m):
+                                idx = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'].index(m)
+                                month = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 
+                                         'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][idx]
+                                break
+                    else:
+                        # Fallback se non c'è data nel nome
+                        month = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'][file_mtime.month-1]
+                        year = str(file_mtime.year)
+                        day = str(file_mtime.day)
+                    
+                    # Estrazione Fila o Tipologia (spazio opzionale)
+                    fila_match = re.search(r'fila\s?([a-z0-9])', fn_clean)
+                    if fila_match:
+                        fila_label = f"Fila {fila_match.group(1).upper()}"
+                    elif "mappa" in fn_clean:
+                        lang_match = re.search(r'\b(it|en|ukr)\b', fn_clean)
+                        fila_label = f"Mappa {lang_match.group(1).upper()}" if lang_match else "Mappa"
+                    elif "correttore" in fn_clean:
+                        fila_label = "Correttore"
+                    elif "recupero" in fn_clean or "debito" in fn_clean:
+                        fila_label = "Recupero"
+                    else:
+                        fila_label = "Versione Unica"
+
+                    # --- ESTRAZIONE ARGOMENTI DAL TESTO ---
+                    topics = []
+                    # Cerca "Verifica di matematica - Argomenti..."
+                    subject_match = re.search(r'Verifica di\s+[^-\n]+\s*-\s*([^\n.]+)', extracted_text, re.IGNORECASE)
+                    if subject_match:
+                        topic_line = subject_match.group(1).strip()
+                        topics = [t.strip().capitalize() for t in re.split(r'[,;]', topic_line) if len(t.strip()) > 2]
+                    
+                    # Fallback temi dal nome file
+                    raw_words = fn_clean[:-4].split()
+                    stopwords = ['verifica', 'fila', 'a', 'b', 'c', 'correttore', 'mappa', 'pdf', 'di', 'del', 'recupero', 'debito', 'it', 'en', 'ukr', 'classe'] + months_it
+                    meaningful_words = [w for w in raw_words if w.lower() not in stopwords and not re.match(r'^\d+$', w) and len(w) > 2]
+                    
+                    if not topics:
+                        topics = [w.capitalize() for w in meaningful_words[:3]]
+
+                    # Titolo formattato: "Verifica Classe 2GP, Marzo 2026"
+                    is_in_verifiche = "verifiche" in root.lower()
+                    if found_class:
+                        clean_title = f"{'Verifica ' if is_in_verifiche else ''}Classe {found_class}, {month} {year}"
+                    else:
+                        prefix = "Verifica " if is_in_verifiche else ""
+                        clean_title = prefix + " ".join(meaningful_words).title()
+                    
+                    tags = list(set(topics + ([found_class] if found_class else [])))
+                    # Aggiungi meta-tag per raggruppamento
+                    group_ref = f"{found_class}_{month}_{year}".lower().replace(" ", "_") if found_class else clean_title.lower()
+
+                    # Excerpt: Solo gli argomenti puliti
+                    excerpt = "Argomenti: " + ", ".join(topics) if topics else "Verifica multimediale."
+
+                    # Validazione minima data
+                    try:
+                        day_int = int(day) if day else 1
+                        if day_int > 31: day_int = 1 # Fallback semplice
+                        date_str = f"{year}-{['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'].index(month)+1:02d}-{day_int:02d}"
+                    except:
+                        date_str = file_mtime.strftime('%Y-%m-%d')
+
+                    meta = {
+                         "title": clean_title.strip(),
+                         "excerpt": excerpt,
+                         "tags": list(set(tags)),
+                         "date": date_str,
+                         "group_ref": group_ref,
+                         "version_label": fila_label
+                    }
             
-            if meta:
+            if meta and content_type != "unknown":
                 # Aggiungi campi comuni calcolati
                 # Se l'URL non c'è (media locale), calcolalo. Se c'è (link esterno), usalo.
                 if "url" not in meta:
@@ -258,6 +426,7 @@ def main():
                 
                 meta["type"] = content_type
                 meta["icon"] = get_icon_for_type(content_type, meta.get("tags", []), meta.get("title", ""))
+                meta["game_type"] = get_game_type(content_type, meta.get("tags", []), meta.get("title", ""), meta.get("excerpt", ""))
                 
                 # Fallback data se mancante nel JSON
                 if "date" not in meta:
@@ -275,6 +444,9 @@ def main():
                 # --- NEW: Data Consistency Check ---
                 if "tags" not in meta or meta["tags"] is None:
                     meta["tags"] = []
+                    
+                meta["tags"] = infer_classes_from_competencies(meta["tags"])
+                
                 if not meta.get("tags"):
                     print(f"  ⚠️  WARNING: Tags mancanti o vuoti per '{filename}'")
                 if not meta.get("excerpt") and not meta.get("description"):
@@ -287,16 +459,61 @@ def main():
     # Ordina per data (dal più recente)
     items.sort(key=lambda x: x.get('date', ''), reverse=True)
 
-    # Scrive il file JS
-    js_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py \n   Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n*/\n\nconst {OUTPUT_VAR_NAME} = " + json.dumps(items, indent=4, ensure_ascii=False) + ";"
-    
+    # --- FILTRO RIGIDO PER CARTELLA ---
+    # Qualsiasi cosa sia nella cartella verifiche finisce in db_verifiche, il resto in db_main
+    db_main = [item for item in items if "content/verifiche" not in item.get('url', '')]
+    raw_verifiche = [item for item in items if "content/verifiche" in item.get('url', '')]
+
+    # --- RAGGRUPPAMENTO VERSIONI ---
+    verifiche_grouped = {}
+    for v in raw_verifiche:
+        # Usa il group_ref calcolato prima
+        group_key = v.get('group_ref', v['title'].lower().strip())
+        
+        if group_key not in verifiche_grouped:
+            # Crea una copia per evitare side effects
+            entry = v.copy()
+            entry['versions'] = []
+            verifiche_grouped[group_key] = entry
+        
+        verifiche_grouped[group_key]['versions'].append({
+            "url": v['url'],
+            "date": v['date'],
+            "label": v.get('version_label', 'File')
+        })
+
+    # Raffina i gruppi: se un gruppo ha più versioni, ordinale
+    db_verifiche = []
+    for key in verifiche_grouped:
+        group = verifiche_grouped[key]
+        
+        # Filtro intelligente: se esistono file contrassegnati come "Fila X", 
+        # rimuoviamo il generico "Versione Unica" (che spesso è il file di testata o un duplicato)
+        has_fila = any("Fila" in v['label'] for v in group['versions'])
+        if has_fila:
+            group['versions'] = [v for v in group['versions'] if v['label'] != "Versione Unica"]
+            
+        # Sort versions by label (A before B) then date
+        group['versions'].sort(key=lambda x: (x['label'], x['date']), reverse=False)
+        # L'URL principale punta alla prima versione utile
+        group['url'] = group['versions'][0]['url']
+        group['date'] = group['versions'][0]['date']
+        db_verifiche.append(group)
+
+    # Scrive il file JS (Main)
+    js_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py \n   Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n*/\n\nconst {OUTPUT_VAR_NAME} = " + json.dumps(db_main, indent=4, ensure_ascii=False) + ";"
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         f.write(js_content)
         
+    # Scrive il file JS (Verifiche)
+    js_verifiche_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py \n   Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n*/\n\nconst db_verifiche = " + json.dumps(db_verifiche, indent=4, ensure_ascii=False) + ";"
+    with open("database_verifiche.js", 'w', encoding='utf-8') as f:
+        f.write(js_verifiche_content)
+        
     # Scrive la Sitemap XML
-    generate_sitemap(items)
+    generate_sitemap(db_main)
     
-    print(f"\n✨ Successo! {len(items)} elementi salvati in '{DB_FILE}' e '{SITEMAP_FILE}'.")
+    print(f"\n✨ Successo! Salvati {len(db_main)} Laboratori e {len(db_verifiche)} Verifiche.")
 
 def generate_sitemap(items):
     """ Genera la sitemap XML standard per i motori di ricerca """

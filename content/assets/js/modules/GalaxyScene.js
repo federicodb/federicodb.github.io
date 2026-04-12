@@ -34,8 +34,8 @@ export class GalaxyScene {
     }
 
     init() {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+        const w = this.container.clientWidth;
+        const h = this.container.clientHeight;
 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x000000); // Pure Black for Void
@@ -78,7 +78,9 @@ export class GalaxyScene {
         this.createMathDebris();
         this.createConnections();
 
-        window.addEventListener('resize', this.onResize.bind(this));
+        this.resizeObserver = new ResizeObserver(() => this.onResize());
+        this.resizeObserver.observe(this.container);
+        
         this.animate();
     }
 
@@ -149,34 +151,43 @@ export class GalaxyScene {
         this.nodes.forEach((node, i) => {
             if (this.data[i]) {
                 const hue = (i / totalTags) * 360;
-                tagMap[this.data[i].text] = { pos: node.position, links: 0, hue: hue };
+                const key = this.data[i].text.toLowerCase().trim();
+                tagMap[key] = { pos: node.position, links: 0, hue: hue };
             }
         });
         const correlation = {};
         this.fullDb.forEach(item => {
             const tags = item.tags || [];
-            for (let i = 0; i < tags.length; i++) {
-                for (let j = i + 1; j < tags.length; j++) {
-                    const pair = [tags[i], tags[j]].sort().join('|');
+            const nTags = [...new Set(tags.map(t => String(t).toLowerCase().trim()).filter(t => t))];
+            
+            for (let i = 0; i < nTags.length; i++) {
+                for (let j = i + 1; j < nTags.length; j++) {
+                    const pair = [nTags[i], nTags[j]].sort().join('|');
                     correlation[pair] = (correlation[pair] || 0) + 1;
                 }
             }
         });
         const points = [];
         const colors = [];
+        const alphas = [];
         // const color = new THREE.Color(0x00e5ff); // Removed static color
         const sortedPairs = Object.entries(correlation).filter(([_, weight]) => weight >= 1).sort((a, b) => b[1] - a[1]);
-        sortedPairs.forEach(([pair, _]) => {
+        sortedPairs.forEach(([pair, weight]) => {
             const [t1, t2] = pair.split('|');
             const n1 = tagMap[t1], n2 = tagMap[t2];
-            if (n1 && n2 && n1.links < 6 && n2.links < 6) {
+            // Ridotto link massimi per eliminare grovigli visivi a favore delle linee forti
+            if (n1 && n2 && n1.links < 4 && n2.links < 4) {
+                const intensity = Math.min(1.0, weight / 5.0); 
+                const lightness = 0.2 + (0.5 * intensity); // weak links = dark, strong = bright
+                const saturation = 0.3 + (0.7 * intensity);
+                
+                const c1 = new THREE.Color().setHSL(((n1.hue + 180) % 360) / 360, saturation, lightness);
+                const c2 = new THREE.Color().setHSL(((n2.hue + 180) % 360) / 360, saturation, lightness);
+
                 points.push(n1.pos.x, n1.pos.y, n1.pos.z, n2.pos.x, n2.pos.y, n2.pos.z);
-
-                // Inverse Gradient: Complementary Hue (+180 deg)
-                const c1 = new THREE.Color().setHSL(((n1.hue + 180) % 360) / 360, 0.8, 0.6);
-                const c2 = new THREE.Color().setHSL(((n2.hue + 180) % 360) / 360, 0.8, 0.6);
-
                 colors.push(c1.r, c1.g, c1.b, c2.r, c2.g, c2.b);
+                alphas.push(intensity, intensity);
+                
                 n1.links++; n2.links++;
             }
         });
@@ -184,14 +195,18 @@ export class GalaxyScene {
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
         geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geometry.setAttribute('alphaWeight', new THREE.Float32BufferAttribute(alphas, 1));
 
         // Shader for Distance Fading (Vanish Effect)
         const connectionVertexShader = `
             attribute vec3 color;
+            attribute float alphaWeight;
             varying vec3 vColor;
             varying float vDist;
+            varying float vAlphaWeight;
             void main() {
                 vColor = color;
+                vAlphaWeight = alphaWeight;
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
                 vDist = -mvPosition.z; // Depth
                 gl_Position = projectionMatrix * mvPosition;
@@ -201,6 +216,7 @@ export class GalaxyScene {
         const connectionFragmentShader = `
             varying vec3 vColor;
             varying float vDist;
+            varying float vAlphaWeight;
             uniform float globalOpacity;
             
             void main() {
@@ -208,7 +224,10 @@ export class GalaxyScene {
                 float fade = 1.0 - smoothstep(150.0, 600.0, vDist);
                 // Hard cut-off to save fragments if needed, or just let it fade
                 if (fade < 0.01) discard;
-                gl_FragColor = vec4(vColor, globalOpacity * fade);
+                
+                // Enhancement Alpha for heavy neural routes
+                float enhancedAlpha = clamp((globalOpacity + (vAlphaWeight * 0.9)) * fade, 0.0, 1.0);
+                gl_FragColor = vec4(vColor, enhancedAlpha);
             }
         `;
 
@@ -351,7 +370,7 @@ export class GalaxyScene {
             const inc = Math.acos(1 - 2 * t);
             const az = Math.PI * 2 * ((1 + Math.sqrt(5)) / 2) * i;
             return {
-                id: tag.text,
+                id: tag.text.toLowerCase().trim(),
                 x: split * Math.sin(inc) * Math.cos(az),
                 y: split * Math.sin(inc) * Math.sin(az),
                 z: split * Math.cos(inc),
@@ -364,7 +383,10 @@ export class GalaxyScene {
         const edges = [];
         const edgeStrength = {};
         this.fullDb.forEach(item => {
-            const relevantTags = item.tags.filter(t => this.data.some(d => d.text === t));
+            const rawTags = item.tags || [];
+            const nTags = [...new Set(rawTags.map(t => String(t).toLowerCase().trim()).filter(t => t))];
+            const relevantTags = nTags.filter(t => this.data.some(d => d.text.toLowerCase().trim() === t));
+            
             for (let i = 0; i < relevantTags.length; i++) {
                 for (let j = i + 1; j < relevantTags.length; j++) {
                     const pair = [relevantTags[i], relevantTags[j]].sort().join('|');
@@ -404,7 +426,9 @@ export class GalaxyScene {
 
             const label = new CSS2DObject(wrapper);
             label.position.set(n.x, n.y, n.z);
-            label.userData = { contentElement: content, importance: Math.sqrt(tagItem.count), isHovered: false };
+            // BOOST di Gerarchia: i tag con più count salgono esponenzialmente di importanza in modo quadratico
+            const boost = Math.pow(tagItem.count, 0.7); 
+            label.userData = { contentElement: content, importance: boost, isHovered: false };
             this.nodes.push(label);
             group.add(label);
         });
@@ -488,10 +512,17 @@ export class GalaxyScene {
 
     onResize() {
         if (!this.camera || !this.renderer) return;
-        this.camera.aspect = window.innerWidth / window.innerHeight;
+        const w = this.container.clientWidth;
+        const h = this.container.clientHeight;
+        if (w === 0 || h === 0) return;
+        
+        this.camera.aspect = w / h;
+        // Adattamento FOV per prevenire distorsioni ottiche ("letterbox squish")
+        this.camera.fov = (w < h) ? 75 : 55;
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        
+        this.renderer.setSize(w, h);
+        this.labelRenderer.setSize(w, h);
     }
 
     updateBokeh() {
@@ -504,10 +535,22 @@ export class GalaxyScene {
         for (let i = 0; i < this.nodes.length; i++) {
             const node = this.nodes[i];
             const dist = camPos.distanceTo(node.position);
-            if (dist > 550) { node.element.style.display = 'none'; continue; }
+            const rawText = node.userData.contentElement.textContent.trim().toLowerCase();
+            const isGodNode = (rawText === "matematica");
+            
+            // Zoom Semantico
+            const maxVisibleDist = 400 + (node.userData.importance * 180);
+            
+            if (dist > maxVisibleDist && !isGodNode && !node.userData.isHovered) { 
+                node.element.style.display = 'none'; 
+                continue; 
+            }
+            
             let opacity = 1;
             const distDiff = Math.abs(dist - focalDist);
-            if (distDiff > range) opacity = 1 - Math.min(1, (distDiff - range) / 150);
+            if (distDiff > range && !isGodNode) opacity = 1 - Math.min(1, (distDiff - range) / 150);
+            else if (isGodNode) opacity = 1; // Dio della matematica mai sfocato
+            
             node.element.style.opacity = Math.max(0, opacity).toFixed(2);
             node.element.style.display = opacity < 0.05 ? 'none' : 'block';
             node.element.style.display = opacity < 0.05 ? 'none' : 'block';
