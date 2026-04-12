@@ -109,11 +109,13 @@
         body {
             margin: 0;
             overflow-x: hidden;
+            overflow-y: auto !important;
             background: var(--bg-dark);
             font-family: var(--font-ui);
             color: white;
             width: 100vw;
-            min-height: 100vh;
+            min-height: 100dvh;
+            min-height: -webkit-fill-available;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -283,6 +285,8 @@
             margin: 0 auto;
             padding: 4rem 2rem;
             min-height: 50vh;
+            flex-grow: 1;
+            height: auto;
         }
 
         .list-grid {

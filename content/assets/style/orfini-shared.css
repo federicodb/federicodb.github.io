@@ -34,7 +34,10 @@
 /* Reset di base per garantire che l'app occupi tutto lo spazio in modo corretto */
 html, body {
     margin: 0; padding: 0;
-    width: 100%; height: 100%;
+    width: 100%; 
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    overflow-y: auto !important; /* Forza lo scrolling su iOS/WebKit */
     /* Usa le variabili per il background invece di hardcoded black/white */
     background-color: var(--md-sys-color-background);
     color: var(--md-sys-color-on-background);

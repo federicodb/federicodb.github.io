@@ -104,10 +104,13 @@
             background-image: 
                 radial-gradient(circle at 20% 20%, rgba(0, 188, 212, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(255, 64, 129, 0.05) 0%, transparent 40%);
-            min-height: 100vh;
+            min-height: 100dvh;
+            min-height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
         }
 
         header {
