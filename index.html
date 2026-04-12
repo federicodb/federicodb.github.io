@@ -12,6 +12,9 @@
         href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Amatic+SC:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Oswald:wght@500&family=Permanent+Marker&family=Playfair+Display:ital,wght@1,600&family=Press+Start+2P&family=Righteous&family=Space+Mono:ital,wght@0,700;1,700&family=Inter:wght@400;700&family=Syne:wght@700;800&display=swap"
         rel="stylesheet">
 
+    <!-- Polyfill per Import Maps (Compatibilità Safari < 16.4 / iOS < 16.4) -->
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.8.2/dist/es-module-shims.js"></script>
+
     <script type="importmap">
         {
             "imports": {
@@ -115,6 +118,7 @@
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* Momentum scrolling iOS */
         }
 
         /* --- NAVIGATION --- */
@@ -135,8 +139,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 2rem;
-            flex-wrap: wrap;
+            gap: 1.5rem;
+            flex-wrap: nowrap; /* Bauhaus: rigore orizzontale */
         }
 
         .brand-container {
@@ -164,35 +168,59 @@
 
         .nav-links {
             display: flex;
-            gap: 0.5rem;
-            align-items: center;
+            align-items: stretch;
             flex: 1;
             justify-content: center;
+            gap: 0;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
         }
 
         .nav-tab {
             background: transparent;
             border: none;
-            color: #bbb;
+            border-right: 1px solid var(--border);
+            color: #888;
             font-family: var(--font-ui);
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
             transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .nav-tab:hover, .nav-tab:focus-visible {
+        .nav-tab:last-child { border-right: none; }
+
+        .nav-tab:hover {
             color: #fff;
             background: rgba(255, 255, 255, 0.05);
-            outline: none;
         }
 
-        .nav-tab.active {
-            color: var(--primary);
-            background: rgba(0, 188, 212, 0.1);
+        /* Bauhaus Color Blocking */
+        .nav-tab.active[data-category="all"], 
+        .nav-tab.active[data-category="arcade"], 
+        .nav-tab.active[data-category="memory"], 
+        .nav-tab.active[data-category="sim"] {
+            background: #fff !important;
+            color: #000 !important;
         }
+
+        .nav-tab.btn-verifiche { color: var(--primary); }
+        .nav-tab.btn-verifiche:hover { background: rgba(0, 188, 212, 0.1); }
+        
+        .nav-tab.btn-competenze { color: #ffeb3b; }
+        .nav-tab.btn-competenze:hover { background: rgba(255, 235, 59, 0.1); }
+
+        .nav-tab#btn-bio { color: var(--secondary); font-weight: 900; }
+        .nav-tab#btn-bio:hover { background: var(--secondary); color: #000; }
 
         .nav-search {
             flex-shrink: 0;
@@ -200,14 +228,14 @@
         }
 
         #search-input {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
             color: white;
-            padding: 0.8rem 1.2rem 0.8rem 2.8rem;
-            border-radius: 12px;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border-radius: 4px;
             outline: none;
-            font-size: 0.95rem;
-            width: 280px;
+            font-size: 0.85rem;
+            width: 220px;
             transition: all 0.3s;
             font-family: var(--font-ui);
         }
@@ -331,8 +359,9 @@
         }
 
         .project-card h3 {
-            font-family: 'Syne', sans-serif;
+            font-family: var(--font-ui);
             font-size: 1.6rem;
+            font-weight: 800;
             margin: 0.5rem 0;
             color: #fff;
             line-height: 1.2;
@@ -471,6 +500,19 @@
             will-change: opacity, transform;
         }
 
+        @media (max-width: 1200px) {
+            .nav-content { gap: 1rem; }
+            #search-input { width: 140px; }
+            .nav-tab { padding: 0.7rem 0.8rem; font-size: 0.75rem; }
+        }
+
+        @media (max-width: 900px) {
+            .nav-content { flex-direction: column; align-items: stretch; }
+            .nav-links { overflow-x: auto; justify-content: flex-start; }
+            .nav-tab { flex-shrink: 0; }
+            #search-input { width: 100%; }
+        }
+
         @media (max-width: 768px) {
             .nav-content {
                 flex-direction: column;
@@ -523,14 +565,19 @@
             </div>
             <div class="nav-links">
                 <button class="nav-tab active" data-category="all">Tutti</button>
-                <button class="nav-tab" data-category="arcade">Gamification & Sfide</button>
-                <button class="nav-tab" data-category="memory">Carte & Memory</button>
-                <button class="nav-tab" data-category="sim">Simulatori 3D/WebGL</button>
-                <a href="verifiche.html" class="nav-tab" style="color: var(--primary); border: 1px solid rgba(0, 188, 212, 0.3); margin-left: 0.5rem; display: flex; align-items: center; gap: 5px;">
-                    <span>Archivio Verifiche</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <button class="nav-tab" data-category="arcade">Arcade</button>
+                <button class="nav-tab" data-category="memory">Cards</button>
+                <button class="nav-tab" data-category="sim">Simulatori</button>
+                
+                <a href="verifiche.html" class="nav-tab btn-verifiche">
+                    <span>Verifiche</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                 </a>
-                <button class="nav-tab" id="btn-bio" style="color: var(--secondary); font-weight: 800; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 0.5rem; padding-left: 1rem;">d::b</button>
+                <a href="competenze.html" class="nav-tab btn-competenze">
+                    <span>Riforma</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </a>
+                <button class="nav-tab" id="btn-bio">d::b</button>
             </div>
             <div class="nav-search">
                 <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -564,24 +611,47 @@
             const counts = {};
             const tagMap = {};
             
-            // Regex per escludere date (formati dd-mm-yy, dd/mm/yy, ecc.)
+            // Regex per escludere date e spazzatura
             const datePattern = /\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/;
             const yearPattern = /202\d/;
 
             data.forEach(item => {
                 const tags = item.tags || [];
                 tags.forEach(tag => {
-                    const key = String(tag).trim().toLowerCase();
-                    if(!key || key.length < 2) return;
+                    let text = String(tag).trim();
+                    const key = text.toLowerCase();
                     
-                    // Salta se è una data
+                    if(!key || key.length < 2) return;
                     if(datePattern.test(key) || yearPattern.test(key)) return;
+                    if(key.length > 30) return; // Salta descrizioni troppo lunghe
+                    
+                    // Escludi Competenze Europee (EU) dalla nuvola (User request: isolano troppo)
+                    if(key.includes('eu:')) return;
 
-                    counts[key] = (counts[key] || 0) + 1;
-                    if(!tagMap[key]) tagMap[key] = tag.trim(); 
+                    // Sintesi Competenze: "ID: Descrizione" -> "✦ ID"
+                    if(text.includes(':')) {
+                        const parts = text.split(':');
+                        const id = parts[0].trim();
+                        // Se l'id è corto (es. MAT_C1), usalo con prefisso
+                        if (id.length < 10) text = `✦ ${id}`;
+                        else text = id; // Altrimenti solo ID
+                    }
+
+                    const normalizedKey = text.toLowerCase();
+                    counts[normalizedKey] = (counts[normalizedKey] || 0) + 1;
+                    if(!tagMap[normalizedKey]) tagMap[normalizedKey] = text; 
                 });
             });
-            return Object.keys(counts).map(key => ({ text: tagMap[key], count: counts[key] }));
+
+            // Converti in array e ordina per importanza (frequenza)
+            let result = Object.keys(counts).map(key => ({ 
+                text: tagMap[key], 
+                count: counts[key] 
+            }));
+
+            // Filtro Top 65 per garantire leggibilità e "rami" chiari
+            result.sort((a, b) => b.count - a.count);
+            return result.slice(0, 65);
         }
 
         window.addEventListener('load', () => {

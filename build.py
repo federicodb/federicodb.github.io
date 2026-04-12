@@ -11,6 +11,19 @@ DB_FILE = "database.js"
 SITEMAP_FILE = "sitemap.xml"
 OUTPUT_VAR_NAME = "db"
 BASE_URL = "https://federicodb.github.io/"
+RIFORMA_JSON_PATH = "riforma2017.json"
+
+# Caricamento Riforma 2017
+def load_riforma_data():
+    if os.path.exists(RIFORMA_JSON_PATH):
+        try:
+            with open(RIFORMA_JSON_PATH, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"⚠️ Errore caricamento {RIFORMA_JSON_PATH}: {e}")
+    return None
+
+RIFORMA_DATA = load_riforma_data()
 
 # Mappa delle cartelle ai tipi di contenuto
 TYPE_MAP = {
@@ -210,43 +223,107 @@ def get_game_type(content_type, tags=[], title="", excerpt=""):
         
     # Fallback standard
     return "standard"
-
+    
+def normalize_class_tag(tag):
+    """ Normalizza '2el' o '2EL' in '2 EL'. """
+    if not tag: return tag
+    # Regex per trovare Numero e Lettere e inserire uno spazio se manca
+    s = str(tag).upper().strip()
+    return re.sub(r'^([1-5])([A-Z]{2,3})$', r'\1 \2', s)
 def infer_classes_from_competencies(tags):
-    """ Estrapola target espliciti (1EL, 2EL, 3MEC, 4EL, 5EL) in base all'argomento. """
+    """ Estrapola target espliciti (1 EL, 2 EL, etc.) in base all'argomento. """
     has_class = False
     for t in tags:
-        # Checka se c'è già una classe dichiarata o un livello macro
-        if re.match(r'^[1-5][A-Z]{2,3}$', t, re.IGNORECASE) or t.lower() in ['biennio', 'triennio', 'trasversale'] or "/" in t:
+        # Checka se c'è già una classe dichiarata o un livello macro (formato X YY o XYY)
+        if re.match(r'^[1-5]\s?[A-Z]{2,3}$', t, re.IGNORECASE) or t.lower() in ['biennio', 'triennio', 'trasversale'] or "/" in t:
             has_class = True
             break
             
     if has_class:
-        return tags
+        # Comunque normalizza i tag esistenti
+        return [normalize_class_tag(t) if re.match(r'^[1-5]\s?[A-Z]{2,3}$', t, re.IGNORECASE) else t for t in tags]
         
     tags_lower = [t.lower() for t in tags]
     
     # Dizionari Argomenti -> Indirizzi (Riforma Tecnici/Professionali)
-    # Classi 1/2 (Basi, Algebra, Polinomi, Insiemistica)
     base_kw = ['aritmetica', 'calcolo', 'frazioni', 'insiemi', 'potenze', 'polinomi', 'scomposizion', 'mcd', 'mcm', 'algebra']
-    # Classe 3 (Geometria analitica base)
     terza_kw = ['retta', 'parabola', 'geometria analitica']
-    # Classe 4 (Funzioni, Goniometria, Elettrotecnica in Alternata)
     quarta_kw = ['funzioni', 'studio di funzione', 'dominio', 'disequazioni', 'fasori', 'onda', 'goniometria', 'trigonometria', 'seno', 'coseno']
-    # Classe 5 (Analisi, Sistemi Dinamici, Caos)
     quinta_kw = ['limiti', 'derivate', 'caos', 'sistemi dinamici', 'attrattori', 'integrali']
     
     if any(k in t for k in quinta_kw for t in tags_lower):
-        tags.append("5EL")
+        tags.append("5 EL")
     elif any(k in t for k in quarta_kw for t in tags_lower):
-        tags.append("4EL")
+        tags.append("4 EL")
     elif any(k in t for k in terza_kw for t in tags_lower):
-        tags.append("3MEC")
+        tags.append("3 MEC")
     elif any(k in t for k in base_kw for t in tags_lower):
-        tags.append("1EL/2EL")
+        tags.append("1 EL / 2 EL")
     elif len(tags) > 0:
         tags.append("Trasversale")
         
     return tags
+
+# --- KNOWLEDGE BASE RIFORMA 2017 (Integrazione Dinamica) ---
+KEYWORD_TO_RIFORMA_ID = {
+    # Matematica Generale
+    "equazioni": "MAT_A03", "disequazioni": "MAT_A03", "sistemi": "MAT_A03",
+    "algebra": "MAT_K01", "letterale": "MAT_K01", "polinomi": "MAT_K01", "scomposizione": "MAT_K01",
+    "funzioni": "MAT_K02", "dominio": "MAT_A02", "grafico": "MAT_A02", "andamento": "MAT_K02",
+    "geometria": "MAT_K03", "pitagora": "MAT_A04", "euclidea": "MAT_K03", "spaziale": "MAT_C4",
+    "statistica": "MAT_K04", "probabilità": "MAT_K04", "dati": "MAT_C3", "interpretare": "MAT_C3",
+    "logica": "MAT_C2", "problemi": "CIT_06", "situazioni": "MAT_C2",
+    
+    # Indirizzo Tecnico & Soft Skills
+    "3d": "IND_C1", "openscad": "IND_C1", "parametr": "IND_C1", "modellazione": "IND_C1",
+    "python": "IND_C2", "p5.js": "IND_C2", "algoritmo": "IND_C2", "computazionale": "IND_C2",
+    "stampa": "IND_C3", "slicing": "IND_C3", "fabbricazione": "IND_C3",
+    "dsa": "IND_C4", "adhd": "IND_C4", "accessibil": "IND_C4", "inclusiv": "IND_C4",
+    "open source": "IND_K01", "arduino": "IND_K03", "raspberry": "IND_K03",
+    "ai": "SOFT_03", "intelligenza": "SOFT_03", "metacognizion": "SOFT_02"
+}
+
+def get_riforma_label(ref_id):
+    """ Cerca l'etichetta corrispondente all'ID nel database della riforma. """
+    if not RIFORMA_DATA: return None
+    
+    # Cerca ricorsivamente in tutte le sezioni
+    sections = [
+        RIFORMA_DATA.get("competenze_cittadinanza", []),
+        RIFORMA_DATA.get("area_generale_matematica", {}).get("competenze", []),
+        RIFORMA_DATA.get("area_generale_matematica", {}).get("abilita", []),
+        RIFORMA_DATA.get("area_generale_matematica", {}).get("conocenze", []), # Nota: 'conocenze' o 'conoscenze' nel JSON? Controllo sopra
+        RIFORMA_DATA.get("area_indirizzo_tecnico", {}).get("competenze_professionali", []),
+        RIFORMA_DATA.get("area_indirizzo_tecnico", {}).get("conoscenze_tecniche", []),
+        RIFORMA_DATA.get("competenze_trasversali_soft_skills", [])
+    ]
+    
+    # Fallback per typo comune nel JSON se presente
+    if "conoscenze" in RIFORMA_DATA.get("area_generale_matematica", {}):
+        sections.append(RIFORMA_DATA["area_generale_matematica"]["conoscenze"])
+    
+    for section in sections:
+        for item in section:
+            if item.get("id") == ref_id:
+                return item.get("label")
+    return None
+
+def map_topics_to_riforma(topics):
+    """ Incrocia gli argomenti/parole chiave con le competenze della riforma 2017. """
+    if not RIFORMA_DATA: return []
+    
+    extra_tags = []
+    text_to_search = " ".join([t.lower() for t in topics])
+    
+    for keyword, ref_id in KEYWORD_TO_RIFORMA_ID.items():
+        if keyword in text_to_search:
+            label = get_riforma_label(ref_id)
+            if label:
+                # Formato: ID:Label_Breve (troncata se troppo lunga per la UI)
+                short_label = label[:45] + "..." if len(label) > 48 else label
+                extra_tags.append(f"{ref_id}:{short_label}")
+    
+    return list(set(extra_tags))
 
 def main():
     if not os.path.exists(CONTENT_DIR):
@@ -309,6 +386,7 @@ def main():
                     meta = extract_html_meta(file_path)
                 elif content_type == "note" and filename.endswith(".md"):
                     meta = extract_markdown_meta(file_path)
+                    meta = extract_markdown_meta(file_path)
                 elif content_type != "app" and content_type != "note":
                     # Per media files, cerca il JSON sidecar
                     meta = extract_sidecar_meta(file_path)
@@ -326,9 +404,9 @@ def main():
                     fn_clean = filename.lower().replace("___", " ").replace("_", " ").replace("-", " ")
                     
                     found_class = None
-                    class_match = re.search(r'\b([1-5][a-z]{2,3})\b', fn_clean)
+                    class_match = re.search(r'\b([1-5])([a-z]{2,3})\b', fn_clean)
                     if class_match:
-                        found_class = class_match.group(1).upper()
+                        found_class = f"{class_match.group(1)} {class_match.group(2).upper()}"
                     
                     # Estrazione Data (anno opzionale)
                     months_it = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 
@@ -372,19 +450,48 @@ def main():
 
                     # --- ESTRAZIONE ARGOMENTI DAL TESTO ---
                     topics = []
-                    # Cerca "Verifica di matematica - Argomenti..."
-                    subject_match = re.search(r'Verifica di\s+[^-\n]+\s*-\s*([^\n.]+)', extracted_text, re.IGNORECASE)
+                    subject = "Matematica" # Fallback
+                    duration = ""
+                    calc_info = ""
+
+                    # 1. Materia e Argomenti
+                    # Cerchiamo "Verifica di [Materia] [: -] [Argomenti]", "Mappa Operativa: [Argomenti]" o "Manuale di Analisi: [Argomenti]"
+                    subj_match = re.search(r'(?:Verifica di|Mappa Operativa|Manuale di Analisi)[:\s-]\s*([^:\- \n]+)', extracted_text, re.IGNORECASE)
+                    if subj_match:
+                        subject = subj_match.group(1).strip().capitalize()
+
+                    # Supporta sia il trattino che i due punti, e gestisce più righe
+                    subject_regex = r'(?:Verifica di|Mappa Operativa|Manuale di Analisi)\s*[^-\n:]*[:\-]\s*([^\n]+(?:\n\s*[^\n]+)?)'
+                    subject_match = re.search(subject_regex, extracted_text, re.IGNORECASE)
                     if subject_match:
-                        topic_line = subject_match.group(1).strip()
-                        topics = [t.strip().capitalize() for t in re.split(r'[,;]', topic_line) if len(t.strip()) > 2]
+                        topic_line = subject_match.group(1).replace('\n', ' ').strip()
+                        # Pulisce dalla riga successiva (es. se cattura Cognome/Nome)
+                        topic_line = re.split(r'Cognome:|Nome:|Istruzioni', topic_line, flags=re.IGNORECASE)[0].strip()
+                        # Pulisce dai punti finali e spazi extra
+                        topics = [t.strip().rstrip('.').capitalize() for t in re.split(r'[,;]', topic_line) if len(t.strip()) > 2]
                     
+                    # 2. Durata
+                    dur_match = re.search(r'(?:durata|tempo a disposizione).*?(\d+)\s*minuti', extracted_text, re.IGNORECASE)
+                    if dur_match:
+                        duration = f"Durata: {dur_match.group(1)} min"
+
+                    # 3. Calcolatrice
+                    if re.search(r'calcolatrice\b.*?ammess|usare\s+la\s+calcolatrice', extracted_text, re.IGNORECASE):
+                        calc_info = "Calcolatrice ammessa"
+                    elif "sconsigliato" in extracted_text.lower() and "calcolatrice" in extracted_text.lower():
+                        calc_info = "Calcolatrice sconsigliata"
+
                     # Fallback temi dal nome file
                     raw_words = fn_clean[:-4].split()
-                    stopwords = ['verifica', 'fila', 'a', 'b', 'c', 'correttore', 'mappa', 'pdf', 'di', 'del', 'recupero', 'debito', 'it', 'en', 'ukr', 'classe'] + months_it
-                    meaningful_words = [w for w in raw_words if w.lower() not in stopwords and not re.match(r'^\d+$', w) and len(w) > 2]
+                    stopwords = ['verifica', 'fila', 'a', 'b', 'c', 'correttore', 'mappa', 'pdf', 'di', 'del', 'recupero', 'debito', 'it', 'en', 'ukr', 'classe', 'manuale', 'operativa'] + months_it
+                    # Filtra anche codici classe (es. 2el, 4gp)
+                    meaningful_words = [w for w in raw_words if w.lower() not in stopwords and not re.match(r'^\d+$', w) and not re.match(r'^[1-5][a-z]{2,3}$', w) and len(w) > 2]
                     
                     if not topics:
                         topics = [w.capitalize() for w in meaningful_words[:3]]
+
+                    # Mappatura Competenze Riforma 2017
+                    riforma_tags = map_topics_to_riforma(topics)
 
                     # Titolo formattato: "Verifica Classe 2GP, Marzo 2026"
                     is_in_verifiche = "verifiche" in root.lower()
@@ -394,13 +501,30 @@ def main():
                         prefix = "Verifica " if is_in_verifiche else ""
                         clean_title = prefix + " ".join(meaningful_words).title()
                     
-                    tags = list(set(topics + ([found_class] if found_class else [])))
-                    # Aggiungi meta-tag per raggruppamento
-                    group_ref = f"{found_class}_{month}_{year}".lower().replace(" ", "_") if found_class else clean_title.lower()
-
-                    # Excerpt: Solo gli argomenti puliti
-                    excerpt = "Argomenti: " + ", ".join(topics) if topics else "Verifica multimediale."
-
+                    # Excerpt: Narrativo e professionale
+                    topic_str = ", ".join(topics) if topics else ""
+                    parts = []
+                    
+                    if is_in_verifiche:
+                        if topic_str:
+                            parts.append(f"Verifica di {subject} su {topic_str}")
+                        else:
+                            parts.append(f"Verifica di {subject}")
+                    else:
+                        # Materiale didattico standard (Infografiche, Link, ecc.)
+                        if topics:
+                            parts.append(f"Approfondimento su {topic_str}")
+                        else:
+                            parts.append(meta.get("description", "Materiale didattico interattivo."))
+                        
+                    if duration and is_in_verifiche: parts.append(duration)
+                    if calc_info and is_in_verifiche: parts.append(calc_info)
+                    
+                    # Unisci le parti con il punto e spazio
+                    excerpt = ". ".join(parts).replace("..", ".") + "."
+                    if not topics and is_in_verifiche:
+                        excerpt = f"Verifica multimediale di {subject}."
+                    
                     # Validazione minima data
                     try:
                         day_int = int(day) if day else 1
@@ -409,10 +533,22 @@ def main():
                     except:
                         date_str = file_mtime.strftime('%Y-%m-%d')
 
+                    # --- NEW: Tagging Semantico Specializzato ---
+                    if "Mappa" in fila_label: topics.append("Mappa")
+                    if "Correttore" in fila_label: topics.append("Correttore")
+                    if "Recupero" in fila_label: topics.append("Recupero")
+
+                    # Aggiungi meta-tag per raggruppamento raffinato (Classe + DataEsatta + PrimoArgomento o SlugFilename)
+                    topic_slug = topics[0].lower().replace(" ", "_") if topics else "generica"
+                    fn_slug = "_".join(meaningful_words[:2]).lower() if not topics else ""
+                    group_ref = f"{found_class}_{date_str}_{topic_slug}_{fn_slug}".lower().replace(" ", "_").strip("_") if found_class else clean_title.lower()
+                    
+                    tags = list(set(topics + ([found_class] if found_class else [])))
+
                     meta = {
                          "title": clean_title.strip(),
                          "excerpt": excerpt,
-                         "tags": list(set(tags)),
+                         "tags": list(set([normalize_class_tag(t) for t in tags + riforma_tags])),
                          "date": date_str,
                          "group_ref": group_ref,
                          "version_label": fila_label
@@ -444,8 +580,17 @@ def main():
                 # --- NEW: Data Consistency Check ---
                 if "tags" not in meta or meta["tags"] is None:
                     meta["tags"] = []
+                
+                # Normalizzazione Case per evitare duplicati (es. "Algebra" vs "ALGEBRA")
+                meta["tags"] = list(set([t.strip().rstrip('.') for t in meta["tags"]]))
                     
-                meta["tags"] = infer_classes_from_competencies(meta["tags"])
+                # Estrazione semantica riforma 2017 (per App e altri tipi basandosi sui tag esistenti)
+                riforma_extra = map_topics_to_riforma(meta.get("tags", []) + [meta.get("title", "")])
+                if riforma_extra:
+                    meta["tags"] = list(set(meta.get("tags", []) + riforma_extra))
+                    
+                # Ri-normalizzazione post-riforma per sicurezza
+                meta["tags"] = list(set([normalize_class_tag(t) for t in meta["tags"]]))
                 
                 if not meta.get("tags"):
                     print(f"  ⚠️  WARNING: Tags mancanti o vuoti per '{filename}'")
@@ -470,17 +615,37 @@ def main():
         # Usa il group_ref calcolato prima
         group_key = v.get('group_ref', v['title'].lower().strip())
         
+        # Logica di priorità: Fila A/B > Versione Unica > Mappa > Correttore
+        def get_priority(label):
+            l = label.lower()
+            if "fila" in l: return 10
+            if "unica" in l: return 8
+            if "mappa" in l: return 5
+            if "correttore" in l: return 3
+            return 1
+
         if group_key not in verifiche_grouped:
             # Crea una copia per evitare side effects
             entry = v.copy()
             entry['versions'] = []
             verifiche_grouped[group_key] = entry
+        else:
+            # Se la nuova versione ha priorità maggiore, aggiorna i metadati della card
+            current_prio = get_priority(verifiche_grouped[group_key].get('version_label', ''))
+            new_prio = get_priority(v.get('version_label', ''))
+            if new_prio > current_prio:
+                # Mantieni 'versions', ma aggiorna il resto
+                new_entry = v.copy()
+                new_entry['versions'] = verifiche_grouped[group_key]['versions']
+                verifiche_grouped[group_key] = new_entry
         
-        verifiche_grouped[group_key]['versions'].append({
-            "url": v['url'],
-            "date": v['date'],
-            "label": v.get('version_label', 'File')
-        })
+        # Evita duplicati nella stessa card (stesso URL già presente)
+        if not any(v['url'] == v_info['url'] for v_info in verifiche_grouped[group_key]['versions']):
+            verifiche_grouped[group_key]['versions'].append({
+                "url": v['url'],
+                "date": v['date'],
+                "label": v.get('version_label', 'File')
+            })
 
     # Raffina i gruppi: se un gruppo ha più versioni, ordinale
     db_verifiche = []
@@ -490,8 +655,13 @@ def main():
         # Filtro intelligente: se esistono file contrassegnati come "Fila X", 
         # rimuoviamo il generico "Versione Unica" (che spesso è il file di testata o un duplicato)
         has_fila = any("Fila" in v['label'] for v in group['versions'])
+        has_multiple_real_versions = len(set(v['label'] for v in group['versions'])) > 1
+        
         if has_fila:
             group['versions'] = [v for v in group['versions'] if v['label'] != "Versione Unica"]
+        
+        # Se dopo il filtro resta solo una versione, resettiamo l'URL principale su quella
+        # e (nello script UI) nasconderemo i bottoni versioni se non c'è reale molteplicità
             
         # Sort versions by label (A before B) then date
         group['versions'].sort(key=lambda x: (x['label'], x['date']), reverse=False)

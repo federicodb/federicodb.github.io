@@ -12,6 +12,9 @@
         href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Amatic+SC:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Oswald:wght@500&family=Permanent+Marker&family=Playfair+Display:ital,wght@1,600&family=Press+Start+2P&family=Righteous&family=Space+Mono:ital,wght@0,700;1,700&family=Inter:wght@400;700&family=Syne:wght@700;800&display=swap"
         rel="stylesheet">
 
+    <!-- Polyfill per Import Maps (Compatibilità Safari < 16.4 / iOS < 16.4) -->
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.8.2/dist/es-module-shims.js"></script>
+
     <script type="importmap">
         {
             "imports": {
@@ -65,6 +68,7 @@
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch; /* Momentum scrolling iOS */
         }
 
         /* --- NAVIGATION --- */
@@ -114,35 +118,45 @@
 
         .nav-links {
             display: flex;
-            gap: 0.5rem;
-            align-items: center;
+            align-items: stretch;
             flex: 1;
             justify-content: center;
+            gap: 0;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
         }
 
         .nav-tab {
             background: transparent;
             border: none;
-            color: #bbb;
+            border-right: 1px solid var(--border);
+            color: #888;
             font-family: var(--font-ui);
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
             transition: all 0.2s;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .nav-tab:hover, .nav-tab:focus-visible {
+        .nav-tab:last-child { border-right: none; }
+
+        .nav-tab:hover {
             color: #fff;
             background: rgba(255, 255, 255, 0.05);
-            outline: none;
         }
 
         .nav-tab.active {
-            color: var(--primary);
-            background: rgba(0, 188, 212, 0.1);
+            background: #fff !important;
+            color: #000 !important;
         }
 
         .nav-search {
@@ -208,23 +222,24 @@
 
         .list-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+            gap: 32px;
             width: 100%;
         }
 
         .project-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 24px;
+            padding: 32px;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 350px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 400px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .project-card:focus-within {
@@ -252,16 +267,24 @@
             position: absolute;
             inset: 0;
             z-index: 0;
-            filter: blur(8px) saturate(0.5);
-            opacity: 0.15;
+            filter: blur(20px) saturate(0.5);
+            opacity: 0.1;
             background-size: cover;
             background-position: center;
-            transition: opacity 0.5s, filter 0.5s;
+            transition: opacity 0.6s, filter 0.6s;
         }
         
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(5,5,15,0.4) 0%, rgba(5,5,15,0.9) 100%);
+            z-index: 1;
+            transition: opacity 0.4s;
+        }
+
         .project-card:hover .card-bg {
-            opacity: 0.3;
-            filter: blur(2px) saturate(1);
+            opacity: 0.2;
+            filter: blur(5px) saturate(0.8);
         }
 
         .card-content-wrap {
@@ -271,12 +294,15 @@
             display: flex;
             flex-direction: column;
         }
-        .card-date { font-size: 0.75rem; color: #888; font-family: 'Space Mono', monospace; margin-bottom: auto; }
-        .project-card h3 { font-family: 'Syne', sans-serif; font-size: 1.6rem; margin: 0.5rem 0; color: #fff; line-height: 1.2; }
-        .project-card p { font-size: 0.95rem; line-height: 1.6; color: #bbb; flex-grow: 1; margin: 1rem 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.5rem; }
-        .filter-tag { font-family: 'Space Mono', monospace; font-size: 0.7rem; padding: 6px 10px; background: rgba(0, 188, 212, 0.1); color: var(--primary); border: 1px solid transparent; border-radius: 50px; cursor: pointer; transition: all 0.2s; position: relative; z-index: 2; }
-        .filter-tag:hover { background: var(--primary); color: #000; }
+        .card-date { font-size: 0.8rem; color: #888; font-family: 'Space Mono', monospace; }
+        .project-card h3 { font-family: var(--font-ui); font-size: 1.4rem; font-weight: 800; margin: 0.8rem 0; color: #fff; line-height: 1.1; }
+        .project-card p { font-size: 0.9rem; line-height: 1.5; color: #ccc; flex-grow: 1; margin: 0.8rem 0 1.5rem 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+        .filter-tag { font-family: 'Space Mono', monospace; font-size: 0.65rem; padding: 6px 12px; background: rgba(255, 255, 255, 0.05); color: #aaa; border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; cursor: pointer; transition: all 0.2s; position: relative; z-index: 5; }
+        .filter-tag:hover { background: var(--primary); color: #000; border-color: var(--primary); }
+        
+        .badge-institutional { background: rgba(79, 70, 229, 0.15) !important; color: #a5b4fc !important; border: 1px solid rgba(79, 70, 229, 0.4) !important; }
+        .badge-class { background: rgba(217, 119, 6, 0.15) !important; color: #fbbf24 !important; border: 1px solid rgba(217, 119, 6, 0.4) !important; font-weight: 700; font-size: 0.75rem !important; }
 
         .card-cta {
             display: block;
@@ -349,7 +375,8 @@
                 <div class="brand-sub">ARCHIVIO VERIFICHE</div>
             </div>
             <div class="nav-links">
-                <a href="index.html" class="nav-tab">← Hub Principale</a>
+                <a href="index.html" class="nav-tab">← Home</a>
+                <a href="competenze.html" class="nav-tab">Riforma 2017</a>
                 <button class="nav-tab active" data-category="all">Tutte</button>
                 <button class="nav-tab" data-category="document">PDF</button>
             </div>

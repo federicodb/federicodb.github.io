@@ -129,11 +129,11 @@ export class GalaxyScene {
             wrapper.appendChild(hex);
             wrapper.appendChild(sym);
             const label = new CSS2DObject(wrapper);
-            // Intermediate radius for balanced depth (User request: via di mezzo)
-            const r = 80 + Math.random() * 550;
+            // Intermediate radius for balanced depth
+            const r = 120 + Math.pow(Math.random(), 2) * 800;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos(2 * Math.random() - 1);
-            label.position.set(r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta) * 0.5, r * Math.cos(phi));
+            label.position.set(r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta) * 0.4, r * Math.cos(phi));
             label.userData = { hexElement: hex, symElement: sym, isDebris: true, phase: Math.random() * Math.PI * 2 };
             this.debris.push(label);
             group.add(label);
@@ -141,24 +141,38 @@ export class GalaxyScene {
     }
 
     createConnections() {
-        if (this.connections) {
-            this.scene.remove(this.connections);
-            if (this.connections.geometry) this.connections.geometry.dispose();
-            if (this.connections.material) this.connections.material.dispose();
-        }
         const tagMap = {};
         const totalTags = this.data.length;
-        this.nodes.forEach((node, i) => {
-            if (this.data[i]) {
-                const hue = (i / totalTags) * 360;
-                const key = this.data[i].text.toLowerCase().trim();
-                tagMap[key] = { pos: node.position, links: 0, hue: hue };
+        
+        // Helper per normalizzare i tag come facciamo in index.html (per il mapping delle connessioni)
+        const normalizeTag = (t) => {
+            let text = String(t).trim();
+            if(text.includes(':')) {
+                const id = text.split(':')[0].trim();
+                text = id.length < 10 ? `✦ ${id}` : id;
             }
+            return text.toLowerCase();
+        };
+
+        this.nodes.forEach((node, i) => {
+                const hue = (i / totalTags) * 360;
+                const text = normalizeTag(this.data[i].text);
+                const key = text.toLowerCase();
+                
+                // Determinazione Colore Semantico Bauhaus & Area Disciplinare
+                let semHue = hue;
+                let discipline = 'GEN'; // Generica
+                if (text.includes('MAT_')) { semHue = 190; discipline = 'MAT'; } 
+                else if (text.includes('IND_')) { semHue = 55; discipline = 'IND'; } 
+                else if (text.includes('CIT_')) { semHue = 160; discipline = 'CIT'; } 
+                else if (text.includes('SOFT_')) { semHue = 320; discipline = 'SOFT'; } 
+                
+                tagMap[key] = { pos: node.position, links: 0, hue: semHue, discipline: discipline, count: this.data[i].count };
         });
         const correlation = {};
         this.fullDb.forEach(item => {
             const tags = item.tags || [];
-            const nTags = [...new Set(tags.map(t => String(t).toLowerCase().trim()).filter(t => t))];
+            const nTags = [...new Set(tags.map(t => normalizeTag(t)).filter(t => t))];
             
             for (let i = 0; i < nTags.length; i++) {
                 for (let j = i + 1; j < nTags.length; j++) {
@@ -172,23 +186,50 @@ export class GalaxyScene {
         const alphas = [];
         // const color = new THREE.Color(0x00e5ff); // Removed static color
         const sortedPairs = Object.entries(correlation).filter(([_, weight]) => weight >= 1).sort((a, b) => b[1] - a[1]);
+        // FASE 1: Connessioni per Co-occorrenza (Legami Autentici)
         sortedPairs.forEach(([pair, weight]) => {
             const [t1, t2] = pair.split('|');
             const n1 = tagMap[t1], n2 = tagMap[t2];
-            // Ridotto link massimi per eliminare grovigli visivi a favore delle linee forti
-            if (n1 && n2 && n1.links < 4 && n2.links < 4) {
-                const intensity = Math.min(1.0, weight / 5.0); 
-                const lightness = 0.2 + (0.5 * intensity); // weak links = dark, strong = bright
-                const saturation = 0.3 + (0.7 * intensity);
+            
+            // "Rami" visivi: Democrazia per i Rami (Stessa Opacità per Tutti)
+            if (n1 && n2 && n1.links < 12 && n2.links < 12) {
+                const lightness = 0.5; // Valore medio costante
+                const saturation = 0.4; // Valore medio costante
                 
-                const c1 = new THREE.Color().setHSL(((n1.hue + 180) % 360) / 360, saturation, lightness);
-                const c2 = new THREE.Color().setHSL(((n2.hue + 180) % 360) / 360, saturation, lightness);
+                const c1 = new THREE.Color().setHSL(n1.hue / 360, saturation, lightness);
+                const c2 = new THREE.Color().setHSL(n2.hue / 360, saturation, lightness);
 
                 points.push(n1.pos.x, n1.pos.y, n1.pos.z, n2.pos.x, n2.pos.y, n2.pos.z);
                 colors.push(c1.r, c1.g, c1.b, c2.r, c2.g, c2.b);
-                alphas.push(intensity, intensity);
+                alphas.push(0.5, 0.5); // Uguaglianza totale: nessuna variazione di intensità
                 
                 n1.links++; n2.links++;
+            }
+        });
+
+        // FASE 2: Orfano-Linker (Nessun nodo solo nel vuoto)
+        Object.entries(tagMap).forEach(([key, n1]) => {
+            if (n1.links === 0) {
+                // Collega al polo "Matematica" se orfano, altrimenti al miglior genitore
+                let candidateKey = Object.keys(tagMap).find(k => k.trim().toLowerCase() === 'matematica');
+                if (!candidateKey) {
+                    const found = Object.entries(tagMap)
+                        .filter(([k, n]) => k !== key && n.discipline === n1.discipline)
+                        .sort((a, b) => b[1].count - a[1].count)[0];
+                    if (found) candidateKey = found[0];
+                }
+
+                const n2 = candidateKey ? tagMap[candidateKey] : null;
+                
+                if (n2) {
+                    const c1 = new THREE.Color().setHSL(n1.hue / 360, 0.3, 0.5);
+                    const c2 = new THREE.Color().setHSL(n2.hue / 360, 0.3, 0.5);
+                    
+                    points.push(n1.pos.x, n1.pos.y, n1.pos.z, n2.pos.x, n2.pos.y, n2.pos.z);
+                    colors.push(c1.r, c1.g, c1.b, c2.r, c2.g, c2.b);
+                    alphas.push(0.5, 0.5); 
+                    n1.links++;
+                }
             }
         });
         if (points.length === 0) return;
@@ -235,7 +276,7 @@ export class GalaxyScene {
             vertexShader: connectionVertexShader,
             fragmentShader: connectionFragmentShader,
             uniforms: {
-                globalOpacity: { value: 0.28 }
+                globalOpacity: { value: 0.12 } // Opacità leggermente alzata per rami autentici
             },
             transparent: true,
             blending: THREE.AdditiveBlending,
@@ -363,17 +404,17 @@ export class GalaxyScene {
         this.scene.add(group);
         const totalTags = this.data.length;
 
-        // 1. Initialize Nodes with Basic Spiral (Starting Guess)
+        // 1. Initialize Nodes with Random Spherical Distribution (Bauhaus Cluster)
         const nodes = this.data.map((tag, i) => {
-            const t = i / totalTags;
-            const split = 150 + Math.sqrt(t) * this.config.galaxyRadius;
-            const inc = Math.acos(1 - 2 * t);
-            const az = Math.PI * 2 * ((1 + Math.sqrt(5)) / 2) * i;
+            const r = Math.pow(Math.random(), 0.6) * 120; // Concentrazione interna
+            const phi = Math.acos(2 * Math.random() - 1);
+            const theta = Math.random() * Math.PI * 2;
+            
             return {
                 id: tag.text.toLowerCase().trim(),
-                x: split * Math.sin(inc) * Math.cos(az),
-                y: split * Math.sin(inc) * Math.sin(az),
-                z: split * Math.cos(inc),
+                x: r * Math.sin(phi) * Math.cos(theta),
+                y: r * Math.sin(phi) * Math.sin(theta),
+                z: r * Math.cos(phi),
                 count: tag.count,
                 vx: 0, vy: 0, vz: 0
             };
@@ -435,12 +476,16 @@ export class GalaxyScene {
     }
 
     runForceSimulation(nodes, edges) {
-        const iterations = 150; // Warm-up steps
-        const repulsion = 15000; // Strong repulsion to prevent overlap
-        const springLen = 120;  // Ideal link distance
-        const kSpring = 0.08;   // Pull strength
-        const centerGrav = 0.015; // Pull to center
-        const dt = 0.6;
+        const iterations = 450; 
+        const repulsion = 9000; // Repulsione morbida per densità estrema
+        const springLen = 40;   
+        const kSpring = 0.45;   
+        const centerGrav = 0.08; 
+        const MAX_RADIUS = 160; 
+        const dt = 0.35;
+        
+        // Identifica Polo Matematica per attrazione eliocentrica
+        const matNode = nodes.find(n => n.id === 'matematica');
 
         for (let k = 0; k < iterations; k++) {
             // Repulsion (Node-Node)
@@ -478,12 +523,21 @@ export class GalaxyScene {
                 n2.vx -= fx; n2.vy -= fy; n2.vz -= fz;
             });
 
-            // Center Gravity & Update
+            // Eliocentric Gravity & Boundary Constraint
             nodes.forEach(n => {
-                // Pull to 0,0,0
-                n.vx -= n.x * centerGrav;
-                n.vy -= n.y * centerGrav;
-                n.vz -= n.z * centerGrav;
+                const dx = matNode ? (matNode.x - n.x) : -n.x;
+                const dy = matNode ? (matNode.y - n.y) : -n.y;
+                const dz = matNode ? (matNode.z - n.z) : -n.z;
+                
+                const d = Math.sqrt(n.x*n.x + n.y*n.y + n.z*n.z);
+                const noise = 1.0 + Math.sin(n.x * 0.08) * 0.1;
+                let pull = centerGrav * noise;
+                
+                if (d > MAX_RADIUS) pull += (d - MAX_RADIUS) * 0.3;
+                
+                n.vx += dx * pull;
+                n.vy += dy * pull;
+                n.vz += dz * pull;
 
                 // Prevent explosions (NaN / Infinity velocity)
                 const vMag = Math.sqrt(n.vx * n.vx + n.vy * n.vy + n.vz * n.vz);
@@ -555,11 +609,16 @@ export class GalaxyScene {
             node.element.style.display = opacity < 0.05 ? 'none' : 'block';
             node.element.style.display = opacity < 0.05 ? 'none' : 'block';
 
-            let s = Math.min(Math.max((baseScale / dist) * (node.userData.importance || 1), 0.4), 2.5);
+            // Democrazia Visiva (Bauhaus): stessa scala per ogni nodo
+            let s = 1.05; 
+
+            // Attenuazione distanza (Sola correzione prospettica)
+            const distScale = Math.min(Math.max(baseScale / dist, 0.5), 1.2);
+            s *= distScale;
 
             // Apply Hover Boost
             if (node.userData.isHovered) {
-                s *= 1.4; // Stronger zoom on hover
+                s *= 1.3;
                 node.userData.contentElement.style.textShadow = "0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px var(--primary)";
                 node.userData.contentElement.style.zIndex = "100";
             } else {
@@ -608,9 +667,9 @@ export class GalaxyScene {
         }
 
         if (this.connections && this.connections.material && this.connections.material.uniforms) {
-            // Keep connections visible but subtle
-            const distFactor = Math.max(0, Math.min(1, (500 - camPos.length()) / 500));
-            this.connections.material.uniforms.globalOpacity.value = 0.35 * distFactor;
+            // Rami visibili solo da molto vicino (effetto scoperta)
+            const distFactor = Math.max(0, Math.min(1, (400 - camPos.length()) / 400));
+            this.connections.material.uniforms.globalOpacity.value = 0.2 * distFactor;
         }
     }
 

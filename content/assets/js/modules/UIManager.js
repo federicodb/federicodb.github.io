@@ -182,23 +182,30 @@ export class UIManager {
             badgeHTML = '';
         }
 
-        el.style.backgroundColor = `hsla(${hue}, 30%, 15%, 0.8)`;
+        el.style.backgroundColor = `hsla(${hue}, 30%, 8%, 0.8)`;
         el.style.borderColor = glowColor;
-        el.style.boxShadow = `0 4px 15px ${glowColor}`;
+        // el.style.boxShadow = `0 4px 15px ${glowColor}`; // Rimossa per look più flat/glass
 
-        const tagsHtml = (item.tags || []).slice(0, 5).map(t => {
+        const tagsHtml = (item.tags || []).slice(0, 6).map(t => {
             if (t.includes(':')) {
                 // Badge per Competenze Istituzionali
-                const name = t.split(':')[1];
-                return `<button class="filter-tag" style="background:#312e81; color:#c7d2fe; border-color:#4f46e5;" data-tag="${t}">✦ ${name}</button>`;
+                const parts = t.split(':');
+                const id = parts[0];
+                const name = parts[1];
+                return `<button class="filter-tag badge-institutional" data-tag="${t}" title="${name}">✦ ${id}</button>`;
             }
-            if (t.match(/^[1-5][A-Z]{2,3}(\/[1-5][A-Z]{2,3})?$/i) || t.match(/^(Biennio|Triennio|Trasversale)$/i)) {
-                // Badge per Codici Classe e Target estrapolati
-                return `<button class="filter-tag" style="background:#78350f; color:#fde68a; border-color:#d97706;" data-tag="${t}">${t}</button>`;
+            if (t.match(/^[1-5]\s?[A-Z]{2,3}(\/[1-5]\s?[A-Z]{2,3})?$/i) || t.match(/^(Biennio|Triennio|Trasversale)$/i)) {
+                // I codici classe non li mettiamo qui se li mettiamo nel badge top, 
+                // ma lasciamoli comunque per filtraggio se l'utente clicca
+                return `<button class="filter-tag badge-class" data-tag="${t}">${t}</button>`;
             }
             // Hashtag standard
             return `<button class="filter-tag" data-tag="${t}">#${t.toLowerCase()}</button>`;
         }).join('');
+
+        const classTag = (item.tags || []).find(t => t.match(/^[1-5]\s?[A-Z]{2,3}(\/[1-5]\s?[A-Z]{2,3})?$/i) || t.match(/^(Biennio|Triennio|Trasversale)$/i));
+        const classBadge = classTag ? `<div class="filter-tag badge-class" style="margin:0; cursor:default;">${classTag}</div>` : '';
+
         const bgHtml = item.thumbnail ? `<div class="card-bg" style="background-image: url('${item.thumbnail}')"></div>` : '';
 
         // Call To Action Specifica (Richiesta Task-Oriented)
@@ -212,34 +219,38 @@ export class UIManager {
         if (item.versions && item.versions.length > 1) {
             const vlinks = item.versions.map((v, i) => {
                 const label = v.label || `Fila ${String.fromCharCode(65 + i)}`;
-                // Colore diverso per Fila A/B per varietà
-                const isB = label.toLowerCase().includes('b');
-                const btnColor = isB ? 'hsla(340, 70%, 60%, 0.2)' : 'hsla(190, 70%, 60%, 0.2)';
-                const borderColor = isB ? '#ff4081' : '#00bcd4';
-                
+                let icon = '📄';
+                if (label.includes('Correttore')) icon = '🔑';
+                else if (label.includes('Mappa')) icon = '🗺️';
+                else if (label.includes('Recupero')) icon = '🔄';
+
                 return `
                     <a href="${v.url}" target="_blank" class="version-btn" 
-                       style="display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:8px; background:${btnColor}; color:white; text-decoration:none; font-size:0.8rem; font-weight:700; border:1px solid ${borderColor}; transition:all 0.2s;">
-                       <span style="font-size:1.1rem;">📄</span> ${label}
+                       style="display:inline-flex; align-items:center; gap:6.4px; padding:8px 14px; border-radius:12px; background:rgba(255,255,255,0.05); color:#fff; text-decoration:none; font-size:0.85rem; font-weight:600; border:1px solid rgba(255,255,255,0.1); transition:all 0.2s;">
+                       <span style="opacity:0.7;">${icon}</span> ${label}
                     </a>`;
             }).join('');
             
             versionsHtml = `
-                <div style="margin-bottom:1.5rem;">
-                    <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:#888; margin-bottom:0.8rem;">Versioni Disponibili</div>
-                    <div style="display:flex; flex-wrap:wrap; gap:8px;">${vlinks}</div>
+                <div style="margin-bottom:24px; padding:16px; background:rgba(255,255,255,0.03); border-radius:16px; border:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.15em; color:#666; margin-bottom:12px; font-weight:800;">Risorse Disponibili</div>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px;">${vlinks}</div>
                 </div>`;
         }
 
         el.innerHTML = `
             ${bgHtml}
+            <div class="card-overlay"></div>
             <div class="card-content-wrap">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     ${badgeHTML}
-                    <div class="card-date" style="margin:0; margin-left:auto;">${item.date || 'Recente'}</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div class="card-date">${item.date || 'Recente'}</div>
+                        ${classBadge}
+                    </div>
                 </div>
-                <h3 style="margin-top:0;">${item.title}</h3>
-                <p style="margin-bottom:0.5rem;">${item.excerpt || item.description || 'Nessuna descrizione.'}</p>
+                <h3>${item.title}</h3>
+                <p>${item.excerpt || item.description || 'Nessuna descrizione.'}</p>
                 
                 ${versionsHtml}
 
