@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-11 18:00:31
+   Data: 2026-04-12 09:20:14
 */
 
 const db = [
@@ -25,7 +25,8 @@ const db = [
         "date": "2026-04-11",
         "url": "content/apps/eq_2_gr_teoria_giochi_01.html",
         "type": "app",
-        "icon": "🧱"
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/eq_2_gr_teoria_giochi_01.jpg"
     },
     {
         "title": "PHI is irrational",
@@ -43,7 +44,8 @@ const db = [
         "date": "2026-04-03",
         "url": "content/apps/phi_is_irrational_01.html",
         "type": "app",
-        "icon": "📐"
+        "icon": "📐",
+        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.jpg"
     },
     {
         "title": "Il metodo di esaustione",
@@ -62,7 +64,8 @@ const db = [
         "date": "2026-04-03",
         "url": "content/apps/esaustione_01.html",
         "type": "app",
-        "icon": "📈"
+        "icon": "📈",
+        "thumbnail": "content/assets/thumbnails/esaustione_01.jpg"
     },
     {
         "title": "Esploratore Polinomiale",
@@ -82,7 +85,8 @@ const db = [
         "date": "2026-04-02",
         "url": "content/apps/operazioni_polinomi_graph.html",
         "type": "app",
-        "icon": "🧱"
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.jpg"
     },
     {
         "title": "Sistemi di disequazioni vs disequazioni frazionarie",
@@ -103,7 +107,8 @@ const db = [
         "date": "2026-04-02",
         "url": "content/apps/disequazioni_frazionarie_vs_sistemi.html",
         "type": "app",
-        "icon": "🧱"
+        "icon": "🧱",
+        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.jpg"
     },
     {
         "title": "Game Theory Lab 2.5 🎲",
@@ -125,7 +130,8 @@ const db = [
         "date": "2026-03-13",
         "url": "content/apps/voto_cosapevole.2.5.html",
         "type": "app",
-        "icon": "🎮"
+        "icon": "🎮",
+        "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.jpg"
     },
     {
         "title": "Scomposizione Polinomi",
@@ -589,7 +595,8 @@ const db = [
         "date": "2025-12-02",
         "url": "content/apps/MCD_mcm_1el_001.html",
         "type": "app",
-        "icon": "🔢"
+        "icon": "🔢",
+        "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.jpg"
     },
     {
         "title": "Chaos Lab: Sistemi Dinamici",
