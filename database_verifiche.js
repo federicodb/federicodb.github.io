@@ -1,23 +1,28 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-04-12 14:54:32
+   Data: 2026-04-19 17:09:55
 */
 
 const db_verifiche = [
     {
         "title": "Verifica Classe 2 GP, Marzo 2026",
-        "excerpt": "Verifica di Matematica su Disequazioni lineari, Sistemi di disequazioni, Disequazioni frazionarie, Problemi risolvibili attraverso disequazioni. Durata: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizion, Insiem, Equazioni, Problemi risolvibili attraverso disequazioni, Disequazioni frazionarie, Sistemi di disequazioni, Disequazioni, Retta, Disequazioni lineari. Tempo a disposizione stimato: 70 min.",
         "tags": [
             "DISEQUAZIONI FRAZIONARIE",
-            "DISEQUAZIONI LINEARI",
-            "2 GP",
+            "EQUAZIONI",
             "SISTEMI DI DISEQUAZIONI",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "RETTA",
+            "SCOMPOSIZION",
+            "DISEQUAZIONI",
+            "DISEQUAZIONI LINEARI",
             "CIT_06:RISOLVERE PROBLEMI",
-            "PROBLEMI RISOLVIBILI ATTRAVERSO DISEQUAZIONI"
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "2 GP",
+            "PROBLEMI RISOLVIBILI ATTRAVERSO DISEQUAZIONI",
+            "INSIEM"
         ],
         "date": "2026-03-31",
-        "group_ref": "2_gp_2026-03-31_disequazioni_lineari",
+        "group_ref": "2_gp_2026-03-31_scomposizion",
         "version_label": "Fila A",
         "url": "content/verifiche/2GP/2GP___verifica_31_marzo_2026_fila_A.pdf",
         "type": "document",
@@ -39,17 +44,23 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 4 EL, Marzo 2026",
-        "excerpt": "Verifica di Matematica su Studio di funzione, Classificazione e dominio. Durata: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Funzion, Studio di funzione, Dominio, Classificazione e dominio, Elettric, Grafico, Retta, Polinom. Tempo a disposizione stimato: 70 min.",
         "tags": [
             "STUDIO DI FUNZIONE",
+            "ELETTRIC",
             "CLASSIFICAZIONE E DOMINIO",
+            "RETTA",
+            "DOMINIO",
+            "GRAFICO",
+            "4 EL",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
             "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
             "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
-            "4 EL"
+            "FUNZION",
+            "POLINOM"
         ],
         "date": "2026-03-27",
-        "group_ref": "4_el_2026-03-27_studio_di_funzione",
+        "group_ref": "4_el_2026-03-27_funzion",
         "version_label": "Fila A",
         "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_A.pdf",
         "type": "document",
@@ -66,18 +77,29 @@ const db_verifiche = [
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_B.pdf",
                 "date": "2026-03-27",
                 "label": "Fila B"
+            },
+            {
+                "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_it.pdf",
+                "date": "2026-03-27",
+                "label": "Mappa IT"
             }
         ]
     },
     {
         "title": "Verifica Classe 4 EL, Marzo 2026",
-        "excerpt": "Verifica multimediale di Matematica.",
+        "excerpt": "Verifica sommativa strutturata su Grafico, Funzion, Dominio.",
         "tags": [
+            "DOMINIO",
+            "GRAFICO",
+            "4 EL",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
             "MAPPA",
-            "4 EL"
+            "FUNZION"
         ],
         "date": "2026-03-27",
-        "group_ref": "4_el_2026-03-27_mappa",
+        "group_ref": "4_el_2026-03-27_grafico",
         "version_label": "Mappa EN",
         "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_en.pdf",
         "type": "document",
@@ -89,24 +111,27 @@ const db_verifiche = [
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_en.pdf",
                 "date": "2026-03-27",
                 "label": "Mappa EN"
-            },
-            {
-                "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_it.pdf",
-                "date": "2026-03-27",
-                "label": "Mappa IT"
             }
         ]
     },
     {
         "title": "Verifica Classe 3 MEC, Marzo 2026",
-        "excerpt": "Verifica di Matematica su Equazioni di secondo grado e parabola. Durata: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni, Equazioni di secondo grado e parabola, Parabola, Grafico, Retta, Polinom. Tempo a disposizione stimato: 70 min.",
         "tags": [
-            "3 MEC",
             "EQUAZIONI DI SECONDO GRADO E PARABOLA",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI"
+            "EQUAZIONI",
+            "RETTA",
+            "PARABOLA",
+            "GRAFICO",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
+            "3 MEC",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "POLINOM"
         ],
         "date": "2026-03-26",
-        "group_ref": "3_mec_2026-03-26_equazioni_di_secondo_grado_e_parabola",
+        "group_ref": "3_mec_2026-03-26_equazioni",
         "version_label": "Fila A",
         "url": "content/verifiche/3MEC/3MEC___verifica_26_marzo_2026_fila_A.pdf",
         "type": "document",
@@ -128,16 +153,28 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Marzo 2026",
-        "excerpt": "Verifica di Algebra su Algebra 2el manuale di analisi: scomposizioni, Frazioni e modelli logici.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizion, Dominio, Equazioni, Algebra 2el manuale di analisi: scomposizioni, Elettric, Frazioni e modelli logici, Disequazioni, Grafico, Retta, Polinom.",
         "tags": [
-            "MAPPA",
-            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "2 EL",
             "FRAZIONI E MODELLI LOGICI",
-            "ALGEBRA 2EL MANUALE DI ANALISI: SCOMPOSIZIONI"
+            "ALGEBRA 2EL MANUALE DI ANALISI: SCOMPOSIZIONI",
+            "EQUAZIONI",
+            "ELETTRIC",
+            "RETTA",
+            "DOMINIO",
+            "GRAFICO",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "SCOMPOSIZION",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "DISEQUAZIONI",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
+            "MAPPA",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "POLINOM"
         ],
         "date": "2026-03-16",
-        "group_ref": "2_el_2026-03-16_algebra_2el_manuale_di_analisi:_scomposizioni",
+        "group_ref": "2_el_2026-03-16_scomposizion",
         "version_label": "Mappa",
         "url": "content/verifiche/2EL/2EL___verifica_16_mar_2026_mappa.pdf",
         "type": "document",
@@ -154,14 +191,22 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Marzo 2026",
-        "excerpt": "Verifica di Matematica su Equazioni frazionarie, Disequazioni lineari, Sistemi di disequazioni lineari, Disequazioni frazionarie. Durata: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni frazionarie, Equazioni, Polinom, Disequazioni frazionarie, Disequazioni, Grafico, Retta, Sistemi di disequazioni lineari, Disequazioni lineari. Tempo a disposizione stimato: 70 min.",
         "tags": [
-            "DISEQUAZIONI FRAZIONARIE",
-            "DISEQUAZIONI LINEARI",
             "2 EL",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "DISEQUAZIONI FRAZIONARIE",
+            "EQUAZIONI",
             "EQUAZIONI FRAZIONARIE",
-            "SISTEMI DI DISEQUAZIONI LINEARI"
+            "SISTEMI DI DISEQUAZIONI LINEARI",
+            "RETTA",
+            "GRAFICO",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "DISEQUAZIONI",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
+            "DISEQUAZIONI LINEARI",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "POLINOM"
         ],
         "date": "2026-03-16",
         "group_ref": "2_el_2026-03-16_equazioni_frazionarie",
@@ -186,18 +231,22 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 1 EL, Marzo 2026",
-        "excerpt": "Verifica di Matematica su Pemdas, Numeri interi e relativi, Proprietà delle potenze, Numeri razionali, Proporzioni e percentuali, Mcm/mcd. Durata: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Numeri razionali, Mcm/mcd, Insiem, Elettric, Proporzioni e percentuali, Proprietà delle potenze, Numeri interi e relativi, Retta, Corrente, Pemdas. Tempo a disposizione stimato: 50 min.",
         "tags": [
-            "MCM/MCD",
+            "ELETTRIC",
+            "RETTA",
+            "CORRENTE",
+            "NUMERI INTERI E RELATIVI",
             "NUMERI RAZIONALI",
-            "PROPRIETÀ DELLE POTENZE",
-            "PEMDAS",
             "PROPORZIONI E PERCENTUALI",
+            "PROPRIETÀ DELLE POTENZE",
             "1 EL",
-            "NUMERI INTERI E RELATIVI"
+            "MCM/MCD",
+            "INSIEM",
+            "PEMDAS"
         ],
         "date": "2026-03-06",
-        "group_ref": "1_el_2026-03-06_pemdas",
+        "group_ref": "1_el_2026-03-06_numeri_razionali",
         "version_label": "Fila A",
         "url": "content/verifiche/1EL/1EL___verifica_6_mar_2026_filaA.pdf",
         "type": "document",
@@ -219,19 +268,24 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 GP, Febbraio 2026",
-        "excerpt": "Verifica di Matematica su Scomposizioni, Frazioni algebriche, Equazioni frazionarie, Modellizzazione, M.c.m./m.c.d. Durata: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizion, Modellizzazione, Equazioni frazionarie, Frazioni algebriche, Equazioni, Insiem, M.c.m./m.c.d, Retta, Polinom, Scomposizioni. Tempo a disposizione stimato: 50 min.",
         "tags": [
-            "FRAZIONI ALGEBRICHE",
-            "MODELLIZZAZIONE",
-            "2 GP",
             "SOFT_03:ALFABETIZZAZIONE DIGITALE E GESTIONE AI",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
             "M.C.M./M.C.D",
+            "EQUAZIONI",
+            "EQUAZIONI FRAZIONARIE",
+            "RETTA",
+            "FRAZIONI ALGEBRICHE",
             "SCOMPOSIZIONI",
-            "EQUAZIONI FRAZIONARIE"
+            "MODELLIZZAZIONE",
+            "SCOMPOSIZION",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "2 GP",
+            "INSIEM",
+            "POLINOM"
         ],
         "date": "2026-02-24",
-        "group_ref": "2_gp_2026-02-24_scomposizioni",
+        "group_ref": "2_gp_2026-02-24_scomposizion",
         "version_label": "Fila A",
         "url": "content/verifiche/2GP/verifica 2gp 24 feb 2026_fila A.pdf",
         "type": "document",
@@ -253,17 +307,23 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Febbraio 2026",
-        "excerpt": "Verifica di Matematica su Scomposizioni, Frazioni algebriche, Modellizzazione, Mcm/mcd. Durata: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizion, Modellizzazione, Mcm/mcd, Equazioni, Frazioni algebriche, Insiem, Retta, Polinom, Scomposizioni. Tempo a disposizione stimato: 50 min.",
         "tags": [
-            "MCM/MCD",
-            "FRAZIONI ALGEBRICHE",
-            "MODELLIZZAZIONE",
             "2 EL",
             "SOFT_03:ALFABETIZZAZIONE DIGITALE E GESTIONE AI",
-            "SCOMPOSIZIONI"
+            "EQUAZIONI",
+            "FRAZIONI ALGEBRICHE",
+            "RETTA",
+            "MCM/MCD",
+            "SCOMPOSIZIONI",
+            "MODELLIZZAZIONE",
+            "SCOMPOSIZION",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "INSIEM",
+            "POLINOM"
         ],
         "date": "2026-02-02",
-        "group_ref": "2_el_2026-02-02_scomposizioni",
+        "group_ref": "2_el_2026-02-02_scomposizion",
         "version_label": "Fila A",
         "url": "content/verifiche/2EL/2EL___verifica_2_feb_2026_fila_A.pdf",
         "type": "document",
@@ -285,19 +345,29 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 3 MEC, Gennaio 2026",
-        "excerpt": "Verifica di Matematica su Equazioni e sistemi lineari, Equazione della retta in forma esplicita, Fattorizzazione di polinomi, Frazioni algebriche. Durata: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizion, Fattorizzazione di polinomi, Dominio, Equazioni, Frazioni algebriche, Equazione della retta in forma esplicita, Equazioni e sistemi lineari, Retta, Geometria, Polinom. Tempo a disposizione stimato: 50 min.",
         "tags": [
-            "EQUAZIONE DELLA RETTA IN FORMA ESPLICITA",
-            "FRAZIONI ALGEBRICHE",
-            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "SOFT_03:ALFABETIZZAZIONE DIGITALE E GESTIONE AI",
+            "GEOMETRIA",
+            "EQUAZIONI",
             "FATTORIZZAZIONE DI POLINOMI",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "FRAZIONI ALGEBRICHE",
+            "RETTA",
+            "DOMINIO",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "SCOMPOSIZION",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "MAT_K03:GEOMETRIA EUCLIDEA E ANALITICA",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
+            "3 MEC",
             "EQUAZIONI E SISTEMI LINEARI",
-            "3 MEC"
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "EQUAZIONE DELLA RETTA IN FORMA ESPLICITA",
+            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "POLINOM"
         ],
         "date": "2026-01-29",
-        "group_ref": "3_mec_2026-01-29_equazioni_e_sistemi_lineari",
+        "group_ref": "3_mec_2026-01-29_scomposizion",
         "version_label": "Fila A",
         "url": "content/verifiche/3MEC/3MEC___verifica_29_gennaio_2026_fila_A.pdf",
         "type": "document",
@@ -318,34 +388,39 @@ const db_verifiche = [
         ]
     },
     {
-        "title": "Verifica Classe 2 GR, Dicembre 2025",
-        "excerpt": "Verifica di Matematica su Equazioni di primo grado, Equazioni con prodotti notevoli, Scomposizione di polinomi algebriche e condizioni di esistenza, Frazioni, Calcolo mentale di quadrati e radici. Durata: 100 min. Calcolatrice ammessa.",
+        "title": "Verifica Classe 2 GP, Dicembre 2025",
+        "excerpt": "Verifica sommativa strutturata su Scomposizion, Equazioni con prodotti notevoli, Equazioni, Frazioni, Scomposizione di polinomi algebriche e condizioni di esistenza, Equazioni di primo grado, Retta, Geometria, Polinom, Calcolo mentale di quadrati e radici. Tempo a disposizione stimato: 100 min. Nota: calcolatrice ammessa.",
         "tags": [
-            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "2 GR",
-            "FRAZIONI",
-            "EQUAZIONI CON PRODOTTI NOTEVOLI",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "GEOMETRIA",
+            "EQUAZIONI",
+            "CALCOLO MENTALE DI QUADRATI E RADICI",
             "SCOMPOSIZIONE DI POLINOMI ALGEBRICHE E CONDIZIONI DI ESISTENZA",
+            "RETTA",
             "EQUAZIONI DI PRIMO GRADO",
-            "CALCOLO MENTALE DI QUADRATI E RADICI"
+            "SCOMPOSIZION",
+            "FRAZIONI",
+            "MAT_K03:GEOMETRIA EUCLIDEA E ANALITICA",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "2 GP",
+            "EQUAZIONI CON PRODOTTI NOTEVOLI",
+            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "POLINOM"
         ],
         "date": "2025-12-02",
-        "group_ref": "2_gr_2025-12-02_equazioni_di_primo_grado",
-        "version_label": "Fila A",
-        "url": "content/verifiche/2GP/2GR___verifica_2_dic_2025_filaA.pdf",
+        "group_ref": "2_gp_2025-12-02_scomposizion",
+        "version_label": "Fila B",
+        "url": "content/verifiche/2GP/2GP___verifica_2_dic_2025_filaA.pdf",
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2GR___verifica_2_dic_2025_filaA.jpg",
         "versions": [
             {
-                "url": "content/verifiche/2GP/2GR___verifica_2_dic_2025_filaA.pdf",
+                "url": "content/verifiche/2GP/2GP___verifica_2_dic_2025_filaA.pdf",
                 "date": "2025-12-02",
                 "label": "Fila A"
             },
             {
-                "url": "content/verifiche/2GP/2GR___verifica_2_dic_2025_filaB.pdf",
+                "url": "content/verifiche/2GP/2GP___verifica_2_dic_2025_filaB.pdf",
                 "date": "2025-12-02",
                 "label": "Fila B"
             }
@@ -353,17 +428,26 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 4 EL, Novembre 2025",
-        "excerpt": "Verifica di Matematica su Equazioni e disequazioni di secondo grado intere, Circonferenza goniometrica, Seno e coseno, Angoli (gradi e radianti). Durata: 50 min. Calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Funzion, Equazioni e disequazioni di secondo grado intere, Equazioni, Seno e coseno, Coseno, Disequazioni, Grafico, Retta, Angoli (gradi e radianti), Circonferenza goniometrica, Seno e Coseno. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
         "tags": [
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "ANGOLI (GRADI E RADIANTI)",
-            "EQUAZIONI E DISEQUAZIONI DI SECONDO GRADO INTERE",
+            "EQUAZIONI",
             "SENO E COSENO",
             "CIRCONFERENZA GONIOMETRICA",
-            "4 EL"
+            "RETTA",
+            "ANGOLI (GRADI E RADIANTI)",
+            "GRAFICO",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "4 EL",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "DISEQUAZIONI",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "COSENO",
+            "EQUAZIONI E DISEQUAZIONI DI SECONDO GRADO INTERE",
+            "FUNZION"
         ],
         "date": "2025-11-21",
-        "group_ref": "4_el_2025-11-21_equazioni_e_disequazioni_di_secondo_grado_intere",
+        "group_ref": "4_el_2025-11-21_funzion",
         "version_label": "Fila A",
         "url": "content/verifiche/4EL/4EL___verifica_21_nov_2025_filaA.pdf",
         "type": "document",
@@ -375,7 +459,38 @@ const db_verifiche = [
                 "url": "content/verifiche/4EL/4EL___verifica_21_nov_2025_filaA.pdf",
                 "date": "2025-11-21",
                 "label": "Fila A"
-            },
+            }
+        ]
+    },
+    {
+        "title": "Verifica Classe 4 EL, Novembre 2025",
+        "excerpt": "Verifica sommativa strutturata su Equazioni e disequazioni di secondo grado intere, Equazioni, Seno e coseno, Parabola, Coseno, Disequazioni, Grafico, Retta, Angoli (gradi e radianti), Circonferenza goniometrica, Seno e Coseno. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
+        "tags": [
+            "EQUAZIONI",
+            "SENO E COSENO",
+            "CIRCONFERENZA GONIOMETRICA",
+            "RETTA",
+            "ANGOLI (GRADI E RADIANTI)",
+            "PARABOLA",
+            "GRAFICO",
+            "4 EL",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "DISEQUAZIONI",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "COSENO",
+            "EQUAZIONI E DISEQUAZIONI DI SECONDO GRADO INTERE"
+        ],
+        "date": "2025-11-21",
+        "group_ref": "4_el_2025-11-21_equazioni_e_disequazioni_di_secondo_grado_intere",
+        "version_label": "Fila B",
+        "url": "content/verifiche/4EL/4EL___verifica_21_nov_2025_filaB.pdf",
+        "type": "document",
+        "icon": "📄",
+        "game_type": "document",
+        "thumbnail": "content/assets/thumbnails/4EL___verifica_21_nov_2025_filaB.jpg",
+        "versions": [
             {
                 "url": "content/verifiche/4EL/4EL___verifica_21_nov_2025_filaB.pdf",
                 "date": "2025-11-21",
@@ -385,17 +500,19 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 1 EL, Novembre 2025",
-        "excerpt": "Verifica di Matematica su Insiemi ed operazioni fra insiemi, Insiemi numerici, Proprietà delle operazioni in n e z, Proprietà delle potenze, Minimo comune multiplo e massimo. Durata: 80 min. Calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Insiemi numerici, Proprietà delle operazioni in n e z, Insiem, Proprietà delle potenze, Minimo comune multiplo e massimo, Retta, Insiemi ed operazioni fra insiemi. Tempo a disposizione stimato: 80 min. Nota: calcolatrice ammessa.",
         "tags": [
-            "PROPRIETÀ DELLE POTENZE",
-            "MINIMO COMUNE MULTIPLO E MASSIMO",
+            "RETTA",
+            "INSIEMI NUMERICI",
             "PROPRIETÀ DELLE OPERAZIONI IN N E Z",
+            "PROPRIETÀ DELLE POTENZE",
             "INSIEMI ED OPERAZIONI FRA INSIEMI",
             "1 EL",
-            "INSIEMI NUMERICI"
+            "INSIEM",
+            "MINIMO COMUNE MULTIPLO E MASSIMO"
         ],
         "date": "2025-11-21",
-        "group_ref": "1_el_2025-11-21_insiemi_ed_operazioni_fra_insiemi",
+        "group_ref": "1_el_2025-11-21_insiemi_numerici",
         "version_label": "Fila A",
         "url": "content/verifiche/1EL/1EL___verifica_21_nov_2025_filaA.pdf",
         "type": "document",
@@ -417,18 +534,22 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Novembre 2025",
-        "excerpt": "Verifica di Matematica su Equazioni di primo grado, Equazioni con prodotti notevoli, Scomposizione di polinomi, Calcolo mentale di quadrati e radici. Durata: 50 min. Calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizion, Equazioni con prodotti notevoli, Equazioni, Scomposizione di polinomi, Equazioni di primo grado, Retta, Polinom, Calcolo mentale di quadrati e radici. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
         "tags": [
-            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "SCOMPOSIZIONE DI POLINOMI",
             "2 EL",
-            "EQUAZIONI CON PRODOTTI NOTEVOLI",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "SCOMPOSIZIONE DI POLINOMI",
+            "EQUAZIONI",
+            "CALCOLO MENTALE DI QUADRATI E RADICI",
+            "RETTA",
             "EQUAZIONI DI PRIMO GRADO",
-            "CALCOLO MENTALE DI QUADRATI E RADICI"
+            "SCOMPOSIZION",
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "EQUAZIONI CON PRODOTTI NOTEVOLI",
+            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "POLINOM"
         ],
         "date": "2025-11-10",
-        "group_ref": "2_el_2025-11-10_equazioni_di_primo_grado",
+        "group_ref": "2_el_2025-11-10_scomposizion",
         "version_label": "Fila A",
         "url": "content/verifiche/2EL/2EL___verifica_10_nov_2025_filaA.pdf",
         "type": "document",
@@ -450,15 +571,21 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 3 MEC, Ottobre 2025",
-        "excerpt": "Verifica di Matematica su Equazioni e sistemi lineari, Equazione della retta. Durata: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni, Grafico, Equazioni e sistemi lineari, Retta, Equazione della retta. Tempo a disposizione stimato: 50 min.",
         "tags": [
-            "EQUAZIONI E SISTEMI LINEARI",
-            "3 MEC",
+            "EQUAZIONI",
+            "RETTA",
             "EQUAZIONE DELLA RETTA",
+            "GRAFICO",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
+            "MAT_A02:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...",
+            "3 MEC",
+            "EQUAZIONI E SISTEMI LINEARI",
             "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI"
         ],
         "date": "2025-10-03",
-        "group_ref": "3_mec_2025-10-03_equazioni_e_sistemi_lineari",
+        "group_ref": "3_mec_2025-10-03_equazioni",
         "version_label": "Versione Unica",
         "url": "content/verifiche/3MEC/3MEC___verifica_3_ottobre_2025.pdf",
         "type": "document",
@@ -475,11 +602,13 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 GP, Ottobre 2025",
-        "excerpt": "Verifica di Matematica su Equazioni di primo grado. Durata: 50 min. Calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni di primo grado, Retta, Equazioni. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
         "tags": [
-            "2 GP",
+            "EQUAZIONI",
+            "RETTA",
             "EQUAZIONI DI PRIMO GRADO",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI"
+            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "2 GP"
         ],
         "date": "2025-10-01",
         "group_ref": "2_gp_2025-10-01_equazioni_di_primo_grado",
@@ -493,374 +622,6 @@ const db_verifiche = [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_1_ottobre_2025.pdf",
                 "date": "2025-10-01",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 2 MEC, Giugno 2025",
-        "excerpt": "Verifica di Matematica su Sospensione del giudizio. Durata: 50 min.",
-        "tags": [
-            "2 MEC",
-            "SOSPENSIONE DEL GIUDIZIO",
-            "RECUPERO"
-        ],
-        "date": "2025-06-27",
-        "group_ref": "2_mec_2025-06-27_sospensione_del_giudizio",
-        "version_label": "Recupero",
-        "url": "content/verifiche/2MEC/2MEC___verifica_di_recupero_del_debito.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2MEC___verifica_di_recupero_del_debito.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/2MEC/2MEC___verifica_di_recupero_del_debito.pdf",
-                "date": "2025-06-27",
-                "label": "Recupero"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 5 EL, Maggio 2025",
-        "excerpt": "Verifica di Matematica su Concetto di derivata, Retta tangente, Problemi di massimo e minimo vincolati. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "CONCETTO DI DERIVATA",
-            "PROBLEMI DI MASSIMO E MINIMO VINCOLATI",
-            "RETTA TANGENTE",
-            "5 EL",
-            "CIT_06:RISOLVERE PROBLEMI"
-        ],
-        "date": "2025-05-23",
-        "group_ref": "5_el_2025-05-23_concetto_di_derivata",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/5EL/5EL___verifica_23_maggio_25.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/5EL___verifica_23_maggio_25.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/5EL/5EL___verifica_23_maggio_25.pdf",
-                "date": "2025-05-23",
-                "label": "Versione Unica"
-            },
-            {
-                "url": "content/verifiche/5EL/5EL___verifica_23_maggio_25 (3).pdf",
-                "date": "2025-05-23",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 5 MEC, Maggio 2025",
-        "excerpt": "Verifica di Matematica su Concetto di derivata, Retta tangente, Problemi di massimo e minimo vincolati. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "CONCETTO DI DERIVATA",
-            "PROBLEMI DI MASSIMO E MINIMO VINCOLATI",
-            "RETTA TANGENTE",
-            "5 MEC",
-            "CIT_06:RISOLVERE PROBLEMI"
-        ],
-        "date": "2025-05-20",
-        "group_ref": "5_mec_2025-05-20_concetto_di_derivata",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/5MEC/5MEC___verifica_20_maggio_25.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/5MEC___verifica_20_maggio_25.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/5MEC/5MEC___verifica_20_maggio_25.pdf",
-                "date": "2025-05-20",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 5 EL, Maggio 2025",
-        "excerpt": "Verifica di Matematica su Funzioni razionali, Applicazioni della derivazione di funzioni alla realtà professionale. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "5 EL",
-            "APPLICAZIONI DELLA DERIVAZIONE DI FUNZIONI ALLA REALTÀ PROFESSIONALE",
-            "MAT_K02:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "FUNZIONI RAZIONALI"
-        ],
-        "date": "2025-05-16",
-        "group_ref": "5_el_2025-05-16_funzioni_razionali",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/5EL/5EL___verifica_16_maggio_25 (1).pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/5EL___verifica_16_maggio_25 (1).jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/5EL/5EL___verifica_16_maggio_25 (1).pdf",
-                "date": "2025-05-16",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 1 EL, Maggio 2025",
-        "excerpt": "Verifica di Matematica su Equazioni di primo grado. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "EQUAZIONI DI PRIMO GRADO",
-            "1 EL",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI"
-        ],
-        "date": "2025-05-01",
-        "group_ref": "1_el_2025-05-01_equazioni_di_primo_grado",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/1EL/1EL___verifica196_maggio_2025.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/1EL___verifica196_maggio_2025.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/1EL/1EL___verifica196_maggio_2025.pdf",
-                "date": "2025-05-01",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 2 MEC, Aprile 2025",
-        "excerpt": "Verifica di Matematica su Disequazioni, Sistemi lineari. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "SISTEMI LINEARI",
-            "2 MEC",
-            "DISEQUAZIONI",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI"
-        ],
-        "date": "2025-04-16",
-        "group_ref": "2_mec_2025-04-16_disequazioni",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/2MEC/2MEC___verifica_16_aprile_2025.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2MEC___verifica_16_aprile_2025.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/2MEC/2MEC___verifica_16_aprile_2025.pdf",
-                "date": "2025-04-16",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 5 MEC, Aprile 2025",
-        "excerpt": "Verifica di Matematica su Funzioni razionali, Funzioni periodiche, Exp/log, Continuità, Asintoti. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "ASINTOTI",
-            "MAT_K02:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "FUNZIONI PERIODICHE",
-            "EXP/LOG",
-            "CONTINUITÀ",
-            "5 MEC",
-            "FUNZIONI RAZIONALI"
-        ],
-        "date": "2025-04-15",
-        "group_ref": "5_mec_2025-04-15_funzioni_razionali",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/5MEC/5MEC___verifica_15_aprile_25.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/5MEC___verifica_15_aprile_25.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/5MEC/5MEC___verifica_15_aprile_25.pdf",
-                "date": "2025-04-15",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 5 EL, Marzo 2025",
-        "excerpt": "Verifica di Matematica su Funzioni razionali, Funzioni periodiche, Exp/log. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "MAT_K02:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "FUNZIONI PERIODICHE",
-            "EXP/LOG",
-            "5 EL",
-            "FUNZIONI RAZIONALI"
-        ],
-        "date": "2025-03-21",
-        "group_ref": "5_el_2025-03-21_funzioni_razionali",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/5EL/5EL___verifica_21_marzo_25 (1).pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/5EL___verifica_21_marzo_25 (1).jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/5EL/5EL___verifica_21_marzo_25 (1).pdf",
-                "date": "2025-03-21",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 1 EL, Marzo 2025",
-        "excerpt": "Verifica di Matematica su Monomi e calcolo letterale. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "MONOMI E CALCOLO LETTERALE",
-            "1 EL",
-            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE"
-        ],
-        "date": "2025-03-10",
-        "group_ref": "1_el_2025-03-10_monomi_e_calcolo_letterale",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/1EL/1EL___verifica_10marzo.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/1EL___verifica_10marzo.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/1EL/1EL___verifica_10marzo.pdf",
-                "date": "2025-03-10",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 1 EL, Marzo 2025",
-        "excerpt": "Verifica di Matematica su Monomi e calcolo letterale. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "MONOMI E CALCOLO LETTERALE",
-            "1 EL",
-            "MAT_K01:INSIEMI NUMERICI E CALCOLO LETTERALE"
-        ],
-        "date": "2025-03-04",
-        "group_ref": "1_el_2025-03-04_monomi_e_calcolo_letterale",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/1EL/1EL___verifica_4marzo.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/1EL___verifica_4marzo.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/1EL/1EL___verifica_4marzo.pdf",
-                "date": "2025-03-04",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 5 EL, Febbraio 2025",
-        "excerpt": "Verifica di Matematica su Funzioni razionali, Funzioni periodiche, Exp/log. Durata: 50 min. Calcolatrice ammessa.",
-        "tags": [
-            "MAT_K02:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "FUNZIONI PERIODICHE",
-            "EXP/LOG",
-            "SOFT_03:ALFABETIZZAZIONE DIGITALE E GESTIONE AI",
-            "5 EL",
-            "FUNZIONI RAZIONALI"
-        ],
-        "date": "2025-02-28",
-        "group_ref": "5_el_2025-02-28_funzioni_razionali",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/5EL/5EL___verifica_28_febbraio_25 (1).pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/5EL___verifica_28_febbraio_25 (1).jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/5EL/5EL___verifica_28_febbraio_25 (1).pdf",
-                "date": "2025-02-28",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 2 MEC, Febbraio 2025",
-        "excerpt": "Verifica di Matematica su Proporzionalità diretta ed inversa. Durata: 60 min. Calcolatrice ammessa.",
-        "tags": [
-            "SOFT_03:ALFABETIZZAZIONE DIGITALE E GESTIONE AI",
-            "2 MEC",
-            "PROPORZIONALITÀ DIRETTA ED INVERSA"
-        ],
-        "date": "2025-02-19",
-        "group_ref": "2_mec_2025-02-19_proporzionalità_diretta_ed_inversa",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/2MEC/2MEC___verifica_19_febbraio_25.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2MEC___verifica_19_febbraio_25.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/2MEC/2MEC___verifica_19_febbraio_25.pdf",
-                "date": "2025-02-19",
-                "label": "Versione Unica"
-            },
-            {
-                "url": "content/verifiche/2MEC/2MEC___verifica_19_febbraio_25_A.pdf",
-                "date": "2025-02-19",
-                "label": "Versione Unica"
-            },
-            {
-                "url": "content/verifiche/2MEC/2MEC___verifica_19_febbraio_25_B.pdf",
-                "date": "2025-02-19",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica Classe 5 MEC, Febbraio 2025",
-        "excerpt": "Verifica di Matematica su Funzioni razionai, Periodiche, Exp/log. Durata: 60 min. Calcolatrice ammessa.",
-        "tags": [
-            "MAT_K02:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "EXP/LOG",
-            "SOFT_03:ALFABETIZZAZIONE DIGITALE E GESTIONE AI",
-            "5 MEC",
-            "FUNZIONI RAZIONAI",
-            "PERIODICHE"
-        ],
-        "date": "2025-02-18",
-        "group_ref": "5_mec_2025-02-18_funzioni_razionai",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/5MEC/5MEC___verifica_18_febbraio_25.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/5MEC___verifica_18_febbraio_25.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/5MEC/5MEC___verifica_18_febbraio_25.pdf",
-                "date": "2025-02-18",
-                "label": "Versione Unica"
-            }
-        ]
-    },
-    {
-        "title": "Verifica 2Meca",
-        "excerpt": "Verifica di Matematica su Equazioni di primo grado. Durata: 90 min. Calcolatrice ammessa.",
-        "tags": [
-            "EQUAZIONI DI PRIMO GRADO",
-            "MAT_A03:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI"
-        ],
-        "date": "2024-10-29",
-        "group_ref": "verifica 2meca",
-        "version_label": "Versione Unica",
-        "url": "content/verifiche/2MEC/2mecA___verifica_29_ottobre_2024.pdf",
-        "type": "document",
-        "icon": "📄",
-        "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2mecA___verifica_29_ottobre_2024.jpg",
-        "versions": [
-            {
-                "url": "content/verifiche/2MEC/2mecA___verifica_29_ottobre_2024.pdf",
-                "date": "2024-10-29",
                 "label": "Versione Unica"
             }
         ]

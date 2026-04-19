@@ -1,704 +1,195 @@
 <!DOCTYPE html>
-<html lang="it" data-theme="dark">
-
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Laboratorio Matematico Orfini | Immersive Hub</title>
-
+    <title>Laboratorio Matematico Orfini | Journal of Educational Innovation</title>
+    
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Hub editoriale del Laboratorio Matematico Orfini Foligno. Un'integrazione tra competenze autentiche, STEM e didattica laboratoriale.">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Amatic+SC:wght@700&family=Caveat:wght@700&family=Cinzel:wght@700&family=Oswald:wght@500&family=Permanent+Marker&family=Playfair+Display:ital,wght@1,600&family=Press+Start+2P&family=Righteous&family=Space+Mono:ital,wght@0,700;1,700&family=Inter:wght@400;700&family=Syne:wght@700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Polyfill per Import Maps (Compatibilità Safari < 16.4 / iOS < 16.4) -->
-    <script async src="https://ga.jspm.io/npm:es-module-shims@1.8.2/dist/es-module-shims.js"></script>
-
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
+    
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script>
-        window.addEventListener('load', () => {
-            if (typeof katex === 'undefined') {
-                console.error("[MathEngine] CRITICAL: KaTeX library failed to load from CDN.");
-            } else {
-                console.log("[MathEngine] KaTeX Ready.");
-            }
-        });
-    </script>
-    <script src="database.js?v=4"></script>
-    <script src="database_verifiche.js?v=4"></script>
 
-    <style>
-        :root {
-            --primary: #00bcd4;
-            --secondary: #ff4081;
-            --bg-dark: #050510;
-            --glass: rgba(10, 20, 40, 0.75);
-            --glass-solid: rgba(10, 20, 40, 0.95);
-            --border: rgba(255, 255, 255, 0.1);
-            --font-ui: 'Inter', sans-serif;
-        }
-
-        /* --- 3D TAG FONTS --- */
-        .font-1 {
-            font-family: 'Caveat', cursive !important;
-            font-size: 1.3em;
-        }
-
-        .font-2 {
-            font-family: 'Space Mono', monospace !important;
-            letter-spacing: -0.05em;
-            font-weight: 700;
-        }
-
-        .font-3 {
-            font-family: 'Abril Fatface', serif !important;
-        }
-
-        .font-4 {
-            font-family: 'Permanent Marker', cursive !important;
-            transform: rotate(-2deg);
-        }
-
-        .font-5 {
-            font-family: 'Righteous', cursive !important;
-        }
-
-        .font-6 {
-            font-family: 'Cinzel', serif !important;
-            font-weight: 700;
-        }
-
-        .font-7 {
-            font-family: 'Amatic SC', cursive !important;
-            font-size: 1.5em;
-            font-weight: 700;
-        }
-
-        .font-8 {
-            font-family: 'Oswald', sans-serif !important;
-            text-transform: uppercase;
-        }
-
-        .font-9 {
-            font-family: 'Press Start 2P', cursive !important;
-            font-size: 0.7em;
-            color: #0f0;
-        }
-
-        .font-10 {
-            font-family: 'Playfair Display', serif !important;
-            font-style: italic;
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            margin: 0;
-            overflow-x: hidden;
-            overflow-y: auto !important;
-            background: var(--bg-dark);
-            font-family: var(--font-ui);
-            color: white;
-            width: 100vw;
-            min-height: 100dvh;
-            min-height: -webkit-fill-available;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; /* Momentum scrolling iOS */
-        }
-
-        /* --- NAVIGATION --- */
-        #main-nav {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: var(--glass-solid);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-        }
-
-        .nav-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            flex-wrap: nowrap; /* Bauhaus: rigore orizzontale */
-        }
-
-        .brand-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-orfini {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            line-height: 1;
-            color: #fff;
-            text-transform: uppercase;
-        }
-
-        .brand-sub {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.65rem;
-            color: var(--primary);
-            letter-spacing: 0.25em;
-            margin-top: 0.2rem;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: stretch;
-            flex: 1;
-            justify-content: center;
-            gap: 0;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .nav-tab {
-            background: transparent;
-            border: none;
-            border-right: 1px solid var(--border);
-            color: #888;
-            font-family: var(--font-ui);
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 0.7rem 1.2rem;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .nav-tab:last-child { border-right: none; }
-
-        .nav-tab:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Bauhaus Color Blocking */
-        .nav-tab.active[data-category="all"], 
-        .nav-tab.active[data-category="arcade"], 
-        .nav-tab.active[data-category="memory"], 
-        .nav-tab.active[data-category="sim"] {
-            background: #fff !important;
-            color: #000 !important;
-        }
-
-        .nav-tab.btn-verifiche { color: var(--primary); }
-        .nav-tab.btn-verifiche:hover { background: rgba(0, 188, 212, 0.1); }
-        
-        .nav-tab.btn-competenze { color: #ffeb3b; }
-        .nav-tab.btn-competenze:hover { background: rgba(255, 235, 59, 0.1); }
-
-        .nav-tab#btn-bio { color: var(--secondary); font-weight: 900; }
-        .nav-tab#btn-bio:hover { background: var(--secondary); color: #000; }
-
-        .nav-search {
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        #search-input {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            color: white;
-            padding: 0.7rem 1rem 0.7rem 2.5rem;
-            border-radius: 4px;
-            outline: none;
-            font-size: 0.85rem;
-            width: 220px;
-            transition: all 0.3s;
-            font-family: var(--font-ui);
-        }
-
-        #search-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 18px;
-            height: 18px;
-            stroke: #888;
-            pointer-events: none;
-        }
-
-        /* --- HERO SECTION --- */
-        #hero {
-            position: relative;
-            height: clamp(250px, 40vh, 500px);
-            width: 100%;
-            overflow: hidden;
-            border-bottom: 1px solid var(--border);
-            background: #000;
-        }
-
-        #scene-container {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            outline: none;
-            touch-action: none;
-        }
-
-        /* --- RIMOSSA HERO OVERLAY, VISIONE E MANIFESTO (Design pulito) --- */
-
-        /* --- GRID & CARDS --- */
-        #main-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            min-height: 50vh;
-            flex-grow: 1;
-            height: auto;
-        }
-
-        .list-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-            gap: 24px;
-            width: 100%;
-        }
-
-        .project-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            min-height: 350px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-        }
-
-        .project-card:focus-within {
-            outline: 2px solid var(--primary);
-            outline-offset: 4px;
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-            .project-card:hover {
-                border-color: var(--primary);
-                transform: translateY(-5px);
-                background: rgba(255, 255, 255, 0.05);
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            }
-            .project-card:hover .card-cta {
-                background: var(--primary);
-                color: #000;
-                border-color: var(--primary);
-            }
-        }
-
-        .card-bg {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            filter: blur(8px) saturate(0.5);
-            opacity: 0.15;
-            background-size: cover;
-            background-position: center;
-            transition: opacity 0.5s, filter 0.5s;
-        }
-        
-        .project-card:hover .card-bg {
-            opacity: 0.3;
-            filter: blur(2px) saturate(1);
-        }
-
-        .card-content-wrap {
-            position: relative;
-            z-index: 1;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-date {
-            font-size: 0.75rem;
-            color: #888;
-            font-family: 'Space Mono', monospace;
-            margin-bottom: auto;
-        }
-
-        .project-card h3 {
-            font-family: var(--font-ui);
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin: 0.5rem 0;
-            color: #fff;
-            line-height: 1.2;
-        }
-
-        .project-card p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #bbb;
-            flex-grow: 1;
-            margin: 1rem 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-tag {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            padding: 6px 10px;
-            background: rgba(0, 188, 212, 0.1);
-            color: var(--primary);
-            border: 1px solid transparent;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            z-index: 2; /* sopre al click della card intera per non triggerarla */
-        }
-
-        .filter-tag:hover, .filter-tag:focus-visible {
-            background: var(--primary);
-            color: #000;
-            outline: none;
-        }
-
-        .card-cta {
-            display: block;
-            width: 100%;
-            padding: 0.8rem;
-            text-align: center;
-            background: transparent;
-            color: #fff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-family: var(--font-ui);
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            z-index: 1;
-        }
-
-
-
-        /* --- OVERLAYS --- */
-        .overlay-full {
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            background: rgba(5, 5, 15, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .overlay-full.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        /* --- MATH DEBRIS TEXT (Legacy needed for galaxy 3D texts) --- */
-        .font-1 { font-family: 'Caveat', cursive !important; font-size: 1.3em; }
-        .font-2 { font-family: 'Space Mono', monospace !important; font-weight: 700; }
-        .font-3 { font-family: 'Abril Fatface', serif !important; }
-        .font-4 { font-family: 'Permanent Marker', cursive !important; transform: rotate(-2deg); }
-        .font-5 { font-family: 'Righteous', cursive !important; }
-        .font-6 { font-family: 'Cinzel', serif !important; font-weight: 700; }
-        .font-7 { font-family: 'Amatic SC', cursive !important; font-size: 1.5em; font-weight: 700; }
-        .font-8 { font-family: 'Oswald', sans-serif !important; text-transform: uppercase; }
-        .font-9 { font-family: 'Press Start 2P', cursive !important; font-size: 0.7em; color: #0f0; }
-        .font-10 { font-family: 'Playfair Display', serif !important; font-style: italic; }
-
-        .tag-content {
-            display: inline-block;
-            font-weight: 700;
-            color: white;
-            padding: 4px 8px;
-            white-space: nowrap;
-            cursor: pointer;
-            pointer-events: auto;
-            will-change: transform, opacity;
-            transition: color 0.2s;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            backface-visibility: hidden;
-        }
-
-        .math-debris {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-            will-change: transform, opacity;
-            contain: layout style;
-        }
-        .debris-hex {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.3);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-        }
-        .debris-sym {
-            position: relative;
-            z-index: 1;
-            color: #fff;
-            white-space: nowrap;
-            transition: opacity 0.3s;
-            text-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
-            font-family: 'KaTeX_Main', serif;
-            will-change: opacity, transform;
-        }
-
-        @media (max-width: 1200px) {
-            .nav-content { gap: 1rem; }
-            #search-input { width: 140px; }
-            .nav-tab { padding: 0.7rem 0.8rem; font-size: 0.75rem; }
-        }
-
-        @media (max-width: 900px) {
-            .nav-content { flex-direction: column; align-items: stretch; }
-            .nav-links { overflow-x: auto; justify-content: flex-start; }
-            .nav-tab { flex-shrink: 0; }
-            #search-input { width: 100%; }
-        }
-
-        @media (max-width: 768px) {
-            .nav-content {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1rem;
-            }
-            .nav-links {
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 0.5rem;
-                scrollbar-width: none; /* Hide scrollbar Firefox */
-            }
-            .nav-links::-webkit-scrollbar {
-                display: none; /* Hide scrollbar Chrome/Safari */
-            }
-            .nav-tab {
-                white-space: nowrap;
-                font-size: 0.85rem;
-                padding: 0.4rem 0.8rem;
-            }
-            #main-nav {
-                padding: 1rem;
-            }
-            .brand-orfini {
-                font-size: 1.2rem;
-            }
-            #search-input {
-                width: 100%;
-            }
-            .list-grid {
-                grid-template-columns: 1fr;
-            }
-            #hero {
-                height: clamp(200px, 30vh, 350px);
-            }
-            #main-content {
-                padding: 2rem 1rem;
-            }
-        }
-    </style>
+    <!-- Project Styles -->
+    <link rel="stylesheet" href="index.css">
 </head>
-
 <body>
 
     <nav id="main-nav">
-        <div class="nav-content">
-            <div class="brand-container">
-                <div class="brand-orfini">ORFINI</div>
-                <div class="brand-sub">MATH LAB</div>
-            </div>
-            <div class="nav-links">
-                <button class="nav-tab active" data-category="all">Tutti</button>
-                <button class="nav-tab" data-category="arcade">Arcade</button>
-                <button class="nav-tab" data-category="memory">Cards</button>
-                <button class="nav-tab" data-category="sim">Simulatori</button>
-                
-                <a href="verifiche.html" class="nav-tab btn-verifiche">
-                    <span>Verifiche</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="brand">
+                    <span class="brand-title">ORFINI</span>
+                    <span class="brand-sub">LABORATORIO</span>
                 </a>
-                <a href="competenze.html" class="nav-tab btn-competenze">
-                    <span>Riforma</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                </a>
-                <button class="nav-tab" id="btn-bio">d::b</button>
-            </div>
-            <div class="nav-search">
-                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input type="text" id="search-input" placeholder="Cerca attività, argomenti, software..." aria-label="Cerca contenuti">
+
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link active">Journal</a>
+                    <a href="verifiche.html" class="nav-link">Archivio</a>
+                    <a href="galaxy.html" class="nav-link">Mappa</a>
+                    <button id="about-btn" class="nav-link" style="background:none; border:none; cursor:pointer;">Chi Sono</button>
+                </div>
+
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Cerca temi o competenze...">
+                </div>
             </div>
         </div>
     </nav>
 
-    <header id="hero" role="banner">
-        <div id="scene-container"></div>
-    </header>
 
-    <main id="main-content">
-        <div class="list-grid" id="full-list-grid" role="region" aria-live="polite"></div>
+
+    <main class="container">
+        <div class="journal-header">
+            <div class="filter-controls" id="quick-filters">
+                <!-- Tag chips injected here -->
+            </div>
+        </div>
+        
+        <!-- Interactive Search Banner -->
+        <div class="filter-banner" id="active-filter-banner">
+            <div>Filtro esplorativo attivo su: <strong id="active-filter-label"></strong></div>
+            <span class="filter-close" onclick="window.clearGlobalFilter()">Azzera ✕</span>
+        </div>
+
+        <div class="content-grid" id="main-grid" role="region" aria-live="polite">
+            <!-- Journal Cards will be injected here -->
+        </div>
     </main>
 
-
-
-    <div id="media-modal" class="overlay-full">
-        <div id="modal-box" style="width:95%; max-width:1100px; margin: auto;"></div>
+    <div id="modal-overlay" class="modal-overlay">
+        <div id="modal-content" class="modal-content"></div>
     </div>
 
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio Permanente di Matematica e Fisica<br>Istituto Professionale "E. Orfini" Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" class="social-circle" title="Instagram">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Prof. Federico DB. Realizzato con strumenti Open Source per una didattica inclusiva.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="database.js"></script>
     <script type="module">
-        import { GalaxyScene } from './content/assets/js/modules/GalaxyScene.js?v=5';
-        import { UIManager } from './content/assets/js/modules/UIManager.js?v=5';
-
-        function getUniqueTags(data) {
-            const counts = {};
-            const tagMap = {};
-            
-            // Regex per escludere date e spazzatura
-            const datePattern = /\d{1,2}[/-]\d{1,2}[/-]\d{2,4}/;
-            const yearPattern = /202\d/;
-
-            data.forEach(item => {
-                const tags = item.tags || [];
-                tags.forEach(tag => {
-                    let text = String(tag).trim();
-                    const key = text.toLowerCase();
-                    
-                    if(!key || key.length < 2) return;
-                    if(datePattern.test(key) || yearPattern.test(key)) return;
-                    if(key.length > 30) return; // Salta descrizioni troppo lunghe
-                    
-                    // Escludi Competenze Europee (EU) dalla nuvola (User request: isolano troppo)
-                    if(key.includes('eu:')) return;
-
-                    // Sintesi Competenze: "ID: Descrizione" -> "✦ ID"
-                    if(text.includes(':')) {
-                        const parts = text.split(':');
-                        const id = parts[0].trim();
-                        // Se l'id è corto (es. MAT_C1), usalo con prefisso
-                        if (id.length < 10) text = `✦ ${id}`;
-                        else text = id; // Altrimenti solo ID
-                    }
-
-                    const normalizedKey = text.toLowerCase();
-                    counts[normalizedKey] = (counts[normalizedKey] || 0) + 1;
-                    if(!tagMap[normalizedKey]) tagMap[normalizedKey] = text; 
-                });
-            });
-
-            // Converti in array e ordina per importanza (frequenza)
-            let result = Object.keys(counts).map(key => ({ 
-                text: tagMap[key], 
-                count: counts[key] 
-            }));
-
-            // Filtro Top 65 per garantire leggibilità e "rami" chiari
-            result.sort((a, b) => b.count - a.count);
-            return result.slice(0, 65);
-        }
+        import { UIManager } from './content/assets/js/modules/UIManager.js';
 
         window.addEventListener('load', () => {
             const initApp = () => {
                 try {
-                    const allData = db;
-                    const galaxyData = getUniqueTags(allData);
+                    const ui = new UIManager(db);
+                    window.appUI = ui;
                     
-                    const app3D = new GalaxyScene('scene-container', galaxyData, allData, (nodeData) => {
-                        const input = document.getElementById('search-input');
-                        input.value = nodeData.text;
-                        input.dispatchEvent(new Event('input'));
-                        document.getElementById('main-content').scrollIntoView({behavior: 'smooth', block: 'start'});
-                    });
-                    
-                    const ui = new UIManager(db, app3D);
+                    // Filter out normative items for tag counts
+                    const appItems = db.filter(item => item.type === 'app');
+                    const topTags = getTopTags(appItems, 8);
+                    renderQuickFilters(topTags, ui);
+
+                    // Chi Sono Modal
+                    const aboutBtn = document.getElementById('about-btn');
+                    const openAbout = () => {
+                        const bio = `
+                            <div class="bio-modal-content" style="color: var(--text-main); line-height: 1.8;">
+                                <h2 style="font-family: var(--font-heading); margin-bottom: 30px; font-size: 2.5rem; color: var(--primary);">Federico DB</h2>
+                                <p style="font-size: 1.1rem; margin-bottom: 20px;">
+                                    Sono un <strong>docente e creativo multidisciplinare</strong> che unisce matematica, fisica, arte, musica, botanica, videogiochi e tecnologia in un pensiero immersivo e iper-connesso.
+                                </p>
+                                <p style="margin-bottom: 20px;">
+                                    La mia missione è trasformare la didattica attraverso l'uso di software <strong>Open Source</strong> e tecnologie generative. Progetto percorsi innovativi per gli Istituti Professionali italiani, integrando modelli 3D parametrici e strumenti digitali inclusivi (DSA/ADHD).
+                                </p>
+                                <p style="margin-bottom: 40px;">
+                                    Il mio approccio è visivo, sperimentale e ironico: ogni progetto è un laboratorio per trasformare il caos creativo in strumenti concreti, accessibili ed esteticamente coerenti.
+                                </p>
+                                <div style="display: flex; gap: 20px;">
+                                    <a href="https://instagram.com/meltingmath" target="_blank" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 25px;">Instagram</a>
+                                    <button onclick="document.getElementById('modal-overlay').click()" class="chip">Chiudi</button>
+                                </div>
+                            </div>
+                        `;
+                        const modal = document.getElementById('modal-overlay');
+                        const content = document.getElementById('modal-content');
+                        content.innerHTML = bio;
+                        modal.classList.add('active');
+                    };
+
+                    if (aboutBtn) aboutBtn.onclick = openAbout;
+                    if (window.location.hash === '#about') openAbout();
 
                     document.addEventListener('keydown', (e) => {
                         if (e.key === 'Escape') ui.closeModal();
                     });
 
-                    document.getElementById('media-modal').onclick = () => ui.closeModal();
-                    document.getElementById('modal-box').onclick = (e) => e.stopPropagation();
+                    document.getElementById('modal-overlay').onclick = (e) => {
+                        if (e.target === document.getElementById('modal-overlay')) {
+                            ui.closeModal();
+                        }
+                    };
+
                 } catch (err) {
-                    console.error("Hub Init Failure:", err);
+                    console.error("UI Init Error:", err);
                 }
             };
 
-            // Check for KaTeX before starting
-            if (typeof katex === 'undefined') {
-                let attempts = 0;
-                const checkKatex = setInterval(() => {
-                    attempts++;
-                    if (typeof katex !== 'undefined' || attempts > 30) {
-                        clearInterval(checkKatex);
-                        initApp();
-                    }
-                }, 50);
-            } else {
-                initApp();
-            }
+            const getTopTags = (data, limit) => {
+                const counts = {};
+                data.forEach(item => (item.tags || []).forEach(tag => counts[tag] = (counts[tag] || 0) + 1));
+                return Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, limit).map(e => e[0]);
+            };
+
+            const renderQuickFilters = (tags, ui) => {
+                const container = document.getElementById('quick-filters');
+                container.innerHTML = tags.map(tag => `<button class="chip" data-tag="${tag}">${tag}</button>`).join('');
+                
+                container.querySelectorAll('.chip').forEach(btn => {
+                    btn.onclick = () => {
+                        const tag = btn.dataset.tag;
+                        window.setGlobalFilter(tag);
+                    };
+                });
+            };
+
+            // Global Filter Logic (callable both from Quick Filters and Card Chips)
+            window.setGlobalFilter = (tag) => {
+                const banner = document.getElementById('active-filter-banner');
+                const label = document.getElementById('active-filter-label');
+                const searchInput = document.getElementById('search-input');
+                
+                searchInput.value = tag;
+                window.appUI.setFilter('search', tag);
+                
+                label.textContent = tag;
+                banner.classList.add('active');
+                window.scrollTo({ top: Math.max(0, banner.offsetTop - 120), behavior: 'smooth' });
+            };
+            
+            window.clearGlobalFilter = () => {
+                document.getElementById('active-filter-banner').classList.remove('active');
+                document.getElementById('search-input').value = '';
+                window.appUI.setFilter('search', '');
+            };
+
+            initApp();
         });
     </script>
 </body>
-
 </html>

@@ -1,31 +1,45 @@
-export class UIManager {
-    constructor(db, sceneApp) {
-        this.db = db;
-        this.sceneApp = sceneApp; // Riferimento alla scena 3D per bloccare i controlli
+/*
+    UIManager.js
+    Gestione della logica di interfaccia, filtraggio e rendering delle card.
+    Ottimizzato per performance mobile e design premium.
+*/
 
-        // State
+export class UIManager {
+    constructor(db) {
+        this.db = db;
+        this.semanticLabels = {
+            'erroricomuni': 'Evitare gli Errori',
+            'mappa': 'Mappa Concettuale',
+            'correttore': 'Correttore Soluzioni',
+            'en': 'English Version',
+            'it': 'Versione Italiana',
+            'mappa_en': 'Conceptual Map (EN)',
+            'mappa_it': 'Mappa Concettuale (IT)',
+            'fila_a': 'Fila A',
+            'fila_b': 'Fila B',
+            'versione_a': 'Fila A',
+            'versione_b': 'Fila B'
+        };
         this.state = {
             searchQuery: '',
             activeCategory: 'all',
             filteredItems: [],
             renderedCount: 0,
-            CHUNK_SIZE: 20 // Renderizza 20 item per volta
+            CHUNK_SIZE: 12
         };
 
         // DOM Elements
         this.els = {
             searchInput: document.getElementById('search-input'),
-            listGrid: document.getElementById('full-list-grid'),
-            modal: document.getElementById('media-modal'),
-            modalBox: document.getElementById('modal-box')
+            grid: document.getElementById('main-grid'),
+            modal: document.getElementById('modal-overlay'),
+            modalContent: document.getElementById('modal-content')
         };
 
-        // Bindings
         this.filterDebounced = this.debounce(this.filterList.bind(this), 300);
-        this.initListeners();
+        this.init();
     }
 
-    // --- UTILS ---
     debounce(func, wait) {
         let timeout;
         return (...args) => {
@@ -34,353 +48,283 @@ export class UIManager {
         };
     }
 
-    // --- LIFECYCLE ---
-    initListeners() {
-        // Infinite Scroll Observer (Native Window Scroll)
+    init() {
+        // Infinite Scroll
         this.observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 this.renderNextChunk();
             }
-        }, { root: null, rootMargin: '300px', threshold: 0.1 });
+        }, { rootMargin: '400px' });
 
-        // Input testuale
+        // Search Listener
         if (this.els.searchInput) {
             this.els.searchInput.addEventListener('input', (e) => {
                 this.state.searchQuery = e.target.value.toLowerCase();
                 this.filterDebounced();
             });
+            
+            // Handle URL params (from Galaxy View)
+            const urlParams = new URLSearchParams(window.location.search);
+            const tagParam = urlParams.get('tag');
+            if (tagParam) {
+                this.els.searchInput.value = tagParam;
+                this.state.searchQuery = tagParam.toLowerCase();
+            }
         }
 
-        // Nav Tabs (Categorie)
-        const tabs = document.querySelectorAll('.nav-tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                if(tab.getAttribute('onclick')) return; 
-
-                if(tab.getAttribute('id') === 'btn-bio') {
-                    this.openBioModal();
-                    return;
-                }
-
-                tabs.forEach(t => {
-                    if(t.getAttribute('id') !== 'btn-bio') t.classList.remove('active');
-                });
-                tab.classList.add('active');
-                this.state.activeCategory = tab.dataset.category || 'all';
-                this.filterList();
-                document.getElementById('main-content').scrollIntoView({behavior: 'smooth', block: 'start'});
-            });
-        });
-
-        // Forza primo rendering!
         this.filterList();
     }
 
-    set3DInteraction(isActive) {
-        if (this.sceneApp && this.sceneApp.controls) {
-            this.sceneApp.controls.enabled = isActive;
+    setFilter(type, value) {
+        if (type === 'search') {
+            this.state.searchQuery = value.toLowerCase();
+            this.filterList();
         }
     }
-
-    // --- SEARCH LOGIC ---
 
     filterList() {
         const term = this.state.searchQuery.trim();
-        const cat = this.state.activeCategory;
         
-        let pool = this.db;
-        
-        // 1. Filtro Categoria ("Faceted logic" deterministico da build.py)
-        if (cat !== 'all') {
-            pool = pool.filter(i => i.game_type === cat);
-        }
-        
-        // 2. Testo Ricerca
+        // Always filter out normative items for the main grid
+        const baseItems = this.db.filter(item => item.type !== 'normativa');
+
         if (!term) {
-            this.state.filteredItems = pool;
+            this.state.filteredItems = baseItems;
         } else {
-            this.state.filteredItems = pool.filter(item =>
-                item.title.toLowerCase().includes(term) ||
-                (item.tags && item.tags.some(t => t.toLowerCase().includes(term)))
-            );
+            this.state.filteredItems = baseItems.filter(item => {
+                const title = item.title?.toLowerCase() || '';
+                const excerpt = item.excerpt?.toLowerCase() || '';
+                const tags = (item.tags || []).map(t => t.toLowerCase());
+                return title.includes(term) || excerpt.includes(term) || tags.some(t => t.includes(term));
+            });
         }
         
-        this.resetListRender();
+        this.resetGrid();
     }
 
-    // --- RENDERING STRATEGY ---
-
-    resetListRender() {
-        this.els.listGrid.innerHTML = '';
+    resetGrid() {
+        this.els.grid.innerHTML = '';
         this.state.renderedCount = 0;
+        
+        // Sentinel for infinite scroll
+        if (this.sentinel) this.sentinel.remove();
         this.sentinel = document.createElement('div');
-        this.sentinel.style.height = '10px';
+        this.sentinel.className = 'sentinel';
+        this.sentinel.style.height = '1px';
         this.sentinel.style.width = '100%';
+        
         this.renderNextChunk();
     }
 
     renderNextChunk() {
         const { filteredItems, renderedCount, CHUNK_SIZE } = this.state;
         const total = filteredItems.length;
+        
         if (renderedCount >= total) return;
 
         const nextBatch = filteredItems.slice(renderedCount, renderedCount + CHUNK_SIZE);
         const fragment = document.createDocumentFragment();
 
+        const themeColors = ['blue', 'green', 'purple', 'red', 'teal', 'yellow'];
+
         nextBatch.forEach((item, idx) => {
-            const card = this.createCardDOM(item);
-            if (renderedCount === 0) card.style.animationDelay = `${Math.min(idx * 0.03, 0.5)}s`;
+            const colorIndex = (renderedCount + idx) % themeColors.length;
+            const themeColor = themeColors[colorIndex];
+            const card = this.createCardDOM(item, themeColor);
+            
+            // Staggered animation for the first batch
+            if (renderedCount === 0) {
+                card.style.animationDelay = `${idx * 0.05}s`;
+            }
             fragment.appendChild(card);
         });
 
-        if (this.sentinel) this.sentinel.remove();
-        this.els.listGrid.appendChild(fragment);
-        this.els.listGrid.appendChild(this.sentinel);
+        this.els.grid.appendChild(fragment);
+        this.els.grid.appendChild(this.sentinel);
         this.state.renderedCount += nextBatch.length;
 
         this.observer.disconnect();
-        if (this.state.renderedCount < total) this.observer.observe(this.sentinel);
-    }
-
-    // --- HELPERS ---
-    hashString(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = (hash << 5) - hash + str.charCodeAt(i);
-            hash |= 0;
+        if (this.state.renderedCount < total) {
+            this.observer.observe(this.sentinel);
         }
-        return Math.abs(hash);
     }
 
-    createCardDOM(item) {
+    getIcon(type, label = '') {
+        const icons = {
+            app: `<svg class="icon" viewBox="0 0 24 24"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3zM6 3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3 3 3 0 0 1-3-3V6a3 3 0 0 1 3-3z"/></svg>`,
+            document: `<svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>`,
+            link: `<svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
+            image: `<svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+            infographic: `<svg class="icon" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>`,
+            normativa: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+            note: `<svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`
+        };
+
+        if (label.includes('Correttore')) return `<svg class="icon" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3-3.5 3.5z"/></svg>`;
+        if (label.includes('Mappa')) return `<svg class="icon" viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`;
+        
+        return icons[type] || icons.app;
+    }
+
+    categorizeTags(tags = []) {
+        const categories = { class: null, competencies: [], topics: [] };
+        tags.forEach(t => {
+            const tag = t.trim();
+            if (/\d\s[A-Z]+/.test(tag)) categories.class = tag;
+            else if (tag.includes(':') || tag.includes('_')) {
+                // Pulizia descrittore competenza: MAT_A03: TESTO -> Riserva il testo pulito
+                let text = tag.split(':').pop().trim();
+                text = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+                if (text.length > 50) text = text.substring(0, 47) + '...';
+                categories.competencies.push({ code: tag.split(':')[0], text: text });
+            }
+            else categories.topics.push(tag);
+        });
+        return categories;
+    }
+
+    getCleanLabel(label = '') {
+        const key = label.toLowerCase().replace(/\s+/g, '_');
+        return this.semanticLabels[key] || label;
+    }
+
+    getClassTheme(className) {
+        // Mappatura Artistica Desaturata
+        const map = {
+            '1 EL': { hue: 200, name: 'azure' },
+            '2 EL': { hue: 140, name: 'sage' },
+            '3 EL': { hue: 280, name: 'lavender' },
+            '4 EL': { hue: 180, name: 'mint' },
+            '5 EL': { hue: 40, name: 'sand' },
+            '1 MEC': { hue: 220, name: 'slate' },
+            '2 MEC': { hue: 210, name: 'ocean' },
+            '3 MEC': { hue: 10, name: 'clay' },
+            '4 MEC': { hue: 160, name: 'forest' },
+            '5 MEC': { hue: 80, name: 'olive' },
+            '2 GP': { hue: 340, name: 'rose' },
+            '2 GR': { hue: 300, name: 'mauve' }
+        };
+        const theme = map[className] || { hue: 240, name: 'neutral' };
+        return {
+            bg: `hsl(${theme.hue}, 20%, 85%)`,
+            fg: `hsl(${theme.hue}, 40%, 25%)`,
+            border: `hsl(${theme.hue}, 25%, 75%)`
+        };
+    }
+
+    createCardDOM(item, themeColor) {
         const el = document.createElement('div');
-        el.className = 'project-card';
-        el.tabIndex = 0; // A11y focusable
+        el.className = 'card animate-in';
+        el.setAttribute('data-color', themeColor);
+        
+        const categories = this.categorizeTags(item.tags);
+        const classTheme = categories.class ? this.getClassTheme(categories.class) : null;
 
-        let hue;
-        let glowColor;
-        let badgeHTML = '';
-
-        if (item.game_type === 'arcade') { 
-            hue = 340; glowColor = 'rgba(244, 63, 94, 0.2)'; 
-            badgeHTML = `<div style="display:inline-block; line-height:1; background:#e11d48; color:white; padding:4px 10px; font-size:0.75rem; border-radius:12px; font-weight:bold;">🎮 Arcade</div>`;
-        } 
-        else if (item.game_type === 'memory') { 
-            hue = 150; glowColor = 'rgba(16, 185, 129, 0.2)'; 
-            badgeHTML = `<div style="display:inline-block; line-height:1; background:#059669; color:white; padding:4px 10px; font-size:0.75rem; border-radius:12px; font-weight:bold;">🃏 Memory</div>`;
-        } 
-        else if (item.game_type === 'sim') { 
-            hue = 190; glowColor = 'rgba(14, 165, 233, 0.2)'; 
-            badgeHTML = `<div style="display:inline-block; line-height:1; background:#0284c7; color:white; padding:4px 10px; font-size:0.75rem; border-radius:12px; font-weight:bold;">🧊 Simulatore</div>`;
-        } 
-        else if (item.game_type === 'document') { 
-            hue = 220; glowColor = 'rgba(79, 70, 229, 0.3)'; 
-            badgeHTML = `<div style="display:inline-block; line-height:1; background:#4f46e5; color:white; padding:4px 10px; font-size:0.75rem; border-radius:12px; font-weight:bold;">📄 Verifica</div>`;
-        }
-        else { 
-            hue = this.hashString(item.title) % 360; glowColor = `hsla(${hue}, 40%, 30%, 0.3)`; 
-            badgeHTML = '';
+        if (classTheme) {
+            el.style.setProperty('--class-bg', classTheme.bg);
+            el.style.setProperty('--class-fg', classTheme.fg);
+            el.style.setProperty('--class-border', classTheme.border);
         }
 
-        el.style.backgroundColor = `hsla(${hue}, 30%, 8%, 0.8)`;
-        el.style.borderColor = glowColor;
-        // el.style.boxShadow = `0 4px 15px ${glowColor}`; // Rimossa per look più flat/glass
+        const typeLabels = {
+            app: 'Laboratorio',
+            document: 'Verifica',
+            normativa: 'Normativa',
+            link: 'Risorsa',
+            image: 'Visual',
+            infographic: 'Infografica'
+        };
 
-        const tagsHtml = (item.tags || []).slice(0, 6).map(t => {
-            if (t.includes(':')) {
-                // Badge per Competenze Istituzionali
-                const parts = t.split(':');
-                const id = parts[0];
-                const name = parts[1];
-                return `<button class="filter-tag badge-institutional" data-tag="${t}" title="${name}">✦ ${id}</button>`;
-            }
-            if (t.match(/^[1-5]\s?[A-Z]{2,3}(\/[1-5]\s?[A-Z]{2,3})?$/i) || t.match(/^(Biennio|Triennio|Trasversale)$/i)) {
-                // I codici classe non li mettiamo qui se li mettiamo nel badge top, 
-                // ma lasciamoli comunque per filtraggio se l'utente clicca
-                return `<button class="filter-tag badge-class" data-tag="${t}">${t}</button>`;
-            }
-            // Hashtag standard
-            return `<button class="filter-tag" data-tag="${t}">#${t.toLowerCase()}</button>`;
-        }).join('');
+        const competenciesHtml = categories.competencies.slice(0, 3).map(c => `
+            <div class="competency-item">
+                <span class="comp-dot"></span>
+                <span class="comp-text"><strong>${c.code}:</strong> ${c.text}</span>
+            </div>
+        `).join('');
 
-        const classTag = (item.tags || []).find(t => t.match(/^[1-5]\s?[A-Z]{2,3}(\/[1-5]\s?[A-Z]{2,3})?$/i) || t.match(/^(Biennio|Triennio|Trasversale)$/i));
-        const classBadge = classTag ? `<div class="filter-tag badge-class" style="margin:0; cursor:default;">${classTag}</div>` : '';
-
-        const bgHtml = item.thumbnail ? `<div class="card-bg" style="background-image: url('${item.thumbnail}')"></div>` : '';
-
-        // Call To Action Specifica (Richiesta Task-Oriented)
-        let ctaText = "Esplora Contenuto";
-        if (item.type === 'app' || !item.type) ctaText = "Apri Laboratorio";
-        else if (item.game_type === 'document') ctaText = "Apri Verifica";
-        else if (item.type === 'document' || item.type === 'note' || item.url.endsWith('.pdf')) ctaText = "Vedi Documento";
-
-        // Gestione versioni multiple (per Verifiche Raggruppate)
+        const topicsHtml = categories.topics.slice(0, 3).map(t => `<button class="topic-chip" onclick="window.setGlobalFilter('${t.replace(/'/g, "\\'")}')">${t}</button>`).join('');
+        
         let versionsHtml = '';
-        if (item.versions && item.versions.length > 1) {
-            const vlinks = item.versions.map((v, i) => {
-                const label = v.label || `Fila ${String.fromCharCode(65 + i)}`;
-                let icon = '📄';
-                if (label.includes('Correttore')) icon = '🔑';
-                else if (label.includes('Mappa')) icon = '🗺️';
-                else if (label.includes('Recupero')) icon = '🔄';
-
-                return `
-                    <a href="${v.url}" target="_blank" class="version-btn" 
-                       style="display:inline-flex; align-items:center; gap:6.4px; padding:8px 14px; border-radius:12px; background:rgba(255,255,255,0.05); color:#fff; text-decoration:none; font-size:0.85rem; font-weight:600; border:1px solid rgba(255,255,255,0.1); transition:all 0.2s;">
-                       <span style="opacity:0.7;">${icon}</span> ${label}
-                    </a>`;
-            }).join('');
-            
+        if (item.versions && item.versions.length > 0) {
             versionsHtml = `
-                <div style="margin-bottom:24px; padding:16px; background:rgba(255,255,255,0.03); border-radius:16px; border:1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.15em; color:#666; margin-bottom:12px; font-weight:800;">Risorse Disponibili</div>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px;">${vlinks}</div>
-                </div>`;
-        }
-
-        el.innerHTML = `
-            ${bgHtml}
-            <div class="card-overlay"></div>
-            <div class="card-content-wrap">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    ${badgeHTML}
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <div class="card-date">${item.date || 'Recente'}</div>
-                        ${classBadge}
+                <div class="version-selector">
+                    <span class="version-label">Varianti</span>
+                    <div class="version-buttons">
+                        ${item.versions.map((v, i) => `
+                            <a href="${v.url}" target="_blank" class="v-btn">
+                                ${this.getCleanLabel(v.label) || ('V' + (i+1))}
+                            </a>
+                        `).join('')}
                     </div>
                 </div>
-                <h3>${item.title}</h3>
-                <p>${item.excerpt || item.description || 'Nessuna descrizione.'}</p>
-                
-                ${versionsHtml}
+            `;
+        } else {
+            versionsHtml = `
+                <a href="${item.url}" target="_blank" class="main-cta-btn">
+                    Esplora Attività 
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            `;
+        }
 
-                <div class="card-tags">${tagsHtml}</div>
-                
-                <div style="margin-top:auto;">
-                    <button class="card-cta">${item.icon || '🚀'} ${ctaText}</button>
+        const bgStyle = item.thumbnail ? `style="background-image: url('${item.thumbnail}')"` : '';
+
+        el.innerHTML = `
+            <div class="card-bg" ${bgStyle}></div>
+            <div class="card-overlay"></div>
+            
+            <div class="card-content">
+                <div class="card-top-meta">
+                    <span class="type-badge">${typeLabels[item.type] || 'Attività'}</span>
+                    ${categories.class ? `<span class="class-badge">${categories.class}</span>` : ''}
+                </div>
+
+                <div class="card-main">
+                    <h3 class="card-title">${item.title}</h3>
+                    <p class="card-desc">${item.excerpt || ''}</p>
+                </div>
+
+                <div class="card-competencies">
+                    ${competenciesHtml}
+                </div>
+
+                <div class="card-footer">
+                    <div class="topics-pills">${topicsHtml}</div>
+                    ${versionsHtml}
                 </div>
             </div>
         `;
 
         el.onclick = (e) => {
-            // Se ho cliccato un tag, setto il filtro invece che navigare!
-            if (e.target.classList.contains('filter-tag')) {
-                e.stopPropagation();
-                e.preventDefault();
-                const tag = e.target.dataset.tag;
-                if (this.els.searchInput) {
-                    if (this.els.searchInput.value === tag) {
-                        this.els.searchInput.value = ''; // Toggle off
-                    } else {
-                        this.els.searchInput.value = tag;
-                    }
-                    this.els.searchInput.dispatchEvent(new Event('input')); // trigga il ricalcolo nativo
-                    document.getElementById('main-content').scrollIntoView({behavior: 'smooth', block: 'start'});
-                }
-                return;
-            }
+            if (e.target.closest('.v-btn')) return; 
             
-            // Se ho cliccato un pulsante versione, lascia che l'evento <a> faccia il suo lavoro
-            if (e.target.closest('.version-btn')) {
-                e.stopPropagation();
-                return;
+            if (['image', 'infographic', 'video'].includes(item.type)) {
+                e.preventDefault();
+                this.openModal(item);
+            } else {
+                window.open(item.url, item.url.startsWith('http') || item.url.endsWith('.pdf') ? '_blank' : '_self');
             }
+        };
 
-            this.handleItemClick(item);
-        };
-        
-        el.onkeydown = (e) => {
-             if (e.key === 'Enter') this.handleItemClick(item);
-        };
-        
         return el;
     }
 
-    handleItemClick(item) {
-        if (item.url.startsWith('http')) {
-            window.open(item.url, '_blank');
-        } else if (item.type === 'app' || !item.type) {
-            window.location.href = item.url;
-        } else if (item.url.endsWith('.pdf')) {
-            window.open(item.url, '_blank');
-        } else {
-            this.openModal(item);
-        }
-    }
-
     openModal(item) {
-        this.els.modalBox.innerHTML = '';
         let content = '';
-        if (item.type === 'video') content = `<video controls autoplay style="width:100%; border-radius:16px;"><source src="${item.url}" type="video/mp4"></video>`;
-        else if (item.type === 'image' || item.type === 'infographic') content = `<img src="${item.url}" style="max-width:100%; max-height:85vh; border-radius:16px; display:block; margin:auto;">`;
-        else content = `<iframe src="${item.url}" style="width:100%; height:80vh; border:none; border-radius:16px; background:white;"></iframe>`;
-
-        this.els.modalBox.innerHTML = content;
+        if (item.type === 'image' || item.type === 'infographic') {
+            content = `<img src="${item.url}" style="max-width:100%; max-height:80vh; border-radius:12px; display:block; margin:0 auto;">`;
+        } else if (item.type === 'video') {
+            content = `<video src="${item.url}" controls autoplay style="width:100%; border-radius:12px;"></video>`;
+        }
+        
+        this.els.modalContent.innerHTML = content;
         this.els.modal.classList.add('active');
-        // Interaction stays ENABLED
+        document.body.style.overflow = 'hidden';
     }
 
     closeModal() {
         this.els.modal.classList.remove('active');
-        this.els.modalBox.innerHTML = '';
-        this.set3DInteraction(true);
-    }
-
-    openBioModal() {
-        this.els.modalBox.innerHTML = '';
-        
-        const bioMarkdown = `
-### **Bio**
-Federico De Benedictis è un docente di ruolo di Matematica presso l'Istituto Professionale "E. Orfini" di Foligno. Laureato in Ingegneria per l'Ambiente ed il Territorio, ha maturato una consolidata esperienza nelle metodologie STEM e nella progettazione didattica supportata da tecnologie digitali. Opera attivamente come docente esperto e formatore PNRR per la transizione digitale e la riduzione dei divari negli apprendimenti. Il suo approccio multidisciplinare unisce matematica, fisica, tecnologia e arte in un modello di apprendimento visivo e sperimentale.
-
----
-
-### **Il Senso dell'Hub**
-Questo ecosistema digitale è stato progettato per centralizzare le attività laboratoriali svolte all'IPIA Orfini, trasformando il caos creativo in strumenti concreti e accessibili. L'hub risponde a finalità specifiche:
-
-* **Continuità e Accessibilità:** Permette agli studenti di fruire dei materiali didattici, come UDA e verifiche parametriche, direttamente dai propri dispositivi personali.
-* **Didattica Inclusiva:** Offre supporti multisensoriali e strumenti digitali personalizzati per facilitare l'apprendimento e ridurre il carico cognitivo di studenti con DSA e ADHD.
-* **Ricerca e Sperimentazione:** Funge da laboratorio per l'integrazione di AI generativa, pensiero computazionale e casi studio reali (Problem Based Learning).
-* **Etica Open Source:** Promuove l'uso esclusivo di software libero e tecnologie accessibili per un'educazione digitale sostenibile e priva di barriere economiche.
-
----
-
-### **Modellazione e Stampa 3D**
-La modellazione algoritmica e la fabbricazione digitale sono pilastri fondamentali del laboratorio. Le competenze spaziano dalla progettazione parametrica con OpenSCAD alla programmazione didattica con Python e p5.js, fino allo slicing e alla stampa 3D professionale con PrusaSlicer. L'attività integra inoltre l'uso di hardware aperto come Arduino e Raspberry Pi per rendere tangibili i concetti astratti attraverso la creazione di prototipi fisici.
-`;
-
-        const htmlContent = window.marked ? window.marked.parse(bioMarkdown) : bioMarkdown;
-        
-        const cardUI = `
-            <div style="background: rgba(10, 20, 30, 0.95); border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; color: #ddd; max-height: 85vh; overflow-y: auto; text-align: left; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom: 2px solid rgba(0, 188, 212, 0.3); padding-bottom: 15px; margin-bottom: 20px; flex-wrap:wrap; gap:10px;">
-                    <h2 style="font-family:'Syne', sans-serif; font-size:2rem; color:#fff; margin:0; line-height:1.1;">Federico De Benedictis</h2>
-                    <span style="background:rgba(255,64,129,0.2); color:#ff4081; padding:5px 15px; border-radius:20px; font-weight:bold; font-size:0.85rem; border:1px solid #ff4081;">Docente STEM & Maker</span>
-                </div>
-                <div class="bio-content" style="line-height:1.7; font-size:1.05rem;">
-                    ${htmlContent}
-                </div>
-                <div style="margin-top:40px; display:flex; justify-content:center;">
-                    <a href="https://instagram.com/meltingmath" target="_blank" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:white; font-weight:bold; padding: 12px 30px; border-radius:30px; text-decoration:none; display:flex; align-items:center; gap:10px; transition: transform 0.2s; box-shadow: 0 8px 25px rgba(220, 39, 67, 0.4);">
-                        📷 Esplora il Dietro le Quinte su @meltingmath
-                    </a>
-                </div>
-            </div>
-            
-            <style>
-                .bio-content h3 { color: #00bcd4; margin-top: 2em; margin-bottom: 0.8em; font-family:'Syne', sans-serif; font-size: 1.4rem;}
-                .bio-content ul { padding-left: 20px; margin-top: 10px; }
-                .bio-content li { margin-bottom: 10px; }
-                .bio-content hr { border: none; border-top: 1px dashed rgba(255,255,255,0.2); margin: 30px 0; }
-                .bio-content p { margin-bottom: 15px; }
-                .bio-content strong { color: #fff; }
-                #modal-box::-webkit-scrollbar { width: 8px; }
-                #modal-box::-webkit-scrollbar-thumb { background: rgba(0, 188, 212, 0.5); border-radius: 10px; }
-            </style>
-        `;
-        
-        this.els.modalBox.innerHTML = cardUI;
-        this.els.modal.classList.add('active');
-        this.set3DInteraction(false);
+        this.els.modalContent.innerHTML = '';
+        document.body.style.overflow = '';
     }
 }

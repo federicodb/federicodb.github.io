@@ -37,6 +37,12 @@ export class GalaxyScene {
         const w = this.container.clientWidth;
         const h = this.container.clientHeight;
 
+        if (w === 0 || h === 0) {
+            // Se le dimensioni sono zero, aspettiamo il prossimo frame o un resize
+            requestAnimationFrame(() => this.init());
+            return;
+        }
+
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x000000); // Pure Black for Void
         this.scene.fog = new THREE.FogExp2(0x000000, this.config.fogDensity);
@@ -44,7 +50,7 @@ export class GalaxyScene {
         this.camera = new THREE.PerspectiveCamera(65, w / h, 2, 2500);
         this.camera.position.set(0, 30, 130);
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
         this.renderer.setSize(w, h);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.domElement.style.position = 'absolute';
@@ -453,6 +459,7 @@ export class GalaxyScene {
             const tagItem = this.data[i];
             const wrapper = document.createElement('div');
             wrapper.className = 'galaxy-tag';
+            wrapper.style.pointerEvents = 'auto'; // Ensure it receives clicks
             const content = document.createElement('span');
             content.className = `tag-content font-${(Math.floor(Math.random() * 10) + 1)}`;
             content.textContent = tagItem.text;

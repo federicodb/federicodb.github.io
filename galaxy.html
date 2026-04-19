@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esplora Orfini Math Lab - Galaxy View</title>
+    
+    <!-- Scripts & Styles -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #galaxy-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Overlay UI */
+        .galaxy-ui {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .galaxy-ui * {
+            pointer-events: auto;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: var(--text-on-accent);
+            transform: translateX(-5px);
+        }
+
+        .galaxy-controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Three.js Specific Overrides for GalaxyScene */
+        .galaxy-tag {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tag-content {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            white-space: nowrap;
+            display: block;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .math-debris {
+            position: absolute;
+            pointer-events: none;
+            white-space: nowrap; /* Prevent formula wrap */
+        }
+
+        .debris-hex {
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .debris-sym {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: white;
+            white-space: nowrap; /* Prevent formula wrap */
+        }
+    </style>
+    
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <div id="galaxy-container"></div>
+
+    <div class="galaxy-ui">
+        <a href="index.html" class="back-btn">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Torna alla Home
+        </a>
+    </div>
+
+    <div class="galaxy-controls">
+        <div class="control-btn" id="reset-cam" title="Resetta Visuale">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </div>
+    </div>
+
+    <!-- Data & Logic -->
+    <script src="database.js"></script>
+    <script type="module">
+        import { GalaxyScene } from './content/assets/js/modules/GalaxyScene.js';
+
+        // Prepara i dati per la galassia (conteggio tag concettuali)
+        function prepareGalaxyData(data) {
+            const tagCounts = {};
+            
+            // Regex per identificare tag "sporchi" (codici competenze, classi, etc.)
+            // Escludiamo tag che contengono numeri, due punti o underscore
+            const isKeyword = (tag) => {
+                const t = tag.trim();
+                if (/\d/.test(t)) return false; // No classi (es. 4 EL)
+                if (t.includes(':') || t.includes('_')) return false; // No competenze (es. MAT_...)
+                if (t.length < 3) return false; // No tag troppo brevi
+                return true;
+            };
+
+            data.filter(item => item.type === 'app').forEach(item => {
+                if (item.tags) {
+                    item.tags.forEach(tag => {
+                        if (isKeyword(tag)) {
+                            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                        }
+                    });
+                }
+            });
+            return Object.entries(tagCounts).map(([text, count]) => ({ text, count }));
+        }
+
+        const filteredApps = db.filter(item => item.type === 'app');
+        const galaxyData = prepareGalaxyData(filteredApps);
+        
+        // Inizializza la scena
+        const scene = new GalaxyScene('galaxy-container', galaxyData, filteredApps, (selected) => {
+            // Quando un tag viene cliccato, torna alla home filtrando per quel tag
+            window.location.href = `index.html?tag=${encodeURIComponent(selected.text)}`;
+        });
+
+        document.getElementById('reset-cam').onclick = () => scene.resetCamera();
+    </script>
+</body>
+</html>

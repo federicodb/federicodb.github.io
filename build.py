@@ -5,6 +5,19 @@ from datetime import datetime
 import html
 import subprocess
 
+# --- GESTIONE VARIABILI D'AMBIENTE (TENTATIVO .ENV) ---
+env_path = os.path.join(os.path.dirname(__file__), ".env")
+if os.path.exists(env_path):
+    with open(env_path, "r", encoding="utf-8") as f:
+        for line in f:
+            if line.strip() and not line.startswith("#"):
+                try:
+                    k, v = line.strip().split("=", 1)
+                    os.environ[k.strip()] = v.strip()
+                except: pass
+
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+
 # --- CONFIGURAZIONE ---
 CONTENT_DIR = "content"
 DB_FILE = "database.js"
@@ -12,6 +25,7 @@ SITEMAP_FILE = "sitemap.xml"
 OUTPUT_VAR_NAME = "db"
 BASE_URL = "https://federicodb.github.io/"
 RIFORMA_JSON_PATH = "riforma2017.json"
+
 
 # Caricamento Riforma 2017
 def load_riforma_data():
@@ -36,7 +50,8 @@ TYPE_MAP = {
     "verifiche": "document",
     "images": "image",
     "notes": "note",
-    "links": "link"
+    "links": "link",
+    "rif_norm_2017": "normativa"
 }
 
 def extract_markdown_meta(file_path):
@@ -264,6 +279,179 @@ def infer_classes_from_competencies(tags):
         
     return tags
 
+# --- DEEP CONTENT SCANNER (Motore Euristico Offline) ---
+class DeepContentScanner:
+    """ 
+    Esplora immagini e PDF per estrarre parole chiave senza IA. 
+    Usa Tesseract per le immagini se installato, altrimenti si affida a pdftotext.
+    """
+    def __init__(self):
+        self.knowledge_base = {
+            "3 MEC": ["parabola", "retta", "geometria analitica", "sistemi", "equazioni fratte"],
+            "4 EL": ["funzioni", "dominio", "segno", "disequazioni", "goniometria", "seno", "coseno", "fasori", "corrente", "onda"],
+            "5 EL": ["limiti", "derivate", "caos", "attrattori", "integrali", "max", "min"],
+            "1 EL / 2 EL": ["frazioni", "percentuali", "insiemi", "polinomi", "scomposizioni", "mcd", "mcm", "algebra", "geometria"]
+        }
+        
+        self.keywords_dictionary = [
+            "equazion", "disequazion", "funzion", "derivata", "limite", "dominio", 
+            "grafico", "parabola", "retta", "polinom", "scomposizion", "frizion", 
+            "trigonometri", "seno", "coseno", "fasor", "corrente", "elettric", 
+            "pitagora", "geometria", "insiem", "probabilità", "statistica"
+        ]
+
+    def scan_file(self, file_path):
+        """ Scansiona un file e restituisce il testo grezzo estratto. """
+        ext = os.path.splitext(file_path)[1].lower()
+        extracted_text = ""
+        
+        if ext == ".pdf":
+            try:
+                result = subprocess.run(["pdftotext", file_path, "-"], capture_output=True, text=True, timeout=5)
+                extracted_text = result.stdout
+            except: pass
+            
+        elif ext in [".png", ".jpg", ".jpeg"]:
+            # Tenta OCR tramite Tesseract (Richiede pytesseract e tesseract-ocr)
+            try:
+                import pytesseract
+                from PIL import Image
+                extracted_text = pytesseract.image_to_string(Image.open(file_path), lang='ita+eng')
+            except ImportError:
+                print(f"  ⚠️ OCR saltato per {os.path.basename(file_path)}: Moduli Python 'pytesseract' o 'Pillow' mancanti.")
+            except Exception as e:
+                pass # Tesseract non installato a livello OS
+
+        return extracted_text
+
+    def analyze_content(self, text, baseline_topics):
+        """ Legge il testo estratto e deduce la classe e veri argomenti (VIA GEMINI AI OPPURE OFFLINE). """
+        if not text.strip(): return None, baseline_topics, ""
+        
+        text_lower = text.lower()
+        found_class = None
+        new_topics = list(baseline_topics)
+        
+        # --- GEMINI AI EXTRACTION (Se chiave presente) ---
+        global GEMINI_API_KEY
+        if GEMINI_API_KEY and GEMINI_API_KEY != "inserisci_qui_la_tua_chiave_selettivamente":
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=GEMINI_API_KEY)
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                prompt = (
+                    "Sei un assistente didattico esperto di matematica e fisica in un istituto tecnico italiano. "
+                    "Leggi il testo crudo seguente estratto da un file PDF o Immagine. "
+                    "Restituisci UNICAMENTE un JSON valido senza formattazioni markdown, contenente: "
+                    "{ \"classe\": \"Una stringa esatta tra '1 EL', '2 EL', '3 MEC', '4 EL', '5 EL', '2 GP' oppure null\", "
+                    "\"topics\": [ \"Lista\", \"Di\", \"Argomenti\", \"Chiave\" (Massimo 4, capitalizzati) ], "
+                    "\"sintesi\": \"Una frase altamente professionale di 10 parole che riassume sinteticamente i temi trattati. (Esempio: Argomenti trattati: Equazioni differenziali e Fisica nucleare)\" } \n\n"
+                    "Testo crudo:\n" + text[:4000]
+                )
+                response = model.generate_content(prompt)
+                # Cleanup robusto da JSON generato da LLM
+                clean_json = response.text.replace("```json", "").replace("```", "").strip()
+                res = json.loads(clean_json)
+                
+                final_topics = list(set([t.capitalize() for t in res.get("topics", [])] + baseline_topics))
+                sintesi = res.get("sintesi", "")
+                
+                print("  ✨ Gemini ha analizzato con successo il documento.")
+                return res.get("classe"), final_topics, sintesi
+            except Exception as e:
+                print(f"  ⚠️ Errore o Timeout API Gemini (fallback su locale euristico in corso): {e}")
+        
+        # --- OFFLINE FALLBACK ENGINE ---
+        # 1. Deduzione Classe dai pattern
+        for classe, keywords in self.knowledge_base.items():
+            for kw in keywords:
+                if kw in text_lower:
+                    found_class = classe
+                    break
+            if found_class: break
+            
+        # 2. Estrazione Keywords Ricorrenti (Frequenza)
+        word_counts = {}
+        for kw in self.keywords_dictionary:
+            count = len(re.findall(kw, text_lower))
+            if count > 0:
+                # Ricostruzione della parola in leggibile
+                true_word = next((w for w in SEMANTIC_MAP.values() if w.lower().startswith(kw)), kw.capitalize())
+                if true_word not in new_topics:
+                    new_topics.append(true_word)
+                    
+        # 3. Generazione di una sintesi organica basata sui contenuti trovati
+        sintesi = ""
+        if new_topics:
+            sintesi = f"Punto focale sulle tematiche di: {', '.join(new_topics[:3])}."
+            
+        return found_class, list(set(new_topics)), sintesi
+
+scanner = DeepContentScanner()
+
+SEMANTIC_MAP = {
+    "eq": "Equazioni",
+    "diseq": "Disequazioni",
+    "sincos": "Seno e Coseno",
+    "gonio": "Goniometria",
+    "trigo": "Trigonometria",
+    "geom": "Geometria",
+    "lab": "Laboratorio",
+    "erroricomuni": "Evitare gli Errori Comuni",
+    "tart": "Generatore di Tartaglia",
+    "invaders": "Space Invaders",
+    "mcd": "Massimo Comune Divisore",
+    "mcm": "Minimo Comune Multiplo",
+    "caos": "Teoria del Caos",
+    "attrattori": "Attrattori",
+    "frazionarie": "Frazionarie",
+    "sistemi": "Sistemi",
+    "decodifica": "Decodifica",
+    "tattoo": "Tattoo Matematico",
+    "delta": "Delta",
+    "pip": "Picture in Picture",
+    "math": "Matematica"
+}
+
+def semantic_title_generator(raw_filename):
+    """ Interprete NLP per nomi file didattici. """
+    base = os.path.splitext(raw_filename)[0].lower()
+    
+    # 1. Filtro clean-up spazzatura file name
+    base = re.sub(r'(v\d+|bozza|final|copia|gemini|worksproperly)', '', base)
+    
+    # 2. Split separatori
+    base = base.replace('_', ' ').replace('-', ' ').replace('.', ' ')
+    
+    # 3. Spaziatura camelCase residua e TestoNumero (erroricomuni02 -> erroricomuni 02)
+    base = re.sub(r'([a-z])(\d+)', r'\1 \2', base)
+    
+    # 4. Traduzione
+    translated = []
+    for w in base.split():
+        if w in SEMANTIC_MAP:
+            translated.append(SEMANTIC_MAP[w])
+        elif len(w) > 2 or w.isdigit():
+            translated.append(w.capitalize())
+            
+    # 5. Formattazione moduli (es. 02 -> Parte 2)
+    parts = []
+    for w in translated:
+        if w.isdigit():
+            num = int(w)
+            if num > 1900 and num < 2100:
+                parts.append(str(num)) # È un anno
+            elif num > 100:
+                parts.append(str(num)) # Suffisso generico
+            else:
+                parts.append(f"(Parte {num})")
+        else:
+            parts.append(w)
+            
+    # Cleanup doppi spazi o stringa vuota
+    out = " ".join(parts).strip()
+    return out if out else "Strumento Espolrativo"
+
 # --- KNOWLEDGE BASE RIFORMA 2017 (Integrazione Dinamica) ---
 KEYWORD_TO_RIFORMA_ID = {
     # Matematica Generale
@@ -326,280 +514,290 @@ def map_topics_to_riforma(topics):
     return list(set(extra_tags))
 
 def main():
-    if not os.path.exists(CONTENT_DIR):
-        print(f"❌ Errore: Cartella '{CONTENT_DIR}' non trovata.")
-        return
-
     items = []
-    print(f"🔄 Scansione '{CONTENT_DIR}' in corso...")
+    print(f"🔄 Scansione '{CONTENT_DIR}' e altre cartelle in corso...")
 
-    # Scansione ricorsiva
-    for root, dirs, files in os.walk(CONTENT_DIR):
-        # Modifica in-place della lista dirs per escludere cartelle nascoste e assets dal walk
-        dirs[:] = [d for d in dirs if not d.startswith('.') and d != 'assets']
+    # Cartelle da scansionare
+    target_dirs = [CONTENT_DIR, "rif_norm_2017"]
 
-        # Determina la categoria basandosi sul percorso
-        path_parts = root.split(os.sep)
-        content_type = "unknown"
-        for part in reversed(path_parts):
-            if part in TYPE_MAP:
-                content_type = TYPE_MAP[part]
-                break
-        
-        if root == CONTENT_DIR:
+    for target_dir in target_dirs:
+        if not os.path.exists(target_dir):
+            print(f"⚠️ Cartella '{target_dir}' non trovata, salto.")
             continue
         
-        for filename in files:
-            file_path = os.path.join(root, filename)
+        # Scansione ricorsiva
+        for root, dirs, files in os.walk(target_dir):
+            # Modifica in-place della lista dirs per escludere cartelle nascoste e assets dal walk
+            dirs[:] = [d for d in dirs if not d.startswith('.') and d != 'assets']
+
+            # Determina la categoria basandosi sul percorso
+            path_parts = root.split(os.sep)
+            content_type = "unknown"
+            for part in reversed(path_parts):
+                if part in TYPE_MAP:
+                    content_type = TYPE_MAP[part]
+                    break
             
-            meta = None
+            if root == CONTENT_DIR:
+                continue
             
-            # CASO SPECIALE: Link Esterni (Solo JSON)
-            if content_type == "link":
-                if filename.endswith(".json"):
-                    try:
-                        with open(file_path, 'r', encoding='utf-8') as f:
-                            meta = json.load(f)
-                            # Se l'URL non è nel JSON (errore), lo ignoriamo
-                            if "url" not in meta:
-                                print(f"  ⚠️ Ignorato link senza URL: {filename}")
-                                continue
-                            # Normalizza
-                            if "description" in meta and "excerpt" not in meta: meta["excerpt"] = meta["description"]
-                    except Exception as e:
-                        print(f"  ⚠️ Errore JSON Link {filename}: {e}")
+            for filename in files:
+                file_path = os.path.join(root, filename)
+                
+                meta = None
+                
+                # CASO SPECIALE: Link Esterni (Solo JSON)
+                if content_type == "link":
+                    if filename.endswith(".json"):
+                        try:
+                            with open(file_path, 'r', encoding='utf-8') as f:
+                                meta = json.load(f)
+                                # Se l'URL non è nel JSON (errore), lo ignoriamo
+                                if "url" not in meta:
+                                    print(f"  ⚠️ Ignorato link senza URL: {filename}")
+                                    continue
+                                # Normalizza
+                                if "description" in meta and "excerpt" not in meta: meta["excerpt"] = meta["description"]
+                        except Exception as e:
+                            print(f"  ⚠️ Errore JSON Link {filename}: {e}")
+                    else:
+                        continue # Ignora file non json nella cartella links
+
+                # CASO STANDARD: File Media o App
                 else:
-                    continue # Ignora file non json nella cartella links
-
-            # CASO STANDARD: File Media o App
-            else:
-                # Ignora i file .json (sono metadati sidecar per i media)
-                if filename.endswith(".json"):
-                    continue
-                    
-                # Ignora file nascosti o di sistema
-                if filename.startswith("."):
-                    continue
-
-                # Strategia di estrazione in base al tipo
-                if content_type == "app" and filename.endswith(".html"):
-                    meta = extract_html_meta(file_path)
-                elif content_type == "note" and filename.endswith(".md"):
-                    meta = extract_markdown_meta(file_path)
-                    meta = extract_markdown_meta(file_path)
-                elif content_type != "app" and content_type != "note":
-                    # Per media files, cerca il JSON sidecar
-                    meta = extract_sidecar_meta(file_path)
-                    
-                    # Strategia avanzata: Estrazione testo reale dal PDF
-                    extracted_text = ""
-                    try:
-                        result = subprocess.run(["pdftotext", file_path, "-"], capture_output=True, text=True, timeout=5)
-                        extracted_text = result.stdout
-                    except Exception as e:
-                        print(f"  ⚠️ Errore pdftotext su {filename}: {e}")
-
-                    # --- PARSING AVANZATO FILENAME ---
-                    # Esempi: 2GP___verifica_31_marzo_2026_fila_A.pdf, verifica 2gp 24 feb 2026_fila A.pdf
-                    fn_clean = filename.lower().replace("___", " ").replace("_", " ").replace("-", " ")
-                    
-                    found_class = None
-                    class_match = re.search(r'\b([1-5])([a-z]{2,3})\b', fn_clean)
-                    if class_match:
-                        found_class = f"{class_match.group(1)} {class_match.group(2).upper()}"
-                    
-                    # Estrazione Data (anno opzionale)
-                    months_it = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 
-                                 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre',
-                                 'gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic']
-                    month_pattern = "|".join(months_it)
-                    date_match = re.search(rf'(\d{{1,2}})\s*({month_pattern})\s*(\d{{4}})?', fn_clean)
-                    
-                    day, month, year = "", "", ""
-                    file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
-                    
-                    if date_match:
-                        day, month, year = date_match.groups()
-                        if not year: year = str(file_mtime.year) 
-                        # Normalizza mese
-                        for m in ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic']:
-                            if month.startswith(m):
-                                idx = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'].index(m)
-                                month = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 
-                                         'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][idx]
-                                break
-                    else:
-                        # Fallback se non c'è data nel nome
-                        month = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'][file_mtime.month-1]
-                        year = str(file_mtime.year)
-                        day = str(file_mtime.day)
-                    
-                    # Estrazione Fila o Tipologia (spazio opzionale)
-                    fila_match = re.search(r'fila\s?([a-z0-9])', fn_clean)
-                    if fila_match:
-                        fila_label = f"Fila {fila_match.group(1).upper()}"
-                    elif "mappa" in fn_clean:
-                        lang_match = re.search(r'\b(it|en|ukr)\b', fn_clean)
-                        fila_label = f"Mappa {lang_match.group(1).upper()}" if lang_match else "Mappa"
-                    elif "correttore" in fn_clean:
-                        fila_label = "Correttore"
-                    elif "recupero" in fn_clean or "debito" in fn_clean:
-                        fila_label = "Recupero"
-                    else:
-                        fila_label = "Versione Unica"
-
-                    # --- ESTRAZIONE ARGOMENTI DAL TESTO ---
-                    topics = []
-                    subject = "Matematica" # Fallback
-                    duration = ""
-                    calc_info = ""
-
-                    # 1. Materia e Argomenti
-                    # Cerchiamo "Verifica di [Materia] [: -] [Argomenti]", "Mappa Operativa: [Argomenti]" o "Manuale di Analisi: [Argomenti]"
-                    subj_match = re.search(r'(?:Verifica di|Mappa Operativa|Manuale di Analisi)[:\s-]\s*([^:\- \n]+)', extracted_text, re.IGNORECASE)
-                    if subj_match:
-                        subject = subj_match.group(1).strip().capitalize()
-
-                    # Supporta sia il trattino che i due punti, e gestisce più righe
-                    subject_regex = r'(?:Verifica di|Mappa Operativa|Manuale di Analisi)\s*[^-\n:]*[:\-]\s*([^\n]+(?:\n\s*[^\n]+)?)'
-                    subject_match = re.search(subject_regex, extracted_text, re.IGNORECASE)
-                    if subject_match:
-                        topic_line = subject_match.group(1).replace('\n', ' ').strip()
-                        # Pulisce dalla riga successiva (es. se cattura Cognome/Nome)
-                        topic_line = re.split(r'Cognome:|Nome:|Istruzioni', topic_line, flags=re.IGNORECASE)[0].strip()
-                        # Pulisce dai punti finali e spazi extra
-                        topics = [t.strip().rstrip('.').capitalize() for t in re.split(r'[,;]', topic_line) if len(t.strip()) > 2]
-                    
-                    # 2. Durata
-                    dur_match = re.search(r'(?:durata|tempo a disposizione).*?(\d+)\s*minuti', extracted_text, re.IGNORECASE)
-                    if dur_match:
-                        duration = f"Durata: {dur_match.group(1)} min"
-
-                    # 3. Calcolatrice
-                    if re.search(r'calcolatrice\b.*?ammess|usare\s+la\s+calcolatrice', extracted_text, re.IGNORECASE):
-                        calc_info = "Calcolatrice ammessa"
-                    elif "sconsigliato" in extracted_text.lower() and "calcolatrice" in extracted_text.lower():
-                        calc_info = "Calcolatrice sconsigliata"
-
-                    # Fallback temi dal nome file
-                    raw_words = fn_clean[:-4].split()
-                    stopwords = ['verifica', 'fila', 'a', 'b', 'c', 'correttore', 'mappa', 'pdf', 'di', 'del', 'recupero', 'debito', 'it', 'en', 'ukr', 'classe', 'manuale', 'operativa'] + months_it
-                    # Filtra anche codici classe (es. 2el, 4gp)
-                    meaningful_words = [w for w in raw_words if w.lower() not in stopwords and not re.match(r'^\d+$', w) and not re.match(r'^[1-5][a-z]{2,3}$', w) and len(w) > 2]
-                    
-                    if not topics:
-                        topics = [w.capitalize() for w in meaningful_words[:3]]
-
-                    # Mappatura Competenze Riforma 2017
-                    riforma_tags = map_topics_to_riforma(topics)
-
-                    # Titolo formattato: "Verifica Classe 2GP, Marzo 2026"
-                    is_in_verifiche = "verifiche" in root.lower()
-                    if found_class:
-                        clean_title = f"{'Verifica ' if is_in_verifiche else ''}Classe {found_class}, {month} {year}"
-                    else:
-                        prefix = "Verifica " if is_in_verifiche else ""
-                        clean_title = prefix + " ".join(meaningful_words).title()
-                    
-                    # Excerpt: Narrativo e professionale
-                    topic_str = ", ".join(topics) if topics else ""
-                    parts = []
-                    
-                    if is_in_verifiche:
-                        if topic_str:
-                            parts.append(f"Verifica di {subject} su {topic_str}")
-                        else:
-                            parts.append(f"Verifica di {subject}")
-                    else:
-                        # Materiale didattico standard (Infografiche, Link, ecc.)
-                        if topics:
-                            parts.append(f"Approfondimento su {topic_str}")
-                        else:
-                            parts.append(meta.get("description", "Materiale didattico interattivo."))
+                    # Ignora i file .json (sono metadati sidecar per i media)
+                    if filename.endswith(".json"):
+                        continue
                         
-                    if duration and is_in_verifiche: parts.append(duration)
-                    if calc_info and is_in_verifiche: parts.append(calc_info)
-                    
-                    # Unisci le parti con il punto e spazio
-                    excerpt = ". ".join(parts).replace("..", ".") + "."
-                    if not topics and is_in_verifiche:
-                        excerpt = f"Verifica multimediale di {subject}."
-                    
-                    # Validazione minima data
-                    try:
-                        day_int = int(day) if day else 1
-                        if day_int > 31: day_int = 1 # Fallback semplice
-                        date_str = f"{year}-{['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'].index(month)+1:02d}-{day_int:02d}"
-                    except:
-                        date_str = file_mtime.strftime('%Y-%m-%d')
+                    # Ignora file nascosti o di sistema
+                    if filename.startswith("."):
+                        continue
 
-                    # --- NEW: Tagging Semantico Specializzato ---
-                    if "Mappa" in fila_label: topics.append("Mappa")
-                    if "Correttore" in fila_label: topics.append("Correttore")
-                    if "Recupero" in fila_label: topics.append("Recupero")
+                    # Strategia di estrazione in base al tipo
+                    if content_type == "app" and filename.endswith(".html"):
+                        meta = extract_html_meta(file_path)
+                    elif content_type == "note" and filename.endswith(".md"):
+                        meta = extract_markdown_meta(file_path)
+                    elif content_type != "app" and content_type != "note":
+                        # Per media files, cerca il JSON sidecar
+                        meta = extract_sidecar_meta(file_path)
+                        
+                        # Strategia avanzata: Estrazione testo reale dal PDF e Immagini (Motore Euristico)
+                        extracted_text = scanner.scan_file(file_path)
 
-                    # Aggiungi meta-tag per raggruppamento raffinato (Classe + DataEsatta + PrimoArgomento o SlugFilename)
-                    topic_slug = topics[0].lower().replace(" ", "_") if topics else "generica"
-                    fn_slug = "_".join(meaningful_words[:2]).lower() if not topics else ""
-                    group_ref = f"{found_class}_{date_str}_{topic_slug}_{fn_slug}".lower().replace(" ", "_").strip("_") if found_class else clean_title.lower()
-                    
-                    tags = list(set(topics + ([found_class] if found_class else [])))
+                        # --- PARSING AVANZATO FILENAME ---
+                        # Generazione semantica dal nome del file grezzo per il fallback
+                        semantic_filename = semantic_title_generator(filename)
+                        
+                        # Esempi: 2GP___verifica_31_marzo_2026_fila_A.pdf, verifica 2gp 24 feb 2026_fila A.pdf
+                        fn_clean = filename.lower().replace("___", " ").replace("_", " ").replace("-", " ")
+                        
+                        found_class = None
+                        class_match = re.search(r'\b([1-5])([a-z]{2,3})\b', fn_clean)
+                        if class_match:
+                            found_class = f"{class_match.group(1)} {class_match.group(2).upper()}"
+                        
+                        # Estrazione Data (anno opzionale)
+                        months_it = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 
+                                     'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre',
+                                     'gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic']
+                        month_pattern = "|".join(months_it)
+                        date_match = re.search(rf'(\d{{1,2}})\s*({month_pattern})\s*(\d{{4}})?', fn_clean)
+                        
+                        day, month, year = "", "", ""
+                        file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
+                        
+                        if date_match:
+                            day, month, year = date_match.groups()
+                            if not year: year = str(file_mtime.year) 
+                            # Normalizza mese
+                            for m in ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic']:
+                                if month.startswith(m):
+                                    idx = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'].index(m)
+                                    month = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 
+                                             'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'][idx]
+                                    break
+                        else:
+                            # Fallback se non c'è data nel nome
+                            month = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'][file_mtime.month-1]
+                            year = str(file_mtime.year)
+                            day = str(file_mtime.day)
+                        
+                        # Estrazione Fila o Tipologia (spazio opzionale)
+                        fila_match = re.search(r'fila\s?([a-z0-9])', fn_clean)
+                        if fila_match:
+                            fila_label = f"Fila {fila_match.group(1).upper()}"
+                        elif "mappa" in fn_clean:
+                            lang_match = re.search(r'\b(it|en|ukr)\b', fn_clean)
+                            fila_label = f"Mappa {lang_match.group(1).upper()}" if lang_match else "Mappa"
+                        elif "correttore" in fn_clean:
+                            fila_label = "Correttore"
+                        elif "recupero" in fn_clean or "debito" in fn_clean:
+                            fila_label = "Recupero"
+                        else:
+                            fila_label = "Versione Unica"
 
-                    meta = {
-                         "title": clean_title.strip(),
-                         "excerpt": excerpt,
-                         "tags": list(set([normalize_class_tag(t) for t in tags + riforma_tags])),
-                         "date": date_str,
-                         "group_ref": group_ref,
-                         "version_label": fila_label
-                    }
-            
-            if meta and content_type != "unknown":
-                # Aggiungi campi comuni calcolati
-                # Se l'URL non c'è (media locale), calcolalo. Se c'è (link esterno), usalo.
-                if "url" not in meta:
-                    meta["url"] = file_path.replace("\\", "/") # Path relativo per il web
+                        # --- ESTRAZIONE ARGOMENTI DAL TESTO ---
+                        topics = []
+                        subject = "Matematica" # Fallback
+                        duration = ""
+                        calc_info = ""
+
+                        # 1. Materia e Argomenti
+                        # Cerchiamo "Verifica di [Materia] [: -] [Argomenti]", "Mappa Operativa: [Argomenti]" o "Manuale di Analisi: [Argomenti]"
+                        subj_match = re.search(r'(?:Verifica di|Mappa Operativa|Manuale di Analisi)[:\s-]\s*([^:\- \n]+)', extracted_text, re.IGNORECASE)
+                        if subj_match:
+                            subject = subj_match.group(1).strip().capitalize()
+
+                        # Supporta sia il trattino che i due punti, e gestisce più righe
+                        subject_regex = r'(?:Verifica di|Mappa Operativa|Manuale di Analisi)\s*[^-\n:]*[:\-]\s*([^\n]+(?:\n\s*[^\n]+)?)'
+                        subject_match = re.search(subject_regex, extracted_text, re.IGNORECASE)
+                        if subject_match:
+                            topic_line = subject_match.group(1).replace('\n', ' ').strip()
+                            # Pulisce dalla riga successiva (es. se cattura Cognome/Nome)
+                            topic_line = re.split(r'Cognome:|Nome:|Istruzioni', topic_line, flags=re.IGNORECASE)[0].strip()
+                            # Pulisce dai punti finali e spazi extra
+                            topics = [t.strip().rstrip('.').capitalize() for t in re.split(r'[,;]', topic_line) if len(t.strip()) > 2]
+                        
+                        # 2. Durata
+                        dur_match = re.search(r'(?:durata|tempo a disposizione).*?(\d+)\s*minuti', extracted_text, re.IGNORECASE)
+                        if dur_match:
+                            duration = f"Durata: {dur_match.group(1)} min"
+
+                        # 3. Calcolatrice
+                        if re.search(r'calcolatrice\b.*?ammess|usare\s+la\s+calcolatrice', extracted_text, re.IGNORECASE):
+                            calc_info = "Calcolatrice ammessa"
+                        elif "sconsigliato" in extracted_text.lower() and "calcolatrice" in extracted_text.lower():
+                            calc_info = "Calcolatrice sconsigliata"
+
+                        # Fallback temi dal nome file
+                        raw_words = fn_clean[:-4].split()
+                        stopwords = ['verifica', 'fila', 'a', 'b', 'c', 'correttore', 'mappa', 'pdf', 'di', 'del', 'recupero', 'debito', 'it', 'en', 'ukr', 'classe', 'manuale', 'operativa'] + months_it
+                        # Filtra anche codici classe (es. 2el, 4gp)
+                        meaningful_words = [w for w in raw_words if w.lower() not in stopwords and not re.match(r'^\d+$', w) and not re.match(r'^[1-5][a-z]{2,3}$', w) and len(w) > 2]
+                        
+                        if not topics:
+                            topics = [w.capitalize() for w in meaningful_words[:3]]
+
+                        # Iniezione Deep Scanner se abbiamo estratto dei dati e non stiamo trattando un verifca pre-stampata
+                        ai_class, ai_topics, ai_sintesi = scanner.analyze_content(extracted_text, topics)
+                        
+                        # Il Deep Scanner ha l'ultima parola sulla classificazione, unificandola alle keywords del file
+                        if not found_class and ai_class:
+                            found_class = ai_class
+                        if ai_topics:
+                            topics = ai_topics
+                            
+                        # Mappatura Competenze Riforma 2017 (Molto più ricca adesso grazie all'OCR)
+                        riforma_tags = map_topics_to_riforma(topics)
+
+                        # Titolo formattato
+                        is_in_verifiche = "verifiche" in root.lower()
+                        if found_class and is_in_verifiche:
+                            clean_title = f"Verifica Classe {found_class}, {month} {year}"
+                        else:
+                            prefix = "Verifica " if is_in_verifiche else ""
+                            clean_title = prefix + semantic_filename
+                        
+                        # Excerpt: Narrativo e professionale
+                        parts = []
+                        
+                        if is_in_verifiche:
+                            topic_str = ", ".join(topics) if topics else ""
+                            if topic_str:
+                                parts.append(f"Verifica sommativa strutturata su {topic_str}")
+                            else:
+                                parts.append(f"Verifica strutturata di {subject}")
+                        else:
+                            # Se non è una verifica, usa la vera sintesi estratta
+                            if ai_sintesi:
+                                parts.append(f"Laboratorio interattivo. {ai_sintesi}")
+                            else:
+                                parts.append(f"Materiale didattico esplorativo relativo a: {semantic_filename}.")
+                            
+                        if duration and is_in_verifiche: parts.append(f"Tempo a disposizione stimato: {duration.split(':')[-1].strip()}")
+                        if calc_info and is_in_verifiche: parts.append(f"Nota: {calc_info.lower()}")
+                        
+                        # Unisci le parti con il punto e spazio
+                        excerpt = ". ".join(parts).replace("..", ".") + "."
+                        if not topics and is_in_verifiche:
+                            excerpt = f"Sessione di verifica multimediale di {subject}."
+                        
+                        # Validazione minima data
+                        try:
+                            day_int = int(day) if day else 1
+                            if day_int > 31: day_int = 1 # Fallback semplice
+                            date_str = f"{year}-{['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'].index(month)+1:02d}-{day_int:02d}"
+                        except:
+                            date_str = file_mtime.strftime('%Y-%m-%d')
+
+                        # --- NEW: Tagging Semantico Specializzato ---
+                        if "Mappa" in fila_label: topics.append("Mappa")
+                        if "Correttore" in fila_label: topics.append("Correttore")
+                        if "Recupero" in fila_label: topics.append("Recupero")
+
+                        # Aggiungi meta-tag per raggruppamento raffinato (Classe + DataEsatta + PrimoArgomento o SlugFilename)
+                        topic_slug = topics[0].lower().replace(" ", "_") if topics else "generica"
+                        fn_slug = "_".join(meaningful_words[:2]).lower() if not topics else ""
+                        group_ref = f"{found_class}_{date_str}_{topic_slug}_{fn_slug}".lower().replace(" ", "_").strip("_") if found_class else clean_title.lower()
+                        
+                        tags = list(set(topics + ([found_class] if found_class else [])))
+
+                        meta = {
+                             "title": clean_title.strip(),
+                             "excerpt": excerpt,
+                             "tags": list(set([normalize_class_tag(t) for t in tags + riforma_tags])),
+                             "date": date_str,
+                             "group_ref": group_ref,
+                             "version_label": fila_label
+                        }
                 
-                meta["type"] = content_type
-                meta["icon"] = get_icon_for_type(content_type, meta.get("tags", []), meta.get("title", ""))
-                meta["game_type"] = get_game_type(content_type, meta.get("tags", []), meta.get("title", ""), meta.get("excerpt", ""))
-                
-                # Fallback data se mancante nel JSON
-                if "date" not in meta:
-                     timestamp = os.path.getmtime(file_path)
-                     meta["date"] = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
-
-                # --- NEW: Thumbnail Linking ---
-                # Cerca se esiste una thumbnail generata automaticamente
-                base_name = os.path.splitext(filename)[0]
-                thumb_rel_path = f"content/assets/thumbnails/{base_name}.jpg"
-                if os.path.exists(thumb_rel_path):
-                    meta["thumbnail"] = thumb_rel_path
-                # ------------------------------
-
-                # --- NEW: Data Consistency Check ---
-                if "tags" not in meta or meta["tags"] is None:
-                    meta["tags"] = []
-                
-                # Normalizzazione Case per evitare duplicati (es. "Algebra" vs "ALGEBRA")
-                meta["tags"] = list(set([t.strip().rstrip('.') for t in meta["tags"]]))
+                if meta and content_type != "unknown":
+                    # Aggiungi campi comuni calcolati
+                    # Se l'URL non c'è (media locale), calcolalo. Se c'è (link esterno), usalo.
+                    if "url" not in meta:
+                        meta["url"] = file_path.replace("\\", "/") # Path relativo per il web
                     
-                # Estrazione semantica riforma 2017 (per App e altri tipi basandosi sui tag esistenti)
-                riforma_extra = map_topics_to_riforma(meta.get("tags", []) + [meta.get("title", "")])
-                if riforma_extra:
-                    meta["tags"] = list(set(meta.get("tags", []) + riforma_extra))
+                    meta["type"] = content_type
+                    meta["icon"] = get_icon_for_type(content_type, meta.get("tags", []), meta.get("title", ""))
+                    meta["game_type"] = get_game_type(content_type, meta.get("tags", []), meta.get("title", ""), meta.get("excerpt", ""))
                     
-                # Ri-normalizzazione post-riforma per sicurezza
-                meta["tags"] = list(set([normalize_class_tag(t) for t in meta["tags"]]))
-                
-                if not meta.get("tags"):
-                    print(f"  ⚠️  WARNING: Tags mancanti o vuoti per '{filename}'")
-                if not meta.get("excerpt") and not meta.get("description"):
-                    print(f"  ⚠️  WARNING: Descrizione mancante per '{filename}'")
-                # -----------------------------------
+                    # Fallback data se mancante nel JSON
+                    if "date" not in meta:
+                         timestamp = os.path.getmtime(file_path)
+                         meta["date"] = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
 
-                items.append(meta)
-                print(f"  ✅ Indicizzato [{content_type}]: {meta['title']}")
+                    # --- NEW: Thumbnail Linking ---
+                    # Cerca se esiste una thumbnail generata automaticamente
+                    base_name = os.path.splitext(filename)[0]
+                    thumb_rel_path = f"content/assets/thumbnails/{base_name}.jpg"
+                    if os.path.exists(thumb_rel_path):
+                        meta["thumbnail"] = thumb_rel_path
+                    # ------------------------------
+
+                    # --- NEW: Data Consistency Check ---
+                    if "tags" not in meta or meta["tags"] is None:
+                        meta["tags"] = []
+                    
+                    # Normalizzazione Case per evitare duplicati (es. "Algebra" vs "ALGEBRA")
+                    meta["tags"] = list(set([t.strip().rstrip('.') for t in meta["tags"]]))
+                        
+                    # Estrazione semantica riforma 2017 (per App e altri tipi basandosi sui tag esistenti)
+                    riforma_extra = map_topics_to_riforma(meta.get("tags", []) + [meta.get("title", "")])
+                    if riforma_extra:
+                        meta["tags"] = list(set(meta.get("tags", []) + riforma_extra))
+                        
+                    # Ri-normalizzazione post-riforma per sicurezza
+                    meta["tags"] = list(set([normalize_class_tag(t) for t in meta["tags"]]))
+                    
+                    if not meta.get("tags"):
+                        print(f"  ⚠️  WARNING: Tags mancanti o vuoti per '{filename}'")
+                    if not meta.get("excerpt") and not meta.get("description"):
+                        print(f"  ⚠️  WARNING: Descrizione mancante per '{filename}'")
+                    # -----------------------------------
+
+                    items.append(meta)
+                    print(f"  ✅ Indicizzato [{content_type}]: {meta['title']}")
 
     # Ordina per data (dal più recente)
     items.sort(key=lambda x: x.get('date', ''), reverse=True)
