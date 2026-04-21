@@ -23,8 +23,8 @@
 <body>
 
     <nav id="main-nav">
-        <div class="container">
-            <div class="nav-content">
+        <div class="container nav-container">
+            <div class="nav-row-1">
                 <a href="index.html" class="brand">
                     <span class="brand-title">ORFINI</span>
                     <span class="brand-sub">ARCHIVIO VERIFICHE</span>
@@ -36,10 +36,18 @@
                     <a href="galaxy.html" class="nav-link">Mappa</a>
                     <a href="index.html#about" class="nav-link">Chi Sono</a>
                 </div>
+            </div>
 
+            <div class="nav-row-2">
                 <div class="search-container">
-                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" id="search-input" class="search-input" placeholder="Cerca classi, date, argomenti...">
+                    <input type="text" id="search-input" class="search-input" placeholder="Cerca classi o argomenti...">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                </div>
+            </div>
+
+            <div class="nav-row-3">
+                <div class="filter-controls" id="quick-filters">
+                    <!-- Tag chips injected here -->
                 </div>
             </div>
         </div>
@@ -50,10 +58,6 @@
             <span class="eyebrow">Archivio Progetto</span>
             <h1 class="hero-title">Verifiche & Prove</h1>
             <p class="hero-sub">Consultazione dinamica e download delle prove strutturate. Ogni attività è calata nel contesto delle competenze richieste dalla Riforma 2017.</p>
-            
-            <div class="filter-controls" id="quick-filters">
-                <!-- Tag chips injected here -->
-            </div>
         </div>
     </header>
 
