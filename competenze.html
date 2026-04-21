@@ -109,6 +109,51 @@
             50% { transform: translateY(-4px) scale(1.02); box-shadow: 0 0 30px var(--primary); }
             100% { transform: translateY(-4px) scale(1); box-shadow: 0 0 10px var(--primary); }
         }
+
+        /* Responsive fixes for portrait mobile */
+        @media (max-width: 900px) {
+            .competenze-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 0;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+            }
+
+            .category-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px 0;
+                gap: 12px;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .category-menu::-webkit-scrollbar { display: none; }
+
+            .cat-btn {
+                flex: 0 0 auto;
+                padding: 0.8rem 1.2rem;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .editorial-hero {
+                padding: 60px 0;
+            }
+            .hero-title {
+                font-size: 3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -126,7 +171,7 @@
                     <a href="verifiche.html" class="nav-link">Archivio</a>
                     <a href="galaxy.html" class="nav-link">Mappa</a>
                     <a href="index.html#about" class="nav-link">Chi Sono</a>
-                    <a href="competenze.html" class="nav-link active">Riforma 2017</a>
+                    <a href="competenze.html" class="nav-link active">Competenze</a>
                 </div>
             </div>
 
