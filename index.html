@@ -17,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
     <!-- Project Styles -->
     <link rel="stylesheet" href="index.css">
@@ -35,7 +36,8 @@
                     <a href="index.html" class="nav-link active">Journal</a>
                     <a href="verifiche.html" class="nav-link">Archivio</a>
                     <a href="galaxy.html" class="nav-link">Mappa</a>
-                    <button id="about-btn" class="nav-link" style="background:none; border:none; cursor:pointer;">Chi Sono</button>
+                    <a href="competenze.html" class="nav-link">Competenze</a>
+                    <a href="#about" id="about-link" class="nav-link">Chi Sono</a>
                 </div>
             </div>
 
@@ -101,26 +103,35 @@
                     window.appUI = ui;
                     
                     const appItems = db.filter(item => item.type === 'app');
-
-
                     // Chi Sono Modal
-                    const aboutBtn = document.getElementById('about-btn');
-                    const openAbout = () => {
+                    const aboutBtn = document.getElementById('about-link');
+                    const openAbout = (e) => {
+                        if (e) e.preventDefault();
                         const bio = `
-                            <div class="bio-modal-content" style="color: var(--text-main); line-height: 1.8;">
-                                <h2 style="font-family: var(--font-heading); margin-bottom: 30px; font-size: 2.5rem; color: var(--primary);">Federico DB</h2>
-                                <p style="font-size: 1.1rem; margin-bottom: 20px;">
-                                    Sono un <strong>docente e creativo multidisciplinare</strong> che unisce matematica, fisica, arte, musica, botanica, videogiochi e tecnologia in un pensiero immersivo e iper-connesso.
-                                </p>
-                                <p style="margin-bottom: 20px;">
-                                    La mia missione è trasformare la didattica attraverso l'uso di software <strong>Open Source</strong> e tecnologie generative. Progetto percorsi innovativi per gli Istituti Professionali italiani, integrando modelli 3D parametrici e strumenti digitali inclusivi (DSA/ADHD).
-                                </p>
-                                <p style="margin-bottom: 40px;">
-                                    Il mio approccio è visivo, sperimentale e ironico: ogni progetto è un laboratorio per trasformare il caos creativo in strumenti concreti, accessibili ed esteticamente coerenti.
-                                </p>
-                                <div style="display: flex; gap: 20px;">
-                                    <a href="https://instagram.com/meltingmath" target="_blank" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 25px;">Instagram</a>
-                                    <button onclick="document.getElementById('modal-overlay').click()" class="chip">Chiudi</button>
+                            <div class="bio-modal-content" style="color: var(--text-main); line-height: 1.8; max-width: 600px; margin: 0 auto; padding: 20px;">
+                                <div style="text-align: center; margin-bottom: 30px;">
+                                    <h2 style="font-family: var(--font-heading); font-size: 2.8rem; color: var(--primary); margin-bottom: 10px;">Federico DB</h2>
+                                    <p style="font-family: 'Space Mono', monospace; font-size: 0.9rem; letter-spacing: 2px; opacity: 0.7;">INNOVAZIONE DIDATTICA / MATEMATICA (A026)</p>
+                                </div>
+                                
+                                <div style="font-size: 1.1rem; margin-bottom: 25px;">
+                                    <p style="margin-bottom: 20px;">
+                                        Sono un docente impegnato nella ricerca di nuove strade per l'insegnamento della <strong>Matematica (classe A026)</strong>. Nel laboratorio dell'Istituto "E. Orfini" di Foligno, sperimento metodologie basate sulla <strong>didattica laboratoriale</strong> e il <strong>costruttivismo</strong>.
+                                    </p>
+                                    <p style="margin-bottom: 20px;">
+                                        Utilizzo la <strong>visualizzazione</strong> e la <strong>gamification</strong> come strumenti chiave per un'istruzione inclusiva, che permetta a ogni studente di esplorare concetti complessi in modo intuitivo.
+                                    </p>
+                                    <p style="margin-bottom: 20px;">
+                                        Ritengo fondamentale la filosofia <strong>Open Source</strong> perché garantisce a tutti l'accesso libero agli strumenti della conoscenza, senza barriere economiche o tecnologiche, favorendo la condivisione e la crescita collettiva.
+                                    </p>
+                                    <p style="margin-bottom: 30px;">
+                                        <a href="https://instagram.com/meltingmath" target="_blank" style="color: var(--primary); text-decoration: none; border-bottom: 1px solid var(--primary); padding-bottom: 2px;">@meltingmath</a> è il mio profilo scolastico: il diario della sperimentazione quotidiana tra tecnologia, coding e design.
+                                    </p>
+                                </div>
+
+                                <div style="display: flex; gap: 15px; justify-content: center;">
+                                    <a href="https://instagram.com/meltingmath" target="_blank" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 25px; border-radius: 30px; background: var(--primary); color: white; font-weight: bold;">Segui il Progetto</a>
+                                    <button onclick="window.appUI.closeModal()" class="chip" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 12px 25px; border-radius: 30px; color: white; cursor: pointer;">Chiudi</button>
                                 </div>
                             </div>
                         `;
@@ -128,6 +139,7 @@
                         const content = document.getElementById('modal-content');
                         content.innerHTML = bio;
                         modal.classList.add('active');
+                        document.body.style.overflow = 'hidden';
                     };
 
                     if (aboutBtn) aboutBtn.onclick = openAbout;

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>$\sqrt{2}$ is irrational</title>
+    <meta name="description" content="Simulatore sferico dell'Albero di Pitagora. Algoritmo di Soft Fusion per eliminare artefatti di complanarità e mostrare l'irrazionalità di $\sqrt{2}$.">
+    <meta name="keywords" content="matematica, $\sqrt{2}$, sqrt(2), albero pitagorico, frattali, WebGL, 3d, incommensurabilità, geometria, soft fusion">
+    <meta name="date" content="2026-04-21">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$', right: '$', display: false}, {left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}]});"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --panel-bg: rgba(5, 5, 8, 0.9);
+            --text-main: #f0f0f0;
+            --accent: #00ffaa;
+            --border-radius: 12px;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            user-select: none;
+            touch-action: none;
+        }
+
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+
+        #ui-layer {
+            position: absolute; top: 20px; right: 20px; width: 340px; z-index: 10;
+            display: flex; flex-direction: column; gap: 12px; pointer-events: none;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            pointer-events: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            max-height: 85vh; 
+            overflow: hidden scroll;
+            position: relative;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+        }
+
+        .panel.collapsed { 
+            max-height: 65px; 
+            padding-bottom: 0;
+            padding-top: 18px;
+        }
+
+        .toggle-ui {
+            position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%; cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--accent); z-index: 20;
+        }
+
+        h1 { margin: 0 0 5px 0; font-size: 1.2rem; color: #fff; letter-spacing: 2px; }
+        .subtitle { margin: 0 0 20px 0; font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+        .control-group {
+            display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .control-header { display: flex; justify-content: space-between; font-size: 0.8rem; }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; background: rgba(255, 255, 255, 0.15); }
+        input[type=range]::-webkit-slider-thumb {
+            height: 14px; width: 14px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; -webkit-appearance: none; margin-top: -6px;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        #info { position: absolute; bottom: 20px; left: 20px; font-size: 0.65rem; color: #444; pointer-events: none; }
+
+        /* Controlli di Navigazione 3D */
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .nav-btn svg { width: 20px; height: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div id="ui-layer">
+        <div class="panel" id="settings-panel">
+            <div class="toggle-ui" onclick="toggleUI()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </div>
+            <h1>$\sqrt{2}$ is irrational</h1>
+            <p class="subtitle">Soft Fusion Engine | Pythagoras Tree</p>
+
+            <div class="control-group">
+                <div class="control-header"><span>Morfologia Sferica</span><span id="val-morph">0%</span></div>
+                <input type="range" id="slider-morph" min="0" max="1" step="0.01" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header"><span>Profondità (Frattale)</span><span id="val-depth">10</span></div>
+                <input type="range" id="slider-depth" min="1" max="14" step="1" value="10">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header"><span>Angolo di Bivio</span><span id="val-angle">45°</span></div>
+                <input type="range" id="slider-angle" min="1" max="89" step="1" value="45">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header"><span>Nitidezza Bordi</span><span id="val-blur">0.2</span></div>
+                <input type="range" id="slider-blur" min="0.01" max="0.5" step="0.01" value="0.2">
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-controls">
+        <div class="nav-btn" onclick="controls.zoomIn()" title="Zoom In">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </div>
+        <div class="nav-btn" onclick="controls.zoomOut()" title="Zoom Out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </div>
+        <div class="nav-btn" id="btn-pan" onclick="togglePanMode()" title="Modalità Pan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"></polyline><polyline points="9 5 12 2 15 5"></polyline><polyline points="15 19 12 22 9 19"></polyline><polyline points="19 9 22 12 19 15"></polyline><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
+        </div>
+        <div class="nav-btn" onclick="resetView()" title="Reset Vista">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+        </div>
+    </div>
+
+    <div id="info">LABORATORIO ORFINI | SOFT-FUSION FRAC SIMULATOR</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, controls;
+        let treeMesh;
+        let depth = 10;
+        let angle = Math.PI / 4;
+        let morph = 0.0;
+        let blur = 0.2;
+        
+        const R_S = 5.0;
+
+        window.onload = () => {
+            init();
+            initUI();
+            updateTree();
+            animate();
+        };
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+            const isMobile = window.innerWidth < 768;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            const initialDist = isMobile ? 24 : 18;
+            camera.position.set(0, isMobile ? 6 : 4, initialDist);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.target.set(0, 4, 0);
+
+            window.addEventListener('resize', onResize);
+        }
+
+        function initUI() {
+            document.getElementById('slider-morph').oninput = e => {
+                morph = parseFloat(e.target.value);
+                if(treeMesh) treeMesh.material.uniforms.uMorph.value = morph;
+                document.getElementById('val-morph').textContent = Math.round(morph * 100) + "%";
+            };
+            document.getElementById('slider-blur').oninput = e => {
+                blur = parseFloat(e.target.value);
+                if(treeMesh) treeMesh.material.uniforms.uBlur.value = blur;
+                document.getElementById('val-blur').textContent = blur.toFixed(2);
+            };
+            document.getElementById('slider-depth').oninput = e => {
+                depth = parseInt(e.target.value);
+                document.getElementById('val-depth').textContent = depth;
+                updateTree();
+            };
+            document.getElementById('slider-angle').oninput = e => {
+                angle = (parseFloat(e.target.value) / 180) * Math.PI;
+                document.getElementById('val-angle').textContent = e.target.value + "°";
+                updateTree();
+            };
+        }
+
+        function resetView() {
+            controls.reset();
+            const isMobile = window.innerWidth < 768;
+            camera.position.set(0, isMobile ? 6 : 4, isMobile ? 24 : 18);
+            controls.target.set(0, 4, 0);
+            setPanMode(false);
+        }
+
+        let isPanMode = false;
+        function togglePanMode() {
+            setPanMode(!isPanMode);
+        }
+
+        function setPanMode(active) {
+            isPanMode = active;
+            const btn = document.getElementById('btn-pan');
+            if (active) {
+                controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
+                controls.touches.ONE = THREE.TOUCH.PAN;
+                btn.classList.add('active');
+            } else {
+                controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+                controls.touches.ONE = THREE.TOUCH.ROTATE;
+                btn.classList.remove('active');
+            }
+        }
+
+        controls.zoomIn = function() {
+            camera.position.lerp(controls.target, 0.1);
+        };
+        controls.zoomOut = function() {
+            camera.position.add(camera.position.clone().sub(controls.target).multiplyScalar(0.1));
+        };
+
+        function updateTree() {
+            if(treeMesh) {
+                scene.remove(treeMesh);
+                treeMesh.geometry.dispose();
+                treeMesh.material.dispose();
+            }
+
+            const pos2D = [], pos3D = [], uvs = [], colors = [];
+            
+            const buildTree = (pos, dir, size, d) => {
+                if (d > depth || size < 0.005) return;
+
+                const p1 = pos.clone();
+                const p2 = pos.clone().add(dir.clone().multiplyScalar(size));
+                const perp = new THREE.Vector2(-dir.y, dir.x);
+                const p3 = p2.clone().add(perp.clone().multiplyScalar(size));
+                const p4 = p1.clone().add(perp.clone().multiplyScalar(size));
+
+                // Vertici del quadrato con micro-offset Z per fusione perfetta
+                const zOffset = d * 0.001;
+                const pts = [p1, p2, p3, p1, p3, p4];
+                const uvList = [
+                    [0, 0], [1, 0], [1, 1],
+                    [0, 0], [1, 1], [0, 1]
+                ];
+                
+                const hue = (0.5 + (d * 0.04)) % 1.0;
+                const col = new THREE.Color().setHSL(hue, 0.8, 0.6);
+
+                pts.forEach((p, i) => {
+                    pos2D.push(p.x, p.y, zOffset);
+                    
+                    // Sfera (mappa cartografica)
+                    const lon = p.x / R_S;
+                    const lat = (p.y) / R_S;
+                    const x3d = R_S * Math.cos(lat) * Math.sin(lon);
+                    const y3d = R_S * Math.sin(lat);
+                    const z3d = R_S * Math.cos(lat) * Math.cos(lon);
+                    pos3D.push(x3d, y3d, z3d - R_S + zOffset);
+                    
+                    uvs.push(uvList[i][0], uvList[i][1]);
+                    colors.push(col.r, col.g, col.b);
+                });
+
+                const sideL = size * Math.cos(angle);
+                const sideR = size * Math.sin(angle);
+                const dirL = dir.clone().rotateAround(new THREE.Vector2(0,0), angle);
+                const dirR = dir.clone().rotateAround(new THREE.Vector2(0,0), angle - Math.PI/2);
+                
+                buildTree(p4.clone(), dirL, sideL, d + 1);
+                buildTree(p4.clone().add(dirL.clone().multiplyScalar(sideL)), dirR, sideR, d + 1);
+            };
+
+            // Inizio centrato
+            buildTree(new THREE.Vector2(-1.5, 0), new THREE.Vector2(1, 0), 3, 0);
+
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos2D, 3));
+            geo.setAttribute('aPos3D', new THREE.Float32BufferAttribute(pos3D, 3));
+            geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+            geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            const mat = new THREE.ShaderMaterial({
+                uniforms: {
+                    uMorph: { value: morph },
+                    uBlur: { value: blur }
+                },
+                vertexShader: `
+                    attribute vec3 aPos3D;
+                    varying vec3 vCol;
+                    varying vec2 vUv;
+                    uniform float uMorph;
+                    void main() {
+                        vCol = color;
+                        vUv = uv;
+                        vec3 finalPos = mix(position, aPos3D, uMorph);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vCol;
+                    varying vec2 vUv;
+                    uniform float uBlur;
+                    void main() {
+                        // Algoritmo Soft Fusion: sfuma l'opacità ai bordi basandosi sulle UV
+                        float d = min(min(vUv.x, 1.0 - vUv.x), min(vUv.y, 1.0 - vUv.y));
+                        float alpha = smoothstep(0.0, uBlur, d);
+                        gl_FragColor = vec4(vCol, alpha);
+                    }
+                `,
+                side: THREE.DoubleSide,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                vertexColors: true
+            });
+
+            treeMesh = new THREE.Mesh(geo, mat);
+            scene.add(treeMesh);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function toggleUI() {
+            document.getElementById('settings-panel').classList.toggle('collapsed');
+        }
+    </script>
+    <script src="../assets/js/orfini-shared.js"></script>
+</body>
+</html>

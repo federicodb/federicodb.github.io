@@ -44,7 +44,7 @@
         Object.assign(btn.style, {
             position: 'fixed',
             top: '20px',
-            right: '20px',
+            left: '20px', /* Spostato a sinistra per massima usabilità */
             zIndex: '2147483647',
             width: '56px',
             height: '56px',
@@ -96,32 +96,79 @@
     // 3. Iniezione Bottone Toggle UI (per dare risalto alla grafica)
     function injectControlToggle() {
         const uiElements = ['#ui-layer', '#controls-area', '.panel'];
-        let target = null;
+        const existingToggles = ['.ui-toggle-btn', '.toggle-ui', '#btn-toggle-ui', '.settings-toggle'];
         
+        let target = null;
         for (const selector of uiElements) {
             target = document.querySelector(selector);
             if (target) break;
         }
 
-        if (!target || document.querySelector('.ui-toggle-btn')) return;
+        if (!target) return;
+        
+        // Verifica se esiste già un pulsante di toggle nell'app
+        for (const sel of existingToggles) {
+            if (document.querySelector(sel)) return;
+        }
 
         const toggleBtn = document.createElement('button');
         toggleBtn.className = 'ui-toggle-btn';
         toggleBtn.title = 'Mostra/Nascondi Controlli';
         
+        // Stile base per il pulsante occhio (FAB)
+        Object.assign(toggleBtn.style, {
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            zIndex: '2147483647',
+            width: '48px',
+            height: '48px',
+            borderRadius: '50%',
+            backgroundColor: 'rgba(20, 25, 35, 0.85)',
+            backdropFilter: 'blur(10px)',
+            color: '#00ffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            cursor: 'pointer',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            pointerEvents: 'auto',
+            padding: '0'
+        });
+
         const updateIcon = (isCollapsed) => {
-            toggleBtn.innerHTML = isCollapsed 
-                ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="1" y1="1" x2="23" y2="23"/></svg>` // Eye slashed
-                : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`; // Eye
+            toggleBtn.innerHTML = !isCollapsed 
+                ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>` // Eye slashed
+                : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`; // Eye
         };
 
-        let collapsed = false;
+        let collapsed = false; /* Espanso di default per permettere l'input immediato */
         updateIcon(collapsed);
+        
+        // Lo stato iniziale è ora gestito dal CSS della pagina o rimosso per default
+        // target.classList.add('collapsed'); // Rimosso l'auto-collapse
 
         toggleBtn.onclick = () => {
             collapsed = !collapsed;
             target.classList.toggle('collapsed', collapsed);
             updateIcon(collapsed);
+            
+            // Animazione feedback
+            toggleBtn.style.transform = 'scale(0.9)';
+            setTimeout(() => toggleBtn.style.transform = 'scale(1)', 100);
+        };
+
+        toggleBtn.onmouseover = () => {
+            toggleBtn.style.backgroundColor = 'rgba(0, 255, 255, 0.15)';
+            toggleBtn.style.borderColor = '#00ffff';
+            toggleBtn.style.boxShadow = '0 0 15px rgba(0, 255, 255, 0.3)';
+        };
+        toggleBtn.onmouseout = () => {
+            toggleBtn.style.backgroundColor = 'rgba(20, 25, 35, 0.85)';
+            toggleBtn.style.borderColor = 'rgba(255,255,255,0.1)';
+            toggleBtn.style.boxShadow = '0 4px 15px rgba(0,0,0,0.5)';
         };
 
         document.body.appendChild(toggleBtn);

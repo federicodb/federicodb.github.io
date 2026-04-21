@@ -11,6 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
     
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -63,11 +64,10 @@
             border-color: var(--primary);
         }
 
-        .cat-btn.active {
-            background: hsla(190, 100%, 45%, 0.1);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        .cat-btn.active[data-target="area_generale_matematica"] { border-color: var(--color-math); color: var(--color-math); background: hsla(280, 85%, 65%, 0.1); }
+        .cat-btn.active[data-target="area_indirizzo_tecnico"] { border-color: var(--color-tech); color: var(--color-tech); background: hsla(155, 100%, 50%, 0.1); }
+        .cat-btn.active[data-target="competenze_cittadinanza"] { border-color: var(--color-citizen); color: var(--color-citizen); background: hsla(38, 100%, 60%, 0.1); }
+        .cat-btn.active[data-target="competenze_trasversali_soft_skills"] { border-color: var(--color-soft); color: var(--color-soft); background: hsla(325, 85%, 65%, 0.1); }
 
         .section-header {
             margin-bottom: 3rem;
@@ -79,78 +79,61 @@
             font-family: var(--font-heading);
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            color: white;
-        }
-
-        /* Skills Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 4rem;
-        }
-
-        .skill-card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md);
-            padding: 1.5rem;
-            transition: var(--transition-fast);
+            color: var(--accent-color, white);
         }
 
         .skill-card:hover {
-            border-color: var(--primary);
+            border-color: var(--accent-color, var(--primary));
             transform: translateY(-4px);
+            background: hsla(0, 0%, 100%, 0.05);
         }
 
         .skill-id {
             font-family: var(--font-code);
             font-size: 0.75rem;
-            color: var(--primary);
-            background: hsla(190, 100%, 45%, 0.1);
+            color: var(--accent-color, var(--primary));
+            background: var(--accent-bg, hsla(190, 100%, 45%, 0.1));
             padding: 0.25rem 0.6rem;
             border-radius: 4px;
-            margin-bottom: 1rem;
-            display: inline-block;
+            width: fit-content;
         }
 
-        .skill-label {
-            font-size: 1.05rem;
-            line-height: 1.5;
-            color: var(--text-main);
-            font-weight: 500;
+        .skill-card.highlight-target {
+            border-color: var(--accent-color, var(--primary));
+            box-shadow: 0 0 30px var(--accent-bg, hsla(190, 100%, 45%, 0.2));
+            animation: pulse-high 2s ease-out;
         }
 
-        @media (max-width: 1024px) {
-            .competenze-container {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                position: static;
-                margin-bottom: 2rem;
-            }
+        @keyframes pulse-high {
+            0% { transform: translateY(-4px) scale(1); box-shadow: 0 0 0px var(--primary); }
+            50% { transform: translateY(-4px) scale(1.02); box-shadow: 0 0 30px var(--primary); }
+            100% { transform: translateY(-4px) scale(1); box-shadow: 0 0 10px var(--primary); }
         }
     </style>
 </head>
 <body>
 
     <nav id="main-nav">
-        <div class="container">
-            <div class="nav-content">
+        <div class="container nav-container">
+            <div class="nav-row-1">
                 <a href="index.html" class="brand">
                     <span class="brand-title">ORFINI</span>
                     <span class="brand-sub">DECODIFICA</span>
                 </a>
 
                 <div class="nav-links">
-                    <a href="index.html" class="nav-link">Home</a>
-                    <a href="verifiche.html" class="nav-link">Verifiche</a>
+                    <a href="index.html" class="nav-link">Journal</a>
+                    <a href="verifiche.html" class="nav-link">Archivio</a>
+                    <a href="galaxy.html" class="nav-link">Mappa</a>
+                    <a href="index.html#about" class="nav-link">Chi Sono</a>
                     <a href="competenze.html" class="nav-link active">Riforma 2017</a>
                 </div>
+            </div>
 
+            <div class="nav-row-2">
                 <div class="search-container">
-                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" id="search-input" class="search-input" placeholder="Cerca codifiche o concetti...">
+                    <input type="text" id="search-input" class="search-input" placeholder="Cerca temi o competenze...">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
                 </div>
             </div>
         </div>
@@ -238,19 +221,67 @@
                     renderContent(term);
                 });
 
+                // Gestione Hash iniziale e navigazione
+                handleInitialHash();
+                window.addEventListener('hashchange', handleInitialHash);
+
             } catch (err) {
                 console.error("Error loading Riforma data:", err);
             }
         }
 
+        function handleInitialHash() {
+            const hash = window.location.hash.substring(1);
+            if (!hash) return;
+
+            // Se l'ID esiste in uno dei settori, cambiamo categoria e renderizziamo
+            for (const cat in schemaData) {
+                const data = schemaData[cat];
+                const found = Array.isArray(data) 
+                    ? data.find(i => i.id === hash) 
+                    : Object.values(data).flat().find(i => i.id === hash);
+
+                if (found) {
+                    if (activeCategory !== cat) {
+                        activeCategory = cat;
+                        document.querySelectorAll('.cat-btn').forEach(b => {
+                            b.classList.toggle('active', b.dataset.target === cat);
+                        });
+                        renderContent();
+                    }
+                    
+                    // Aspettiamo il rendering
+                    setTimeout(() => {
+                        const el = document.getElementById(hash);
+                        if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.classList.add('highlight-target');
+                            setTimeout(() => {
+                                el.classList.remove('highlight-target');
+                            }, 4000);
+                        }
+                    }, 100);
+                    break;
+                }
+            }
+        }
+
         function createSkillCard(item, type) {
             return `
-                <div class="skill-card animate-in">
+                <div class="skill-card animate-in" id="${item.id}">
                     <span class="skill-id">${item.id}</span>
                     <div class="skill-label">${item.label}</div>
+                    ${item.description ? `<div class="skill-desc">${item.description}</div>` : ''}
                 </div>
             `;
         }
+
+        const categoryThemes = {
+            area_generale_matematica: { color: 'var(--color-math)', bg: 'hsla(280, 85%, 65%, 0.1)' },
+            area_indirizzo_tecnico: { color: 'var(--color-tech)', bg: 'hsla(155, 100%, 50%, 0.1)' },
+            competenze_cittadinanza: { color: 'var(--color-citizen)', bg: 'hsla(38, 100%, 60%, 0.1)' },
+            competenze_trasversali_soft_skills: { color: 'var(--color-soft)', bg: 'hsla(325, 85%, 65%, 0.1)' }
+        };
 
         function renderContent(filter = '') {
             const container = document.getElementById('main-content');
@@ -259,10 +290,15 @@
             const data = schemaData[activeCategory];
             if (!data) return;
 
+            const theme = categoryThemes[activeCategory] || { color: 'var(--primary)', bg: 'hsla(190, 100%, 45%, 0.1)' };
+            container.style.setProperty('--accent-color', theme.color);
+            container.style.setProperty('--accent-bg', theme.bg);
+
             if (Array.isArray(data)) {
                 const filtered = data.filter(item => 
                     item.id.toLowerCase().includes(filter) || 
-                    item.label.toLowerCase().includes(filter)
+                    item.label.toLowerCase().includes(filter) ||
+                    (item.description && item.description.toLowerCase().includes(filter))
                 );
                 
                 if(filtered.length > 0) {
@@ -282,7 +318,8 @@
                     const items = data[subKey];
                     const filtered = items.filter(item => 
                         item.id.toLowerCase().includes(filter) || 
-                        item.label.toLowerCase().includes(filter)
+                        item.label.toLowerCase().includes(filter) ||
+                        (item.description && item.description.toLowerCase().includes(filter))
                     );
 
                     if (filtered.length > 0) {

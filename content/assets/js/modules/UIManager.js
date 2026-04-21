@@ -128,10 +128,21 @@ export class UIManager {
         const themeColors = ['blue', 'green', 'purple', 'red', 'teal', 'yellow'];
 
         nextBatch.forEach((item, idx) => {
-            const colorIndex = (renderedCount + idx) % themeColors.length;
-            const themeColor = themeColors[colorIndex];
-            const card = this.createCardDOM(item, themeColor);
+            const card = this.createCardDOM(item);
             
+            // Renderizza formule KaTeX nella singola card prima dell'append
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(card, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError: false
+                });
+            }
+
             // Staggered animation for the first batch
             if (renderedCount === 0) {
                 card.style.animationDelay = `${idx * 0.05}s`;
@@ -212,10 +223,26 @@ export class UIManager {
         };
     }
 
-    createCardDOM(item, themeColor) {
+    createCardDOM(item) {
         const el = document.createElement('div');
         el.className = 'card animate-in';
-        el.setAttribute('data-color', themeColor);
+        
+        // Assegnazione colore semantico basato sulla categoria prevalente nei tag
+        let themeColor = 'var(--primary)';
+        const fullTags = item.tags.join(' ').toLowerCase();
+        
+        if (fullTags.includes('matematica') || fullTags.includes('algebra') || fullTags.includes('geometria')) themeColor = 'var(--color-math)';
+        else if (fullTags.includes('progettazione') || fullTags.includes('webgl') || fullTags.includes('3d') || fullTags.includes('digital')) themeColor = 'var(--color-tech)';
+        else if (fullTags.includes('cittadinanza') || fullTags.includes('voto') || fullTags.includes('sociale')) themeColor = 'var(--color-citizen)';
+        else if (fullTags.includes('soft skills') || fullTags.includes('metacognizione')) themeColor = 'var(--color-soft)';
+        else {
+            // Fallback colori rotanti se nessuna categoria prevale
+            const fallbackColors = ['var(--color-math)', 'var(--color-tech)', 'var(--color-citizen)', 'var(--color-soft)', 'var(--primary)'];
+            themeColor = fallbackColors[Math.floor(Math.random() * fallbackColors.length)];
+        }
+        
+        el.style.setProperty('--card-accent', themeColor);
+        el.setAttribute('data-color', 'custom'); 
         
         const categories = this.categorizeTags(item.tags);
         const classTheme = categories.class ? this.getClassTheme(categories.class) : null;
@@ -238,7 +265,7 @@ export class UIManager {
         const competenciesHtml = categories.competencies.slice(0, 3).map(c => `
             <div class="competency-item">
                 <span class="comp-dot"></span>
-                <span class="comp-text"><strong>${c.code}:</strong> ${c.text}</span>
+                <span class="comp-text"><a href="competenze.html#${c.code}" style="color: var(--primary); text-decoration: none; font-weight: 700;">${c.code}:</a> ${c.text}</span>
             </div>
         `).join('');
 
@@ -296,7 +323,8 @@ export class UIManager {
         `;
 
         el.onclick = (e) => {
-            if (e.target.closest('.v-btn')) return; 
+            // Se clicco su un link (competenza, variante, ecc), non aprire l'URL della card
+            if (e.target.closest('a')) return;
             
             if (['image', 'infographic', 'video'].includes(item.type)) {
                 e.preventDefault();

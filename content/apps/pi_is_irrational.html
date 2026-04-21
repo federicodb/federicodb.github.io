@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>$\pi$ is irrational</title>
+    <meta name="description" content="Simulatore ultra-high res. della costante $\pi$. Esplorazione dell'incommensurabilità con morfing sferico e shader glow.">
+    <meta name="keywords" content="matematica, $\pi$, pi greco, geometria, WebGL, 3d, rotazione, incommensurabilità, shader, glow">
+    <meta name="date" content="2026-04-21">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}]});"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --panel-bg: rgba(5, 5, 7, 0.9);
+            --text-main: #f0f0f0;
+            --accent: #ff4444;
+            --border-radius: 12px;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            user-select: none;
+            touch-action: none;
+        }
+
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+
+        #ui-layer {
+            position: absolute; top: 20px; right: 20px; width: 340px; z-index: 10;
+            display: flex; flex-direction: column; gap: 12px; pointer-events: none;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            pointer-events: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            max-height: 85vh; overflow-y: auto;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .panel.collapsed { max-height: 75px; overflow: hidden; padding-bottom: 0; }
+
+        .toggle-ui {
+            position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%; cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--accent); z-index: 20;
+            transition: transform 0.4s;
+        }
+
+        .collapsed .toggle-ui { transform: rotate(-180deg); }
+
+        h1 { margin: 0 0 5px 0; font-size: 1.2rem; color: #fff; letter-spacing: 3px; font-weight: 300; }
+        .subtitle { margin: 0 0 20px 0; font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
+
+        .control-group {
+            display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .control-header { display: flex; justify-content: space-between; font-size: 0.8rem; letter-spacing: 1px; }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; background: rgba(255, 255, 255, 0.15); }
+        input[type=range]::-webkit-slider-thumb {
+            height: 14px; width: 14px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; -webkit-appearance: none; margin-top: -6px;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+        button {
+            flex: 1; background: rgba(255,255,255,0.05); color: #fff;
+            border: 1px solid rgba(255,255,255,0.1); padding: 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.75rem;
+            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        button.active { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); border-color: var(--accent); }
+
+        #info { position: absolute; bottom: 20px; left: 20px; font-size: 0.65rem; color: #555; pointer-events: none; }
+
+        /* Controlli di Navigazione 3D */
+        .nav-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .nav-btn svg { width: 20px; height: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <div id="ui-layer">
+        <div class="panel" id="settings-panel">
+            <div class="toggle-ui" id="btn-toggle-ui" onclick="toggleUI()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </div>
+            <h1>\(\pi \text{ is irrational}\)</h1>
+            <p class="subtitle">Ultra High Resolution & Glow Shader</p>
+
+            <div class="control-group">
+                <div class="control-header"><span>Evoluzione Sferica</span><span id="val-morph">0%</span></div>
+                <input type="range" id="slider-morph" min="0" max="1" step="0.005" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header"><span>Densità Matematica</span><span id="val-step">600</span></div>
+                <input type="range" id="slider-step" min="100" max="2000" step="10" value="600">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header"><span>Velocità Flusso</span><span id="val-speed">1.0x</span></div>
+                <input type="range" id="slider-speed" min="0.1" max="5" step="0.1" value="1.0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header"><span>Bagliore (Glow)</span><span id="val-glow">0.5</span></div>
+                <input type="range" id="slider-glow" min="0" max="2" step="0.05" value="0.5">
+            </div>
+
+            <div class="btn-row">
+                <button id="btn-play" class="active">PAUSA</button>
+                <button id="btn-reset">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-controls">
+        <div class="nav-btn" onclick="controls.zoomIn()" title="Zoom In">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </div>
+        <div class="nav-btn" onclick="controls.zoomOut()" title="Zoom Out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </div>
+        <div class="nav-btn" id="btn-pan" onclick="togglePanMode()" title="Modalità Pan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"></polyline><polyline points="9 5 12 2 15 5"></polyline><polyline points="15 19 12 22 9 19"></polyline><polyline points="19 9 22 12 19 15"></polyline><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
+        </div>
+        <div class="nav-btn" onclick="resetView()" title="Reset Vista">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+        </div>
+    </div>
+
+    <div id="info">LABORATORIO ORFINI | 3D PI-FLOW SIMULATOR</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        const PI = Math.PI;
+        const R_I = 2.0;
+        const R_O = R_I * PI;
+        const R_S = 4.5;
+        const MAX_SEGS = 250000; // Ultra high res
+        const CURVE_RES = 32;
+
+        let scene, camera, renderer, controls;
+        let isPlaying = true;
+        let time = 0;
+        let speed = 1.0;
+        let morph = 0.0;
+        let lastT = 0;
+        let step = 1.0 / 600.0;
+
+        let p1, p2;
+        let traceGeo, traceMat;
+        let count = 0;
+        let pos2D, pos3D, times, colors;
+
+        const uniforms = {
+            uTime: { value: 0.0 },
+            uMorph: { value: 0.0 },
+            uGlow: { value: 0.5 },
+            uColorA: { value: new THREE.Color('#ff2200') },
+            uColorB: { value: new THREE.Color('#ffaa00') }
+        };
+
+        window.onload = () => {
+            init();
+            initUI();
+            animate();
+        };
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+            const isMobile = window.innerWidth < 768;
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, isMobile ? 22 : 15);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            const geo = new THREE.SphereGeometry(0.08, 16, 16);
+            p1 = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xff4444 }));
+            p2 = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
+            scene.add(p1, p2);
+
+            traceGeo = new THREE.BufferGeometry();
+            pos2D = new Float32Array(MAX_SEGS * CURVE_RES * 6);
+            pos3D = new Float32Array(MAX_SEGS * CURVE_RES * 6);
+            times = new Float32Array(MAX_SEGS * CURVE_RES * 2);
+            colors = new Float32Array(MAX_SEGS * CURVE_RES * 6);
+
+            traceGeo.setAttribute('position', new THREE.BufferAttribute(pos2D, 3));
+            traceGeo.setAttribute('aPos3D', new THREE.BufferAttribute(pos3D, 3));
+            traceGeo.setAttribute('aTime', new THREE.BufferAttribute(times, 1));
+            traceGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            traceMat = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                vertexShader: `
+                    attribute vec3 aPos3D;
+                    attribute float aTime;
+                    varying float vAlpha;
+                    varying vec3 vCol;
+                    uniform float uTime, uMorph, uGlow;
+                    void main() {
+                        vCol = color;
+                        float age = max(0.0, uTime - aTime);
+                        vAlpha = (0.3 + uGlow * 0.5) * exp(-age * 0.1);
+                        vec3 finalPos = mix(position, aPos3D, uMorph);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying float vAlpha;
+                    varying vec3 vCol;
+                    void main() {
+                        if (vAlpha < 0.01) discard;
+                        gl_FragColor = vec4(vCol, vAlpha);
+                    }
+                `,
+                vertexColors: true
+            });
+
+            scene.add(new THREE.LineSegments(traceGeo, traceMat));
+            window.addEventListener('resize', onResize);
+        }
+
+        function initUI() {
+            document.getElementById('slider-morph').oninput = e => {
+                morph = parseFloat(e.target.value);
+                uniforms.uMorph.value = morph;
+                document.getElementById('val-morph').textContent = Math.round(morph * 100) + "%";
+            };
+            document.getElementById('slider-glow').oninput = e => {
+                uniforms.uGlow.value = parseFloat(e.target.value);
+                document.getElementById('val-glow').textContent = e.target.value;
+            };
+            document.getElementById('slider-speed').oninput = e => {
+                speed = parseFloat(e.target.value);
+                document.getElementById('val-speed').textContent = speed.toFixed(1) + "x";
+            };
+            document.getElementById('slider-step').oninput = e => {
+                step = 1.0 / parseInt(e.target.value);
+                document.getElementById('val-step').textContent = e.target.value;
+                reset();
+            };
+            document.getElementById('btn-play').onclick = () => {
+                isPlaying = !isPlaying;
+                document.getElementById('btn-play').textContent = isPlaying ? "PAUSA" : "PLAY";
+                document.getElementById('btn-play').classList.toggle('active');
+            };
+            document.getElementById('btn-reset').onclick = reset;
+        }
+
+        function reset() {
+            time = 0; lastT = 0; count = 0;
+            traceGeo.setDrawRange(0, 0);
+            updatePos(0);
+        }
+
+        function getCoord(t) {
+            const r1 = t, r2 = t * PI;
+            const b2d = new THREE.Vector3(R_I * Math.cos(r1), R_I * Math.sin(r1), 0);
+            const p2d = new THREE.Vector3(R_O * Math.cos(r2), R_O * Math.sin(r2), 0);
+            // Sfera
+            const b3d = new THREE.Vector3(R_S * Math.cos(r1), R_S * Math.sin(r1), 0);
+            const p3d = new THREE.Vector3(0, R_S * Math.cos(r2), R_S * Math.sin(r2));
+            return { b2d, p2d, b3d, p3d };
+        }
+
+        function updatePos(t) {
+            const c = getCoord(t);
+            p1.position.lerpVectors(c.b2d, c.b3d, morph);
+            p2.position.lerpVectors(c.p2d, c.p3d, morph);
+        }
+
+        function addSeg(t) {
+            if (count >= MAX_SEGS) return;
+            const c = getCoord(t);
+            let op = count * CURVE_RES * 6;
+            let ot = count * CURVE_RES * 2;
+            let oc = count * CURVE_RES * 6;
+
+            for (let i = 0; i < CURVE_RES; i++) {
+                const f1 = i / CURVE_RES, f2 = (i + 1) / CURVE_RES;
+                const v1_2 = new THREE.Vector3().lerpVectors(c.b2d, c.p2d, f1);
+                const v2_2 = new THREE.Vector3().lerpVectors(c.b2d, c.p2d, f2);
+                const v1_3 = new THREE.Vector3().lerpVectors(c.b3d, c.p3d, f1).normalize().multiplyScalar(R_S);
+                const v2_3 = new THREE.Vector3().lerpVectors(c.b3d, c.p3d, f2).normalize().multiplyScalar(R_S);
+
+                pos2D.set([v1_2.x, v1_2.y, v1_2.z, v2_2.x, v2_2.y, v2_2.z], op);
+                pos3D.set([v1_3.x, v1_3.y, v1_3.z, v2_3.x, v2_3.y, v2_3.z], op);
+                times.set([t, t], ot);
+
+                const color = new THREE.Color().lerpColors(uniforms.uColorA.value, uniforms.uColorB.value, f1);
+                colors.set([color.r, color.g, color.b, color.r, color.g, color.b], oc);
+
+                op += 6; ot += 2; oc += 6;
+            }
+            count++;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (isPlaying) {
+                time += 0.01 * speed;
+                for (let t = lastT; t < time; t += step) addSeg(t);
+                lastT = time;
+                traceGeo.setDrawRange(0, count * CURVE_RES * 2);
+                traceGeo.attributes.position.needsUpdate = true;
+                traceGeo.attributes.aPos3D.needsUpdate = true;
+                traceGeo.attributes.aTime.needsUpdate = true;
+                traceGeo.attributes.color.needsUpdate = true;
+                uniforms.uTime.value = time;
+            }
+            updatePos(time);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function resetView() {
+            controls.reset();
+            const isMobile = window.innerWidth < 768;
+            camera.position.set(0, 0, isMobile ? 22 : 15);
+            setPanMode(false);
+        }
+
+        let isPanMode = false;
+        function togglePanMode() {
+            setPanMode(!isPanMode);
+        }
+
+        function setPanMode(active) {
+            isPanMode = active;
+            const btn = document.getElementById('btn-pan');
+            if (active) {
+                controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
+                controls.touches.ONE = THREE.TOUCH.PAN;
+                btn.classList.add('active');
+            } else {
+                controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+                controls.touches.ONE = THREE.TOUCH.ROTATE;
+                btn.classList.remove('active');
+            }
+        }
+
+        // Estensione controlli per zoom programmatico
+        controls.zoomIn = function() {
+            camera.position.multiplyScalar(0.9);
+        };
+        controls.zoomOut = function() {
+            camera.position.multiplyScalar(1.1);
+        };
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function toggleUI() {
+            document.getElementById('settings-panel').classList.toggle('collapsed');
+        }
+    </script>
+    <script src="../assets/js/orfini-shared.js"></script>
+</body>
+</html>

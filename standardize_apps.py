@@ -67,41 +67,27 @@ def standardize_file(file_path):
         is_dirty = True
         print(f"  🧹 Removed HTML Theme Toggle: {os.path.basename(file_path)}")
     
-    # C. Remove Hardcoded Home/Back Links & their containers (Header/Nav)
     # Target <header> or <nav> that contain a link to index.html
     new_content = re.sub(
-        r'<(header|nav)[^>]*>.*?<a[^>]*href=[\'"]\.\./index\.html[\'"][^>]*>.*?</a>.*?</\1>', 
-        '<!-- Header/Nav Removed -->', 
+        r'<(header|nav|div)[^>]*class=["\'][^"\']*(?:home|nav|back)[^"\']*["\'][^>]*>.*?<a[^>]*href=[\'"](?:\.\./)*index\.html[\'"][^>]*>.*?</a>.*?</\1>', 
+        '<!-- Header/Nav Home Removed -->', 
         content, 
-        flags=re.DOTALL
+        flags=re.DOTALL | re.IGNORECASE
     )
     if new_content != content:
         content = new_content
         is_dirty = True
-        print(f"  🧹 Removed Header/Nav with Home Link: {os.path.basename(file_path)}")
 
-    # Specific check for generic anchors if not caught above
+    # Specific check for generic anchors with Home text or icon if they point to index.html
     new_content = re.sub(
-        r'<a[^>]*href=[\'"]\.\./index\.html[\'"][^>]*>.*?</a>', 
-        '', 
+        r'<a[^>]*href=[\'"](?:\.\./)*index\.html[\'"][^>]* class=["\'][^"\']*(?:home|back)[^"\']*["\'][^>]*>.*?</a>', 
+        '<!-- Home Button Link Removed -->', 
         content, 
-        flags=re.DOTALL
+        flags=re.DOTALL | re.IGNORECASE
     )
     if new_content != content:
         content = new_content
         is_dirty = True
-        print(f"  🧹 Removed Home Link: {os.path.basename(file_path)}")
-    
-    new_content = re.sub(
-        r'<a[^>]*href=[\'"]\.\./\.\./index\.html[\'"][^>]*>.*?</a>', 
-        '', 
-        content, 
-        flags=re.DOTALL
-    )
-    if new_content != content:
-        content = new_content
-        is_dirty = True
-        print(f"  🧹 Removed Deep Home Link: {os.path.basename(file_path)}")
 
     # --- PHASE 2: INJECTION (DISABILITATA) ---
     # Per evitare doppi inclusioni e sovrascritture distruttive dei temi custom
