@@ -644,23 +644,32 @@
                 let current = "";
                 let depth = 0;
                 
+                // Parser robusto per dividere i fattori separati da '*' a livello gerarchico 0
                 for(let i=0; i<factored.length; i++) {
                     let char = factored[i];
                     if(char === '(') depth++;
                     else if(char === ')') depth--;
                     
                     if(char === '*' && depth === 0) {
-                        if(current) factors.push(current);
+                        if(current) factors.push(current.trim());
                         current = "";
                     } else {
                         current += char;
                     }
                 }
-                if(current) factors.push(current);
+                if(current) factors.push(current.trim());
                 
+                // Filtriamo i fattori:
+                // 1. Teniamo quelli che contengono l'incognita 'x'
+                // 2. Teniamo le costanti numeriche negative (che invertono il segno)
+                // 3. Ignoriamo i numeri complessi che potrebbero emergere in casi limite
                 let validFactors = factors.filter(f => {
+                    if (f.includes('i')) return false; // Escludiamo preventivamente fattori complessi
                     if (f.includes('x')) return true;
-                    try { if (parseFloat(nerdamer(f).evaluate().text()) < 0) return true; } catch(e) {}
+                    try { 
+                        let val = parseFloat(nerdamer(f).evaluate().text());
+                        if (val < 0) return true; // Contribuisce al segno negativo
+                    } catch(e) {}
                     return false;
                 });
                 return validFactors.length > 0 ? validFactors : [polyStr];
@@ -1060,8 +1069,11 @@
                 let capisaldi = [];
                 [...nRoots, ...dRoots].forEach(r => {
                     let sym = r.toString();
+                    if (sym.includes('i')) return; // FILTRO REALI: Salta se contiene l'unità immaginaria
+                    
                     try {
                         let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
+                        if (isNaN(val)) return;
                         if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
                             capisaldi.push({sym: sym, val: val});
                         }
@@ -1194,8 +1206,11 @@
                 let capisaldi = [];
                 [...roots1, ...roots2].forEach(r => {
                     let sym = r.toString();
+                    if (sym.includes('i')) return; // FILTRO REALI
+                    
                     try {
                         let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
+                        if (isNaN(val)) return;
                         if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) capisaldi.push({sym: sym, val: val});
                     } catch(e) {}
                 });

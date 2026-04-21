@@ -102,6 +102,45 @@
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
             max-height: 85vh;
             overflow-y: auto;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .panel.collapsed {
+            max-height: 70px;
+            overflow: hidden;
+            padding-bottom: 0;
+        }
+
+        .toggle-ui {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+            z-index: 20;
+        }
+
+        .toggle-ui:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .toggle-ui svg {
+            transition: transform 0.4s;
+        }
+
+        .collapsed .toggle-ui svg {
+            transform: rotate(-180deg);
         }
         
         .panel::-webkit-scrollbar {
@@ -255,7 +294,10 @@
     
 
     <div id="ui-layer">
-        <div class="panel">
+        <div class="panel collapsed" id="settings-panel">
+            <div class="toggle-ui" id="btn-toggle-ui" onclick="toggleUI()" title="Espandi/Collassa parametri">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </div>
             <h1 style="font-size: 1.6rem; margin-bottom: 5px;">\(\Phi \text{ is irrational}\)</h1>
             <p class="subtitle">Dimostrazione d'incommensurabilità</p>
 
@@ -661,6 +703,11 @@
                 }
                 updateSystemToTime(targetTime);
             });
+        }
+
+        function toggleUI() {
+            const panel = document.getElementById('settings-panel');
+            panel.classList.toggle('collapsed');
         }
 
         function resetSystem() {

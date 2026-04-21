@@ -45,10 +45,6 @@
                 </div>
             </div>
 
-            <div class="nav-row-3">
-                <div class="filter-controls" id="quick-filters">
-                    <!-- Tag chips injected here -->
-                </div>
             </div>
         </div>
     </nav>
@@ -102,8 +98,7 @@
                 try {
                     const ui = new UIManager(data);
                     
-                    const topTags = getTopTags(data, 10);
-                    renderQuickFilters(topTags, ui);
+
 
                     document.addEventListener('keydown', (e) => {
                         if (e.key === 'Escape') ui.closeModal();
@@ -124,43 +119,7 @@
             }
         });
 
-        function getTopTags(db, limit) {
-            const counts = {};
-            db.forEach(item => {
-                if (item.tags) {
-                    item.tags.forEach(tag => {
-                        counts[tag] = (counts[tag] || 0) + 1;
-                    });
-                }
-            });
-            return Object.entries(counts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, limit)
-                .map(e => e[0]);
-        }
 
-        function renderQuickFilters(tags, ui) {
-            const container = document.getElementById('quick-filters');
-            container.innerHTML = tags.map(tag => `
-                <button class="chip" data-tag="${tag}">${tag}</button>
-            `).join('');
-
-            container.querySelectorAll('.chip').forEach(btn => {
-                btn.onclick = () => {
-                    const tag = btn.getAttribute('data-tag');
-                    if (btn.classList.contains('active')) {
-                        btn.classList.remove('active');
-                        ui.setFilter('search', '');
-                        document.getElementById('search-input').value = '';
-                    } else {
-                        container.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        ui.setFilter('search', tag);
-                        document.getElementById('search-input').value = tag;
-                    }
-                };
-            });
-        }
     </script>
 </body>
 </html>

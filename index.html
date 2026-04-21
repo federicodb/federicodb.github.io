@@ -46,10 +46,6 @@
                 </div>
             </div>
 
-            <div class="nav-row-3">
-                <div class="filter-controls" id="quick-filters">
-                    <!-- Tag chips injected here -->
-                </div>
             </div>
         </div>
     </nav>
@@ -104,10 +100,8 @@
                     const ui = new UIManager(db);
                     window.appUI = ui;
                     
-                    // Filter out normative items for tag counts
                     const appItems = db.filter(item => item.type === 'app');
-                    const topTags = getTopTags(appItems, 8);
-                    renderQuickFilters(topTags, ui);
+
 
                     // Chi Sono Modal
                     const aboutBtn = document.getElementById('about-btn');
@@ -154,23 +148,7 @@
                 }
             };
 
-            const getTopTags = (data, limit) => {
-                const counts = {};
-                data.forEach(item => (item.tags || []).forEach(tag => counts[tag] = (counts[tag] || 0) + 1));
-                return Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, limit).map(e => e[0]);
-            };
 
-            const renderQuickFilters = (tags, ui) => {
-                const container = document.getElementById('quick-filters');
-                container.innerHTML = tags.map(tag => `<button class="chip" data-tag="${tag}">${tag}</button>`).join('');
-                
-                container.querySelectorAll('.chip').forEach(btn => {
-                    btn.onclick = () => {
-                        const tag = btn.dataset.tag;
-                        window.setGlobalFilter(tag);
-                    };
-                });
-            };
 
             // Global Filter Logic (callable both from Quick Filters and Card Chips)
             window.setGlobalFilter = (tag) => {
