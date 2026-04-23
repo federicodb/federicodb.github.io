@@ -199,6 +199,19 @@ export class UIManager {
         return this.semanticLabels[key] || label;
     }
 
+    formatMath(text) {
+        if (!text) return text;
+        
+        let corrected = text.replace(/\\(PI|PHI|ALPHA|BETA|GAMMA|DELTA|EPSILON|ZETA|ETA|THETA|IOTA|KAPPA|LAMBDA|MU|NU|XI|OMICRON|RHO|SIGMA|TAU|UPSILON|CHI|PSI|OMEGA|SQRT)\b/g, (match, p1) => {
+            return '\\' + p1.toLowerCase();
+        });
+
+        return corrected.replace(/(\$?)\\(pi|phi|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa|lambda|mu|nu|xi|omicron|rho|sigma|tau|upsilon|chi|psi|omega|Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega)\b(\$?)/g, (match, p1, p2, p3) => {
+            if (p1 === '$' || p3 === '$') return match;
+            return `$\\${p2}$`;
+        });
+    }
+
     getClassTheme(className) {
         // Mappatura Artistica Desaturata
         const map = {
@@ -227,21 +240,27 @@ export class UIManager {
         const el = document.createElement('div');
         el.className = 'card animate-in';
         
-        // Assegnazione colore semantico basato sulla categoria prevalente nei tag
-        let themeColor = 'var(--primary)';
-        const fullTags = item.tags.join(' ').toLowerCase();
+        // Assegnazione colore semantico basato su hash del titolo per garantire varietà stabile
+        const palette = [
+            'hsl(330, 80%, 65%)', // pink
+            'hsl(280, 85%, 65%)', // purple
+            'hsl(190, 100%, 55%)', // cyan
+            'hsl(155, 80%, 50%)', // green
+            'hsl(38, 100%, 60%)', // yellow
+            'hsl(10, 90%, 65%)',  // orange
+            'hsl(220, 90%, 70%)'  // light blue
+        ];
         
-        if (fullTags.includes('matematica') || fullTags.includes('algebra') || fullTags.includes('geometria')) themeColor = 'var(--color-math)';
-        else if (fullTags.includes('progettazione') || fullTags.includes('webgl') || fullTags.includes('3d') || fullTags.includes('digital')) themeColor = 'var(--color-tech)';
-        else if (fullTags.includes('cittadinanza') || fullTags.includes('voto') || fullTags.includes('sociale')) themeColor = 'var(--color-citizen)';
-        else if (fullTags.includes('soft skills') || fullTags.includes('metacognizione')) themeColor = 'var(--color-soft)';
-        else {
-            // Fallback colori rotanti se nessuna categoria prevale
-            const fallbackColors = ['var(--color-math)', 'var(--color-tech)', 'var(--color-citizen)', 'var(--color-soft)', 'var(--primary)'];
-            themeColor = fallbackColors[Math.floor(Math.random() * fallbackColors.length)];
+        let hash = 0;
+        const titleStr = item.title || "";
+        for (let i = 0; i < titleStr.length; i++) {
+            hash = titleStr.charCodeAt(i) + ((hash << 5) - hash);
         }
+        const themeColor = palette[Math.abs(hash) % palette.length];
         
         el.style.setProperty('--card-accent', themeColor);
+        el.style.setProperty('--class-border', themeColor);
+        el.style.setProperty('--md-sys-color-primary', themeColor);
         el.setAttribute('data-color', 'custom'); 
         
         const categories = this.categorizeTags(item.tags);
@@ -250,7 +269,7 @@ export class UIManager {
         if (classTheme) {
             el.style.setProperty('--class-bg', classTheme.bg);
             el.style.setProperty('--class-fg', classTheme.fg);
-            el.style.setProperty('--class-border', classTheme.border);
+            // Non sovrascriviamo il class-border per mantenere la varietà
         }
 
         const typeLabels = {
@@ -262,14 +281,17 @@ export class UIManager {
             infographic: 'Infografica'
         };
 
+        const titleFormatted = this.formatMath(item.title);
+        const excerptFormatted = this.formatMath(item.excerpt);
+
         const competenciesHtml = categories.competencies.slice(0, 3).map(c => `
             <div class="competency-item">
                 <span class="comp-dot"></span>
-                <span class="comp-text"><a href="competenze.html#${c.code}" style="color: var(--primary); text-decoration: none; font-weight: 700;">${c.code}:</a> ${c.text}</span>
+                <span class="comp-text"><a href="competenze.html#${c.code}" style="color: var(--primary); text-decoration: none; font-weight: 700;">${c.code}:</a> ${this.formatMath(c.text)}</span>
             </div>
         `).join('');
 
-        const topicsHtml = categories.topics.slice(0, 3).map(t => `<button class="topic-chip" onclick="window.setGlobalFilter('${t.replace(/'/g, "\\'")}')">${t}</button>`).join('');
+        const topicsHtml = categories.topics.slice(0, 3).map(t => `<button class="topic-chip" onclick="window.setGlobalFilter('${t.replace(/'/g, "\\'")}')">${this.formatMath(t)}</button>`).join('');
         
         let versionsHtml = '';
         if (item.versions && item.versions.length > 0) {
@@ -307,8 +329,8 @@ export class UIManager {
                 </div>
 
                 <div class="card-main">
-                    <h3 class="card-title">${item.title}</h3>
-                    <p class="card-desc">${item.excerpt || ''}</p>
+                    <h3 class="card-title">${titleFormatted}</h3>
+                    <p class="card-desc">${excerptFormatted || ''}</p>
                 </div>
 
                 <div class="card-competencies">

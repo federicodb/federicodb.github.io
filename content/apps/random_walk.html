@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hyperchaos Fractal Engine 3D - Chromatic Memory</title>
+    <meta name="description" content="Simulatore frattale 3D interattivo. Generatore algoritmico con geometria variabile, passeggiate aleatorie (Random Walk) e memoria cromatica nello spazio.">
+    <meta name="keywords" content="FRATTALI, RANDOM WALK, GEOMETRIA, SIMULATORE, WEBGL, CAOS, ALGORITMI, 3D, MAT_K03:GEOMETRIA EUCLIDEA E ANALITICA, 5 EL">
+    <meta name="date" content="2026-04-23">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --accent-h: 280;
+            --accent-color: hsl(var(--accent-h), 85%, 65%);
+            --accent-soft: hsla(var(--accent-h), 85%, 65%, 0.1);
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            touch-action: none;
+        }
+
+        .ui-panel {
+            background: rgba(3, 3, 3, 0.98);
+            backdrop-filter: blur(40px);
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 100;
+        }
+
+        @media (min-width: 768px) {
+            .panel-closed {
+                transform: translateX(-100%);
+            }
+
+            .panel-open {
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .ui-panel {
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 85vh;
+                border-radius: 32px 32px 0 0;
+                border-right: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.15);
+            }
+
+            .panel-closed {
+                transform: translateY(100%);
+            }
+
+            .panel-open {
+                transform: translateY(0);
+            }
+        }
+
+        .text-accent {
+            color: var(--accent-color);
+            transition: color 0.1s;
+        }
+
+        .bg-accent {
+            background-color: var(--accent-color);
+            transition: background-color 0.1s;
+        }
+
+        input[type=range] {
+            accent-color: var(--accent-color);
+            height: 6px;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border: 3px solid var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type=checkbox] {
+            accent-color: var(--accent-color);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Contrasto menu a tendina migliorato */
+        select {
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 13px;
+            color: #ffffff;
+            outline: none;
+            width: 100%;
+            cursor: pointer;
+            appearance: none;
+        }
+
+        select option {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .fab {
+            z-index: 200;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 1);
+            background-color: var(--accent-color);
+        }
+
+        #stats {
+            pointer-events: none;
+            text-shadow: 0 0 5px #000;
+        }
+    </style>
+</head>
+
+<body class="h-screen w-screen bg-[#000000]">
+
+    <!-- Home Button -->
+    <a href="../../index.html" class="fixed top-6 right-6 z-[100] w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95" title="Torna alla Home">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+    </a>
+
+    <div id="stats" class="fixed top-6 left-6 z-[50] font-mono text-[10px] text-white/40 space-y-1">
+        <div id="fps">FPS: 60</div>
+        <div id="points-count">PUNTI: 0</div>
+        <div id="scale-info">SCALA: 1.0x</div>
+    </div>
+
+    <button id="menuToggle"
+        class="fab fixed bottom-8 right-8 w-14 h-14 text-black rounded-full flex items-center justify-center pointer-events-auto active:scale-90 transition-all">
+        <svg id="menuIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+    </button>
+
+    <aside id="controls"
+        class="fixed left-0 top-0 h-full w-80 ui-panel p-8 flex flex-col pointer-events-auto panel-closed overflow-y-auto">
+        <div class="flex justify-between items-center mb-8 shrink-0">
+            <div>
+                <h1 class="text-2xl font-bold text-white tracking-tighter">Hypercaos</h1>
+                <p class="text-[10px] text-accent uppercase tracking-[0.2em] font-black">Chromatic Memory</p>
+            </div>
+            <button id="closeMenu" class="text-white/30 hover:text-white p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="space-y-10 pb-12">
+            <!-- Navigazione -->
+            <section class="space-y-6">
+                <p class="text-[11px] font-bold text-white/30 uppercase tracking-widest border-b border-white/10 pb-2">
+                    Navigazione</p>
+                <div class="flex items-center justify-between text-xs">
+                    <label>Auto-Fit (Space Fill)</label>
+                    <input type="checkbox" id="autoFit" checked>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between text-xs"><span>Inerzia Zoom</span><span id="zoomInertia-val"
+                            class="text-accent">0.96</span></div>
+                    <input type="range" id="zoomInertia" min="0.85" max="0.99" step="0.01" value="0.96">
+                </div>
+            </section>
+
+            <!-- Cromia -->
+            <section class="space-y-6">
+                <p class="text-[11px] font-bold text-white/30 uppercase tracking-widest border-b border-white/10 pb-2">
+                    Cromia & Morphing</p>
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between text-xs"><span>Tonalità Attuale</span><span id="hue-val"
+                            class="text-accent">280°</span></div>
+                    <input type="range" id="hue" min="0" max="360" step="1" value="280">
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <label>Ciclo Permanente (Morphing)</label>
+                    <input type="checkbox" id="cycleColor" checked>
+                </div>
+            </section>
+
+            <!-- Geometria -->
+            <section class="space-y-6">
+                <p class="text-[11px] font-bold text-white/30 uppercase tracking-widest border-b border-white/10 pb-2">
+                    Parametri Geometrici</p>
+                <div class="space-y-6">
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between text-xs"><span>Curvatura</span><span id="curvature-val"
+                                class="text-accent">1.0</span></div>
+                        <input type="range" id="curvature" min="0.1" max="5" step="0.05" value="1">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between text-xs"><span>Snap Ortogonale</span><span id="solidAngle-val"
+                                class="text-accent">0%</span></div>
+                        <input type="range" id="solidAngle" min="0" max="1" step="0.01" value="0">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between text-xs"><span>Randomness</span><span id="noise-val"
+                                class="text-accent">0</span></div>
+                        <input type="range" id="noise" min="0" max="100" step="1" value="0">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Frattali -->
+            <section class="space-y-6 pb-12">
+                <p class="text-[11px] font-bold text-white/30 uppercase tracking-widest border-b border-white/10 pb-2">
+                    Macro Frattali</p>
+                <select id="fractalMode">
+                    <option value="none">Standard Harmonic</option>
+                    <option value="koch">Koch Morphism</option>
+                    <option value="hilbert">Hilbert Spatial Grid</option>
+                    <option value="peano">Peano Ternary</option>
+                    <option value="walk">Fractal Random Walk</option>
+                </select>
+                <div class="flex flex-col gap-2 mt-4">
+                    <div class="flex justify-between text-xs"><span>Intensità Frattale</span><span id="fractalInt-val"
+                            class="text-accent">0.5</span></div>
+                    <input type="range" id="fractalInt" min="0" max="1" step="0.01" value="0.5">
+                </div>
+            </section>
+        </div>
+
+        <div class="pt-8 border-t border-white/10 grid grid-cols-2 gap-4 shrink-0">
+            <button id="resetView"
+                class="bg-white/5 hover:bg-white/10 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all">Reset
+                View</button>
+            <button id="clearPoints"
+                class="bg-white/10 text-accent py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all">Pulisci</button>
+        </div>
+    </aside>
+
+    <main id="container" class="fixed inset-0 z-10 pointer-events-auto"></main>
+
+    <script>
+        /**
+         * HYPERCHAOS ENGINE 3D - CHROMATIC MEMORY
+         * Motore di generazione parametrica con persistenza cromatica.
+         */
+        let scene, camera, renderer, controls, line;
+        let pointsMemory = []; // Nuovo buffer per coppie {pos, color}
+        let t = 0;
+        let frameCount = 0;
+        let centroid = new THREE.Vector3(0, 0, 0);
+        let orthoPos = new THREE.Vector3(0, 0, 0);
+        let orthoDir = new THREE.Vector3(1, 0, 0);
+
+        let zoomVelocity = 0;
+        let lastPinchDist = 0;
+        let isUserInteracting = false;
+
+        const MAX_POINTS = 45000;
+        const params = {
+            fX: 2.1, fY: 3.2, fZ: 1.6,
+            curvature: 1.0, solidAngle: 0.0,
+            roundness: 1.0, noise: 0,
+            fractalMode: 'none', fractalInt: 0.5,
+            damp: 0.0005, speed: 0.04,
+            hue: 280, cycleColor: true,
+            autoFit: true, zoomInertia: 0.96
+        };
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.001, 10000000);
+            camera.position.set(1500, 1500, 1500);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.035;
+            controls.enableZoom = false;
+
+            initGeometry();
+            setupUI();
+            setupInteractions();
+            syncTheme();
+
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+
+        function initGeometry() {
+            if (line) scene.remove(line);
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(MAX_POINTS * 3), 3).setUsage(THREE.DynamicDrawUsage));
+            geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(MAX_POINTS * 3), 3).setUsage(THREE.DynamicDrawUsage));
+
+            const material = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.95,
+                blending: THREE.AdditiveBlending
+            });
+
+            line = new THREE.Line(geometry, material);
+            line.frustumCulled = false;
+            scene.add(line);
+        }
+
+        function syncTheme() {
+            const h = params.hue;
+            document.documentElement.style.setProperty('--accent-h', h);
+            const color = `hsl(${h}, 85%, 65%)`;
+            document.querySelectorAll('.text-accent').forEach(el => el.style.color = color);
+            const fab = document.getElementById('menuToggle');
+            if (fab) fab.style.backgroundColor = color;
+            const clearBtn = document.getElementById('clearPoints');
+            if (clearBtn) {
+                clearBtn.style.color = color;
+                clearBtn.style.backgroundColor = `hsla(${h}, 85%, 65%, 0.15)`;
+            }
+        }
+
+        function setupUI() {
+            const menuToggle = document.getElementById('menuToggle');
+            const controlsPanel = document.getElementById('controls');
+            const closeMenu = document.getElementById('closeMenu');
+
+            menuToggle.onclick = () => {
+                const isOpen = controlsPanel.classList.toggle('panel-open');
+                controlsPanel.classList.toggle('panel-closed', !isOpen);
+            };
+            closeMenu.onclick = () => {
+                controlsPanel.classList.add('panel-closed');
+                controlsPanel.classList.remove('panel-open');
+            };
+
+            const inputs = ['fX', 'fY', 'fZ', 'curvature', 'solidAngle', 'noise', 'hue', 'fractalInt', 'zoomInertia'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.oninput = (e) => {
+                    let val = parseFloat(e.target.value);
+                    params[id] = val;
+                    const valDisplay = document.getElementById(id + '-val');
+                    if (valDisplay) {
+                        let text = val;
+                        if (id === 'solidAngle') text = Math.round(val * 100) + '%';
+                        if (id === 'hue') text = val + '°';
+                        valDisplay.innerText = text;
+                    }
+                    if (id === 'hue') syncTheme();
+                    if (['fX', 'fY', 'fZ', 'curvature', 'solidAngle', 'fractalInt'].includes(id)) resetTraccia();
+                };
+            });
+
+            document.getElementById('fractalMode').onchange = (e) => { params.fractalMode = e.target.value; resetTraccia(); };
+            document.getElementById('cycleColor').onchange = (e) => params.cycleColor = e.target.checked;
+            document.getElementById('autoFit').onchange = (e) => params.autoFit = e.target.checked;
+            document.getElementById('resetView').onclick = () => {
+                controls.reset();
+                camera.position.set(1500, 1500, 1500);
+                controls.target.set(0, 0, 0);
+                zoomVelocity = 0;
+            };
+            document.getElementById('clearPoints').onclick = resetTraccia;
+        }
+
+        function setupInteractions() {
+            const container = renderer.domElement;
+            container.addEventListener('wheel', (e) => {
+                isUserInteracting = true;
+                zoomVelocity += e.deltaY * 0.15;
+            }, { passive: true });
+
+            container.addEventListener('touchstart', (e) => {
+                isUserInteracting = true;
+                zoomVelocity = 0;
+                if (e.touches.length === 2) {
+                    lastPinchDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2) {
+                    const dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+                    zoomVelocity += (lastPinchDist - dist) * 14.0;
+                    lastPinchDist = dist;
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchend', () => { isUserInteracting = false; }, { passive: true });
+            controls.addEventListener('start', () => { isUserInteracting = true; });
+            controls.addEventListener('end', () => { isUserInteracting = false; });
+        }
+
+        function resetTraccia() {
+            pointsMemory = []; t = 0; orthoPos.set(0, 0, 0);
+            const posAttr = line.geometry.attributes.position;
+            posAttr.array.fill(0);
+            posAttr.needsUpdate = true;
+            line.geometry.setDrawRange(0, 0);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function shape(v, k) {
+            return Math.sign(v) * Math.pow(Math.abs(v), 1 / k);
+        }
+
+        function applyFractalMod(vec, time) {
+            const intensity = params.fractalInt;
+            if (params.fractalMode === 'none') return vec;
+            let offset = new THREE.Vector3(0, 0, 0);
+            switch (params.fractalMode) {
+                case 'koch':
+                    let k = Math.sin(time * 5) * 85 * intensity;
+                    offset.set(Math.sin(time * 24) * k, Math.cos(time * 24) * k, Math.sin(time * 12) * k);
+                    break;
+                case 'hilbert':
+                    const c = 160 * (1.1 - intensity);
+                    offset.set(Math.round(vec.x / c) * c - vec.x, Math.round(vec.y / c) * c - vec.y, Math.round(vec.z / c) * c - vec.z).multiplyScalar(intensity);
+                    break;
+                case 'peano':
+                    let p = (Math.floor(time * 16) % 3 - 1) * 80 * intensity;
+                    offset.set(p, p, p);
+                    break;
+                case 'walk':
+                    if (Math.random() > 0.91) offset.set((Math.random() - 0.5) * 450 * intensity, (Math.random() - 0.5) * 450 * intensity, (Math.random() - 0.5) * 450 * intensity);
+                    break;
+            }
+            return vec.add(offset);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            frameCount++;
+
+            // Gestione Morphing Colore (Hue corrente)
+            if (params.cycleColor) {
+                params.hue = (params.hue + 0.12) % 360;
+                document.getElementById('hue').value = params.hue;
+                const hueDisplay = document.getElementById('hue-val');
+                if (hueDisplay) hueDisplay.innerText = Math.round(params.hue) + '°';
+                syncTheme();
+            }
+
+            const amp = Math.min(window.innerWidth, window.innerHeight) * 0.48;
+            const d = Math.exp(-params.damp * t);
+
+            let tx = amp * shape(Math.sin(t * params.fX), params.curvature) * d;
+            let ty = amp * shape(Math.sin(t * params.fY + params.roundness), params.curvature) * d;
+            let tz = amp * shape(Math.sin(t * params.fZ), params.curvature) * d;
+
+            let vec = new THREE.Vector3(tx, ty, tz);
+
+            if (params.solidAngle > 0) {
+                if (frameCount % 10 === 0) {
+                    const axes = [new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -1, 0), new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, -1)];
+                    const poss = axes.filter(a => Math.abs(a.dot(orthoDir)) < 0.1);
+                    orthoDir = poss[Math.floor(Math.random() * poss.length)];
+                }
+                orthoPos.addScaledVector(orthoDir, params.speed * amp * d);
+                vec.lerp(orthoPos, params.solidAngle);
+            }
+
+            vec = applyFractalMod(vec, t);
+            if (params.noise > 0) {
+                vec.x += (Math.random() - 0.5) * params.noise;
+                vec.y += (Math.random() - 0.5) * params.noise;
+                vec.z += (Math.random() - 0.5) * params.noise;
+            }
+
+            // Memorizzazione Coppia Punto-Colore Permanente
+            const currentColor = new THREE.Color().setHSL(params.hue / 360, 0.9, 0.6);
+            pointsMemory.push({ pos: vec, baseCol: currentColor });
+
+            if (pointsMemory.length > MAX_POINTS) pointsMemory.shift();
+
+            // Navigazione & Auto-Fit
+            if (frameCount % 4 === 0 && pointsMemory.length > 5) {
+                let sum = new THREE.Vector3(0, 0, 0);
+                let maxR = 100;
+                const step = Math.max(1, Math.floor(pointsMemory.length / 80));
+                let count = 0;
+                for (let i = 0; i < pointsMemory.length; i += step) {
+                    sum.add(pointsMemory[i].pos);
+                    count++;
+                    maxR = Math.max(maxR, pointsMemory[i].pos.length());
+                }
+                centroid.copy(sum.divideScalar(count));
+                controls.target.lerp(centroid, 0.05);
+
+                if (params.autoFit && !isUserInteracting && Math.abs(zoomVelocity) < 0.1) {
+                    const fovF = 1.0 / Math.tan((camera.fov * 0.5) * (Math.PI / 180));
+                    const targetDist = (maxR * 2.6) * fovF;
+                    const curDist = camera.position.distanceTo(controls.target);
+                    if (curDist > targetDist + 10) {
+                        const zoomS = (targetDist - curDist) * 0.04;
+                        camera.position.addScaledVector(new THREE.Vector3().subVectors(camera.position, controls.target).normalize(), zoomS);
+                    }
+                }
+                document.getElementById('points-count').innerText = `PUNTI: ${pointsMemory.length}`;
+            }
+
+            if (Math.abs(zoomVelocity) > 0.02) {
+                const dir = new THREE.Vector3().subVectors(camera.position, controls.target).normalize();
+                camera.position.addScaledVector(dir, zoomVelocity);
+                zoomVelocity *= params.zoomInertia;
+            } else { zoomVelocity = 0; }
+
+            // AGGIORNAMENTO BUFFER GPU CON MEMORIA CROMATICA
+            const posAttr = line.geometry.attributes.position;
+            const colAttr = line.geometry.attributes.color;
+
+            for (let i = 0; i < pointsMemory.length; i++) {
+                const pData = pointsMemory[i];
+                posAttr.setXYZ(i, pData.pos.x, pData.pos.y, pData.pos.z);
+
+                // Logica Glow: gli ultimi punti transizionano dal Bianco verso il loro colore base
+                let glowZone = 250;
+                let headIdx = pointsMemory.length - i;
+
+                if (headIdx < glowZone) {
+                    // Fattore di incandescenza (1.0 in punta, 0.0 a fine zona glow)
+                    let glowFactor = 1.0 - (headIdx / glowZone);
+                    colAttr.setXYZ(i,
+                        THREE.MathUtils.lerp(pData.baseCol.r * 0.75, 1.0, glowFactor),
+                        THREE.MathUtils.lerp(pData.baseCol.g * 0.75, 1.0, glowFactor),
+                        THREE.MathUtils.lerp(pData.baseCol.b * 0.75, 1.0, glowFactor)
+                    );
+                } else {
+                    // Colore stabilizzato permanente (quello assegnato alla nascita)
+                    colAttr.setXYZ(i, pData.baseCol.r * 0.75, pData.baseCol.g * 0.75, pData.baseCol.b * 0.75);
+                }
+            }
+
+            line.geometry.setDrawRange(0, pointsMemory.length);
+            posAttr.needsUpdate = true;
+            colAttr.needsUpdate = true;
+
+            t += params.speed;
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>

@@ -18,7 +18,7 @@
     --bg-dark: hsl(240, 6%, 4%);
     --bg-surface: hsl(240, 6%, 8%);
     --bg-card: hsla(240, 6%, 12%, 0.4);
-    --glass-border: hsla(0, 0%, 100%, 0.06);
+    --glass-border: hsla(0, 0%, 100%, 0.12);
     
     --primary: hsl(190, 35%, 60%);   /* Desaturated Lab Cyan */
     --accent: hsl(330, 25%, 65%);    /* Muted Magenta */
@@ -484,7 +484,8 @@ main { flex: 1; }
     background: #000000; /* Pure OLED Black */
     border-radius: var(--radius-md);
     overflow: hidden;
-    border: 1px solid var(--glass-border);
+    border: 1.5px solid var(--glass-border);
+    box-shadow: 0 0 0 0.5px var(--glass-border); /* Anti-aliasing buffer */
     transition: var(--transition);
     text-decoration: none;
     color: inherit;
@@ -493,7 +494,8 @@ main { flex: 1; }
 .card:hover {
     transform: translateY(-8px) scale(1.01);
     border-color: var(--class-border, var(--primary));
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    border-width: 2px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 0.5px var(--class-border, var(--primary));
 }
 
 .card-bg {
@@ -704,7 +706,8 @@ main { flex: 1; }
     height: 40px;
     min-width: 60px;
     background: #000000;
-    border: 1px solid var(--glass-border);
+    border: 1.5px solid var(--glass-border);
+    box-shadow: 0 0 0 0.5px var(--glass-border);
     border-radius: 12px;
     color: var(--text-muted);
     font-weight: 600;
@@ -732,7 +735,8 @@ main { flex: 1; }
     padding: 0 32px;
     background: #000000; /* OLED Pure Black */
     color: var(--md-sys-color-primary);
-    border: 1.5px solid var(--md-sys-color-primary);
+    border: 2px solid var(--md-sys-color-primary);
+    box-shadow: 0 0 0 0.5px var(--md-sys-color-primary); /* Smooth edges */
     border-radius: 24px;
     text-decoration: none;
     font-weight: 700;
