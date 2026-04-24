@@ -121,8 +121,13 @@
         
         /* Pannello Canvas Responsive */
         #canvas-container {
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+            z-index: -10;
         }
         
         /* Fix per mantenere l'aspect ratio isometrico nel p5.js canvas */
@@ -133,26 +138,64 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        .ui-panel {
+            background: rgba(16, 16, 16, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 100;
+        }
+
+        .panel-closed {
+            transform: translateX(-100%);
+        }
+
+        .panel-open {
+            transform: translateX(0);
+        }
+
+        .fab {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            z-index: 90;
+        }
     </style>
 </head>
-<body class="h-[100dvh] w-screen flex flex-col md:flex-row p-3 md:p-4 gap-4 box-border">
+<body class="h-screen w-screen bg-[#000000] overflow-hidden">
 
-    
-
-    <!-- Pannello Grafico (Elastico, occupa lo spazio rimanente) -->
-    <div class="flex-1 flex justify-center items-center rounded-2xl border border-gray-800 shadow-2xl overflow-hidden min-h-[40vh] md:min-h-0" id="canvas-container">
+    <!-- Pannello Grafico (Schermo Intero) -->
+    <div id="canvas-container">
         <!-- Il canvas p5.js verrà iniettato qui -->
     </div>
 
-    <!-- Pannello Controlli e Formule (Dashboard Sidebar) -->
-    <div class="w-full md:w-[420px] flex flex-col gap-6 p-6 bg-[#161616] rounded-2xl border border-gray-800 shadow-2xl overflow-y-auto shrink-0">
+    <!-- Toggle FAB -->
+    <button id="menuToggle"
+        class="fab fixed bottom-8 right-8 w-14 h-14 rounded-full flex items-center justify-center pointer-events-auto active:scale-90 transition-all">
+        <svg id="menuIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+    </button>
+
+    <!-- Pannello Controlli e Formule (Collapsible UI Panel) -->
+    <aside id="controls"
+        class="fixed left-0 top-0 h-full w-80 ui-panel p-6 flex flex-col pointer-events-auto panel-closed overflow-y-auto">
         
         <!-- Intestazione -->
-        <div class="border-b border-gray-800 pb-4">
-            <h1 class="text-2xl font-semibold mb-2 tracking-wide">Il metodo di esaustione</h1>
-            <p class="text-gray-400 text-sm leading-relaxed">
-                Visualizzazione parametrica del limite delle aree di poligoni regolari al crescere del numero dei lati.
-            </p>
+        <div class="flex justify-between items-center border-b border-gray-800 pb-4 mb-6 shrink-0">
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-tighter">Metodo Esaustione</h1>
+                <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black">Visualizzazione Limiti</p>
+            </div>
+            <button id="closeMenu" class="text-white/30 hover:text-white p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
 
         <!-- Controlli Interattivi -->
@@ -205,7 +248,8 @@
             </div>
 
         </div>
-    </div>
+        </div>
+    </aside>
 
     <script>
         // Inizializzazione di KaTeX per la tipografia matematica
@@ -238,6 +282,28 @@
             let container = document.getElementById('canvas-container');
             let canvas = createCanvas(container.clientWidth, container.clientHeight);
             canvas.parent('canvas-container');
+            
+            // Logica Menu Toggle
+            const panel = document.getElementById('controls');
+            const toggleBtn = document.getElementById('menuToggle');
+            const closeBtn = document.getElementById('closeMenu');
+
+            function toggleMenu() {
+                if (panel.classList.contains('panel-closed')) {
+                    panel.classList.remove('panel-closed');
+                    panel.classList.add('panel-open');
+                    toggleBtn.style.opacity = '0';
+                    toggleBtn.style.pointerEvents = 'none';
+                } else {
+                    panel.classList.remove('panel-open');
+                    panel.classList.add('panel-closed');
+                    toggleBtn.style.opacity = '1';
+                    toggleBtn.style.pointerEvents = 'auto';
+                }
+            }
+
+            toggleBtn.addEventListener('click', toggleMenu);
+            closeBtn.addEventListener('click', toggleMenu);
             
             // Gestione Interazioni
             slider.addEventListener('input', (e) => {
