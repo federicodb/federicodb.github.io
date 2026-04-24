@@ -75,18 +75,31 @@ export class UIManager {
         this.filterList();
     }
 
-    setFilter(type, value) {
+    setFilter(type, value, gameType = null) {
         if (type === 'search') {
             this.state.searchQuery = value.toLowerCase();
-            this.filterList();
+        } else if (type === 'category') {
+            this.state.filterCategory = value; // e.g. 'all', 'app', 'image', 'infographic'
+            this.state.filterGameType = gameType; // e.g. 'arcade', 'sim', 'memory', null
         }
+        this.filterList();
     }
 
     filterList() {
-        const term = this.state.searchQuery.trim();
+        const term = this.state.searchQuery ? this.state.searchQuery.trim() : '';
+        const cat = this.state.filterCategory || 'all';
+        const gameCat = this.state.filterGameType;
         
         // Always filter out normative items for the main grid
-        const baseItems = this.db.filter(item => item.type !== 'normativa');
+        let baseItems = this.db.filter(item => item.type !== 'normativa');
+
+        if (cat !== 'all') {
+            baseItems = baseItems.filter(item => {
+                if (item.type !== cat) return false;
+                if (gameCat && item.game_type !== gameCat) return false;
+                return true;
+            });
+        }
 
         if (!term) {
             this.state.filteredItems = baseItems;
@@ -202,7 +215,11 @@ export class UIManager {
     formatMath(text) {
         if (!text) return text;
         
-        let corrected = text.replace(/\\(PI|PHI|ALPHA|BETA|GAMMA|DELTA|EPSILON|ZETA|ETA|THETA|IOTA|KAPPA|LAMBDA|MU|NU|XI|OMICRON|RHO|SIGMA|TAU|UPSILON|CHI|PSI|OMEGA|SQRT)\b/g, (match, p1) => {
+        // Risoluzione stringhe fisse (come SQRT(2) o PI GRECO) usate nei tags prima del regex standard
+        let corrected = text.replace(/SQRT\(2\)/gi, '$\\sqrt{2}$')
+                            .replace(/PI GRECO/gi, '$\\pi$');
+        
+        corrected = corrected.replace(/\\(PI|PHI|ALPHA|BETA|GAMMA|DELTA|EPSILON|ZETA|ETA|THETA|IOTA|KAPPA|LAMBDA|MU|NU|XI|OMICRON|RHO|SIGMA|TAU|UPSILON|CHI|PSI|OMEGA|SQRT)\b/g, (match, p1) => {
             return '\\' + p1.toLowerCase();
         });
 
@@ -291,7 +308,7 @@ export class UIManager {
             </div>
         `).join('');
 
-        const topicsHtml = categories.topics.slice(0, 3).map(t => `<button class="topic-chip" onclick="window.setGlobalFilter('${t.replace(/'/g, "\\'")}')">${this.formatMath(t)}</button>`).join('');
+        const topicsHtml = categories.topics.slice(0, 7).map(t => `<button class="topic-chip" onclick="window.setGlobalFilter('${t.replace(/'/g, "\\'")}')">${this.formatMath(t)}</button>`).join('');
         
         let versionsHtml = '';
         if (item.versions && item.versions.length > 0) {

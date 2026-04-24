@@ -211,11 +211,110 @@ main { flex: 1; }
 }
 .nav-link:hover, .nav-link.active { color: white; }
 
-/* M3 Search Bar - High Priority */
+/* M3 Search Bar & Filter Burger */
+.search-filter-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    position: relative;
+}
+
+.burger-btn {
+    background: var(--bg-surface);
+    border: 2px solid var(--md-sys-color-outline);
+    color: var(--text-muted);
+    width: var(--m3-search-height);
+    height: var(--m3-search-height);
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.burger-btn:hover {
+    color: white;
+    border-color: var(--md-sys-color-primary);
+    background: var(--bg-card);
+}
+
 .search-container { 
     position: relative; 
     width: 100%; 
-    max-width: 100%;
+    flex-grow: 1;
+}
+
+/* Filter Dropdown */
+.filter-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 20px;
+    width: max-content;
+    max-width: 90vw;
+    z-index: 200;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transform-origin: top left;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.filter-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    padding-left: 12px;
+}
+
+.filter-chip {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    padding: 12px 20px;
+    border-radius: 16px;
+    text-align: left;
+    font-size: 0.95rem;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.filter-chip:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.filter-chip.active {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
 }
 
 .search-input {

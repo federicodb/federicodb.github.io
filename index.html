@@ -43,12 +43,27 @@
             </div>
 
             <div class="nav-row-2">
-                <div class="search-container">
-                    <input type="text" id="search-input" class="search-input" placeholder="Cerca temi o competenze...">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                <div class="search-filter-wrapper">
+                    <button id="filter-burger-btn" class="burger-btn" aria-label="Menu Filtri">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="search-container">
+                        <input type="text" id="search-input" class="search-input" placeholder="Cerca temi o competenze...">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    </div>
                 </div>
-            </div>
-
+                
+                <div id="filter-dropdown" class="filter-dropdown">
+                    <div class="filter-group">
+                        <span class="filter-group-title">Filtra per Categoria</span>
+                        <button class="filter-chip active" data-type="all">Tutte le attività</button>
+                        <button class="filter-chip" data-type="app" data-game="arcade">🕹️ Arcade</button>
+                        <button class="filter-chip" data-type="app" data-game="sim">🧪 Simulazioni</button>
+                        <button class="filter-chip" data-type="app" data-game="memory">🧠 Memory</button>
+                        <button class="filter-chip" data-type="image">🖼️ Immagini</button>
+                        <button class="filter-chip" data-type="infographic">📊 Infografiche</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -181,7 +196,59 @@
                 document.getElementById('active-filter-banner').classList.remove('active');
                 document.getElementById('search-input').value = '';
                 window.appUI.setFilter('search', '');
+                
+                // Clear category filter visually
+                if (document.querySelectorAll('.filter-chip').length > 0) {
+                    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+                    document.querySelector('.filter-chip[data-type="all"]').classList.add('active');
+                    window.appUI.setFilter('category', 'all');
+                }
             };
+
+            // Burger Menu Logic
+            const burgerBtn = document.getElementById('filter-burger-btn');
+            const dropdown = document.getElementById('filter-dropdown');
+            const filterChips = document.querySelectorAll('.filter-chip');
+
+            if (burgerBtn && dropdown) {
+                burgerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target) && e.target !== burgerBtn) {
+                        dropdown.classList.remove('active');
+                    }
+                });
+
+                filterChips.forEach(chip => {
+                    chip.addEventListener('click', () => {
+                        filterChips.forEach(c => c.classList.remove('active'));
+                        chip.classList.add('active');
+                        
+                        const type = chip.getAttribute('data-type');
+                        const gameType = chip.getAttribute('data-game');
+                        
+                        window.appUI.setFilter('category', type, gameType);
+                        
+                        // Close menu
+                        dropdown.classList.remove('active');
+                        
+                        // Update banner
+                        const banner = document.getElementById('active-filter-banner');
+                        const label = document.getElementById('active-filter-label');
+                        if (type !== 'all') {
+                            label.textContent = chip.textContent.trim();
+                            banner.classList.add('active');
+                        } else {
+                            if (!document.getElementById('search-input').value) {
+                                banner.classList.remove('active');
+                            }
+                        }
+                    });
+                });
+            }
 
             initApp();
         });
