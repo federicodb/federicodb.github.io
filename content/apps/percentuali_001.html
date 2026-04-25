@@ -190,6 +190,7 @@
 
         // --- VISTA 1: ESPLORATORE ---
         const Visualizer = ({ base, setBase, perc, setPerc, isSwapped, setIsSwapped }) => {
+            const [showTips, setShowTips] = useState(false);
             const result = (base * perc) / 100;
             
             // Dati per Pie Chart SVG
@@ -198,7 +199,7 @@
             const offset = circ - (Math.min(100, perc) / 100) * circ;
 
             return (
-                <div className="flex flex-col h-full gap-4">
+                <div className="flex flex-col min-h-full gap-6 pb-20 md:pb-8">
                     {/* CARD PRINCIPALE */}
                     <div className="glass p-5 md:p-8 flex flex-col gap-6 relative overflow-hidden animate-enter">
                         {/* Decorazione Sfondo */}
@@ -285,22 +286,41 @@
                         </div>
                     </div>
 
-                    {/* TRUCCHI GRID */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-24 md:pb-0">
-                        {[
-                            {t: "10%", d: "Sposta virgola ←", f: "10% di 450 = 45", c: "border-emerald-500"},
-                            {t: "50%", d: "Dimezza il numero", f: "50% di 80 = 40", c: "border-blue-500"},
-                            {t: "25%", d: "Metà della metà", f: "Metà 40 è 20", c: "border-purple-500"},
-                            {t: "5%", d: "Metà del 10%", f: "10% è 8 → 5% è 4", c: "border-amber-500"},
-                            {t: "1%", d: "Sposta virgola ←←", f: "1% di 300 = 3", c: "border-pink-500"},
-                            {t: "Swap", d: "Inverti i numeri", f: "8% di 25 → 25% di 8", c: "border-indigo-500"}
-                        ].map((trick, i) => (
-                            <div key={i} className={`glass p-4 border-l-4 ${trick.c} bg-opacity-40 hover:bg-opacity-100 transition-all cursor-default`}>
-                                <div className="font-bold text-xs uppercase mb-1 opacity-80">{trick.t}</div>
-                                <div className="text-[11px] leading-tight opacity-60 mb-2">{trick.d}</div>
-                                <div className="bg-black/20 p-1.5 rounded text-[10px] font-mono text-center opacity-90">{trick.f}</div>
+                    {/* TRUCCHI SECTION */}
+                    <div className="mt-4 md:mt-6">
+                        <div 
+                            onClick={() => setShowTips(!showTips)}
+                            className="flex items-center justify-between cursor-pointer group py-3 px-4 glass border-l-4 border-indigo-500/50 hover:border-indigo-500 transition-all mb-2"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className={`p-1.5 rounded-lg transition-colors ${showTips ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 group-hover:text-indigo-400'}`}>
+                                    <Icon path={icons.brain} className="w-4 h-4" />
+                                </div>
+                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-200 transition-colors">
+                                    Trucchi per il calcolo mentale
+                                </h3>
                             </div>
-                        ))}
+                            <div className={`text-slate-500 transition-all duration-300 ${showTips ? 'rotate-180 text-indigo-400' : ''}`}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </div>
+
+                        <div className={`grid grid-cols-1 md:grid-cols-3 gap-3 transition-all duration-500 ease-in-out overflow-hidden ${showTips ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                            {[
+                                {t: "10%", d: "Sposta virgola ←", f: "10% di 450 = 45", c: "border-emerald-500"},
+                                {t: "50%", d: "Dimezza il numero", f: "50% di 80 = 40", c: "border-blue-500"},
+                                {t: "25%", d: "Metà della metà", f: "Metà 40 è 20", c: "border-purple-500"},
+                                {t: "5%", d: "Metà del 10%", f: "10% è 8 → 5% è 4", c: "border-amber-500"},
+                                {t: "1%", d: "Sposta virgola ←←", f: "1% di 300 = 3", c: "border-pink-500"},
+                                {t: "Swap", d: "Inverti i numeri", f: "8% di 25 → 25% di 8", c: "border-indigo-500"}
+                            ].map((trick, i) => (
+                                <div key={i} className={`glass p-4 border-l-4 ${trick.c} bg-opacity-40 hover:bg-opacity-100 transition-all cursor-default`}>
+                                    <div className="font-bold text-xs uppercase mb-1 opacity-80">{trick.t}</div>
+                                    <div className="text-[11px] leading-tight opacity-60 mb-2">{trick.d}</div>
+                                    <div className="bg-black/20 p-1.5 rounded text-[10px] font-mono text-center opacity-90">{trick.f}</div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             );
@@ -458,7 +478,7 @@
 
                     {/* Main Scrollable Area */}
                     <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 no-scrollbar">
-                        <div className="max-w-4xl mx-auto h-full">
+                        <div className="max-w-4xl mx-auto min-h-full">
                             {view === 'lab' ? (
                                 <Visualizer 
                                     base={base} setBase={setBase} 
