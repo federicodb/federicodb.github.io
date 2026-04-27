@@ -269,7 +269,12 @@
 
     <script>
         nerdamer.set('RESERVE_NAMES', ['x', 'y', 'z']);
-        const COLORS = { xLogic: 0x3399FF, unitLogic: 0x27ae60 };
+        const COLORS = { 
+            x3: 0xD0BCFF, // Purple (Vol 3)
+            x2: 0x3399FF, // Blue (Vol 2)
+            x1: 0xB4E197, // Green (Vol 1)
+            u: 0xFFD700   // Gold (Unit)
+        };
         const MODES = ['training', 'base', 'medio', 'avanzato'];
 
         let state = {
@@ -277,6 +282,7 @@
             current: null,
             mode: 'training',
             history: [],
+            seen: new Set(),
             isSolved: false,
             transition: 0,
             completedInLevel: 0
@@ -327,19 +333,30 @@
         }
 
         function createBlock(w, h, d, x, y, z) {
-            const geometry = new THREE.BoxGeometry(w, h, d);
-            const isXInBase = (w > 1.5 || h > 1.5);
-            const color = isXInBase ? COLORS.xLogic : COLORS.unitLogic;
+            const geometry = new THREE.BoxGeometry(w - 0.05, h - 0.05, d - 0.05); // Micro-gap per effetto moduli
+            
+            // Determinazione colore semantica basata sul "tipo" di blocco (Volume)
+            let color = COLORS.u;
+            const xCount = [w, h, d].filter(v => v > 1.5).length;
+            if (xCount === 3) color = COLORS.x3;
+            else if (xCount === 2) color = COLORS.x2;
+            else if (xCount === 1) color = COLORS.x1;
 
-            const material = new THREE.MeshPhongMaterial({ color: color, shininess: 120, specular: 0x555555 });
+            const material = new THREE.MeshPhongMaterial({ 
+                color: color, 
+                shininess: 80, 
+                specular: 0x333333,
+                transparent: true,
+                opacity: 0.9
+            });
             const mesh = new THREE.Mesh(geometry, material);
             const edges = new THREE.EdgesGeometry(geometry);
-            mesh.add(new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 })));
+            mesh.add(new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 })));
 
             mesh.userData.targetPos = new THREE.Vector3(x + w/2, y + h/2, z + d/2);
             mesh.userData.targetQuat = new THREE.Quaternion().identity();
-            mesh.userData.startPos = new THREE.Vector3((Math.random()-0.5)*25, (Math.random()-0.5)*25, (Math.random()-0.5)*25);
-            mesh.userData.startQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.random()*Math.PI*2, Math.random()*Math.PI*2, Math.random()*Math.PI*2));
+            mesh.userData.startPos = new THREE.Vector3((Math.random()-0.5)*30, (Math.random()-0.5)*30, (Math.random()-0.5)*30);
+            mesh.userData.startQuat = new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI));
 
             mesh.position.copy(mesh.userData.startPos);
             mesh.quaternion.copy(mesh.userData.startQuat);
@@ -354,17 +371,33 @@
             
             const getParts = (f) => {
                 let p = [];
+                // Se il fattore ha x (f[0] > 0), aggiungiamo i moduli x
                 for(let i=0; i<f[0]; i++) p.push(CONFIG.xSize);
-                for(let i=1; i<f.length; i++) for(let j=0; j<f[i]; j++) p.push(CONFIG.unitSize);
+                // Poi aggiungiamo i moduli unità (f[1...])
+                for(let i=1; i<f.length; i++) {
+                    const count = Math.abs(f[i]); // Usiamo il valore assoluto per la geometria dei moduli
+                    for(let j=0; j<count; j++) p.push(CONFIG.unitSize);
+                }
                 return p;
             };
 
-            let partsX, partsY, partsZ;
-            if (factors.length === 3) {
-                partsX = getParts(factors[1]); partsY = getParts(factors[2]); partsZ = getParts(factors[0]);
-            } else {
-                partsX = getParts(factors[0]); partsY = getParts(factors[1]); partsZ = [CONFIG.unitSize];
-            }
+            // Distribuzione intelligente dei fattori nelle 3 dimensioni per formare un parallelepipedo
+            let dims = [[CONFIG.unitSize], [CONFIG.unitSize], [CONFIG.unitSize]];
+            
+            // Mappa i fattori alle dimensioni X, Y, Z in modo ciclico
+            factors.forEach((f, i) => {
+                const targetDim = i % 3;
+                const parts = getParts(f);
+                if (dims[targetDim].length === 1 && dims[targetDim][0] === CONFIG.unitSize) {
+                    dims[targetDim] = parts;
+                } else {
+                    // Se la dimensione ha già parti, moltiplichiamo la complessità (raccoglimento totale)
+                    // In questo caso semplifichiamo accodando per mantenere la forma a blocchi
+                    dims[targetDim] = dims[targetDim].concat(parts);
+                }
+            });
+
+            let partsX = dims[0], partsY = dims[1], partsZ = dims[2];
 
             let accX = 0;
             partsX.forEach(w => {
@@ -385,64 +418,57 @@
             blocksGroup.children.forEach(c => c.userData.targetPos.sub(center));
             controls.target.set(0,0,0);
             const size = new THREE.Vector3(); box.getSize(size);
-            const maxDim = Math.max(size.x, size.y, size.z, 3.5);
-            camera.position.set(maxDim * 1.15, maxDim * 1.15, maxDim * 1.15);
+            const maxDim = Math.max(size.x, size.y, size.z, 5);
+            camera.position.set(maxDim * 1.5, maxDim * 1.5, maxDim * 1.5);
             camera.updateProjectionMatrix();
         }
 
         const Generator = {
             training: () => {
-                const k = Math.floor(Math.random() * 5) + 2;
-                const a = Math.floor(Math.random() * 4) + 1;
+                const k = Math.floor(Math.random() * 12) + 2;
+                const a = Math.floor(Math.random() * 8) + 1;
                 const templates = [
                     () => ({ orig: `${k}x + ${k*a}`, factors: [[0, k], [1, a]], target: `${k}(x+${a})` }),
-                    () => ({ orig: `${k}x^2 + ${k*a}x`, factors: [[0, k], [1, 0], [1, a]], target: `${k}x(x+${a})` })
+                    () => ({ orig: `${k}x^2 + ${k*a}x`, factors: [[0, k], [1, 0], [1, a]], target: `${k}x(x+${a})` }),
+                    () => ({ orig: `${k}x^2 + ${k}x`, factors: [[0, k], [1, 0], [1, 1]], target: `${k}x(x+1)` })
                 ];
                 return templates[Math.floor(Math.random()*templates.length)]();
             },
             base: () => {
-                const a = Math.floor(Math.random() * 3) + 1;
-                const b = Math.floor(Math.random() * 3) + 1;
+                const a = Math.floor(Math.random() * 6) + 1;
+                const b = Math.floor(Math.random() * 6) + 1;
                 const templates = [
                     () => ({ orig: nerdamer(`(x+${a})^2`).expand().toString(), factors: [[1, a], [1, a]], target: `(x+${a})^2` }),
                     () => ({ orig: nerdamer(`(x-${a})(x+${a})`).expand().toString(), factors: [[1, -a], [1, a]], target: `(x-${a})(x+${a})` }),
-                    () => ({ orig: nerdamer(`(x+${a})(x+${b})`).expand().toString(), factors: [[1, a], [1, b]], target: `(x+${a})(x+${b})` })
+                    () => ({ orig: nerdamer(`(x+${a})(x+${b})`).expand().toString(), factors: [[1, a], [1, b]], target: `(x+${a})(x+${b})` }),
+                    () => ({ orig: nerdamer(`x^2 + ${2*a}x + ${a*a}`).expand().toString(), factors: [[1, a], [1, a]], target: `(x+${a})^2` })
                 ];
                 return templates[Math.floor(Math.random()*templates.length)]();
             },
             medio: () => {
-                const a = Math.floor(Math.random() * 2) + 1;
-                const b = Math.floor(Math.random() * 2) + 1;
-                const k = Math.floor(Math.random() * 2) + 2;
+                const a = Math.floor(Math.random() * 5) + 1;
+                const b = Math.floor(Math.random() * 5) + 1;
+                const k = Math.floor(Math.random() * 6) + 2;
                 const templates = [
-                    () => ({ orig: nerdamer(`x*(x+${a})*(x+${b})`).expand().toString(), factors: [[1, 0], [1, a], [1, b]], target: `x(x+${a})(x+${b})` }),
-                    () => ({ orig: nerdamer(`${k}*(x+${a})*(x+${b})`).expand().toString(), factors: [[0, k], [1, a], [1, b]], target: `${k}(x+${a})(x+${b})` })
+                    // Misti: Raccoglimento + Prodotto Notevole
+                    () => ({ orig: nerdamer(`${k}*(x^2 - ${a*a})`).expand().toString(), factors: [[0, k], [1, -a], [1, a]], target: `${k}(x-${a})(x+${a})` }),
+                    () => ({ orig: nerdamer(`${k}*(x+${a})^2`).expand().toString(), factors: [[0, k], [1, a], [1, a]], target: `${k}(x+${a})^2` }),
+                    () => ({ orig: nerdamer(`${k}*(x+${a})*(x+${b})`).expand().toString(), factors: [[0, k], [1, a], [1, b]], target: `${k}(x+${a})(x+${b})` }),
+                    () => ({ orig: nerdamer(`x*(x+${a})*(x+${b})`).expand().toString(), factors: [[1, 0], [1, a], [1, b]], target: `x(x+${a})(x+${b})` })
                 ];
                 return templates[Math.floor(Math.random()*templates.length)]();
             },
             avanzato: () => {
-                const a = Math.floor(Math.random() * 2) + 1;
-                const b = Math.floor(Math.random() * 2) + 1;
-                const rand = Math.random();
-                if (rand < 0.3) { // Quadrato di trinomio: (x + a + b)^2
-                    return { 
-                        orig: nerdamer(`(x+${a}+${b})^2`).expand().toString(), 
-                        factors: [[1, a, b], [1, a, b]], 
-                        target: `(x+${a}+${b})^2` 
-                    };
-                } else if (rand < 0.6) { // Cubo di binomio: (x + a)^3
-                    return { 
-                        orig: nerdamer(`(x+${a})^3`).expand().toString(), 
-                        factors: [[1, a], [1, a], [1, a]], 
-                        target: `(x+${a})^3` 
-                    };
-                } else { // Trinomio composto
-                    return { 
-                        orig: nerdamer(`2*x*(x+${a})*(x+${b})`).expand().toString(), 
-                        factors: [[0, 2], [1, 0], [1, a], [1, b]], 
-                        target: `2x(x+${a})(x+${b})` 
-                    };
-                }
+                const a = Math.floor(Math.random() * 3) + 1;
+                const b = Math.floor(Math.random() * 3) + 1;
+                const k = Math.floor(Math.random() * 3) + 2;
+                const templates = [
+                    () => ({ orig: nerdamer(`(x+${a}+${b})^2`).expand().toString(), factors: [[1, a, b], [1, a, b]], target: `(x+${a}+${b})^2` }),
+                    () => ({ orig: nerdamer(`(x+${a})^3`).expand().toString(), factors: [[1, a], [1, a], [1, a]], target: `(x+${a})^3` }),
+                    () => ({ orig: nerdamer(`${k}*x*(x+${a})*(x+${b})`).expand().toString(), factors: [[0, k], [1, 0], [1, a], [1, b]], target: `${k}x(x+${a})(x+${b})` }),
+                    () => ({ orig: nerdamer(`${k}*(x+${a})^2*(x+${b})`).expand().toString(), factors: [[0, k], [1, a], [1, a], [1, b]], target: `${k}(x+${a})^2(x+${b})` })
+                ];
+                return templates[Math.floor(Math.random()*templates.length)]();
             }
         };
 
@@ -458,7 +484,16 @@
         }
 
         function newProblem() {
-            state.current = Generator[state.mode]();
+            let prob;
+            let attempts = 0;
+            do {
+                prob = Generator[state.mode]();
+                attempts++;
+            } while (state.seen.has(prob.orig) && attempts < 50);
+            
+            state.seen.add(prob.orig);
+            state.current = prob;
+            
             document.getElementById('math-input').value = '';
             document.getElementById('feedback').innerText = "Risolvi per ricostruire il volume";
             document.getElementById('feedback').style.color = "";
