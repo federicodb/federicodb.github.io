@@ -890,6 +890,9 @@ def main():
     # Scrive la Sitemap XML
     generate_sitemap(db_main)
     
+    # Iniezione SEO nell'index.html
+    update_index_seo(db_main)
+    
     print(f"\n✨ Successo! Salvati {len(db_main)} Laboratori e {len(db_verifiche)} Verifiche.")
 
 def generate_sitemap(items):
@@ -925,6 +928,33 @@ def generate_sitemap(items):
     
     with open(SITEMAP_FILE, 'w', encoding='utf-8') as f:
         f.write(xml)
+
+def update_index_seo(items):
+    """ Inietta un catalogo testuale nascosto nell'index.html per favorire il crawling """
+    try:
+        index_path = "index.html"
+        if not os.path.exists(index_path): return
+        
+        with open(index_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        catalog_html = ""
+        for item in items:
+            tags_str = ", ".join(item.get('tags', []))
+            catalog_html += f"<div><h3>{item['title']}</h3><p>{item.get('excerpt', '')}</p><span>Tags: {tags_str}</span></div>\n"
+        
+        print(f"  🔍 SEO Catalog: generati {len(items)} elementi")
+            
+        pattern = re.compile(r'<!-- SEO_CATALOG_START -->.*?<!-- SEO_CATALOG_END -->', re.DOTALL)
+        # Escapiamo le backslash per evitare che re.sub le interpreti come sequenze di escape (es. \p in LaTeX)
+        safe_catalog = catalog_html.replace('\\', '\\\\')
+        new_content = pattern.sub(f'<!-- SEO_CATALOG_START -->\n{safe_catalog}        <!-- SEO_CATALOG_END -->', content)
+        
+        with open(index_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        print("  🔍 SEO Catalog aggiornato in index.html")
+    except Exception as e:
+        print(f"  ⚠️ Errore aggiornamento SEO in index.html: {e}")
 
 if __name__ == "__main__":
     main()

@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Decodifica Competenze Riforma 2017 | Orfini Lab</title>
-    
+
     <!-- SEO & Metadata -->
-    <meta name="description" content="Strumento interattivo per la decodifica delle competenze della Riforma 2017 per gli Istituti Professionali.">
-    
+    <meta name="description"
+        content="Strumento interattivo per la decodifica delle competenze della Riforma 2017 per gli Istituti Professionali.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://federicodb.github.io/competenze.html">
+    <meta property="og:title" content="Decodifica Competenze Riforma 2017 | Orfini Lab">
+    <meta property="og:description" content="Mappa interattiva della Riforma Istituti Professionali (D.Lgs. 61/2017).">
+    <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.jpg">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap"
+        rel="stylesheet">
+
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -58,16 +70,36 @@
             font-weight: 600;
         }
 
-        .cat-btn:hover, .cat-btn.active {
+        .cat-btn:hover,
+        .cat-btn.active {
             background: hsla(0, 0%, 100%, 0.1);
             color: white;
             border-color: var(--primary);
         }
 
-        .cat-btn.active[data-target="area_generale_matematica"] { border-color: var(--color-math); color: var(--color-math); background: hsla(280, 85%, 65%, 0.1); }
-        .cat-btn.active[data-target="area_indirizzo_tecnico"] { border-color: var(--color-tech); color: var(--color-tech); background: hsla(155, 100%, 50%, 0.1); }
-        .cat-btn.active[data-target="competenze_cittadinanza"] { border-color: var(--color-citizen); color: var(--color-citizen); background: hsla(38, 100%, 60%, 0.1); }
-        .cat-btn.active[data-target="competenze_trasversali_soft_skills"] { border-color: var(--color-soft); color: var(--color-soft); background: hsla(325, 85%, 65%, 0.1); }
+        .cat-btn.active[data-target="area_generale_matematica"] {
+            border-color: var(--color-math);
+            color: var(--color-math);
+            background: hsla(280, 85%, 65%, 0.1);
+        }
+
+        .cat-btn.active[data-target="area_indirizzo_tecnico"] {
+            border-color: var(--color-tech);
+            color: var(--color-tech);
+            background: hsla(155, 100%, 50%, 0.1);
+        }
+
+        .cat-btn.active[data-target="competenze_cittadinanza"] {
+            border-color: var(--color-citizen);
+            color: var(--color-citizen);
+            background: hsla(38, 100%, 60%, 0.1);
+        }
+
+        .cat-btn.active[data-target="competenze_trasversali_soft_skills"] {
+            border-color: var(--color-soft);
+            color: var(--color-soft);
+            background: hsla(325, 85%, 65%, 0.1);
+        }
 
         .section-header {
             margin-bottom: 3rem;
@@ -105,9 +137,20 @@
         }
 
         @keyframes pulse-high {
-            0% { transform: translateY(-4px) scale(1); box-shadow: 0 0 0px var(--primary); }
-            50% { transform: translateY(-4px) scale(1.02); box-shadow: 0 0 30px var(--primary); }
-            100% { transform: translateY(-4px) scale(1); box-shadow: 0 0 10px var(--primary); }
+            0% {
+                transform: translateY(-4px) scale(1);
+                box-shadow: 0 0 0px var(--primary);
+            }
+
+            50% {
+                transform: translateY(-4px) scale(1.02);
+                box-shadow: 0 0 30px var(--primary);
+            }
+
+            100% {
+                transform: translateY(-4px) scale(1);
+                box-shadow: 0 0 10px var(--primary);
+            }
         }
 
         /* Responsive fixes for portrait mobile */
@@ -132,7 +175,9 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            .category-menu::-webkit-scrollbar { display: none; }
+            .category-menu::-webkit-scrollbar {
+                display: none;
+            }
 
             .cat-btn {
                 flex: 0 0 auto;
@@ -153,6 +198,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <nav id="main-nav">
@@ -175,17 +221,32 @@
             <div class="nav-row-2">
                 <div class="search-container">
                     <input type="text" id="search-input" class="search-input" placeholder="Cerca temi o competenze...">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y2="21" x2="16.65" y1="16.65"></line>
+                    </svg>
                 </div>
             </div>
         </div>
     </nav>
 
+    <div class="breadcrumbs-bar">
+        <div class="container">
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+                <a href="index.html">Home</a>
+                <span class="sep">/</span>
+                <span class="current">Competenze</span>
+            </nav>
+        </div>
+    </div>
+
     <header class="editorial-hero">
         <div class="container animate-in">
             <span class="eyebrow">Quadro Normativo</span>
             <h1 class="hero-title">Decodifica Competenze</h1>
-            <p class="hero-sub">Mappa interattiva della Riforma Istituti Professionali (D.Lgs. 61/2017). Uno strumento per la progettazione didattica.</p>
+            <p class="hero-sub">Mappa interattiva della Riforma Istituti Professionali (D.Lgs. 61/2017). Uno strumento
+                per la progettazione didattica.</p>
         </div>
     </header>
 
@@ -194,19 +255,31 @@
             <aside class="sidebar">
                 <div class="category-menu" id="cat-menu">
                     <button class="cat-btn active" data-target="area_generale_matematica">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
                         Matematica
                     </button>
                     <button class="cat-btn" data-target="area_indirizzo_tecnico">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                        </svg>
                         Professionali
                     </button>
                     <button class="cat-btn" data-target="competenze_cittadinanza">
-                        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
                         Cittadinanza
                     </button>
                     <button class="cat-btn" data-target="competenze_trasversali_soft_skills">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                        </svg>
                         Soft Skills
                     </button>
                 </div>
@@ -227,7 +300,11 @@
                 </div>
                 <div class="footer-social">
                     <a href="https://instagram.com/meltingmath" target="_blank" class="social-circle">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
                     </a>
                 </div>
             </div>
@@ -246,10 +323,10 @@
                 const response = await fetch('./riforma2017.json');
                 schemaData = await response.json();
                 renderContent();
-                
+
                 document.getElementById('cat-menu').addEventListener('click', (e) => {
                     const btn = e.target.closest('.cat-btn');
-                    if(btn) {
+                    if (btn) {
                         document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         activeCategory = btn.dataset.target;
@@ -279,8 +356,8 @@
             // Se l'ID esiste in uno dei settori, cambiamo categoria e renderizziamo
             for (const cat in schemaData) {
                 const data = schemaData[cat];
-                const found = Array.isArray(data) 
-                    ? data.find(i => i.id === hash) 
+                const found = Array.isArray(data)
+                    ? data.find(i => i.id === hash)
                     : Object.values(data).flat().find(i => i.id === hash);
 
                 if (found) {
@@ -291,7 +368,7 @@
                         });
                         renderContent();
                     }
-                    
+
                     // Aspettiamo il rendering
                     setTimeout(() => {
                         const el = document.getElementById(hash);
@@ -337,13 +414,13 @@
             container.style.setProperty('--accent-bg', theme.bg);
 
             if (Array.isArray(data)) {
-                const filtered = data.filter(item => 
-                    item.id.toLowerCase().includes(filter) || 
+                const filtered = data.filter(item =>
+                    item.id.toLowerCase().includes(filter) ||
                     item.label.toLowerCase().includes(filter) ||
                     (item.description && item.description.toLowerCase().includes(filter))
                 );
-                
-                if(filtered.length > 0) {
+
+                if (filtered.length > 0) {
                     const section = document.createElement('div');
                     section.innerHTML = `
                         <div class="section-header">
@@ -358,17 +435,17 @@
             } else {
                 Object.keys(data).forEach(subKey => {
                     const items = data[subKey];
-                    const filtered = items.filter(item => 
-                        item.id.toLowerCase().includes(filter) || 
+                    const filtered = items.filter(item =>
+                        item.id.toLowerCase().includes(filter) ||
                         item.label.toLowerCase().includes(filter) ||
                         (item.description && item.description.toLowerCase().includes(filter))
                     );
 
                     if (filtered.length > 0) {
                         const section = document.createElement('div');
-                        const typeLabel = subKey.includes('competenze') ? 'Competenze' : 
-                                          subKey.includes('abilita') ? 'Abilità' : 'Conoscenze';
-                        
+                        const typeLabel = subKey.includes('competenze') ? 'Competenze' :
+                            subKey.includes('abilita') ? 'Abilità' : 'Conoscenze';
+
                         section.innerHTML = `
                             <div class="section-header">
                                 <h2>${typeLabel}</h2>
@@ -382,7 +459,7 @@
                 });
             }
 
-            if(container.innerHTML === '') {
+            if (container.innerHTML === '') {
                 container.innerHTML = '<div style="text-align:center; padding: 4rem; color: var(--text-muted);">Nessun risultato trovato.</div>';
             }
         }
@@ -390,4 +467,5 @@
         init();
     </script>
 </body>
+
 </html>

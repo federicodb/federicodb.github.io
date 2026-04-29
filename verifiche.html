@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Archivio Verifiche | Orfini Math Lab</title>
-    
+
     <!-- SEO & Metadata -->
     <meta name="description" content="Archivio completo delle verifiche di Matematica del Laboratorio Orfini.">
-    
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://federicodb.github.io/verifiche.html">
+    <meta property="og:title" content="Archivio Verifiche | Orfini Math Lab">
+    <meta property="og:description" content="Consultazione dinamica e download delle prove strutturate di Matematica.">
+    <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.jpg">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap"
+        rel="stylesheet">
+
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -21,6 +32,7 @@
     <!-- Project Styles -->
     <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
 
     <nav id="main-nav">
@@ -43,19 +55,34 @@
             <div class="nav-row-2">
                 <div class="search-container">
                     <input type="text" id="search-input" class="search-input" placeholder="Cerca classi o argomenti...">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y2="21" x2="16.65" y1="16.65"></line>
+                    </svg>
                 </div>
             </div>
 
-            </div>
+        </div>
         </div>
     </nav>
+
+    <div class="breadcrumbs-bar">
+        <div class="container">
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+                <a href="index.html">Home</a>
+                <span class="sep">/</span>
+                <span class="current">Archivio Verifiche</span>
+            </nav>
+        </div>
+    </div>
 
     <header class="editorial-hero">
         <div class="container animate-in">
             <span class="eyebrow">Archivio Progetto</span>
             <h1 class="hero-title">Verifiche & Prove</h1>
-            <p class="hero-sub">Consultazione dinamica e download delle prove strutturate. Ogni attività è calata nel contesto delle competenze richieste dalla Riforma 2017.</p>
+            <p class="hero-sub">Consultazione dinamica e download delle prove strutturate. Ogni attività è calata nel
+                contesto delle competenze richieste dalla Riforma 2017.</p>
         </div>
     </header>
 
@@ -78,7 +105,11 @@
                 </div>
                 <div class="footer-social">
                     <a href="https://instagram.com/meltingmath" target="_blank" class="social-circle">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
                     </a>
                 </div>
             </div>
@@ -95,11 +126,11 @@
 
         window.addEventListener('load', () => {
             const data = (typeof db_verifiche !== 'undefined') ? db_verifiche : [];
-            
+
             const initApp = () => {
                 try {
                     const ui = new UIManager(data);
-                    
+
 
 
                     document.addEventListener('keydown', (e) => {
@@ -124,4 +155,5 @@
 
     </script>
 </body>
+
 </html>

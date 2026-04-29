@@ -1,5 +1,5 @@
 # 🧠 Orfini Math Lab
-### Hub Multidisciplinare per l'Innovazione Didattica e la Visualizzazione Scientifica
+### Hub Multidisciplinare per l'Innovazione Didattica e la Visualizzazione della Matematica
 
 ![License](https://img.shields.io/badge/license-MIT-purple.svg)
 ![Three.js](https://img.shields.io/badge/3D-Three.js-black.svg)
@@ -17,7 +17,7 @@ Il progetto si fonda su un approccio laboratoriale e inclusivo, integrando tecno
 *   **Scaffolding Cognitivo:** Riduzione del carico mentale attraverso interfacce che guidano lo studente in passaggi logici sequenziali e strutturati.
 *   **Visualizzazione Parametrica:** Uso di modelli 3D e 2D dinamici (Algebra Tiles, solidi di rotazione) per rendere tangibili concetti astratti di algebra e fisica.
 *   **Didattica Immersiva:** Integrazione di elementi ludici e di gamification per incentivare l'autovalutazione e il superamento creativo delle difficoltà.
-*   **Accessibilità Totale (BYOD):** Strumenti ottimizzati per dispositivi mobili e progettati con particolare attenzione agli studenti con **DSA e ADHD**, utilizzando palette AMOLED ad alto contrasto e tipografia matematica ad alta leggibilità.
+*   **Accessibilità Totale (BYOD):** Strumenti ottimizzati per dispositivi mobili, utilizzando palette AMOLED ad alto contrasto e tipografia matematica ad alta leggibilità.
 
 ---
 
@@ -64,4 +64,4 @@ Coerentemente con la filosofia del progetto, vengono utilizzate esclusivamente t
 **Licenza:** MIT - Progetto interamente Open Source.
 
 ---
-*Creato con passione per l'Istituto Professionale Orfini di Foligno.*
+*Creato con passione per l'Istituto Professionale Statale "E. Orfini" di Foligno.*

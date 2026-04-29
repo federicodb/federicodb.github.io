@@ -1,18 +1,41 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Laboratorio Matematico Orfini | Journal of Educational Innovation</title>
-    
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Orfini Math Lab | Innovazione Didattica e Gamification</title>
+
     <!-- SEO & Metadata -->
-    <meta name="description" content="Hub editoriale del Laboratorio Matematico Orfini Foligno. Un'integrazione tra competenze autentiche, STEM e didattica laboratoriale.">
-    
+    <meta name="description"
+        content="Laboratorio Matematico dell'Istituto Orfini di Foligno. Esplora app 3D, frattali e strumenti di gamification per una didattica della matematica inclusiva e moderna.">
+    <meta name="keywords" content="matematica, didattica, gamification, 3d, frattali, orfini, foligno, federico db">
+    <link rel="canonical" href="https://federicodb.github.io/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://federicodb.github.io/">
+    <meta property="og:title" content="Orfini Math Lab | Innovazione Didattica">
+    <meta property="og:description"
+        content="Laboratorio interattivo di Matematica: visualizzazione 3D, gamification e strumenti per l'inclusione.">
+    <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://federicodb.github.io/">
+    <meta property="twitter:title" content="Orfini Math Lab | Innovazione Didattica">
+    <meta property="twitter:description"
+        content="Laboratorio interattivo di Matematica: visualizzazione 3D, gamification e strumenti per l'inclusione.">
+    <meta property="twitter:image" content="https://federicodb.github.io/content/assets/social_share_cover.jpg">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap"
+        rel="stylesheet">
+
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -22,6 +45,7 @@
     <!-- Project Styles -->
     <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
 
     <nav id="main-nav">
@@ -37,7 +61,8 @@
                     <a href="verifiche.html" class="nav-link">Archivio</a>
                     <a href="galaxy.html" class="nav-link">Mappa</a>
                     <a href="competenze.html" class="nav-link">Competenze</a>
-                    <a href="#" onclick="window.setGlobalCategoryFilter('video', 'Video'); return false;" class="nav-link">Video</a>
+                    <a href="#" onclick="window.setGlobalCategoryFilter('video', 'Video'); return false;"
+                        class="nav-link">Video</a>
                     <a href="#about" id="about-link" class="nav-link">Chi Sono</a>
                 </div>
             </div>
@@ -45,14 +70,24 @@
             <div class="nav-row-2">
                 <div class="search-filter-wrapper">
                     <button id="filter-burger-btn" class="burger-btn" aria-label="Menu Filtri">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
                     </button>
                     <div class="search-container">
-                        <input type="text" id="search-input" class="search-input" placeholder="Cerca temi o competenze...">
-                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                        <input type="text" id="search-input" class="search-input"
+                            placeholder="Cerca temi o competenze...">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y2="21" x2="16.65" y1="16.65"></line>
+                        </svg>
                     </div>
                 </div>
-                
+
                 <div id="filter-dropdown" class="filter-dropdown">
                     <div class="filter-group">
                         <span class="filter-group-title">Filtra per Categoria</span>
@@ -71,8 +106,8 @@
 
 
     <main class="container">
-        
-        
+
+
         <!-- Interactive Search Banner -->
         <div class="filter-banner" id="active-filter-banner">
             <div>Filtro esplorativo attivo su: <strong id="active-filter-label"></strong></div>
@@ -88,16 +123,326 @@
         <div id="modal-content" class="modal-content"></div>
     </div>
 
+    <!-- SEO Catalog for Crawlers -->
+    <div id="seo-catalog" style="display:none;" aria-hidden="true">
+        <!-- SEO_CATALOG_START -->
+        <div>
+            <h3>Polinomi Challenge 3D PRO</h3>
+            <p>Versione PRO della sfida 3D sui polinomi: Ghost Target, X-Ray mode e variabili dinamiche.</p><span>Tags:
+                ALGEBRA, POLINOMI, PRO, MATEMATICA, NERDAMER, 1 EL, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE,
+                SCOMPOSIZIONE, 3D</span>
+        </div>
+        <div>
+            <h3>Scomposizione Polinomi</h3>
+            <p>Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento,
+                Quadrati, Trinomi).</p><span>Tags: ALGEBRA, CIT_5:IMPARARE A IMPARARE, PRODOTTI NOTEVOLI, 2 GP,
+                MAT:CALCOLO, POLINOMI, 2 EL, MATEMATICA, EU:IMPARAREIMPARARE, 1 EL, MAT_K1:INSIEMI NUMERICI E CALCOLO
+                LETTERALE, GAMIFICATION, SCOMPOSIZIONI</span>
+        </div>
+        <div>
+            <h3>C.E. Match</h3>
+            <p>Gioco Memory sul riconoscimento delle condizioni di esistenza di frazioni algebriche.</p><span>Tags:
+                ALGEBRA, CIT_5:IMPARARE A IMPARARE, PRODOTTI NOTEVOLI, 2 GP, MAT:CALCOLO, POLINOMI, 2 EL, MATEMATICA,
+                EU:IMPARAREIMPARARE, 1 EL, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, GAMIFICATION,
+                SCOMPOSIZIONI</span>
+        </div>
+        <div>
+            <h3>Game Theory Lab 2.5 🎲</h3>
+            <p>Simulazione interattiva del Dilemma del Prigioniero ed Equilibrio di Nash. Laboratorio per esplorare la
+                cooperazione e le scelte strategiche nel contesto del voto scolastico.</p><span>Tags: 4 EL, MAT:DATI,
+                EU:CITTADINANZA, CIV:COSTITUZIONE, TEORIA DEI GIOCHI, EQUILIBRIO DI NASH, MAT:MODELLIZZAZIONE,
+                MATEMATICA, MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C..., CIT_6:COMPETENZE SOCIALI E CIVICHE,
+                ED. CIVICA, CITTADINANZA</span>
+        </div>
+        <div>
+            <h3>PixelGrid</h3>
+            <p>Applicazione di Game Theory all'analisi delle radici nelle equazioni di secondo grado, esplorando
+                l'ottimizzazione e le strategie dominanti.</p><span>Tags: ALGEBRA, 4 EL, PRODOTTI NOTEVOLI, ITA, G,
+                QUADRATICHE, FATTORIZZAZIONE, PARABOLA, POLINOMI, EQUAZIONI DI SECONDO GRADO, MAT_A3:RISOLVERE
+                EQUAZIONI, DISEQUAZIONI E SISTEMI, MODELLIZZAZIONE, 3 MEC, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE,
+                SCOMPOSIZIONE</span>
+        </div>
+        <div>
+            <h3>Hyperchaos Fractal Engine 3D</h3>
+            <p>Simulatore frattale 3D interattivo. Generatore algoritmico con geometria variabile, passeggiate aleatorie
+                (Random Walk) e memoria cromatica nello spazio.</p><span>Tags: MAT_K03:GEOMETRIA EUCLIDEA E ANALITICA,
+                MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, ALGORITMI, CAOS, SIMULATORE, RANDOM WALK, GEOMETRIA, FRATTALI,
+                WEBGL, 3D</span>
+        </div>
+        <div>
+            <h3>Lissajous Curves 3D</h3>
+            <p>Esplorazione interattiva delle curve di Lissajous in 2D e 3D. Simulatore matematico con morphing sferico
+                e decadimento visivo.</p><span>Tags: ONDE, LABORATORIO, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, FISICA,
+                MATEMATICA, OSCILLAZIONI, LISSAJOUS, GEOMETRIA, WEBGL, 3D, DIDATTICA</span>
+        </div>
+        <div>
+            <h3>$\pi$ is irrational</h3>
+            <p>Simulatore ultra-high res. della costante $\pi$. Esplorazione dell'incommensurabilità con morfing sferico
+                e shader glow.</p><span>Tags: MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, SHADER, WEBGL, MATEMATICA, $\PI$,
+                ROTAZIONE, GEOMETRIA, PI GRECO, INCOMMENSURABILITÀ, 3D, GLOW</span>
+        </div>
+        <div>
+            <h3>$\sqrt{2}$ is irrational</h3>
+            <p>Simulatore sferico dell'Albero di Pitagora. Algoritmo di Soft Fusion per eliminare artefatti di
+                complanarità e mostrare l'irrazionalità di $\sqrt{2}$.</p><span>Tags: INCOMMENSURABILITÀ, SQRT(2),
+                MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, $\SQRT{2}$, MATEMATICA, SOFT FUSION, GEOMETRIA, FRATTALI, ALBERO
+                PITAGORICO, WEBGL, 3D</span>
+        </div>
+        <div>
+            <h3>Allegato Dlgs (Parte 61) 2017</h3>
+            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Allegato, Dlgs61, Funzion..</p><span>Tags:
+                RETTA, DLGS61, 3 MEC, ALLEGATO, LIMITE, FUNZION, INSIEM</span>
+        </div>
+        <div>
+            <h3>Dlgs (Parte 61) 2017</h3>
+            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Dlgs, Funzion, Limite..</p><span>Tags: RETTA,
+                DLGS, 3 MEC, STATISTICA, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, LIMITE, ELETTRIC, FUNZION,
+                INSIEM</span>
+        </div>
+        <div>
+            <h3>Allegato (Parte 1) Competenze Pecup Professionali Area Generale Def (Parte 1)</h3>
+            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Allegato, Competenze, Pecup..</p><span>Tags:
+                DISEQUAZIONI, POLINOM, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN
+                CONTESTI O, TRIGONOMETRIA, GRAFICO, FUNZION, SCOMPOSIZION, INSIEM, COMPETENZE, MAT_A4:APPLICARE
+                PROPRIETÀ GEOMETRICHE IN CONTESTI O..., RETTA, PECUP, GEOMETRIA, ALLEGATO, STATISTICA, MAT_A3:RISOLVERE
+                EQUAZIONI, DISEQUAZIONI E SISTEMI, PROBABILITÀ, MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...,
+                MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, PITAGORA, EQUAZIONI, MAT_A2:RAPPRESENTARE DATI MEDIANTE
+                TABELLE, GRAFICI, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ..., 3 MEC</span>
+        </div>
+        <div>
+            <h3>Linee Guida Parte Prima Seconda</h3>
+            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Linee, Guida, Parte..</p><span>Tags: RETTA,
+                GUIDA, LINEE, 3 MEC, STATISTICA, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, LIMITE, PARTE, FUNZION,
+                INSIEM</span>
+        </div>
+        <div>
+            <h3>Decreto Legislativo (Parte 13) (Parte 4) 2017 (Parte 61)</h3>
+            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Decreto, Legislativo, Funzion..</p><span>Tags:
+                DECRETO, RETTA, 3 MEC, STATISTICA, LEGISLATIVO, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, LIMITE,
+                FUNZION, INSIEM</span>
+        </div>
+        <div>
+            <h3>Il triangolo di Sierpinski</h3>
+            <p>Visualizzazione geometrica della costruzione ricorsiva del triangolo di Sierpinski in tre dimensioni. Al
+                crescere delle iterazioni l'area diminuisce ogni volta di 1/4, tendendo a 0, ma il perimetro aumenta,
+                tendendo all'infinito!</p><span>Tags: IND_C1:MODELLAZIONE ALGORITMICA E PARAMETRICA, MAT_C4:UTILIZZARE
+                CONCETTI E MODELLI GEOMETRICI, VIDEO, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, SIERPINSKI01, GEOMETRIA,
+                FRATTALI, 3D</span>
+        </div>
+        <div>
+            <h3>Sistemi di disequazioni vs. disequazioni frazionarie</h3>
+            <p>Nonostante dal punto di vista del calcolo sistemi di disequazioni e disequazioni frazionarie siano molto
+                simili, è importante sottolineare che l'interpretazione delle soluzioni è diversa nei due casi. Nei
+                sistemi, due 'sfighe' non fanno una gioia, mentre nel caso delle disequazioni frazionarie due segni
+                negativi fanno un segno positivo.</p><span>Tags: ALGEBRA, DISEQUAZIONI, VIDEO, DUESFIGHE,
+                MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, CIT_6:COMPETENZE SOCIALI E CIVICHE, DISEQ,
+                MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE</span>
+        </div>
+        <div>
+            <h3>$\phi$ is irrational</h3>
+            <p>Esplorazione interattiva 2D/3D del modulo aureo ($\phi$). Simulatore WebGL per dimostrare
+                l'incommensurabilità attraverso le proiezioni concentriche della spirale.</p><span>Tags:
+                INCOMMENSURABILITÀ, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, $\PHI$, MATEMATICA, GEOMETRIA, FRATTALI,
+                WEBGL, 3D, SPIRALE</span>
+        </div>
+        <div>
+            <h3>Il metodo di esaustione</h3>
+            <p>Visualizzazione parametrica del limite delle aree di poligoni regolari al crescere del numero dei lati
+                per approssimare l'area del cerchio.</p><span>Tags: ARCHIMEDE, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA,
+                AREA, MATEMATICA, ESAUSTIONE, LIMITI, GEOMETRIA, P5JS, PI GRECO, POLIGONI</span>
+        </div>
+        <div>
+            <h3>Esploratore Polinomiale</h3>
+            <p>Esploratore grafico per polinomi che permette di visualizzare l'effetto delle operazioni (Addizione,
+                Sottrazione) sulle funzioni risultanti.</p><span>Tags: ALGEBRA, 4 EL, 2 GP, FUNZIONI FRAZIONARIE,
+                EQUAZIONI FRAZIONARIE, POLINOMI, 2 EL, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI,
+                MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE, 1 EL, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE,
+                GRAFICI ..., 3 MEC, GRAFICO, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, SCOMPOSIZIONE</span>
+        </div>
+        <div>
+            <h3>Sistemi di disequazioni vs disequazioni frazionarie</h3>
+            <p>Risolutore simbolico e interattivo per disequazioni frazionarie e sistemi matematici. Integra un tutor
+                socratico passo passo per l'apprendimento guidato.</p><span>Tags: DISEQUAZIONI, ALGEBRA, FRAZIONARIE, 4
+                EL, TUTOR, 2 GP, MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE P..., RISOLUTORE, 2 EL, LOGICA,
+                MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, SISTEMI, 1 EL, 3 MEC, MAT_K1:INSIEMI NUMERICI E
+                CALCOLO LETTERALE</span>
+        </div>
+        <div>
+            <h3>Decodifica La Matematica</h3>
+            <p>Risorsa: Decodifica La Matematica</p><span>Tags: VISUAL, INFOGRAFICA, DECODIFICA, MATEMATICA</span>
+        </div>
+        <div>
+            <h3>Errori Comuni - Potenze, Espressioni</h3>
+            <p>Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.</p>
+            <span>Tags: VISUAL, COMUNI02, PEMDAS, POTENZE, INFOGRAFICA, 1 EL, ESPRESSIONI, CALCOLO, ERRORI</span>
+        </div>
+        <div>
+            <h3>Google AI Studio: Assistant</h3>
+            <p>Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi
+                contestuale.</p><span>Tags: SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA, GEMINI, STRUMENTI,
+                ASSISTANT, GOOGLE, AI, LINKOGRAFIA</span>
+        </div>
+        <div>
+            <h3>Guida Al Mondo Delle Funzioni Matematiche</h3>
+            <p>Risorsa: Guida Al Mondo Delle Funzioni Matematiche</p><span>Tags: VISUAL, MONDO, DELLE, MAT_K2:FUNZIONI
+                ELEMENTARI E LORO RAPPRESENTAZIONE, INFOGRAFICA, GUIDA</span>
+        </div>
+        <div>
+            <h3>Tattoo Delta</h3>
+            <p>Risorsa: Tattoo Delta</p><span>Tags: TATTOO, GALLERY, IMMAGINE, DELTA</span>
+        </div>
+        <div>
+            <h3>PIP</h3>
+            <p>Terminale didattico Orfini Industries. Simulatore open source per lo studio della retta (y=mx+q).</p>
+            <span>Tags: 4 EL, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, FALLOUT, RETTA, 2 PUNTI, PENDENZA, MATEMATICA, 3
+                MEC, GAMIFICATION, GEOMETRIA ANALITICA</span>
+        </div>
+        <div>
+            <h3>Percent Lab</h3>
+            <p>Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.</p>
+            <span>Tags: PERCENTUALI, MATEMATICA, 1 EL, ARITMETICA, CALCOLO MENTALE, GAMIFICATION</span>
+        </div>
+        <div>
+            <h3>Studio di Funzioni: Lab Analisi + AI</h3>
+            <p>Suite completa per lo studio di funzioni reali: dominio, simmetrie, classificazione e composizione.
+                Grafici interattivi e analisi in tempo reale powered by Gemini.</p><span>Tags: GRAFICI, STUDIO DI
+                FUNZIONE, SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA, GEMINI, EDUCATION, DOMINIO, MATEMATICA,
+                MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI
+                ..., ANALISI, FUNZIONI, AI</span>
+        </div>
+        <div>
+            <h3>Laboratorio Frazioni: Operazioni Visive</h3>
+            <p>Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso
+                modelli visivi (Torte) e retta numerica.</p><span>Tags: NUMERI RAZIONALI, 2 GP, MAT:MODELLIZZAZIONE,
+                MAT:CALCOLO, EU:STEM, 2 EL, MATEMATICA, 1 EL, FRAZIONI, ARITMETICA, LAB</span>
+        </div>
+        <div>
+            <h3>Algebra Tiles 3D: Scomposizione</h3>
+            <p>Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include
+                esportazione STL per la stampa 3D dei kit didattici.</p><span>Tags: ALGEBRA, STAMPA 3D, MAT_K3:GEOMETRIA
+                EUCLIDEA E ANALITICA, 2 GP, MAT:MODELLIZZAZIONE, POLINOMI, EU:STEM, 2 EL, MATEMATICA, 1 EL,
+                MAT:GEOMETRIA, GEOMETRIA, IND:STRUMENTAZIONE, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, LAB</span>
+        </div>
+        <div>
+            <h3>GonioMatch: Segnali Goniometrici</h3>
+            <p>Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla
+                circonferenza goniometrica.</p><span>Tags: 4 EL, ANGOLI, MAT:ANALISI, MATEMATICA, MAT_K2:FUNZIONI
+                ELEMENTARI E LORO RAPPRESENTAZIONE, GONIOMETRIA, 3 MEC, TRIGONOMETRIA, FUNZIONI, LAB,
+                GAMIFICATION</span>
+        </div>
+        <div>
+            <h3>Albero di Pitagora: Frattali 3D</h3>
+            <p>Simulazione WebGL dell'Albero di Pitagora in 3D. Un'esplorazione visiva dei frattali e delle relazioni
+                geometriche tra i quadrati.</p><span>Tags: PITAGORA, STAMPA 3D, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, 2
+                GP, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O..., MAT:MODELLIZZAZIONE, CODING, ALGORITMI,
+                RICORSIONE, EU:STEM, 2 EL, MATEMATICA, 1 EL, MAT:GEOMETRIA, 3 MEC, GEOMETRIA, FRATTALI, LAB</span>
+        </div>
+        <div>
+            <h3>AlgebraLab 3D: Geometria dei Polinomi</h3>
+            <p>Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.</p>
+            <span>Tags: ALGEBRA, VISUALIZZAZIONE, 4 EL, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, 2 GP,
+                MAT:MODELLIZZAZIONE, EU:STEM, 2 EL, MATEMATICA, 1 EL, MAT:GEOMETRIA, 3 MEC, GEOMETRIA, MAT_K1:INSIEMI
+                NUMERICI E CALCOLO LETTERALE, LAB</span>
+        </div>
+        <div>
+            <h3>Parabola Challenge: Disequazioni</h3>
+            <p>Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino
+                all'input testuale libero.</p><span>Tags: ALGEBRA, DISEQUAZIONI, 4 EL, SCAFFOLDING, MAT:PROBLEMSOLVING,
+                PARABOLA, MAT:ANALISI, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, MATEMATICA, 3 MEC,
+                MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, GAMIFICATION</span>
+        </div>
+        <div>
+            <h3>Simulazione CA: Fasori & Onde</h3>
+            <p>Simulatore interattivo del comportamento in Corrente Alternata (Sfasamento, Valori Efficaci, Potenza) per
+                il corso di macchine elettriche.</p><span>Tags: ONDE, 4 EL, FASORI, MAT:MODELLIZZAZIONE, MAT:ANALISI,
+                FISICA, CORRENTE ALTERNATA, IND:STRUMENTAZIONE, LAB, ELETTROTECNICA</span>
+        </div>
+        <div>
+            <h3>Esploratore Numerico: Pitagora & Tartaglia</h3>
+            <p>Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo
+                di Tartaglia (Combinatoria) e regole di divisibilità.</p><span>Tags: PITAGORA, TARTAGLIA, NUMERI, 4 EL,
+                2 GP, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O..., MAT:DATI, DIVISIBILITÀ,
+                MAT:MODELLIZZAZIONE, MAT:CALCOLO, 2 EL, MATEMATICA, 1 EL, MAT_C3:ANALIZZARE DATI E INTERPRETARE
+                INFORMAZIONI C..., ARITMETICA, LAB</span>
+        </div>
+        <div>
+            <h3>Sketch to Pattern: Arte Generativa</h3>
+            <p>Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi.
+                Sperimenta con algoritmi, semplificazione e tassellazioni.</p><span>Tags: CREATIVITÀ, MAT_K3:GEOMETRIA
+                EUCLIDEA E ANALITICA, ARTE, CODING, CIT_4:COMPETENZA DIGITALE, EU:CULTURALE, TECNOLOGIA, PATTERN,
+                GEOMETRIA, TINKERING, LAB, EU:DIGITALE</span>
+        </div>
+        <div>
+            <h3>Logic Lab: Insiemi & Venn</h3>
+            <p>Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi
+                espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.</p>
+            <span>Tags: DIAGRAMMI DI VENN, 2 GP, MAT:MODELLIZZAZIONE, MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE
+                P..., EU:STEM, 2 EL, LOGICA, MATEMATICA, 1 EL, MAT:LOGICA, INSIEMI, LAB</span>
+        </div>
+        <div>
+            <h3>Mappe & Distorsioni: Mercatore</h3>
+            <p>Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le
+                aree reali dei paesi.</p><span>Tags: PROIEZIONI, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, 2 GP, GEOGRAFIA,
+                SCALA, MAT:MODELLIZZAZIONE, MERCATORE, EU:STEM, 2 EL, MATEMATICA, COORDINATE, 1 EL, MAT:GEOMETRIA,
+                LAB</span>
+        </div>
+        <div>
+            <h3>Math Underground: Mappa Funzioni</h3>
+            <p>Mappa interattiva della metropolitana per lo studio teorico delle funzioni analitiche e delle loro
+                principali proprietà (Dominio, Codominio).</p><span>Tags: 4 EL, MAT:MODELLIZZAZIONE, MAT:ANALISI,
+                EU:STEM, DOMINIO, MATEMATICA, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE, MAT_A2:RAPPRESENTARE
+                DATI MEDIANTE TABELLE, GRAFICI ..., ANALISI, MAPPA, FUNZIONI, LAB</span>
+        </div>
+        <div>
+            <h3>Math Invaders</h3>
+            <p>Laboratorio procedurale per il calcolo del Massimo Comune Divisore e Minimo Comune Multiplo tramite
+                scomposizione in fattori primi.</p><span>Tags: VIDEOGIOCO, MCM, MAT:CALCOLO, MATEMATICA, 1 EL,
+                ARITMETICA, MCD, GAMIFICATION</span>
+        </div>
+        <div>
+            <h3>Chaos Lab: Sistemi Dinamici</h3>
+            <p>Simulatore 3D di Attrattori Strani (Lorenz, Rössler, Chen). Esplora il Caos Deterministico e le Equazioni
+                Differenziali tramite integrazione numerica RK4.</p><span>Tags: 4 EL, ATTRATTORI, 2 GP,
+                MAT:MODELLIZZAZIONE, CIT_4:COMPETENZA DIGITALE, EU:STEM, 2 EL, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI
+                E SISTEMI, CAOS, FISICA, MATEMATICA, ANALISI, MAT:ANALISI, SIMULAZIONE, SISTEMI DINAMICI,
+                EU:DIGITALE</span>
+        </div>
+        <div>
+            <h3>Caccia all'Errore: Operazioni in Z</h3>
+            <p>Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette ed evita
+                le trappole degli errori comuni di calcolo.</p><span>Tags: Z, NUMERI INTERI, MAT:CALCOLO, POTENZE,
+                MAT:PROBLEMSOLVING, ERRORI COMUNI, EU:STEM, MATEMATICA, 1 EL, ARITMETICA, GAMIFICATION</span>
+        </div>
+        <!-- SEO_CATALOG_END -->
+    </div>
+
     <footer class="site-footer">
         <div class="container">
             <div class="footer-top">
                 <div class="brand">
                     <span class="brand-title">ORFINI MATH LAB</span>
-                    <p>Laboratorio Permanente di Matematica e Fisica<br>Istituto Professionale "E. Orfini" Foligno</p>
+                    <p>Ricerca e Sperimentazione Didattica<br>Istituto Professionale Orfini</p>
+                </div>
+                <div class="footer-nav">
+                    <div class="footer-nav-col">
+                        <h4>Esplora</h4>
+                        <a href="index.html">Journal</a>
+                        <a href="verifiche.html">Archivio</a>
+                        <a href="competenze.html">Competenze</a>
+                        <a href="galaxy.html">Mappa 3D</a>
+                    </div>
+                    <div class="footer-nav-col">
+                        <h4>Social</h4>
+                        <a href="https://instagram.com/meltingmath" target="_blank">Instagram</a>
+                    </div>
                 </div>
                 <div class="footer-social">
                     <a href="https://instagram.com/meltingmath" target="_blank" class="social-circle" title="Instagram">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
                     </a>
                 </div>
             </div>
@@ -117,7 +462,7 @@
                 try {
                     const ui = new UIManager(db);
                     window.appUI = ui;
-                    
+
                     const appItems = db.filter(item => item.type === 'app');
                     // Chi Sono Modal
                     const aboutBtn = document.getElementById('about-link');
@@ -183,10 +528,10 @@
                 const banner = document.getElementById('active-filter-banner');
                 const label = document.getElementById('active-filter-label');
                 const searchInput = document.getElementById('search-input');
-                
+
                 searchInput.value = tag;
                 window.appUI.setFilter('search', tag);
-                
+
                 label.textContent = tag;
                 banner.classList.add('active');
                 window.scrollTo({ top: Math.max(0, banner.offsetTop - 120), behavior: 'smooth' });
@@ -196,20 +541,20 @@
                 const banner = document.getElementById('active-filter-banner');
                 const label = document.getElementById('active-filter-label');
                 const searchInput = document.getElementById('search-input');
-                
+
                 searchInput.value = '';
                 window.appUI.setFilter('category', cat);
-                
+
                 label.textContent = labelText;
                 banner.classList.add('active');
                 window.scrollTo({ top: Math.max(0, banner.offsetTop - 120), behavior: 'smooth' });
             };
-            
+
             window.clearGlobalFilter = () => {
                 document.getElementById('active-filter-banner').classList.remove('active');
                 document.getElementById('search-input').value = '';
                 window.appUI.setFilter('search', '');
-                
+
                 // Clear category filter visually
                 if (document.querySelectorAll('.filter-chip').length > 0) {
                     document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
@@ -239,15 +584,15 @@
                     chip.addEventListener('click', () => {
                         filterChips.forEach(c => c.classList.remove('active'));
                         chip.classList.add('active');
-                        
+
                         const type = chip.getAttribute('data-type');
                         const gameType = chip.getAttribute('data-game');
-                        
+
                         window.appUI.setFilter('category', type, gameType);
-                        
+
                         // Close menu
                         dropdown.classList.remove('active');
-                        
+
                         // Update banner
                         const banner = document.getElementById('active-filter-banner');
                         const label = document.getElementById('active-filter-label');
@@ -267,4 +612,5 @@
         });
     </script>
 </body>
+
 </html>
