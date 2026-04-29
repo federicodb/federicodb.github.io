@@ -37,7 +37,7 @@
                     <a href="verifiche.html" class="nav-link">Archivio</a>
                     <a href="galaxy.html" class="nav-link">Mappa</a>
                     <a href="competenze.html" class="nav-link">Competenze</a>
-                    <a href="https://www.instagram.com/p/DWqugpTDApP/" target="_blank" class="nav-link">Video</a>
+                    <a href="#" onclick="window.setGlobalCategoryFilter('video', 'Video'); return false;" class="nav-link">Video</a>
                     <a href="#about" id="about-link" class="nav-link">Chi Sono</a>
                 </div>
             </div>
@@ -188,6 +188,19 @@
                 window.appUI.setFilter('search', tag);
                 
                 label.textContent = tag;
+                banner.classList.add('active');
+                window.scrollTo({ top: Math.max(0, banner.offsetTop - 120), behavior: 'smooth' });
+            };
+
+            window.setGlobalCategoryFilter = (cat, labelText) => {
+                const banner = document.getElementById('active-filter-banner');
+                const label = document.getElementById('active-filter-label');
+                const searchInput = document.getElementById('search-input');
+                
+                searchInput.value = '';
+                window.appUI.setFilter('category', cat);
+                
+                label.textContent = labelText;
                 banner.classList.add('active');
                 window.scrollTo({ top: Math.max(0, banner.offsetTop - 120), behavior: 'smooth' });
             };

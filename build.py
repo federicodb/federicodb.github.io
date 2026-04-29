@@ -746,6 +746,12 @@ def main():
                         
                         tags = list(set(topics + ([found_class] if found_class else [])))
 
+                        # Se abbiamo già i metadati dal sidecar JSON, usiamoli come base e integriamo
+                        if meta:
+                            if "title" in meta: clean_title = meta["title"]
+                            if "excerpt" in meta: excerpt = meta["excerpt"]
+                            if "tags" in meta: tags = list(set(tags + meta["tags"]))
+                        
                         meta = {
                              "title": clean_title.strip(),
                              "excerpt": excerpt,
