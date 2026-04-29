@@ -941,7 +941,13 @@ def update_index_seo(items):
         catalog_html = ""
         for item in items:
             tags_str = ", ".join(item.get('tags', []))
-            catalog_html += f"<div><h3>{item['title']}</h3><p>{item.get('excerpt', '')}</p><span>Tags: {tags_str}</span></div>\n"
+            # Utilizzo di tag semantici article e microdati Schema.org
+            catalog_html += f"""<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">{item['title']}</h3>
+                <p itemprop="description">{item.get('excerpt', '')}</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="{tags_str}">
+            </article>\n"""
         
         print(f"  🔍 SEO Catalog: generati {len(items)} elementi")
             

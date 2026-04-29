@@ -7,11 +7,51 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Orfini Math Lab | Innovazione Didattica e Gamification</title>
 
+    <!-- Performance Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+    <!-- PWA & Mobile -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#050507">
+    <link rel="apple-touch-icon" href="content/assets/social_share_cover.jpg">
+
     <!-- SEO & Metadata -->
     <meta name="description"
         content="Laboratorio Matematico dell'Istituto Orfini di Foligno. Esplora app 3D, frattali e strumenti di gamification per una didattica della matematica inclusiva e moderna.">
     <meta name="keywords" content="matematica, didattica, gamification, 3d, frattali, orfini, foligno, federico db">
     <link rel="canonical" href="https://federicodb.github.io/" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Orfini Math Lab",
+      "alternateName": "Laboratorio Matematico Orfini",
+      "url": "https://federicodb.github.io/",
+      "logo": "https://federicodb.github.io/content/assets/social_share_cover.jpg",
+      "parentOrganization": {
+        "@type": "EducationalOrganization",
+        "name": "Istituto Professionale Statale E. Orfini"
+      },
+      "description": "Laboratorio permanente di ricerca e sperimentazione didattica sulla matematica e fisica."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Orfini Math Lab",
+      "url": "https://federicodb.github.io/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://federicodb.github.io/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -126,293 +166,264 @@
     <!-- SEO Catalog for Crawlers -->
     <div id="seo-catalog" style="display:none;" aria-hidden="true">
         <!-- SEO_CATALOG_START -->
-        <div>
-            <h3>Polinomi Challenge 3D PRO</h3>
-            <p>Versione PRO della sfida 3D sui polinomi: Ghost Target, X-Ray mode e variabili dinamiche.</p><span>Tags:
-                ALGEBRA, POLINOMI, PRO, MATEMATICA, NERDAMER, 1 EL, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE,
-                SCOMPOSIZIONE, 3D</span>
-        </div>
-        <div>
-            <h3>Scomposizione Polinomi</h3>
-            <p>Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento,
-                Quadrati, Trinomi).</p><span>Tags: ALGEBRA, CIT_5:IMPARARE A IMPARARE, PRODOTTI NOTEVOLI, 2 GP,
-                MAT:CALCOLO, POLINOMI, 2 EL, MATEMATICA, EU:IMPARAREIMPARARE, 1 EL, MAT_K1:INSIEMI NUMERICI E CALCOLO
-                LETTERALE, GAMIFICATION, SCOMPOSIZIONI</span>
-        </div>
-        <div>
-            <h3>C.E. Match</h3>
-            <p>Gioco Memory sul riconoscimento delle condizioni di esistenza di frazioni algebriche.</p><span>Tags:
-                ALGEBRA, CIT_5:IMPARARE A IMPARARE, PRODOTTI NOTEVOLI, 2 GP, MAT:CALCOLO, POLINOMI, 2 EL, MATEMATICA,
-                EU:IMPARAREIMPARARE, 1 EL, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, GAMIFICATION,
-                SCOMPOSIZIONI</span>
-        </div>
-        <div>
-            <h3>Game Theory Lab 2.5 🎲</h3>
-            <p>Simulazione interattiva del Dilemma del Prigioniero ed Equilibrio di Nash. Laboratorio per esplorare la
-                cooperazione e le scelte strategiche nel contesto del voto scolastico.</p><span>Tags: 4 EL, MAT:DATI,
-                EU:CITTADINANZA, CIV:COSTITUZIONE, TEORIA DEI GIOCHI, EQUILIBRIO DI NASH, MAT:MODELLIZZAZIONE,
-                MATEMATICA, MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C..., CIT_6:COMPETENZE SOCIALI E CIVICHE,
-                ED. CIVICA, CITTADINANZA</span>
-        </div>
-        <div>
-            <h3>PixelGrid</h3>
-            <p>Applicazione di Game Theory all'analisi delle radici nelle equazioni di secondo grado, esplorando
-                l'ottimizzazione e le strategie dominanti.</p><span>Tags: ALGEBRA, 4 EL, PRODOTTI NOTEVOLI, ITA, G,
-                QUADRATICHE, FATTORIZZAZIONE, PARABOLA, POLINOMI, EQUAZIONI DI SECONDO GRADO, MAT_A3:RISOLVERE
-                EQUAZIONI, DISEQUAZIONI E SISTEMI, MODELLIZZAZIONE, 3 MEC, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE,
-                SCOMPOSIZIONE</span>
-        </div>
-        <div>
-            <h3>Hyperchaos Fractal Engine 3D</h3>
-            <p>Simulatore frattale 3D interattivo. Generatore algoritmico con geometria variabile, passeggiate aleatorie
-                (Random Walk) e memoria cromatica nello spazio.</p><span>Tags: MAT_K03:GEOMETRIA EUCLIDEA E ANALITICA,
-                MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, ALGORITMI, CAOS, SIMULATORE, RANDOM WALK, GEOMETRIA, FRATTALI,
-                WEBGL, 3D</span>
-        </div>
-        <div>
-            <h3>Lissajous Curves 3D</h3>
-            <p>Esplorazione interattiva delle curve di Lissajous in 2D e 3D. Simulatore matematico con morphing sferico
-                e decadimento visivo.</p><span>Tags: ONDE, LABORATORIO, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, FISICA,
-                MATEMATICA, OSCILLAZIONI, LISSAJOUS, GEOMETRIA, WEBGL, 3D, DIDATTICA</span>
-        </div>
-        <div>
-            <h3>$\pi$ is irrational</h3>
-            <p>Simulatore ultra-high res. della costante $\pi$. Esplorazione dell'incommensurabilità con morfing sferico
-                e shader glow.</p><span>Tags: MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, SHADER, WEBGL, MATEMATICA, $\PI$,
-                ROTAZIONE, GEOMETRIA, PI GRECO, INCOMMENSURABILITÀ, 3D, GLOW</span>
-        </div>
-        <div>
-            <h3>$\sqrt{2}$ is irrational</h3>
-            <p>Simulatore sferico dell'Albero di Pitagora. Algoritmo di Soft Fusion per eliminare artefatti di
-                complanarità e mostrare l'irrazionalità di $\sqrt{2}$.</p><span>Tags: INCOMMENSURABILITÀ, SQRT(2),
-                MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, $\SQRT{2}$, MATEMATICA, SOFT FUSION, GEOMETRIA, FRATTALI, ALBERO
-                PITAGORICO, WEBGL, 3D</span>
-        </div>
-        <div>
-            <h3>Allegato Dlgs (Parte 61) 2017</h3>
-            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Allegato, Dlgs61, Funzion..</p><span>Tags:
-                RETTA, DLGS61, 3 MEC, ALLEGATO, LIMITE, FUNZION, INSIEM</span>
-        </div>
-        <div>
-            <h3>Dlgs (Parte 61) 2017</h3>
-            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Dlgs, Funzion, Limite..</p><span>Tags: RETTA,
-                DLGS, 3 MEC, STATISTICA, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, LIMITE, ELETTRIC, FUNZION,
-                INSIEM</span>
-        </div>
-        <div>
-            <h3>Allegato (Parte 1) Competenze Pecup Professionali Area Generale Def (Parte 1)</h3>
-            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Allegato, Competenze, Pecup..</p><span>Tags:
-                DISEQUAZIONI, POLINOM, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN
-                CONTESTI O, TRIGONOMETRIA, GRAFICO, FUNZION, SCOMPOSIZION, INSIEM, COMPETENZE, MAT_A4:APPLICARE
-                PROPRIETÀ GEOMETRICHE IN CONTESTI O..., RETTA, PECUP, GEOMETRIA, ALLEGATO, STATISTICA, MAT_A3:RISOLVERE
-                EQUAZIONI, DISEQUAZIONI E SISTEMI, PROBABILITÀ, MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...,
-                MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, PITAGORA, EQUAZIONI, MAT_A2:RAPPRESENTARE DATI MEDIANTE
-                TABELLE, GRAFICI, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ..., 3 MEC</span>
-        </div>
-        <div>
-            <h3>Linee Guida Parte Prima Seconda</h3>
-            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Linee, Guida, Parte..</p><span>Tags: RETTA,
-                GUIDA, LINEE, 3 MEC, STATISTICA, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, LIMITE, PARTE, FUNZION,
-                INSIEM</span>
-        </div>
-        <div>
-            <h3>Decreto Legislativo (Parte 13) (Parte 4) 2017 (Parte 61)</h3>
-            <p>Laboratorio interattivo. Punto focale sulle tematiche di: Decreto, Legislativo, Funzion..</p><span>Tags:
-                DECRETO, RETTA, 3 MEC, STATISTICA, LEGISLATIVO, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, LIMITE,
-                FUNZION, INSIEM</span>
-        </div>
-        <div>
-            <h3>Il triangolo di Sierpinski</h3>
-            <p>Visualizzazione geometrica della costruzione ricorsiva del triangolo di Sierpinski in tre dimensioni. Al
-                crescere delle iterazioni l'area diminuisce ogni volta di 1/4, tendendo a 0, ma il perimetro aumenta,
-                tendendo all'infinito!</p><span>Tags: IND_C1:MODELLAZIONE ALGORITMICA E PARAMETRICA, MAT_C4:UTILIZZARE
-                CONCETTI E MODELLI GEOMETRICI, VIDEO, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, SIERPINSKI01, GEOMETRIA,
-                FRATTALI, 3D</span>
-        </div>
-        <div>
-            <h3>Sistemi di disequazioni vs. disequazioni frazionarie</h3>
-            <p>Nonostante dal punto di vista del calcolo sistemi di disequazioni e disequazioni frazionarie siano molto
-                simili, è importante sottolineare che l'interpretazione delle soluzioni è diversa nei due casi. Nei
-                sistemi, due 'sfighe' non fanno una gioia, mentre nel caso delle disequazioni frazionarie due segni
-                negativi fanno un segno positivo.</p><span>Tags: ALGEBRA, DISEQUAZIONI, VIDEO, DUESFIGHE,
-                MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, CIT_6:COMPETENZE SOCIALI E CIVICHE, DISEQ,
-                MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE</span>
-        </div>
-        <div>
-            <h3>$\phi$ is irrational</h3>
-            <p>Esplorazione interattiva 2D/3D del modulo aureo ($\phi$). Simulatore WebGL per dimostrare
-                l'incommensurabilità attraverso le proiezioni concentriche della spirale.</p><span>Tags:
-                INCOMMENSURABILITÀ, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, $\PHI$, MATEMATICA, GEOMETRIA, FRATTALI,
-                WEBGL, 3D, SPIRALE</span>
-        </div>
-        <div>
-            <h3>Il metodo di esaustione</h3>
-            <p>Visualizzazione parametrica del limite delle aree di poligoni regolari al crescere del numero dei lati
-                per approssimare l'area del cerchio.</p><span>Tags: ARCHIMEDE, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA,
-                AREA, MATEMATICA, ESAUSTIONE, LIMITI, GEOMETRIA, P5JS, PI GRECO, POLIGONI</span>
-        </div>
-        <div>
-            <h3>Esploratore Polinomiale</h3>
-            <p>Esploratore grafico per polinomi che permette di visualizzare l'effetto delle operazioni (Addizione,
-                Sottrazione) sulle funzioni risultanti.</p><span>Tags: ALGEBRA, 4 EL, 2 GP, FUNZIONI FRAZIONARIE,
-                EQUAZIONI FRAZIONARIE, POLINOMI, 2 EL, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI,
-                MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE, 1 EL, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE,
-                GRAFICI ..., 3 MEC, GRAFICO, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, SCOMPOSIZIONE</span>
-        </div>
-        <div>
-            <h3>Sistemi di disequazioni vs disequazioni frazionarie</h3>
-            <p>Risolutore simbolico e interattivo per disequazioni frazionarie e sistemi matematici. Integra un tutor
-                socratico passo passo per l'apprendimento guidato.</p><span>Tags: DISEQUAZIONI, ALGEBRA, FRAZIONARIE, 4
-                EL, TUTOR, 2 GP, MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE P..., RISOLUTORE, 2 EL, LOGICA,
-                MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, SISTEMI, 1 EL, 3 MEC, MAT_K1:INSIEMI NUMERICI E
-                CALCOLO LETTERALE</span>
-        </div>
-        <div>
-            <h3>Decodifica La Matematica</h3>
-            <p>Risorsa: Decodifica La Matematica</p><span>Tags: VISUAL, INFOGRAFICA, DECODIFICA, MATEMATICA</span>
-        </div>
-        <div>
-            <h3>Errori Comuni - Potenze, Espressioni</h3>
-            <p>Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.</p>
-            <span>Tags: VISUAL, COMUNI02, PEMDAS, POTENZE, INFOGRAFICA, 1 EL, ESPRESSIONI, CALCOLO, ERRORI</span>
-        </div>
-        <div>
-            <h3>Google AI Studio: Assistant</h3>
-            <p>Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi
-                contestuale.</p><span>Tags: SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA, GEMINI, STRUMENTI,
-                ASSISTANT, GOOGLE, AI, LINKOGRAFIA</span>
-        </div>
-        <div>
-            <h3>Guida Al Mondo Delle Funzioni Matematiche</h3>
-            <p>Risorsa: Guida Al Mondo Delle Funzioni Matematiche</p><span>Tags: VISUAL, MONDO, DELLE, MAT_K2:FUNZIONI
-                ELEMENTARI E LORO RAPPRESENTAZIONE, INFOGRAFICA, GUIDA</span>
-        </div>
-        <div>
-            <h3>Tattoo Delta</h3>
-            <p>Risorsa: Tattoo Delta</p><span>Tags: TATTOO, GALLERY, IMMAGINE, DELTA</span>
-        </div>
-        <div>
-            <h3>PIP</h3>
-            <p>Terminale didattico Orfini Industries. Simulatore open source per lo studio della retta (y=mx+q).</p>
-            <span>Tags: 4 EL, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, FALLOUT, RETTA, 2 PUNTI, PENDENZA, MATEMATICA, 3
-                MEC, GAMIFICATION, GEOMETRIA ANALITICA</span>
-        </div>
-        <div>
-            <h3>Percent Lab</h3>
-            <p>Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.</p>
-            <span>Tags: PERCENTUALI, MATEMATICA, 1 EL, ARITMETICA, CALCOLO MENTALE, GAMIFICATION</span>
-        </div>
-        <div>
-            <h3>Studio di Funzioni: Lab Analisi + AI</h3>
-            <p>Suite completa per lo studio di funzioni reali: dominio, simmetrie, classificazione e composizione.
-                Grafici interattivi e analisi in tempo reale powered by Gemini.</p><span>Tags: GRAFICI, STUDIO DI
-                FUNZIONE, SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA, GEMINI, EDUCATION, DOMINIO, MATEMATICA,
-                MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI
-                ..., ANALISI, FUNZIONI, AI</span>
-        </div>
-        <div>
-            <h3>Laboratorio Frazioni: Operazioni Visive</h3>
-            <p>Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso
-                modelli visivi (Torte) e retta numerica.</p><span>Tags: NUMERI RAZIONALI, 2 GP, MAT:MODELLIZZAZIONE,
-                MAT:CALCOLO, EU:STEM, 2 EL, MATEMATICA, 1 EL, FRAZIONI, ARITMETICA, LAB</span>
-        </div>
-        <div>
-            <h3>Algebra Tiles 3D: Scomposizione</h3>
-            <p>Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include
-                esportazione STL per la stampa 3D dei kit didattici.</p><span>Tags: ALGEBRA, STAMPA 3D, MAT_K3:GEOMETRIA
-                EUCLIDEA E ANALITICA, 2 GP, MAT:MODELLIZZAZIONE, POLINOMI, EU:STEM, 2 EL, MATEMATICA, 1 EL,
-                MAT:GEOMETRIA, GEOMETRIA, IND:STRUMENTAZIONE, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, LAB</span>
-        </div>
-        <div>
-            <h3>GonioMatch: Segnali Goniometrici</h3>
-            <p>Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla
-                circonferenza goniometrica.</p><span>Tags: 4 EL, ANGOLI, MAT:ANALISI, MATEMATICA, MAT_K2:FUNZIONI
-                ELEMENTARI E LORO RAPPRESENTAZIONE, GONIOMETRIA, 3 MEC, TRIGONOMETRIA, FUNZIONI, LAB,
-                GAMIFICATION</span>
-        </div>
-        <div>
-            <h3>Albero di Pitagora: Frattali 3D</h3>
-            <p>Simulazione WebGL dell'Albero di Pitagora in 3D. Un'esplorazione visiva dei frattali e delle relazioni
-                geometriche tra i quadrati.</p><span>Tags: PITAGORA, STAMPA 3D, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, 2
-                GP, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O..., MAT:MODELLIZZAZIONE, CODING, ALGORITMI,
-                RICORSIONE, EU:STEM, 2 EL, MATEMATICA, 1 EL, MAT:GEOMETRIA, 3 MEC, GEOMETRIA, FRATTALI, LAB</span>
-        </div>
-        <div>
-            <h3>AlgebraLab 3D: Geometria dei Polinomi</h3>
-            <p>Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.</p>
-            <span>Tags: ALGEBRA, VISUALIZZAZIONE, 4 EL, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, 2 GP,
-                MAT:MODELLIZZAZIONE, EU:STEM, 2 EL, MATEMATICA, 1 EL, MAT:GEOMETRIA, 3 MEC, GEOMETRIA, MAT_K1:INSIEMI
-                NUMERICI E CALCOLO LETTERALE, LAB</span>
-        </div>
-        <div>
-            <h3>Parabola Challenge: Disequazioni</h3>
-            <p>Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino
-                all'input testuale libero.</p><span>Tags: ALGEBRA, DISEQUAZIONI, 4 EL, SCAFFOLDING, MAT:PROBLEMSOLVING,
-                PARABOLA, MAT:ANALISI, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, MATEMATICA, 3 MEC,
-                MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, GAMIFICATION</span>
-        </div>
-        <div>
-            <h3>Simulazione CA: Fasori & Onde</h3>
-            <p>Simulatore interattivo del comportamento in Corrente Alternata (Sfasamento, Valori Efficaci, Potenza) per
-                il corso di macchine elettriche.</p><span>Tags: ONDE, 4 EL, FASORI, MAT:MODELLIZZAZIONE, MAT:ANALISI,
-                FISICA, CORRENTE ALTERNATA, IND:STRUMENTAZIONE, LAB, ELETTROTECNICA</span>
-        </div>
-        <div>
-            <h3>Esploratore Numerico: Pitagora & Tartaglia</h3>
-            <p>Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo
-                di Tartaglia (Combinatoria) e regole di divisibilità.</p><span>Tags: PITAGORA, TARTAGLIA, NUMERI, 4 EL,
-                2 GP, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O..., MAT:DATI, DIVISIBILITÀ,
-                MAT:MODELLIZZAZIONE, MAT:CALCOLO, 2 EL, MATEMATICA, 1 EL, MAT_C3:ANALIZZARE DATI E INTERPRETARE
-                INFORMAZIONI C..., ARITMETICA, LAB</span>
-        </div>
-        <div>
-            <h3>Sketch to Pattern: Arte Generativa</h3>
-            <p>Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi.
-                Sperimenta con algoritmi, semplificazione e tassellazioni.</p><span>Tags: CREATIVITÀ, MAT_K3:GEOMETRIA
-                EUCLIDEA E ANALITICA, ARTE, CODING, CIT_4:COMPETENZA DIGITALE, EU:CULTURALE, TECNOLOGIA, PATTERN,
-                GEOMETRIA, TINKERING, LAB, EU:DIGITALE</span>
-        </div>
-        <div>
-            <h3>Logic Lab: Insiemi & Venn</h3>
-            <p>Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi
-                espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.</p>
-            <span>Tags: DIAGRAMMI DI VENN, 2 GP, MAT:MODELLIZZAZIONE, MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE
-                P..., EU:STEM, 2 EL, LOGICA, MATEMATICA, 1 EL, MAT:LOGICA, INSIEMI, LAB</span>
-        </div>
-        <div>
-            <h3>Mappe & Distorsioni: Mercatore</h3>
-            <p>Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le
-                aree reali dei paesi.</p><span>Tags: PROIEZIONI, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, 2 GP, GEOGRAFIA,
-                SCALA, MAT:MODELLIZZAZIONE, MERCATORE, EU:STEM, 2 EL, MATEMATICA, COORDINATE, 1 EL, MAT:GEOMETRIA,
-                LAB</span>
-        </div>
-        <div>
-            <h3>Math Underground: Mappa Funzioni</h3>
-            <p>Mappa interattiva della metropolitana per lo studio teorico delle funzioni analitiche e delle loro
-                principali proprietà (Dominio, Codominio).</p><span>Tags: 4 EL, MAT:MODELLIZZAZIONE, MAT:ANALISI,
-                EU:STEM, DOMINIO, MATEMATICA, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE, MAT_A2:RAPPRESENTARE
-                DATI MEDIANTE TABELLE, GRAFICI ..., ANALISI, MAPPA, FUNZIONI, LAB</span>
-        </div>
-        <div>
-            <h3>Math Invaders</h3>
-            <p>Laboratorio procedurale per il calcolo del Massimo Comune Divisore e Minimo Comune Multiplo tramite
-                scomposizione in fattori primi.</p><span>Tags: VIDEOGIOCO, MCM, MAT:CALCOLO, MATEMATICA, 1 EL,
-                ARITMETICA, MCD, GAMIFICATION</span>
-        </div>
-        <div>
-            <h3>Chaos Lab: Sistemi Dinamici</h3>
-            <p>Simulatore 3D di Attrattori Strani (Lorenz, Rössler, Chen). Esplora il Caos Deterministico e le Equazioni
-                Differenziali tramite integrazione numerica RK4.</p><span>Tags: 4 EL, ATTRATTORI, 2 GP,
-                MAT:MODELLIZZAZIONE, CIT_4:COMPETENZA DIGITALE, EU:STEM, 2 EL, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI
-                E SISTEMI, CAOS, FISICA, MATEMATICA, ANALISI, MAT:ANALISI, SIMULAZIONE, SISTEMI DINAMICI,
-                EU:DIGITALE</span>
-        </div>
-        <div>
-            <h3>Caccia all'Errore: Operazioni in Z</h3>
-            <p>Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette ed evita
-                le trappole degli errori comuni di calcolo.</p><span>Tags: Z, NUMERI INTERI, MAT:CALCOLO, POTENZE,
-                MAT:PROBLEMSOLVING, ERRORI COMUNI, EU:STEM, MATEMATICA, 1 EL, ARITMETICA, GAMIFICATION</span>
-        </div>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Polinomi Challenge 3D PRO</h3>
+                <p itemprop="description">Versione PRO della sfida 3D sui polinomi: Ghost Target, X-Ray mode e variabili dinamiche.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ALGEBRA, MATEMATICA, NERDAMER, 1 EL, SCOMPOSIZIONE, PRO, 3D, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, POLINOMI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Scomposizione Polinomi</h3>
+                <p itemprop="description">Gioco Memory per allenare il riconoscimento dei prodotti notevoli e delle scomposizioni (Raccoglimento, Quadrati, Trinomi).</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ALGEBRA, MATEMATICA, 1 EL, SCOMPOSIZIONI, 2 GP, GAMIFICATION, 2 EL, PRODOTTI NOTEVOLI, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, CIT_5:IMPARARE A IMPARARE, EU:IMPARAREIMPARARE, MAT:CALCOLO, POLINOMI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">C.E. Match</h3>
+                <p itemprop="description">Gioco Memory sul riconoscimento delle condizioni di esistenza di frazioni algebriche.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ALGEBRA, MATEMATICA, 1 EL, SCOMPOSIZIONI, 2 GP, GAMIFICATION, 2 EL, PRODOTTI NOTEVOLI, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, CIT_5:IMPARARE A IMPARARE, EU:IMPARAREIMPARARE, MAT:CALCOLO, POLINOMI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Game Theory Lab 2.5 🎲</h3>
+                <p itemprop="description">Simulazione interattiva del Dilemma del Prigioniero ed Equilibrio di Nash. Laboratorio per esplorare la cooperazione e le scelte strategiche nel contesto del voto scolastico.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="MAT:MODELLIZZAZIONE, MATEMATICA, MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C..., CIV:COSTITUZIONE, EQUILIBRIO DI NASH, MAT:DATI, ED. CIVICA, CIT_6:COMPETENZE SOCIALI E CIVICHE, 4 EL, EU:CITTADINANZA, CITTADINANZA, TEORIA DEI GIOCHI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">PixelGrid</h3>
+                <p itemprop="description">Applicazione di Game Theory all'analisi delle radici nelle equazioni di secondo grado, esplorando l'ottimizzazione e le strategie dominanti.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="EQUAZIONI DI SECONDO GRADO, 3 MEC, ALGEBRA, SCOMPOSIZIONE, QUADRATICHE, G, ITA, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, MODELLIZZAZIONE, FATTORIZZAZIONE, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, PARABOLA, PRODOTTI NOTEVOLI, 4 EL, POLINOMI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Hyperchaos Fractal Engine 3D</h3>
+                <p itemprop="description">Simulatore frattale 3D interattivo. Generatore algoritmico con geometria variabile, passeggiate aleatorie (Random Walk) e memoria cromatica nello spazio.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="FRATTALI, MAT_K03:GEOMETRIA EUCLIDEA E ANALITICA, RANDOM WALK, ALGORITMI, SIMULATORE, WEBGL, 3D, CAOS, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, GEOMETRIA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Lissajous Curves 3D</h3>
+                <p itemprop="description">Esplorazione interattiva delle curve di Lissajous in 2D e 3D. Simulatore matematico con morphing sferico e decadimento visivo.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="MATEMATICA, LABORATORIO, WEBGL, ONDE, LISSAJOUS, 3D, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, FISICA, GEOMETRIA, OSCILLAZIONI, DIDATTICA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">$\pi$ is irrational</h3>
+                <p itemprop="description">Simulatore ultra-high res. della costante $\pi$. Esplorazione dell'incommensurabilità con morfing sferico e shader glow.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="MATEMATICA, WEBGL, GEOMETRIA, GLOW, $\PI$, INCOMMENSURABILITÀ, 3D, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, SHADER, PI GRECO, ROTAZIONE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">$\sqrt{2}$ is irrational</h3>
+                <p itemprop="description">Simulatore sferico dell'Albero di Pitagora. Algoritmo di Soft Fusion per eliminare artefatti di complanarità e mostrare l'irrazionalità di $\sqrt{2}$.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="SQRT(2), FRATTALI, $\SQRT{2}$, MATEMATICA, ALBERO PITAGORICO, WEBGL, INCOMMENSURABILITÀ, 3D, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, SOFT FUSION, GEOMETRIA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Allegato Dlgs (Parte 61) 2017</h3>
+                <p itemprop="description">Laboratorio interattivo. Punto focale sulle tematiche di: Allegato, Dlgs61, Funzion..</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="LIMITE, 3 MEC, INSIEM, ALLEGATO, RETTA, FUNZION, DLGS61">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Dlgs (Parte 61) 2017</h3>
+                <p itemprop="description">Laboratorio interattivo. Punto focale sulle tematiche di: Dlgs, Funzion, Limite..</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="LIMITE, 3 MEC, INSIEM, DLGS, STATISTICA, RETTA, ELETTRIC, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, FUNZION">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Allegato (Parte 1) Competenze Pecup Professionali Area Generale Def (Parte 1)</h3>
+                <p itemprop="description">Laboratorio interattivo. Punto focale sulle tematiche di: Allegato, Competenze, Pecup..</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="PITAGORA, 3 MEC, ALLEGATO, RETTA, PROBABILITÀ, POLINOM, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI, SCOMPOSIZION, TRIGONOMETRIA, INSIEM, DISEQUAZIONI, PECUP, GRAFICO, COMPETENZE, STATISTICA, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O..., MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, GEOMETRIA, MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C..., EQUAZIONI, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, FUNZION, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ...">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Linee Guida Parte Prima Seconda</h3>
+                <p itemprop="description">Laboratorio interattivo. Punto focale sulle tematiche di: Linee, Guida, Parte..</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="LIMITE, 3 MEC, GUIDA, INSIEM, STATISTICA, RETTA, LINEE, PARTE, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, FUNZION">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Decreto Legislativo (Parte 13) (Parte 4) 2017 (Parte 61)</h3>
+                <p itemprop="description">Laboratorio interattivo. Punto focale sulle tematiche di: Decreto, Legislativo, Funzion..</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="LIMITE, 3 MEC, INSIEM, STATISTICA, RETTA, DECRETO, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, FUNZION, LEGISLATIVO">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Il triangolo di Sierpinski</h3>
+                <p itemprop="description">Visualizzazione geometrica della costruzione ricorsiva del triangolo di Sierpinski in tre dimensioni. Al crescere delle iterazioni l'area diminuisce ogni volta di 1/4, tendendo a 0, ma il perimetro aumenta, tendendo all'infinito!</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="FRATTALI, VIDEO, MAT_C4:UTILIZZARE CONCETTI E MODELLI GEOMETRICI, SIERPINSKI01, 3D, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, IND_C1:MODELLAZIONE ALGORITMICA E PARAMETRICA, GEOMETRIA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Sistemi di disequazioni vs. disequazioni frazionarie</h3>
+                <p itemprop="description">Nonostante dal punto di vista del calcolo sistemi di disequazioni e disequazioni frazionarie siano molto simili, è importante sottolineare che l'interpretazione delle soluzioni è diversa nei due casi. Nei sistemi, due 'sfighe' non fanno una gioia, mentre nel caso delle disequazioni frazionarie due segni negativi fanno un segno positivo.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ALGEBRA, VIDEO, DISEQUAZIONI, DISEQ, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, DUESFIGHE, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, CIT_6:COMPETENZE SOCIALI E CIVICHE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">$\phi$ is irrational</h3>
+                <p itemprop="description">Esplorazione interattiva 2D/3D del modulo aureo ($\phi$). Simulatore WebGL per dimostrare l'incommensurabilità attraverso le proiezioni concentriche della spirale.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="FRATTALI, $\PHI$, MATEMATICA, SPIRALE, WEBGL, INCOMMENSURABILITÀ, 3D, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, GEOMETRIA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Il metodo di esaustione</h3>
+                <p itemprop="description">Visualizzazione parametrica del limite delle aree di poligoni regolari al crescere del numero dei lati per approssimare l'area del cerchio.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="LIMITI, P5JS, MATEMATICA, AREA, ESAUSTIONE, ARCHIMEDE, GEOMETRIA, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, POLIGONI, PI GRECO">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Esploratore Polinomiale</h3>
+                <p itemprop="description">Esploratore grafico per polinomi che permette di visualizzare l'effetto delle operazioni (Addizione, Sottrazione) sulle funzioni risultanti.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="FUNZIONI FRAZIONARIE, 3 MEC, ALGEBRA, 1 EL, SCOMPOSIZIONE, 2 GP, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ..., MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, GRAFICO, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, EQUAZIONI FRAZIONARIE, 4 EL, 2 EL, POLINOMI, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Sistemi di disequazioni vs disequazioni frazionarie</h3>
+                <p itemprop="description">Risolutore simbolico e interattivo per disequazioni frazionarie e sistemi matematici. Integra un tutor socratico passo passo per l'apprendimento guidato.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="3 MEC, FRAZIONARIE, ALGEBRA, RISOLUTORE, LOGICA, 1 EL, DISEQUAZIONI, TUTOR, 2 GP, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, 2 EL, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, SISTEMI, 4 EL, MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE P...">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Decodifica La Matematica</h3>
+                <p itemprop="description">Risorsa: Decodifica La Matematica</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="INFOGRAFICA, DECODIFICA, MATEMATICA, VISUAL">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Errori Comuni - Potenze, Espressioni</h3>
+                <p itemprop="description">Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="INFOGRAFICA, 1 EL, ESPRESSIONI, POTENZE, ERRORI, COMUNI02, VISUAL, PEMDAS, CALCOLO">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Google AI Studio: Assistant</h3>
+                <p itemprop="description">Applicazione intelligente sperimentale sviluppata con Google AI Studio. Offre supporto avanzato e analisi contestuale.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="LINKOGRAFIA, GOOGLE, SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA, STRUMENTI, GEMINI, AI, ASSISTANT">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Guida Al Mondo Delle Funzioni Matematiche</h3>
+                <p itemprop="description">Risorsa: Guida Al Mondo Delle Funzioni Matematiche</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="INFOGRAFICA, GUIDA, DELLE, MONDO, VISUAL, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Tattoo Delta</h3>
+                <p itemprop="description">Risorsa: Tattoo Delta</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="TATTOO, IMMAGINE, GALLERY, DELTA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">PIP</h3>
+                <p itemprop="description">Terminale didattico Orfini Industries. Simulatore open source per lo studio della retta (y=mx+q).</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="3 MEC, FALLOUT, RETTA, MATEMATICA, PENDENZA, GAMIFICATION, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, 4 EL, GEOMETRIA ANALITICA, 2 PUNTI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Percent Lab</h3>
+                <p itemprop="description">Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ARITMETICA, MATEMATICA, 1 EL, CALCOLO MENTALE, GAMIFICATION, PERCENTUALI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Studio di Funzioni: Lab Analisi + AI</h3>
+                <p itemprop="description">Suite completa per lo studio di funzioni reali: dominio, simmetrie, classificazione e composizione. Grafici interattivi e analisi in tempo reale powered by Gemini.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="MATEMATICA, EDUCATION, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ..., DOMINIO, SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA, GRAFICI, FUNZIONI, AI, GEMINI, ANALISI, STUDIO DI FUNZIONE, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Laboratorio Frazioni: Operazioni Visive</h3>
+                <p itemprop="description">Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ARITMETICA, MAT:MODELLIZZAZIONE, MATEMATICA, LAB, 1 EL, 2 GP, FRAZIONI, 2 EL, NUMERI RAZIONALI, EU:STEM, MAT:CALCOLO">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Algebra Tiles 3D: Scomposizione</h3>
+                <p itemprop="description">Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include esportazione STL per la stampa 3D dei kit didattici.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ALGEBRA, MAT:MODELLIZZAZIONE, MATEMATICA, LAB, 1 EL, 2 GP, IND:STRUMENTAZIONE, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, MAT:GEOMETRIA, EU:STEM, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, POLINOMI, 2 EL, GEOMETRIA, STAMPA 3D">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">GonioMatch: Segnali Goniometrici</h3>
+                <p itemprop="description">Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="TRIGONOMETRIA, 3 MEC, GONIOMETRIA, MATEMATICA, LAB, GAMIFICATION, FUNZIONI, MAT:ANALISI, 4 EL, ANGOLI, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Albero di Pitagora: Frattali 3D</h3>
+                <p itemprop="description">Simulazione WebGL dell'Albero di Pitagora in 3D. Un'esplorazione visiva dei frattali e delle relazioni geometriche tra i quadrati.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="FRATTALI, PITAGORA, 3 MEC, MAT:MODELLIZZAZIONE, MATEMATICA, LAB, 1 EL, ALGORITMI, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O..., RICORSIONE, 2 GP, CODING, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, MAT:GEOMETRIA, EU:STEM, 2 EL, GEOMETRIA, STAMPA 3D">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">AlgebraLab 3D: Geometria dei Polinomi</h3>
+                <p itemprop="description">Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="3 MEC, ALGEBRA, MAT:MODELLIZZAZIONE, MATEMATICA, LAB, 1 EL, 2 GP, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, MAT:GEOMETRIA, EU:STEM, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, VISUALIZZAZIONE, 4 EL, 2 EL, GEOMETRIA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Parabola Challenge: Disequazioni</h3>
+                <p itemprop="description">Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino all'input testuale libero.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="3 MEC, ALGEBRA, MATEMATICA, DISEQUAZIONI, MAT:PROBLEMSOLVING, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, SCAFFOLDING, GAMIFICATION, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, PARABOLA, MAT:ANALISI, 4 EL">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Simulazione CA: Fasori & Onde</h3>
+                <p itemprop="description">Simulatore interattivo del comportamento in Corrente Alternata (Sfasamento, Valori Efficaci, Potenza) per il corso di macchine elettriche.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="MAT:MODELLIZZAZIONE, LAB, IND:STRUMENTAZIONE, ONDE, CORRENTE ALTERNATA, FASORI, MAT:ANALISI, 4 EL, FISICA, ELETTROTECNICA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Esploratore Numerico: Pitagora & Tartaglia</h3>
+                <p itemprop="description">Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo di Tartaglia (Combinatoria) e regole di divisibilità.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ARITMETICA, PITAGORA, MAT:MODELLIZZAZIONE, NUMERI, MATEMATICA, LAB, 1 EL, MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI O..., 2 GP, TARTAGLIA, MAT:DATI, 2 EL, DIVISIBILITÀ, 4 EL, MAT:CALCOLO, MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI C...">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Sketch to Pattern: Arte Generativa</h3>
+                <p itemprop="description">Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="LAB, EU:DIGITALE, CODING, EU:CULTURALE, GEOMETRIA, TECNOLOGIA, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, TINKERING, CREATIVITÀ, CIT_4:COMPETENZA DIGITALE, PATTERN, ARTE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Logic Lab: Insiemi & Venn</h3>
+                <p itemprop="description">Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="DIAGRAMMI DI VENN, LOGICA, MAT:MODELLIZZAZIONE, MAT:LOGICA, LAB, 1 EL, MATEMATICA, 2 GP, 2 EL, EU:STEM, MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE P..., INSIEMI">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Mappe & Distorsioni: Mercatore</h3>
+                <p itemprop="description">Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le aree reali dei paesi.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="MERCATORE, MAT:MODELLIZZAZIONE, PROIEZIONI, MATEMATICA, LAB, 1 EL, 2 GP, COORDINATE, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, MAT:GEOMETRIA, EU:STEM, 2 EL, SCALA, GEOGRAFIA">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Math Underground: Mappa Funzioni</h3>
+                <p itemprop="description">Mappa interattiva della metropolitana per lo studio teorico delle funzioni analitiche e delle loro principali proprietà (Dominio, Codominio).</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="MAT:MODELLIZZAZIONE, MATEMATICA, LAB, MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI ..., DOMINIO, MAPPA, FUNZIONI, EU:STEM, MAT:ANALISI, 4 EL, ANALISI, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Math Invaders</h3>
+                <p itemprop="description">Laboratorio procedurale per il calcolo del Massimo Comune Divisore e Minimo Comune Multiplo tramite scomposizione in fattori primi.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ARITMETICA, MATEMATICA, 1 EL, MCD, MCM, GAMIFICATION, VIDEOGIOCO, MAT:CALCOLO">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Chaos Lab: Sistemi Dinamici</h3>
+                <p itemprop="description">Simulatore 3D di Attrattori Strani (Lorenz, Rössler, Chen). Esplora il Caos Deterministico e le Equazioni Differenziali tramite integrazione numerica RK4.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="SIMULAZIONE, MAT:ANALISI, MAT:MODELLIZZAZIONE, MATEMATICA, EU:DIGITALE, 2 GP, MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI, SISTEMI DINAMICI, 2 EL, CAOS, EU:STEM, ATTRATTORI, FISICA, 4 EL, ANALISI, CIT_4:COMPETENZA DIGITALE">
+            </article>
+<article itemscope itemtype="https://schema.org/LearningResource">
+                <h3 itemprop="name">Caccia all'Errore: Operazioni in Z</h3>
+                <p itemprop="description">Missione di addestramento sui Numeri Interi (Z) e le Potenze. Trova le corrispondenze corrette ed evita le trappole degli errori comuni di calcolo.</p>
+                <meta itemprop="learningResourceType" content="InteractiveResource">
+                <meta itemprop="keywords" content="ARITMETICA, ERRORI COMUNI, MATEMATICA, 1 EL, MAT:PROBLEMSOLVING, POTENZE, GAMIFICATION, Z, EU:STEM, MAT:CALCOLO, NUMERI INTERI">
+            </article>
         <!-- SEO_CATALOG_END -->
     </div>
 

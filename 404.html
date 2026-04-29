@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Funzione Non Definita | Orfini Lab</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 24px;
+        }
+        .error-container {
+            max-width: 600px;
+        }
+        .error-code {
+            font-family: var(--font-heading);
+            font-size: 8rem;
+            line-height: 1;
+            color: var(--primary);
+            margin-bottom: 24px;
+            filter: drop-shadow(0 0 20px var(--primary-glow));
+        }
+        .error-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+        .error-msg {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .math-joke {
+            font-family: var(--font-code);
+            background: hsla(0, 0%, 100%, 0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container animate-in">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Dominio non trovato</h1>
+        <p class="error-msg">La risorsa che stai cercando sembra essere un valore in cui la funzione non è definita.</p>
+        
+        <div class="math-joke">
+            lim (x &rarr; orfini_lab) f(x) = &infin; ma qui c'è un buco!
+        </div>
+
+        <a href="index.html" class="main-cta-btn" style="display: inline-flex; margin: 0 auto;">
+            Torna alla Home
+        </a>
+    </div>
+</body>
+</html>
