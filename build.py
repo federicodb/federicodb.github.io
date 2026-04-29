@@ -455,20 +455,23 @@ def semantic_title_generator(raw_filename):
 # --- KNOWLEDGE BASE RIFORMA 2017 (Integrazione Dinamica) ---
 KEYWORD_TO_RIFORMA_ID = {
     # Matematica Generale
-    "equazioni": "MAT_A03", "disequazioni": "MAT_A03", "sistemi": "MAT_A03",
-    "algebra": "MAT_K01", "letterale": "MAT_K01", "polinomi": "MAT_K01", "scomposizione": "MAT_K01",
-    "funzioni": "MAT_K02", "dominio": "MAT_A02", "grafico": "MAT_A02", "andamento": "MAT_K02",
-    "geometria": "MAT_K03", "pitagora": "MAT_A04", "euclidea": "MAT_K03", "spaziale": "MAT_C4",
-    "statistica": "MAT_K04", "probabilità": "MAT_K04", "dati": "MAT_C3", "interpretare": "MAT_C3",
-    "logica": "MAT_C2", "problemi": "CIT_06", "situazioni": "MAT_C2",
+    "equazioni": "MAT_A3", "disequazioni": "MAT_A3", "sistemi": "MAT_A3",
+    "algebra": "MAT_K1", "letterale": "MAT_K1", "polinomi": "MAT_K1", "scomposizione": "MAT_K1",
+    "funzioni": "MAT_K2", "dominio": "MAT_A2", "grafico": "MAT_A2", "andamento": "MAT_K2",
+    "geometria": "MAT_K3", "pitagora": "MAT_A4", "euclidea": "MAT_K3", "spaziale": "MAT_C4",
+    "statistica": "MAT_K4", "probabilità": "MAT_K4", "dati": "MAT_C3", "interpretare": "MAT_C3",
+    "logica": "MAT_C2", "problemi": "CIT_6", "situazioni": "MAT_C2",
     
     # Indirizzo Tecnico & Soft Skills
     "3d": "IND_C1", "openscad": "IND_C1", "parametr": "IND_C1", "modellazione": "IND_C1",
     "python": "IND_C2", "p5.js": "IND_C2", "algoritmo": "IND_C2", "computazionale": "IND_C2",
     "stampa": "IND_C3", "slicing": "IND_C3", "fabbricazione": "IND_C3",
     "dsa": "IND_C4", "adhd": "IND_C4", "accessibil": "IND_C4", "inclusiv": "IND_C4",
-    "open source": "IND_K01", "arduino": "IND_K03", "raspberry": "IND_K03",
-    "ai": "SOFT_03", "intelligenza": "SOFT_03", "metacognizion": "SOFT_02"
+    "open source": "IND_K1", "arduino": "IND_K3", "raspberry": "IND_K3",
+    "ai": "SOFT_3", "intelligenza": "SOFT_3", "metacognizion": "SOFT_2",
+    
+    # Competenze di Cittadinanza
+    "civica": "CIT_6", "costituzione": "CIT_6", "comunicazione": "CIT_1", "imparare": "CIT_5", "digitale": "CIT_4"
 }
 
 def get_riforma_label(ref_id):

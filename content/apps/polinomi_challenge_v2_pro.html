@@ -293,7 +293,7 @@
             completedInLevel: 0
         };
 
-        const CONFIG = { xSize: 2.8, unitSize: 1.0, scatter: 10 };
+        const CONFIG = { xSize: 2.8, ySize: 2.2, zSize: 1.6, unitSize: 1.0, scatter: 10 };
         let scene, camera, renderer, controls, blocksGroup;
 
         function initThree() {
@@ -344,12 +344,25 @@
         function createBlock(w, h, d, x, y, z) {
             const geometry = new THREE.BoxGeometry(w - 0.05, h - 0.05, d - 0.05); // Micro-gap per effetto moduli
             
-            // Determinazione colore semantica basata sul "tipo" di blocco (Volume)
-            let color = COLORS.u;
-            const xCount = [w, h, d].filter(v => v > 1.5).length;
-            if (xCount === 3) color = COLORS.x3;
-            else if (xCount === 2) color = COLORS.x2;
-            else if (xCount === 1) color = COLORS.x1;
+            // Determinazione colore semantica basata sulle dimensioni esatte del blocco per garantire varietà cromatica
+            const dimsKey = [w, h, d].map(v => Math.round(v * 10)).sort((a,b)=>a-b).join('-');
+            const colorMap = {
+                '10-10-10': 0xFFD700, // u (Gold)
+                '10-10-28': 0xB4E197, // x (Green)
+                '10-10-22': 0x97E1D4, // y (Teal)
+                '10-10-16': 0xD4E197, // z (Yellow-Green)
+                '10-28-28': 0x3399FF, // x^2 (Blue)
+                '10-22-22': 0x33B5FF, // y^2 (Light Blue)
+                '10-16-16': 0x33FFB5, // z^2 (Cyan-Green)
+                '10-22-28': 0x8833FF, // xy (Purple)
+                '10-16-28': 0xFF33AA, // xz (Pink)
+                '10-16-22': 0xFF8833, // yz (Orange)
+                '28-28-28': 0xD0BCFF, // x^3 (Light Purple)
+                '22-22-22': 0xFFBCD0, // y^3 (Light Pink)
+                '16-16-16': 0xD0FFBC, // z^3 (Light Green)
+                '16-22-28': 0xFF5555  // xyz (Red)
+            };
+            let color = colorMap[dimsKey] || 0xCCCCCC;
 
             const material = new THREE.MeshPhongMaterial({ 
                 color: color, 
@@ -378,17 +391,7 @@
             document.getElementById('controls-solved').classList.add('hidden');
             while(blocksGroup.children.length > 0) blocksGroup.remove(blocksGroup.children[0]);
             
-            const getParts = (f) => {
-                let p = [];
-                // Se il fattore ha x (f[0] > 0), aggiungiamo i moduli x
-                for(let i=0; i<f[0]; i++) p.push(CONFIG.xSize);
-                // Poi aggiungiamo i moduli unità (f[1...])
-                for(let i=1; i<f.length; i++) {
-                    const count = Math.abs(f[i]); // Usiamo il valore assoluto per la geometria dei moduli
-                    for(let j=0; j<count; j++) p.push(CONFIG.unitSize);
-                }
-                return p;
-            };
+            const getParts = (f) => f;
 
             // Distribuzione intelligente dei fattori nelle 3 dimensioni per formare un parallelepipedo
             let dims = [[CONFIG.unitSize], [CONFIG.unitSize], [CONFIG.unitSize]];
@@ -449,54 +452,101 @@
         const Generator = {
             vars: ['x', 'y', 'a', 'b', 'z'],
             getV: () => Generator.vars[Math.floor(Math.random() * Generator.vars.length)],
+            getDistinctVars: (n) => {
+                let shuffled = [...Generator.vars].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, n);
+            },
+            getSizes: () => [CONFIG.xSize, CONFIG.ySize, CONFIG.zSize],
 
             training: () => {
                 const v = state.v;
+                const vS = CONFIG.xSize;
+                const uS = CONFIG.unitSize;
                 const k = Math.floor(Math.random() * 12) + 2;
                 const a = Math.floor(Math.random() * 8) + 1;
                 const templates = [
-                    () => ({ orig: `${k}${v} + ${k*a}`, factors: [[0, k], [1, a]], target: `${k}(${v}+${a})` }),
-                    () => ({ orig: `${k}${v}^2 + ${k*a}${v}`, factors: [[0, k], [1, 0], [1, a]], target: `${k}${v}(${v}+${a})` }),
-                    () => ({ orig: `${k}${v}^2 + ${k}${v}`, factors: [[0, k], [1, 0], [1, 1]], target: `${k}${v}(${v}+1)` })
+                    () => ({ orig: `${k}${v} + ${k*a}`, factors: [ Array(k).fill(uS), [vS, ...Array(a).fill(uS)] ], target: `${k}(${v}+${a})` }),
+                    () => ({ orig: `${k}${v}^2 + ${k*a}${v}`, factors: [ Array(k).fill(uS), [vS], [vS, ...Array(a).fill(uS)] ], target: `${k}${v}(${v}+${a})` }),
+                    () => ({ orig: `${k}${v}^2 + ${k}${v}`, factors: [ Array(k).fill(uS), [vS], [vS, uS] ], target: `${k}${v}(${v}+1)` })
                 ];
                 return templates[Math.floor(Math.random()*templates.length)]();
             },
             base: () => {
                 const v = state.v;
+                const vS = CONFIG.xSize;
+                const uS = CONFIG.unitSize;
                 const a = Math.floor(Math.random() * 6) + 1;
                 const b = Math.floor(Math.random() * 6) + 1;
                 const templates = [
-                    () => ({ orig: nerdamer(`(${v}+${a})^2`).expand().toString(), factors: [[1, a], [1, a]], target: `(${v}+${a})^2` }),
-                    () => ({ orig: nerdamer(`(${v}-${a})(${v}+${a})`).expand().toString(), factors: [[1, -a], [1, a]], target: `(${v}-${a})(${v}+${a})` }),
-                    () => ({ orig: nerdamer(`(${v}+${a})(${v}+${b})`).expand().toString(), factors: [[1, a], [1, b]], target: `(${v}+${a})(${v}+${b})` }),
-                    () => ({ orig: nerdamer(`${v}^2 + ${2*a}${v} + ${a*a}`).expand().toString(), factors: [[1, a], [1, a]], target: `(${v}+${a})^2` })
+                    () => ({ orig: nerdamer(`(${v}+${a})^2`).expand().toString(), factors: [ [vS, ...Array(a).fill(uS)], [vS, ...Array(a).fill(uS)] ], target: `(${v}+${a})^2` }),
+                    () => ({ orig: nerdamer(`(${v}-${a})(${v}+${a})`).expand().toString(), factors: [ [vS, ...Array(a).fill(uS)], [vS, ...Array(a).fill(uS)] ], target: `(${v}-${a})(${v}+${a})` }),
+                    () => ({ orig: nerdamer(`(${v}+${a})(${v}+${b})`).expand().toString(), factors: [ [vS, ...Array(a).fill(uS)], [vS, ...Array(b).fill(uS)] ], target: `(${v}+${a})(${v}+${b})` }),
+                    () => ({ orig: nerdamer(`${v}^2 + ${2*a}${v} + ${a*a}`).expand().toString(), factors: [ [vS, ...Array(a).fill(uS)], [vS, ...Array(a).fill(uS)] ], target: `(${v}+${a})^2` })
                 ];
                 return templates[Math.floor(Math.random()*templates.length)]();
             },
             medio: () => {
                 const v = state.v;
+                const vS = CONFIG.xSize;
+                const uS = CONFIG.unitSize;
                 const a = Math.floor(Math.random() * 5) + 1;
                 const b = Math.floor(Math.random() * 5) + 1;
                 const k = Math.floor(Math.random() * 6) + 2;
                 const templates = [
-                    // Misti: Raccoglimento + Prodotto Notevole
-                    () => ({ orig: nerdamer(`${k}*(${v}^2 - ${a*a})`).expand().toString(), factors: [[0, k], [1, -a], [1, a]], target: `${k}(${v}-${a})(${v}+${a})` }),
-                    () => ({ orig: nerdamer(`${k}*(${v}+${a})^2`).expand().toString(), factors: [[0, k], [1, a], [1, a]], target: `${k}(${v}+${a})^2` }),
-                    () => ({ orig: nerdamer(`${k}*(${v}+${a})*(${v}+${b})`).expand().toString(), factors: [[0, k], [1, a], [1, b]], target: `${k}(${v}+${a})(${v}+${b})` }),
-                    () => ({ orig: nerdamer(`${v}*(${v}+${a})*(${v}+${b})`).expand().toString(), factors: [[1, 0], [1, a], [1, b]], target: `${v}(${v}+${a})(${v}+${b})` })
+                    () => ({ orig: nerdamer(`${k}*(${v}^2 - ${a*a})`).expand().toString(), factors: [ Array(k).fill(uS), [vS, ...Array(a).fill(uS)], [vS, ...Array(a).fill(uS)] ], target: `${k}(${v}-${a})(${v}+${a})` }),
+                    () => ({ orig: nerdamer(`${k}*(${v}+${a})^2`).expand().toString(), factors: [ Array(k).fill(uS), [vS, ...Array(a).fill(uS)], [vS, ...Array(a).fill(uS)] ], target: `${k}(${v}+${a})^2` }),
+                    () => ({ orig: nerdamer(`${k}*(${v}+${a})*(${v}+${b})`).expand().toString(), factors: [ Array(k).fill(uS), [vS, ...Array(a).fill(uS)], [vS, ...Array(b).fill(uS)] ], target: `${k}(${v}+${a})(${v}+${b})` }),
+                    () => ({ orig: nerdamer(`${v}*(${v}+${a})*(${v}+${b})`).expand().toString(), factors: [ [vS], [vS, ...Array(a).fill(uS)], [vS, ...Array(b).fill(uS)] ], target: `${v}(${v}+${a})(${v}+${b})` })
                 ];
                 return templates[Math.floor(Math.random()*templates.length)]();
             },
             avanzato: () => {
-                const v = state.v;
+                const vars = Generator.getDistinctVars(3);
+                const v1 = vars[0], v2 = vars[1], v3 = vars[2];
+                const sizes = Generator.getSizes();
+                const s1 = sizes[0], s2 = sizes[1], s3 = sizes[2];
+                const uS = CONFIG.unitSize;
                 const a = Math.floor(Math.random() * 3) + 1;
                 const b = Math.floor(Math.random() * 3) + 1;
                 const k = Math.floor(Math.random() * 3) + 2;
+                
                 const templates = [
-                    () => ({ orig: nerdamer(`(${v}+${a}+${b})^2`).expand().toString(), factors: [[1, a, b], [1, a, b]], target: `(${v}+${a}+${b})^2` }),
-                    () => ({ orig: nerdamer(`(${v}+${a})^3`).expand().toString(), factors: [[1, a], [1, a], [1, a]], target: `(${v}+${a})^3` }),
-                    () => ({ orig: nerdamer(`${k}*${v}*(${v}+${a})*(${v}+${b})`).expand().toString(), factors: [[0, k], [1, 0], [1, a], [1, b]], target: `${k}${v}(${v}+${a})(${v}+${b})` }),
-                    () => ({ orig: nerdamer(`${k}*(${v}+${a})^2*(${v}+${b})`).expand().toString(), factors: [[0, k], [1, a], [1, a], [1, b]], target: `${k}(${v}+${a})^2(${v}+${b})` })
+                    // Differenza di quadrati con due variabili
+                    () => ({ 
+                        orig: nerdamer(`(${v1}-${v2})*(${v1}+${v2})`).expand().toString(), 
+                        factors: [ [s1, s2], [s1, s2] ], 
+                        target: `(${v1}-${v2})(${v1}+${v2})` 
+                    }),
+                    // Quadrato di binomio con due variabili
+                    () => ({ 
+                        orig: nerdamer(`(${v1}+${v2})^2`).expand().toString(), 
+                        factors: [ [s1, s2], [s1, s2] ], 
+                        target: `(${v1}+${v2})^2` 
+                    }),
+                    // Volume 3D k*(v1+v2)^2
+                    () => ({ 
+                        orig: nerdamer(`${k}*(${v1}+${v2})^2`).expand().toString(), 
+                        factors: [ Array(k).fill(uS), [s1, s2], [s1, s2] ], 
+                        target: `${k}(${v1}+${v2})^2` 
+                    }),
+                    // Volume 3D (v1+v2)(v1-v2)*v3
+                    () => ({ 
+                        orig: nerdamer(`${v3}*(${v1}-${v2})*(${v1}+${v2})`).expand().toString(), 
+                        factors: [ [s3], [s1, s2], [s1, s2] ], 
+                        target: `${v3}(${v1}-${v2})(${v1}+${v2})` 
+                    }),
+                    // Volume 3D v1*(v2+a)*(v3+b)
+                    () => ({ 
+                        orig: nerdamer(`${v1}*(${v2}+${a})*(${v3}+${b})`).expand().toString(), 
+                        factors: [ [s1], [s2, ...Array(a).fill(uS)], [s3, ...Array(b).fill(uS)] ], 
+                        target: `${v1}(${v2}+${a})(${v3}+${b})` 
+                    }),
+                    // Raccoglimento a fattore comune a più variabili
+                    () => ({
+                        orig: nerdamer(`${k}*${v1}*${v2}*(${v1}+${v2})`).expand().toString(),
+                        factors: [ Array(k).fill(s1), [s2], [s1, s2] ],
+                        target: `${k}${v1}${v2}(${v1}+${v2})`
+                    })
                 ];
                 return templates[Math.floor(Math.random()*templates.length)]();
             }
