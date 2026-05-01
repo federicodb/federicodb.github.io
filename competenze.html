@@ -246,14 +246,11 @@
         </div>
     </div>
 
-    <header class="editorial-hero">
+    <div class="compact-header">
         <div class="container animate-in">
-            <span class="eyebrow">Quadro Normativo</span>
-            <h1 class="hero-title">Decodifica Competenze</h1>
-            <p class="hero-sub">Mappa interattiva della Riforma Istituti Professionali (D.Lgs. 61/2017). Uno strumento
-                per la progettazione didattica.</p>
+            <p class="hero-manifesto">Mappa interattiva della Riforma Istituti Professionali (D.Lgs. 61/2017). Uno strumento per la progettazione didattica.</p>
         </div>
-    </header>
+    </div>
 
     <main class="container">
         <div class="competenze-container">
@@ -469,24 +466,7 @@
             }
         }
 
-        const fitTitle = () => {
-            const title = document.querySelector('.hero-title');
-            if (!title) return;
-            const container = title.parentElement;
-            let fontSize = parseFloat(window.getComputedStyle(title).fontSize);
-            title.style.display = 'inline-block';
-            title.style.whiteSpace = 'nowrap';
-            
-            while (title.offsetWidth > container.offsetWidth && fontSize > 14) {
-                fontSize -= 1;
-                title.style.fontSize = fontSize + 'px';
-            }
-        };
-
-        init().then(() => {
-            fitTitle();
-            window.addEventListener('resize', fitTitle);
-        });
+        init();
     </script>
 </body>
 

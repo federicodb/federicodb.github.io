@@ -82,14 +82,11 @@
         </div>
     </div>
 
-    <header class="editorial-hero">
+    <div class="compact-header">
         <div class="container animate-in">
-            <span class="eyebrow">Archivio Progetto</span>
-            <h1 class="hero-title">Verifiche & Prove</h1>
-            <p class="hero-sub">Consultazione dinamica e download delle prove strutturate. Ogni attività è calata nel
-                contesto delle competenze richieste dalla Riforma 2017.</p>
+            <p class="hero-manifesto">Consultazione dinamica e download delle prove strutturate di Matematica e Fisica.</p>
         </div>
-    </header>
+    </div>
 
     <main class="container">
         <div class="content-grid" id="main-grid" role="region" aria-live="polite">
@@ -155,23 +152,6 @@
             } else {
                 initApp();
             }
-
-            // Auto-scale hero title
-            const fitTitle = () => {
-                const title = document.querySelector('.hero-title');
-                if (!title) return;
-                const container = title.parentElement;
-                let fontSize = parseFloat(window.getComputedStyle(title).fontSize);
-                title.style.display = 'inline-block';
-                title.style.whiteSpace = 'nowrap';
-                
-                while (title.offsetWidth > container.offsetWidth && fontSize > 14) {
-                    fontSize -= 1;
-                    title.style.fontSize = fontSize + 'px';
-                }
-            };
-            fitTitle();
-            window.addEventListener('resize', fitTitle);
         });
 
 

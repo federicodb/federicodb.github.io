@@ -424,26 +424,31 @@ main {
 
 .hero-title {
     font-family: var(--font-heading);
-    /* Font size ultra-responsive: scende gradualmente per evitare wrap su mobile */
-    font-size: clamp(2.5rem, 10vw, 7.5rem);
-    line-height: 1;
+    font-size: clamp(2.5rem, 8vw, 7.5rem);
+    line-height: 1.1;
     letter-spacing: -0.05em;
     font-weight: 800;
     margin-bottom: 60px;
     max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
-    hyphens: none;
-    -webkit-hyphens: none;
+    /* Allow wrapping for safety, but with balanced text */
+    text-wrap: balance;
+    overflow-wrap: break-word;
 }
 
-/* Correzione specifica per titoli lunghi su schermi piccoli */
+.compact-header {
+    padding: 60px 0 40px 0;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 40px;
+}
+
 @media (max-width: 600px) {
     .hero-title {
-        font-size: 8vw; /* Proporzionale alla larghezza */
+        font-size: 12vw;
+        line-height: 1.1;
         margin-bottom: 30px;
-        letter-spacing: -0.02em;
+    }
+    .compact-header {
+        padding: 40px 0 20px 0;
     }
 }
 
