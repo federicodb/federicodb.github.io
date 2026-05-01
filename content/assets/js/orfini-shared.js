@@ -91,6 +91,64 @@
         });
 
         document.body.appendChild(btn);
+        
+        // 2.1 Evitamento Sovrapposizioni (Intelligenza Spaziale)
+        const checkArea = (x, y) => {
+            btn.style.visibility = 'hidden';
+            const elementsUnder = document.elementsFromPoint(x, y);
+            btn.style.visibility = 'visible';
+            
+            for (const elUnder of elementsUnder) {
+                if (elUnder === document.body || elUnder === document.documentElement) continue;
+                if (elUnder.tagName === 'CANVAS' && (elUnder.offsetWidth > window.innerWidth * 0.8)) continue; // Ignora canvas di sfondo
+                
+                const style = window.getComputedStyle(elUnder);
+                if (parseFloat(style.opacity) < 0.1 || style.display === 'none' || style.visibility === 'hidden') continue;
+                
+                // Se c'è testo visibile o l'elemento è interattivo
+                const hasText = elUnder.childNodes.length > 0 && Array.from(elUnder.childNodes).some(node => 
+                    node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0
+                );
+                
+                if (hasText || ['BUTTON', 'INPUT', 'SELECT', 'A'].includes(elUnder.tagName)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        setTimeout(() => {
+            const rect = btn.getBoundingClientRect();
+            const positions = [
+                { top: '20px', left: '20px', bottom: 'auto' },
+                { top: '20px', left: 'auto', right: '20px' },
+                { top: 'auto', bottom: '20px', left: '20px' }
+            ];
+
+            let currentPosIndex = 0;
+            const tryPosition = () => {
+                if (currentPosIndex >= positions.length) return;
+                
+                const pos = positions[currentPosIndex];
+                Object.assign(btn.style, pos);
+                
+                // Aspettiamo un frame per il reflow se necessario, o calcoliamo in base a window
+                const testX = pos.left === '20px' ? 48 : (window.innerWidth - 48);
+                const testY = pos.top === '20px' ? 48 : (window.innerHeight - 48);
+                
+                if (checkArea(testX, testY)) {
+                    currentPosIndex++;
+                    tryPosition();
+                } else {
+                    if (currentPosIndex > 0) {
+                        btn.style.border = '1px solid var(--primary, #00ffff)';
+                        console.log(`OrfiniShared: Home button spostato in posizione ${currentPosIndex}`);
+                    }
+                }
+            };
+
+            tryPosition();
+        }, 1000);
     }
 
     // 3. Iniezione Bottone Toggle UI (per dare risalto alla grafica)

@@ -469,7 +469,24 @@
             }
         }
 
-        init();
+        const fitTitle = () => {
+            const title = document.querySelector('.hero-title');
+            if (!title) return;
+            const container = title.parentElement;
+            let fontSize = parseFloat(window.getComputedStyle(title).fontSize);
+            title.style.display = 'inline-block';
+            title.style.whiteSpace = 'nowrap';
+            
+            while (title.offsetWidth > container.offsetWidth && fontSize > 14) {
+                fontSize -= 1;
+                title.style.fontSize = fontSize + 'px';
+            }
+        };
+
+        init().then(() => {
+            fitTitle();
+            window.addEventListener('resize', fitTitle);
+        });
     </script>
 </body>
 

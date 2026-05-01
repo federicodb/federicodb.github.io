@@ -424,13 +424,27 @@ main {
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(1.2rem, 6vw, 7.5rem);
+    /* Font size ultra-responsive: scende gradualmente per evitare wrap su mobile */
+    font-size: clamp(2.5rem, 10vw, 7.5rem);
     line-height: 1;
     letter-spacing: -0.05em;
     font-weight: 800;
     margin-bottom: 60px;
     max-width: 100%;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    hyphens: none;
+    -webkit-hyphens: none;
+}
+
+/* Correzione specifica per titoli lunghi su schermi piccoli */
+@media (max-width: 600px) {
+    .hero-title {
+        font-size: 8vw; /* Proporzionale alla larghezza */
+        margin-bottom: 30px;
+        letter-spacing: -0.02em;
+    }
 }
 
 .hero-manifesto {
@@ -611,8 +625,6 @@ main {
 }
 
 /* M3 Pill Chip Implementation */
-}
-
 .chip {
     display: inline-flex;
     align-items: center;
