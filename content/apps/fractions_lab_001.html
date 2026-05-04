@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
-    
+
     <!-- 1. META DATI PER CATALOGAZIONE (BUILDER) -->
-    <title>Laboratorio Frazioni: Operazioni Visive</title>
-    <meta name="description" content="Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.">
-    <meta name="keywords" content="Matematica, Aritmetica, Frazioni, Numeri Razionali, Mat:Calcolo, Mat:Modellizzazione, EU:STEM, Lab, 1 EL, 2 EL, 2 GP">
+    <title>Laboratorio di operazioni tra Frazioni</title>
+    <meta name="description"
+        content="Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.">
+    <meta name="keywords"
+        content="Matematica, Aritmetica, Frazioni, Numeri Razionali, Mat:Calcolo, Mat:Modellizzazione, EU:STEM, Lab, 1 EL, 2 EL, 2 GP">
     <meta name="date" content="2025-12-08">
 
     <!-- 2. FIX MOBILE & VIEWPORT -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Shared Orfini Design System -->
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
     <script src="../assets/js/orfini-shared.js"></script>
@@ -43,40 +47,59 @@
             }
         }
     </script>
-    
+
     <!-- KaTeX for Math Rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
-        
+
         /* 3. CSS FULLSCREEN ROBUSTO - Colori delegati a orfini-shared.css */
-        html, body {
-            margin: 0; padding: 0;
+        html,
+        body {
+            margin: 0;
+            padding: 0;
             width: 100vw;
             min-height: 100dvh;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         /* Nascondiamo controlli nativi input number */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; margin: 0; 
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
-        input[type=number] { -moz-appearance: textfield; }
-        
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         /* Animazioni fluide */
-        .visual-enter { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+        .visual-enter {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        
-        .marker-transition { transition: cx 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .marker-transition {
+            transition: cx 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
@@ -85,11 +108,11 @@
 
         // --- ICONS ---
         const Icons = {
-            Info: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
-            ChevronRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
-            PieChart: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>,
-            Activity: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
-            X: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+            Info: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>,
+            ChevronRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>,
+            PieChart: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></svg>,
+            Activity: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>,
+            X: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>,
             Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
             Minus: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         };
@@ -120,7 +143,7 @@
         const NumberLine = ({ valA, valB, valRes }) => {
             const values = [valA, valRes];
             if (valB !== null) values.push(valB);
-            
+
             const minVal = Math.min(...values);
             const maxVal = Math.max(...values);
             const start = Math.floor(minVal) - 1;
@@ -129,10 +152,10 @@
             const width = 600;
             const height = 100;
             const padding = 40;
-            
+
             const scale = (val) => {
                 const effectiveWidth = width - (padding * 2);
-                const percent = (val - start) / totalRange; 
+                const percent = (val - start) / totalRange;
                 return padding + (percent * effectiveWidth);
             };
 
@@ -142,7 +165,7 @@
             }
 
             const Marker = ({ val, color, label, yPos, showLabel }) => {
-                if (val < start || val > end) return null; 
+                if (val < start || val > end) return null;
                 const x = scale(val);
                 return (
                     <g className="marker-transition" transform={`translate(${x}, 0)`}>
@@ -163,11 +186,11 @@
                         <Icons.Activity /> Retta Numerica
                     </div>
                     {/* FIXED: Commento HTML rimosso per compatibilità JSX */}
-                    <div className="min-w-[400px]"> 
+                    <div className="min-w-[400px]">
                         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
                             <line x1={padding} y1="50" x2={width - padding} y2="50" stroke="#525252" strokeWidth="2" />
-                            <polygon points={`${width-padding+5},50 ${width-padding-5},45 ${width-padding-5},55`} fill="#525252" />
-                            <polygon points={`${padding-5},50 ${padding+5},45 ${padding+5},55`} fill="#525252" />
+                            <polygon points={`${width - padding + 5},50 ${width - padding - 5},45 ${width - padding - 5},55`} fill="#525252" />
+                            <polygon points={`${padding - 5},50 ${padding + 5},45 ${padding + 5},55`} fill="#525252" />
                             {ticks.map(t => (
                                 <g key={t} transform={`translate(${scale(t)}, 50)`}>
                                     <line x1="0" y1="-5" x2="0" y2="5" stroke="#737373" strokeWidth="2" />
@@ -189,10 +212,10 @@
             const value = num / safeDen;
             const absValue = Math.abs(value);
             const wholeParts = Math.floor(absValue);
-            const remainder = absValue - wholeParts; 
-            
+            const remainder = absValue - wholeParts;
+
             const totalCircles = wholeParts + (remainder > 0.0001 ? 1 : 0);
-            const displayCircles = totalCircles > 0 ? Array.from({length: totalCircles}, (_, i) => i) : [0];
+            const displayCircles = totalCircles > 0 ? Array.from({ length: totalCircles }, (_, i) => i) : [0];
             const effectiveParts = parts || [{ n: num, color: color, bg: bg }];
 
             const getCoordinatesForPercent = (percent) => {
@@ -204,7 +227,7 @@
             const DrawWedge = ({ startIdx, count, colorClass }) => {
                 const startPercent = startIdx / safeDen;
                 const endPercent = (startIdx + count) / safeDen;
-                
+
                 if (count >= safeDen && Math.abs(count - safeDen) < 0.1) {
                     return <circle cx="0" cy="0" r="1" className={`${colorClass} fill-current opacity-90`} stroke="white" strokeWidth="0.05" />;
                 }
@@ -212,7 +235,7 @@
                 const [startX, startY] = getCoordinatesForPercent(startPercent);
                 const [endX, endY] = getCoordinatesForPercent(endPercent);
                 const largeArcFlag = (endPercent - startPercent) > 0.5 ? 1 : 0;
-                
+
                 const d = `M 0 0 L ${startX} ${startY} A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY} Z`;
                 return <path d={d} className={`${colorClass} fill-current opacity-90`} stroke="white" strokeWidth="0.05" />;
             };
@@ -221,14 +244,14 @@
                 const startUnit = circleIndex * safeDen;
                 const endUnit = (circleIndex + 1) * safeDen;
                 const slices = [];
-                let currentUnit = 0; 
-                
+                let currentUnit = 0;
+
                 effectiveParts.forEach(part => {
                     const partStart = currentUnit;
                     const partEnd = currentUnit + part.n;
                     const overlapStart = Math.max(startUnit, partStart);
                     const overlapEnd = Math.min(endUnit, partEnd);
-                    
+
                     if (overlapEnd > overlapStart) {
                         const localStart = overlapStart - startUnit;
                         const localCount = overlapEnd - overlapStart;
@@ -259,15 +282,15 @@
                     <div className="mb-2 text-xl font-bold h-10 flex items-center text-on-background">
                         <LaTeX formula={`\\frac{${num}}{${den}}`} />
                     </div>
-                    
+
                     <div className="flex flex-wrap justify-center mb-4 gap-2 min-h-[4rem]">
                         {displayCircles.map((c) => <RenderCircle key={c} circleIndex={c} />)}
                     </div>
 
                     <div className="text-xs font-mono text-on-surface-variant mt-2">
-                         Valore: {(value * 100).toFixed(1)}%
+                        Valore: {(value * 100).toFixed(1)}%
                     </div>
-                    
+
                     {value < 0 && (
                         <div className="absolute top-2 right-2 text-xs bg-red-900/30 text-red-400 border border-red-800/50 px-2 py-1 rounded">Negativo</div>
                     )}
@@ -276,11 +299,11 @@
         };
 
         const FractionInput = ({ val, setVal }) => {
-            const updateN = (delta) => setVal({...val, n: (val.n + delta)});
+            const updateN = (delta) => setVal({ ...val, n: (val.n + delta) });
             const updateD = (delta) => {
                 const nextD = val.d + delta;
-                if (nextD === 0) return; 
-                setVal({...val, d: nextD});
+                if (nextD === 0) return;
+                setVal({ ...val, d: nextD });
             };
 
             return (
@@ -291,30 +314,30 @@
                             <button onClick={() => updateN(-1)} className="p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95" aria-label="Diminuisci numeratore">
                                 <Icons.Minus />
                             </button>
-                            <input 
-                                type="number" 
-                                value={val.n} 
-                                onChange={(e) => setVal({...val, n: parseInt(e.target.value)||0})} 
-                                className="w-full text-center bg-transparent text-on-background text-xl font-bold p-0 leading-none focus:outline-none focus:text-blue-400 transition-colors" 
+                            <input
+                                type="number"
+                                value={val.n}
+                                onChange={(e) => setVal({ ...val, n: parseInt(e.target.value) || 0 })}
+                                className="w-full text-center bg-transparent text-on-background text-xl font-bold p-0 leading-none focus:outline-none focus:text-blue-400 transition-colors"
                             />
                             <button onClick={() => updateN(1)} className="p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95" aria-label="Aumenta numeratore">
                                 <Icons.Plus />
                             </button>
                         </div>
-                        
+
                         {/* Separator Line */}
                         <div className="w-full h-0.5 bg-neutral-600 my-0.5 rounded-full opacity-50"></div>
-                        
+
                         {/* Denominatore Row */}
                         <div className="flex items-center justify-between flex-1">
                             <button onClick={() => updateD(-1)} className="p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95" aria-label="Diminuisci denominatore">
                                 <Icons.Minus />
                             </button>
-                            <input 
-                                type="number" 
-                                value={val.d} 
-                                onChange={(e) => setVal({...val, d: parseInt(e.target.value)||1})} 
-                                className="w-full text-center bg-transparent text-on-background text-xl font-bold p-0 leading-none focus:outline-none focus:text-blue-400 transition-colors" 
+                            <input
+                                type="number"
+                                value={val.d}
+                                onChange={(e) => setVal({ ...val, d: parseInt(e.target.value) || 1 })}
+                                className="w-full text-center bg-transparent text-on-background text-xl font-bold p-0 leading-none focus:outline-none focus:text-blue-400 transition-colors"
                             />
                             <button onClick={() => updateD(1)} className="p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95" aria-label="Aumenta denominatore">
                                 <Icons.Plus />
@@ -328,7 +351,7 @@
         const ControlPanel = ({ f1, setF1, f2, setF2, op, setOp, exp, setExp }) => {
             return (
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-surface p-6 rounded-2xl shadow-xl border border-outline-variant">
-                    
+
                     {/* Frazione A */}
                     <div className="col-span-12 md:col-span-3 flex flex-col items-center gap-3">
                         <label className="text-blue-400 font-bold text-sm tracking-wide">FRAZIONE A</label>
@@ -340,7 +363,7 @@
                         <div className="flex flex-col gap-2 w-full max-w-[100px]">
                             <label className="text-on-surface-variant text-[10px] text-center uppercase font-bold tracking-widest">Operazione</label>
                             <div className="relative group">
-                                <select value={op} onChange={(e) => setOp(e.target.value)} 
+                                <select value={op} onChange={(e) => setOp(e.target.value)}
                                     className="w-full bg-surface-container text-on-background py-3 px-2 rounded-lg text-2xl font-bold text-center appearance-none border border-outline-variant group-hover:border-neutral-500 focus:border-blue-500 outline-none transition-all cursor-pointer shadow-lg">
                                     <option value="sum">+</option>
                                     <option value="sub">−</option>
@@ -349,7 +372,7 @@
                                     <option value="pow">xⁿ</option>
                                 </select>
                                 <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none text-on-surface-variant">
-                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z" /></svg>
                                 </div>
                             </div>
                         </div>
@@ -361,13 +384,13 @@
                             <>
                                 <label className="text-purple-400 font-bold text-sm tracking-wide">ESPONENTE (n)</label>
                                 <div className="flex flex-col items-center justify-center w-full h-24 px-4 bg-surface-container rounded-xl border border-outline-variant shadow-inner">
-                                     <input type="range" min="-3" max="3" step="1" value={exp} onChange={(e) => setExp(parseInt(e.target.value))}
+                                    <input type="range" min="-3" max="3" step="1" value={exp} onChange={(e) => setExp(parseInt(e.target.value))}
                                         className="w-full accent-purple-500 cursor-pointer h-1 bg-neutral-700 rounded-lg appearance-none" />
-                                     <div className="flex justify-between w-full text-xs text-on-surface-variant font-mono mt-4">
+                                    <div className="flex justify-between w-full text-xs text-on-surface-variant font-mono mt-4">
                                         <span>-3</span>
                                         <span className="text-on-background text-2xl font-bold -mt-3">{exp}</span>
                                         <span>3</span>
-                                     </div>
+                                    </div>
                                 </div>
                             </>
                         ) : (
@@ -377,7 +400,7 @@
                             </>
                         )}
                     </div>
-                    
+
                     {/* Descrizione rapida */}
                     <div className="col-span-12 md:col-span-4 bg-surface-container p-4 rounded-lg text-sm text-on-surface-variant border border-outline-variant h-24 flex items-center justify-center text-center italic leading-tight">
                         {op === 'sum' && "Trova un denominatore comune per sommare le parti."}
@@ -408,8 +431,8 @@
 
             const result = useMemo(() => {
                 let resN, resD, steps = [];
-                let parts = null; 
-                
+                let parts = null;
+
                 if (f1.d === 0 || (op !== 'pow' && f2.d === 0)) {
                     return { n: 0, d: 1, error: "Impossibile dividere per zero", steps: [], parts: null };
                 }
@@ -423,7 +446,7 @@
                         const partB = f2.n * m2;
                         resN = partA + partB;
                         resD = l;
-                        
+
                         parts = [
                             { n: partA, color: 'text-blue-500', bg: 'bg-blue-500' },
                             { n: partB, color: 'text-emerald-500', bg: 'bg-emerald-500' }
@@ -460,7 +483,7 @@
                         steps.push({ title: "Moltiplicazione", desc: "Numeratore × Numeratore, Denominatore × Denominatore.", latex: `\\frac{${f1.n}}{${f1.d}} \\cdot \\frac{${f2.n}}{${f2.d}} = \\frac{${resN}}{${resD}}` });
                         break;
                     case 'div':
-                        if (f2.n === 0) return { n:0, d:1, error: "Impossibile dividere per zero", steps: [] };
+                        if (f2.n === 0) return { n: 0, d: 1, error: "Impossibile dividere per zero", steps: [] };
                         resN = f1.n * f2.d;
                         resD = f1.d * f2.n;
                         steps.push({ title: "Reciproco", desc: `Moltiplichiamo per l'inverso della seconda frazione.`, latex: `\\frac{${f1.n}}{${f1.d}} \\cdot \\frac{${f2.d}}{${f2.n}} = \\frac{${resN}}{${resD}}` });
@@ -475,7 +498,7 @@
                             steps.push({ title: "Potenza Positiva", desc: `Moltiplichiamo la frazione per se stessa ${exp} volte.`, latex: `\\left(\\frac{${f1.n}}{${f1.d}}\\right)^{\\scriptscriptstyle ${exp}} = \\frac{${f1.n}^${exp}}{${f1.d}^${exp}} = \\frac{${resN}}{${resD}}` });
                         } else {
                             const absExp = Math.abs(exp);
-                            if (f1.n === 0) return { n:0, d:1, error: "Err: 0^-n", steps: [] };
+                            if (f1.n === 0) return { n: 0, d: 1, error: "Err: 0^-n", steps: [] };
                             resN = Math.pow(f1.d, absExp);
                             resD = Math.pow(f1.n, absExp);
                             steps.push({ title: "Esponente Negativo", desc: "Invertiamo la base e usiamo l'esponente positivo.", latex: `\\left(\\frac{${f1.n}}{${f1.d}}\\right)^{\\scriptscriptstyle ${exp}} = \\left(\\frac{${f1.d}}{${f1.n}}\\right)^{\\scriptscriptstyle ${absExp}} = \\frac{${resN}}{${resD}}` });
@@ -506,38 +529,38 @@
                             <div className="space-y-6">
                                 <div className="bg-surface rounded-2xl p-6 border border-outline-variant shadow-xl">
                                     <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-on-background"><Icons.PieChart /> Modello Visivo</h2>
-                                    
+
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
                                         <FractionVisualizer num={f1.n} den={f1.d} color="text-blue-500" bg="bg-blue-500" label="A" />
                                         {op !== 'pow' && <FractionVisualizer num={f2.n} den={f2.d} color="text-emerald-500" bg="bg-emerald-500" label="B" />}
-                                        
+
                                         <div className="relative">
                                             <div className="hidden md:block absolute top-1/2 -left-4 transform -translate-y-1/2 text-neutral-600"><Icons.ChevronRight /></div>
-                                            <FractionVisualizer 
-                                                num={result.parts ? result.rawN : result.n} 
-                                                den={result.parts ? result.rawD : result.d} 
-                                                color="text-amber-500" 
-                                                bg="bg-amber-500" 
-                                                label="Risultato" 
-                                                parts={result.parts} 
+                                            <FractionVisualizer
+                                                num={result.parts ? result.rawN : result.n}
+                                                den={result.parts ? result.rawD : result.d}
+                                                color="text-amber-500"
+                                                bg="bg-amber-500"
+                                                label="Risultato"
+                                                parts={result.parts}
                                             />
                                         </div>
                                     </div>
 
                                     {/* NUOVA SEZIONE: Retta Numerica */}
-                                    <NumberLine 
-                                        valA={f1.n/f1.d} 
-                                        valB={op !== 'pow' ? f2.n/f2.d : null} 
-                                        valRes={result.n/result.d}
+                                    <NumberLine
+                                        valA={f1.n / f1.d}
+                                        valB={op !== 'pow' ? f2.n / f2.d : null}
+                                        valRes={result.n / result.d}
                                     />
 
                                     <div className="mt-8 pt-6 border-t border-outline-variant text-center">
                                         <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-3 font-bold">Equazione Completa</p>
                                         <div className="text-2xl md:text-3xl font-bold text-on-background bg-surface-container inline-block px-8 py-4 rounded-xl shadow-inner border border-outline-variant min-w-[200px]">
-                                            {result.error ? <span className="text-red-400 text-base flex items-center gap-2 justify-center"><Icons.X /> {result.error}</span> : 
-                                            <LaTeX formula={op === 'pow' 
-                                                ? `\\left(\\frac{${f1.n}}{${f1.d}}\\right)^{\\scriptscriptstyle ${exp}} = \\frac{${result.n}}{${result.d}}`
-                                                : `\\frac{${f1.n}}{${f1.d}} ${op==='sum' ? '+' : op==='sub' ? '-' : op==='mul' ? '\\cdot' : '\\div'} \\frac{${f2.n}}{${f2.d}} = \\frac{${result.n}}{${result.d}}`} />}
+                                            {result.error ? <span className="text-red-400 text-base flex items-center gap-2 justify-center"><Icons.X /> {result.error}</span> :
+                                                <LaTeX formula={op === 'pow'
+                                                    ? `\\left(\\frac{${f1.n}}{${f1.d}}\\right)^{\\scriptscriptstyle ${exp}} = \\frac{${result.n}}{${result.d}}`
+                                                    : `\\frac{${f1.n}}{${f1.d}} ${op === 'sum' ? '+' : op === 'sub' ? '-' : op === 'mul' ? '\\cdot' : '\\div'} \\frac{${f2.n}}{${f2.d}} = \\frac{${result.n}}{${result.d}}`} />}
                                         </div>
                                     </div>
                                 </div>
@@ -554,9 +577,9 @@
                                     <h4 className="text-indigo-400 font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wide"><Icons.Info /> Concetto Chiave</h4>
                                     <p className="text-sm text-on-surface-variant leading-relaxed">
                                         {op === 'sum' || op === 'sub' ? "Per sommare o sottrarre, dobbiamo trovare una 'taglia' di fetta comune (MCM). Solo quando le fette sono uguali possiamo contarle." :
-                                        op === 'mul' ? "Moltiplicare è come calcolare l'area di un rettangolo con lati dati dalle due frazioni." :
-                                        op === 'div' ? "Dividere significa 'quante volte il secondo numero sta nel primo?'. Dividere per 1/2 è come raddoppiare." :
-                                        "L'esponente negativo inverte numeratore e denominatore, come una retromarcia."}
+                                            op === 'mul' ? "Moltiplicare è come calcolare l'area di un rettangolo con lati dati dalle due frazioni." :
+                                                op === 'div' ? "Dividere significa 'quante volte il secondo numero sta nel primo?'. Dividere per 1/2 è come raddoppiare." :
+                                                    "L'esponente negativo inverte numeratore e denominatore, come una retromarcia."}
                                     </p>
                                 </div>
                             </div>
@@ -570,4 +593,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>

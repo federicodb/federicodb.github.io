@@ -3,19 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    
+
     <!-- 1. META DATI PER CATALOGAZIONE -->
-    <title>Algebra Tiles 3D: Scomposizione</title>
+    <title>Visualizzazione della scomposizione di un polinomio</title>
     <!-- Shared Orfini Design System -->
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
     <script src="../assets/js/orfini-shared.js"></script>
 
-    <meta name="description" content="Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include esportazione STL per la stampa 3D dei kit didattici.">
-    <meta name="keywords" content="Matematica, Algebra, Polinomi, Geometria, Stampa 3D, Mat:Geometria, Mat:Modellizzazione, Ind:Strumentazione, EU:STEM, Lab, 1 EL, 2 EL, 2 GP">
+    <meta name="description"
+        content="Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include esportazione STL per la stampa 3D dei kit didattici.">
+    <meta name="keywords"
+        content="Matematica, Algebra, Polinomi, Geometria, Stampa 3D, Mat:Geometria, Mat:Modellizzazione, Ind:Strumentazione, EU:STEM, Lab, 1 EL, 2 EL, 2 GP">
     <meta name="date" content="2025-12-08">
 
     <!-- 2. FIX MOBILE -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
     <title>Algebra Tiles 3D - Scomposizione Polinomi</title>
     <!-- Importiamo Tailwind per l'UI veloce -->
@@ -30,13 +33,17 @@
         }
     </script>
     <style>
-        body { margin: 0; padding: 0; }
+        body {
+            margin: 0;
+            padding: 0;
+        }
 
         #canvas-container {
             width: 100%;
             height: 100%;
             display: block;
-            touch-action: none; /* Fondamentale per OrbitControls su mobile */
+            touch-action: none;
+            /* Fondamentale per OrbitControls su mobile */
             outline: none;
         }
 
@@ -62,16 +69,36 @@
             font-family: monospace;
             appearance: none;
         }
-        input[type=number]:focus { outline: none; border-color: #3b82f6; }
+
+        input[type=number]:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
 
         /* Slider Custom */
-        input[type=range] { -webkit-appearance: none; background: transparent; height: 20px; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
-            background: #3b82f6; margin-top: -6px; cursor: pointer; border: 2px solid #1e1e1e;
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+            height: 20px;
         }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+            margin-top: -6px;
+            cursor: pointer;
+            border: 2px solid #1e1e1e;
+        }
+
         input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer; background: #4b5563; border-radius: 2px;
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #4b5563;
+            border-radius: 2px;
         }
 
         /* Gestione Pannello Mobile/Desktop */
@@ -79,16 +106,22 @@
             position: absolute;
             z-index: 20;
             /* Mobile Default: Bottom Sheet (nascosto parzialmente o accessibile via toggle) */
-            bottom: 0; left: 0; right: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
             border-radius: 20px 20px 0 0;
             max-height: 80vh;
-            transform: translateY(100%); /* Nascondi inizialmente su mobile se vogliamo toggle */
+            transform: translateY(100%);
+            /* Nascondi inizialmente su mobile se vogliamo toggle */
         }
 
         /* Desktop: Top-Left Floating */
         @media (min-width: 768px) {
             #ui-panel {
-                top: 20px; left: 20px; right: auto; bottom: auto;
+                top: 20px;
+                left: 20px;
+                right: auto;
+                bottom: auto;
                 width: 340px;
                 border-radius: 16px;
                 transform: translateY(0);
@@ -100,27 +133,49 @@
         #ui-toggle {
             position: absolute;
             z-index: 30;
-            bottom: 20px; right: 20px;
-            width: 50px; height: 50px;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: #3b82f6;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            border: 2px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             transition: transform 0.2s;
         }
-        #ui-toggle:active { transform: scale(0.95); }
-        
+
+        #ui-toggle:active {
+            transform: scale(0.95);
+        }
+
         /* Nascondi toggle su desktop se il pannello è fisso */
         @media (min-width: 768px) {
-            #ui-toggle { display: none; }
+            #ui-toggle {
+                display: none;
+            }
         }
 
         /* Classe per mostrare il pannello su mobile */
-        #ui-panel.open { transform: translateY(0); }
+        #ui-panel.open {
+            transform: translateY(0);
+        }
 
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 
     <!-- Configurazione Tailwind con Colori Semantici -->
@@ -150,16 +205,26 @@
 
     <!-- 3. TOGGLE BUTTON (MOBILE) -->
     <button id="ui-toggle" onclick="toggleUI()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+            </path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>
     </button>
 
     <!-- 4. UI PANEL (DRAWER) -->
     <div id="ui-panel" class="glass-panel p-5 overflow-y-auto custom-scrollbar flex flex-col gap-4">
-        
+
         <!-- Header con Close su Mobile -->
         <div class="flex justify-between items-center md:mb-2">
             <h1 class="text-lg font-bold text-blue-400 flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                    </path>
+                </svg>
                 Algebra Tiles 3D
             </h1>
             <button class="md:hidden text-gray-400 hover:text-white" onclick="toggleUI()">✕</button>
@@ -167,8 +232,12 @@
 
         <!-- Selezione Grado -->
         <div class="bg-gray-800/50 p-1 rounded-lg flex">
-            <button id="btn-deg2" class="flex-1 py-1.5 rounded-md text-xs font-bold transition bg-blue-600 text-on-background shadow-sm">2D (Area)</button>
-            <button id="btn-deg3" class="flex-1 py-1.5 rounded-md text-xs font-medium transition text-gray-400 hover:text-white hover:bg-gray-700">3D (Volume)</button>
+            <button id="btn-deg2"
+                class="flex-1 py-1.5 rounded-md text-xs font-bold transition bg-blue-600 text-on-background shadow-sm">2D
+                (Area)</button>
+            <button id="btn-deg3"
+                class="flex-1 py-1.5 rounded-md text-xs font-medium transition text-gray-400 hover:text-white hover:bg-gray-700">3D
+                (Volume)</button>
         </div>
 
         <!-- Input Coefficienti -->
@@ -181,10 +250,13 @@
 
         <!-- Azioni -->
         <div class="flex gap-2">
-            <button id="btn-visualize" class="flex-1 bg-green-600 hover:bg-green-500 text-on-background font-bold py-2 px-4 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
+            <button id="btn-visualize"
+                class="flex-1 bg-green-600 hover:bg-green-500 text-on-background font-bold py-2 px-4 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
                 <span>▶</span> Genera
             </button>
-            <button id="btn-random" class="bg-purple-600 hover:bg-purple-500 text-on-background py-2 px-4 rounded-lg shadow transition" title="Random">
+            <button id="btn-random"
+                class="bg-purple-600 hover:bg-purple-500 text-on-background py-2 px-4 rounded-lg shadow transition"
+                title="Random">
                 🎲
             </button>
         </div>
@@ -199,7 +271,8 @@
         </div>
 
         <!-- Output -->
-        <div id="result-output" class="p-3 bg-black/40 rounded-lg border border-gray-700 text-xs font-mono text-center min-h-[40px] flex items-center justify-center">
+        <div id="result-output"
+            class="p-3 bg-black/40 rounded-lg border border-gray-700 text-xs font-mono text-center min-h-[40px] flex items-center justify-center">
             In attesa...
         </div>
 
@@ -214,10 +287,13 @@
                     <input type="number" id="print-scale" value="20" min="1" max="100" class="!w-12 !p-1 text-[10px]">
                 </div>
             </div>
-            <button id="btn-export" class="w-full bg-gray-700 hover:bg-gray-600 text-on-background py-2 rounded-lg text-xs font-bold border border-gray-600 transition flex items-center justify-center gap-2">
+            <button id="btn-export"
+                class="w-full bg-gray-700 hover:bg-gray-600 text-on-background py-2 rounded-lg text-xs font-bold border border-gray-600 transition flex items-center justify-center gap-2">
                 Scarica .STL
             </button>
-            <div id="size-warning" class="hidden mt-2 text-[10px] text-orange-300 bg-orange-900/40 p-2 rounded border border-orange-800/50"></div>
+            <div id="size-warning"
+                class="hidden mt-2 text-[10px] text-orange-300 bg-orange-900/40 p-2 rounded border border-orange-800/50">
+            </div>
         </div>
 
         <!-- View Toggle -->
@@ -226,7 +302,9 @@
             <label class="flex items-center cursor-pointer">
                 <div class="relative">
                     <input type="checkbox" id="view-toggle" class="sr-only peer">
-                    <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                    <div
+                        class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600">
+                    </div>
                 </div>
                 <span class="ml-2 font-bold text-on-background" id="view-label">Orto (2D)</span>
             </label>
@@ -242,7 +320,7 @@
         import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 
         // --- GESTIONE UI MOBILE ---
-        window.toggleUI = function() {
+        window.toggleUI = function () {
             const panel = document.getElementById('ui-panel');
             panel.classList.toggle('open');
         }
@@ -285,7 +363,7 @@
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         // Importante per mobile: disabilita pan con 2 dita se interferisce, ma qui serve
-        controls.enablePan = true; 
+        controls.enablePan = true;
 
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
@@ -317,18 +395,18 @@
         }
 
         function expandFactors(f1, f2) {
-            return { 
-                coeffs: [f1[0] * f2[0], f1[0] * f2[1] + f1[1] * f2[0], f1[1] * f2[1]], 
-                factors: [f1, f2] 
+            return {
+                coeffs: [f1[0] * f2[0], f1[0] * f2[1] + f1[1] * f2[0], f1[1] * f2[1]],
+                factors: [f1, f2]
             };
         }
 
         function expandFactors3(f1, f2, f3) {
             const p = expandFactors(f1, f2).coeffs;
             const [e, f] = f3;
-            return { 
-                coeffs: [p[0]*e, p[0]*f + p[1]*e, p[1]*f + p[2]*e, p[2]*f], 
-                factors: [f1, f2, f3] 
+            return {
+                coeffs: [p[0] * e, p[0] * f + p[1] * e, p[1] * f + p[2] * e, p[2] * f],
+                factors: [f1, f2, f3]
             };
         }
 
@@ -347,7 +425,7 @@
                 const [a, b, c, d] = coeffs;
                 if (a === 1) {
                     for (let p = 0; p <= limit; p++) for (let q = 0; q <= limit; q++) for (let r = 0; r <= limit; r++) {
-                        if (p*q*r === d && (p+q+r) === b && (p*q+p*r+q*r) === c) return [[1, p], [1, q], [1, r]];
+                        if (p * q * r === d && (p + q + r) === b && (p * q + p * r + q * r) === c) return [[1, p], [1, q], [1, r]];
                     }
                 }
             }
@@ -358,7 +436,7 @@
         function createBlock(type, w, h, d, x, y, z) {
             const geometry = new THREE.BoxGeometry(w, h, d);
             let color = COLORS.positive['1'];
-            
+
             // Logica colore base: x=lungo, 1=corto. 
             // x^3 (3 lunghi), x^2 (2 lunghi), x (1 lungo), 1 (0 lunghi)
             const dimType = (w > 1.5 ? 1 : 0) + (h > 1.5 ? 1 : 0) + (d > 1.5 ? 1 : 0);
@@ -368,7 +446,7 @@
 
             const material = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3, metalness: 0.1 });
             const mesh = new THREE.Mesh(geometry, material);
-            
+
             // Bordo nero per stile "cartoon/didattico"
             const edges = new THREE.EdgesGeometry(geometry);
             const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 }));
@@ -378,7 +456,7 @@
             const cy = y - h / 2;
             const cz = z + d / 2;
             mesh.position.set(cx, cy, cz);
-            
+
             mesh.userData = { originalLocalPos: new THREE.Vector3(cx, cy, cz) };
             mesh.castShadow = true;
             mesh.receiveShadow = true;
@@ -388,19 +466,19 @@
         function buildScene(factors) {
             document.getElementById('explosion-slider').value = 0;
             document.getElementById('explosion-val').innerText = '0%';
-            
+
             // Pulisci
-            while(blocksGroup.children.length > 0) blocksGroup.remove(blocksGroup.children[0]);
+            while (blocksGroup.children.length > 0) blocksGroup.remove(blocksGroup.children[0]);
 
             const getDims = (f) => {
                 let parts = [];
-                for(let i=0; i<f[0]; i++) parts.push({size: SCENE_CONFIG.xSize});
-                for(let i=0; i<f[1]; i++) parts.push({size: SCENE_CONFIG.unitSize});
+                for (let i = 0; i < f[0]; i++) parts.push({ size: SCENE_CONFIG.xSize });
+                for (let i = 0; i < f[1]; i++) parts.push({ size: SCENE_CONFIG.unitSize });
                 return parts;
             };
 
             const dX = getDims(factors[0]), dY = getDims(factors[1]);
-            const dZ = factors.length > 2 ? getDims(factors[2]) : [{size: state.is3D ? SCENE_CONFIG.unitSize : 0.1}];
+            const dZ = factors.length > 2 ? getDims(factors[2]) : [{ size: state.is3D ? SCENE_CONFIG.unitSize : 0.1 }];
 
             let curY = 0;
             dY.forEach(Y => {
@@ -409,10 +487,10 @@
                     let curZ = 0;
                     dZ.forEach(Z => {
                         const depth = state.degree === 2 ? 0.1 : Z.size;
-                        const m = createBlock(null, 
-                            X.size - SCENE_CONFIG.spacing, 
-                            Y.size - SCENE_CONFIG.spacing, 
-                            depth - (state.degree===3 ? SCENE_CONFIG.spacing : 0), 
+                        const m = createBlock(null,
+                            X.size - SCENE_CONFIG.spacing,
+                            Y.size - SCENE_CONFIG.spacing,
+                            depth - (state.degree === 3 ? SCENE_CONFIG.spacing : 0),
                             curX, curY, curZ
                         );
                         blocksGroup.add(m);
@@ -424,17 +502,17 @@
             });
 
             // Centra il gruppo
-            const totW = dX.reduce((a,b)=>a+b.size,0);
-            const totH = dY.reduce((a,b)=>a+b.size,0);
-            const totD = dZ.reduce((a,b)=>a+b.size,0);
-            blocksGroup.position.set(-totW/2, totH/2, state.degree===3 ? -totD/2 : 0);
+            const totW = dX.reduce((a, b) => a + b.size, 0);
+            const totH = dY.reduce((a, b) => a + b.size, 0);
+            const totD = dZ.reduce((a, b) => a + b.size, 0);
+            blocksGroup.position.set(-totW / 2, totH / 2, state.degree === 3 ? -totD / 2 : 0);
 
             // Calcola direzioni esplosione
-            const center = new THREE.Vector3(totW/2, -totH/2, totD/2);
+            const center = new THREE.Vector3(totW / 2, -totH / 2, totD / 2);
             blocksGroup.children.forEach(m => {
                 m.userData.explosionDir = new THREE.Vector3().subVectors(m.userData.originalLocalPos, center);
             });
-            
+
             checkPrintSize();
         }
 
@@ -447,8 +525,8 @@
         function updateUI() {
             inputs.innerHTML = '';
             const coeffs = state.degree === 2 ? ['x²', 'x', '1'] : ['x³', 'x²', 'x', '1'];
-            const ids = state.degree === 2 ? ['a','b','c'] : ['a','b','c','d'];
-            
+            const ids = state.degree === 2 ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd'];
+
             ids.forEach((id, i) => {
                 const div = document.createElement('div');
                 div.className = 'flex flex-col items-center';
@@ -459,25 +537,25 @@
         }
 
         function solve() {
-            const ids = state.degree === 2 ? ['a','b','c'] : ['a','b','c','d'];
-            const vals = ids.map(id => parseInt(document.getElementById(`coeff-${id}`).value)||0);
+            const ids = state.degree === 2 ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd'];
+            const vals = ids.map(id => parseInt(document.getElementById(`coeff-${id}`).value) || 0);
             const factors = factorize(vals);
 
             if (factors) {
-                let s = ""; factors.forEach(f => s += `(${f[0]>1?f[0]:''}x + ${f[1]})`);
+                let s = ""; factors.forEach(f => s += `(${f[0] > 1 ? f[0] : ''}x + ${f[1]})`);
                 resOut.innerHTML = `<span class="text-green-400 block mb-1">Fattorizzabile!</span><span class="text-on-background text-sm">${s}</span>`;
                 resOut.className = "p-3 bg-green-900/20 rounded-lg border border-green-700/50 text-center min-h-[50px] flex flex-col justify-center fade-in";
                 buildScene(factors);
             } else {
                 resOut.innerHTML = `<span class="text-red-400 font-bold">Irriducibile</span><br><span class="text-[10px] text-gray-400">Prova col dado 🎲</span>`;
                 resOut.className = "p-3 bg-red-900/20 rounded-lg border border-red-800/50 text-center min-h-[50px] flex flex-col justify-center fade-in";
-                while(blocksGroup.children.length > 0) blocksGroup.remove(blocksGroup.children[0]);
+                while (blocksGroup.children.length > 0) blocksGroup.remove(blocksGroup.children[0]);
             }
         }
 
         function updateExplosion() {
             const v = parseInt(document.getElementById('explosion-slider').value) / 100;
-            document.getElementById('explosion-val').innerText = Math.round(v*100) + '%';
+            document.getElementById('explosion-val').innerText = Math.round(v * 100) + '%';
             blocksGroup.children.forEach(m => {
                 m.position.copy(m.userData.originalLocalPos).addScaledVector(m.userData.explosionDir, v * 0.8);
             });
@@ -485,13 +563,13 @@
         }
 
         function checkPrintSize() {
-            const s = parseFloat(document.getElementById('print-scale').value)||20;
+            const s = parseFloat(document.getElementById('print-scale').value) || 20;
             const box = new THREE.Box3().setFromObject(blocksGroup);
             const size = new THREE.Vector3(); box.getSize(size);
             const max = Math.max(size.x, size.y, size.z) * s;
-            
+
             const warn = document.getElementById('size-warning');
-            if(max > 180) {
+            if (max > 180) {
                 warn.classList.remove('hidden');
                 warn.innerHTML = `⚠️ Max dim: ${Math.round(max)}mm ( > 180mm A1 Mini)`;
             } else warn.classList.add('hidden');
@@ -500,12 +578,12 @@
         function setDegree(d) {
             state.degree = d;
             updateUI();
-            
+
             const b2 = document.getElementById('btn-deg2');
             const b3 = document.getElementById('btn-deg3');
             const baseClass = "flex-1 py-1.5 rounded-md text-xs transition shadow-sm";
-            
-            if(d===2) {
+
+            if (d === 2) {
                 b2.className = baseClass + " bg-blue-600 text-on-background font-bold";
                 b3.className = baseClass + " text-gray-400 hover:text-white hover:bg-gray-700 font-medium";
                 viewTog.checked = false;
@@ -521,8 +599,8 @@
         function toggleView() {
             state.is3D = viewTog.checked;
             viewLbl.innerText = state.is3D ? "Prospettiva (3D)" : "Ortogonale (2D)";
-            
-            if(state.is3D) {
+
+            if (state.is3D) {
                 currentCamera = cameraPersp;
                 controls.enabled = true;
                 gridHelper.rotation.x = 0;
@@ -530,8 +608,8 @@
                 currentCamera = cameraOrtho;
                 controls.enabled = false;
                 cameraOrtho.position.set(0, 0, 20);
-                cameraOrtho.lookAt(0,0,0);
-                gridHelper.rotation.x = Math.PI/2;
+                cameraOrtho.lookAt(0, 0, 0);
+                gridHelper.rotation.x = Math.PI / 2;
             }
             solve();
         }
@@ -543,32 +621,32 @@
         document.getElementById('explosion-slider').oninput = updateExplosion;
         document.getElementById('print-scale').oninput = checkPrintSize;
         document.getElementById('view-toggle').onchange = toggleView;
-        
+
         document.getElementById('btn-random').onclick = () => {
             const d = generateRandomPolynomial();
-            const ids = state.degree === 2 ? ['a','b','c'] : ['a','b','c','d'];
+            const ids = state.degree === 2 ? ['a', 'b', 'c'] : ['a', 'b', 'c', 'd'];
             ids.forEach((id, i) => document.getElementById(`coeff-${id}`).value = d.coeffs[i]);
             solve();
         };
 
         document.getElementById('btn-export').onclick = () => {
             const exporter = new STLExporter();
-            const s = parseFloat(document.getElementById('print-scale').value)||20;
+            const s = parseFloat(document.getElementById('print-scale').value) || 20;
             const clone = blocksGroup.clone(true);
-            clone.scale.set(s,s,s);
-            clone.rotation.x = -Math.PI/2;
+            clone.scale.set(s, s, s);
+            clone.rotation.x = -Math.PI / 2;
             clone.updateMatrixWorld(true);
             const res = exporter.parse(clone, { binary: true });
             const link = document.createElement('a');
-            link.href = URL.createObjectURL(new Blob([res], {type:'application/octet-stream'}));
+            link.href = URL.createObjectURL(new Blob([res], { type: 'application/octet-stream' }));
             link.download = `polinomio_${state.degree}deg.stl`;
             link.click();
         };
 
         window.onresize = () => {
-            const a = window.innerWidth/window.innerHeight;
+            const a = window.innerWidth / window.innerHeight;
             cameraPersp.aspect = a; cameraPersp.updateProjectionMatrix();
-            cameraOrtho.left = -20*a/2; cameraOrtho.right = 20*a/2;
+            cameraOrtho.left = -20 * a / 2; cameraOrtho.right = 20 * a / 2;
             cameraOrtho.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         };
@@ -582,11 +660,12 @@
         // Init
         setDegree(2);
         const startData = generateRandomPolynomial();
-        const ids = ['a','b','c'];
+        const ids = ['a', 'b', 'c'];
         ids.forEach((id, i) => document.getElementById(`coeff-${id}`).value = startData.coeffs[i]);
         solve();
         animate();
 
     </script>
 </body>
+
 </html>

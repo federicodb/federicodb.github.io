@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="theme-color" content="#121212">
-    <meta name="description" content="Simulazione interattiva del Dilemma del Prigioniero ed Equilibrio di Nash. Laboratorio per esplorare la cooperazione e le scelte strategiche nel contesto del voto scolastico.">
+    <meta name="description"
+        content="Simulazione interattiva del Dilemma del Prigioniero ed Equilibrio di Nash. Laboratorio per esplorare la cooperazione e le scelte strategiche nel contesto del voto scolastico.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Theory Lab 2.5 🎲</title>
+    <title>Teoria dei giochi e valutazione consapevole</title>
     <meta name="keywords"
         content="Ed. Civica, Matematica, Teoria dei Giochi, Equilibrio di Nash, Cittadinanza, Civ:Costituzione, EU:Cittadinanza, Mat:Modellizzazione, Mat:Dati, 4 EL">
 
@@ -161,7 +162,7 @@
     <nav
         class="w-full p-6 flex flex-col md:flex-row justify-between items-center glass-panel sticky top-0 z-50 mb-8 border-b border-slate-700/50 gap-4">
         <div class="flex items-center gap-3">
-            
+
             <span class="text-3xl filter drop-shadow-lg">🎲</span>
             <div>
                 <h1 class="font-bold text-xl leading-none text-white tracking-tight">Voto Consapevole <span
@@ -172,8 +173,8 @@
 
         <div class="flex flex-wrap justify-center gap-3">
             <!-- Pulsante Torna alla Home integrato nella NavBar -->
-            
-            
+
+
             <button @click="showMission = true"
                 class="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-full transition shadow-lg shadow-indigo-500/20 border border-indigo-400/30 flex items-center gap-2 font-bold animate-pulse">
                 <span>🚀</span> Missione
@@ -657,14 +658,14 @@
                 initSim() {
                     this.reinitClass();
                     this.$nextTick(() => {
-                        renderMathInElement(document.body, { 
+                        renderMathInElement(document.body, {
                             delimiters: [
-                                {left: '$$', right: '$$', display: true},
-                                {left: '$', right: '$', display: false},
-                                {left: '\\(', right: '\\)', display: false},
-                                {left: '\\[', right: '\\]', display: true}
-                            ], 
-                            throwOnError: false 
+                                { left: '$$', right: '$$', display: true },
+                                { left: '$', right: '$', display: false },
+                                { left: '\\(', right: '\\)', display: false },
+                                { left: '\\[', right: '\\]', display: true }
+                            ],
+                            throwOnError: false
                         });
                         this.initChart();
                     });
@@ -752,7 +753,7 @@
             }
         }
     </script>
-<script src="../assets/js/orfini-shared.js"></script>
+    <script src="../assets/js/orfini-shared.js"></script>
 </body>
 
 </html>

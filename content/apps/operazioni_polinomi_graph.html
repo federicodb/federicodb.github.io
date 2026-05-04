@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esploratore Polinomiale</title>
-    <meta name="description" content="Esploratore grafico per polinomi che permette di visualizzare l'effetto delle operazioni (Addizione, Sottrazione) sulle funzioni risultanti.">
-    <meta name="keywords" content="algebra, scomposizione, grafico, equazioni frazionarie, funzioni frazionarie, polinomi, 1 EL, 2 EL, 2 GP, 3 MEC, 4 EL">
+    <title>Guida interattiva alla scomposizione di polinomi</title>
+    <meta name="description"
+        content="Esploratore grafico per polinomi che permette di visualizzare l'effetto delle operazioni (Addizione, Sottrazione) sulle funzioni risultanti.">
+    <meta name="keywords"
+        content="algebra, scomposizione, grafico, equazioni frazionarie, funzioni frazionarie, polinomi, 1 EL, 2 EL, 2 GP, 3 MEC, 4 EL">
     <meta name="date" content="2026-04-02">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Motore Numerico per il Rendering Vettoriale -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
-    
+
     <!-- Motore Simbolico per Scomposizione e Semplificazione -->
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
-    
+
     <!-- Tipografia Matematica -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
-    
+
     <!-- Libreria Grafica -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    
+
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -39,13 +43,17 @@
             --border-hover: #333333;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            
+
             --color-p: #00e5ff;
             --color-q: #ff0055;
             --color-res: #00ff88;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             background-color: var(--bg-oled);
@@ -57,7 +65,9 @@
             overflow: hidden;
         }
 
-        .mono { font-family: 'Share Tech Mono', monospace; }
+        .mono {
+            font-family: 'Share Tech Mono', monospace;
+        }
 
         .home-button {
             position: absolute;
@@ -155,8 +165,10 @@
             cursor: pointer;
             transition: border-color 0.2s;
         }
-        
-        .select-op:hover { border-color: var(--border-hover); }
+
+        .select-op:hover {
+            border-color: var(--border-hover);
+        }
 
         /* AREA MATEMATICA E SPAZIATURA */
         .math-section {
@@ -199,8 +211,13 @@
         }
 
         /* Correzione KaTeX per dark mode */
-        .katex .frac-line { border-bottom-color: currentColor; }
-        .katex .sqrt-line { border-top-color: currentColor; }
+        .katex .frac-line {
+            border-bottom-color: currentColor;
+        }
+
+        .katex .sqrt-line {
+            border-top-color: currentColor;
+        }
 
         /* TOOLBAR GRAFICA */
         .toolbar {
@@ -243,7 +260,7 @@
         .toggle-btn.active {
             color: var(--text-main);
             border-color: var(--btn-color);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 8px rgba(255,255,255,0.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.05);
         }
 
         .toggle-btn.active::before {
@@ -284,9 +301,21 @@
             overflow: hidden;
         }
 
-        .grid-line { stroke: #111111; stroke-width: 1; }
-        .axis-line { stroke: #333333; stroke-width: 1.5; }
-        .axis-tick text { font-size: 11px; fill: #555555; font-family: 'Share Tech Mono', monospace; }
+        .grid-line {
+            stroke: #111111;
+            stroke-width: 1;
+        }
+
+        .axis-line {
+            stroke: #333333;
+            stroke-width: 1.5;
+        }
+
+        .axis-tick text {
+            font-size: 11px;
+            fill: #555555;
+            font-family: 'Share Tech Mono', monospace;
+        }
 
         /* ERROR TOAST */
         .error-toast {
@@ -307,10 +336,11 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Pulsante Home -->
-    
+
 
     <!-- Controlli Superiori -->
     <header class="control-panel">
@@ -342,10 +372,11 @@
     <div class="toolbar">
         <button class="toggle-btn active" data-layer="p" style="--btn-color: var(--color-p)">Polinomio P(x)</button>
         <button class="toggle-btn active" data-layer="q" style="--btn-color: var(--color-q)">Polinomio Q(x)</button>
-        <button class="toggle-btn active" data-layer="res" style="--btn-color: var(--color-res)">Curva Risultato R(x)</button>
-        
+        <button class="toggle-btn active" data-layer="res" style="--btn-color: var(--color-res)">Curva Risultato
+            R(x)</button>
+
         <div class="divider"></div>
-        
+
         <button id="resetViewBtn" class="action-btn">◎ Centra Vista</button>
     </div>
 
@@ -400,10 +431,10 @@
         function resize() {
             width = graphContainer.clientWidth;
             height = graphContainer.clientHeight;
-            
+
             xScaleOriginal = d3.scaleLinear().domain(baseDomainX).range([0, width]);
             yScaleOriginal = d3.scaleLinear().domain(baseDomainY).range([height, 0]);
-            
+
             const transform = d3.zoomTransform(svg.node());
             currentXScale = transform.rescaleX(xScaleOriginal);
             currentYScale = transform.rescaleY(yScaleOriginal);
@@ -433,7 +464,7 @@
             btn.addEventListener('click', (e) => {
                 const layerId = e.currentTarget.getAttribute('data-layer');
                 layers[layerId] = !layers[layerId];
-                
+
                 if (layers[layerId]) {
                     e.currentTarget.classList.add('active');
                 } else {
@@ -504,7 +535,7 @@
             let prevY = null;
             const compiled = node.compile();
             const qCompiled = qNode ? qNode.compile() : null;
-            
+
             const domainX = currentXScale.domain();
             const rangeY = Math.abs(currentYScale.domain()[1] - currentYScale.domain()[0]);
             const resolution = (domainX[1] - domainX[0]) / 1000;
@@ -544,7 +575,7 @@
             const compiled = node.compile();
             let prevY = null;
             let prevX = null;
-            
+
             for (let x = -100; x <= 100; x += 0.05) {
                 try {
                     let y = compiled.evaluate({ x: x });
@@ -556,7 +587,7 @@
                     }
                     prevY = y;
                     prevX = x;
-                } catch (e) {}
+                } catch (e) { }
             }
             return roots.filter((item, pos, ary) => !pos || Math.abs(item - ary[pos - 1]) > 0.05);
         }
@@ -591,12 +622,12 @@
                 }
 
                 const nRes = nerdamer(exprStr);
-                
+
                 // Ricerca di fattori per scomposizione
                 const factPTex = nerdamer(`factor(${strP})`).toTeX();
                 const factQTex = nerdamer(`factor(${strQ})`).toTeX();
                 const factResTex = nerdamer(`factor(${exprStr})`).toTeX();
-                
+
                 // Ricerca della forma elementare più semplice
                 const simpResTex = nerdamer(`simplify(${exprStr})`).toTeX();
 
@@ -610,7 +641,7 @@
                 const pTex = nP.toTeX();
                 const qTex = nQ.toTeX();
                 const resTex = nRes.toTeX();
-                
+
                 // Mostra il passaggio di scomposizione solo se genera una modifica formale
                 const pStep = (pTex !== factPTex) ? `\\xrightarrow{\\text{Scomp.}} ${factPTex}` : '';
                 const qStep = (qTex !== factQTex) ? `\\xrightarrow{\\text{Scomp.}} ${factQTex}` : '';
@@ -622,14 +653,14 @@
 
                 if (currentIsDiv) {
                     latexExpression += `R(x) &= \\frac{P(x)}{Q(x)} `;
-                    
+
                     // Se P(x) o Q(x) sono scomponibili, mostra la frazione scomposta
                     if (pTex !== factPTex || qTex !== factQTex) {
                         latexExpression += `= \\frac{${factPTex}}{${factQTex}} `;
                     }
-                    
+
                     latexExpression += `\\xrightarrow{\\text{Sempl.}} ${simpResTex}`;
-                    
+
                     // Condizioni di esistenza
                     const rootsQ = findApproximateRoots(currentNodeQ);
                     let ceLatex = "";
@@ -638,17 +669,17 @@
                     } else {
                         ceLatex = `\\forall x \\in \\mathbb{R}`;
                     }
-                    
+
                     katex.render(`\\text{C.E.: } ${ceLatex}`, ceOutput, { throwOnError: false, displayMode: false });
                     ceOutput.classList.remove('hidden');
 
                 } else {
                     latexExpression += `R(x) &= P(x) ${opSymbol} Q(x) = ${resTex} `;
-                    
+
                     if (resTex !== factResTex && simpResTex !== factResTex) {
                         latexExpression += `\\xrightarrow{\\text{Scomp.}} ${factResTex} `;
                     }
-                    
+
                     latexExpression += `\\xrightarrow{\\text{Sempl.}} ${simpResTex}`;
                     ceOutput.classList.add('hidden');
                 }
@@ -727,7 +758,7 @@
         inputP.addEventListener('input', recalculateMath);
         inputQ.addEventListener('input', recalculateMath);
         operation.addEventListener('change', recalculateMath);
-        
+
         document.getElementById('resetViewBtn').addEventListener('click', () => {
             recalculateMath();
             triggerSwooshReset();
@@ -739,6 +770,7 @@
         triggerSwooshReset();
 
     </script>
-<script src="../assets/js/orfini-shared.js"></script>
+    <script src="../assets/js/orfini-shared.js"></script>
 </body>
+
 </html>
