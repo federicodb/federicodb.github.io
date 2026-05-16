@@ -127,6 +127,19 @@ def extract_html_meta(file_path):
             timestamp = os.path.getmtime(file_path)
             date_str = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
 
+        # Integrazione Gemini per App HTML (se disponibile)
+        global GEMINI_API_KEY
+        if GEMINI_API_KEY and GEMINI_API_KEY != "inserisci_qui_la_tua_chiave_selettivamente":
+            # Estraiamo una porzione del contenuto (senza script) per l'analisi
+            text_to_analyze = re.sub(r'<script.*?>.*?</script>', '', content, flags=re.DOTALL)
+            text_to_analyze = re.sub(r'<style.*?>.*?</style>', '', text_to_analyze, flags=re.DOTALL)
+            text_to_analyze = re.sub(r'<.*?>', ' ', text_to_analyze) # Rimuovi tag residui
+            
+            ai_class, ai_topics, ai_sintesi = scanner.analyze_content(text_to_analyze[:3000], tags)
+            if ai_sintesi: description = ai_sintesi
+            if ai_topics: tags = list(set(tags + ai_topics))
+            if ai_class: tags.append(ai_class)
+
         return {
             "title": title,
             "excerpt": description,

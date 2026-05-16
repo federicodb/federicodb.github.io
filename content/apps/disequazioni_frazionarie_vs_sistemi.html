@@ -817,7 +817,7 @@
             if(partsInt.length === 0) return { interval: "\\emptyset", logic: "\\nexists x \\in \\mathbb{R}" };
             if(partsLog.length === 1 && partsLog[0] === "x \\in \\mathbb{R}") return { interval: "]-\\infty; +\\infty[", logic: "\\forall x \\in \\mathbb{R}" };
             
-            return { interval: partsInt.join(" \\cup "), logic: partsLog.join(" \\lor ") };
+            return { interval: partsInt.join(" \\cup "), logic: partsLog.join(" \\lor "), targetCondition: targetCondition };
         }
 
         // --- MOTORE SCHEMATICO VETTORIALE (SEGNI E SISTEMI) ---
@@ -831,7 +831,19 @@
 
             let svg = `<div class="svg-wrapper"><svg viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="xMidYMid meet">`;
 
-            svg += `<defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-secondary)" /></marker></defs>`;
+            svg += `<defs>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-secondary)" />
+                </marker>
+            </defs>`;
             svg += `<line x1="${startX-40}" y1="40" x2="${endX+40}" y2="40" stroke="var(--text-secondary)" stroke-width="2" marker-end="url(#arrow)" />`;
 
             let xCoords = [];
@@ -860,7 +872,9 @@
                 let y = 100 + rowIndex * rowSpacing;
                 
                 // Distanza di sicurezza: incrementata da -30 a -50 per evitare sovrapposizioni
-                svg += `<text x="${startX - 65}" y="${y+6}" fill="var(--text-primary)" font-size="18" text-anchor="end" font-weight="bold">${row.label}</text>`;
+                let labelColor = row.isResult ? 'var(--accent-color)' : 'var(--text-primary)';
+                let labelSize = row.isResult ? '20' : '18';
+                svg += `<text x="${startX - 65}" y="${y+6}" fill="${labelColor}" font-size="${labelSize}" text-anchor="end" font-weight="bold">${row.label}</text>`;
 
                 let intervalsCount = capisaldi.length + 1;
                 for(let i = 0; i < intervalsCount; i++) {
@@ -868,20 +882,29 @@
                     let x2 = (i === intervalsCount - 1) ? endX + 40 : xCoords[i];
                     let midX = (x1 + x2) / 2;
                     let val = row.intervals[i];
+                    let isSol = row.isResult && val === row.targetCondition;
 
                     if (type === 'fraz') {
                         if (val === '+') {
-                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="var(--success-color)" stroke-width="3" stroke-linecap="round" />`;
-                            svg += `<text x="${midX}" y="${y-12}" fill="var(--success-color)" font-size="24" text-anchor="middle" font-weight="bold">+</text>`;
+                            let color = isSol ? 'var(--success-color)' : 'var(--success-color)';
+                            let strokeW = isSol ? '8' : (row.isResult ? '5' : '3');
+                            let glow = isSol ? 'filter="url(#glow)"' : '';
+                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="${strokeW}" stroke-linecap="round" ${glow} />`;
+                            svg += `<text x="${midX}" y="${y-14}" fill="${color}" font-size="${isSol ? '30' : '24'}" text-anchor="middle" font-weight="bold">+</text>`;
                         } else if (val === '-') {
-                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="var(--error-color)" stroke-width="2" stroke-dasharray="8,6" />`;
-                            svg += `<text x="${midX}" y="${y-12}" fill="var(--error-color)" font-size="30" text-anchor="middle" font-weight="bold">-</text>`;
+                            let color = isSol ? 'var(--error-color)' : 'var(--error-color)';
+                            let strokeW = isSol ? '6' : (row.isResult ? '4' : '2');
+                            let glow = isSol ? 'filter="url(#glow)"' : '';
+                            let dash = isSol ? '' : 'stroke-dasharray="8,6"';
+                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="${strokeW}" ${dash} stroke-linecap="round" ${glow} />`;
+                            svg += `<text x="${midX}" y="${y-14}" fill="${color}" font-size="${isSol ? '36' : '30'}" text-anchor="middle" font-weight="bold">-</text>`;
                         }
                     } else if (type === 'sist') {
                         if (val === true) {
                             let color = row.isResult ? 'var(--accent-color)' : 'var(--success-color)';
-                            let strokeW = row.isResult ? '5' : '3';
-                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="${strokeW}" stroke-linecap="round" />`;
+                            let strokeW = row.isResult ? '10' : '4';
+                            let glow = row.isResult ? 'filter="url(#glow)"' : '';
+                            svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="${strokeW}" stroke-linecap="round" ${glow} />`;
                         } else {
                             if (!row.isResult) {
                                 svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="var(--border-color)" stroke-width="1.5" />`;
@@ -1123,17 +1146,21 @@
 
         function evaluateFractional() {
             const numRaw = document.getElementById('num').value.trim() || '1';
-            const denRaw = document.getElementById('den').value.trim() || '1';
+            let denRaw = document.getElementById('den').value.trim() || '1';
             const op = document.getElementById('fraz-verso').value;
+
+            // Normalizzazione: se il denominatore è '1' o vuoto, lo trattiamo come intera
+            if (denRaw === '1' || denRaw === '') denRaw = '1';
+            const isIntera = denRaw === '1';
 
             try {
                 // Scomposizione in fattori dei polinomi immessi
                 const nFact = nerdamer(`factor(${numRaw})`);
-                const dFact = nerdamer(`factor(${denRaw})`);
+                const dFact = isIntera ? null : nerdamer(`factor(${denRaw})`);
                 
                 // Estrazione radici reali
                 const nRoots = nerdamer.solveEquations(`${numRaw}=0`, 'x');
-                const dRoots = nerdamer.solveEquations(`${denRaw}=0`, 'x');
+                const dRoots = isIntera ? [] : nerdamer.solveEquations(`${denRaw}=0`, 'x');
 
                 let capisaldi = [];
                 [...nRoots, ...dRoots].forEach(r => {
@@ -1159,14 +1186,18 @@
                     testPoints.push(capisaldi[capisaldi.length - 1].val + 1);
                 }
 
-                let nFactors = extractFactors(numRaw);
-                let dFactors = extractFactors(denRaw);
+                let nFactors = extractFactors(numRaw).filter(f => f !== '1' && f !== '(1)');
+                let dFactors = isIntera ? [] : extractFactors(denRaw).filter(f => f !== '1' && f !== '(1)');
+                
+                // Se non ci sono fattori (es. numeratore costante), ne teniamo almeno uno per la visualizzazione
+                if (nFactors.length === 0) nFactors = [numRaw];
                 
                 let diagramRows = [];
                 let factorsAnalysisHTML = `<div class="logic-box" style="background: rgba(183, 148, 246, 0.05); border-left: 4px solid #b794f6; padding: 15px; margin-top: 15px;">
                     <div style="font-weight: bold; color: #b794f6; margin-bottom: 10px;">Analisi Analitica dei Fattori:</div>`;
 
                 nFactors.forEach((f, idx) => {
+                    if (f === '1' || f === '(1)') return; 
                     let label = nFactors.length > 1 ? `N${toSub(idx+1)}` : 'N(x)';
                     let row = { label: label, intervals: [] };
                     testPoints.forEach(tp => {
@@ -1187,12 +1218,17 @@
                             let test_val = parseFloat(nerdamer(f).sub('x', r_val + 1).evaluate().text());
                             let verso = test_val > 0 ? ">" : "<";
                             sol = `x ${verso} ${nerdamer(r).toTeX()}`;
+                        } else if (roots.length === 0) {
+                            // Caso costante
+                            let val = parseFloat(nerdamer(f).evaluate().text());
+                            sol = val > 0 ? "\\forall x" : "\\nexists x";
                         }
                     } catch(e) {}
                     factorsAnalysisHTML += `<div style="margin-bottom: 5px;">$${label}: ${nerdamer(f).toTeX()} > 0 \\Rightarrow ${sol}$</div>`;
                 });
 
                 dFactors.forEach((f, idx) => {
+                    if (f === '1' || f === '(1)') return;
                     let label = dFactors.length > 1 ? `D${toSub(idx+1)}` : 'D(x)';
                     let row = { label: label, intervals: [] };
                     testPoints.forEach(tp => {
@@ -1220,7 +1256,8 @@
                 factorsAnalysisHTML += `</div>`;
 
                 let checkFn = (val) => checkFrazPoint(numRaw, denRaw, op, val);
-                let rowRes = {label: 'Segno', intervals: [], isResult: true, evalFn: checkFn};
+                let targetSign = (op === '>' || op === '>=') ? '+' : '-';
+                let rowRes = {label: 'Segno', intervals: [], isResult: true, evalFn: checkFn, targetCondition: targetSign};
                 
                 testPoints.forEach(tp => {
                     try {
@@ -1231,13 +1268,17 @@
                 });
                 diagramRows.push(rowRes);
 
-                let targetSign = (op === '>' || op === '>=') ? '+' : '-';
                 let solutions = buildSolutionIntervals(capisaldi, rowRes.intervals, targetSign, checkFn);
 
                 let html = `
                     <div class="step-block">
-                        <div class="step-title">Fattorizzazione e Forma Normale</div>
-                        <div class="math-display">$$\\frac{${nFact.toTeX()}}{${dFact.toTeX()}} ${op === '>=' ? '\\ge' : op === '<=' ? '\\le' : op} 0$$</div>
+                        <div class="step-title">Forma Normale ${isIntera ? '(Disequazione Intera)' : '(Disequazione Frazionaria)'}</div>
+                        <div class="math-display">
+                            ${isIntera ? 
+                                `$$${nFact.toTeX()} ${op === '>=' ? '\\ge' : op === '<=' ? '\\le' : op} 0$$` : 
+                                `$$\\frac{${nFact.toTeX()}}{${dFact.toTeX()}} ${op === '>=' ? '\\ge' : op === '<=' ? '\\le' : op} 0$$`
+                            }
+                        </div>
                         ${factorsAnalysisHTML}
                     </div>
                     <div class="step-block">
@@ -1314,7 +1355,7 @@
                 let rowS1 = {label: 'S₁', intervals: [], evalFn: (v) => checkSysPoint(ineq1.poly, ineq1.op, v)};
                 let rowS2 = {label: 'S₂', intervals: [], evalFn: (v) => checkSysPoint(ineq2.poly, ineq2.op, v)};
                 let checkFn = (val) => { return checkSysPoint(ineq1.poly, ineq1.op, val) && checkSysPoint(ineq2.poly, ineq2.op, val); };
-                let rowRes = {label: 'S₁ ∩ S₂', intervals: [], isResult: true, evalFn: checkFn};
+                let rowRes = {label: 'S₁ ∩ S₂', intervals: [], isResult: true, evalFn: checkFn, targetCondition: true};
 
                 testPoints.forEach(tp => {
                     try {

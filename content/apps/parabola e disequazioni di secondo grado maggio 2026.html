@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola</title>
+    <meta name="description"
+        content="Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.">
+    <meta name="keywords"
+        content="Parabola, Disequazioni, Secondo Grado, Scomposizioni, Algebra, Delta, Segni, MAT_K1:Algebra, MAT_A3:Equazioni e Disequazioni, 3 MEC, 4 EL">
+    <meta name="date" content="2026-05-16">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Nerdamer -->
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"></script>
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- p5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            overscroll-behavior: none;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .glass-panel {
+            background: #050505;
+            border: 1px solid #1a1a1a;
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .glass-panel:hover {
+            border-color: #333;
+        }
+
+        .math-display {
+            font-size: 1.15rem;
+            padding: 0.75rem;
+            background: #0a0a0c;
+            border-radius: 0.5rem;
+            border: 1px solid #1a1a1a;
+            overflow-x: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .math-display .katex {
+            color: inherit;
+        }
+
+        .math-display::-webkit-scrollbar {
+            display: none;
+        }
+
+        input,
+        select {
+            background-color: #000000;
+            border: 1px solid #333;
+            color: #00E5FF;
+            transition: all 0.3s;
+            font-family: 'Fira Code', monospace;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #00E5FF;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+        }
+
+        .svg-wrapper svg {
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+        }
+
+        /* Scrollbar custom */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00E5FF;
+        }
+
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+
+        /* Ottimizzazione scorrimento mobile */
+        .custom-scroll {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #333 #000;
+        }
+    </style>
+</head>
+
+<body class="h-[100dvh] w-full flex flex-col lg:flex-row-reverse overflow-hidden bg-black">
+
+    <!-- Il tasto Home viene iniettato automaticamente da orfini-shared.js per evitare sovrapposizioni -->
+
+    <!-- SEZIONE GRAFICO (Sticky su mobile, laterale su desktop) -->
+    <div
+        class="w-full lg:w-5/12 h-[40dvh] lg:h-full flex flex-col bg-[#000000] border-b lg:border-b-0 lg:border-l border-[#1a1a1a] z-50 shadow-[0_4px_20px_rgba(0,0,0,0.9)] lg:shadow-none shrink-0">
+        <div class="px-4 py-2 bg-[#050505] border-b border-[#1a1a1a] flex justify-between items-center flex-shrink-0">
+            <h2 class="text-xs font-bold text-[#00E5FF] uppercase tracking-widest flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18" />
+                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                </svg>
+                Vista Grafica In tempo Reale
+            </h2>
+        </div>
+        <div id="canvas-container" class="flex-1 w-full relative group">
+            <!-- Pulsante Reset Vista -->
+            <button onclick="window.p5Inst.resetView()" class="absolute bottom-4 right-4 z-[60] p-2 bg-[#050505]/80 backdrop-blur-md border border-[#1a1a1a] rounded-lg text-[#888888] hover:text-[#00E5FF] hover:border-[#00E5FF]/40 transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest shadow-2xl">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset Vista
+            </button>
+            <!-- p5.js canvas injetato qui -->
+        </div>
+    </div>
+
+    <!-- SEZIONE CONTENUTI (Scrollabile) -->
+    <div class="flex-1 w-full lg:w-7/12 h-full overflow-y-auto p-4 lg:p-8 pb-32 bg-[#000000] custom-scroll">
+
+        <header class="mb-4 px-2">
+            <h1 class="text-2xl font-bold tracking-tight text-white">
+                Scomposizioni <span class="text-[#00E5FF]">Analitiche</span>
+            </h1>
+            <p class="text-[#888888] text-xs mt-1">Laboratorio Metacognitivo OLED • Apprendimento Sinottico</p>
+        </header>
+
+        <!-- NAVIGAZIONE A SCHEDE (TABS) -->
+        <div class="flex gap-4 border-b border-[#1a1a1a] mb-6 px-2 select-none overflow-x-auto">
+            <button id="btn-lab" onclick="switchMainTab('lab')"
+                class="whitespace-nowrap pb-2 text-sm font-bold text-[#00E5FF] border-b-2 border-[#00E5FF] transition-colors uppercase tracking-wider">
+                Laboratorio Pratico
+            </button>
+            <button id="btn-delta" onclick="switchMainTab('delta')"
+                class="whitespace-nowrap pb-2 text-sm font-bold text-[#888888] border-b-2 border-transparent hover:text-white transition-colors uppercase tracking-wider">
+                Metodo del Delta
+            </button>
+            <button id="btn-richiami" onclick="switchMainTab('richiami')"
+                class="whitespace-nowrap pb-2 text-sm font-bold text-[#888888] border-b-2 border-transparent hover:text-white transition-colors uppercase tracking-wider">
+                Richiami di Algebra
+            </button>
+            <button id="btn-sfida" onclick="switchMainTab('sfida')"
+                class="whitespace-nowrap pb-2 text-sm font-bold text-[#888888] border-b-2 border-transparent hover:text-white transition-colors uppercase tracking-wider">
+                Sfida
+            </button>
+        </div>
+
+        <!-- ==================== TAB 1: LABORATORIO PRATICO ==================== -->
+        <div id="tab-lab" class="space-y-4">
+            <!-- SCHEDA 1: Input -->
+            <div class="glass-panel">
+                <div class="p-4 flex justify-between items-center cursor-pointer select-none"
+                    onclick="togglePanel(this)">
+                    <h2 class="text-sm font-bold text-[#888888] uppercase tracking-wider flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="4 7 4 4 20 4 20 7" />
+                            <line x1="9" y1="20" x2="15" y2="20" />
+                            <line x1="12" y1="4" x2="12" y2="20" />
+                        </svg>
+                        Inserimento Dati
+                    </h2>
+                    <svg class="chevron rotate-180 w-5 h-5 text-[#888888]" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="panel-content px-4 pb-4 border-t border-[#1a1a1a] pt-4">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex-1">
+                            <label class="block text-[10px] font-mono text-[#888888] mb-1 uppercase">Polinomio
+                                P(x)</label>
+                            <input type="text" id="poly-input" class="w-full p-3 rounded-lg text-lg font-bold"
+                                value="x^2 - 5x + 6" autocomplete="off" spellcheck="false" oninput="debounceProcess()">
+                        </div>
+                        <div class="w-full sm:w-32">
+                            <label class="block text-[10px] font-mono text-[#888888] mb-1 uppercase">Verso</label>
+                            <select id="op-input"
+                                class="w-full p-3 rounded-lg text-lg font-bold appearance-none text-center cursor-pointer"
+                                onchange="processPolynomial()">
+                                <option value=">">&gt; 0</option>
+                                <option value=">=">&ge; 0</option>
+                                <option value="<">&lt; 0</option>
+                                <option value="<=">&le; 0</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCHEDA 2: Analisi Algebrica -->
+            <div class="glass-panel">
+                <div class="p-4 flex justify-between items-center cursor-pointer select-none"
+                    onclick="togglePanel(this)">
+                    <h2 class="text-sm font-bold text-[#888888] uppercase tracking-wider flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="16" x2="12" y2="12" />
+                            <line x1="12" y1="8" x2="12.01" y2="8" />
+                        </svg>
+                        Scomposizione e Fattori
+                    </h2>
+                    <svg class="chevron rotate-180 w-5 h-5 text-[#888888]" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="panel-content px-4 pb-4 border-t border-[#1a1a1a] pt-4">
+                    <div id="algebra-output" class="flex flex-col gap-3">
+                        <!-- Generato via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCHEDA 3: Segni -->
+            <div class="glass-panel">
+                <div class="p-4 flex justify-between items-center cursor-pointer select-none"
+                    onclick="togglePanel(this)">
+                    <h2 class="text-sm font-bold text-[#888888] uppercase tracking-wider flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                        Studio dei Segni
+                    </h2>
+                    <svg class="chevron rotate-180 w-5 h-5 text-[#888888]" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="panel-content px-4 pb-4 border-t border-[#1a1a1a] pt-4 overflow-x-auto">
+                    <div id="sign-chart-container" class="w-full min-w-[300px]">
+                        <!-- SVG Segni -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCHEDA 4: Soluzione -->
+            <div class="glass-panel" style="border-color: rgba(0, 229, 255, 0.3);">
+                <div class="p-4 flex justify-between items-center cursor-pointer select-none"
+                    onclick="togglePanel(this)">
+                    <h2 class="text-sm font-bold text-[#00E5FF] uppercase tracking-wider flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Insieme Soluzioni
+                    </h2>
+                    <svg class="chevron rotate-180 w-5 h-5 text-[#00E5FF]" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="panel-content px-4 pb-4 border-t border-[#1a1a1a] pt-4"
+                    style="background-color: rgba(0, 229, 255, 0.05);">
+                    <div id="solution-output" class="flex flex-col gap-3">
+                        <!-- Soluzione -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: METODO DEL DELTA ==================== -->
+        <div id="tab-delta" class="hidden space-y-4">
+            <div id="delta-output">
+                <!-- Generato via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: RICHIAMI DI ALGEBRA ==================== -->
+        <div id="tab-richiami" class="hidden space-y-4">
+            <div class="bg-[#050505] border border-[#1a1a1a] rounded-2xl p-6 space-y-6">
+                <h3 class="text-[#00E5FF] font-bold uppercase tracking-widest text-[10px]">Punti chiave per la risoluzione
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-black/40 rounded-xl border border-white/5 space-y-2">
+                        <h4 class="text-white text-sm font-bold">1. Primo passaggio</h4>
+                        <p class="text-xs text-[#888888]">Porta sempre la disequazione in forma normale $ax^2 + bx + c > 0$
+                            e, se possibile, rendi $a > 0$ cambiando i versi.</p>
+                    </div>
+                    <div class="p-4 bg-black/40 rounded-xl border border-white/5 space-y-2">
+                        <h4 class="text-white text-sm font-bold">2. Trova le radici</h4>
+                        <p class="text-xs text-[#888888]">Risolvi l'equazione associata. I valori trovati sono i punti in cui
+                            la parabola "tocca" l'asse x.</p>
+                    </div>
+                    <div class="p-4 bg-black/40 rounded-xl border border-white/5 space-y-2">
+                        <h4 class="text-white text-sm font-bold">3. Immagina il grafico</h4>
+                        <p class="text-xs text-[#888888]">Una parabola con $a > 0$ rivolge la concavità verso l'alto
+                            (sorridente). È positiva esternamente alle radici.</p>
+                    </div>
+                    <div class="p-4 bg-black/40 rounded-xl border border-white/5 space-y-2">
+                        <h4 class="text-white text-sm font-bold">4. Attenzione al Delta</h4>
+                        <p class="text-xs text-[#888888]">Se $\Delta < 0$, la parabola non tocca mai l'asse x. È tutta
+                            sopra ($a > 0$) o tutta sotto ($a < 0$).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-5">
+                <h3 class="text-[#00E5FF] font-bold mb-3 uppercase tracking-wider text-xs flex items-center gap-2">
+                    <span class="w-2 h-2 bg-[#00E5FF] rounded-full"></span> Differenza di Due Quadrati
+                </h3>
+                <div class="math-display">$$A^2 - B^2 = (A - B)(A + B)$$</div>
+                <div class="mt-3 text-sm text-[#888888] leading-relaxed">
+                    <strong>Come riconoscerla:</strong> Il polinomio ha esattamente due termini, entrambi riconducibili
+                    a quadrati perfetti, separati da un segno meno.
+                    <div class="mt-2 p-2 bg-[#0a0a0c] border border-[#1a1a1a] rounded">
+                        <span class="text-white">Esempio:</span> $\quad x^2 - 16 = x^2 - 4^2 = (x - 4)(x + 4)$
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-5">
+                <h3 class="text-[#00E5FF] font-bold mb-3 uppercase tracking-wider text-xs flex items-center gap-2">
+                    <span class="w-2 h-2 bg-[#00E5FF] rounded-full"></span> Raccoglimento Totale
+                </h3>
+                <div class="math-display">$$AB + AC = A(B + C)$$</div>
+                <div class="mt-3 text-sm text-[#888888] leading-relaxed">
+                    <strong>Come riconoscerla:</strong> Tutti i termini del polinomio presentano un fattore (numero o
+                    lettera) in comune. Deve essere sempre il primo tentativo!
+                    <div class="mt-2 p-2 bg-[#0a0a0c] border border-[#1a1a1a] rounded">
+                        <span class="text-white">Esempio:</span> $\quad 3x^2 - 6x = 3x(x - 2)$
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-5">
+                <h3 class="text-[#00E5FF] font-bold mb-3 uppercase tracking-wider text-xs flex items-center gap-2">
+                    <span class="w-2 h-2 bg-[#00E5FF] rounded-full"></span> Trinomio Speciale (Somma e Prodotto)
+                </h3>
+                <div class="math-display">$$x^2 + Sx + P = (x - x_1)(x - x_2)$$</div>
+                <div class="mt-3 text-sm text-[#888888] leading-relaxed">
+                    <strong>Come riconoscerla:</strong> Polinomio di secondo grado (trinomio) con il coefficiente di
+                    $x^2$ pari a 1 (o riconducibile ad esso). Cerchiamo due numeri la cui somma sia $S$ e il prodotto
+                    sia $P$.
+                    <div class="mt-2 p-2 bg-[#0a0a0c] border border-[#1a1a1a] rounded">
+                        <span class="text-white">Esempio:</span> $\quad x^2 - 5x + 6 \implies S=-5, P=6 \implies
+                        (x-2)(x-3)$
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-5">
+                <h3 class="text-[#00E5FF] font-bold mb-3 uppercase tracking-wider text-xs flex items-center gap-2">
+                    <span class="w-2 h-2 bg-[#00E5FF] rounded-full"></span> Quadrato di Binomio
+                </h3>
+                <div class="math-display">$$A^2 \pm 2AB + B^2 = (A \pm B)^2$$</div>
+                <div class="mt-3 text-sm text-[#888888] leading-relaxed">
+                    <strong>Come riconoscerla:</strong> Trinomio che presenta due termini che sono quadrati perfetti
+                    positivi. Il terzo termine deve corrispondere esattamente al doppio prodotto delle loro basi.
+                    <div class="mt-2 p-2 bg-[#0a0a0c] border border-[#1a1a1a] rounded">
+                        <span class="text-white">Esempio:</span> $\quad x^2 + 6x + 9 = (x + 3)^2$
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== TAB 4: SFIDA (CHALLENGE) ==================== -->
+        <div id="tab-sfida" class="hidden space-y-6">
+            <div id="challenge-setup" class="text-center py-10 space-y-6">
+                <div class="inline-flex p-4 bg-[#00E5FF]/10 rounded-full mb-4">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="1.5">
+                        <path d="M12 15l-2 5 9-11h-7l2-5-9 11h7z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Pronto per la Sfida?</h2>
+                <p class="text-[#888888] max-w-md mx-auto italic">Rispondi a 5 esercizi generati casualmente seguendo il percorso logico socratico.</p>
+                <button onclick="startChallenge()"
+                    class="px-8 py-4 bg-[#00E5FF] text-black font-black uppercase tracking-tighter rounded-xl hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,229,255,0.4)]">
+                    Inizia Test Metacognitivo
+                </button>
+            </div>
+
+            <div id="challenge-game" class="hidden space-y-6">
+                <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-[#888888] px-2">
+                    <span>Esercizio <span id="current-ex-num">1</span> di 5</span>
+                    <span>Punteggio: <span id="current-score" class="text-[#00E5FF]">0</span></span>
+                </div>
+                <div class="bg-[#050505] border border-[#1a1a1a] rounded-2xl p-6 shadow-2xl space-y-6">
+                    <div id="challenge-question-display" class="math-display text-center py-6 text-2xl bg-black/40 rounded-xl border border-white/5"></div>
+                    <div id="challenge-steps" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <div id="challenge-results" class="hidden text-center py-10 space-y-6 animate-in">
+                <h2 class="text-3xl font-black text-white uppercase tracking-tighter">Risultati Finali</h2>
+                <div id="final-score-display" class="text-7xl font-black text-[#00E5FF] drop-shadow-[0_0_20px_rgba(0,229,255,0.4)]"></div>
+                <p id="final-message" class="text-[#888888] text-sm max-w-xs mx-auto"></p>
+                <button onclick="resetChallenge()"
+                    class="px-6 py-3 border border-[#333] rounded-lg text-xs font-bold text-[#888888] hover:text-white hover:border-white uppercase tracking-widest transition-all">
+                    Nuova Sessione
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- LOGICA TAB PRINCIPALI ---
+        function switchMainTab(tabId) {
+            const tabs = ['lab', 'delta', 'richiami', 'sfida'];
+            const activeClass = "whitespace-nowrap pb-2 text-sm font-bold text-[#00E5FF] border-b-2 border-[#00E5FF] transition-colors uppercase tracking-wider";
+            const inactiveClass = "whitespace-nowrap pb-2 text-sm font-bold text-[#888888] border-b-2 border-transparent hover:text-white transition-colors uppercase tracking-wider";
+
+            tabs.forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                const tabContent = document.getElementById(`tab-${t}`);
+
+                if (t === tabId) {
+                    btn.className = activeClass;
+                    tabContent.classList.remove('hidden');
+
+                    if (t !== 'lab') {
+                        renderMathInElement(tabContent, {
+                            delimiters: [
+                                { left: '$$', right: '$$', display: true },
+                                { left: '$', right: '$', display: false }
+                            ],
+                            throwOnError: false
+                        });
+                    }
+                } else {
+                    btn.className = inactiveClass;
+                    tabContent.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- LOGICA COLLASSABILI ---
+        function togglePanel(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('.chevron');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // --- UTILITÀ CORE ---
+        let debounceTimer;
+        function debounceProcess() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(processPolynomial, 400);
+        }
+
+        function renderMath(elementId, htmlContent) {
+            const el = document.getElementById(elementId);
+            if (htmlContent !== undefined) el.innerHTML = htmlContent;
+            renderMathInElement(el, {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false }
+                ],
+                throwOnError: false
+            });
+        }
+
+        function extractFactors(polyStr) {
+            try {
+                let factored = nerdamer(`factor(${polyStr})`).text();
+                let factors = [];
+                let current = "";
+                let depth = 0;
+
+                for (let i = 0; i < factored.length; i++) {
+                    let char = factored[i];
+                    if (char === '(') depth++;
+                    else if (char === ')') depth--;
+
+                    if (char === '*' && depth === 0) {
+                        if (current) factors.push(current.trim());
+                        current = "";
+                    } else {
+                        current += char;
+                    }
+                }
+                if (current) factors.push(current.trim());
+
+                let validFactors = factors.filter(f => {
+                    if (f.includes('i')) return false;
+                    if (f.includes('x')) return true;
+                    try {
+                        let val = parseFloat(nerdamer(f).evaluate().text());
+                        if (val < 0) return true;
+                    } catch (e) { }
+                    return false;
+                });
+                return validFactors.length > 0 ? validFactors : [polyStr];
+            } catch (e) { return [polyStr]; }
+        }
+
+        function formatLogicPart(intv) {
+            if (intv.isLeftInf && intv.isRightInf) return "x \\in \\mathbb{R}";
+            if (intv.isLeftInf) return `x ${intv.rightInc ? '\\le' : '<'} ${intv.rightSym}`;
+            if (intv.isRightInf) return `x ${intv.leftInc ? '\\ge' : '>'} ${intv.leftSym}`;
+            return `${intv.leftSym} ${intv.leftInc ? '\\le' : '<'} x ${intv.rightInc ? '\\le' : '<'} ${intv.rightSym}`;
+        }
+
+        function checkPoint(polyRaw, op, val) {
+            try {
+                let res = parseFloat(nerdamer(polyRaw).sub('x', val).evaluate().text());
+                if (op === '>') return res > 1e-7;
+                if (op === '>=') return res >= -1e-7;
+                if (op === '<') return res < -1e-7;
+                if (op === '<=') return res <= 1e-7;
+            } catch (e) { return false; }
+            return false;
+        }
+
+        function createSignDiagram(capisaldi, rows) {
+            if (capisaldi.length === 0) return `<div class="text-[#888888] text-xs p-4 text-center">Nessun caposaldo reale. Il segno è costante.</div>`;
+
+            let svgW = window.innerWidth < 500 ? 500 : 700;
+            let rowSpacing = 60;
+            let svgH = rows.length * rowSpacing + 70;
+            let startX = 110;
+            let endX = svgW - 40;
+            let spacing = capisaldi.length > 0 ? (endX - startX) / (capisaldi.length + 1) : (endX - startX);
+
+            let svg = `<div class="svg-wrapper w-full flex justify-center"><svg viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="xMidYMid meet">`;
+
+            // Asse X
+            svg += `<line x1="${startX - 20}" y1="30" x2="${endX + 20}" y2="30" stroke="#333333" stroke-width="2" />`;
+            svg += `<polygon points="${endX + 25},30 ${endX + 15},25 ${endX + 15},35" fill="#333333" />`;
+
+            let xCoords = [];
+            capisaldi.forEach((cap, i) => {
+                let x = startX + spacing * (i + 1);
+                xCoords.push(x);
+                svg += `<line x1="${x}" y1="20" x2="${x}" y2="${svgH - 10}" stroke="#222222" stroke-width="1.5" stroke-dasharray="4,4" />`;
+
+                let texSym = "";
+                try { texSym = nerdamer(cap.sym).toTeX(); } catch (e) { texSym = cap.sym; }
+                svg += `<foreignObject x="${x - 40}" y="5" width="80" height="25" style="overflow:visible; pointer-events:none;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
+                        <div style="color:#ffffff; font-size:12px; font-weight:bold; background: #000000; padding: 0 4px;">$${texSym}$</div>
+                    </div>
+                </foreignObject>`;
+                svg += `<line x1="${x}" y1="25" x2="${x}" y2="35" stroke="#ffffff" stroke-width="2" />`;
+            });
+
+            rows.forEach((row, rowIndex) => {
+                let y = 80 + rowIndex * rowSpacing;
+                let isRes = row.isResult;
+                let lblColor = isRes ? '#00E5FF' : '#888888';
+                let fw = isRes ? 'bold' : 'normal';
+
+                // Box di sicurezza per l'etichetta (allineata a 16px sopra la linea)
+                svg += `<foreignObject x="0" y="${y - 31}" width="${startX - 15}" height="30">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:flex-end; align-items:center; height:100%; color:${lblColor}; font-weight:${fw}; font-size:15px;">
+                        $${row.label}$
+                    </div>
+                </foreignObject>`;
+
+                let intervalsCount = capisaldi.length + 1;
+                for (let i = 0; i < intervalsCount; i++) {
+                    let x1 = (i === 0) ? startX : xCoords[i - 1];
+                    let x2 = (i === intervalsCount - 1) ? endX + 20 : xCoords[i];
+                    let midX = (x1 + x2) / 2;
+                    let val = row.intervals[i];
+
+                    if (val === '+') {
+                        svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#00E676" stroke-width="${isRes ? 4 : 2}" stroke-linecap="round" />`;
+                        svg += `<text x="${midX}" y="${y - 16}" fill="#00E676" font-size="${isRes ? 22 : 18}" text-anchor="middle" dominant-baseline="central" font-weight="bold">+</text>`;
+                    } else if (val === '-') {
+                        let dash = isRes ? '' : 'stroke-dasharray="6,4"';
+                        svg += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#FF1744" stroke-width="${isRes ? 4 : 2}" stroke-linecap="round" ${dash} />`;
+                        svg += `<text x="${midX}" y="${y - 16}" fill="#FF1744" font-size="${isRes ? 22 : 18}" text-anchor="middle" dominant-baseline="central" font-weight="bold">-</text>`;
+                    }
+                }
+
+                if (row.evalFn) {
+                    capisaldi.forEach((cap, i) => {
+                        let cx = xCoords[i];
+                        let isInc = row.evalFn(cap.val);
+                        let fill = isInc ? (isRes ? "#00E5FF" : "#ffffff") : "#000000";
+                        let stroke = isRes ? "#00E5FF" : "#ffffff";
+                        svg += `<circle cx="${cx}" cy="${y}" r="4.5" fill="${fill}" stroke="${stroke}" stroke-width="2" />`;
+                    });
+                } else if (!isRes) {
+                    capisaldi.forEach((cap, i) => {
+                        try {
+                            let v = parseFloat(nerdamer(row.rawExpr).sub('x', cap.val).evaluate().text());
+                            if (Math.abs(v) < 1e-7) {
+                                svg += `<circle cx="${xCoords[i]}" cy="${y}" r="3.5" fill="#000000" stroke="#888888" stroke-width="1.5" />`;
+                            }
+                        } catch (e) { }
+                    });
+                }
+            });
+
+            svg += `</svg></div>`;
+            return svg;
+        }
+
+        // Supporto per calcolo Delta
+        function generateDeltaProcess(expanded, degree) {
+            let deltaHtml = '';
+            if (degree === 2) {
+                try {
+                    let expandedText = expanded.text();
+                    // Calcolo simbolico di c, b, a
+                    let c_sym = nerdamer(expandedText).sub('x', 0).evaluate();
+                    let no_c = nerdamer(`${expandedText} - (${c_sym.text()})`).expand();
+                    let no_c_div_x = nerdamer(`(${no_c.text()})/x`).expand();
+                    let b_sym = nerdamer(no_c_div_x).sub('x', 0).evaluate();
+                    let a_sym_final = nerdamer(`(${no_c_div_x.text()} - (${b_sym.text()})) / x`).expand();
+
+                    let a_tex = a_sym_final.toTeX();
+                    let b_tex = b_sym.toTeX();
+                    let c_tex = c_sym.toTeX();
+
+                    let formatSub = (symText, symTex) => {
+                        if (symText.startsWith('-') || symText.includes('/')) return `\\left(${symTex}\\right)`;
+                        return symTex;
+                    };
+
+                    let a_sub = formatSub(a_sym_final.text(), a_tex);
+                    let b_sub = formatSub(b_sym.text(), b_tex);
+                    let c_sub = formatSub(c_sym.text(), c_tex);
+
+                    let delta_expr = `(${b_sym.text()})^2 - 4*(${a_sym_final.text()})*(${c_sym.text()})`;
+                    let delta_sym = nerdamer(delta_expr).evaluate();
+                    let delta_val = parseFloat(delta_sym.text());
+                    let delta_tex = delta_sym.toTeX();
+
+                    deltaHtml += `<div class="glass-panel p-5 mb-4 border-[#1a1a1a]">`;
+                    deltaHtml += `<h3 class="text-[#00E5FF] font-bold mb-3 uppercase tracking-wider text-xs flex items-center gap-2"><span class="bg-[#00E5FF] text-black w-5 h-5 rounded-full inline-flex items-center justify-center">1</span> Identificazione Coefficienti</h3>`;
+                    deltaHtml += `<div class="math-display">$$a = ${a_tex}, \\quad b = ${b_tex}, \\quad c = ${c_tex}$$</div>`;
+                    deltaHtml += `</div>`;
+
+                    deltaHtml += `<div class="glass-panel p-5 mb-4 border-[#1a1a1a]">`;
+                    deltaHtml += `<h3 class="text-[#00E5FF] font-bold mb-3 uppercase tracking-wider text-xs flex items-center gap-2"><span class="bg-[#00E5FF] text-black w-5 h-5 rounded-full inline-flex items-center justify-center">2</span> Calcolo del Discriminante ($\\Delta$)</h3>`;
+                    deltaHtml += `<div class="math-display">$$\\Delta = b^2 - 4ac$$</div>`;
+                    deltaHtml += `<div class="math-display">$$\\Delta = ${b_sub}^2 - 4 \\cdot ${a_sub} \\cdot ${c_sub} = ${delta_tex}$$</div>`;
+                    deltaHtml += `</div>`;
+
+                    deltaHtml += `<div class="glass-panel p-5 border-[#1a1a1a]">`;
+                    deltaHtml += `<h3 class="text-[#00E5FF] font-bold mb-3 uppercase tracking-wider text-xs flex items-center gap-2"><span class="bg-[#00E5FF] text-black w-5 h-5 rounded-full inline-flex items-center justify-center">3</span> Soluzioni Reali ($x_{1,2}$)</h3>`;
+
+                    if (delta_val > 0) {
+                        deltaHtml += `<div class="text-sm text-[#00E676] mb-3 font-bold">$\\Delta > 0$: L'equazione ammette due soluzioni reali e distinte.</div>`;
+                        deltaHtml += `<div class="math-display mb-3">$$x_{1,2} = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$$</div>`;
+                        let sqrt_delta = nerdamer(`sqrt(${delta_sym.text()})`).toTeX();
+                        let denom = nerdamer(`2*(${a_sym_final.text()})`).evaluate().toTeX();
+                        let minus_b = nerdamer(`-(${b_sym.text()})`).evaluate().toTeX();
+                        deltaHtml += `<div class="math-display mb-3">$$x_{1,2} = \\frac{${minus_b} \\pm ${sqrt_delta}}{${denom}}$$</div>`;
+                        let x1 = nerdamer(`(${minus_b} - sqrt(${delta_sym.text()}))/(${denom})`).evaluate();
+                        let x2 = nerdamer(`(${minus_b} + sqrt(${delta_sym.text()}))/(${denom})`).evaluate();
+                        deltaHtml += `<div class="math-display">$$x_1 = ${x1.toTeX()}, \\quad x_2 = ${x2.toTeX()}$$</div>`;
+                    } else if (Math.abs(delta_val) < 1e-9) {
+                        deltaHtml += `<div class="text-sm text-[#FFD600] mb-3 font-bold">$\\Delta = 0$: L'equazione ammette due soluzioni reali e coincidenti.</div>`;
+                        deltaHtml += `<div class="math-display mb-3">$$x_{1,2} = \\frac{-b}{2a}$$</div>`;
+                        let denom = nerdamer(`2*(${a_sym_final.text()})`).evaluate().toTeX();
+                        let minus_b = nerdamer(`-(${b_sym.text()})`).evaluate().toTeX();
+                        let x1 = nerdamer(`(${minus_b})/(${denom})`).evaluate();
+                        deltaHtml += `<div class="math-display">$$x_1 = x_2 = \\frac{${minus_b}}{${denom}} = ${x1.toTeX()}$$</div>`;
+                    } else {
+                        deltaHtml += `<div class="text-sm text-[#FF1744] mb-3 font-bold">$\\Delta < 0$: L'equazione associata non ammette soluzioni nel campo dei numeri reali.</div>`;
+                        deltaHtml += `<div class="math-display">$$\\nexists x \\in \\mathbb{R}$$</div>`;
+                    }
+
+                    deltaHtml += `<div class="mt-4 pt-3 border-t border-[#1a1a1a] text-xs text-[#888888] leading-relaxed">Nota: I valori $x_1$ e $x_2$ rappresentano i capisaldi sull'asse x. Per lo studio della disequazione, utilizza l'analisi dei segni o osserva il posizionamento della parabola rispetto all'asse mostrato nel Laboratorio Pratico.</div>`;
+                    deltaHtml += `</div>`;
+
+                } catch (e) {
+                    deltaHtml = `<div class="text-[#FF1744] text-sm p-4 bg-[#FF1744]/10 rounded border border-[#FF1744]/20">Si è verificato un errore durante l'estrazione dei coefficienti.</div>`;
+                }
+            } else {
+                deltaHtml = `
+                    <div class="glass-panel p-6 border-[#FFD600]/30 bg-[#FFD600]/5 flex items-start gap-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD600" stroke-width="2" class="flex-shrink-0 mt-1"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        <div>
+                            <h3 class="text-[#FFD600] font-bold text-sm uppercase tracking-wider mb-2">Procedura Non Applicabile</h3>
+                            <p class="text-sm text-white/80 leading-relaxed">Il metodo del $\\Delta$ (formula risolutiva quadratica) è applicabile esclusivamente ai polinomi di <strong>secondo grado</strong>. Il polinomio inserito è di grado ${degree}.<br><br>Fai riferimento alla scheda "Laboratorio Pratico" per la scomposizione in fattori, lo studio dei segni o regole specifiche (es. Ruffini).</p>
+                        </div>
+                    </div>`;
+            }
+
+            renderMath('delta-output', deltaHtml);
+        }
+
+        let currentGraphData = null;
+
+        function processPolynomial() {
+            const rawInput = document.getElementById('poly-input').value.trim();
+            const op = document.getElementById('op-input').value;
+            const algOut = document.getElementById('algebra-output');
+            const solOut = document.getElementById('solution-output');
+            const signOut = document.getElementById('sign-chart-container');
+            const deltaOut = document.getElementById('delta-output');
+
+            if (!rawInput) {
+                algOut.innerHTML = '<div class="text-[#FF1744] text-xs">Inserisci un polinomio valido.</div>';
+                deltaOut.innerHTML = '';
+                return;
+            }
+
+            try {
+                const expanded = nerdamer(`expand(${rawInput})`);
+                const factored = nerdamer(`factor(${expanded})`);
+                const texOrig = expanded.toTeX();
+                const texFact = factored.toTeX();
+
+                let degree = 0;
+                try { degree = parseInt(nerdamer(`deg(${expanded}, x)`).text()); } catch (e) { }
+
+                // Gestione TAB DELTA
+                generateDeltaProcess(expanded, degree);
+
+                const rootsObj = nerdamer.solveEquations(`${expanded}=0`, 'x');
+                let capisaldi = [];
+                rootsObj.forEach(r => {
+                    let sym = r.toString();
+                    if (sym.includes('i')) return;
+                    try {
+                        let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
+                        if (!isNaN(val) && !capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
+                            capisaldi.push({ sym: sym, val: val });
+                        }
+                    } catch (e) { }
+                });
+                capisaldi.sort((a, b) => a.val - b.val);
+
+                const factors = extractFactors(expanded.text());
+
+                let isDeltaNegativo = false;
+                let methodStr = "";
+                let segnoCostante = "";
+
+                if (degree === 2 && capisaldi.length === 0) {
+                    isDeltaNegativo = true;
+                    let testY = parseFloat(nerdamer(expanded.text()).sub('x', 0).evaluate().text());
+                    segnoCostante = testY > 0 ? "positivo" : "negativo";
+                    let pos = testY > 0 ? "sopra" : "sotto";
+                    methodStr = `Polinomio di secondo grado irriducibile (Δ < 0). La parabola non interseca l'asse x e si trova interamente ${pos} di esso. Il segno è costantemente ${segnoCostante}.`;
+                } else {
+                    if (degree === 1) methodStr = "Polinomio di primo grado (già irriducibile).";
+                    else if (factors.length === 1 && factors[0] === expanded.text()) methodStr = "Polinomio irriducibile in ℝ.";
+                    else {
+                        try {
+                            const terms = expanded.text().split(/(?=[+-])/);
+                            if (terms.length === 2 && !expanded.text().includes('+') && factors.length === 2) methodStr = "Differenza di quadrati: $A^2 - B^2 = (A-B)(A+B)$";
+                            else if (factors.length === 2 && (factors[0] === 'x' || factors[1] === 'x' || factors[0].startsWith('-x') || factors[0].match(/^\d+\*x$/))) methodStr = "Raccoglimento totale a fattor comune.";
+                            else if (factors.length === 1 && factors[0].includes('^2')) methodStr = "Quadrato di binomio: $A^2 \\pm 2AB + B^2 = (A \\pm B)^2$";
+                            else if (degree === 2 && factors.length === 2) methodStr = "Trinomio speciale (Somma e Prodotto).";
+                            else methodStr = "Raccoglimento parziale o Regola di Ruffini.";
+                        } catch (e) { methodStr = "Scomposizione in fattori lineari."; }
+                    }
+                }
+
+                let testPoints = [];
+                if (capisaldi.length === 0) testPoints.push(0);
+                else {
+                    testPoints.push(capisaldi[0].val - 1);
+                    for (let i = 0; i < capisaldi.length - 1; i++) {
+                        testPoints.push((capisaldi[i].val + capisaldi[i + 1].val) / 2);
+                    }
+                    testPoints.push(capisaldi[capisaldi.length - 1].val + 1);
+                }
+
+                let algHtml = `
+                    <div class="mb-1">
+                        <div class="math-display border-[#1a1a1a]">$$${texOrig} ${op === '>=' ? '\\ge' : op === '<=' ? '\\le' : op} 0$$</div>
+                    </div>
+                `;
+
+                if (isDeltaNegativo) {
+                    algHtml += `
+                        <div class="my-3 border-l-2 border-[#FFD600] pl-3 py-2 bg-[#FFD600]/10 rounded-r-md">
+                            <div class="text-[10px] font-bold text-[#FFD600] uppercase tracking-widest mb-1">Analisi Geometrica (Delta Negativo):</div>
+                            <div class="text-xs text-white leading-relaxed">${methodStr}</div>
+                        </div>
+                    `;
+                } else if (factors.length > 1 || (factors.length === 1 && factors[0] !== expanded.text())) {
+                    algHtml += `
+                        <div class="my-3 border-l-2 border-[#00E5FF] pl-3 py-2 bg-[#00E5FF]/10 rounded-r-md">
+                            <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-widest mb-1">Strategia d'attacco consigliata:</div>
+                            <div class="text-xs text-white">${methodStr}</div>
+                        </div>
+                        <div class="mb-1">
+                            <div class="math-display border-[#00E5FF]/30 text-[#00E5FF]">$$${texFact} ${op === '>=' ? '\\ge' : op === '<=' ? '\\le' : op} 0$$</div>
+                        </div>
+                    `;
+                } else {
+                    algHtml += `<div class="text-xs text-[#888888] italic my-2">${methodStr}</div>`;
+                }
+
+                let rows = [];
+
+                if (!isDeltaNegativo) {
+                    let factorsToShow = factors.filter(f => f !== '1' && f !== '-1');
+                    if (factorsToShow.length === 0) factorsToShow = [expanded.text()];
+
+                    if (factorsToShow.length > 1) {
+                        let factorsHtml = '<div class="mt-5 pt-4 border-t border-[#1a1a1a]"><div class="text-[10px] text-[#888888] mb-3 uppercase tracking-widest font-bold">Studio Positività Singoli Fattori</div><div class="flex flex-col gap-2">';
+                        factorsToShow.forEach((f, idx) => {
+                            let fLabel = factorsToShow.length > 1 ? `F_{${idx + 1}}` : `P(x)`;
+                            let fTex = nerdamer(f).toTeX();
+                            let solStr = "\\dots";
+                            let fDeg = 0;
+                            try { fDeg = parseInt(nerdamer(`deg(${f}, x)`).text()); } catch (e) { }
+
+                            try {
+                                let rootsF = nerdamer.solveEquations(`${f}=0`, 'x');
+                                if (fDeg === 1 && rootsF.length === 1) {
+                                    let rootVal = parseFloat(nerdamer(rootsF[0].toString()).evaluate().text());
+                                    let testVal = parseFloat(nerdamer(f).sub('x', rootVal + 1).evaluate().text());
+                                    let verso = testVal > 0 ? ">" : "<";
+                                    solStr = `x ${verso} ${nerdamer(rootsF[0].toString()).toTeX()}`;
+                                } else if (fDeg === 2 && rootsF.length === 0) {
+                                    let testVal = parseFloat(nerdamer(f).sub('x', 0).evaluate().text());
+                                    solStr = testVal > 0 ? "\\forall x \\in \\mathbb{R}" : "\\nexists x \\in \\mathbb{R}";
+                                } else {
+                                    solStr = "\\text{Studio del segno}";
+                                }
+                            } catch (e) { }
+
+                            factorsHtml += `<div class="math-display bg-[#0a0a0c] border-[#222]" style="padding: 0.6rem; font-size: 1.1rem;">$$${fLabel}: ${fTex} > 0 \\implies ${solStr}$$</div>`;
+
+                            let row = { label: fLabel, rawExpr: f, intervals: [] };
+                            testPoints.forEach(tp => {
+                                try {
+                                    let val = parseFloat(nerdamer(f).sub('x', tp).evaluate().text());
+                                    row.intervals.push(val >= 0 ? '+' : '-');
+                                } catch (e) { row.intervals.push('+'); }
+                            });
+                            rows.push(row);
+                        });
+                        factorsHtml += '</div></div>';
+                        algHtml += factorsHtml;
+                    }
+                }
+
+                renderMath('algebra-output', algHtml);
+
+                let checkFn = (val) => checkPoint(expanded.text(), op, val);
+                let targetSign = (op === '>' || op === '>=') ? '+' : '-';
+                let rowRes = { label: 'P(x)', intervals: [], isResult: true, evalFn: checkFn };
+
+                testPoints.forEach(tp => {
+                    try {
+                        let val = parseFloat(nerdamer(expanded.text()).sub('x', tp).evaluate().text());
+                        rowRes.intervals.push(val >= 0 ? '+' : '-');
+                    } catch (e) { rowRes.intervals.push('+'); }
+                });
+                rows.push(rowRes);
+
+                // Ricostruzione intervalli
+                let currentInterval = null;
+                let partsInt = [];
+                let partsLog = [];
+
+                for (let i = 0; i < rowRes.intervals.length; i++) {
+                    let isTrue = (rowRes.intervals[i] === targetSign);
+                    if (isTrue) {
+                        if (!currentInterval) {
+                            let isLeftInf = (i === 0);
+                            let leftSym = isLeftInf ? "" : capisaldi[i - 1].sym;
+                            let leftInc = isLeftInf ? false : checkFn(capisaldi[i - 1].val);
+                            let leftBound = isLeftInf ? "]-\\infty" : (leftInc ? `[${leftSym}` : `]${leftSym}`);
+
+                            let isRightInf = (i === rowRes.intervals.length - 1);
+                            let rightSym = isRightInf ? "" : capisaldi[i].sym;
+                            let rightInc = isRightInf ? false : checkFn(capisaldi[i].val);
+                            let rightBound = isRightInf ? "+\\infty[" : (rightInc ? `${rightSym}]` : `${rightSym}[`);
+
+                            currentInterval = { left: leftBound, right: rightBound, isLeftInf, isRightInf, leftSym, rightSym, leftInc, rightInc };
+                        } else {
+                            let sepCap = capisaldi[i - 1];
+                            if (checkFn(sepCap.val)) {
+                                let isRightInf = (i === rowRes.intervals.length - 1);
+                                currentInterval.isRightInf = isRightInf;
+                                currentInterval.rightSym = isRightInf ? "" : capisaldi[i].sym;
+                                currentInterval.rightInc = isRightInf ? false : checkFn(capisaldi[i].val);
+                                currentInterval.right = isRightInf ? "+\\infty[" : (currentInterval.rightInc ? `${currentInterval.rightSym}]` : `${currentInterval.rightSym}[`);
+                            } else {
+                                partsInt.push(`${currentInterval.left}; ${currentInterval.right}`);
+                                partsLog.push(formatLogicPart(currentInterval));
+
+                                let isRightInf = (i === rowRes.intervals.length - 1);
+                                let rightSym = isRightInf ? "" : capisaldi[i].sym;
+                                let rightInc = isRightInf ? false : checkFn(capisaldi[i].val);
+
+                                currentInterval = {
+                                    left: `]${sepCap.sym}`, right: isRightInf ? "+\\infty[" : (rightInc ? `${rightSym}]` : `${rightSym}[`),
+                                    isLeftInf: false, isRightInf, leftSym: sepCap.sym, rightSym, leftInc: false, rightInc
+                                };
+                            }
+                        }
+                    } else {
+                        if (currentInterval) {
+                            partsInt.push(`${currentInterval.left}; ${currentInterval.right}`);
+                            partsLog.push(formatLogicPart(currentInterval));
+                            currentInterval = null;
+                        }
+                    }
+                }
+                if (currentInterval) {
+                    partsInt.push(`${currentInterval.left}; ${currentInterval.right}`);
+                    partsLog.push(formatLogicPart(currentInterval));
+                }
+
+                capisaldi.forEach((cap, i) => {
+                    let leftTrue = i === 0 ? rowRes.intervals[0] === targetSign : rowRes.intervals[i] === targetSign;
+                    let rightTrue = i === rowRes.intervals.length - 1 ? rowRes.intervals[rowRes.intervals.length - 1] === targetSign : rowRes.intervals[i + 1] === targetSign;
+
+                    if (!leftTrue && !rightTrue && checkFn(cap.val)) {
+                        partsInt.push(`\\{${cap.sym}\\}`);
+                        partsLog.push(`x = ${cap.sym}`);
+                    }
+                });
+
+                let finalInt = "\\emptyset", finalLog = "\\nexists x \\in \\mathbb{R}";
+                if (partsInt.length > 0) {
+                    if (partsLog.length === 1 && partsLog[0] === "x \\in \\mathbb{R}") {
+                        finalInt = "]-\\infty; +\\infty["; finalLog = "\\forall x \\in \\mathbb{R}";
+                    } else {
+                        finalInt = partsInt.join(" \\cup "); finalLog = partsLog.join(" \\lor ");
+                    }
+                }
+
+                let solHtml = `
+                    <div class="math-display border-none bg-transparent m-0 font-bold" style="font-size: 1.25rem;">$$S = ${finalInt}$$</div>
+                    <div class="math-display border-none bg-transparent m-0 text-[#00E5FF] font-bold" style="font-size: 1.35rem;">$$${finalLog}$$</div>
+                `;
+                renderMath('solution-output', solHtml);
+
+                let svgHtml = createSignDiagram(capisaldi, rows);
+                renderMath('sign-chart-container', svgHtml);
+
+                currentGraphData = {
+                    expr: expanded.text(),
+                    capisaldi: capisaldi,
+                    op: op,
+                    targetSign: targetSign,
+                    checkFn: checkFn
+                };
+                if (window.p5Inst) window.p5Inst.updateData();
+
+            } catch (e) {
+                document.getElementById('algebra-output').innerHTML = `<div class="text-[#FF1744] text-xs p-3 bg-[#FF1744]/10 rounded border border-[#FF1744]/20">Impossibile analizzare il polinomio. Assicurati che sia scritto correttamente (es: x^2 - 4).</div>`;
+                document.getElementById('solution-output').innerHTML = '';
+                document.getElementById('sign-chart-container').innerHTML = '';
+                currentGraphData = null;
+                if (window.p5Inst) window.p5Inst.updateData();
+            }
+        }
+
+        // --- P5.JS SKETCH ---
+        const sketch = (p) => {
+            let container;
+            let zoom = 1.0;
+            let offsetX = 0;
+            let offsetY = 0;
+            let isDragging = false;
+            let prevMouseX, prevMouseY;
+
+            p.setup = () => {
+                container = document.getElementById('canvas-container');
+                let canvas = p.createCanvas(container.offsetWidth, container.offsetHeight);
+                canvas.parent('canvas-container');
+                p.noLoop();
+            };
+
+            p.windowResized = () => {
+                if (container) {
+                    p.resizeCanvas(container.offsetWidth, container.offsetHeight);
+                    p.redraw();
+                }
+            };
+
+            p.updateData = () => { p.redraw(); };
+
+            p.resetView = () => {
+                zoom = 1.0;
+                offsetX = 0;
+                offsetY = 0;
+                p.redraw();
+            };
+
+            p.mouseWheel = (event) => {
+                if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+                    let zoomFactor = 1.1;
+                    let oldZoom = zoom;
+                    if (event.delta > 0) zoom /= zoomFactor;
+                    else zoom *= zoomFactor;
+
+                    // Point to zoom logic
+                    offsetX -= (p.mouseX - p.width / 2 - offsetX) * (zoom / oldZoom - 1);
+                    offsetY -= (p.mouseY - p.height / 2 - offsetY) * (zoom / oldZoom - 1);
+
+                    p.redraw();
+                    return false;
+                }
+            };
+
+            p.mousePressed = () => {
+                if (p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height) {
+                    isDragging = true;
+                    prevMouseX = p.mouseX;
+                    prevMouseY = p.mouseY;
+                }
+            };
+
+            p.mouseDragged = () => {
+                if (isDragging) {
+                    offsetX += (p.mouseX - prevMouseX);
+                    offsetY += (p.mouseY - prevMouseY);
+                    prevMouseX = p.mouseX;
+                    prevMouseY = p.mouseY;
+                    p.redraw();
+                }
+            };
+
+            p.mouseReleased = () => { isDragging = false; };
+
+            p.draw = () => {
+                p.clear();
+                p.background(0);
+
+                if (!currentGraphData) {
+                    p.fill(80); p.noStroke(); p.textAlign(p.CENTER, p.CENTER); p.textSize(12);
+                    p.text("Grafico in attesa di dati validi", p.width / 2, p.height / 2);
+                    return;
+                }
+
+                const data = currentGraphData;
+
+                let minX = -5, maxX = 5;
+                if (data.capisaldi.length > 0) {
+                    let span = data.capisaldi[data.capisaldi.length - 1].val - data.capisaldi[0].val;
+                    if (span === 0) span = 4;
+                    minX = data.capisaldi[0].val - span * 0.6 - 1;
+                    maxX = data.capisaldi[data.capisaldi.length - 1].val + span * 0.6 + 1;
+                }
+
+                const fn = nerdamer(data.expr).buildFunction(['x']);
+
+                let pts = [];
+                let maxY = -Infinity, minY = Infinity;
+                for (let x = minX; x <= maxX; x += (maxX - minX) / 150) {
+                    let y = fn(x);
+                    if (!isNaN(y) && Math.abs(y) < 1000) {
+                        pts.push({ x, y });
+                        if (y > maxY) maxY = y;
+                        if (y < minY) minY = y;
+                    }
+                }
+
+                let rangeY = Math.max(Math.abs(maxY), Math.abs(minY)) * 1.1;
+                if (rangeY < 5) rangeY = 5;
+
+                // Trasformazioni globali per Pan & Zoom
+                p.push();
+                p.translate(p.width / 2 + offsetX, p.height / 2 + offsetY);
+                p.scale(zoom);
+                p.translate(-p.width / 2, -p.height / 2);
+
+                const mx = v => p.map(v, minX, maxX, 30, p.width - 30);
+                const my = v => p.map(v, -rangeY, rangeY, p.height - 30, 30);
+
+                // Griglia
+                p.stroke(20); p.strokeWeight(1 / zoom);
+                let stepX = Math.ceil((maxX - minX) / 8);
+                if (stepX < 1) stepX = 1;
+                let startGridX = Math.floor(minX / stepX) * stepX;
+                for (let i = startGridX; i <= maxX; i += stepX) {
+                    p.line(mx(i), -1000, mx(i), 2000);
+                }
+
+                p.stroke(50); p.strokeWeight(2 / zoom);
+                p.line(mx(0), -1000, mx(0), 2000); // Asse Y
+
+                // Disegno Parabola e Aree di Soluzione
+                for (let i = 0; i < pts.length - 1; i++) {
+                    let p1 = pts[i];
+                    let p2 = pts[i + 1];
+                    let midX = (p1.x + p2.x) / 2;
+                    let isSol = data.checkFn(midX);
+
+                    let baseColor = p1.y >= 0 ? p.color('#00E676') : p.color('#FF1744');
+                    let fillColor = p.color(baseColor);
+
+                    if (isSol) {
+                        fillColor.setAlpha(25);
+                        p.strokeWeight(4.5 / zoom);
+                    } else {
+                        fillColor.setAlpha(5);
+                        baseColor.setAlpha(80);
+                        p.strokeWeight(2 / zoom);
+                    }
+
+                    p.noStroke();
+                    p.fill(fillColor);
+                    p.quad(mx(p1.x), my(0), mx(p2.x), my(0), mx(p2.x), my(p2.y), mx(p1.x), my(p1.y));
+
+                    p.stroke(baseColor);
+                    p.noFill();
+                    p.line(mx(p1.x), my(p1.y), mx(p2.x), my(p2.y));
+                }
+
+                p.stroke(50); p.strokeWeight(2 / zoom);
+                p.line(-1000, my(0), 2000, my(0)); // Asse X
+
+                // Evidenziazione intervalli soluzione sull'asse X
+                for (let i = 0; i < pts.length - 1; i++) {
+                    let p1 = pts[i];
+                    let p2 = pts[i + 1];
+                    let midX = (p1.x + p2.x) / 2;
+                    let isSol = data.checkFn(midX);
+
+                    if (isSol) {
+                        let col = (data.targetSign === '+') ? p.color('#00E676') : p.color('#FF1744');
+                        p.stroke(col);
+                        p.strokeWeight(6 / zoom);
+                        p.line(mx(p1.x), my(0), mx(p2.x), my(0));
+                    }
+                }
+
+                // Capisaldi (Radici)
+                data.capisaldi.forEach(c => {
+                    let cx = mx(c.val);
+                    let cy = my(0);
+                    let isSol = data.checkFn(c.val);
+
+                    p.stroke(isSol ? (data.targetSign === '+' ? '#00E676' : '#FF1744') : '#555555');
+                    p.strokeWeight(2 / zoom);
+                    p.fill(isSol ? (data.targetSign === '+' ? '#00E676' : '#FF1744') : '#000000');
+                    p.circle(cx, cy, 10 / zoom);
+
+                    // Etichette (non scalate per leggibilità)
+                    p.push();
+                    p.resetMatrix();
+                    p.translate(p.width / 2 + offsetX, p.height / 2 + offsetY);
+                    p.scale(zoom);
+                    p.translate(-p.width / 2, -p.height / 2);
+
+                    // Qui disegniamo l'etichetta ma dobbiamo "annullare" lo zoom per il testo
+                    let screenX = (cx - p.width / 2) * zoom + p.width / 2 + offsetX;
+                    let screenY = (cy - p.height / 2) * zoom + p.height / 2 + offsetY;
+
+                    p.pop(); // Esci dalle trasformazioni per disegnare UI statica sopra i punti
+
+                    p.push();
+                    let displayVal = Number.isInteger(c.val) ? c.val : c.val.toFixed(2);
+                    p.fill(0, 0, 0, 200);
+                    p.noStroke();
+                    p.rect(screenX - 15, screenY + 12, 30, 16, 4);
+                    p.fill(255); p.textAlign(p.CENTER, p.TOP); p.textSize(10); p.textStyle(p.BOLD);
+                    p.text(displayVal, screenX, screenY + 14);
+                    p.pop();
+                });
+
+                p.pop(); // Fine trasformazioni zoom/pan
+            };
+        };
+
+        window.p5Inst = new p5(sketch);
+
+        // --- LOGICA CHALLENGE (SFIDA) ---
+        let challengeState = {
+            currentEx: 0,
+            exercises: [],
+            score: 0,
+            currentStep: 0 // 0: Concavità, 1: Delta, 2: Radici, 3: Soluzione
+        };
+
+        function generateChallengeExercise() {
+            const types = ['delta_pos', 'delta_zero', 'delta_neg', 'delta_pos', 'delta_neg'];
+            const type = types[challengeState.exercises.length];
+            let a, b, c, op, strategy;
+            const ops = ['>', '<', '>=', '<='];
+            op = ops[Math.floor(Math.random() * ops.length)];
+            a = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 2) + 1);
+
+            if (type === 'delta_pos') {
+                const r1 = Math.floor(Math.random() * 10) - 5;
+                let r2 = Math.floor(Math.random() * 10) - 5;
+                if (r1 === r2) r2 += 2;
+                b = -a * (r1 + r2);
+                c = a * (r1 * r2);
+            } else if (type === 'delta_zero') {
+                const r = Math.floor(Math.random() * 6) - 3;
+                b = -a * (2 * r);
+                c = a * (r * r);
+            } else {
+                b = Math.floor(Math.random() * 3) - 1;
+                c = a * (Math.floor(Math.random() * 5) + 5); 
+                while (b*b - 4*a*c >= 0) { c += 5; }
+            }
+
+            const poly = nerdamer(`${a}*x^2 + ${b}*x + ${c}`).expand();
+            const delta = b*b - 4*a*c;
+            
+            // Strategia: scomposizione se a=1/-1 e delta quadrato perfetto, altrimenti delta
+            const isPerfectSquare = delta > 0 && Math.sqrt(delta) % 1 === 0;
+            strategy = (Math.abs(a) === 1 && isPerfectSquare && Math.random() > 0.4) ? 'factor' : 'delta';
+
+            const roots = nerdamer.solveEquations(`${poly.text()}=0`, 'x');
+            let vals = [];
+            roots.forEach(r => { if(!r.toString().includes('i')) vals.push(parseFloat(nerdamer(r.toString()).evaluate().text())); });
+            vals = [...new Set(vals)].sort((x,y) => x-y);
+
+            return { poly: poly.toTeX(), raw: poly.text(), a, b, c, delta, op, roots: vals, strategy };
+        }
+
+        function startChallenge() {
+            challengeState = { currentEx: 0, exercises: [], score: 0, currentStep: 0 };
+            for(let i=0; i<5; i++) challengeState.exercises.push(generateChallengeExercise());
+            
+            document.getElementById('challenge-setup').classList.add('hidden');
+            document.getElementById('challenge-results').classList.add('hidden');
+            document.getElementById('challenge-game').classList.remove('hidden');
+            showExercise();
+        }
+
+        function showExercise() {
+            const ex = challengeState.exercises[challengeState.currentEx];
+            document.getElementById('current-ex-num').innerText = challengeState.currentEx + 1;
+            document.getElementById('current-score').innerText = challengeState.score;
+            document.getElementById('challenge-question-display').innerHTML = `$$${ex.poly} ${ex.op === '>=' ? '\\ge' : ex.op === '<=' ? '\\le' : ex.op} 0$$`;
+            renderMathInElement(document.getElementById('challenge-question-display'), {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false }
+                ],
+                throwOnError: false
+            });
+            
+            // SINCRONIZZAZIONE GRAFICO
+            currentGraphData = {
+                expr: ex.raw,
+                capisaldi: ex.roots.map(r => ({ val: r, sym: r.toString() })),
+                op: ex.op,
+                targetSign: (ex.op === '>' || ex.op === '>=') ? '+' : '-',
+                checkFn: (val) => {
+                    const res = parseFloat(nerdamer(ex.raw).sub('x', val).evaluate().text());
+                    if (ex.op === '>') return res > 1e-7;
+                    if (ex.op === '>=') return res >= -1e-7;
+                    if (ex.op === '<') return res < -1e-7;
+                    if (ex.op === '<=') return res <= 1e-7;
+                    return false;
+                }
+            };
+            if (window.p5Inst) window.p5Inst.updateData();
+
+            challengeState.currentStep = 0;
+            renderStep();
+        }
+
+        function renderStep() {
+            const container = document.getElementById('challenge-steps');
+            container.innerHTML = '';
+            const ex = challengeState.exercises[challengeState.currentEx];
+            
+            let steps = [];
+            if (ex.strategy === 'factor') {
+                steps = [
+                    { id: 'step-a', q: "La parabola rivolge la concavità verso l'alto (U) o verso il basso (D)?", placeholder: "U o D" },
+                    { id: 'step-factor', q: "Scomponi il polinomio mentalmente (Trinomio Speciale):", placeholder: "es: (x-2)(x+3)" },
+                    { id: 'step-roots', q: "Quali sono le radici dei singoli fattori?", placeholder: "es: 2, -3" },
+                    { id: 'step-sol', q: "Scrivi la soluzione finale:", placeholder: "es: x<2 V x>5" }
+                ];
+            } else {
+                steps = [
+                    { id: 'step-a', q: "La parabola rivolge la concavità verso l'alto (U) o verso il basso (D)?", placeholder: "U o D" },
+                    { id: 'step-delta', q: "Quanto vale il discriminante $\\Delta$?", placeholder: "es: 16" },
+                    { id: 'step-roots', q: "Quali sono le radici? (Separa con virgola, scrivi 'null' se nessuna)", placeholder: "es: 2, 5 o null" },
+                    { id: 'step-sol', q: "Scrivi la soluzione finale:", placeholder: "es: x<2 V x>5" }
+                ];
+            }
+
+            for(let i=0; i <= challengeState.currentStep; i++) {
+                const s = steps[i];
+                const isCurrent = (i === challengeState.currentStep);
+                const stepDiv = document.createElement('div');
+                stepDiv.className = `p-4 rounded-xl border ${isCurrent ? 'border-[#00E5FF] bg-[#00E5FF]/5' : 'border-[#1a1a1a] opacity-50'}`;
+                stepDiv.innerHTML = `
+                    <div class="text-[10px] uppercase font-bold text-[#888888] mb-1">Passaggio ${i+1}</div>
+                    <div class="text-xs text-white mb-3">${s.q}</div>
+                    <div class="flex gap-2">
+                        <input id="ans-${i}" type="text" placeholder="${s.placeholder}" ${!isCurrent ? 'disabled' : ''} 
+                               class="flex-1 bg-black border border-[#333] rounded px-3 py-2 text-white text-xs focus:border-[#00E5FF] outline-none transition-all">
+                        ${isCurrent ? `<button onclick="checkChallengeStep(${i})" class="px-4 py-2 bg-[#00E5FF] text-black font-bold text-[10px] rounded uppercase tracking-tighter">Invia</button>` : '✅'}
+                    </div>
+                    <div id="feedback-${i}" class="text-[10px] mt-2 hidden"></div>
+                `;
+                container.appendChild(stepDiv);
+                if(isCurrent) {
+                    document.getElementById(`ans-${i}`).focus();
+                    document.getElementById(`ans-${i}`).onkeydown = (e) => { if(e.key === 'Enter') checkChallengeStep(i); };
+                }
+                renderMathInElement(stepDiv, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
+        function checkChallengeStep(stepIdx) {
+            const val = document.getElementById(`ans-${stepIdx}`).value.trim().toUpperCase();
+            const ex = challengeState.exercises[challengeState.currentEx];
+            const feedback = document.getElementById(`feedback-${stepIdx}`);
+            let correct = false;
+
+            if (stepIdx === 0) {
+                correct = (val === 'U' && ex.a > 0) || (val === 'D' && ex.a < 0);
+            } else if (stepIdx === 1) {
+                if (ex.strategy === 'factor') {
+                    try {
+                        const userExpanded = nerdamer(val.toLowerCase()).expand().text();
+                        const correctExpanded = nerdamer(ex.raw).text();
+                        correct = (userExpanded === correctExpanded);
+                    } catch(e) { correct = false; }
+                } else {
+                    correct = (parseInt(val) === ex.delta);
+                }
+            } else if (stepIdx === 2) {
+                if (val === 'NULL') correct = (ex.roots.length === 0);
+                else {
+                    const userRoots = val.split(',').map(v => parseFloat(v)).sort((a,b) => a-b);
+                    correct = (userRoots.length > 0 && JSON.stringify(userRoots) === JSON.stringify(ex.roots));
+                }
+            } else if (stepIdx === 3) {
+                correct = verifyFinalSolution(val, ex);
+            }
+
+            if (correct) {
+                feedback.innerHTML = "Ottimo! Proseguiamo.";
+                feedback.className = "text-[10px] mt-2 text-[#00E676] font-bold";
+                feedback.classList.remove('hidden');
+                challengeState.score += 10;
+                
+                if (stepIdx < 3) {
+                    challengeState.currentStep++;
+                    setTimeout(renderStep, 600);
+                } else {
+                    setTimeout(() => {
+                        if (challengeState.currentEx < 4) {
+                            challengeState.currentEx++;
+                            showExercise();
+                        } else {
+                            finishChallenge();
+                        }
+                    }, 1000);
+                }
+            } else {
+                feedback.innerHTML = "Non è corretto, riprova riflettendo meglio.";
+                feedback.className = "text-[10px] mt-2 text-[#FF1744] font-bold";
+                feedback.classList.remove('hidden');
+                challengeState.score = Math.max(0, challengeState.score - 2);
+            }
+            document.getElementById('current-score').innerText = challengeState.score;
+        }
+
+        function verifyFinalSolution(userStr, ex) {
+            const clean = userStr.toUpperCase().replace(/\s+/g, '').replace(/OR|U|V|\||O/g, '|');
+            const isAll = (clean.includes('ALL') || clean.includes('TUTTO') || (clean.includes('X') && clean.includes('R')));
+            const isNull = (clean.includes('NULL') || clean.includes('MAI') || clean.includes('EMPTY') || clean.includes('VUOTO') || clean === '');
+
+            const testPts = [-1000, ...ex.roots.flatMap(r => [r-0.1, r, r+0.1]), 1000];
+            const checkFn = (x) => {
+                const val = parseFloat(nerdamer(ex.raw).sub('x', x).evaluate().text());
+                if (ex.op === '>') return val > 1e-7;
+                if (ex.op === '>=') return val >= -1e-7;
+                if (ex.op === '<') return val < -1e-7;
+                if (ex.op === '<=') return val <= 1e-7;
+                return false;
+            };
+            
+            const userCheck = (x) => {
+                if (isAll) return true;
+                if (isNull) return false;
+                const parts = clean.split('|');
+                return parts.some(p => {
+                    try {
+                        // 1. Caso a < x < b (Intervallo limitato)
+                        const rangeMatch = p.match(/(-?\d+\.?\d*)([<>]=?)X([<>]=?)(-?\d+\.?\d*)/);
+                        if (rangeMatch) {
+                            const v1 = parseFloat(rangeMatch[1]), op1 = rangeMatch[2], op2 = rangeMatch[3], v2 = parseFloat(rangeMatch[4]);
+                            const c1 = op1.includes('>') ? v1 >= x - 1e-7 : (op1.includes('=') ? v1 <= x + 1e-7 : v1 < x - 1e-7);
+                            const c2 = op2.includes('>') ? x >= v2 - 1e-7 : (op2.includes('=') ? x <= v2 + 1e-7 : x < v2 - 1e-7);
+                            return c1 && c2;
+                        }
+
+                        // 2. Caso x < a, a < x, o x = a (Semirette o Punti isolati)
+                        const opMatch = p.match(/[<>]=?|=/);
+                        if (!opMatch) return false;
+                        const operator = opMatch[0];
+                        const sides = p.split(operator);
+                        
+                        if (sides[0] === 'X') {
+                            const val = parseFloat(sides[1]);
+                            if (operator === '>') return x > val + 1e-7;
+                            if (operator === '>=') return x >= val - 1e-7;
+                            if (operator === '<') return x < val - 1e-7;
+                            if (operator === '<=') return x <= val + 1e-7;
+                            if (operator === '=') return Math.abs(x - val) < 1e-7;
+                        } else if (sides[1] === 'X') {
+                            const val = parseFloat(sides[0]);
+                            if (operator === '>') return val > x + 1e-7;
+                            if (operator === '>=') return val >= x - 1e-7;
+                            if (operator === '<') return val < x - 1e-7;
+                            if (operator === '<=') return val <= x + 1e-7;
+                            if (operator === '=') return Math.abs(x - val) < 1e-7;
+                        }
+                    } catch(e) { return false; }
+                    return false;
+                });
+            };
+            return testPts.every(pt => checkFn(pt) === userCheck(pt));
+        }
+
+        function finishChallenge() {
+            document.getElementById('challenge-game').classList.add('hidden');
+            document.getElementById('challenge-results').classList.remove('hidden');
+            document.getElementById('final-score-display').innerText = challengeState.score + " pt";
+            let msg = "Eccellente! Hai una solida comprensione della parabola.";
+            if (challengeState.score < 150) msg = "Buon lavoro, ma ripassa i casi con Delta negativo.";
+            if (challengeState.score < 100) msg = "Hai bisogno di più pratica. Riguarda le scomposizioni nel laboratorio.";
+            document.getElementById('final-message').innerText = msg;
+        }
+
+        function resetChallenge() {
+            document.getElementById('challenge-results').classList.add('hidden');
+            document.getElementById('challenge-setup').classList.remove('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            processPolynomial();
+        });
+    </script>
+    <script src="../assets/js/orfini-shared.js"></script>
+</body>
+
+</html>
