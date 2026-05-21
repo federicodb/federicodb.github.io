@@ -635,22 +635,28 @@
 
         function logToPixel(logX, logY) {
             const effGrid = getEffectiveGridSize();
-            const cx = (canvas.width / window.devicePixelRatio) / 2;
-            const cy = (canvas.height / window.devicePixelRatio) / 2;
+            const dpr = window.devicePixelRatio || 1;
+            const cx = (canvas.width / dpr) / 2;
+            const cy = (canvas.height / dpr) / 2;
             return { x: cx + (logX * effGrid) + state.camera.x, y: cy - (logY * effGrid) + state.camera.y };
         }
 
         function pixelToLog(pxX, pxY) {
             const effGrid = getEffectiveGridSize();
-            const cx = (canvas.width / window.devicePixelRatio) / 2;
-            const cy = (canvas.height / window.devicePixelRatio) / 2;
+            const dpr = window.devicePixelRatio || 1;
+            const cx = (canvas.width / dpr) / 2;
+            const cy = (canvas.height / dpr) / 2;
             return { x: (pxX - cx - state.camera.x) / effGrid, y: (cy - pxY + state.camera.y) / effGrid };
         }
 
         function draw() {
-            const w = canvas.width / window.devicePixelRatio;
-            const h = canvas.height / window.devicePixelRatio;
-            ctx.clearRect(0, 0, w, h);
+            const dpr = window.devicePixelRatio || 1;
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.scale(dpr, dpr);
+
+            const w = canvas.width / dpr;
+            const h = canvas.height / dpr;
 
             drawGrid(w, h);
             drawAxes(w, h);
@@ -1477,9 +1483,11 @@
         const resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
                 const rect = entry.contentRect;
-                canvas.width = rect.width * window.devicePixelRatio;
-                canvas.height = rect.height * window.devicePixelRatio;
-                ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+                const dpr = window.devicePixelRatio || 1;
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
                 draw();
             }
         });
