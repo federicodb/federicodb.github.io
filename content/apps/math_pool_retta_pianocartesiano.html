@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Math Pool: Biliardo Cartesiano e retta</title>
+    <meta name="description"
+        content="Gamification e Laboratorio interattivo sulla Geometria Analitica. Gioca a biliardo nel piano cartesiano calcolando le equazioni delle retta e i punti di intersezione.">
+    <meta name="keywords"
+        content="Matematica, Geometria Analitica, Retta, Piano Cartesiano, Biliardo, Gamification, 2 GP, 3 MEC">
+    <meta name="date" content="2026-05-21">
+
+    <!-- Il tasto Home viene iniettato automaticamente da orfini-shared.js per evitare sovrapposizioni -->
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        surface: '#000000',
+                        'surface-container': '#0A0A0A',
+                        'surface-high': '#141414',
+                        border: '#27272A',
+                        primary: '#D0BCFF',
+                        'on-primary': '#381E72',
+                        'primary-container': '#4F378B',
+                        secondary: '#E0E0E0',
+                        muted: '#A1A1AA',
+                        accent: '#80D8CB',
+                        target: '#FFB4AB',
+                        third: '#81C995', /* Green for Ball R */
+                        success: '#81C995'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            background-color: theme('colors.surface');
+            color: theme('colors.secondary');
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface-container');
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.border');
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.muted');
+        }
+
+        .md-button {
+            border-radius: 9999px;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .md-button:active {
+            transform: scale(0.96);
+        }
+
+        .md-button:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .md-input {
+            background-color: theme('colors.surface-high');
+            border: 1px solid theme('colors.border');
+            color: theme('colors.primary');
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .md-input:focus {
+            outline: none;
+            border-color: theme('colors.accent');
+            background-color: #1A1A1A;
+        }
+
+        .segmented-btn {
+            background-color: theme('colors.surface-high');
+            border-radius: 9999px;
+            padding: 4px;
+            display: flex;
+            border: 1px solid theme('colors.border');
+        }
+
+        .tab-btn {
+            border-radius: 9999px;
+            transition: all 0.3s;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .tab-btn.active {
+            background-color: theme('colors.primary-container');
+            color: theme('colors.primary');
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 4px;
+            line-height: 1.1;
+        }
+
+        .fraction>span:first-child {
+            border-bottom: 1.5px solid currentColor;
+            padding: 0 4px;
+        }
+
+        .fraction>span:last-child {
+            padding: 0 4px;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-10px);
+            }
+
+            40% {
+                transform: translateX(10px);
+            }
+
+            60% {
+                transform: translateX(-5px);
+            }
+
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .anim-shake {
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .anim-pop {
+            animation: pop 0.4s ease-out forwards;
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
+        }
+
+        .expandable-content.expanded {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        .chevron {
+            transition: transform 0.3s;
+        }
+
+        .chevron.expanded {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col lg:flex-row h-screen w-screen selection:bg-primary selection:text-on-primary">
+
+    <main id="canvas-wrapper" class="flex-1 relative min-h-0 min-w-0 bg-surface">
+        <canvas id="gameCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+        <div class="absolute top-4 right-4 flex flex-col md:flex-row gap-2 z-10">
+            <div
+                class="flex gap-2 bg-surface-container/80 backdrop-blur-md p-1.5 rounded-full border border-border shadow-lg">
+                <button id="btn-zoom-in"
+                    class="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:text-white hover:bg-surface-high transition-colors"
+                    title="Zoom In">
+                    <span class="material-symbols-rounded">zoom_in</span>
+                </button>
+                <button id="btn-zoom-out"
+                    class="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:text-white hover:bg-surface-high transition-colors"
+                    title="Zoom Out">
+                    <span class="material-symbols-rounded">zoom_out</span>
+                </button>
+                <button id="btn-reset-view"
+                    class="w-10 h-10 rounded-full flex items-center justify-center text-accent hover:bg-surface-high transition-colors"
+                    title="Vista Ottimale">
+                    <span class="material-symbols-rounded">center_focus_strong</span>
+                </button>
+            </div>
+
+            <button id="btn-toggle-panel"
+                class="bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold flex items-center gap-2 shadow-[0_0_15px_rgba(208,188,255,0.3)] hover:scale-105 transition-transform">
+                <span class="material-symbols-rounded" id="icon-toggle-panel">menu_open</span>
+                <span class="hidden md:inline" id="text-toggle-panel">Controlli</span>
+            </button>
+        </div>
+
+        <div id="feedback-overlay"
+            class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center opacity-0 transition-opacity duration-300">
+            <div id="feedback-icon" class="material-symbols-rounded text-[80px] mb-2 drop-shadow-2xl"></div>
+            <span id="feedback-text" class="text-4xl font-black uppercase tracking-widest drop-shadow-2xl"></span>
+        </div>
+
+        <div id="cursor-tooltip"
+            class="absolute pointer-events-none z-20 bg-surface-high/90 text-primary font-mono text-xs px-2 py-1 rounded border border-border shadow-lg opacity-0 transition-opacity duration-150">
+        </div>
+    </main>
+
+    <aside id="side-panel"
+        class="hidden w-full lg:w-[450px] lg:h-full h-[50vh] flex-col bg-surface-container border-t lg:border-t-0 lg:border-l border-border transition-all duration-300 z-20 overflow-y-auto">
+        <div class="p-5 flex-grow flex flex-col">
+
+            <header class="mb-6 flex flex-col items-center">
+                <h1 class="text-2xl font-black tracking-tight text-white flex items-center gap-2 mb-4">
+                    <span class="material-symbols-rounded text-primary text-3xl">sports_esports</span>
+                    Math Pool
+                </h1>
+
+                <div class="segmented-btn w-full">
+                    <button id="tab-explore" class="tab-btn active px-4 py-2 text-sm font-bold flex items-center gap-2">
+                        <span class="material-symbols-rounded text-lg">science</span>
+                        Lab
+                    </button>
+                    <button id="tab-play"
+                        class="tab-btn text-muted hover:text-white px-4 py-2 text-sm font-bold flex items-center gap-2">
+                        <span class="material-symbols-rounded text-lg">track_changes</span>
+                        Sfida
+                    </button>
+                </div>
+            </header>
+
+            <!-- LABORATORIO -->
+            <div id="panel-explore" class="flex-grow flex flex-col">
+                <p class="text-sm text-muted mb-4 text-center">
+                    Trascina le palle sul tavolo. Clicca sui parametri per espandere i calcoli.
+                </p>
+
+                <div class="bg-surface-high rounded-xl p-4 mb-4 border border-border">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-white font-medium flex items-center gap-2 text-sm">
+                            <div class="w-3 h-3 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>
+                            Punto P
+                        </span>
+                        <span id="exp-white-coord" class="font-mono font-bold text-base text-secondary">(0, 0)</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-white font-medium flex items-center gap-2 text-sm">
+                            <div class="w-3 h-3 rounded-full bg-target shadow-[0_0_8px_rgba(255,180,171,0.8)]"></div>
+                            Punto Q
+                        </span>
+                        <span id="exp-red-coord" class="font-mono font-bold text-base text-target">(5, 3)</span>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-surface-high/50 rounded-xl p-4 mb-4 border border-border flex-grow flex flex-col justify-center">
+                    <h3 class="text-xs font-bold text-muted mb-2 uppercase tracking-widest text-center">Equazione della
+                        Retta</h3>
+
+                    <div id="exp-equation"
+                        class="font-mono text-3xl font-black text-center mb-6 text-white bg-surface-container py-4 rounded-xl border border-white/5">
+                        <!-- Generato dinamicamente per evitare + ridondanti -->
+                    </div>
+
+                    <div class="space-y-2 text-sm font-medium">
+                        <!-- Box Pendenza Espandibile -->
+                        <div class="bg-surface rounded-lg border border-border overflow-hidden cursor-pointer"
+                            onclick="toggleMathDetails('m')">
+                            <div class="flex justify-between items-center p-3 hover:bg-surface-high transition-colors">
+                                <span class="text-secondary flex items-center gap-2">
+                                    <span class="material-symbols-rounded text-sm chevron"
+                                        id="chevron-m">expand_more</span>
+                                    Pendenza <span class="font-mono text-accent text-lg font-bold">m</span>
+                                </span>
+                                <span id="exp-calc-m" class="font-mono text-accent text-xl font-bold"></span>
+                            </div>
+                            <div id="detail-m"
+                                class="expandable-content bg-surface-container/50 px-3 pb-3 font-mono text-xs text-muted">
+                                <!-- Calcoli generati dinamicamente -->
+                            </div>
+                        </div>
+
+                        <!-- Box Intercetta Espandibile -->
+                        <div class="bg-surface rounded-lg border border-border overflow-hidden cursor-pointer"
+                            onclick="toggleMathDetails('q')">
+                            <div class="flex justify-between items-center p-3 hover:bg-surface-high transition-colors">
+                                <span class="text-secondary flex items-center gap-2">
+                                    <span class="material-symbols-rounded text-sm chevron"
+                                        id="chevron-q">expand_more</span>
+                                    Intercetta <span class="font-mono text-primary text-lg font-bold">q</span>
+                                </span>
+                                <span id="exp-calc-q" class="font-mono text-primary text-xl font-bold"></span>
+                            </div>
+                            <div id="detail-q"
+                                class="expandable-content bg-surface-container/50 px-3 pb-3 font-mono text-xs text-muted">
+                                <!-- Calcoli generati dinamicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-set-origin"
+                    class="md-button w-full py-3.5 bg-surface-high hover:bg-[#1A1A1A] text-primary border border-primary/30 mt-auto">
+                    <span class="material-symbols-rounded">my_location</span>
+                    Usa P come Origine (0,0)
+                </button>
+            </div>
+
+            <!-- SFIDA -->
+            <div id="panel-play" class="hidden flex-grow flex-col pb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-target flex items-center gap-2">
+                        <span class="material-symbols-rounded">sports_score</span>
+                        Modalità Sfida
+                    </h2>
+                    <div
+                        class="bg-surface-high px-3 py-1.5 rounded-lg text-sm font-black text-white flex items-center gap-1.5 border border-border">
+                        <span class="material-symbols-rounded text-accent text-base">stars</span>
+                        <span id="game-score" class="text-base">0</span>
+                    </div>
+                </div>
+
+                <div id="step1-box"
+                    class="bg-surface-high rounded-xl p-5 mb-4 border border-border transition-all duration-300">
+                    <h3 class="text-base font-bold text-secondary mb-4 flex items-center gap-2">
+                        <span
+                            class="bg-primary text-on-primary w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">1</span>
+                        Calcola la Pendenza (m)
+                    </h3>
+                    <div class="flex gap-3 items-center">
+                        <span class="font-mono text-accent font-bold text-xl whitespace-nowrap">m =</span>
+                        <input type="text" id="step1-m" class="md-input w-24 py-2 text-lg text-accent font-bold min-w-0"
+                            placeholder="es. 3/2" autocomplete="off">
+                        <button id="btn-check-s1"
+                            class="md-button bg-surface-container border border-border hover:bg-surface text-primary px-5 py-2 ml-auto text-base whitespace-nowrap shrink-0">Verifica</button>
+                    </div>
+                </div>
+
+                <div id="step2-box"
+                    class="bg-surface-high rounded-xl p-5 mb-4 border border-border opacity-40 pointer-events-none transition-all duration-300 grayscale">
+                    <h3 class="text-base font-bold text-secondary mb-3 flex items-center gap-2">
+                        <span
+                            class="bg-primary text-on-primary w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">2</span>
+                        Calcola l'Intercetta (q)
+                    </h3>
+
+                    <!-- Fase A: Sostituzione -->
+                    <div id="step2a-container">
+                        <p class="text-xs text-muted mb-3 leading-relaxed">Sostituisci P o Q in <span
+                                class="font-mono text-white whitespace-nowrap">y = mx + q</span>:</p>
+                        <div class="flex gap-1.5 items-center">
+                            <input type="text" id="s2-y"
+                                class="md-input w-10 py-1.5 text-base font-bold text-white min-w-0" placeholder="y"
+                                autocomplete="off">
+                            <span class="font-mono text-muted text-lg whitespace-nowrap">=</span>
+                            <input type="text" id="s2-m"
+                                class="md-input w-14 py-1.5 text-base font-bold text-accent min-w-0" placeholder="m"
+                                autocomplete="off">
+                            <span class="font-mono text-muted text-lg whitespace-nowrap">·</span>
+                            <input type="text" id="s2-x"
+                                class="md-input w-10 py-1.5 text-base font-bold text-white min-w-0" placeholder="x"
+                                autocomplete="off">
+                            <span class="font-mono text-muted text-lg whitespace-nowrap">+ q</span>
+                            <button id="btn-check-s2a"
+                                class="md-button bg-surface-container border border-border hover:bg-surface text-primary px-3 py-1.5 ml-auto text-sm whitespace-nowrap shrink-0">Applica</button>
+                        </div>
+                    </div>
+
+                    <!-- Fase B: Risoluzione -->
+                    <div id="step2b-container" class="hidden flex-col gap-3 pt-4 mt-4 border-t border-border/50">
+                        <p class="text-xs text-muted leading-relaxed">Isola q (1° Principio) e calcola il risultato:</p>
+                        <div class="flex gap-1.5 items-center">
+                            <span class="font-mono text-primary font-bold text-lg whitespace-nowrap">q =</span>
+                            <span id="s2-lbl-y" class="font-mono text-white text-base whitespace-nowrap"></span>
+                            <span class="font-mono text-muted text-lg whitespace-nowrap">- (</span>
+                            <span id="s2-lbl-mx" class="font-mono text-accent text-base whitespace-nowrap"></span>
+                            <span class="font-mono text-muted text-lg whitespace-nowrap">) =</span>
+                            <input type="text" id="s2-q"
+                                class="md-input w-14 py-1.5 text-base font-bold text-primary min-w-0" placeholder="ris."
+                                autocomplete="off">
+                            <button id="btn-check-s2b"
+                                class="md-button bg-surface-container border border-border hover:bg-surface text-primary px-3 py-1.5 ml-auto text-sm whitespace-nowrap shrink-0">Verifica</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step3-box"
+                    class="bg-surface-high rounded-xl p-5 mb-4 border border-border opacity-40 pointer-events-none transition-all duration-300 grayscale">
+                    <h3 class="text-base font-bold text-secondary mb-3 flex items-center gap-2">
+                        <span
+                            class="bg-primary text-on-primary w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">3</span>
+                        Scrivi l'Equazione Formale
+                    </h3>
+                    <div
+                        class="flex items-center justify-center gap-2 text-xl font-mono font-black text-white w-full py-4 bg-surface-container rounded-xl border border-border/50">
+                        <span class="text-muted whitespace-nowrap">y =</span>
+                        <input type="text" id="step3-m" class="md-input w-16 py-2 text-xl font-bold text-accent min-w-0"
+                            placeholder="m" autocomplete="off">
+                        <span class="text-muted whitespace-nowrap">x</span>
+                        <span id="step3-sign"
+                            class="text-muted transition-opacity duration-200 overflow-hidden whitespace-nowrap">+</span>
+                        <input type="text" id="step3-q"
+                            class="md-input w-20 py-2 text-xl font-bold text-primary min-w-0" placeholder="q"
+                            autocomplete="off">
+                    </div>
+                    <button id="btn-check-s3"
+                        class="md-button w-full mt-4 bg-surface-container border border-border hover:bg-surface text-primary py-2 text-base whitespace-nowrap shrink-0">Verifica
+                        Equazione</button>
+                </div>
+
+                <div id="step4-box"
+                    class="bg-surface-container rounded-xl p-5 mb-5 border border-border opacity-40 pointer-events-none transition-all duration-300 grayscale flex flex-col">
+                    <h3 class="text-base font-bold text-third mb-3 flex items-center gap-2">
+                        <span
+                            class="bg-third text-surface w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">4</span>
+                        Allinea la Palla R (Urto a Catena)
+                    </h3>
+                    <p class="text-xs text-muted mb-4 leading-relaxed">
+                        Scegli una coordinata <span class="font-mono text-white whitespace-nowrap">x</span> compresa tra
+                        <span id="hint-xp" class="font-mono text-white font-bold whitespace-nowrap"></span> e <span
+                            id="hint-xq" class="font-mono text-white font-bold whitespace-nowrap"></span>. Calcola la
+                        <span class="font-mono text-white whitespace-nowrap">y</span> corrispondente.
+                    </p>
+                    <div class="flex gap-2 items-center justify-center mb-5 mt-2">
+                        <span class="font-mono text-third text-xl whitespace-nowrap">R(</span>
+                        <input type="text" id="step4-x"
+                            class="md-input w-12 py-1.5 text-lg font-bold text-white min-w-0" placeholder="x"
+                            autocomplete="off">
+                        <span class="font-mono text-third text-xl whitespace-nowrap">,</span>
+                        <input type="text" id="step4-y"
+                            class="md-input w-12 py-1.5 text-lg font-bold text-white min-w-0" placeholder="y"
+                            autocomplete="off">
+                        <span class="font-mono text-third text-xl whitespace-nowrap">)</span>
+                        <button id="btn-check-s4"
+                            class="md-button bg-surface-high border border-border hover:bg-surface text-third px-4 py-1.5 ml-2 text-sm whitespace-nowrap shrink-0">Posiziona</button>
+                    </div>
+
+                    <button id="btn-shoot"
+                        class="md-button w-full py-4 bg-primary text-on-primary hover:bg-white text-lg hidden whitespace-nowrap shrink-0">
+                        <span class="material-symbols-rounded text-2xl">flare</span> Avvia Simulazione
+                    </button>
+                </div>
+
+                <button id="btn-next-level"
+                    class="md-button hidden w-full py-3 bg-accent text-surface hover:bg-white text-base shadow-[0_0_15px_rgba(128,216,203,0.3)] shrink-0">
+                    <span class="material-symbols-rounded">skip_next</span> Prossimo Livello
+                </button>
+            </div>
+
+        </div>
+    </aside>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasWrapper = document.getElementById('canvas-wrapper');
+        const sidePanel = document.getElementById('side-panel');
+
+        const btnTogglePanel = document.getElementById('btn-toggle-panel');
+        const iconTogglePanel = document.getElementById('icon-toggle-panel');
+        const textTogglePanel = document.getElementById('text-toggle-panel');
+        const btnZoomIn = document.getElementById('btn-zoom-in');
+        const btnZoomOut = document.getElementById('btn-zoom-out');
+        const btnResetView = document.getElementById('btn-reset-view');
+
+        const expWhiteCoord = document.getElementById('exp-white-coord');
+        const expRedCoord = document.getElementById('exp-red-coord');
+        const expEquation = document.getElementById('exp-equation');
+        const expCalcM = document.getElementById('exp-calc-m');
+        const expCalcQ = document.getElementById('exp-calc-q');
+        const detailM = document.getElementById('detail-m');
+        const detailQ = document.getElementById('detail-q');
+        const chevronM = document.getElementById('chevron-m');
+        const chevronQ = document.getElementById('chevron-q');
+
+        const step1M = document.getElementById('step1-m');
+        const btnCheckS1 = document.getElementById('btn-check-s1');
+
+        const s2Y = document.getElementById('s2-y');
+        const s2M = document.getElementById('s2-m');
+        const s2X = document.getElementById('s2-x');
+        const btnCheckS2a = document.getElementById('btn-check-s2a');
+        const step2bContainer = document.getElementById('step2b-container');
+        const s2LblY = document.getElementById('s2-lbl-y');
+        const s2LblMx = document.getElementById('s2-lbl-mx');
+        const s2Q = document.getElementById('s2-q');
+        const btnCheckS2b = document.getElementById('btn-check-s2b');
+
+        const step3M = document.getElementById('step3-m');
+        const step3Q = document.getElementById('step3-q');
+        const step3Sign = document.getElementById('step3-sign');
+        const btnCheckS3 = document.getElementById('btn-check-s3');
+        const step4X = document.getElementById('step4-x');
+        const step4Y = document.getElementById('step4-y');
+        const btnCheckS4 = document.getElementById('btn-check-s4');
+        const hintXp = document.getElementById('hint-xp');
+        const hintXq = document.getElementById('hint-xq');
+
+        const btnShoot = document.getElementById('btn-shoot');
+        const btnNextLevel = document.getElementById('btn-next-level');
+        const scoreEl = document.getElementById('game-score');
+
+        const state = {
+            mode: 'explore',
+            gridSize: 40,
+            camera: { x: 0, y: 0, zoom: 1 },
+            originOffset: { x: 0, y: 0 },
+            score: 0,
+            playState: 'idle',
+            animationReq: null,
+            isPanelOpen: false,
+            hoveredGrid: null
+        };
+
+        const balls = {
+            white: { logicalX: -6, logicalY: -3, radius: 0.6, color: '#FFFFFF', label: 'P', isDragging: false, active: true },
+            green: { logicalX: 0, logicalY: 0, radius: 0.6, color: '#81C995', label: 'R', isDragging: false, active: false },
+            red: { logicalX: 4, logicalY: 2, radius: 0.6, color: '#FFB4AB', label: 'Q', isDragging: false, active: true }
+        };
+
+        let shotPath = [];
+        let ripples = [];
+
+        function gcd(a, b) {
+            a = Math.abs(a); b = Math.abs(b);
+            return b === 0 ? a : gcd(b, a % b);
+        }
+
+        function simplifyFraction(num, den) {
+            if (den === 0) return { num: 1, den: 0, isInfinity: true, html: "∞" };
+            if (num === 0) return { num: 0, den: 1, isInfinity: false, html: "0" };
+
+            const sign = (num < 0) ^ (den < 0) ? -1 : 1;
+            let n = Math.abs(num); let d = Math.abs(den);
+            const div = gcd(n, d);
+            n /= div; d /= div;
+
+            const nSigned = n * sign;
+            return {
+                num: nSigned, den: d, isInfinity: false, val: nSigned / d,
+                html: d === 1 ? nSigned.toString() : `<span class="fraction"><span>${nSigned}</span><span>${d}</span></span>`
+            };
+        }
+
+        function parseFractionInput(str) {
+            if (!str) return null;
+            str = str.replace(',', '.').replace(/\s+/g, '');
+            if (str.startsWith('+')) str = str.substring(1);
+            if (str.includes('/')) {
+                const parts = str.split('/');
+                if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                    const n = parseFloat(parts[0]);
+                    const d = parseFloat(parts[1]);
+                    if (d !== 0) return n / d;
+                }
+            }
+            return isNaN(parseFloat(str)) ? null : parseFloat(str);
+        }
+
+        function fmtNum(n) {
+            return n < 0 ? `(${n})` : `${n}`;
+        }
+
+        function getRelativeCoords(absoluteX, absoluteY) {
+            return { x: absoluteX - state.originOffset.x, y: absoluteY - state.originOffset.y };
+        }
+        function getAbsoluteCoords(relativeX, relativeY) {
+            return { x: relativeX + state.originOffset.x, y: relativeY + state.originOffset.y };
+        }
+
+        function getEffectiveGridSize() { return state.gridSize * state.camera.zoom; }
+
+        function logToPixel(logX, logY) {
+            const effGrid = getEffectiveGridSize();
+            const cx = (canvas.width / window.devicePixelRatio) / 2;
+            const cy = (canvas.height / window.devicePixelRatio) / 2;
+            return { x: cx + (logX * effGrid) + state.camera.x, y: cy - (logY * effGrid) + state.camera.y };
+        }
+
+        function pixelToLog(pxX, pxY) {
+            const effGrid = getEffectiveGridSize();
+            const cx = (canvas.width / window.devicePixelRatio) / 2;
+            const cy = (canvas.height / window.devicePixelRatio) / 2;
+            return { x: (pxX - cx - state.camera.x) / effGrid, y: (cy - pxY + state.camera.y) / effGrid };
+        }
+
+        function draw() {
+            const w = canvas.width / window.devicePixelRatio;
+            const h = canvas.height / window.devicePixelRatio;
+            ctx.clearRect(0, 0, w, h);
+
+            drawGrid(w, h);
+            drawAxes(w, h);
+
+            if (state.mode === 'explore') {
+                drawMathTriangle();
+                drawTheoreticalLine(w, h);
+                drawIntercept();
+            }
+
+            drawGridHover();
+            drawShotPath();
+            drawBalls();
+            drawRipples();
+        }
+
+        function drawGridHover() {
+            if (!state.hoveredGrid || state.playState !== 'idle') return;
+            const px = logToPixel(state.hoveredGrid.x, state.hoveredGrid.y);
+
+            ctx.fillStyle = 'rgba(208, 188, 255, 0.4)';
+            ctx.beginPath();
+            ctx.arc(px.x, px.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(208, 188, 255, 0.6)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(px.x - 8, px.y); ctx.lineTo(px.x + 8, px.y);
+            ctx.moveTo(px.x, px.y - 8); ctx.lineTo(px.x, px.y + 8);
+            ctx.stroke();
+        }
+
+        function drawGrid(w, h) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.lineWidth = 1.5;
+            const effGrid = getEffectiveGridSize();
+            const cx = (w / 2) + state.camera.x;
+            const cy = (h / 2) + state.camera.y;
+
+            const startX = cx % effGrid;
+            const startY = cy % effGrid;
+
+            ctx.beginPath();
+            for (let x = startX; x < w; x += effGrid) {
+                const px = Math.round(x);
+                ctx.moveTo(px, 0); ctx.lineTo(px, h);
+            }
+            for (let y = startY; y < h; y += effGrid) {
+                const py = Math.round(y);
+                ctx.moveTo(0, py); ctx.lineTo(w, py);
+            }
+            ctx.stroke();
+        }
+
+        function drawAxes(w, h) {
+            const originPx = logToPixel(state.originOffset.x, state.originOffset.y);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(208, 188, 255, 0.3)';
+            if (originPx.y >= 0 && originPx.y <= h) {
+                ctx.beginPath(); ctx.moveTo(0, originPx.y); ctx.lineTo(w, originPx.y); ctx.stroke();
+            }
+            if (originPx.x >= 0 && originPx.x <= w) {
+                ctx.beginPath(); ctx.moveTo(originPx.x, 0); ctx.lineTo(originPx.x, h); ctx.stroke();
+            }
+            ctx.fillStyle = '#D0BCFF';
+            ctx.beginPath(); ctx.arc(originPx.x, originPx.y, 4, 0, Math.PI * 2); ctx.fill();
+            ctx.font = '600 12px Inter';
+            ctx.fillText('(0,0)', originPx.x + 8, originPx.y - 8);
+        }
+
+        function drawMathTriangle() {
+            const relW = getRelativeCoords(balls.white.logicalX, balls.white.logicalY);
+            const relR = getRelativeCoords(balls.red.logicalX, balls.red.logicalY);
+            const dx = relR.x - relW.x;
+            const dy = relR.y - relW.y;
+            if (dx === 0 || dy === 0) return;
+
+            const pW = logToPixel(balls.white.logicalX, balls.white.logicalY);
+            const pR = logToPixel(balls.red.logicalX, balls.red.logicalY);
+            const pCorner = logToPixel(balls.red.logicalX, balls.white.logicalY);
+
+            ctx.strokeStyle = '#80D8CB';
+            ctx.setLineDash([4, 4]);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(pW.x, pW.y); ctx.lineTo(pCorner.x, pCorner.y); ctx.lineTo(pR.x, pR.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#80D8CB';
+            ctx.font = '700 14px Inter';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            const offset = 15;
+            ctx.fillText(`Δx = ${dx}`, (pW.x + pCorner.x) / 2, pCorner.y + (dy > 0 ? offset : -offset));
+            ctx.textAlign = dx > 0 ? 'left' : 'right';
+            ctx.fillText(`Δy = ${dy}`, pCorner.x + (dx > 0 ? 10 : -10), (pR.y + pCorner.y) / 2);
+            ctx.textAlign = 'left';
+        }
+
+        function drawTheoreticalLine(w, h) {
+            const relW = getRelativeCoords(balls.white.logicalX, balls.white.logicalY);
+            const relR = getRelativeCoords(balls.red.logicalX, balls.red.logicalY);
+            const dx = relR.x - relW.x;
+            const dy = relR.y - relW.y;
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+
+            if (dx === 0) {
+                const pxX = logToPixel(balls.white.logicalX, 0).x;
+                ctx.moveTo(pxX, 0); ctx.lineTo(pxX, h);
+            } else {
+                const m = dy / dx;
+                const q = relW.y - m * relW.x;
+                const p1Abs = getAbsoluteCoords(-100, m * -100 + q);
+                const p2Abs = getAbsoluteCoords(100, m * 100 + q);
+                const p1 = logToPixel(p1Abs.x, p1Abs.y);
+                const p2 = logToPixel(p2Abs.x, p2Abs.y);
+                ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawIntercept() {
+            const relW = getRelativeCoords(balls.white.logicalX, balls.white.logicalY);
+            const relR = getRelativeCoords(balls.red.logicalX, balls.red.logicalY);
+            const dx = relR.x - relW.x;
+            const dy = relR.y - relW.y;
+
+            if (dx === 0) return;
+
+            const m = dy / dx;
+            const q = relW.y - m * relW.x;
+
+            const absQ = getAbsoluteCoords(0, q);
+            const p = logToPixel(absQ.x, absQ.y);
+
+            ctx.fillStyle = '#D0BCFF';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#141414';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#D0BCFF';
+            ctx.font = '700 16px Inter';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('q', p.x + 12, p.y);
+        }
+
+        function drawShotPath() {
+            if (shotPath.length < 2) return;
+            ctx.strokeStyle = '#D0BCFF';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            ctx.beginPath();
+            const startP = logToPixel(shotPath[0].x, shotPath[0].y);
+            ctx.moveTo(startP.x, startP.y);
+            for (let i = 1; i < shotPath.length; i++) {
+                const p = logToPixel(shotPath[i].x, shotPath[i].y);
+                ctx.lineTo(p.x, p.y);
+            }
+            ctx.stroke();
+        }
+
+        function drawBalls() {
+            const effGrid = getEffectiveGridSize();
+            for (const key in balls) {
+                const b = balls[key];
+                if (!b.active) continue;
+
+                const px = logToPixel(b.logicalX, b.logicalY);
+                const r = b.radius * effGrid;
+
+                ctx.beginPath();
+                ctx.arc(px.x, px.y + r * 0.3, r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                ctx.filter = 'blur(4px)';
+                ctx.fill();
+                ctx.filter = 'none';
+
+                ctx.beginPath();
+                ctx.arc(px.x, px.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = b.color;
+                ctx.fill();
+
+                ctx.fillStyle = key === 'white' ? '#1A1A1A' : '#731409';
+                if (key === 'green') ctx.fillStyle = '#1A3322';
+                ctx.font = `900 ${r * 0.9}px Inter`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.save();
+                ctx.translate(px.x, px.y);
+                ctx.scale(1, 0.9);
+                ctx.fillText(b.label, 0, r * 0.05);
+                ctx.restore();
+
+                const grad = ctx.createRadialGradient(px.x - r * 0.3, px.y - r * 0.3, r * 0.1, px.x, px.y, r);
+                grad.addColorStop(0, 'rgba(255,255,255,0.9)');
+                grad.addColorStop(0.5, 'rgba(255,255,255,0)');
+                grad.addColorStop(1, 'rgba(0,0,0,0.4)');
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                if (b.isDragging) {
+                    ctx.strokeStyle = '#D0BCFF';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath(); ctx.arc(px.x, px.y, r + 4, 0, Math.PI * 2); ctx.stroke();
+                }
+            }
+        }
+
+        function drawRipples() {
+            const effGrid = getEffectiveGridSize();
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const r = ripples[i];
+                const px = logToPixel(r.x, r.y);
+                ctx.strokeStyle = `rgba(255, 255, 255, ${r.alpha})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(px.x, px.y, r.radius * effGrid, 0, Math.PI * 2);
+                ctx.stroke();
+
+                r.radius += 0.2;
+                r.alpha -= 0.05;
+                if (r.alpha <= 0) ripples.splice(i, 1);
+            }
+        }
+
+        function createRipple(logX, logY) {
+            ripples.push({ x: logX, y: logY, radius: 0.6, alpha: 1 });
+        }
+
+        function toggleMathDetails(id) {
+            const detail = document.getElementById(`detail-${id}`);
+            const chevron = document.getElementById(`chevron-${id}`);
+            detail.classList.toggle('expanded');
+            chevron.classList.toggle('expanded');
+        }
+
+        function updateMathUI() {
+            const relW = getRelativeCoords(balls.white.logicalX, balls.white.logicalY);
+            const relR = getRelativeCoords(balls.red.logicalX, balls.red.logicalY);
+
+            expWhiteCoord.innerText = `(${relW.x}, ${relW.y})`;
+            expRedCoord.innerText = `(${relR.x}, ${relR.y})`;
+
+            const dx = relR.x - relW.x;
+            const dy = relR.y - relW.y;
+            const mFrac = simplifyFraction(dy, dx);
+
+            let eqString = '';
+
+            if (mFrac.isInfinity) {
+                expCalcM.innerHTML = '∞'; expCalcQ.innerHTML = '-';
+                expEquation.innerHTML = `<span class="text-accent">x = ${relW.x}</span>`;
+                detailM.innerHTML = `La retta è verticale. Δx = 0, quindi la pendenza è infinita.`;
+                detailQ.innerHTML = `Non interseca l'asse y (se non coincidente).`;
+            } else {
+                expCalcM.innerHTML = mFrac.html;
+
+                const qNum = (relW.y * dx) - (dy * relW.x);
+                const qDen = dx;
+                const qFrac = simplifyFraction(qNum, qDen);
+
+                expCalcQ.innerHTML = qFrac.html;
+
+                // Generazione stringa equazione rigorosa
+                let mPart = '';
+                if (mFrac.val === 1) mPart = `<span class="text-accent">x</span>`;
+                else if (mFrac.val === -1) mPart = `<span class="text-accent">-x</span>`;
+                else if (mFrac.val !== 0) mPart = `<span class="text-accent">${mFrac.html}</span>x`;
+
+                let qPart = '';
+                if (qFrac.val > 0 && mPart !== '') qPart = ` + <span class="text-primary">${qFrac.html}</span>`;
+                else if (qFrac.val > 0 && mPart === '') qPart = `<span class="text-primary">${qFrac.html}</span>`;
+                else if (qFrac.val < 0) {
+                    const absQHtml = simplifyFraction(Math.abs(qNum), qDen).html;
+                    qPart = mPart !== '' ? ` - <span class="text-primary">${absQHtml}</span>` : `<span class="text-primary">-${absQHtml}</span>`;
+                }
+
+                if (mPart === '' && qPart === '') eqString = `<span class="text-primary">0</span>`;
+                else eqString = mPart + qPart;
+
+                expEquation.innerHTML = `y = ${eqString}`;
+
+                // Popolamento pannelli esplosi
+                detailM.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-white">m =</span>
+                        <span class="fraction"><span>Δy</span><span>Δx</span></span>
+                        <span class="text-white">=</span>
+                        <span class="fraction"><span>y<sub>Q</sub> - y<sub>P</sub></span><span>x<sub>Q</sub> - x<sub>P</sub></span></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-white">m =</span>
+                        <span class="fraction"><span>${relR.y} - ${fmtNum(relW.y)}</span><span>${relR.x} - ${fmtNum(relW.x)}</span></span>
+                        <span class="text-white">=</span>
+                        <span class="fraction"><span>${dy}</span><span>${dx}</span></span>
+                        ${mFrac.val !== dy / dx ? `<span class="text-white">=</span> <span class="text-accent font-bold">${mFrac.html}</span>` : ''}
+                    </div>
+                `;
+
+                detailQ.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-white">q =</span> y<sub>P</sub> - m · x<sub>P</sub>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-white">q =</span> ${relW.y} - <span class="text-accent">${mFrac.val < 0 ? `(${mFrac.html})` : mFrac.html}</span> · <span class="text-white">${fmtNum(relW.x)}</span>
+                    </div>`;
+
+                const mxNumRaw = mFrac.num * relW.x;
+                const mxDenRaw = mFrac.den;
+                const mxSimp = simplifyFraction(mxNumRaw, mxDenRaw);
+
+                if (mxSimp.den !== 1) {
+                    const ypNum = relW.y * mxSimp.den;
+                    const ypFracHtml = `<span class="fraction"><span>${ypNum}</span><span>${mxSimp.den}</span></span>`;
+
+                    detailQ.innerHTML += `
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-white">q =</span> ${relW.y} - ${mxSimp.num < 0 ? `(${mxSimp.html})` : mxSimp.html}
+                    </div>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-white">q =</span> ${ypFracHtml} - ${mxSimp.num < 0 ? `(${mxSimp.html})` : mxSimp.html}
+                    </div>
+                    `;
+                } else {
+                    detailQ.innerHTML += `
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="text-white">q =</span> ${relW.y} - ${fmtNum(mxSimp.num)}
+                    </div>
+                    `;
+                }
+
+                detailQ.innerHTML += `
+                    <div class="flex items-center gap-2 mt-2 pt-1 border-t border-border/30">
+                        <span class="text-white">q =</span> <span class="text-primary font-bold text-lg">${qFrac.html}</span>
+                    </div>
+                `;
+            }
+        }
+
+        let interaction = { type: 'none', target: null, lastX: 0, lastY: 0 };
+        let initialPinchDist = null;
+        let initialZoom = null;
+
+        function getPointerPos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX = evt.clientX, clientY = evt.clientY;
+            if (evt.touches && evt.touches.length > 0) {
+                clientX = evt.touches[0].clientX; clientY = evt.touches[0].clientY;
+            }
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function getPinchDistance(e) {
+            if (e.touches.length < 2) return 0;
+            const dx = e.touches[0].clientX - e.touches[1].clientX;
+            const dy = e.touches[0].clientY - e.touches[1].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        canvas.addEventListener('pointerdown', (e) => {
+            if (state.playState !== 'idle') return;
+            canvas.setPointerCapture(e.pointerId);
+            const pos = getPointerPos(e);
+            let hitBall = null;
+
+            for (const key in balls) {
+                if (!balls[key].active) continue;
+                const b = balls[key];
+                const px = logToPixel(b.logicalX, b.logicalY);
+                const effGrid = getEffectiveGridSize();
+                const realPxX = px.x / window.devicePixelRatio;
+                const realPxY = px.y / window.devicePixelRatio;
+                const rCSS = (b.radius * effGrid) / window.devicePixelRatio;
+                const dx = pos.x - realPxX;
+                const dy = pos.y - realPxY;
+                if (Math.sqrt(dx * dx + dy * dy) <= rCSS + 10) { hitBall = key; break; }
+            }
+
+            if (hitBall) {
+                if (state.mode === 'explore') {
+                    interaction = { type: 'drag', target: hitBall, lastX: pos.x, lastY: pos.y };
+                    balls[hitBall].isDragging = true;
+                } else if (state.mode === 'play' && hitBall === 'white') {
+                    setOriginToBall('white');
+                    showFeedback("my_location", "Origine Traslata", "success");
+                }
+            } else {
+                interaction = { type: 'pan', target: null, lastX: pos.x, lastY: pos.y };
+                canvas.style.cursor = 'grabbing';
+            }
+            draw();
+        });
+
+        canvas.addEventListener('pointermove', (e) => {
+            const pos = getPointerPos(e);
+            let needsDraw = false;
+
+            if (e.pointerType === 'mouse') {
+                const realPxX = pos.x * window.devicePixelRatio;
+                const realPxY = pos.y * window.devicePixelRatio;
+                const logPos = pixelToLog(realPxX, realPxY);
+
+                const snappedLogX = Math.round(logPos.x);
+                const snappedLogY = Math.round(logPos.y);
+
+                if (!state.hoveredGrid || state.hoveredGrid.x !== snappedLogX || state.hoveredGrid.y !== snappedLogY) {
+                    state.hoveredGrid = { x: snappedLogX, y: snappedLogY };
+                    needsDraw = true;
+                }
+
+                const snappedPx = logToPixel(snappedLogX, snappedLogY);
+                const cssPxX = snappedPx.x / window.devicePixelRatio;
+                const cssPxY = snappedPx.y / window.devicePixelRatio;
+                const relLog = getRelativeCoords(snappedLogX, snappedLogY);
+
+                const tooltip = document.getElementById('cursor-tooltip');
+                tooltip.style.left = `${cssPxX + 15}px`;
+                tooltip.style.top = `${cssPxY + 15}px`;
+                tooltip.innerText = `(${relLog.x}; ${relLog.y})`;
+                tooltip.classList.remove('opacity-0');
+            }
+
+            if (interaction.type !== 'none') {
+                if (interaction.type === 'drag' && state.mode === 'explore') {
+                    const realPxX = pos.x * window.devicePixelRatio;
+                    const realPxY = pos.y * window.devicePixelRatio;
+                    const logPos = pixelToLog(realPxX, realPxY);
+                    balls[interaction.target].logicalX = Math.round(logPos.x);
+                    balls[interaction.target].logicalY = Math.round(logPos.y);
+                    updateMathUI();
+                }
+                else if (interaction.type === 'pan') {
+                    const dx = pos.x - interaction.lastX;
+                    const dy = pos.y - interaction.lastY;
+                    state.camera.x += dx * window.devicePixelRatio;
+                    state.camera.y += dy * window.devicePixelRatio;
+                    interaction.lastX = pos.x;
+                    interaction.lastY = pos.y;
+                }
+                needsDraw = true;
+            }
+
+            if (needsDraw) draw();
+        });
+
+        canvas.addEventListener('pointerup', (e) => {
+            canvas.releasePointerCapture(e.pointerId);
+            if (interaction.type === 'drag') balls[interaction.target].isDragging = false;
+            interaction = { type: 'none', target: null, lastX: 0, lastY: 0 };
+            canvas.style.cursor = 'crosshair';
+            draw();
+        });
+
+        canvas.addEventListener('pointerleave', (e) => {
+            document.getElementById('cursor-tooltip').classList.add('opacity-0');
+            state.hoveredGrid = null;
+            if (interaction.type === 'drag') balls[interaction.target].isDragging = false;
+            interaction = { type: 'none', target: null, lastX: 0, lastY: 0 };
+            canvas.style.cursor = 'crosshair';
+            draw();
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                interaction.type = 'none';
+                initialPinchDist = getPinchDistance(e);
+                initialZoom = state.camera.zoom;
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialPinchDist) {
+                e.preventDefault();
+                const currentDist = getPinchDistance(e);
+                setZoom(initialZoom * (currentDist / initialPinchDist));
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => { if (e.touches.length < 2) initialPinchDist = null; });
+        canvas.addEventListener('wheel', (e) => { e.preventDefault(); setZoom(state.camera.zoom * (e.deltaY > 0 ? 0.9 : 1.1)); }, { passive: false });
+
+        function setZoom(newZoom) {
+            state.camera.zoom = Math.max(0.3, Math.min(newZoom, 4.0));
+            draw();
+        }
+
+        document.getElementById('btn-set-origin').addEventListener('click', () => setOriginToBall('white'));
+
+        function setOriginToBall(ballKey) {
+            state.originOffset.x = balls[ballKey].logicalX;
+            state.originOffset.y = balls[ballKey].logicalY;
+            updateMathUI();
+            draw();
+        }
+
+        function generateLevel() {
+            state.playState = 'idle';
+            shotPath = [];
+            ripples = [];
+
+            document.getElementById('step2-box').classList.add('opacity-40', 'pointer-events-none', 'grayscale');
+            document.getElementById('step3-box').classList.add('opacity-40', 'pointer-events-none', 'grayscale');
+            document.getElementById('step4-box').classList.add('opacity-40', 'pointer-events-none', 'grayscale');
+
+            ['step1-m', 's2-y', 's2-m', 's2-x', 's2-q', 'step3-m', 'step3-q', 'step4-x', 'step4-y'].forEach(id => { document.getElementById(id).value = ''; });
+
+            step3Sign.style.opacity = '1';
+            step3Sign.style.width = 'auto';
+            step3Sign.style.margin = '';
+
+            ['btn-check-s1', 'btn-check-s2a', 'btn-check-s2b', 'btn-check-s3', 'btn-check-s4'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (id === 'btn-check-s4') btn.innerHTML = 'Posiziona';
+                else if (id === 'btn-check-s2a') btn.innerHTML = 'Applica';
+                else btn.innerHTML = 'Verifica';
+                const px = id.includes('s2') ? 'px-2' : 'px-4';
+                btn.className = `md-button bg-surface-container border border-border hover:bg-surface text-primary ${px} py-1.5 ml-auto text-${id.includes('s2') ? 'xs' : 'sm'}`;
+            });
+
+            step2bContainer.classList.add('hidden');
+            step2bContainer.classList.remove('flex');
+
+            btnShoot.classList.add('hidden');
+            btnNextLevel.classList.add('hidden');
+
+            state.originOffset = { x: 0, y: 0 };
+            resetView();
+
+            balls.green.active = false; // Nascondi palla R inizialmente
+
+            let wx, wy, rx, ry;
+            do {
+                wx = Math.floor(Math.random() * 16) - 8; wy = Math.floor(Math.random() * 10) - 5;
+                rx = Math.floor(Math.random() * 16) - 8; ry = Math.floor(Math.random() * 10) - 5;
+            } while (Math.abs(wx - rx) < 2 || wy === ry); // Garantisce almeno un intero intermedio per la palla R ed evita rette orizzontali
+
+            balls.white.logicalX = wx; balls.white.logicalY = wy;
+            balls.red.logicalX = rx; balls.red.logicalY = ry;
+
+            // Aggiorna suggerimenti Step 4
+            hintXp.innerText = Math.min(wx, rx);
+            hintXq.innerText = Math.max(wx, rx);
+
+            updateMathUI();
+            draw();
+        }
+
+        function showFeedback(icon, text, type) {
+            const overlay = document.getElementById('feedback-overlay');
+            document.getElementById('feedback-icon').innerText = icon;
+            document.getElementById('feedback-text').innerText = text;
+
+            overlay.className = `absolute inset-0 pointer-events-none flex flex-col items-center justify-center transition-opacity duration-300 z-10`;
+            overlay.classList.add(type === 'success' ? 'text-success' : 'text-target');
+
+            if (type !== 'success') {
+                canvasWrapper.classList.remove('anim-shake');
+                void canvasWrapper.offsetWidth;
+                canvasWrapper.classList.add('anim-shake');
+            }
+
+            overlay.classList.remove('opacity-0');
+            setTimeout(() => overlay.classList.add('opacity-0'), 1500);
+        }
+
+        function getExpectedVals() {
+            const relW = getRelativeCoords(balls.white.logicalX, balls.white.logicalY);
+            const relR = getRelativeCoords(balls.red.logicalX, balls.red.logicalY);
+            const m = (relR.y - relW.y) / (relR.x - relW.x);
+            const q = relW.y - m * relW.x;
+            return { relW, relR, m, q };
+        }
+
+        function checkStep1() {
+            const exp = getExpectedVals();
+            const userM = parseFractionInput(step1M.value);
+            if (userM !== null && Math.abs(userM - exp.m) < 0.001) {
+                document.getElementById('step2-box').classList.remove('opacity-40', 'pointer-events-none', 'grayscale');
+                btnCheckS1.innerHTML = '<span class="material-symbols-rounded text-lg">check_circle</span> Esatto';
+                btnCheckS1.className = 'md-button bg-success text-surface px-4 py-1.5 ml-auto text-sm';
+                s2M.value = step1M.value;
+            } else { showFeedback("error", "Pendenza Errata", "error"); }
+        }
+
+        function checkStep2A() {
+            const exp = getExpectedVals();
+            const uY = parseFractionInput(s2Y.value);
+            const uM = parseFractionInput(s2M.value);
+            const uX = parseFractionInput(s2X.value);
+
+            if (uY === null || uM === null || uX === null) {
+                showFeedback("error", "Valori Mancanti", "error"); return;
+            }
+
+            const isP = Math.abs(uX - exp.relW.x) < 0.001 && Math.abs(uY - exp.relW.y) < 0.001;
+            const isQ = Math.abs(uX - exp.relR.x) < 0.001 && Math.abs(uY - exp.relR.y) < 0.001;
+
+            if (Math.abs(uM - exp.m) < 0.001 && (isP || isQ)) {
+                step2bContainer.classList.remove('hidden');
+                step2bContainer.classList.add('flex');
+
+                btnCheckS2a.innerHTML = '<span class="material-symbols-rounded text-sm">check</span>';
+                btnCheckS2a.className = 'md-button bg-success text-surface px-2 py-1 ml-auto text-xs';
+
+                s2LblY.innerText = s2Y.value;
+                s2LblMx.innerText = `${s2M.value} · ${s2X.value}`;
+            } else {
+                showFeedback("error", "Sostituzione Errata", "error");
+            }
+        }
+
+        function checkStep2B() {
+            const exp = getExpectedVals();
+            const uQ = parseFractionInput(s2Q.value);
+            if (uQ !== null && Math.abs(uQ - exp.q) < 0.001) {
+                document.getElementById('step3-box').classList.remove('opacity-40', 'pointer-events-none', 'grayscale');
+                btnCheckS2b.innerHTML = '<span class="material-symbols-rounded text-sm">check</span>';
+                btnCheckS2b.className = 'md-button bg-success text-surface px-2 py-1 ml-auto text-xs';
+            } else { showFeedback("calculate", "Calcolo Errato", "error"); }
+        }
+
+        function checkStep3() {
+            const exp = getExpectedVals();
+            const uM = parseFractionInput(step3M.value);
+            const uQ = parseFractionInput(step3Q.value) || 0; // Se è vuoto ma q atteso è 0, passa
+
+            if (uM !== null && Math.abs(uM - exp.m) < 0.001 && Math.abs(uQ - exp.q) < 0.001) {
+                document.getElementById('step4-box').classList.remove('opacity-40', 'pointer-events-none', 'grayscale');
+                btnCheckS3.innerHTML = '<span class="material-symbols-rounded text-lg">check_circle</span> Equazione Corretta';
+                btnCheckS3.className = 'md-button w-full mt-4 bg-success text-surface py-2 text-base';
+            } else { showFeedback("edit_document", "Equazione Errata", "error"); }
+        }
+
+        function checkStep4() {
+            const exp = getExpectedVals();
+            const minX = Math.min(exp.relW.x, exp.relR.x);
+            const maxX = Math.max(exp.relW.x, exp.relR.x);
+            const uX = parseFractionInput(step4X.value);
+            const uY = parseFractionInput(step4Y.value);
+
+            if (uX === null || uY === null) {
+                showFeedback("error", "Valori Mancanti", "error"); return;
+            }
+
+            if (uX <= minX || uX >= maxX) {
+                showFeedback("warning", "X fuori dal segmento PQ", "error"); return;
+            }
+
+            const expectedY = exp.m * uX + exp.q;
+            if (Math.abs(uY - expectedY) < 0.001) {
+                const absTarget = getAbsoluteCoords(uX, uY);
+                balls.green.logicalX = absTarget.x;
+                balls.green.logicalY = absTarget.y;
+                balls.green.active = true;
+                draw();
+
+                btnCheckS4.innerHTML = '<span class="material-symbols-rounded text-lg">check_circle</span> OK';
+                btnCheckS4.className = 'md-button bg-success text-surface px-3 py-1 ml-2 text-xs';
+                btnShoot.classList.remove('hidden');
+
+                setTimeout(() => {
+                    const el = document.getElementById('step4-box');
+                    el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 100);
+            } else {
+                showFeedback("timeline", "Allineamento Errato", "error");
+            }
+        }
+
+        function shoot() {
+            if (state.playState !== 'idle') return;
+            if (window.innerWidth < 1024 && state.isPanelOpen) togglePanel();
+
+            state.playState = 'animating';
+            shotPath = [];
+
+            const m = getExpectedVals().m;
+            let currentShooter = 'white';
+            let currentTarget = 'green';
+            let currX = balls.white.logicalX;
+            let currY = balls.white.logicalY;
+
+            const relW = getRelativeCoords(currX, currY);
+            const relTarget = getRelativeCoords(balls[currentTarget].logicalX, balls[currentTarget].logicalY);
+
+            let dirX = Math.sign(relTarget.x - relW.x);
+            const speed = 0.4;
+
+            function animateLoop() {
+                if (state.playState !== 'animating') return;
+
+                const currRel = getRelativeCoords(currX, currY);
+                const nextRelX = currRel.x + (speed * dirX);
+                const nextRelY = m * nextRelX + getExpectedVals().q;
+
+                const nextAbs = getAbsoluteCoords(nextRelX, nextRelY);
+                currX = nextAbs.x; currY = nextAbs.y;
+
+                if (currentShooter === 'white') shotPath.push({ x: currX, y: currY });
+                balls[currentShooter].logicalX = currX; balls[currentShooter].logicalY = currY;
+                draw();
+
+                const dx = currX - balls[currentTarget].logicalX;
+                const dy = currY - balls[currentTarget].logicalY;
+
+                // Rilevamento collisione
+                if (Math.sqrt(dx * dx + dy * dy) <= balls[currentShooter].radius + balls[currentTarget].radius) {
+                    createRipple(balls[currentTarget].logicalX, balls[currentTarget].logicalY);
+
+                    if (currentTarget === 'green') {
+                        // Urto elastico perfetto: la bianca si ferma, la verde parte
+                        balls.white.logicalX = balls.green.logicalX - dirX * (balls.white.radius * 2);
+                        balls.white.logicalY = m * getRelativeCoords(balls.white.logicalX, 0).x + getExpectedVals().q + state.originOffset.y; // Snap sulla retta
+
+                        currentShooter = 'green';
+                        currentTarget = 'red';
+                        currX = balls.green.logicalX;
+                        currY = balls.green.logicalY;
+                    } else if (currentTarget === 'red') {
+                        // Vittoria
+                        state.playState = 'result';
+                        state.score += 150;
+                        scoreEl.innerText = state.score;
+                        scoreEl.parentElement.classList.add('anim-pop');
+                        setTimeout(() => scoreEl.parentElement.classList.remove('anim-pop'), 400);
+
+                        showFeedback("celebration", "Ottimo Colpo!", "success");
+                        btnShoot.classList.add('hidden'); btnNextLevel.classList.remove('hidden');
+                        if (window.innerWidth < 1024) togglePanel();
+                        draw();
+                        return;
+                    }
+                }
+
+                if (Math.abs(currX) > 30 || Math.abs(currY) > 30) {
+                    state.playState = 'result';
+                    showFeedback("cancel", "Errore Fisico!", "error");
+                    setTimeout(() => generateLevel(), 1500);
+                    return;
+                }
+                state.animationReq = requestAnimationFrame(animateLoop);
+            }
+            if (currentShooter === 'white') shotPath.push({ x: currX, y: currY });
+            state.animationReq = requestAnimationFrame(animateLoop);
+        }
+
+        btnCheckS1.addEventListener('click', checkStep1);
+        btnCheckS2a.addEventListener('click', checkStep2A);
+        btnCheckS2b.addEventListener('click', checkStep2B);
+        btnCheckS3.addEventListener('click', checkStep3);
+        btnCheckS4.addEventListener('click', checkStep4);
+        btnShoot.addEventListener('click', shoot);
+        btnNextLevel.addEventListener('click', generateLevel);
+
+        step1M.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkStep1(); });
+        [s2Y, s2M, s2X].forEach(input => input.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkStep2A(); }));
+        s2Q.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkStep2B(); });
+        [step3M, step3Q].forEach(input => input.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkStep3(); }));
+        [step4X, step4Y].forEach(input => input.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkStep4(); }));
+
+        step3Q.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            if (val.startsWith('-')) {
+                step3Sign.style.opacity = '0';
+                step3Sign.style.width = '0px';
+                step3Sign.style.margin = '0px';
+            } else {
+                step3Sign.style.opacity = '1';
+                step3Sign.style.width = 'auto';
+                step3Sign.style.margin = '';
+            }
+        });
+
+        function switchTab(newMode) {
+            state.mode = newMode;
+            document.getElementById('tab-explore').classList.toggle('active', newMode === 'explore');
+            document.getElementById('tab-explore').classList.toggle('text-muted', newMode !== 'explore');
+            document.getElementById('tab-play').classList.toggle('active', newMode === 'play');
+            document.getElementById('tab-play').classList.toggle('text-muted', newMode !== 'play');
+
+            document.getElementById('panel-explore').classList.toggle('hidden', newMode !== 'explore');
+            document.getElementById('panel-explore').classList.toggle('flex', newMode === 'explore');
+            document.getElementById('panel-play').classList.toggle('hidden', newMode !== 'play');
+            document.getElementById('panel-play').classList.toggle('flex', newMode === 'play');
+
+            if (newMode === 'explore') {
+                balls.white.logicalX = -6; balls.white.logicalY = -3;
+                balls.green.active = false;
+                balls.red.logicalX = 4; balls.red.logicalY = 2;
+                state.originOffset = { x: 0, y: 0 };
+                shotPath = []; ripples = []; resetView();
+            } else { generateLevel(); }
+            updateMathUI(); draw();
+        }
+
+        document.getElementById('tab-explore').addEventListener('click', () => switchTab('explore'));
+        document.getElementById('tab-play').addEventListener('click', () => switchTab('play'));
+
+        function togglePanel() {
+            state.isPanelOpen = !state.isPanelOpen;
+            if (state.isPanelOpen) {
+                sidePanel.classList.remove('hidden');
+                sidePanel.classList.add('flex');
+                iconTogglePanel.innerText = 'close';
+                textTogglePanel.innerText = 'Chiudi';
+            } else {
+                sidePanel.classList.add('hidden');
+                sidePanel.classList.remove('flex');
+                iconTogglePanel.innerText = 'menu_open';
+                textTogglePanel.innerText = 'Controlli';
+            }
+        }
+        btnTogglePanel.addEventListener('click', togglePanel);
+
+        function resetView() { state.camera = { x: 0, y: 0, zoom: 1 }; draw(); }
+        btnResetView.addEventListener('click', resetView);
+        btnZoomIn.addEventListener('click', () => setZoom(state.camera.zoom * 1.2));
+        btnZoomOut.addEventListener('click', () => setZoom(state.camera.zoom * 0.8));
+
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                const rect = entry.contentRect;
+                canvas.width = rect.width * window.devicePixelRatio;
+                canvas.height = rect.height * window.devicePixelRatio;
+                draw();
+            }
+        });
+        resizeObserver.observe(canvasWrapper);
+
+        window.onload = () => {
+            document.fonts.ready.then(() => { updateMathUI(); resetView(); });
+        };
+    </script>
+</body>
+
+</html>
