@@ -1033,11 +1033,9 @@
                 const b = balls[key];
                 const px = logToPixel(b.logicalX, b.logicalY);
                 const effGrid = getEffectiveGridSize();
-                const realPxX = px.x / window.devicePixelRatio;
-                const realPxY = px.y / window.devicePixelRatio;
-                const rCSS = (b.radius * effGrid) / window.devicePixelRatio;
-                const dx = pos.x - realPxX;
-                const dy = pos.y - realPxY;
+                const dx = pos.x - px.x;
+                const dy = pos.y - px.y;
+                const rCSS = b.radius * effGrid;
                 if (Math.sqrt(dx * dx + dy * dy) <= rCSS + 10) { hitBall = key; break; }
             }
 
@@ -1061,9 +1059,7 @@
             let needsDraw = false;
 
             if (e.pointerType === 'mouse') {
-                const realPxX = pos.x * window.devicePixelRatio;
-                const realPxY = pos.y * window.devicePixelRatio;
-                const logPos = pixelToLog(realPxX, realPxY);
+                const logPos = pixelToLog(pos.x, pos.y);
 
                 const snappedLogX = Math.round(logPos.x);
                 const snappedLogY = Math.round(logPos.y);
@@ -1074,22 +1070,18 @@
                 }
 
                 const snappedPx = logToPixel(snappedLogX, snappedLogY);
-                const cssPxX = snappedPx.x / window.devicePixelRatio;
-                const cssPxY = snappedPx.y / window.devicePixelRatio;
                 const relLog = getRelativeCoords(snappedLogX, snappedLogY);
 
                 const tooltip = document.getElementById('cursor-tooltip');
-                tooltip.style.left = `${cssPxX + 15}px`;
-                tooltip.style.top = `${cssPxY + 15}px`;
+                tooltip.style.left = `${snappedPx.x + 15}px`;
+                tooltip.style.top = `${snappedPx.y + 15}px`;
                 tooltip.innerText = `(${relLog.x}; ${relLog.y})`;
                 tooltip.classList.remove('opacity-0');
             }
 
             if (interaction.type !== 'none') {
                 if (interaction.type === 'drag' && state.mode === 'explore') {
-                    const realPxX = pos.x * window.devicePixelRatio;
-                    const realPxY = pos.y * window.devicePixelRatio;
-                    const logPos = pixelToLog(realPxX, realPxY);
+                    const logPos = pixelToLog(pos.x, pos.y);
                     balls[interaction.target].logicalX = Math.round(logPos.x);
                     balls[interaction.target].logicalY = Math.round(logPos.y);
                     updateMathUI();
@@ -1097,8 +1089,8 @@
                 else if (interaction.type === 'pan') {
                     const dx = pos.x - interaction.lastX;
                     const dy = pos.y - interaction.lastY;
-                    state.camera.x += dx * window.devicePixelRatio;
-                    state.camera.y += dy * window.devicePixelRatio;
+                    state.camera.x += dx;
+                    state.camera.y += dy;
                     interaction.lastX = pos.x;
                     interaction.lastY = pos.y;
                 }
@@ -1487,6 +1479,7 @@
                 const rect = entry.contentRect;
                 canvas.width = rect.width * window.devicePixelRatio;
                 canvas.height = rect.height * window.devicePixelRatio;
+                ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
                 draw();
             }
         });
