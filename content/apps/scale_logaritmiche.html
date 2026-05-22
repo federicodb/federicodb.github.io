@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- META DATI PER CATALOGAZIONE (build.py) -->
+    <title>Esploratore di Scale Logaritmiche</title>
+    <meta name="description" content="Laboratorio interattivo sulle scale logaritmiche per esplorare la crescita esponenziale, le leggi di potenza e fenomeni fisici reali.">
+    <meta name="keywords" content="Matematica, Scale Logaritmiche, Crescita Esponenziale, Legge di Moore, Legge di Kleiber, Epidemiologia, Acustica, 4 EL, 5 EL, Laboratorio">
+    <meta name="date" content="2026-05-22">
+
+    <!-- Shared Orfini Design System -->
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+    <script src="../assets/js/orfini-shared.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- KaTeX per le formule -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        oled: '#050505',
+                        panel: 'rgba(15, 15, 20, 0.7)',
+                        accent: '#10b981', // Verde Smeraldo per Esplorazione
+                        accentGlow: 'rgba(16, 185, 129, 0.35)',
+                        challenge: '#c084fc', // Viola per Sfida
+                        challengeGlow: 'rgba(192, 132, 252, 0.35)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
+                        radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.04) 0%, transparent 45%),
+                        #030303;
+            overflow-x: hidden;
+            transition: background 0.8s ease;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 15, 20, 0.65);
+            backdrop-filter: blur(20px) saturate(120%);
+            -webkit-backdrop-filter: blur(20px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .panel {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Gestione dell'allargamento fluido della griglia con :has() */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            transition: grid-template-columns 0.5s cubic-bezier(0.4, 0, 0.2, 1), gap 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (min-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr 2fr;
+            }
+            .main-grid:has(.panel.collapsed) {
+                grid-template-columns: 0fr 1fr;
+                gap: 0;
+            }
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 99px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* KaTeX styling */
+        .katex {
+            font-size: 1.1em;
+            color: #f3f4f6;
+        }
+        
+        /* Glow effects */
+        .btn-glow-explore {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+        .btn-glow-challenge {
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+            border-color: rgba(192, 132, 252, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-oled text-gray-200 min-h-screen p-4 md:p-6 lg:p-8 flex items-center justify-center">
+
+    <div class="w-full max-w-7xl main-grid h-full">
+        
+        <!-- PANNELLO LATERALE -->
+        <div class="panel glass-panel p-5 lg:p-6 rounded-2xl flex flex-col gap-6 h-[85vh] overflow-y-auto custom-scrollbar">
+            
+            <div class="pb-4 border-b border-neutral-800/80">
+                <h1 class="text-2xl font-bold text-white mb-2 tracking-tight">Scale Logaritmiche</h1>
+                <p class="text-sm text-neutral-400 leading-relaxed font-light">Laboratorio interattivo per riconoscere leggi fisiche ed esponenziali dai dati grezzi.</p>
+            </div>
+
+            <!-- TABS -->
+            <div class="flex bg-neutral-900/60 rounded-xl p-1 gap-1 border border-neutral-800/40">
+                <button id="tabExplore" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-neutral-800 text-accent btn-glow-explore border border-accent/20 transition-all duration-300 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    Esplora
+                </button>
+                <button id="tabChallenge" class="flex-1 py-2 text-sm font-semibold rounded-lg text-neutral-400 hover:text-challenge transition-all duration-300 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Sfida
+                </button>
+            </div>
+
+            <!-- CONTENUTO ESPLORAZIONE -->
+            <div id="sectionExplore" class="flex flex-col gap-5 flex-grow">
+                <div class="flex flex-col gap-2">
+                    <label class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Scenario</label>
+                    <select id="datasetSelector" class="bg-neutral-900/80 border border-neutral-700/60 text-sm text-white p-3 rounded-lg focus:outline-none focus:border-accent w-full cursor-pointer transition-colors duration-300">
+                        <option value="moore">Tecnologia: Legge di Moore</option>
+                        <option value="viral">Social Media: Viralità Contenuti</option>
+                        <option value="kleiber">Biologia: Legge di Kleiber</option>
+                        <option value="pandemic">Epidemiologia: Crescita Logistica</option>
+                        <option value="acoustic">Acustica: Inverso del Quadrato</option>
+                    </select>
+                </div>
+
+                <div class="mt-auto bg-neutral-900/40 p-4 rounded-xl border border-neutral-800/80">
+                    <h3 class="text-sm font-bold text-accent mb-2" id="infoTitle">Osservazioni</h3>
+                    <p class="text-[13px] text-neutral-300 mb-4 leading-relaxed font-light" id="infoText">Seleziona uno scenario e modifica gli assi per analizzare i dati.</p>
+                    <div id="mathExplanation" class="text-sm text-neutral-400 overflow-x-auto pb-2 flex justify-center min-h-[40px] items-center"></div>
+                </div>
+            </div>
+
+            <!-- CONTENUTO SFIDA -->
+            <div id="sectionChallenge" class="hidden flex-col gap-5 flex-grow">
+                <div class="bg-challenge/5 p-4 rounded-xl border border-challenge/20 flex flex-col gap-3">
+                    <p class="text-[13px] text-neutral-300 leading-relaxed font-light">
+                        Abbiamo campionato un fenomeno sconosciuto (con rumore di misurazione). Modifica gli assi: <strong>quando i punti formano una retta, hai trovato la legge che governa il fenomeno!</strong>
+                    </p>
+                    
+                    <button id="btnNewChallenge" class="bg-challenge hover:bg-purple-400 text-black font-bold py-2.5 px-4 rounded-lg text-sm transition-all duration-300 shadow-lg shadow-challenge/10 hover:scale-[1.02] active:scale-[0.98]">
+                        Genera Nuovo Campione
+                    </button>
+                </div>
+
+                <!-- Box Aiuti / Hints -->
+                <div class="bg-neutral-900/40 p-3.5 rounded-xl border border-neutral-800/85 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Assistente Analisi
+                        </span>
+                        <button id="btnHint" class="text-[11px] font-semibold text-amber-400 bg-amber-400/5 hover:bg-amber-400/10 border border-amber-400/20 px-2 py-1 rounded transition-colors duration-300 flex items-center gap-1">
+                            💡 Richiedi Indizio
+                        </button>
+                    </div>
+                    
+                    <div id="dynamicAxisHelper" class="text-[12px] text-cyan-300/80 bg-cyan-900/10 p-2.5 rounded-lg border border-cyan-800/20 leading-relaxed font-light">
+                        Imposta gli assi per iniziare la valutazione.
+                    </div>
+
+                    <div id="secretHintBox" class="hidden text-[12px] text-amber-300/90 bg-amber-900/10 p-2.5 rounded-lg border border-amber-800/20 leading-relaxed font-light">
+                    </div>
+                </div>
+
+                <div class="mt-auto flex flex-col gap-2">
+                    <label class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500 mb-1">Qual è la natura del fenomeno?</label>
+                    <button class="ans-btn bg-neutral-800/60 hover:bg-neutral-700/80 hover:text-white text-neutral-300 text-sm font-medium py-2.5 rounded-lg border border-neutral-700/50 transition-all duration-300 hover:scale-[1.01]" data-answer="linear">Lineare (Retta in Lin-Lin)</button>
+                    <button class="ans-btn bg-neutral-800/60 hover:bg-neutral-700/80 hover:text-white text-neutral-300 text-sm font-medium py-2.5 rounded-lg border border-neutral-700/50 transition-all duration-300 hover:scale-[1.01]" data-answer="exponential">Esponenziale (Retta in Lin-Log)</button>
+                    <button class="ans-btn bg-neutral-800/60 hover:bg-neutral-700/80 hover:text-white text-neutral-300 text-sm font-medium py-2.5 rounded-lg border border-neutral-700/50 transition-all duration-300 hover:scale-[1.01]" data-answer="power">Legge di Potenza (Retta in Log-Log)</button>
+                </div>
+                
+                <div id="challengeFeedback" class="hidden p-3.5 rounded-lg text-sm text-center font-bold"></div>
+            </div>
+
+            <!-- CONTROLLI ASSI (Sempre visibili) -->
+            <div class="pt-4 border-t border-neutral-800/80">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Asse X (Variabile)</label>
+                        <div class="flex bg-neutral-900/80 p-1 rounded-lg border border-neutral-800/60">
+                            <button class="axis-btn flex-1 text-xs py-1.5 rounded-md font-semibold text-black bg-accent transition-colors x-axis btn-glow-explore" data-axis="x" data-type="linear">Lin</button>
+                            <button class="axis-btn flex-1 text-xs py-1.5 rounded-md font-semibold text-neutral-400 hover:text-white transition-colors x-axis" data-axis="x" data-type="logarithmic">Log</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Asse Y (Misura)</label>
+                        <div class="flex bg-neutral-900/80 p-1 rounded-lg border border-neutral-800/60">
+                            <button class="axis-btn flex-1 text-xs py-1.5 rounded-md font-semibold text-black bg-accent transition-colors y-axis btn-glow-explore" data-axis="y" data-type="linear">Lin</button>
+                            <button class="axis-btn flex-1 text-xs py-1.5 rounded-md font-semibold text-neutral-400 hover:text-white transition-colors y-axis" data-axis="y" data-type="logarithmic">Log</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- AREA GRAFICO -->
+        <div class="chart-container glass-panel rounded-2xl flex flex-col h-[60vh] lg:h-[85vh] relative overflow-hidden transition-all duration-500">
+            <div class="absolute top-4 left-6 bg-black/70 px-3 py-1 rounded-full text-xs font-mono text-neutral-400 border border-neutral-800/80 backdrop-blur-md z-10" id="chartStateLabel">
+                Stato: Lin-Lin
+            </div>
+            <div class="flex-grow p-4 lg:p-8 mt-6 w-full h-full relative">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. DEFINIZIONE DATI ESPLORAZIONE ---
+        const datasets = {
+            moore: {
+                title: "Legge di Moore (Transistor)",
+                xLabel: "Anni dal 1970",
+                yLabel: "Transistor",
+                math: `y = a \\cdot e^{kx} \\implies \\log(y) = \\log(a) + kx`,
+                info: {
+                    "linear-linear": "I dati storici sembrano nulli. L'enorme numero dei processori moderni schiaccia tutto sull'asse X. Impossibile leggere il grafico.",
+                    "linear-logarithmic": "La curva diventa una <strong>retta perfetta</strong>. Questo dimostra visivamente che la crescita è Esponenziale: il numero si moltiplica costantemente nel tempo.",
+                    "logarithmic-linear": "Il logaritmo del tempo non ha senso in questo contesto. Non aiuta la visualizzazione.",
+                    "logarithmic-logarithmic": "La curva non si raddrizza. Non è una legge di potenza, ma puramente esponenziale."
+                },
+                data: [
+                    { x: 1, y: 2300, name: "Intel 4004 (1971)" },
+                    { x: 8, y: 29000, name: "Intel 8086 (1978)" },
+                    { x: 19, y: 1180000, name: "Intel 486 (1989)" },
+                    { x: 27, y: 7500000, name: "Pentium II (1997)" },
+                    { x: 34, y: 125000000, name: "Pentium 4 (2004)" },
+                    { x: 42, y: 1400000000, name: "Core i7 (2012)" },
+                    { x: 47, y: 19200000000, name: "AMD EPYC (2017)" },
+                    { x: 51, y: 57000000000, name: "Apple M1 Max (2021)" }
+                ]
+            },
+            viral: {
+                title: "Viralità sui Social Media",
+                xLabel: "Ore dalla pubblicazione",
+                yLabel: "Visualizzazioni Totali",
+                math: `y = a \\cdot e^{kt} \\implies \\log(y) = \\log(a) + kt`,
+                info: {
+                    "linear-linear": "Nelle prime ore il grafico sembra drammaticamente piatto, poi il contenuto 'esplode' sfondando la scala visiva verso l'alto.",
+                    "linear-logarithmic": "<strong>Retta perfetta! (Lin-Log)</strong> Comprimendo le views (Y) dimostriamo che il contenuto si sta diffondendo in modo esponenziale: ogni nuovo utente ne porta un numero costante di nuovi.",
+                    "logarithmic-linear": "Il logaritmo del tempo non aiuta l'interpretazione visiva di questo fenomeno.",
+                    "logarithmic-logarithmic": "I dati formano una curva concava verso il basso. Non è una legge di potenza, dipende esclusivamente dal tasso di crescita esponenziale nel tempo."
+                },
+                data: [
+                    { x: 1, y: 15, name: "Ora 1" },
+                    { x: 4, y: 50, name: "Ora 4" },
+                    { x: 8, y: 245, name: "Ora 8" },
+                    { x: 12, y: 1215, name: "Ora 12" },
+                    { x: 16, y: 6013, name: "Ora 16" },
+                    { x: 20, y: 29809, name: "Ora 20" },
+                    { x: 24, y: 147647, name: "Ora 24" }
+                ]
+            },
+            kleiber: {
+                title: "Legge di Kleiber (Biologia)",
+                xLabel: "Massa (kg)",
+                yLabel: "Metabolismo (kcal/giorno)",
+                math: `y = a \\cdot x^{\\frac{3}{4}} \\implies \\log(y) = \\log(a) + \\frac{3}{4}\\log(x)`,
+                info: {
+                    "linear-linear": "L'elefante distrugge la scala. Topo, gatto e cane collassano nell'origine.",
+                    "linear-logarithmic": "Non si raddrizza. La massa dell'elefante è troppo vasta rispetto a quella del topo per usare l'asse X lineare.",
+                    "logarithmic-linear": "Non si raddrizza. I consumi sono troppo distanti.",
+                    "logarithmic-logarithmic": "<strong>Retta perfetta!</strong> Applicare il logaritmo a X e Y dimostra che questa è una <strong>Legge di Potenza</strong>. La pendenza indica l'esponente."
+                },
+                data: [
+                    { x: 0.02, y: 3.6, name: "Topo" },
+                    { x: 0.3, y: 35, name: "Ratto" },
+                    { x: 2.5, y: 180, name: "Gatto" },
+                    { x: 15, y: 600, name: "Cane" },
+                    { x: 70, y: 1700, name: "Umano" },
+                    { x: 500, y: 6000, name: "Cavallo" },
+                    { x: 3000, y: 20000, name: "Elefante" }
+                ]
+            },
+            pandemic: {
+                title: "Curva Epidemica (Logistica)",
+                xLabel: "Giorni dal Caso Zero",
+                yLabel: "Casi Totali",
+                math: `y = \\frac{L}{1 + e^{-k(x-x_0)}}`,
+                info: {
+                    "linear-linear": "Si vede la classica forma a 'S'. Crescita lenta, poi rapida, infine plateau per immunità.",
+                    "linear-logarithmic": "<strong>Molto utile:</strong> Nella fase iniziale (primi giorni) la curva è una retta, confermando che i contagi partono in modo <strong>Esponenziale</strong>. Poi la curva devia dalla retta quando intervengono fattori limitanti.",
+                    "logarithmic-linear": "Meno utile fisicamente in epidemiologia.",
+                    "logarithmic-logarithmic": "Deforma visivamente il fenomeno senza rivelare linearità."
+                },
+                data: Array.from({length: 30}, (_, i) => {
+                    const x = i + 1;
+                    const L = 100000;
+                    const k = 0.3;
+                    const x0 = 15;
+                    const y = L / (1 + Math.exp(-k * (x - x0)));
+                    return { x: x, y: Math.max(1, Math.round(y)), name: `Giorno ${x}` };
+                })
+            },
+            acoustic: {
+                title: "Intensità Acustica",
+                xLabel: "Distanza dalla Sorgente (m)",
+                yLabel: "Intensità Relativa",
+                math: `y = \\frac{1}{x^2} \\implies \\log(y) = -2\\log(x)`,
+                info: {
+                    "linear-linear": "L'intensità crolla precipitosamente vicino alla sorgente e poi si appiattisce.",
+                    "linear-logarithmic": "La curva non diventa una retta.",
+                    "logarithmic-linear": "Il decadimento non è esponenziale.",
+                    "logarithmic-logarithmic": "<strong>Retta con pendenza negativa!</strong> Questo dimostra visivamente una Legge di Potenza inversa ($x^{-2}$). Raddoppiando la distanza, l'intensità diventa un quarto."
+                },
+                data: [1, 2, 4, 8, 16, 32, 64].map(x => ({ x: x, y: 10000 / (x * x), name: `${x} metri` }))
+            }
+        };
+
+        // --- 2. STATO GLOBALE ---
+        let currentMode = 'explore'; // 'explore' o 'challenge'
+        let currentDatasetKey = 'moore';
+        let scaleX = 'linear';
+        let scaleY = 'linear';
+        let chartInstance = null;
+
+        // Variabili Sfida
+        let challengeData = [];
+        let challengeSolution = '';
+        let hintUsed = false;
+
+        // Colori in base alla modalità (utilizzano HSL coerenti)
+        const colorAccent = '#10b981';
+        const colorChallenge = '#c084fc';
+
+        // --- 3. INIZIALIZZAZIONE GRAFICO ---
+        function initChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            
+            // Personalizzazione globale di Chart.js per allinearsi ad Outfit
+            Chart.defaults.font.family = "'Outfit', sans-serif";
+            Chart.defaults.font.weight = '400';
+            Chart.defaults.color = '#a3a3a3';
+
+            // Gradiente per l'area sotto il grafico
+            let fillGradient = ctx.createLinearGradient(0, 0, 0, 400);
+            fillGradient.addColorStop(0, 'rgba(16, 185, 129, 0.15)');
+            fillGradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '',
+                        data: [],
+                        backgroundColor: colorAccent,
+                        borderColor: colorAccent,
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 9,
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 3,
+                        showLine: true,
+                        tension: 0.15,
+                        fill: true,
+                        backgroundColor: fillGradient
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 20,
+                            right: 20,
+                            bottom: 10,
+                            left: 10
+                        }
+                    },
+                    animation: { 
+                        duration: 800, 
+                        easing: 'easeOutQuart' 
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 15, 20, 0.85)',
+                            titleFont: { size: 13, weight: 'bold', family: "'Outfit', sans-serif" },
+                            bodyFont: { size: 12, family: "'JetBrains Mono', monospace" },
+                            titleColor: '#fff',
+                            bodyColor: '#e2e8f0',
+                            borderColor: 'rgba(255,255,255,0.08)',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 10,
+                            displayColors: false,
+                            callbacks: {
+                                title: (ctx) => ctx[0].raw.name || `Rilevamento ${ctx[0].dataIndex + 1}`,
+                                label: (ctx) => `X: ${Number(ctx.raw.x.toPrecision(5))} | Y: ${Number(ctx.raw.y.toPrecision(5))}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            type: 'linear', 
+                            title: { 
+                                display: true, 
+                                text: 'X', 
+                                color: '#737373',
+                                font: { size: 11, weight: 'bold', family: "'Outfit', sans-serif" } 
+                            }, 
+                            grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                            border: { dash: [4, 4] }
+                        },
+                        y: { 
+                            type: 'linear', 
+                            title: { 
+                                display: true, 
+                                text: 'Y', 
+                                color: '#737373',
+                                font: { size: 11, weight: 'bold', family: "'Outfit', sans-serif" } 
+                            }, 
+                            grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                            border: { dash: [4, 4] }
+                        }
+                    }
+                }
+            });
+            
+            updateChart();
+        }
+
+        // --- 4. AGGIORNAMENTO LOGICA GRAFICA ---
+        function updateChart() {
+            const isExplore = currentMode === 'explore';
+            const ds = isExplore ? datasets[currentDatasetKey].data : challengeData;
+            const dsColor = isExplore ? colorAccent : colorChallenge;
+            
+            // Aggiorna Dati e Colori
+            chartInstance.data.datasets[0].data = ds;
+            chartInstance.data.datasets[0].borderColor = dsColor;
+            
+            // Aggiorna il gradiente di riempimento in base al colore della modalità
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            let fillGradient = ctx.createLinearGradient(0, 0, 0, chartInstance.height || 400);
+            if (isExplore) {
+                fillGradient.addColorStop(0, 'rgba(16, 185, 129, 0.18)');
+                fillGradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+                chartInstance.data.datasets[0].backgroundColor = fillGradient;
+                chartInstance.data.datasets[0].pointBorderColor = colorAccent;
+            } else {
+                fillGradient.addColorStop(0, 'rgba(192, 132, 252, 0.18)');
+                fillGradient.addColorStop(1, 'rgba(192, 132, 252, 0.0)');
+                chartInstance.data.datasets[0].backgroundColor = fillGradient;
+                chartInstance.data.datasets[0].pointBorderColor = colorChallenge;
+            }
+            
+            // Imposta tipo di scala in modo sicuro
+            try {
+                chartInstance.options.scales.x.type = scaleX;
+                chartInstance.options.scales.y.type = scaleY;
+            } catch (e) {
+                console.warn("Cambio scala non supportato per questi dati.", e);
+            }
+
+            // Testi Assi
+            if (isExplore) {
+                chartInstance.options.scales.x.title.text = datasets[currentDatasetKey].xLabel;
+                chartInstance.options.scales.y.title.text = datasets[currentDatasetKey].yLabel;
+            } else {
+                chartInstance.options.scales.x.title.text = "Variabile X (Unità arbitrarie)";
+                chartInstance.options.scales.y.title.text = "Variabile Y (Misurazione)";
+            }
+
+            chartInstance.update();
+
+            // Aggiorna Interfaccia
+            const shortX = scaleX === 'linear' ? 'Lin' : 'Log';
+            const shortY = scaleY === 'linear' ? 'Lin' : 'Log';
+            document.getElementById('chartStateLabel').innerText = `Stato: ${shortX}-${shortY}`;
+
+            if (isExplore) {
+                const infoDs = datasets[currentDatasetKey];
+                const stateKey = `${scaleX}-${scaleY}`;
+                
+                document.getElementById('infoText').innerHTML = infoDs.info[stateKey] || "Esplora i dati.";
+                
+                const mathContainer = document.getElementById('mathExplanation');
+                mathContainer.innerHTML = ''; // Pulisce
+                
+                if (window.katex) {
+                    try {
+                        katex.render(infoDs.math, mathContainer, {
+                            displayMode: true,
+                            throwOnError: false
+                        });
+                    } catch (err) {
+                        mathContainer.innerHTML = `$$${infoDs.math}$$`;
+                        console.error(err);
+                    }
+                } else {
+                    mathContainer.innerHTML = `$$${infoDs.math}$$`;
+                }
+            } else {
+                // Assistente Dinamico in Sfida
+                const helperEl = document.getElementById('dynamicAxisHelper');
+                if (scaleX === 'linear' && scaleY === 'linear') {
+                    helperEl.innerHTML = "👀 <strong>Lin-Lin:</strong> Stai guardando i dati grezzi. Se formano una retta qui, il fenomeno è <strong>Lineare</strong>.";
+                } else if (scaleX === 'linear' && scaleY === 'logarithmic') {
+                    helperEl.innerHTML = "🔎 <strong>Lin-Log (Semi-Log):</strong> Hai compresso la Y. Se vedi una retta ora, c'è una crescita <strong>Esponenziale</strong>.";
+                } else if (scaleX === 'logarithmic' && scaleY === 'linear') {
+                    helperEl.innerHTML = "⚠️ <strong>Log-Lin:</strong> Combinazione inusuale. Difficilmente rivela leggi fisiche standard in questo test.";
+                } else if (scaleX === 'logarithmic' && scaleY === 'logarithmic') {
+                    helperEl.innerHTML = "🔭 <strong>Log-Log:</strong> Entrambi compressi. Se vedi una retta, stai osservando una <strong>Legge di Potenza</strong>.";
+                }
+            }
+        }
+
+        // --- 5. LOGICA SFIDA (Generazione Procedurale) ---
+        function generateChallenge() {
+            challengeData = [];
+            const types = ['linear', 'exponential', 'power'];
+            challengeSolution = types[Math.floor(Math.random() * types.length)];
+            
+            let numPoints = 15;
+            let a = Math.random() * 5 + 1;
+            let k, m, q;
+
+            for (let i = 1; i <= numPoints; i++) {
+                let x = i * (Math.random() * 1.5 + 0.5); 
+                let y = 0;
+                
+                // Rumore randomico ±5%
+                let noise = 1 + (Math.random() * 0.1 - 0.05);
+
+                if (challengeSolution === 'linear') {
+                    m = Math.random() * 10 + 2;
+                    q = Math.random() * 20;
+                    y = (m * x + q) * noise;
+                } else if (challengeSolution === 'exponential') {
+                    k = Math.random() * 0.2 + 0.05;
+                    y = (a * Math.exp(k * x)) * noise;
+                } else if (challengeSolution === 'power') {
+                    k = Math.random() * 2.5 + 1.5;
+                    y = (a * Math.pow(x, k)) * noise;
+                }
+
+                // Protezione logaritmo (evita <= 0)
+                if (x <= 0) x = 0.1;
+                if (y <= 0) y = 0.1;
+
+                challengeData.push({ x: x, y: y });
+            }
+            
+            challengeData.sort((a,b) => a.x - b.x);
+
+            // Reset UI risposte
+            document.querySelectorAll('.ans-btn').forEach(b => {
+                b.className = "ans-btn bg-neutral-800/60 hover:bg-neutral-700/80 hover:text-white text-neutral-300 text-sm font-medium py-2.5 rounded-lg border border-neutral-700/50 transition-all duration-300 hover:scale-[1.01]";
+                b.disabled = false;
+            });
+            document.getElementById('challengeFeedback').classList.add('hidden');
+            
+            // Reset Aiuti
+            document.getElementById('secretHintBox').classList.add('hidden');
+            const btnH = document.getElementById('btnHint');
+            btnH.disabled = false;
+            btnH.className = "text-[11px] font-semibold text-amber-400 bg-amber-400/5 hover:bg-amber-400/10 border border-amber-400/20 px-2 py-1 rounded transition-colors duration-300 flex items-center gap-1";
+            btnH.innerHTML = "💡 Richiedi Indizio";
+            hintUsed = false;
+
+            // Forza Lin-Lin all'inizio della sfida
+            scaleX = 'linear';
+            scaleY = 'linear';
+            updateButtonsVisualState();
+            updateChart();
+        }
+
+        // --- 6. GESTIONE EVENTI (UI) ---
+        function updateButtonsVisualState() {
+            const isExplore = currentMode === 'explore';
+            const btnColor = isExplore ? 'bg-accent text-black btn-glow-explore' : 'bg-challenge text-black btn-glow-challenge';
+
+            document.querySelectorAll('.axis-btn').forEach(btn => {
+                const axis = btn.dataset.axis;
+                const type = btn.dataset.type;
+                const isActive = (axis === 'x' && type === scaleX) || (axis === 'y' && type === scaleY);
+                
+                if (isActive) {
+                    btn.className = `axis-btn flex-1 text-xs py-1.5 rounded-md font-bold transition-all duration-300 ${btnColor}`;
+                } else {
+                    btn.className = `axis-btn flex-1 text-xs py-1.5 rounded-md font-medium text-neutral-400 hover:text-white bg-transparent transition-all duration-300`;
+                }
+            });
+        }
+
+        // Tab Switching
+        document.getElementById('tabExplore').addEventListener('click', () => {
+            if (currentMode !== 'explore') {
+                currentMode = 'explore';
+                
+                // Cambia sfondo in modo fluido
+                document.body.style.background = `radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.04) 0%, transparent 45%), #030303`;
+
+                document.getElementById('sectionExplore').classList.remove('hidden');
+                document.getElementById('sectionExplore').classList.add('flex');
+                document.getElementById('sectionChallenge').classList.add('hidden');
+                document.getElementById('sectionChallenge').classList.remove('flex');
+                
+                document.getElementById('tabExplore').className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-neutral-800 text-accent btn-glow-explore border border-accent/20 transition-all duration-300 flex items-center justify-center gap-2";
+                document.getElementById('tabChallenge').className = "flex-1 py-2 text-sm font-semibold rounded-lg text-neutral-400 hover:text-challenge transition-all duration-300 flex items-center justify-center gap-2";
+                
+                updateButtonsVisualState();
+                updateChart();
+            }
+        });
+
+        document.getElementById('tabChallenge').addEventListener('click', () => {
+            if (currentMode !== 'challenge') {
+                currentMode = 'challenge';
+                
+                // Cambia sfondo in modo fluido
+                document.body.style.background = `radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.02) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.06) 0%, transparent 45%), #030303`;
+
+                document.getElementById('sectionChallenge').classList.remove('hidden');
+                document.getElementById('sectionChallenge').classList.add('flex');
+                document.getElementById('sectionExplore').classList.add('hidden');
+                document.getElementById('sectionExplore').classList.remove('flex');
+                
+                document.getElementById('tabChallenge').className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-neutral-800 text-challenge btn-glow-challenge border border-challenge/20 transition-all duration-300 flex items-center justify-center gap-2";
+                document.getElementById('tabExplore').className = "flex-1 py-2 text-sm font-semibold rounded-lg text-neutral-400 hover:text-accent transition-all duration-300 flex items-center justify-center gap-2";
+                
+                generateChallenge();
+            }
+        });
+
+        // Pulsanti Assi
+        document.querySelectorAll('.axis-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = e.target.closest('.axis-btn');
+                if (target.dataset.axis === 'x') scaleX = target.dataset.type; 
+                else scaleY = target.dataset.type;
+                
+                updateButtonsVisualState();
+                updateChart();
+            });
+        });
+
+        // Selettore Dataset (Esplorazione)
+        document.getElementById('datasetSelector').addEventListener('change', (e) => {
+            currentDatasetKey = e.target.value;
+            updateChart();
+        });
+
+        // Pulsante Nuova Sfida
+        document.getElementById('btnNewChallenge').addEventListener('click', generateChallenge);
+
+        // Pulsante Indizio
+        document.getElementById('btnHint').addEventListener('click', () => {
+            if (currentMode !== 'challenge' || hintUsed) return;
+            
+            const box = document.getElementById('secretHintBox');
+            let msg = "";
+            if (challengeSolution === 'linear') {
+                msg = "💡 <strong>Indizio:</strong> Prova a guardare i dati senza applicare alcuna trasformazione logaritmica. Cosa noti?";
+            } else if (challengeSolution === 'exponential') {
+                msg = "💡 <strong>Indizio:</strong> La crescita sull'asse Y è troppo veloce. Prova ad applicare il logaritmo SOLO all'asse Y (Lin-Log).";
+            } else if (challengeSolution === 'power') {
+                msg = "💡 <strong>Indizio:</strong> Il fenomeno si estende su molti ordini di grandezza. Ti serve il logaritmo su ENTRAMBI gli assi (Log-Log).";
+            }
+
+            box.innerHTML = msg;
+            box.classList.remove('hidden');
+            
+            hintUsed = true;
+            const btnH = document.getElementById('btnHint');
+            btnH.disabled = true;
+            btnH.className = "text-[11px] font-semibold text-neutral-500 bg-neutral-900 border border-neutral-800 px-2 py-1 rounded cursor-not-allowed opacity-50 flex items-center gap-1";
+            btnH.innerHTML = "Indizio svelato";
+        });
+
+        // Risposte Sfida
+        document.querySelectorAll('.ans-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const buttonClicked = e.target.closest('.ans-btn');
+                const answer = buttonClicked.dataset.answer;
+                const feedbackEl = document.getElementById('challengeFeedback');
+                
+                // Disabilita bottoni
+                document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+                
+                if (answer === challengeSolution) {
+                    buttonClicked.className = "ans-btn text-emerald-400 bg-emerald-950/40 border border-emerald-500/50 text-sm font-semibold py-2.5 rounded-lg w-full transition-all duration-300 shadow-[0_0_15px_rgba(16,185,129,0.15)]";
+                    
+                    feedbackEl.innerHTML = "✅ Risposta Esatta! Hai individuato correttamente la natura del fenomeno.";
+                    feedbackEl.className = "p-3.5 rounded-lg text-sm text-center font-bold bg-emerald-950/30 text-emerald-400 border border-emerald-800/40 mt-2 shadow-[0_0_10px_rgba(16,185,129,0.1)]";
+                } else {
+                    buttonClicked.className = "ans-btn text-rose-400 bg-rose-955/40 border border-rose-500/50 text-sm font-semibold py-2.5 rounded-lg w-full transition-all duration-300 shadow-[0_0_15px_rgba(244,63,94,0.15)]";
+                    
+                    let correctBtn = document.querySelector(`.ans-btn[data-answer="${challengeSolution}"]`);
+                    correctBtn.className = "ans-btn text-emerald-400 bg-emerald-950/40 border border-emerald-500/50 text-sm font-semibold py-2.5 rounded-lg w-full transition-all duration-300";
+                    
+                    feedbackEl.innerHTML = "❌ Sbagliato. La natura corretta era quella evidenziata in verde.";
+                    feedbackEl.className = "p-3.5 rounded-lg text-sm text-center font-bold bg-rose-950/30 text-rose-400 border border-rose-800/40 mt-2 shadow-[0_0_10px_rgba(244,63,94,0.1)]";
+                }
+                
+                feedbackEl.classList.remove('hidden');
+            });
+        });
+
+        // --- 7. RESIZE INTERATTIVO E DINAMICO DI CHART.JS (INTEGRAZIONE COLLAPSE EYE) ---
+        // Riconosciamo il click sul pulsante occhio iniettato a runtime da orfini-shared.js e aggiorniamo il grafico Chart.js in tempo reale per 600ms per seguire l'animazione di allargamento
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.ui-toggle-btn')) {
+                let start = null;
+                function resizeStep(timestamp) {
+                    if (!start) start = timestamp;
+                    if (chartInstance) {
+                        chartInstance.resize();
+                    }
+                    if (timestamp - start < 600) {
+                        requestAnimationFrame(resizeStep);
+                    }
+                }
+                requestAnimationFrame(resizeStep);
+            }
+        });
+
+        // Inizializzazione all'avvio
+        window.onload = () => {
+            // Verifica ritardata per caricamento KaTeX differito
+            let checkKatex = setInterval(() => {
+                if (window.katex) {
+                    clearInterval(checkKatex);
+                    updateChart();
+                }
+            }, 50);
+
+            // Inizializza Chart
+            initChart();
+            updateButtonsVisualState();
+            
+            // Timeout di sicurezza per pulire il controllo KaTeX
+            setTimeout(() => clearInterval(checkKatex), 3000);
+        };
+    </script>
+</body>
+</html>
