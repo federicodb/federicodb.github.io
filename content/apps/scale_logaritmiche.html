@@ -118,6 +118,21 @@
             box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
             border-color: rgba(192, 132, 252, 0.5);
         }
+        
+        /* Sonification pulsing glow */
+        .btn-play-active {
+            animation: pulse-glow-red 1.5s infinite alternate;
+        }
+        @keyframes pulse-glow-red {
+            0% {
+                box-shadow: 0 0 5px rgba(239, 68, 68, 0.2);
+                border-color: rgba(239, 68, 68, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+                border-color: rgba(239, 68, 68, 0.8);
+            }
+        }
     </style>
 </head>
 <body class="bg-oled text-gray-200 min-h-screen p-4 md:p-6 lg:p-8 flex items-center justify-center">
@@ -145,7 +160,7 @@
             </div>
 
             <!-- CONTENUTO ESPLORAZIONE -->
-            <div id="sectionExplore" class="flex flex-col gap-5 flex-grow">
+            <div id="sectionExplore" class="flex flex-col gap-4 flex-grow">
                 <div class="flex flex-col gap-2">
                     <label class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Scenario</label>
                     <select id="datasetSelector" class="bg-neutral-900/80 border border-neutral-700/60 text-sm text-white p-3 rounded-lg focus:outline-none focus:border-accent w-full cursor-pointer transition-colors duration-300">
@@ -157,7 +172,30 @@
                     </select>
                 </div>
 
-                <div class="mt-auto bg-neutral-900/40 p-4 rounded-xl border border-neutral-800/80">
+                <!-- DESCRIZIONE IMMERSIVA SCENARIO -->
+                <div id="scenarioDescriptionContainer" class="bg-neutral-900/30 p-4 rounded-xl border border-neutral-800/40">
+                    <h4 class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500 mb-1.5 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        Il Contesto Didattico
+                    </h4>
+                    <p id="scenarioDescriptionText" class="text-[13px] text-neutral-300 leading-relaxed font-light"></p>
+                </div>
+
+                <!-- SONIFICAZIONE (ASCOLTA I DATI) -->
+                <div id="sonificationContainer" class="bg-neutral-900/30 p-4 rounded-xl border border-neutral-800/40 flex items-center justify-between gap-3">
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Sonificazione</span>
+                        <span class="text-xs text-neutral-400 font-light">Misure come frequenze e ritmi</span>
+                    </div>
+                    <button id="btnPlaySound" class="bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded-lg p-2.5 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-accentGlow/5 hover:scale-[1.03] active:scale-[0.97]">
+                        <svg id="soundIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z"></path>
+                        </svg>
+                        <span id="soundBtnText" class="text-xs font-semibold">Ascolta</span>
+                    </button>
+                </div>
+
+                <div class="bg-neutral-900/40 p-4 rounded-xl border border-neutral-800/80">
                     <h3 class="text-sm font-bold text-accent mb-2" id="infoTitle">Osservazioni</h3>
                     <p class="text-[13px] text-neutral-300 mb-4 leading-relaxed font-light" id="infoText">Seleziona uno scenario e modifica gli assi per analizzare i dati.</p>
                     <div id="mathExplanation" class="text-sm text-neutral-400 overflow-x-auto pb-2 flex justify-center min-h-[40px] items-center"></div>
@@ -165,7 +203,7 @@
             </div>
 
             <!-- CONTENUTO SFIDA -->
-            <div id="sectionChallenge" class="hidden flex-col gap-5 flex-grow">
+            <div id="sectionChallenge" class="hidden flex-col gap-4 flex-grow">
                 <div class="bg-challenge/5 p-4 rounded-xl border border-challenge/20 flex flex-col gap-3">
                     <p class="text-[13px] text-neutral-300 leading-relaxed font-light">
                         Abbiamo campionato un fenomeno sconosciuto (con rumore di misurazione). Modifica gli assi: <strong>quando i punti formano una retta, hai trovato la legge che governa il fenomeno!</strong>
@@ -173,6 +211,20 @@
                     
                     <button id="btnNewChallenge" class="bg-challenge hover:bg-purple-400 text-black font-bold py-2.5 px-4 rounded-lg text-sm transition-all duration-300 shadow-lg shadow-challenge/10 hover:scale-[1.02] active:scale-[0.98]">
                         Genera Nuovo Campione
+                    </button>
+                </div>
+
+                <!-- SONIFICAZIONE SFIDA -->
+                <div id="challengeSonificationContainer" class="bg-neutral-900/30 p-4 rounded-xl border border-neutral-800/60 flex items-center justify-between gap-3">
+                    <div class="flex flex-col gap-0.5">
+                        <span class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Impronta Sonora</span>
+                        <span class="text-xs text-neutral-400 font-light">Ascolta il ritmo acustico del fenomeno ignoto</span>
+                    </div>
+                    <button id="btnPlayChallengeSound" class="bg-challenge/10 hover:bg-challenge/20 text-challenge border border-challenge/30 rounded-lg p-2.5 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-challengeGlow/5 hover:scale-[1.03] active:scale-[0.97]">
+                        <svg id="challengeSoundIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z"></path>
+                        </svg>
+                        <span id="challengeSoundBtnText" class="text-xs font-semibold">Ascolta</span>
                     </button>
                 </div>
 
@@ -226,6 +278,18 @@
                 </div>
             </div>
 
+            <!-- INDICATORE DI LINEARITA' (R2) -->
+            <div id="r2Container" class="pt-4 border-t border-neutral-800/80 flex flex-col gap-2">
+                <div class="flex items-center justify-between">
+                    <label class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500">Rallineamento Dati (R²)</label>
+                    <span id="r2Value" class="text-xs font-mono font-bold text-accent">R² = 0.000 (0.0%)</span>
+                </div>
+                <div class="w-full bg-neutral-900/60 rounded-full h-2 border border-neutral-800/80 overflow-hidden relative">
+                    <div id="r2Bar" class="h-full bg-accent transition-all duration-500 ease-out w-0" style="box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);"></div>
+                </div>
+                <p id="r2Comment" class="text-[11px] text-neutral-400 font-light leading-relaxed"></p>
+            </div>
+
         </div>
 
         <!-- AREA GRAFICO -->
@@ -248,11 +312,12 @@
                 xLabel: "Anni dal 1970",
                 yLabel: "Transistor",
                 math: `y = a \\cdot e^{kx} \\implies \\log(y) = \\log(a) + kx`,
+                scenarioDescription: "<strong>La sfida dell'infinitamente piccolo:</strong> Prendi il tuo smartphone o tablet. Quello che stringi tra le mani ha miliardi di transistor microscopici che lavorano all'unisono. Ora viaggia indietro nel tempo fino al 1971: sei un giovane ingegnere informatico nel primo pionieristico laboratorio di microelettronica. Stai assemblando l'Intel 4004, il primo microprocessore commerciale, saldando al microscopio appena 2.300 transistor giganti su una piastrina di silicio. Un collega sussurra una profezia audace: <em>\"Il numero di transistor raddoppierà ogni due anni!\"</em>. Guardando il grafico in scala lineare (Lin-Lin), i primi 30 anni di questa rivoluzione tecnologica sembrano piatti, come se non fosse successo nulla. Sembra che i pionieri degli anni '70 e '80 non abbiano fatto progressi! Passa alla scala semi-logaritmica (Lin-Log): quale verità nascosta si rivela sotto questo inganno visivo? Come si collega il raddoppio regolare alla retta risultante?",
                 info: {
-                    "linear-linear": "I dati storici sembrano nulli. L'enorme numero dei processori moderni schiaccia tutto sull'asse X. Impossibile leggere il grafico.",
-                    "linear-logarithmic": "La curva diventa una <strong>retta perfetta</strong>. Questo dimostra visivamente che la crescita è Esponenziale: il numero si moltiplica costantemente nel tempo.",
-                    "logarithmic-linear": "Il logaritmo del tempo non ha senso in questo contesto. Non aiuta la visualizzazione.",
-                    "logarithmic-logarithmic": "La curva non si raddrizza. Non è una legge di potenza, ma puramente esponenziale."
+                    "linear-linear": "I dati storici sembrano nulli nell'origine. L'enorme numero dei processori moderni (decine di miliardi) schiaccia tutto il passato sull'asse X. Impossibile leggere o interpretare il grafico.",
+                    "linear-logarithmic": "La curva si raddrizza in una <strong>retta quasi perfetta</strong>. Questo dimostra visivamente che la crescita è Esponenziale: a intervalli di tempo regolari (asse X lineare), il numero di transistor si moltiplica per un fattore costante (asse Y logaritmico).",
+                    "logarithmic-linear": "Il logaritmo del tempo non ha senso logico o fisico in questo contesto e non aiuta a linearizzare i dati.",
+                    "logarithmic-logarithmic": "La curva non si raddrizza. Non siamo in presenza di una legge di potenza, ma di una crescita puramente esponenziale."
                 },
                 data: [
                     { x: 1, y: 2300, name: "Intel 4004 (1971)" },
@@ -270,11 +335,12 @@
                 xLabel: "Ore dalla pubblicazione",
                 yLabel: "Visualizzazioni Totali",
                 math: `y = a \\cdot e^{kt} \\implies \\log(y) = \\log(a) + kt`,
+                scenarioDescription: "<strong>L'illusione del successo istantaneo:</strong> Hai registrato un video in cui mostri ai tuoi compagni di classe un esperimento di fisica fatto a casa usando il sensore del cellulare. Lo carichi online. Nelle prime ore il contatore segna 15 visualizzazioni, poi 50. Ti scoraggi, pensi a un fallimento totale: sul grafico lineare la curva è piatta, rasenta lo zero. All'improvviso, dopo 16 ore, la linea schizza verso l'alto verticalmente fino a 150.000 visualizzazioni! È stata davvero un'esplosione improvvisa dell'algoritmo? O il contagio sociale stava seguendo la medesima, implacabile legge moltiplicativa fin dal primo minuto, invisibile ai nostri occhi abituati a pensare in modo lineare? Passa alla scala Lin-Log. Qual è il tasso di riproduzione costante di questo virus digitale? Riesci a percepirlo nel suono?",
                 info: {
-                    "linear-linear": "Nelle prime ore il grafico sembra drammaticamente piatto, poi il contenuto 'esplode' sfondando la scala visiva verso l'alto.",
-                    "linear-logarithmic": "<strong>Retta perfetta! (Lin-Log)</strong> Comprimendo le views (Y) dimostriamo che il contenuto si sta diffondendo in modo esponenziale: ogni nuovo utente ne porta un numero costante di nuovi.",
-                    "logarithmic-linear": "Il logaritmo del tempo non aiuta l'interpretazione visiva di questo fenomeno.",
-                    "logarithmic-logarithmic": "I dati formano una curva concava verso il basso. Non è una legge di potenza, dipende esclusivamente dal tasso di crescita esponenziale nel tempo."
+                    "linear-linear": "Nelle prime ore il grafico sembra drammaticamente piatto e a crescita zero, poi il contenuto 'esplode' improvvisamente sfondando la scala visiva verso l'alto con un comportamento ingannevole.",
+                    "linear-logarithmic": "<strong>Retta perfetta! (Lin-Log)</strong> Comprimendo le visualizzazioni (asse Y logaritmico) e mantenendo il tempo lineare (asse X), dimostriamo che la diffusione è guidata da un tasso di crescita costante: ogni utente infetta un numero fisso di nuovi spettatori a ogni ora.",
+                    "logarithmic-linear": "Il logaritmo del tempo non aiuta a interpretare la natura dinamica di questo fenomeno.",
+                    "logarithmic-logarithmic": "I dati formano una curva concava verso il basso. Non è una legge di potenza, ma dipende esclusivamente da un tasso costante riferito al tempo lineare."
                 },
                 data: [
                     { x: 1, y: 15, name: "Ora 1" },
@@ -291,11 +357,12 @@
                 xLabel: "Massa (kg)",
                 yLabel: "Metabolismo (kcal/giorno)",
                 math: `y = a \\cdot x^{\\frac{3}{4}} \\implies \\log(y) = \\log(a) + \\frac{3}{4}\\log(x)`,
+                scenarioDescription: "<strong>Il respiro termodinamico dell'arca di Noè:</strong> Appoggia due dita sul tuo polso e ascolta il tuo battito cardiaco. Ora immagina un piccolo topo di campagna da 20 grammi con un battito frenetico e un maestoso elefante africano da 3 tonnellate. Benvenuto nel laboratorio di fisiologia comparata: stiamo indagando come l'energia alimenta la vita. Se provi a graficare la massa su una scala lineare, il topo e persino il cane spariscono schiacciati contro l'asse verticale, azzerati dal gigante. Ma come scala il consumo energetico (metabolismo) con le dimensioni corporee? Nel 1932, Max Kleiber capì che l'energia non cresce proporzionalmente alla massa ($1:1$), ma segue una legge di potenza geometrica con esponente $3/4$. Imposta la scala bi-logaritmica (Log-Log) per allineare l'intera biodiversità su un'unica retta universale. Rileva la pendenza: perché la vita risparmia energia man mano che cresce?",
                 info: {
-                    "linear-linear": "L'elefante distrugge la scala. Topo, gatto e cane collassano nell'origine.",
-                    "linear-logarithmic": "Non si raddrizza. La massa dell'elefante è troppo vasta rispetto a quella del topo per usare l'asse X lineare.",
-                    "logarithmic-linear": "Non si raddrizza. I consumi sono troppo distanti.",
-                    "logarithmic-logarithmic": "<strong>Retta perfetta!</strong> Applicare il logaritmo a X e Y dimostra che questa è una <strong>Legge di Potenza</strong>. La pendenza indica l'esponente."
+                    "linear-linear": "L'elefante distrugge completamente la scala visiva. Topo, ratto, cane e uomo spariscono compressi a ridosso dell'origine X-Y.",
+                    "linear-logarithmic": "Non si raddrizza. La massa dell'elefante è troppo vasta rispetto a quella del topo per poter usare un asse X lineare.",
+                    "logarithmic-linear": "Non si raddrizza. I consumi metabolici dell'elefante sono troppo distanti da quelli degli animali più piccoli per la scala Y lineare.",
+                    "logarithmic-logarithmic": "<strong>Retta perfetta!</strong> L'applicazione del logaritmo a entrambi gli assi rivela una <strong>Legge di Potenza</strong>. La pendenza della retta rappresenta l'esponente frazionario 3/4 scoperto da Max Kleiber nel 1932."
                 },
                 data: [
                     { x: 0.02, y: 3.6, name: "Topo" },
@@ -312,11 +379,12 @@
                 xLabel: "Giorni dal Caso Zero",
                 yLabel: "Casi Totali",
                 math: `y = \\frac{L}{1 + e^{-k(x-x_0)}}`,
+                scenarioDescription: "<strong>La stanza dei bottoni dell'Unità di Crisi:</strong> Sei il coordinatore scientifico dell'unità sanitaria locale e devi consigliare il sindaco sulle misure di confinamento a partire dai dati che i ragazzi inseriscono nei loro tablet per lavorare a casa. Un nuovo patogeno si diffonde. Nei primi giorni i casi aumentano lentamente (10, 30, 80...). Su scala lineare sembra tutto sotto controllo. All'improvviso la curva si impenna in verticale seminando il panico. Le restrizioni che avete introdotto tre giorni fa stanno funzionando? Guardando il grafico lineare (Lin-Lin) non vedrai alcuna differenza per giorni. Passa alla scala Lin-Log: se le misure sono efficaci, la retta della crescita esponenziale inizierà immediatamente a piegarsi verso il basso, anticipando il plateau logistico prima che sia visibile in scala reale. Riesci a vedere questa flessione precoce che salverà vite?",
                 info: {
-                    "linear-linear": "Si vede la classica forma a 'S'. Crescita lenta, poi rapida, infine plateau per immunità.",
-                    "linear-logarithmic": "<strong>Molto utile:</strong> Nella fase iniziale (primi giorni) la curva è una retta, confermando che i contagi partono in modo <strong>Esponenziale</strong>. Poi la curva devia dalla retta quando intervengono fattori limitanti.",
-                    "logarithmic-linear": "Meno utile fisicamente in epidemiologia.",
-                    "logarithmic-logarithmic": "Deforma visivamente il fenomeno senza rivelare linearità."
+                    "linear-linear": "Si apprezza la classica curva sigmoidea (a S) della crescita logistica: lenta all'inizio, poi esplosiva e infine a plateau per via dell'immunità o del contenimento.",
+                    "linear-logarithmic": "<strong>Fase iniziale lineare:</strong> Nei primi giorni i contagi formano una linea retta, confermando una crescita <strong>Esponenziale</strong> pura. La deviazione calante da questa retta indica l'efficacia del contenimento.",
+                    "logarithmic-linear": "Questa combinazione non ha un'utilità fisica o interpretativa in campo epidemiologico.",
+                    "logarithmic-logarithmic": "Questa scala deforma la classica dinamica epidemiologica senza apportare linearità o benefici visivi."
                 },
                 data: Array.from({length: 30}, (_, i) => {
                     const x = i + 1;
@@ -332,11 +400,12 @@
                 xLabel: "Distanza dalla Sorgente (m)",
                 yLabel: "Intensità Relativa",
                 math: `y = \\frac{1}{x^2} \\implies \\log(y) = -2\\log(x)`,
+                scenarioDescription: "<strong>Fisica acustica con il tuo smartphone:</strong> Scarica un'app fonometro open-source (come <em>Phyphox</em>). Allontanati progressivamente da una sorgente sonora che emette un suono puro, registrando i decibel sul tablet o sul cellulare. L'energia del suono si propaga nello spazio sferico diminuendo con l'inverso del quadrato della distanza ($1/d^2$). Sul grafico lineare vedi un crollo verticale seguito da una coda indistinguibile. Come possiamo calibrare l'audio per chi siede nelle file più lontane della classe? Passa alla scala Log-Log: vedrai il decadimento geometrico tramutarsi in una retta geometrica perfetta con pendenza negativa pari a -2. Ascolta la sonificazione: in quale scala la diminuzione del volume corrisponde meglio alla discesa lineare percepita dal tuo orecchio?",
                 info: {
-                    "linear-linear": "L'intensità crolla precipitosamente vicino alla sorgente e poi si appiattisce.",
-                    "linear-logarithmic": "La curva non diventa una retta.",
-                    "logarithmic-linear": "Il decadimento non è esponenziale.",
-                    "logarithmic-logarithmic": "<strong>Retta con pendenza negativa!</strong> Questo dimostra visivamente una Legge di Potenza inversa ($x^{-2}$). Raddoppiando la distanza, l'intensità diventa un quarto."
+                    "linear-linear": "L'intensità sonora crolla precipitosamente vicino alla sorgente e poi si adagia su una coda asintotica apparentemente costante.",
+                    "linear-logarithmic": "La curva continua ad essere fortemente flessa verso l'alto; non diventa una retta.",
+                    "logarithmic-linear": "Il decadimento spaziale non è un fenomeno a base temporale esponenziale e non viene linearizzato qui.",
+                    "logarithmic-logarithmic": "<strong>Retta con pendenza negativa pari a -2!</strong> Questa combinazione bi-logaritmica dimostra la <strong>Legge di Potenza inversa</strong>. Raddoppiando la distanza, l'intensità diventa un quarto (decadimento geometrico)."
                 },
                 data: [1, 2, 4, 8, 16, 32, 64].map(x => ({ x: x, y: 10000 / (x * x), name: `${x} metri` }))
             }
@@ -358,6 +427,11 @@
         const colorAccent = '#10b981';
         const colorChallenge = '#c084fc';
 
+        // Variabili Audio (Sonificazione)
+        let audioCtx = null;
+        let isPlayingSound = false;
+        let activeAudioOscillators = [];
+
         // --- 3. INIZIALIZZAZIONE GRAFICO ---
         function initChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
@@ -367,29 +441,36 @@
             Chart.defaults.font.weight = '400';
             Chart.defaults.color = '#a3a3a3';
 
-            // Gradiente per l'area sotto il grafico
-            let fillGradient = ctx.createLinearGradient(0, 0, 0, 400);
-            fillGradient.addColorStop(0, 'rgba(16, 185, 129, 0.15)');
-            fillGradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
-
             chartInstance = new Chart(ctx, {
                 type: 'scatter',
                 data: {
-                    datasets: [{
-                        label: '',
-                        data: [],
-                        backgroundColor: colorAccent,
-                        borderColor: colorAccent,
-                        borderWidth: 3,
-                        pointRadius: 6,
-                        pointHoverRadius: 9,
-                        pointBackgroundColor: '#fff',
-                        pointBorderWidth: 3,
-                        showLine: true,
-                        tension: 0.15,
-                        fill: true,
-                        backgroundColor: fillGradient
-                    }]
+                    datasets: [
+                        {
+                            label: 'Dati Sperimentali',
+                            data: [],
+                            backgroundColor: colorAccent,
+                            borderColor: colorAccent,
+                            borderWidth: 3,
+                            pointRadius: 6,
+                            pointHoverRadius: 9,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderWidth: 3,
+                            showLine: false,
+                            fill: false
+                        },
+                        {
+                            label: 'Retta di Regressione',
+                            data: [],
+                            type: 'line',
+                            borderColor: 'rgba(255, 255, 255, 0.35)',
+                            borderWidth: 2,
+                            borderDash: [6, 6],
+                            pointRadius: 0,
+                            pointHoverRadius: 0,
+                            fill: false,
+                            showLine: true
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -419,6 +500,7 @@
                             padding: 12,
                             cornerRadius: 10,
                             displayColors: false,
+                            filter: (tooltipItem) => tooltipItem.datasetIndex === 0, // Ignora la retta di regressione nel tooltip
                             callbacks: {
                                 title: (ctx) => ctx[0].raw.name || `Rilevamento ${ctx[0].dataIndex + 1}`,
                                 label: (ctx) => `X: ${Number(ctx.raw.x.toPrecision(5))} | Y: ${Number(ctx.raw.y.toPrecision(5))}`
@@ -461,24 +543,13 @@
             const ds = isExplore ? datasets[currentDatasetKey].data : challengeData;
             const dsColor = isExplore ? colorAccent : colorChallenge;
             
-            // Aggiorna Dati e Colori
+            // Aggiorna Dati e Colori dei punti (dataset 0)
             chartInstance.data.datasets[0].data = ds;
             chartInstance.data.datasets[0].borderColor = dsColor;
+            chartInstance.data.datasets[0].pointBorderColor = dsColor;
             
-            // Aggiorna il gradiente di riempimento in base al colore della modalità
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            let fillGradient = ctx.createLinearGradient(0, 0, 0, chartInstance.height || 400);
-            if (isExplore) {
-                fillGradient.addColorStop(0, 'rgba(16, 185, 129, 0.18)');
-                fillGradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
-                chartInstance.data.datasets[0].backgroundColor = fillGradient;
-                chartInstance.data.datasets[0].pointBorderColor = colorAccent;
-            } else {
-                fillGradient.addColorStop(0, 'rgba(192, 132, 252, 0.18)');
-                fillGradient.addColorStop(1, 'rgba(192, 132, 252, 0.0)');
-                chartInstance.data.datasets[0].backgroundColor = fillGradient;
-                chartInstance.data.datasets[0].pointBorderColor = colorChallenge;
-            }
+            // Aggiorna colore della retta di regressione (dataset 1)
+            chartInstance.data.datasets[1].borderColor = isExplore ? 'rgba(16, 185, 129, 0.45)' : 'rgba(192, 132, 252, 0.45)';
             
             // Imposta tipo di scala in modo sicuro
             try {
@@ -497,6 +568,10 @@
                 chartInstance.options.scales.y.title.text = "Variabile Y (Misurazione)";
             }
 
+            // Calcola la regressione lineare dinamica e i punti della retta
+            const regressionResults = calculateRegressionAndR2(ds, scaleX, scaleY);
+            chartInstance.data.datasets[1].data = regressionResults.regressionPoints;
+
             chartInstance.update();
 
             // Aggiorna Interfaccia
@@ -504,11 +579,54 @@
             const shortY = scaleY === 'linear' ? 'Lin' : 'Log';
             document.getElementById('chartStateLabel').innerText = `Stato: ${shortX}-${shortY}`;
 
+            // Aggiorna Indicatore R²
+            const r2 = regressionResults.r2;
+            const r2Pct = r2 * 100;
+            const r2ValEl = document.getElementById('r2Value');
+            const r2BarEl = document.getElementById('r2Bar');
+            const r2CommentEl = document.getElementById('r2Comment');
+
+            if (r2ValEl && r2BarEl && r2CommentEl) {
+                r2ValEl.innerText = `R² = ${r2.toFixed(3)} (${r2Pct.toFixed(1)}%)`;
+                r2BarEl.style.width = `${r2Pct}%`;
+
+                // Regolazioni di colore in base alla linearità
+                if (r2 >= 0.98) {
+                    r2ValEl.className = "text-xs font-mono font-bold text-emerald-400";
+                    r2BarEl.style.backgroundColor = isExplore ? colorAccent : colorChallenge;
+                    r2BarEl.style.boxShadow = isExplore ? "0 0 10px rgba(16, 185, 129, 0.6)" : "0 0 10px rgba(192, 132, 252, 0.6)";
+                    
+                    if (isExplore) {
+                        r2CommentEl.innerHTML = "✨ <strong>Allineamento perfetto!</strong> La scala scelta raddrizza i dati: rivela una legge scientifica esatta.";
+                    } else {
+                        r2CommentEl.innerHTML = "✨ <strong>Allineamento eccellente!</strong> Hai trovato la scala che linearizza il fenomeno ignoto.";
+                    }
+                } else if (r2 >= 0.90) {
+                    r2ValEl.className = "text-xs font-mono font-bold text-cyan-400";
+                    r2BarEl.style.backgroundColor = "#22d3ee";
+                    r2BarEl.style.boxShadow = "0 0 8px rgba(34, 211, 238, 0.4)";
+                    r2CommentEl.innerHTML = "👍 <strong>Buon allineamento.</strong> C'è una chiara correlazione lineare in questa scala.";
+                } else if (r2 >= 0.70) {
+                    r2ValEl.className = "text-xs font-mono font-bold text-amber-400";
+                    r2BarEl.style.backgroundColor = "#fbbf24";
+                    r2BarEl.style.boxShadow = "none";
+                    r2CommentEl.innerHTML = "⚠️ <strong>Allineamento debole.</strong> La retta descrive solo parzialmente il fenomeno.";
+                } else {
+                    r2ValEl.className = "text-xs font-mono font-bold text-rose-400";
+                    r2BarEl.style.backgroundColor = "#f87171";
+                    r2BarEl.style.boxShadow = "none";
+                    r2CommentEl.innerHTML = "❌ <strong>Nessun allineamento.</strong> I punti sono sparsi o curvi. Prova un'altra combinazione di scale.";
+                }
+            }
+
             if (isExplore) {
                 const infoDs = datasets[currentDatasetKey];
                 const stateKey = `${scaleX}-${scaleY}`;
                 
+                // Aggiorna titolo e descrizione didattica del contesto
+                document.getElementById('infoTitle').innerText = infoDs.title;
                 document.getElementById('infoText').innerHTML = infoDs.info[stateKey] || "Esplora i dati.";
+                document.getElementById('scenarioDescriptionText').innerHTML = infoDs.scenarioDescription || "";
                 
                 const mathContainer = document.getElementById('mathExplanation');
                 mathContainer.innerHTML = ''; // Pulisce
@@ -541,8 +659,386 @@
             }
         }
 
+        // --- FUNZIONE CALCOLO REGRESSIONE LINEARE E R² ---
+        function calculateRegressionAndR2(data, scaleX, scaleY) {
+            const N = data.length;
+            if (N < 2) return { m: 0, q: 0, r2: 0, regressionPoints: [] };
+
+            let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0, sumYY = 0;
+            const transformedData = [];
+
+            for (let i = 0; i < N; i++) {
+                const rawX = data[i].x;
+                const rawY = data[i].y;
+
+                // Protezioni matematiche per valori <= 0
+                const safeX = rawX <= 0 ? 0.0001 : rawX;
+                const safeY = rawY <= 0 ? 0.0001 : rawY;
+
+                // Applica trasformazione logaritmica se l'asse è logaritmico
+                const X = (scaleX === 'logarithmic') ? Math.log(safeX) : safeX;
+                const Y = (scaleY === 'logarithmic') ? Math.log(safeY) : safeY;
+
+                transformedData.push({ X, Y, rawX, rawY });
+
+                sumX += X;
+                sumY += Y;
+                sumXY += X * Y;
+                sumXX += X * X;
+                sumYY += Y * Y;
+            }
+
+            const meanX = sumX / N;
+            const meanY = sumY / N;
+
+            // Calcolo pendenza (m) e intercetta (q) nello spazio trasformato
+            let num = 0;
+            let den = 0;
+            for (let i = 0; i < N; i++) {
+                const diffX = transformedData[i].X - meanX;
+                const diffY = transformedData[i].Y - meanY;
+                num += diffX * diffY;
+                den += diffX * diffX;
+            }
+
+            let m = 0;
+            let q = 0;
+            if (den !== 0) {
+                m = num / den;
+                q = meanY - m * meanX;
+            } else {
+                m = 0;
+                q = meanY;
+            }
+
+            // Calcolo R² (Coefficiente di determinazione)
+            let ssRes = 0;
+            let ssTot = 0;
+            for (let i = 0; i < N; i++) {
+                const diffY = transformedData[i].Y - meanY;
+                const predY = m * transformedData[i].X + q;
+                const resY = transformedData[i].Y - predY;
+                ssRes += resY * resY;
+                ssTot += diffY * diffY;
+            }
+
+            let r2 = 0;
+            if (ssTot !== 0) {
+                r2 = 1 - (ssRes / ssTot);
+            } else {
+                r2 = 1.0;
+            }
+
+            r2 = Math.min(1.0, Math.max(0.0, r2));
+
+            // Generiamo i punti per tracciare la retta di regressione
+            const rawXVals = data.map(d => d.x);
+            const minRawX = Math.min(...rawXVals);
+            const maxRawX = Math.max(...rawXVals);
+
+            const regressionPoints = [];
+            const steps = 40;
+
+            if (scaleX === 'logarithmic') {
+                const logMinX = Math.log(minRawX <= 0 ? 0.0001 : minRawX);
+                const logMaxX = Math.log(maxRawX <= 0 ? 0.0001 : maxRawX);
+                for (let j = 0; j <= steps; j++) {
+                    const XVal = logMinX + (j / steps) * (logMaxX - logMinX);
+                    const YVal = m * XVal + q;
+                    
+                    const xReal = Math.exp(XVal);
+                    const yReal = (scaleY === 'logarithmic') ? Math.exp(YVal) : YVal;
+                    
+                    if (scaleY !== 'logarithmic' || yReal > 0) {
+                        regressionPoints.push({ x: xReal, y: yReal });
+                    }
+                }
+            } else {
+                for (let j = 0; j <= steps; j++) {
+                    const xReal = minRawX + (j / steps) * (maxRawX - minRawX);
+                    const XVal = xReal;
+                    const YVal = m * XVal + q;
+                    
+                    const yReal = (scaleY === 'logarithmic') ? Math.exp(YVal) : YVal;
+                    
+                    if (scaleY !== 'logarithmic' || yReal > 0) {
+                        regressionPoints.push({ x: xReal, y: yReal });
+                    }
+                }
+            }
+
+            return { m, q, r2, regressionPoints };
+        }
+
+        // --- INTERFACCIA E MOTORE DI SONIFICAZIONE (Web Audio API) ---
+        function stopSonification() {
+            if (audioCtx) {
+                try {
+                    audioCtx.close();
+                } catch(e) {
+                    console.error("Errore nella chiusura dell'AudioContext:", e);
+                }
+                audioCtx = null;
+            }
+            isPlayingSound = false;
+            activeAudioOscillators = [];
+            
+            // Ripristina graficamente i pulsanti
+            const btnPlay = document.getElementById('btnPlaySound');
+            const btnPlayText = document.getElementById('soundBtnText');
+            const icon = document.getElementById('soundIcon');
+            if (btnPlay) {
+                btnPlay.classList.remove('btn-play-active', 'bg-red-500/10', 'text-red-400', 'border-red-500/30');
+                btnPlay.classList.add('bg-accent/10', 'text-accent', 'border-accent/30');
+                btnPlayText.innerText = "Ascolta";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z"></path>`;
+            }
+
+            const btnPlayChallenge = document.getElementById('btnPlayChallengeSound');
+            const btnPlayChallengeText = document.getElementById('challengeSoundBtnText');
+            const challengeIcon = document.getElementById('challengeSoundIcon');
+            if (btnPlayChallenge) {
+                btnPlayChallenge.classList.remove('btn-play-active', 'bg-red-500/10', 'text-red-400', 'border-red-500/30');
+                btnPlayChallenge.classList.add('bg-challenge/10', 'text-challenge', 'border-challenge/30');
+                btnPlayChallengeText.innerText = "Ascolta";
+                challengeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5v5h3.25L12 18.75z"></path>`;
+            }
+        }
+
+        async function playSonification() {
+            if (isPlayingSound) {
+                stopSonification();
+                return;
+            }
+
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            isPlayingSound = true;
+            activeAudioOscillators = [];
+
+            const isExplore = currentMode === 'explore';
+            const btn = isExplore ? document.getElementById('btnPlaySound') : document.getElementById('btnPlayChallengeSound');
+            const btnText = isExplore ? document.getElementById('soundBtnText') : document.getElementById('challengeSoundBtnText');
+            const icon = isExplore ? document.getElementById('soundIcon') : document.getElementById('challengeSoundIcon');
+
+            if (btn) {
+                btn.classList.add('btn-play-active', 'bg-red-500/10', 'text-red-400', 'border-red-500/30');
+                btn.classList.remove('bg-accent/10', 'text-accent', 'border-accent/30', 'bg-challenge/10', 'text-challenge', 'border-challenge/30');
+                btnText.innerText = "Ferma";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>`;
+            }
+
+            const data = isExplore ? datasets[currentDatasetKey].data : challengeData;
+            const scenario = isExplore ? currentDatasetKey : challengeSolution;
+
+            const sortedData = [...data].sort((a, b) => a.x - b.x);
+            const xVals = sortedData.map(d => d.x);
+            const yVals = sortedData.map(d => d.y);
+            const xMin = Math.min(...xVals);
+            const xMax = Math.max(...xVals);
+            const yMin = Math.min(...yVals);
+            const yMax = Math.max(...yVals);
+
+            const now = audioCtx.currentTime;
+
+            if (scenario === 'kleiber' || scenario === 'power') {
+                // Legge di Kleiber (Metabolismo) o legge di potenza
+                let totalDuration = sortedData.length * 1.3;
+                
+                sortedData.forEach((point, index) => {
+                    const startOffset = index * 1.3;
+                    const mass = point.x;
+
+                    // Calcolo bpm basato sulla legge di Kleiber HR = c * M^(-1/4)
+                    let bpm = 220 * Math.pow(mass, -0.25);
+                    if (bpm > 650) bpm = 650;
+                    if (bpm < 25) bpm = 25;
+
+                    const beatInterval = 60 / bpm;
+                    const numBeats = Math.floor(1.2 / beatInterval);
+
+                    // Mappatura della frequenza sorda (battiti più piccoli più alti, grossi più bassi)
+                    let baseFreq = 160 * Math.pow(mass, -0.1); 
+                    if (baseFreq > 220) baseFreq = 220;
+                    if (baseFreq < 45) baseFreq = 45;
+
+                    for (let b = 0; b < numBeats; b++) {
+                        const beatTime = now + startOffset + (b * beatInterval);
+                        playHeartSound(beatTime, baseFreq, 0.08, 0.35);
+                        
+                        const dubDelay = Math.min(0.15, beatInterval * 0.35);
+                        playHeartSound(beatTime + dubDelay, baseFreq * 0.75, 0.12, 0.28);
+                    }
+                });
+
+                setTimeout(() => {
+                    if (isPlayingSound) stopSonification();
+                }, totalDuration * 1000 + 200);
+                
+            } else if (scenario === 'acoustic') {
+                // Intensità Acustica (Volume geometrico 1/x^2)
+                const step = 0.5;
+                const totalDuration = sortedData.length * step;
+
+                sortedData.forEach((point, index) => {
+                    const startTime = now + (index * step);
+                    const freq = 440; // 440Hz nota LA standard
+                    
+                    const relativeIntensity = point.y / 10000;
+                    const gainVal = 0.35 * Math.min(1, Math.max(0.002, relativeIntensity));
+
+                    playTone(startTime, freq, gainVal, step * 0.8, 'sine');
+                });
+
+                setTimeout(() => {
+                    if (isPlayingSound) stopSonification();
+                }, totalDuration * 1000 + 200);
+
+            } else if (scenario === 'viral') {
+                // Viralità sui Social (Cascata di notifiche accelerata esponenzialmente)
+                const totalPoints = sortedData.length;
+                let lastTime = 0.1;
+
+                sortedData.forEach((point, index) => {
+                    const progress = index / (totalPoints - 1 || 1);
+                    const delay = 0.65 * Math.pow(0.18, progress); // Intervalli decrescenti
+                    const startTime = now + lastTime;
+                    lastTime += delay;
+
+                    let freq;
+                    if (scaleY === 'linear') {
+                        freq = 280 + ((point.y - yMin) / (yMax - yMin || 1)) * 900;
+                    } else {
+                        const logY = Math.log(point.y || 1);
+                        const logMin = Math.log(yMin || 1);
+                        const logMax = Math.log(yMax || 100000);
+                        const ratio = (logY - logMin) / (logMax - logMin || 1);
+                        freq = 280 * Math.pow(4.5, ratio);
+                    }
+
+                    playTone(startTime, freq, 0.28, 0.08, 'triangle');
+                });
+
+                setTimeout(() => {
+                    if (isPlayingSound) stopSonification();
+                }, lastTime * 1000 + 200);
+
+            } else if (scenario === 'pandemic') {
+                // Epidemia Logistica (Beep a passo fisso, pitch logistico)
+                const step = 0.15;
+                const totalDuration = sortedData.length * step;
+
+                sortedData.forEach((point, index) => {
+                    const startTime = now + (index * step);
+
+                    let freq;
+                    if (scaleY === 'linear') {
+                        freq = 220 + ((point.y - yMin) / (yMax - yMin || 1)) * 780;
+                    } else {
+                        const logY = Math.log(point.y || 1);
+                        const logMin = Math.log(yMin || 1);
+                        const logMax = Math.log(yMax || 100000);
+                        const ratio = (logY - logMin) / (logMax - logMin || 1);
+                        freq = 220 * Math.pow(4.5, ratio);
+                    }
+
+                    playTone(startTime, freq, 0.22, 0.1, 'sine');
+                });
+
+                setTimeout(() => {
+                    if (isPlayingSound) stopSonification();
+                }, totalDuration * 1000 + 200);
+
+            } else {
+                // Moore o Sfide Lineari ed Esponenziali
+                // Tempi proporzionali all'asse X reale
+                const totalDuration = 3.5;
+                
+                sortedData.forEach((point, index) => {
+                    const ratioX = (point.x - xMin) / (xMax - xMin || 1);
+                    const startTime = now + 0.1 + (ratioX * totalDuration);
+
+                    let freq;
+                    if (scaleY === 'linear') {
+                        freq = 220 + ((point.y - yMin) / (yMax - yMin || 1)) * 880;
+                    } else {
+                        const logY = Math.log(point.y || 1);
+                        const logMin = Math.log(yMin || 1);
+                        const logMax = Math.log(yMax || 100000);
+                        const ratioY = (logY - logMin) / (logMax - logMin || 1);
+                        freq = 220 * Math.pow(5, ratioY);
+                    }
+
+                    playTone(startTime, freq, 0.25, 0.18, 'sine');
+                });
+
+                setTimeout(() => {
+                    if (isPlayingSound) stopSonification();
+                }, (totalDuration + 0.4) * 1000);
+            }
+        }
+
+        function playTone(startTime, frequency, volume, duration, type = 'sine') {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, startTime);
+                
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(startTime);
+                osc.stop(startTime + duration + 0.05);
+                
+                activeAudioOscillators.push(osc);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function playHeartSound(startTime, frequency, duration, volume) {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(frequency, startTime);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(140, startTime);
+
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(startTime);
+                osc.stop(startTime + duration + 0.05);
+
+                activeAudioOscillators.push(osc);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         // --- 5. LOGICA SFIDA (Generazione Procedurale) ---
         function generateChallenge() {
+            stopSonification(); // Spegne l'audio se in riproduzione
             challengeData = [];
             const types = ['linear', 'exponential', 'power'];
             challengeSolution = types[Math.floor(Math.random() * types.length)];
@@ -622,6 +1118,7 @@
         // Tab Switching
         document.getElementById('tabExplore').addEventListener('click', () => {
             if (currentMode !== 'explore') {
+                stopSonification(); // Spegne l'audio
                 currentMode = 'explore';
                 
                 // Cambia sfondo in modo fluido
@@ -642,6 +1139,7 @@
 
         document.getElementById('tabChallenge').addEventListener('click', () => {
             if (currentMode !== 'challenge') {
+                stopSonification(); // Spegne l'audio
                 currentMode = 'challenge';
                 
                 // Cambia sfondo in modo fluido
@@ -662,6 +1160,7 @@
         // Pulsanti Assi
         document.querySelectorAll('.axis-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                stopSonification(); // Interrompe l'audio se cambiano gli assi per ricalibrare
                 const target = e.target.closest('.axis-btn');
                 if (target.dataset.axis === 'x') scaleX = target.dataset.type; 
                 else scaleY = target.dataset.type;
@@ -673,9 +1172,14 @@
 
         // Selettore Dataset (Esplorazione)
         document.getElementById('datasetSelector').addEventListener('change', (e) => {
+            stopSonification(); // Spegne l'audio
             currentDatasetKey = e.target.value;
             updateChart();
         });
+
+        // Pulsanti Play Sonificazione
+        document.getElementById('btnPlaySound').addEventListener('click', playSonification);
+        document.getElementById('btnPlayChallengeSound').addEventListener('click', playSonification);
 
         // Pulsante Nuova Sfida
         document.getElementById('btnNewChallenge').addEventListener('click', generateChallenge);
@@ -707,6 +1211,7 @@
         // Risposte Sfida
         document.querySelectorAll('.ans-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                stopSonification(); // Ferma la sonificazione se si risponde
                 const buttonClicked = e.target.closest('.ans-btn');
                 const answer = buttonClicked.dataset.answer;
                 const feedbackEl = document.getElementById('challengeFeedback');
@@ -734,7 +1239,6 @@
         });
 
         // --- 7. RESIZE INTERATTIVO E DINAMICO DI CHART.JS (INTEGRAZIONE COLLAPSE EYE) ---
-        // Riconosciamo il click sul pulsante occhio iniettato a runtime da orfini-shared.js e aggiorniamo il grafico Chart.js in tempo reale per 600ms per seguire l'animazione di allargamento
         document.body.addEventListener('click', (e) => {
             if (e.target.closest('.ui-toggle-btn')) {
                 let start = null;
@@ -753,7 +1257,6 @@
 
         // Inizializzazione all'avvio
         window.onload = () => {
-            // Verifica ritardata per caricamento KaTeX differito
             let checkKatex = setInterval(() => {
                 if (window.katex) {
                     clearInterval(checkKatex);
@@ -761,11 +1264,9 @@
                 }
             }, 50);
 
-            // Inizializza Chart
             initChart();
             updateButtonsVisualState();
             
-            // Timeout di sicurezza per pulire il controllo KaTeX
             setTimeout(() => clearInterval(checkKatex), 3000);
         };
     </script>
