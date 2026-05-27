@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Experience Fibonacci</title>
+    <meta name="description" content="Esplorazione interattiva della successione di Fibonacci, della spirale aurea e della fillotassi nei girasoli. Un'esperienza visiva per comprendere la convergenza del rapporto aureo e l'ottimizzazione geometrica in natura.">
+    <meta name="keywords" content="Fibonacci, sezione aurea, phi, spirale aurea, fillotassi, p5.js, matematica, geometria, natura, trasversale">
+    <meta name="date" content="2026-05-27">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' },
+            chtml: {
+                displayAlign: 'center',
+                scale: 1.1 
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            touch-action: none; 
+        }
+        
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh; 
+        }
+
+        #canvas-wrapper {
+            position: relative;
+            flex: 1; 
+            width: 100%;
+            background-color: #020617; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
+        }
+
+        canvas { 
+            display: block; 
+            touch-action: none; 
+        }
+
+        #control-panel {
+            flex-shrink: 0;
+            height: 45vh; 
+            background-color: #1e293b; 
+            border-top: 1px solid #334155; 
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        @media (min-width: 768px) {
+            #app-container { flex-direction: row-reverse; }
+            #canvas-wrapper { height: 100%; border-left: 1px solid #334155; }
+            #control-panel { width: 380px; height: 100%; border-top: none; }
+        }
+
+        .math-block { 
+            background-color: #0f172a; 
+            padding: 0.75rem; 
+            border-radius: 0.375rem; 
+            margin-bottom: 1rem; 
+            overflow-x: auto; 
+            border: 1px solid #334155;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .scrollable-area {
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #475569 #1e293b;
+            overscroll-behavior: contain; 
+        }
+        .scrollable-area::-webkit-scrollbar { width: 6px; }
+        .scrollable-area::-webkit-scrollbar-track { background: #1e293b; }
+        .scrollable-area::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin: 10px 0;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px; 
+            width: 24px;
+            border-radius: 50%;
+            background: #f59e0b; 
+            cursor: pointer;
+            margin-top: -10px; 
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+            transition: transform 0.1s;
+        }
+        input[type=range]::-webkit-slider-thumb:active { transform: scale(1.1); }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #475569;
+            border-radius: 2px;
+        }
+        input[type=range]:focus { outline: none; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    
+    <main id="canvas-wrapper">
+    </main>
+
+    <aside id="control-panel">
+        <header class="p-4 border-b border-slate-700 bg-slate-900 shadow-md">
+            <h1 class="text-xl font-bold text-amber-500 flex items-center gap-2">
+                <span class="text-3xl font-serif leading-none">$\phi$</span> 
+                <span class="tracking-tight">Laboratorio Aureo</span>
+            </h1>
+        </header>
+
+        <nav class="flex overflow-x-auto border-b border-slate-700 bg-slate-800 shrink-0 hide-scrollbar" aria-label="Moduli">
+            <button onclick="setModule('fibonacci')" id="btn-fibonacci" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-amber-500 text-amber-500 transition-colors focus:outline-none hover:bg-slate-700/50">
+                Spirale
+            </button>
+            <button onclick="setModule('formula')" id="btn-formula" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+                Formula
+            </button>
+            <button onclick="setModule('nature')" id="btn-nature" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+                Natura
+            </button>
+        </nav>
+
+        <div class="flex-1 p-4 md:p-6 scrollable-area relative">
+            
+            <section id="content-fibonacci" class="module-content">
+                <h2 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> La Spirale Logaritmica
+                </h2>
+                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
+                    La successione di Fibonacci si costruisce sommando i due termini precedenti:
+                </p>
+                <div class="math-block text-center text-sm">
+                    $$ F_n = F_{n-1} + F_{n-2} $$
+                </div>
+                
+                <div class="mt-5 p-4 bg-slate-800/80 rounded-lg border border-slate-700 shadow-inner">
+                    <div class="flex justify-between items-end mb-3">
+                        <label for="fib-slider" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Iterazioni (n)</label>
+                        <span id="fib-step-display" class="text-amber-400 font-mono text-lg font-bold bg-slate-900 px-2 py-1 rounded">1</span>
+                    </div>
+                    <input type="range" id="fib-slider" min="1" max="10" value="1" step="1" oninput="updateFibStep(this.value)" aria-label="Seleziona iterazioni">
+                </div>
+
+                <div class="mt-5">
+                    <p class="text-sm text-slate-300 mb-2">Convergenza del rapporto al valore $\phi$:</p>
+                    <div id="fib-ratio-calc" class="font-mono text-sm bg-slate-900 p-3 rounded-lg text-center text-emerald-400 border border-slate-700 shadow-inner">
+                        $F_2 / F_1 = 1 / 1 = 1.000000$
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-formula" class="module-content hidden">
+                <h2 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Il calcolo di $\sqrt{5}$
+                </h2>
+                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
+                    Dividere un segmento in <i>media ed estrema ragione</i> equivale all'equazione $x^2 - x - 1 = 0$.
+                </p>
+                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
+                    Geometricamente si risolve applicando il teorema di Pitagora a un triangolo con cateti $1$ e $\frac{1}{2}$. 
+                    L'ipotenusa misura:
+                </p>
+                <div class="math-block text-cyan-400 text-sm">
+                    $$ c = \sqrt{1^2 + \left(\frac{1}{2}\right)^2} = \frac{\sqrt{5}}{2} $$
+                </div>
+                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
+                    Proiettando l'ipotenusa sul prolungamento della base (sommando $\frac{1}{2}$), si ottiene la soluzione:
+                </p>
+                <div class="math-block text-amber-500 font-bold text-base">
+                    $$ \phi = \frac{1 + \sqrt{5}}{2} $$
+                </div>
+            </section>
+
+            <section id="content-nature" class="module-content hidden">
+                <h2 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> La Fillotassi (Girasole)
+                </h2>
+                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
+                    Il modello di Vogel descrive come l'Angolo Aureo ($\approx 137.5^\circ$) disponga i semi in modo da ottimizzare lo spazio vitale.
+                </p>
+                
+                <div class="mt-5 p-4 bg-slate-800/80 rounded-lg border border-slate-700 shadow-inner">
+                    <div class="flex justify-between items-end mb-3">
+                        <label for="nature-slider" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Angolo di Divergenza</label>
+                        <span id="nature-angle-display" class="text-amber-400 font-mono text-lg font-bold bg-slate-900 px-2 py-1 rounded">137.51°</span>
+                    </div>
+                    <input type="range" id="nature-slider" min="130" max="145" value="137.5077" step="0.01" oninput="updateNatureAngle(this.value)">
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="resetGoldenAngle()" class="text-xs font-bold uppercase tracking-wider bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded text-slate-200 transition-colors focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            Ripristina $\phi$
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-xs text-slate-400 bg-slate-900 p-3 rounded-lg border border-slate-800 leading-relaxed">
+                    Selezionando una frazione razionale (es. 135°) i semi si allineano su raggi definiti. L'irrazionalità di $\phi$ impedisce la sovrapposizione.
+                </div>
+            </section>
+
+        </div>
+    </aside>
+
+</div>
+
+<script>
+    let activeModule = 'fibonacci';
+    
+    function setModule(modId) {
+        activeModule = modId;
+        
+        document.querySelectorAll('.module-btn').forEach(btn => {
+            btn.classList.remove('border-amber-500', 'text-amber-500');
+            btn.classList.add('border-transparent', 'text-slate-400');
+        });
+        const activeBtn = document.getElementById(`btn-${modId}`);
+        activeBtn.classList.remove('border-transparent', 'text-slate-400');
+        activeBtn.classList.add('border-amber-500', 'text-amber-500');
+        
+        document.querySelectorAll('.module-content').forEach(content => content.classList.add('hidden'));
+        document.getElementById(`content-${modId}`).classList.remove('hidden');
+
+        if(typeof forceRedraw === 'function') forceRedraw();
+    }
+
+    function updateFibStep(val) {
+        targetFibStep = parseInt(val);
+        document.getElementById('fib-step-display').innerText = targetFibStep;
+        
+        let f_n = fibSeq[targetFibStep];
+        let f_n1 = fibSeq[targetFibStep-1];
+        let ratio = f_n / f_n1;
+        
+        const ratioContainer = document.getElementById('fib-ratio-calc');
+        ratioContainer.innerHTML = `\\[ \\frac{F_{${targetFibStep+1}}}{F_{${targetFibStep}}} = \\frac{${f_n}}{${f_n1}} = \\mathbf{${ratio.toFixed(6)}} \\]`;
+        
+        if (window.MathJax && MathJax.typesetPromise) {
+            MathJax.typesetPromise([ratioContainer]).catch((err) => console.log(err.message));
+        }
+    }
+
+    function updateNatureAngle(val) {
+        natureAngle = parseFloat(val);
+        document.getElementById('nature-angle-display').innerText = natureAngle.toFixed(2) + "°";
+        forceRedraw();
+    }
+
+    function resetGoldenAngle() {
+        let slider = document.getElementById('nature-slider');
+        slider.value = 137.5077;
+        updateNatureAngle(137.5077);
+    }
+
+    function forceRedraw() {
+        formulaT = 0; 
+        loop(); 
+    }
+
+    let p5canvas;
+    
+    let fibSeq = [1, 1];
+    const maxFibSteps = 10; 
+    let currentFibStep = 1;
+    let targetFibStep = 1;  
+    
+    let globalScale = 1;
+    let globalTx = 0, globalTy = 0;
+
+    let formulaT = 0; 
+
+    let natureAngle = 137.5077;
+    let maxSeeds = 450; 
+
+    function setup() {
+        let wrapper = document.getElementById('canvas-wrapper');
+        p5canvas = createCanvas(wrapper.clientWidth, wrapper.clientHeight);
+        p5canvas.parent('canvas-wrapper');
+        
+        angleMode(DEGREES);
+        
+        for (let i = 2; i <= maxFibSteps; i++) {
+            fibSeq.push(fibSeq[i-1] + fibSeq[i-2]);
+        }
+        
+        updateFibStep(1);
+    }
+
+    function windowResized() {
+        let wrapper = document.getElementById('canvas-wrapper');
+        resizeCanvas(wrapper.clientWidth, wrapper.clientHeight);
+        forceRedraw();
+    }
+
+    function draw() {
+        background(2, 6, 23); 
+        translate(width / 2, height / 2);
+
+        if (activeModule === 'fibonacci') {
+            drawFibonacci();
+        } else if (activeModule === 'formula') {
+            drawFormula();
+        } else if (activeModule === 'nature') {
+            drawNature();
+        }
+    }
+
+    function drawFibonacci() {
+        textFont('sans-serif');
+        if (abs(currentFibStep - targetFibStep) > 0.005) {
+            currentFibStep = lerp(currentFibStep, targetFibStep, 0.12);
+        } else {
+            currentFibStep = targetFibStep;
+        }
+
+        let baseU = 15; 
+        let stepInt = Math.floor(currentFibStep);
+        let stepFract = currentFibStep - stepInt;
+        
+        let rects = [];
+        let arcs = [];
+        
+        let s0 = fibSeq[0] * baseU;
+        rects.push({x: 0, y: 0, w: s0, h: s0, val: fibSeq[0]});
+        arcs.push({x: s0, y: s0, r: s0*2, start: 180, end: 270});
+        
+        let minX = 0, minY = 0, maxX = s0, maxY = s0;
+        let dir = 0; 
+        
+        for (let i = 1; i <= stepInt; i++) {
+            let s = fibSeq[i] * baseU;
+            let rx, ry, ax, ay, startA, endA;
+
+            if (dir === 0) { 
+                rx = maxX; ry = minY;
+                ax = rx; ay = ry + s; 
+                startA = 270; endA = 360;
+                maxX += s;
+                if (ry + s > maxY) maxY = ry + s;
+            } else if (dir === 1) { 
+                rx = maxX - s; ry = maxY;
+                ax = rx; ay = ry; 
+                startA = 0; endA = 90;
+                maxY += s;
+                if (rx < minX) minX = rx;
+            } else if (dir === 2) { 
+                rx = minX - s; ry = maxY - s;
+                ax = rx + s; ay = ry; 
+                startA = 90; endA = 180;
+                minX -= s;
+                if (ry < minY) minY = ry;
+            } else if (dir === 3) { 
+                rx = minX; ry = minY - s;
+                ax = rx + s; ay = ry + s; 
+                startA = 180; endA = 270;
+                minY -= s;
+                if (rx + s > maxX) maxX = rx + s;
+            }
+            
+            rects.push({x: rx, y: ry, w: s, h: s, val: fibSeq[i]});
+            arcs.push({x: ax, y: ay, r: s*2, start: startA, end: endA});
+            
+            dir = (dir + 1) % 4;
+        }
+
+        let boundingW = maxX - minX;
+        let boundingH = maxY - minY;
+        
+        let canvasMin = min(width, height) * 0.75;
+        let targetGlobalScale = min(width / max(boundingW, 1), height / max(boundingH, 1)) * 0.75;
+        globalScale = lerp(globalScale, targetGlobalScale, 0.08);
+
+        let cx = (minX + maxX) / 2;
+        let cy = (minY + maxY) / 2;
+        
+        globalTx = lerp(globalTx, -cx, 0.1);
+        globalTy = lerp(globalTy, -cy, 0.1);
+
+        scale(globalScale);
+        translate(globalTx, globalTy);
+
+        push();
+        for (let i = 0; i <= stepInt; i++) {
+            let rObj = rects[i];
+            let aObj = arcs[i];
+            
+            let alpha = 255;
+            let drawArcEnd = aObj.end;
+            
+            if (i === stepInt && stepFract > 0) {
+                let ease = 1 - Math.pow(1 - stepFract, 3);
+                alpha = 255 * ease;
+                drawArcEnd = aObj.start + (aObj.end - aObj.start) * ease;
+            } else if (i === stepInt && stepFract === 0 && targetFibStep !== stepInt) {
+                 continue; 
+            }
+
+            stroke(71, 85, 105, alpha * 0.8); 
+            strokeWeight(1.5 / globalScale); 
+            noFill();
+            rect(rObj.x, rObj.y, rObj.w, rObj.h);
+
+            if (rObj.w * globalScale > 22) {
+                noStroke();
+                fill(148, 163, 184, alpha * 0.9);
+                textSize(min(rObj.w * 0.4, 32 / globalScale));
+                textAlign(CENTER, CENTER);
+                text(rObj.val, rObj.x + rObj.w/2, rObj.y + rObj.h/2);
+            }
+
+            stroke(245, 158, 11, alpha); 
+            strokeWeight(3 / globalScale);
+            noFill();
+            arc(aObj.x, aObj.y, aObj.r, aObj.r, aObj.start, drawArcEnd);
+        }
+        pop();
+    }
+
+    function drawFormula() {
+        textFont('serif'); // Rendering pulito per radice e testo matematico
+        formulaT += deltaTime * 0.001; 
+        let phase = formulaT % 7; 
+        
+        let u = min(width, height) * 0.38; 
+        
+        translate(-u/2, u/4); 
+        strokeCap(ROUND);
+        strokeJoin(ROUND);
+
+        let w = u;       
+        let h = u / 2;   
+        let ipo = sqrt(w*w + h*h); 
+
+        stroke(255); strokeWeight(3);
+        line(0, 0, w, 0);
+        noStroke(); fill(255); textSize(20); textAlign(CENTER, TOP);
+        text("1", w/2, 12);
+
+        let drawH = h * constrain(phase * 2, 0, 1); 
+        stroke(255); strokeWeight(3);
+        line(w, 0, w, -drawH);
+        
+        if (phase > 0.5) {
+            noStroke(); fill(255); textSize(20); textAlign(LEFT, CENTER);
+            text("1/2", w + 18, -h/2); // Marginatura corretta per allineamento testo verticale
+        }
+
+        if (phase > 1) {
+            let t = constrain((phase - 1) * 2, 0, 1);
+            let hX = lerp(w, 0, t);
+            let hY = lerp(-h, 0, t);
+            
+            stroke(34, 211, 238); 
+            strokeWeight(4);
+            line(w, -h, hX, hY);
+            
+            if (phase > 1.5) {
+                push();
+                translate(w/2, -h/2);
+                rotate(atan2(-h, w)); // Rotazione esatta in coordinate p5.js (Degrees)
+                noStroke(); fill(34, 211, 238); textSize(20); textAlign(CENTER, BOTTOM);
+                text("√5 / 2", 0, -10);
+                pop();
+            }
+        }
+
+        if (phase > 2) {
+            let t = constrain((phase - 2) * 1.5, 0, 1); 
+            
+            let cx = w;
+            let cy = -h;
+            let r = ipo;
+            
+            let startAng = 180 + atan2(h, w);
+            let endAng = 90; 
+            
+            stroke(245, 158, 11, 150); 
+            strokeWeight(2);
+            noFill();
+            
+            beginShape();
+            let currentEnd = map(t, 0, 1, startAng, endAng);
+            for(let a = startAng; a <= currentEnd; a += 1) {
+                vertex(cx + r * cos(a), cy + r * sin(a));
+            }
+            endShape();
+
+            if (phase > 2.8) {
+                let phiLen = h + ipo; 
+                let yOff = 45;
+                
+                stroke(245, 158, 11); 
+                strokeWeight(5);
+                line(w, yOff, w - phiLen, yOff);
+                
+                strokeWeight(2);
+                line(w, yOff-8, w, yOff+8);
+                line(w - phiLen, yOff-8, w - phiLen, yOff+8);
+                
+                stroke(100, 116, 139); 
+                line(w - h, yOff-8, w - h, yOff+8); 
+                
+                noStroke(); fill(245, 158, 11); textSize(22); textAlign(CENTER, TOP);
+                text("φ ≈ 1.618", w - phiLen/2, yOff + 15);
+            }
+        }
+    }
+
+    function drawNature() {
+        textFont('sans-serif');
+        let maxRadius = min(width, height) / 2 * 0.85;
+        let c = maxRadius / sqrt(maxSeeds);
+        
+        noStroke();
+        
+        let isGolden = abs(natureAngle - 137.5077) < 0.08;
+
+        for (let n = 0; n < maxSeeds; n++) {
+            let a = n * natureAngle;
+            let r = c * sqrt(n);
+            
+            let x = r * cos(a);
+            let y = r * sin(a);
+            
+            let pct = n / maxSeeds;
+            
+            let colR = lerp(20, 245, pct);
+            let colG = lerp(100, 158, pct);
+            let colB = lerp(20, 11, pct);
+            
+            if (!isGolden) {
+                colR = lerp(colR, 70, 0.6);
+                colG = lerp(colG, 80, 0.6);
+                colB = lerp(colB, 100, 0.6);
+            }
+            
+            fill(colR, colG, colB);
+            
+            let s = c * 0.6 + (pct * c * 0.6);
+            circle(x, y, s);
+        }
+        
+        if (isGolden) {
+            fill(16, 185, 129); 
+            textSize(15);
+            textAlign(CENTER, BOTTOM);
+            text("Impacchettamento Ottimale: Nessun vuoto", 0, -maxRadius - 15);
+        } else {
+            fill(239, 68, 68); 
+            textSize(15);
+            textAlign(CENTER, BOTTOM);
+            text("Configurazione Inefficiente: Spazi vuoti visibili", 0, -maxRadius - 15);
+        }
+    }
+</script>
+</body>
+</html>
