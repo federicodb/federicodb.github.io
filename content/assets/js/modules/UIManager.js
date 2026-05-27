@@ -312,23 +312,29 @@ export class UIManager {
 
         const topicsHtml = categories.topics.slice(0, 7).map(t => `<button class="topic-chip" onclick="window.setGlobalFilter('${t.replace(/'/g, "\\'")}')">${this.formatMath(t)}</button>`).join('');
         
+        const isExternalOrPdf = (url) => url.startsWith('http') || url.endsWith('.pdf');
+
         let versionsHtml = '';
         if (item.versions && item.versions.length > 0) {
             versionsHtml = `
                 <div class="version-selector">
                     <span class="version-label">Varianti</span>
                     <div class="version-buttons">
-                        ${item.versions.map((v, i) => `
-                            <a href="${v.url}" target="_blank" class="v-btn">
-                                ${this.getCleanLabel(v.label) || ('V' + (i+1))}
-                            </a>
-                        `).join('')}
+                        ${item.versions.map((v, i) => {
+                            const targetVal = isExternalOrPdf(v.url) ? '_blank' : '_self';
+                            return `
+                                <a href="${v.url}" target="${targetVal}" class="v-btn">
+                                    ${this.getCleanLabel(v.label) || ('V' + (i+1))}
+                                </a>
+                            `;
+                        }).join('')}
                     </div>
                 </div>
             `;
         } else {
+            const targetVal = isExternalOrPdf(item.url) ? '_blank' : '_self';
             versionsHtml = `
-                <a href="${item.url}" target="_blank" class="main-cta-btn">
+                <a href="${item.url}" target="${targetVal}" class="main-cta-btn">
                     Esplora Attività 
                     <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
