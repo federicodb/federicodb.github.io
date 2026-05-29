@@ -314,23 +314,49 @@
 
             <section id="content-formula" class="module-content hidden">
                 <h2 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Il calcolo di $\sqrt{5}$
+                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span> La Geometria di $\phi$
                 </h2>
-                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
-                    Dividere un segmento in <i>media ed estrema ragione</i> equivale all'equazione $x^2 - x - 1 = 0$.
-                </p>
-                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
-                    Geometricamente si risolve applicando il teorema di Pitagora a un triangolo con cateti $1$ e $\frac{1}{2}$. 
-                    L'ipotenusa misura:
-                </p>
-                <div class="math-block text-cyan-400 text-sm">
-                    $$ c = \sqrt{1^2 + \left(\frac{1}{2}\right)^2} = \frac{\sqrt{5}}{2} $$
+                
+                <!-- Definizione Euclidea -->
+                <div class="mb-4 text-xs text-slate-300 leading-relaxed">
+                    <h3 class="text-cyan-400 font-bold mb-1 uppercase tracking-wider text-[10px]">La Proporzione Divina (Euclide)</h3>
+                    <p class="mb-2">
+                        Dividere un segmento di lunghezza $1$ in <i>media ed estrema ragione</i> significa posizionare un punto in modo che l'intero segmento stia alla parte maggiore ($x$) come la parte maggiore sta alla parte minore ($1-x$):
+                    </p>
+                    <div class="math-block text-center text-sm">
+                        $$ \frac{1}{x} = \frac{x}{1-x} $$
+                    </div>
                 </div>
-                <p class="text-slate-300 text-sm mb-3 leading-relaxed">
-                    Proiettando l'ipotenusa sul prolungamento della base (sommando $\frac{1}{2}$), si ottiene la soluzione:
-                </p>
-                <div class="math-block text-amber-500 font-bold text-base">
-                    $$ \phi = \frac{1 + \sqrt{5}}{2} $$
+
+                <!-- L'Equazione algebrica -->
+                <div class="mb-4 text-xs text-slate-300 leading-relaxed">
+                    <h3 class="text-cyan-400 font-bold mb-1 uppercase tracking-wider text-[10px]">Dalla Proporzione all'Equazione</h3>
+                    <p class="mb-2">
+                        Risolvendo il prodotto dei medi e degli estremi otteniamo $x^2 + x - 1 = 0$. 
+                        Definendo il rapporto aureo $\phi = \frac{1}{x}$ (il tutto diviso la parte maggiore) e sostituendo $x = \frac{1}{\phi}$, si giunge all'equazione di secondo grado di $\phi$:
+                    </p>
+                    <div class="math-block text-cyan-400 text-sm">
+                        $$ \phi^2 - \phi - 1 = 0 $$
+                    </div>
+                    <p class="mb-2">
+                        La cui unica soluzione reale positiva è la nota costante irrazionale:
+                    </p>
+                    <div class="math-block text-amber-500 font-bold text-base">
+                        $$ \phi = \frac{1 + \sqrt{5}}{2} \approx 1.61803398... $$
+                    </div>
+                </div>
+
+                <!-- Ruolo del Triangolo -->
+                <div class="mb-4 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50 text-xs text-slate-300 leading-relaxed shadow-inner">
+                    <h3 class="text-amber-500 font-bold mb-1 uppercase tracking-wider text-[10px]">Il Triangolo è necessario e sufficiente?</h3>
+                    <p class="mb-2">
+                        Il triangolo rettangolo con cateti $1$ e $\frac{1}{2}$ visualizzato sul canvas è lo strumento geometrico <b>necessario e sufficiente</b> per la costruzione con riga e compasso di $\phi$:
+                    </p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-400">
+                        <li>L'ipotenusa $c$ calcolata con il teorema di Pitagora genera esattamente il termine irrazionale: $c = \sqrt{1^2 + (\frac{1}{2})^2} = \frac{\sqrt{5}}{2}$.</li>
+                        <li>Sottraendo il cateto minore ($\frac{1}{2}$) all'ipotenusa si ottiene la parte maggiore: $x = \frac{\sqrt{5}}{2} - \frac{1}{2} \approx 0.618$.</li>
+                        <li>Proiettando l'ipotenusa sul prolungamento (come nell'animazione), sommiamo $\frac{\sqrt{5}}{2}$ a $\frac{1}{2}$, tracciando graficamente la lunghezza esatta di $\phi$.</li>
+                    </ul>
                 </div>
             </section>
 
