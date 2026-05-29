@@ -584,14 +584,7 @@
 
     function drawFibonacci() {
         textFont('sans-serif');
-        if (abs(currentFibStep - targetFibStep) > 0.005) {
-            currentFibStep = lerp(currentFibStep, targetFibStep, 0.12);
-            loop();
-        } else {
-            currentFibStep = targetFibStep;
-            noLoop();
-        }
-
+        
         let baseU = 15; 
         let stepInt = Math.floor(currentFibStep);
         let stepFract = currentFibStep - stepInt;
@@ -645,15 +638,28 @@
         let boundingW = maxX - minX;
         let boundingH = maxY - minY;
         
-        let canvasMin = min(width, height) * 0.75;
         let targetGlobalScale = min(width / max(boundingW, 1), height / max(boundingH, 1)) * 0.75;
-        globalScale = lerp(globalScale, targetGlobalScale, 0.08);
-
         let cx = (minX + maxX) / 2;
         let cy = (minY + maxY) / 2;
-        
-        globalTx = lerp(globalTx, -cx, 0.1);
-        globalTy = lerp(globalTy, -cy, 0.1);
+
+        let isStepStable = abs(currentFibStep - targetFibStep) < 0.005;
+        let isScaleStable = abs(globalScale - targetGlobalScale) < 0.002;
+        let isTxStable = abs(globalTx - (-cx)) < 0.1;
+        let isTyStable = abs(globalTy - (-cy)) < 0.1;
+
+        if (!isStepStable || !isScaleStable || !isTxStable || !isTyStable) {
+            currentFibStep = lerp(currentFibStep, targetFibStep, 0.12);
+            globalScale = lerp(globalScale, targetGlobalScale, 0.12);
+            globalTx = lerp(globalTx, -cx, 0.12);
+            globalTy = lerp(globalTy, -cy, 0.12);
+            loop();
+        } else {
+            currentFibStep = targetFibStep;
+            globalScale = targetGlobalScale;
+            globalTx = -cx;
+            globalTy = -cy;
+            noLoop();
+        }
 
         scale(globalScale);
         translate(globalTx, globalTy);
