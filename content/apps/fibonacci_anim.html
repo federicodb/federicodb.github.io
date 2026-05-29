@@ -142,6 +142,12 @@
             <button onclick="setModule('fibonacci')" id="btn-fibonacci" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-amber-500 text-amber-500 transition-colors focus:outline-none hover:bg-slate-700/50">
                 Spirale
             </button>
+            <button onclick="setModule('rabbits')" id="btn-rabbits" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+                Conigli
+            </button>
+            <button onclick="setModule('pascal')" id="btn-pascal" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+                Tartaglia
+            </button>
             <button onclick="setModule('formula')" id="btn-formula" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
                 Formula
             </button>
@@ -175,6 +181,111 @@
                     <p class="text-sm text-slate-300 mb-2">Convergenza del rapporto al valore $\phi$:</p>
                     <div id="fib-ratio-calc" class="font-mono text-sm bg-slate-900 p-3 rounded-lg text-center text-emerald-400 border border-slate-700 shadow-inner">
                         $F_2 / F_1 = 1 / 1 = 1.000000$
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-rabbits" class="module-content hidden">
+                <h2 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> Il Problema dei Conigli
+                </h2>
+                
+                <!-- Scheda Storica -->
+                <div class="mb-4 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50 text-xs text-slate-300 leading-relaxed shadow-inner">
+                    <h3 class="text-amber-500 font-bold mb-1 uppercase tracking-wider text-[10px]">Scheda Storica: Fibonacci</h3>
+                    <p class="mb-1">
+                        <b>Leonardo Pisano</b> (Pisa, c. 1170 - 1240), noto storicamente come <i>Fibonacci</i> (figlio di Bonaccio), è stato il più influente matematico dell'Occidente medievale. Compì i suoi studi a Bugia (l'odierna Bejaïa, in Algeria) per conto del padre, mercante pisano, apprendendo qui i metodi di calcolo indo-arabi.
+                    </p>
+                    <p>
+                        Nel suo trattato fondamentale, il <b>Liber Abaci</b> (1202), descrisse ed introdusse in Europa lo zero e le cifre arabe posizionali, rimpiazzando i laboriosi calcoli con l'abaco romano e ponendo le basi della matematica commerciale ed accademica moderna.
+                    </p>
+                </div>
+
+                <!-- Il Problema -->
+                <div class="mb-4 text-xs text-slate-300 leading-relaxed">
+                    <h3 class="text-purple-400 font-bold mb-1 uppercase tracking-wider text-[10px]">La Riproduzione delle Coppie</h3>
+                    <p>
+                        Nel <i>Liber Abaci</i>, Fibonacci pose questo celebre problema speculativo: supponiamo di posizionare una coppia iniziale di conigli neonati in un recinto. Ogni coppia diventa fertile (adulta) dopo un mese e genera una nuova coppia (un maschio ed una femmina) ogni mese successivo. Sapendo che i conigli non muoiono mai, quante coppie ci saranno dopo $t$ mesi?
+                    </p>
+                </div>
+
+                <!-- Slider -->
+                <div class="mt-4 p-4 bg-slate-800/80 rounded-lg border border-slate-700 shadow-inner">
+                    <div class="flex justify-between items-end mb-2">
+                        <label for="rabbits-slider" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mese Corrente (t)</label>
+                        <span id="rabbits-month-display" class="text-purple-400 font-mono text-lg font-bold bg-slate-900 px-2 py-1 rounded">1</span>
+                    </div>
+                    <input type="range" id="rabbits-slider" min="1" max="10" value="1" step="1" oninput="updateRabbitsMonth(this.value)" aria-label="Seleziona mese conigli">
+                    
+                    <!-- Contatori -->
+                    <div class="grid grid-cols-3 gap-2 mt-3 text-center text-[10px]">
+                        <div class="bg-slate-900 p-2 rounded border border-slate-800">
+                            <span class="block text-slate-500 font-semibold uppercase">Adulte</span>
+                            <span id="rabbits-adults-count" class="text-emerald-400 font-mono text-sm font-bold">0</span>
+                        </div>
+                        <div class="bg-slate-900 p-2 rounded border border-slate-800">
+                            <span class="block text-slate-500 font-semibold uppercase">Giovani</span>
+                            <span id="rabbits-young-count" class="text-pink-400 font-mono text-sm font-bold">1</span>
+                        </div>
+                        <div class="bg-slate-900 p-2 rounded border border-slate-800">
+                            <span class="block text-slate-500 font-semibold uppercase">Totale</span>
+                            <span id="rabbits-total-count" class="text-purple-400 font-mono text-sm font-bold">1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Relazione Matematica -->
+                <div class="mt-4">
+                    <p class="text-slate-300 text-xs leading-relaxed mb-2">
+                        Le coppie al mese $t$ sono la somma delle coppie del mese precedente ($F_{t-1}$) e delle coppie nate in questo mese. Poiché nascono nuove coppie solo da quelle che erano già adulte al mese scorso, le neonate sono pari alle coppie presenti due mesi prima ($F_{t-2}$):
+                    </p>
+                    <div id="rabbits-math-calc" class="math-block text-center text-sm text-purple-400">
+                        $$ F_1 = \mathbf{1} $$
+                    </div>
+                </div>
+            </section>
+
+            <section id="content-pascal" class="module-content hidden">
+                <h2 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> Il Triangolo di Tartaglia
+                </h2>
+                
+                <!-- Scheda Storica -->
+                <div class="mb-4 p-3 bg-slate-900/60 rounded-lg border border-slate-700/50 text-xs text-slate-300 leading-relaxed shadow-inner">
+                    <h3 class="text-amber-500 font-bold mb-1 uppercase tracking-wider text-[10px]">Scheda Storica: Tartaglia e Pascal</h3>
+                    <p class="mb-1">
+                        Il <b>Triangolo di Tartaglia</b> (noto in Asia come <i>Triangolo di Yang Hui</i> e in Occidente come <i>Triangolo di Pascal</i>) è una disposizione piramidale dei coefficienti binomiali. In Italia prende il nome da Niccolò Fontana (detto Tartaglia, 1500-1557) che ne studiò le proprietà combinatorie.
+                    </p>
+                    <p>
+                        Sommando i numeri lungo le **diagonali ascendenti** (diagonali oblique "poco inclinate"), si ricava inaspettatamente la successione di Fibonacci! Questa profonda connessione unisce l'algebra combinatoria alla geometria della natura.
+                    </p>
+                </div>
+
+                <!-- Slider -->
+                <div class="mt-4 p-4 bg-slate-800/80 rounded-lg border border-slate-700 shadow-inner">
+                    <div class="flex justify-between items-end mb-2">
+                        <label for="pascal-slider" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Diagonale (d)</label>
+                        <span id="pascal-diag-display" class="text-amber-400 font-mono text-lg font-bold bg-slate-900 px-2 py-1 rounded">0</span>
+                    </div>
+                    <input type="range" id="pascal-slider" min="0" max="9" value="0" step="1" oninput="updatePascalDiag(this.value)" aria-label="Seleziona diagonale Tartaglia">
+                    
+                    <!-- Somma e risultato -->
+                    <div class="mt-3 bg-slate-900 p-3 rounded border border-slate-800 text-center">
+                        <span class="block text-[10px] text-slate-500 font-semibold uppercase mb-1">Somma della Diagonale</span>
+                        <div id="pascal-sum-display" class="text-amber-400 font-mono text-sm font-bold">1</div>
+                    </div>
+                </div>
+
+                <!-- Spiegazione Matematica -->
+                <div class="mt-4">
+                    <p class="text-slate-300 text-xs leading-relaxed mb-2">
+                        Ciascun elemento del triangolo corrisponde al coefficiente binomiale $\binom{r}{c}$ (riga $r$, colonna $c$). Gli elementi che compongono la diagonale $d$ sono quelli che soddisfano la relazione:
+                    </p>
+                    <div class="math-block text-center text-xs text-amber-500">
+                        $$ r + c = d \quad \text{con } 0 \le c \le \lfloor d/2 \rfloor $$
+                    </div>
+                    <div id="pascal-math-calc" class="math-block text-center text-sm text-amber-400">
+                        $$ \binom{0}{0} = \mathbf{1} $$
                     </div>
                 </div>
             </section>
@@ -280,6 +391,68 @@
         updateNatureAngle(137.5077);
     }
 
+    function updateRabbitsMonth(val) {
+        targetRabbitsMonth = parseInt(val);
+        document.getElementById('rabbits-month-display').innerText = targetRabbitsMonth;
+        
+        let totalPairs = rabbitPairs.filter(p => p.birthMonth <= targetRabbitsMonth);
+        let adultsCount = totalPairs.filter(p => targetRabbitsMonth - p.birthMonth >= 1).length;
+        let youngCount = totalPairs.filter(p => p.birthMonth === targetRabbitsMonth).length;
+        
+        document.getElementById('rabbits-adults-count').innerText = adultsCount;
+        document.getElementById('rabbits-young-count').innerText = youngCount;
+        document.getElementById('rabbits-total-count').innerText = totalPairs.length;
+        
+        const mathContainer = document.getElementById('rabbits-math-calc');
+        if (targetRabbitsMonth === 1) {
+            mathContainer.innerHTML = `\\[ F_1 = \\mathbf{1} \\]`;
+        } else if (targetRabbitsMonth === 2) {
+            mathContainer.innerHTML = `\\[ F_2 = \\mathbf{1} \\]`;
+        } else {
+            let fn = fibSeq[targetRabbitsMonth - 1];
+            let fn1 = fibSeq[targetRabbitsMonth - 2];
+            let fn2 = fibSeq[targetRabbitsMonth - 3];
+            mathContainer.innerHTML = `\\[ F_{${targetRabbitsMonth}} = F_{${targetRabbitsMonth-1}} + F_{${targetRabbitsMonth-2}} \\implies ${fn1} + ${fn2} = \\mathbf{${fn}} \\]`;
+        }
+        
+        if (window.MathJax && MathJax.typesetPromise) {
+            MathJax.typesetPromise([mathContainer]).catch((err) => console.log(err.message));
+        }
+        
+        forceRedraw();
+    }
+
+    function updatePascalDiag(val) {
+        targetPascalDiag = parseInt(val);
+        document.getElementById('pascal-diag-display').innerText = targetPascalDiag;
+        
+        let sum = 0;
+        let terms = [];
+        let binomials = [];
+        
+        for (let c = 0; c <= Math.floor(targetPascalDiag / 2); c++) {
+            let r = targetPascalDiag - c;
+            if (r >= 0 && r < 10 && c <= r) {
+                let v = pascalTriangle[r][c];
+                sum += v;
+                terms.push(v);
+                binomials.push(`\\binom{${r}}{${c}}`);
+            }
+        }
+        
+        const sumContainer = document.getElementById('pascal-sum-display');
+        sumContainer.innerHTML = terms.join(" + ") + ` = <span class="text-amber-500 font-bold text-lg">${sum}</span> (F_{${targetPascalDiag + 1}})`;
+        
+        const mathContainer = document.getElementById('pascal-math-calc');
+        mathContainer.innerHTML = `\\[ ${binomials.join(" + ")} = ${terms.join(" + ")} = \\mathbf{${sum}} \\]`;
+        
+        if (window.MathJax && MathJax.typesetPromise) {
+            MathJax.typesetPromise([mathContainer]).catch((err) => console.log(err.message));
+        }
+        
+        forceRedraw();
+    }
+
     function forceRedraw() {
         formulaT = 0; 
         loop(); 
@@ -300,6 +473,31 @@
     let natureAngle = 137.5077;
     let maxSeeds = 450; 
 
+    // Variabili per il modulo conigli
+    let rabbitsMonth = 1;
+    let targetRabbitsMonth = 1;
+    let currentRabbitsMonth = 1;
+    let rabbitPairs = [];
+
+    const monthColors = [
+        '#a855f7', // Mese 1: Viola
+        '#3b82f6', // Mese 2: Blu
+        '#06b6d4', // Mese 3: Ciano
+        '#10b981', // Mese 4: Smeraldo
+        '#84cc16', // Mese 5: Lime
+        '#eab308', // Mese 6: Giallo
+        '#f97316', // Mese 7: Arancio
+        '#ef4444', // Mese 8: Rosso
+        '#ec4899', // Mese 9: Rosa
+        '#f43f5e'  // Mese 10: Rosa scuro
+    ];
+
+    // Variabili per il modulo Tartaglia
+    let pascalDiag = 0;
+    let targetPascalDiag = 0;
+    let currentPascalDiag = 0;
+    let pascalTriangle = [];
+
     function setup() {
         let wrapper = document.getElementById('canvas-wrapper');
         p5canvas = createCanvas(wrapper.clientWidth, wrapper.clientHeight);
@@ -311,7 +509,11 @@
             fibSeq.push(fibSeq[i-1] + fibSeq[i-2]);
         }
         
+        generateRabbits();
+        generatePascalTriangle();
         updateFibStep(1);
+        updateRabbitsMonth(1);
+        updatePascalDiag(0);
     }
 
     function windowResized() {
@@ -326,6 +528,10 @@
 
         if (activeModule === 'fibonacci') {
             drawFibonacci();
+        } else if (activeModule === 'rabbits') {
+            drawRabbits();
+        } else if (activeModule === 'pascal') {
+            drawPascal();
         } else if (activeModule === 'formula') {
             drawFormula();
         } else if (activeModule === 'nature') {
@@ -578,6 +784,397 @@
             textSize(15);
             textAlign(CENTER, BOTTOM);
             text("Configurazione Inefficiente: Spazi vuoti visibili", 0, -maxRadius - 15);
+        }
+    }
+
+    function generateRabbits() {
+        rabbitPairs = [];
+        let nextPairId = 1;
+        
+        let root = {
+            id: nextPairId++,
+            birthMonth: 1,
+            parentId: null,
+            generation: 0
+        };
+        rabbitPairs.push(root);
+        
+        for (let m = 2; m <= 10; m++) {
+            let currentLength = rabbitPairs.length;
+            for (let i = 0; i < currentLength; i++) {
+                let p = rabbitPairs[i];
+                if (m - p.birthMonth >= 2) {
+                    let child = {
+                        id: nextPairId++,
+                        birthMonth: m,
+                        parentId: p.id,
+                        generation: p.generation + 1
+                    };
+                    rabbitPairs.push(child);
+                }
+            }
+        }
+    }
+
+    function getOrderedPairsForMonth(pair, m) {
+        let result = [];
+        if (pair.birthMonth > m) return result;
+        
+        let activeChildren = rabbitPairs.filter(p => p.parentId === pair.id && p.birthMonth <= m);
+        activeChildren.sort((a, b) => a.birthMonth - b.birthMonth);
+        
+        let mid = Math.floor(activeChildren.length / 2);
+        
+        for (let i = 0; i < mid; i++) {
+            result = result.concat(getOrderedPairsForMonth(activeChildren[i], m));
+        }
+        
+        result.push(pair);
+        
+        for (let i = mid; i < activeChildren.length; i++) {
+            result = result.concat(getOrderedPairsForMonth(activeChildren[i], m));
+        }
+        
+        return result;
+    }
+
+    function drawRabbits() {
+        textFont('sans-serif');
+        if (abs(currentRabbitsMonth - targetRabbitsMonth) > 0.005) {
+            currentRabbitsMonth = lerp(currentRabbitsMonth, targetRabbitsMonth, 0.08);
+            loop();
+        } else {
+            currentRabbitsMonth = targetRabbitsMonth;
+        }
+
+        let mInt = Math.floor(currentRabbitsMonth);
+        let mFract = currentRabbitsMonth - mInt;
+        
+        let maxDisplayMonth = mInt;
+        if (mFract > 0 && mInt < 10) {
+            maxDisplayMonth = mInt + 1;
+        }
+
+        let positions = {};
+        
+        let paddingX = width * 0.08;
+        let drawWidth = width - paddingX * 2;
+        let startY = -height * 0.38;
+        let endY = height * 0.38;
+        let totalHeight = endY - startY;
+        
+        let rowHeight = maxDisplayMonth > 1 ? totalHeight / (maxDisplayMonth - 1) : 0;
+
+        let root = rabbitPairs[0];
+
+        for (let m = 1; m <= maxDisplayMonth; m++) {
+            positions[m] = {};
+            let orderedPairs = getOrderedPairsForMonth(root, m);
+            let F_m = orderedPairs.length;
+            
+            let y = startY + (m - 1) * rowHeight;
+            
+            for (let i = 0; i < F_m; i++) {
+                let p = orderedPairs[i];
+                let x = 0;
+                if (F_m > 1) {
+                    x = map(i, 0, F_m - 1, -drawWidth / 2, drawWidth / 2);
+                }
+                positions[m][p.id] = { x: x, y: y };
+            }
+        }
+
+        // 1. DISEGNO DELLE LINEE DI COLLEGAMENTO
+        for (let m = 2; m <= maxDisplayMonth; m++) {
+            let orderedPairs = getOrderedPairsForMonth(root, m);
+            
+            let alpha = 255;
+            let lineScale = 1.0;
+            if (m === mInt + 1) {
+                let ease = 1 - Math.pow(1 - mFract, 3);
+                alpha = 255 * ease;
+                lineScale = ease;
+            }
+
+            for (let p of orderedPairs) {
+                let posCurr = positions[m][p.id];
+                if (!posCurr) continue;
+
+                if (p.birthMonth < m) {
+                    let posPrev = positions[m-1][p.id];
+                    if (posPrev) {
+                        stroke(71, 85, 105, alpha * 0.3);
+                        strokeWeight(1.5);
+                        let targetX = lerp(posPrev.x, posCurr.x, lineScale);
+                        let targetY = lerp(posPrev.y, posCurr.y, lineScale);
+                        line(posPrev.x, posPrev.y, targetX, targetY);
+                    }
+                } else if (p.birthMonth === m) {
+                    let posParentPrev = positions[m-1][p.parentId];
+                    if (posParentPrev) {
+                        let colHex = monthColors[m - 1];
+                        let col = color(colHex);
+                        col.setAlpha(alpha * 0.6);
+                        stroke(col);
+                        strokeWeight(2.5);
+                        let targetX = lerp(posParentPrev.x, posCurr.x, lineScale);
+                        let targetY = lerp(posParentPrev.y, posCurr.y, lineScale);
+                        line(posParentPrev.x, posParentPrev.y, targetX, targetY);
+                    }
+                }
+            }
+        }
+
+        // 2. DISEGNO DEI CONIGLIETTI
+        for (let m = 1; m <= maxDisplayMonth; m++) {
+            let orderedPairs = getOrderedPairsForMonth(root, m);
+            let F_m = orderedPairs.length;
+            
+            let alpha = 255;
+            let scaleFactor = 1.0;
+            if (m === mInt + 1) {
+                let ease = 1 - Math.pow(1 - mFract, 3);
+                alpha = 255 * ease;
+                scaleFactor = ease;
+            }
+
+            // Calcolo dimensione proporzionale per non sovrapporsi con F_10 = 55
+            let baseSize = min(36, drawWidth / (F_m * 1.5));
+            baseSize = max(baseSize, 10); // Dimensione minima leggibile
+
+            for (let p of orderedPairs) {
+                let pos = positions[m][p.id];
+                if (!pos) continue;
+
+                let isYoung = (m - p.birthMonth === 0);
+                let currentSize = isYoung ? baseSize * 0.65 : baseSize;
+                currentSize *= scaleFactor;
+
+                let colHex = monthColors[p.birthMonth - 1];
+                let col = color(colHex);
+
+                let dx = currentSize * 0.45;
+                drawRabbit(pos.x - dx, pos.y, currentSize, col, alpha);
+                drawRabbit(pos.x + dx, pos.y, currentSize, col, alpha);
+
+                // Mostra un piccolo indicatore di nascita
+                if (isYoung && alpha > 120 && F_m < 20) {
+                    push();
+                    fill(244, 63, 94, alpha * 0.8);
+                    noStroke();
+                    textSize(currentSize * 0.4);
+                    textAlign(CENTER, BOTTOM);
+                    text("New", pos.x, pos.y - currentSize * 0.7);
+                    pop();
+                }
+            }
+        }
+        
+        // Etichette dei mesi sul lato sinistro (con opacità controllata)
+        for (let m = 1; m <= maxDisplayMonth; m++) {
+            let y = startY + (m - 1) * rowHeight;
+            let alpha = 255;
+            if (m === mInt + 1) {
+                alpha = 255 * (1 - Math.pow(1 - mFract, 3));
+            }
+            
+            push();
+            fill(148, 163, 184, alpha * 0.9);
+            noStroke();
+            textSize(11);
+            textAlign(LEFT, CENTER);
+            let count = fibSeq[m - 1];
+            let labelText = `Mese ${m}: ${count} ${count === 1 ? 'coppia' : 'coppie'}`;
+            text(labelText, -width/2 + 10, y);
+            pop();
+        }
+    }
+
+    function drawRabbit(x, y, size, col, alpha) {
+        push();
+        translate(x, y);
+        
+        let c = color(col);
+        c.setAlpha(alpha);
+        
+        // Orecchie
+        fill(c);
+        noStroke();
+        ellipse(-size * 0.22, -size * 0.35, size * 0.18, size * 0.45);
+        ellipse(size * 0.22, -size * 0.35, size * 0.18, size * 0.45);
+        
+        // Interno orecchie (rosa chiaro)
+        let innerCol = color(254, 205, 211);
+        innerCol.setAlpha(alpha);
+        fill(innerCol);
+        ellipse(-size * 0.22, -size * 0.35, size * 0.08, size * 0.3);
+        ellipse(size * 0.22, -size * 0.35, size * 0.08, size * 0.3);
+        
+        // Testa
+        fill(c);
+        circle(0, 0, size * 0.65);
+        
+        // Occhietti
+        let whiteCol = color(255);
+        whiteCol.setAlpha(alpha);
+        fill(whiteCol);
+        circle(-size * 0.1, -size * 0.05, size * 0.1);
+        circle(size * 0.1, -size * 0.05, size * 0.1);
+        
+        let blackCol = color(0);
+        blackCol.setAlpha(alpha);
+        fill(blackCol);
+        circle(-size * 0.1, -size * 0.05, size * 0.05);
+        circle(size * 0.1, -size * 0.05, size * 0.05);
+        
+        // Nasino (rosa)
+        let noseCol = color(244, 63, 94);
+        noseCol.setAlpha(alpha);
+        fill(noseCol);
+        circle(0, size * 0.08, size * 0.07);
+        pop();
+    }
+
+    function generatePascalTriangle() {
+        pascalTriangle = [];
+        for (let r = 0; r < 10; r++) {
+            pascalTriangle[r] = [];
+            for (let c = 0; c <= r; c++) {
+                if (c === 0 || c === r) {
+                    pascalTriangle[r][c] = 1;
+                } else {
+                    pascalTriangle[r][c] = pascalTriangle[r - 1][c - 1] + pascalTriangle[r - 1][c];
+                }
+            }
+        }
+    }
+
+    function drawPascal() {
+        textFont('sans-serif');
+        if (abs(currentPascalDiag - targetPascalDiag) > 0.005) {
+            currentPascalDiag = lerp(currentPascalDiag, targetPascalDiag, 0.08);
+            loop();
+        } else {
+            currentPascalDiag = targetPascalDiag;
+        }
+
+        let numRows = 10;
+        let startY = -height * 0.38;
+        let endY = height * 0.35;
+        let totalHeight = endY - startY;
+        let rowHeight = totalHeight / (numRows - 1);
+        
+        let maxColWidth = min(50, width * 0.75 / 9);
+        
+        let positions = [];
+        for (let r = 0; r < numRows; r++) {
+            positions[r] = [];
+            let y = startY + r * rowHeight;
+            for (let c = 0; c <= r; c++) {
+                let x = (c - r / 2) * maxColWidth;
+                positions[r][c] = { x: x, y: y };
+            }
+        }
+
+        // 1. DISEGNO DEI COLLEGAMENTI STANDARD
+        stroke(51, 65, 85, 100);
+        strokeWeight(1);
+        for (let r = 0; r < numRows - 1; r++) {
+            for (let c = 0; c <= r; c++) {
+                let pCurr = positions[r][c];
+                let pLeft = positions[r+1][c];
+                let pRight = positions[r+1][c+1];
+                line(pCurr.x, pCurr.y, pLeft.x, pLeft.y);
+                line(pCurr.x, pCurr.y, pRight.x, pRight.y);
+            }
+        }
+
+        // 2. DISEGNO DELLA LINEA DIAGONALE DI FIBONACCI
+        let dVal = currentPascalDiag;
+        let maxC = Math.floor(dVal / 2);
+        let diagPoints = [];
+        for (let c = 0; c <= maxC; c++) {
+            let r = dVal - c;
+            let rFloor = Math.floor(r);
+            let rCeil = Math.ceil(r);
+            
+            if (rFloor >= 0 && rFloor < numRows && rCeil >= 0 && rCeil < numRows) {
+                let pFloor = positions[rFloor][c];
+                let pCeil = positions[rCeil][c];
+                
+                let weight = r - rFloor;
+                let x = lerp(pFloor.x, pCeil.x, weight);
+                let y = lerp(pFloor.y, pCeil.y, weight);
+                diagPoints.push({ x: x, y: y });
+            }
+        }
+
+        if (diagPoints.length > 1) {
+            stroke(245, 158, 11, 200);
+            strokeWeight(4);
+            noFill();
+            beginShape();
+            for (let pt of diagPoints) {
+                vertex(pt.x, pt.y);
+            }
+            endShape();
+        }
+
+        // 3. DISEGNO DEI NODI DEL TRIANGOLO
+        for (let r = 0; r < numRows; r++) {
+            for (let c = 0; c <= r; c++) {
+                let pt = positions[r][c];
+                let v = pascalTriangle[r][c];
+                
+                let distance = abs((r + c) - currentPascalDiag);
+                let highlightIntensity = constrain(1 - distance, 0, 1);
+                
+                let nodeSize = maxColWidth * 0.72;
+                if (highlightIntensity > 0) {
+                    nodeSize += highlightIntensity * 6;
+                }
+                
+                let bgColor;
+                let textColor;
+                let strokeColor;
+                
+                if (highlightIntensity > 0) {
+                    let colNormalBg = color(30, 41, 59, 230);
+                    let colNormalStr = color(71, 85, 105, 230);
+                    let colActiveBg = color(245, 158, 11, 240);
+                    let colActiveStr = color(255, 251, 235, 255);
+                    
+                    bgColor = lerpColor(colNormalBg, colActiveBg, highlightIntensity);
+                    strokeColor = lerpColor(colNormalStr, colActiveStr, highlightIntensity);
+                    
+                    let colTextNormal = color(148, 163, 184);
+                    let colTextActive = color(15, 23, 42);
+                    textColor = lerpColor(colTextNormal, colTextActive, highlightIntensity);
+                } else {
+                    bgColor = color(30, 41, 59, 180);
+                    strokeColor = color(71, 85, 105, 120);
+                    textColor = color(148, 163, 184, 150);
+                }
+                
+                fill(bgColor);
+                stroke(strokeColor);
+                strokeWeight(highlightIntensity > 0 ? 2 + highlightIntensity : 1);
+                circle(pt.x, pt.y, nodeSize);
+                
+                if (highlightIntensity > 0.1) {
+                    push();
+                    noStroke();
+                    fill(245, 158, 11, highlightIntensity * 40);
+                    circle(pt.x, pt.y, nodeSize * 1.4);
+                    pop();
+                }
+                
+                fill(textColor);
+                noStroke();
+                textSize(nodeSize * 0.36);
+                textAlign(CENTER, CENTER);
+                text(v, pt.x, pt.y + (textSize() * 0.05));
+            }
         }
     }
 </script>
