@@ -399,6 +399,8 @@
         if (window.MathJax && MathJax.typesetPromise) {
             MathJax.typesetPromise([ratioContainer]).catch((err) => console.log(err.message));
         }
+        
+        forceRedraw();
     }
 
     function updateNatureAngle(val) {
