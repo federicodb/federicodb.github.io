@@ -67,12 +67,23 @@
             display: flex;
             flex-direction: column;
             z-index: 10;
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @media (min-width: 768px) {
+        @media (max-width: 767px) {
+            #control-panel.collapsed {
+                height: 56px;
+            }
+            #control-panel.collapsed .scrollable-area,
+            #control-panel.collapsed nav {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 768px) or (orientation: landscape) {
             #app-container { flex-direction: row-reverse; }
             #canvas-wrapper { height: 100%; border-left: 1px solid #334155; }
-            #control-panel { width: 380px; height: 100%; border-top: none; }
+            #control-panel { width: 340px; height: 100% !important; border-top: none; }
         }
 
         .math-block { 
@@ -83,6 +94,12 @@
             overflow-x: auto; 
             border: 1px solid #334155;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        @media (max-width: 767px) {
+            .math-block {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
         }
         
         .scrollable-area {
@@ -130,28 +147,33 @@
     <main id="canvas-wrapper">
     </main>
 
-    <aside id="control-panel">
-        <header class="p-4 border-b border-slate-700 bg-slate-900 shadow-md">
+    <aside id="control-panel" class="collapsed">
+        <header class="p-4 border-b border-slate-700 bg-slate-900 shadow-md flex justify-between items-center cursor-pointer md:cursor-default" onclick="toggleCollapseMobile()">
             <h1 class="text-xl font-bold text-amber-500 flex items-center gap-2">
                 <span class="text-3xl font-serif leading-none">$\phi$</span> 
                 <span class="tracking-tight">Laboratorio Aureo</span>
             </h1>
+            <button id="btn-toggle-panel" class="md:hidden text-amber-500 focus:outline-none p-1 hover:bg-slate-800 rounded transition-colors" aria-label="Espandi o collassa controlli">
+                <svg id="toggle-icon-svg" class="w-6 h-6 transform transition-transform duration-300 rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+            </button>
         </header>
 
         <nav class="flex overflow-x-auto border-b border-slate-700 bg-slate-800 shrink-0 hide-scrollbar" aria-label="Moduli">
-            <button onclick="setModule('fibonacci')" id="btn-fibonacci" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-amber-500 text-amber-500 transition-colors focus:outline-none hover:bg-slate-700/50">
+            <button onclick="setModule('fibonacci')" id="btn-fibonacci" class="module-btn flex-1 py-2.5 md:py-3 px-1 md:px-2 text-center text-[11px] md:text-sm font-medium border-b-[3px] border-amber-500 text-amber-500 transition-colors focus:outline-none hover:bg-slate-700/50">
                 Spirale
             </button>
-            <button onclick="setModule('rabbits')" id="btn-rabbits" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+            <button onclick="setModule('rabbits')" id="btn-rabbits" class="module-btn flex-1 py-2.5 md:py-3 px-1 md:px-2 text-center text-[11px] md:text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
                 Conigli
             </button>
-            <button onclick="setModule('pascal')" id="btn-pascal" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+            <button onclick="setModule('pascal')" id="btn-pascal" class="module-btn flex-1 py-2.5 md:py-3 px-1 md:px-2 text-center text-[11px] md:text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
                 Tartaglia
             </button>
-            <button onclick="setModule('formula')" id="btn-formula" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+            <button onclick="setModule('formula')" id="btn-formula" class="module-btn flex-1 py-2.5 md:py-3 px-1 md:px-2 text-center text-[11px] md:text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
                 Formula
             </button>
-            <button onclick="setModule('nature')" id="btn-nature" class="module-btn flex-1 min-w-[100px] py-3 px-2 text-center text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
+            <button onclick="setModule('nature')" id="btn-nature" class="module-btn flex-1 py-2.5 md:py-3 px-1 md:px-2 text-center text-[11px] md:text-sm font-medium border-b-[3px] border-transparent text-slate-400 hover:text-slate-200 transition-colors focus:outline-none hover:bg-slate-700/50">
                 Natura
             </button>
         </nav>
@@ -412,7 +434,7 @@
             let fn = fibSeq[targetRabbitsMonth - 1];
             let fn1 = fibSeq[targetRabbitsMonth - 2];
             let fn2 = fibSeq[targetRabbitsMonth - 3];
-            mathContainer.innerHTML = `\\[ F_{${targetRabbitsMonth}} = F_{${targetRabbitsMonth-1}} + F_{${targetRabbitsMonth-2}} \\implies ${fn1} + ${fn2} = \\mathbf{${fn}} \\]`;
+            mathContainer.innerHTML = `\\[ F_{${targetRabbitsMonth}} = ${fn1} + ${fn2} = \\mathbf{${fn}} \\]`;
         }
         
         if (window.MathJax && MathJax.typesetPromise) {
@@ -451,6 +473,25 @@
         }
         
         forceRedraw();
+    }
+
+    function toggleCollapseMobile() {
+        if (window.innerWidth >= 768) return;
+        
+        const panel = document.getElementById('control-panel');
+        const iconSvg = document.getElementById('toggle-icon-svg');
+        
+        panel.classList.toggle('collapsed');
+        
+        if (panel.classList.contains('collapsed')) {
+            iconSvg.classList.add('rotate-180');
+        } else {
+            iconSvg.classList.remove('rotate-180');
+        }
+        
+        setTimeout(() => {
+            if (typeof windowResized === 'function') windowResized();
+        }, 310);
     }
 
     function forceRedraw() {
@@ -543,8 +584,10 @@
         textFont('sans-serif');
         if (abs(currentFibStep - targetFibStep) > 0.005) {
             currentFibStep = lerp(currentFibStep, targetFibStep, 0.12);
+            loop();
         } else {
             currentFibStep = targetFibStep;
+            noLoop();
         }
 
         let baseU = 15; 
@@ -785,6 +828,7 @@
             textAlign(CENTER, BOTTOM);
             text("Configurazione Inefficiente: Spazi vuoti visibili", 0, -maxRadius - 15);
         }
+        noLoop();
     }
 
     function generateRabbits() {
@@ -841,10 +885,11 @@
     function drawRabbits() {
         textFont('sans-serif');
         if (abs(currentRabbitsMonth - targetRabbitsMonth) > 0.005) {
-            currentRabbitsMonth = lerp(currentRabbitsMonth, targetRabbitsMonth, 0.08);
+            currentRabbitsMonth = lerp(currentRabbitsMonth, targetRabbitsMonth, 0.12);
             loop();
         } else {
             currentRabbitsMonth = targetRabbitsMonth;
+            noLoop();
         }
 
         let mInt = Math.floor(currentRabbitsMonth);
@@ -1052,10 +1097,11 @@
     function drawPascal() {
         textFont('sans-serif');
         if (abs(currentPascalDiag - targetPascalDiag) > 0.005) {
-            currentPascalDiag = lerp(currentPascalDiag, targetPascalDiag, 0.08);
+            currentPascalDiag = lerp(currentPascalDiag, targetPascalDiag, 0.12);
             loop();
         } else {
             currentPascalDiag = targetPascalDiag;
+            noLoop();
         }
 
         let numRows = 10;
