@@ -665,6 +665,8 @@
                 drawMathTriangle();
                 drawTheoreticalLine(w, h);
                 drawIntercept();
+            } else if (state.mode === 'play') {
+                drawTheoreticalLine(w, h);
             }
 
             drawGridHover();
@@ -691,7 +693,7 @@
         }
 
         function drawGrid(w, h) {
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
             ctx.lineWidth = 1.5;
             const effGrid = getEffectiveGridSize();
             const cx = (w / 2) + state.camera.x;
@@ -715,7 +717,7 @@
         function drawAxes(w, h) {
             const originPx = logToPixel(state.originOffset.x, state.originOffset.y);
             ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(208, 188, 255, 0.3)';
+            ctx.strokeStyle = 'rgba(208, 188, 255, 0.6)';
             if (originPx.y >= 0 && originPx.y <= h) {
                 ctx.beginPath(); ctx.moveTo(0, originPx.y); ctx.lineTo(w, originPx.y); ctx.stroke();
             }
@@ -1366,8 +1368,12 @@
                 const dx = currX - balls[currentTarget].logicalX;
                 const dy = currY - balls[currentTarget].logicalY;
 
-                // Rilevamento collisione
-                if (Math.sqrt(dx * dx + dy * dy) <= balls[currentShooter].radius + balls[currentTarget].radius) {
+                // Rilevamento collisione (con prevenzione tunneling tramite hasPassed)
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const collisionRadius = balls[currentShooter].radius + balls[currentTarget].radius;
+                const hasPassed = (dirX > 0 && currX >= balls[currentTarget].logicalX) || (dirX < 0 && currX <= balls[currentTarget].logicalX);
+
+                if (dist <= collisionRadius || hasPassed) {
                     createRipple(balls[currentTarget].logicalX, balls[currentTarget].logicalY);
 
                     if (currentTarget === 'green') {
@@ -1379,6 +1385,11 @@
                         currentTarget = 'red';
                         currX = balls.green.logicalX;
                         currY = balls.green.logicalY;
+
+                        // Ricalcola la direzione del moto per la seconda palla
+                        const relShooter = getRelativeCoords(currX, currY);
+                        const relTarget = getRelativeCoords(balls[currentTarget].logicalX, balls[currentTarget].logicalY);
+                        dirX = Math.sign(relTarget.x - relShooter.x);
                     } else if (currentTarget === 'red') {
                         // Vittoria
                         state.playState = 'result';
