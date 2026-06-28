@@ -9,6 +9,9 @@
     <meta name="keywords" content="plotter, CNC, gcode, matematica, geometria, arte generativa, frattali, armonografo">
     <meta name="date" content="2026-06-28">
 
+    <!-- Il tasto Home e il tema vengono iniettati automaticamente da orfini-shared.js -->
+    <script src="../assets/js/orfini-shared.js"></script>
+
     <!-- Tailwind CSS per il Layout base -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -47,6 +50,13 @@
 
         .code-font {
             font-family: 'Fira Code', monospace;
+        }
+
+        /* Gestione Tasto Home per evitare sovrapposizioni fisse */
+        .orfini-back-btn {
+            top: 20px !important;
+            right: 20px !important;
+            left: auto !important;
         }
 
         /* Glassmorphism Custom */
