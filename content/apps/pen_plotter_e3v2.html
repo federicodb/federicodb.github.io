@@ -4060,6 +4060,19 @@
             let canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
 
+            let scaleX = 100;
+            let scaleY = 100;
+            let offsetX = -50;
+            let offsetY = -50;
+            const aspectR = sourceImage.width / sourceImage.height;
+            if (aspectR >= 1) {
+                scaleY = 100 / aspectR;
+                offsetY = -scaleY / 2;
+            } else {
+                scaleX = 100 * aspectR;
+                offsetX = -scaleX / 2;
+            }
+
             if (processType === 'hatching' || processType === 'spiral') {
                 canvas.width = 180;
                 canvas.height = Math.floor(180 * (sourceImage.height / sourceImage.width));
@@ -4088,7 +4101,7 @@
                             if (invert) val = 255 - val;
 
                             if (val < threshold) {
-                                segment.push({ x: (x / w) * 100 - 50, y: (1 - y / h) * 100 - 50 });
+                                segment.push({ x: (x / w) * scaleX + offsetX, y: (1 - y / h) * scaleY + offsetY });
                             } else {
                                 if (segment.length > 1) {
                                     currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: segment });
@@ -4113,7 +4126,7 @@
                             if (invert) val = 255 - val;
 
                             if (val < (threshold - 40)) {
-                                segment.push({ x: (x / w) * 100 - 50, y: (1 - y / h) * 100 - 50 });
+                                segment.push({ x: (x / w) * scaleX + offsetX, y: (1 - y / h) * scaleY + offsetY });
                             } else {
                                 if (segment.length > 1) {
                                     currentRawElements.push({ type: 'path', stroke: '#047857', width: penWidth, points: segment });
@@ -4158,7 +4171,7 @@
                         const mx = cx + rMod * Math.cos(theta);
                         const my = cy + rMod * Math.sin(theta);
 
-                        path.push({ x: (mx / w) * 100 - 50, y: (1 - my / h) * 100 - 50 });
+                        path.push({ x: (mx / w) * scaleX + offsetX, y: (1 - my / h) * scaleY + offsetY });
                     }
                     currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
                 }
@@ -4199,7 +4212,7 @@
                                 let dir = 0;
 
                                 do {
-                                    path.push({ x: (currX / w) * 100 - 50, y: (1 - currY / h) * 100 - 50 });
+                                    path.push({ x: (currX / w) * scaleX + offsetX, y: (1 - currY / h) * scaleY + offsetY });
                                     visited[currY][currX] = true;
 
                                     let found = false;
@@ -4270,7 +4283,7 @@
                 }
                 selectedChars.sort((a, b) => a.density - b.density);
 
-                const charScale = (100 / cols) / 1.6;
+                const charScale = (scaleX / cols) / 1.6;
 
                 // Spessore del tratto ridotto proporzionalmente all'aumento delle colonne
                 const effectivePenWidth = Math.max(0.15, penWidth * Math.min(1.0, 45 / cols));
@@ -4298,8 +4311,8 @@
 
                         if (chosenChar === ' ') continue;
 
-                        let cellStartX = (x / cols) * 100 - 50;
-                        let cellStartY = (1 - (y + 0.95) / rows) * 100 - 50;
+                        let cellStartX = (x / cols) * scaleX + offsetX;
+                        let cellStartY = (1 - (y + 0.95) / rows) * scaleY + offsetY;
 
                         // 1. Mostriamo il carattere come testo SVG a schermo (super-leggero per il browser)
                         currentRawElements.push({
