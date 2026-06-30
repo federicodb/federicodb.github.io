@@ -1819,213 +1819,172 @@
         }
 
         function findFunctionPeriodicity(exprStr) {
-            let s = exprStr.replace(/\s+/g, '');
-            const hasTrig = /sin|cos|tan|cot/.test(s);
-            if (!hasTrig) return null;
+            let mathNode;
+            try { mathNode = math.parse(exprStr); } catch(e) { return null; }
 
+            let s = exprStr.replace(/\s+/g, '');
             let temp = s;
             let replaced = true;
             while (replaced) {
                 let old = temp;
-                temp = temp.replace(/(sin|cos|tan|cot)\(([^()]+)\)/g, '1');
+                temp = temp.replace(/(sin|cos|tan|cot|sec|csc)\([^()]+\)/g, '1');
                 if (temp === old) replaced = false;
             }
             if (/\bx\b/.test(temp)) {
                 return null;
             }
 
-            let match = s.match(/(sin|cos|tan|cot)\(([^()]+)\)/);
-            if (!match) return null;
-            let trigName = match[1];
-            let arg = match[2];
-
-            let omega = 1;
-            try {
-                let argDeriv = nerdamer.diff(arg, 'x').text();
-                let parsedDeriv = parseFloat(nerdamer(argDeriv).evaluate().text());
-                if (!isNaN(parsedDeriv)) {
-                    omega = parsedDeriv;
+            let omegas = [];
+            mathNode.traverse(function(node) {
+                if (node.isFunctionNode) {
+                    if (['sin', 'cos', 'sec', 'csc'].includes(node.fn.name)) {
+                        let arg = node.args[0].toString({parenthesis:'keep'});
+                        try {
+                            let diff = nerdamer.diff(arg, 'x').evaluate().text();
+                            let w = Math.abs(parseFloat(diff));
+                            if (!isNaN(w) && w > 0) omegas.push({ base: 2, w: w });
+                        } catch(e){}
+                    } else if (['tan', 'cot'].includes(node.fn.name)) {
+                        let arg = node.args[0].toString({parenthesis:'keep'});
+                        try {
+                            let diff = nerdamer.diff(arg, 'x').evaluate().text();
+                            let w = Math.abs(parseFloat(diff));
+                            if (!isNaN(w) && w > 0) omegas.push({ base: 1, w: w });
+                        } catch(e){}
+                    }
                 }
-            } catch (e) {
-                if (arg.includes('2*x')) omega = 2;
-                else if (arg.includes('3*x')) omega = 3;
-                else if (arg.includes('4*x')) omega = 4;
+            });
+
+            if (omegas.length === 0) return null;
+
+            function gcdDec(a, b) {
+                if (b < 1e-5) return a;
+                return gcdDec(b, a % b);
+            }
+            function lcmDec(a, b) {
+                if (a === 0 || b === 0) return 0;
+                return (a * b) / gcdDec(a, b);
             }
 
-            if (omega === 0) omega = 1;
+            let T_coeff = omegas[0].base / omegas[0].w;
+            for (let i = 1; i < omegas.length; i++) {
+                let current_coeff = omegas[i].base / omegas[i].w;
+                let c1 = Math.round(T_coeff * 1000);
+                let c2 = Math.round(current_coeff * 1000);
+                T_coeff = lcmDec(c1, c2) / 1000;
+            }
+
+            if (T_coeff > 1000 || isNaN(T_coeff)) return null;
 
             let T_latex = "";
-            let isTanCot = (trigName === 'tan' || trigName === 'cot');
+            let fraction = math.fraction(T_coeff);
+            let n = fraction.n;
+            let d = fraction.d;
+            
+            if (n === 1 && d === 1) T_latex = "\\pi";
+            else if (d === 1) T_latex = `${n}\\pi`;
+            else if (n === 1) T_latex = `\\dfrac{\\pi}{${d}}`;
+            else T_latex = `\\dfrac{${n}\\pi}{${d}}`;
 
-            if (isTanCot) {
-                if (omega === 1) T_latex = "\\pi";
-                else if (omega === 2) T_latex = "\\dfrac{\\pi}{2}";
-                else T_latex = `\\dfrac{\\pi}{${omega}}`;
-            } else {
-                if (omega === 1) T_latex = "2\\pi";
-                else if (omega === 2) T_latex = "\\pi";
-                else if (omega % 2 === 0) {
-                    T_latex = `\\dfrac{\\pi}{${omega / 2}}`;
-                } else {
-                    T_latex = `\\dfrac{2\\pi}{${omega}}`;
-                }
-            }
+            let T_text = T_latex.replace('\\dfrac', '').replace(/[{}]/g, '').replace('\\pi', 'pi');
 
             return {
-                trigName: trigName,
-                omega: omega,
-                isTanCot: isTanCot,
-                periodLaTeX: T_latex
+                omega: 1 / T_coeff,
+                periodLaTeX: T_latex,
+                periodVal: T_coeff * Math.PI,
+                periodText: T_text
             };
         }
 
         function calculateDomainAnalytic(exprStr) {
             let undefinedPoints = [];
             let boundaries = [];
-
-            // 1. Rileva i denominatori simbolici tramite Nerdamer
+            
+            let mathNode;
             try {
-                let denExpr = nerdamer(exprStr).denominator().text();
-                // Se contiene la variabile x, troviamo le radici
-                if (denExpr.includes('x') && denExpr !== 'x') {
-                    let sol = nerdamer.solve(denExpr + ' = 0', 'x');
-                    let solText = sol.text();
-                    if (solText.startsWith('[') && solText.endsWith(']')) {
-                        let pts = solText.slice(1, -1).split(',').map(s => s.trim());
-                        pts.forEach(p => {
-                            let val = parseFloat(nerdamer(p).evaluate().text());
-                            if (!isNaN(val) && isFinite(val)) {
-                                undefinedPoints.push(val);
-                                boundaries.push(val);
-                            }
-                        });
-                    } else if (solText) {
-                        let val = parseFloat(nerdamer(solText).evaluate().text());
-                        if (!isNaN(val) && isFinite(val)) {
-                            undefinedPoints.push(val);
-                            boundaries.push(val);
-                        }
-                    }
-                } else if (denExpr === 'x') {
-                    undefinedPoints.push(0);
-                    boundaries.push(0);
-                }
+                mathNode = math.parse(exprStr);
             } catch (e) {
-                console.warn("Errore dominio denominatore:", e);
+                return { latex: "\\emptyset", text: "errore", excluded: [] };
             }
 
-            // Funzione di supporto per trovare argomenti tra parentesi bilanciate
-            function getFuncArgs(str, funcName) {
-                let args = [];
-                let pos = 0;
-                while ((pos = str.indexOf(funcName + '(', pos)) !== -1) {
-                    let start = pos + funcName.length + 1;
-                    let count = 1;
-                    let i = start;
-                    while (i < str.length && count > 0) {
-                        if (str[i] === '(') count++;
-                        else if (str[i] === ')') count--;
-                        i++;
-                    }
-                    if (count === 0) {
-                        args.push(str.slice(start, i - 1));
-                    }
-                    pos = start;
+            let denomArgs = [];
+            let sqrtArgs = [];
+            let logArgs = [];
+
+            mathNode.traverse(function (node) {
+                if (node.isOperatorNode && node.op === '/') {
+                    denomArgs.push(node.args[1].toString({parenthesis: 'keep'}));
                 }
-                return args;
+                if (node.isFunctionNode) {
+                    if (node.fn.name === 'sqrt') {
+                        sqrtArgs.push(node.args[0].toString({parenthesis: 'keep'}));
+                    }
+                    if (node.fn.name === 'log' || node.fn.name === 'ln') {
+                        logArgs.push(node.args[0].toString({parenthesis: 'keep'}));
+                    }
+                }
+            });
+
+            function solveAndPush(expr, list) {
+                try {
+                    let sol = nerdamer.solve(expr + ' = 0', 'x');
+                    let solText = sol.text();
+                    if (solText.startsWith('[') && solText.endsWith(']')) {
+                        solText.slice(1, -1).split(',').forEach(p => {
+                            let val = parseFloat(nerdamer(p.trim()).evaluate().text());
+                            if (!isNaN(val) && isFinite(val)) {
+                                boundaries.push(val);
+                                list.push(val);
+                            }
+                        });
+                    } else if (solText) {
+                        let val = parseFloat(nerdamer(solText).evaluate().text());
+                        if (!isNaN(val) && isFinite(val)) {
+                            boundaries.push(val);
+                            list.push(val);
+                        }
+                    }
+                } catch (e) {}
             }
 
-            // 2. Rileva radici quadrate (argomento >= 0)
-            let sqrtArgs = getFuncArgs(exprStr, 'sqrt');
+            denomArgs.forEach(arg => solveAndPush(arg, undefinedPoints));
             let sqrtZeros = [];
-            sqrtArgs.forEach(arg => {
-                try {
-                    let sol = nerdamer.solve(arg + ' = 0', 'x');
-                    let solText = sol.text();
-                    if (solText.startsWith('[') && solText.endsWith(']')) {
-                        solText.slice(1, -1).split(',').forEach(p => {
-                            let val = parseFloat(nerdamer(p.trim()).evaluate().text());
-                            if (!isNaN(val) && isFinite(val)) {
-                                boundaries.push(val);
-                                sqrtZeros.push(val);
-                            }
-                        });
-                    } else if (solText) {
-                        let val = parseFloat(nerdamer(solText).evaluate().text());
-                        if (!isNaN(val) && isFinite(val)) {
-                            boundaries.push(val);
-                            sqrtZeros.push(val);
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Errore zeros sqrt:", e);
-                }
-            });
-
-            // 3. Rileva logaritmi (argomento > 0)
-            let logArgs = [...getFuncArgs(exprStr, 'log'), ...getFuncArgs(exprStr, 'ln')];
+            sqrtArgs.forEach(arg => solveAndPush(arg, sqrtZeros));
             let logZeros = [];
-            logArgs.forEach(arg => {
-                try {
-                    let sol = nerdamer.solve(arg + ' = 0', 'x');
-                    let solText = sol.text();
-                    if (solText.startsWith('[') && solText.endsWith(']')) {
-                        solText.slice(1, -1).split(',').forEach(p => {
-                            let val = parseFloat(nerdamer(p.trim()).evaluate().text());
-                            if (!isNaN(val) && isFinite(val)) {
-                                boundaries.push(val);
-                                logZeros.push(val);
-                            }
-                        });
-                    } else if (solText) {
-                        let val = parseFloat(nerdamer(solText).evaluate().text());
-                        if (!isNaN(val) && isFinite(val)) {
-                            boundaries.push(val);
-                            logZeros.push(val);
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Errore zeros log:", e);
-                }
-            });
+            logArgs.forEach(arg => solveAndPush(arg, logZeros));
 
-            // Rimuove duplicati e ordina le frontiere
             boundaries = [...new Set(boundaries)].sort((a, b) => a - b);
-
-            // Genera intervalli reali dividendo da -inf a +inf
             let pointsToTest = [-Infinity, ...boundaries, Infinity];
             let intervals = [];
 
-            // Controlla se la funzione è definita in un punto x
+            let compiledNode;
+            try { compiledNode = mathNode.compile(); } catch (e) {}
+
             function isDefined(xVal) {
-                // Controlla denominatori
-                for (let pt of undefinedPoints) {
-                    if (Math.abs(xVal - pt) < 1e-5) return false;
+                for (let arg of denomArgs) {
+                    try {
+                        let val = parseFloat(nerdamer(arg).evaluate({ x: xVal }).text());
+                        if (isNaN(val) || Math.abs(val) < 1e-6) return false;
+                    } catch (e) { return false; }
                 }
-                // Controlla radici quadrate (argomento >= 0)
                 for (let arg of sqrtArgs) {
                     try {
                         let val = parseFloat(nerdamer(arg).evaluate({ x: xVal }).text());
                         if (isNaN(val) || val < -1e-6) return false;
-                    } catch (e) {
-                        return false;
-                    }
+                    } catch (e) { return false; }
                 }
-                // Controlla logaritmi (argomento > 0)
                 for (let arg of logArgs) {
                     try {
                         let val = parseFloat(nerdamer(arg).evaluate({ x: xVal }).text());
                         if (isNaN(val) || val <= 1e-6) return false;
-                    } catch (e) {
-                        return false;
-                    }
+                    } catch (e) { return false; }
                 }
-                // Controlla valutazione generale
-                try {
-                    let val = parseFloat(nerdamer(exprStr).evaluate({ x: xVal }).text());
-                    if (isNaN(val) || !isFinite(val)) return false;
-                } catch (e) {
-                    return false;
+                if (compiledNode) {
+                    try {
+                        let val = compiledNode.evaluate({ x: xVal });
+                        if (typeof val === 'number' && (isNaN(val) || !isFinite(val))) return false;
+                        if (typeof val === 'object' && val.isComplex) return false;
+                    } catch (e) { return false; }
                 }
                 return true;
             }
@@ -2034,64 +1993,51 @@
                 let start = pointsToTest[i];
                 let end = pointsToTest[i + 1];
 
-                // Sceglie un punto di test interno all'intervallo
-                let testPt;
-                if (start === -Infinity && end === Infinity) testPt = 0;
-                else if (start === -Infinity) testPt = end - 2;
-                else if (end === Infinity) testPt = start + 2;
-                else testPt = (start + end) / 2;
+                let testPt = (start === -Infinity && end === Infinity) ? 0 :
+                             (start === -Infinity) ? end - 2 :
+                             (end === Infinity) ? start + 2 :
+                             (start + end) / 2;
 
                 if (isDefined(testPt)) {
-                    // Controlla gli estremi per stabilire se sono aperti o chiusi
                     let startBracket = '(';
                     let endBracket = ')';
-                    let startValStr = start === -Infinity ? '-\\infty' : formatMathNumber(start);
-                    let endValStr = end === Infinity ? '+\\infty' : formatMathNumber(end);
+                    let startValStr = start === -Infinity ? '-inf' : formatMathNumber(start);
+                    let endValStr = end === Infinity ? '+inf' : formatMathNumber(end);
 
                     if (start !== -Infinity) {
-                        let isStartDefined = isDefined(start);
                         let isLogOrDen = undefinedPoints.some(pt => Math.abs(start - pt) < 1e-4) || logZeros.some(pt => Math.abs(start - pt) < 1e-4);
-                        if (isStartDefined && !isLogOrDen) {
-                            startBracket = '[';
-                        }
+                        if (isDefined(start) && !isLogOrDen) startBracket = '[';
                     }
                     if (end !== -Infinity && end !== Infinity) {
-                        let isEndDefined = isDefined(end);
                         let isLogOrDen = undefinedPoints.some(pt => Math.abs(end - pt) < 1e-4) || logZeros.some(pt => Math.abs(end - pt) < 1e-4);
-                        if (isEndDefined && !isLogOrDen) {
-                            endBracket = ']';
-                        }
+                        if (isDefined(end) && !isLogOrDen) endBracket = ']';
                     }
 
+                    let startLatex = start === -Infinity ? '-\\infty' : formatMathNumber(start);
+                    let endLatex = end === Infinity ? '+\\infty' : formatMathNumber(end);
+
                     intervals.push({
-                        latex: `${startBracket}${startValStr}, ${endValStr}${endBracket}`,
-                        text: `${startBracket === '[' ? '[' : '('}${start === -Infinity ? '-inf' : formatMathNumber(start)}, ${end === Infinity ? '+inf' : formatMathNumber(end)}${endBracket === ']' ? ']' : ')'}`
+                        latex: `${startBracket}${startLatex}, ${endLatex}${endBracket}`,
+                        text: `${startBracket}${startValStr}, ${endValStr}${endBracket}`
                     });
                 }
             }
 
-            // Costruisci il report LaTeX ed il testo semplice
-            if (intervals.length === 0) {
-                return {
-                    latex: "\\emptyset",
-                    text: "vuoto"
-                };
-            }
+            if (intervals.length === 0) return { latex: "\\emptyset", text: "vuoto", excluded: boundaries };
 
-            // Caso speciale per tutto R tranne punti isolati (es. x != 0)
             if (undefinedPoints.length > 0 && sqrtArgs.length === 0 && logArgs.length === 0) {
                 let ptsStr = undefinedPoints.map(pt => formatMathNumber(pt)).join(', ');
                 return {
                     latex: `\\mathbb{R} \\setminus \\{${ptsStr}\\}`,
-                    text: `x \\neq ${undefinedPoints.map(pt => formatMathNumber(pt)).join(' e x \\neq ')}`
+                    text: `x != ${undefinedPoints.map(pt => formatMathNumber(pt)).join(' e x != ')}`,
+                    excluded: undefinedPoints
                 };
             }
 
-            let latexStr = intervals.map(inter => inter.latex).join(" \\cup ");
-            let textStr = intervals.map(inter => inter.text).join(" U ");
             return {
-                latex: latexStr,
-                text: textStr
+                latex: intervals.map(inter => inter.latex).join(" \\cup "),
+                text: intervals.map(inter => inter.text).join(" U "),
+                excluded: boundaries
             };
         }
 
@@ -2625,6 +2571,21 @@
                     currentRawElements.push({ type: 'axis', stroke: 'rgba(255,255,255,0.4)', width: 0.8, points: [{ x: nx - 1.5, y: gYmax - 1.5 }, { x: nx, y: gYmax }, { x: nx + 1.5, y: gYmax - 1.5 }] });
                 }
 
+                // Calcolo Dominio Matematica Reale (Insieme di Definizione)
+                let domainText = "D = R";
+                let domainLaTeX = "\\mathbb{R}";
+                let domainExcluded = [];
+                if (nerdamerLoaded) {
+                    try {
+                        let domainObj = calculateDomainAnalytic(cleanedExpr);
+                        domainText = domainObj.text;
+                        domainLaTeX = formatStrictLaTeX(domainObj.latex);
+                        domainExcluded = domainObj.excluded || [];
+                    } catch (e) {
+                        console.warn("Errore calcolo analitico dominio:", e);
+                    }
+                }
+
                 // Generazione Campioni della funzione
                 const steps = 400;
                 const step = (xMax - xMin) / steps;
@@ -2637,120 +2598,106 @@
                     try { y = node.evaluate({ x: x }); } catch (e) { y = NaN; }
                     samples.push({ x: x, y: y });
 
-                    if (typeof y !== 'number' || isNaN(y) || y < yMin || y > yMax) {
-                        if (currentSegment.length > 0) { currentRawElements.push({ type: 'path', stroke: '#6366f1', width: penWidth, points: [...currentSegment] }); currentSegment = []; }
-                        prevY = NaN; continue;
+                    let isAsymptote = false;
+                    for (let excl of domainExcluded) {
+                        if (x >= excl && (x - step) < excl) {
+                            isAsymptote = true;
+                            break;
+                        }
                     }
-                    currentSegment.push({ x: normX(x), y: normY(y) }); prevY = y;
+
+                    if (typeof y !== 'number' || isNaN(y) || y < yMin || y > yMax || isAsymptote) {
+                        if (currentSegment.length > 0) { currentRawElements.push({ type: 'path', stroke: '#6366f1', width: penWidth, points: [...currentSegment] }); currentSegment = []; }
+                        prevY = NaN; 
+                        if (isAsymptote) continue;
+                    }
+                    if (typeof y === 'number' && !isNaN(y) && y >= yMin && y <= yMax) {
+                        currentSegment.push({ x: normX(x), y: normY(y) }); prevY = y;
+                    }
                 }
                 if (currentSegment.length > 0) currentRawElements.push({ type: 'path', stroke: '#6366f1', width: penWidth, points: [...currentSegment] });
 
-                // Calcolo Dominio Matematica Reale (Insieme di Definizione)
-                let domainText = "D = R";
-                let domainLaTeX = "\\mathbb{R}";
+                let rootsLaTeX = "\\text{nessuna}";
+                let periodicity = findFunctionPeriodicity(evalExpr);
+                let rootsText = "Nessuna";
+                let yIntText = "Nessuna";
+                let signText = "Non calcolato";
+                let periodText = "Non periodica";
+                let posLaTeX = "\\emptyset";
+
+                if (periodicity) {
+                    periodText = "T = " + periodicity.periodText;
+                }
+
                 if (nerdamerLoaded) {
                     try {
-                        let domainObj = calculateDomainAnalytic(cleanedExpr);
-                        domainText = domainObj.text;
-                        domainLaTeX = formatStrictLaTeX(domainObj.latex);
-                    } catch (e) {
-                        console.warn("Errore calcolo analitico dominio:", e);
-                    }
-                }
-
-                let roots = [];
-                let rootsLaTeX = "";
-                let periodicity = findFunctionPeriodicity(evalExpr);
-                if (!periodicity && /sin|cos|tan|cot/i.test(cleanedExpr)) {
-                    const isTanCot = /tan|cot/i.test(cleanedExpr);
-                    let fallbackOmega = 1;
-                    const omegaMatch = cleanedExpr.match(/(?:sin|cos|tan|cot)\s*\(\s*([0-9.]+)\s*\*?\s*x/i);
-                    if (omegaMatch) {
-                        fallbackOmega = parseFloat(omegaMatch[1]) || 1;
-                    }
-                    let T_latex = "";
-                    if (isTanCot) {
-                        T_latex = fallbackOmega === 1 ? "\\pi" : `\\dfrac{\\pi}{${fallbackOmega}}`;
-                    } else {
-                        T_latex = fallbackOmega === 1 ? "2\\pi" : `\\dfrac{2\\pi}{${fallbackOmega}}`;
-                    }
-                    periodicity = {
-                        trigName: isTanCot ? 'tan' : 'sin',
-                        omega: fallbackOmega,
-                        isTanCot: isTanCot,
-                        periodLaTeX: T_latex
-                    };
-                }
-
-                if (document.getElementById('chkMathRoots')?.checked) {
-                    // Rileva zeri grafici nel range
-                    for (let i = 1; i < samples.length; i++) {
-                        if (samples[i - 1].y * samples[i].y <= 0 && Math.abs(samples[i].y - samples[i - 1].y) < (yMax - yMin) / 2) {
-                            roots.push(samples[i].x);
-                            currentRawElements.push({ type: 'point', fill: '#f59e0b', x: normX(samples[i].x), y: normY(0) });
+                        let yZero = node.evaluate({x: 0});
+                        let isDefZero = !domainExcluded.some(pt => Math.abs(pt) < 1e-4);
+                        if (isDefZero && !isNaN(yZero) && isFinite(yZero)) {
+                            yIntText = "y = " + formatMathNumber(yZero);
                         }
-                    }
+                    } catch(e){}
 
-                    if (periodicity) {
-                        const omega = periodicity.omega;
-                        const trigName = periodicity.trigName;
-                        const isTanCot = periodicity.isTanCot;
-
-                        let valAtZero = NaN;
-                        try { valAtZero = node.evaluate({ x: 0 }); } catch (e) { }
-
-                        if (Math.abs(valAtZero) < 1e-3 && (trigName === 'sin' || trigName === 'tan')) {
-                            if (omega === 1) rootsLaTeX = "x = k\\pi,\\quad k \\in \\mathbb{Z}";
-                            else if (omega === 2) rootsLaTeX = "x = \\dfrac{k\\pi}{2},\\quad k \\in \\mathbb{Z}";
-                            else rootsLaTeX = `x = \\dfrac{k\\pi}{${formatMathNumber(omega)}},\\quad k \\in \\mathbb{Z}`;
-                        } else {
-                            let valAtCosZero = NaN;
-                            try { valAtCosZero = node.evaluate({ x: Math.PI / (2 * omega) }); } catch (e) { }
-                            if (Math.abs(valAtCosZero) < 1e-3 && trigName === 'cos') {
-                                if (omega === 1) rootsLaTeX = "x = \\dfrac{\\pi}{2} + k\\pi,\\quad k \\in \\mathbb{Z}";
-                                else {
-                                    const doubleOmega = 2 * omega;
-                                    rootsLaTeX = `x = \\dfrac{\\pi}{${formatMathNumber(doubleOmega)}} + \\dfrac{k\\pi}{${formatMathNumber(omega)}},\\quad k \\in \\mathbb{Z}`;
-                                }
+                    let foundRoots = [];
+                    try {
+                        let sol = nerdamer.solve(cleanedExpr + ' = 0', 'x');
+                        let solText = sol.text();
+                        if (solText.startsWith('[') && solText.endsWith(']')) {
+                            foundRoots = solText.slice(1, -1).split(',').map(s => parseFloat(nerdamer(s.trim()).evaluate().text()));
+                        } else if (solText) {
+                            foundRoots.push(parseFloat(nerdamer(solText).evaluate().text()));
+                        }
+                        foundRoots = foundRoots.filter(r => !isNaN(r) && !domainExcluded.some(pt => Math.abs(pt - r) < 1e-4));
+                        foundRoots = [...new Set(foundRoots)].sort((a,b)=>a-b);
+                        
+                        if (foundRoots.length > 0) {
+                            let rootStrs = foundRoots.map(r => formatMathNumber(r));
+                            if (periodicity) {
+                                rootsText = rootStrs.map(r => `x=${r} + k*${periodicity.periodText}`).join(", ");
+                                rootsLaTeX = rootStrs.map(r => `x=${r} + k${periodicity.periodLaTeX}`).join(",\\quad ") + ",\\quad k \\in \\mathbb{Z}";
                             } else {
-                                let periodVal = isTanCot ? Math.PI / omega : 2 * Math.PI / omega;
-                                let periodRoots = [];
-                                const stepsTest = 100;
-                                const stepTest = periodVal / stepsTest;
-                                for (let i = 1; i <= stepsTest; i++) {
-                                    let x1 = (i - 1) * stepTest;
-                                    let x2 = i * stepTest;
-                                    let y1 = NaN, y2 = NaN;
-                                    try { y1 = node.evaluate({ x: x1 }); y2 = node.evaluate({ x: x2 }); } catch (e) { }
-                                    if (typeof y1 === 'number' && typeof y2 === 'number' && !isNaN(y1) && !isNaN(y2)) {
-                                        if (y1 * y2 <= 0) {
-                                            let rootX = x1 + (x2 - x1) * (0 - y1) / (y2 - y1);
-                                            periodRoots.push(rootX);
-                                        }
-                                    }
-                                }
-                                let uniquePeriodRoots = [];
-                                periodRoots.sort((a, b) => a - b);
-                                periodRoots.forEach(r => {
-                                    if (uniquePeriodRoots.length === 0 || r - uniquePeriodRoots[uniquePeriodRoots.length - 1] > 0.05) {
-                                        uniquePeriodRoots.push(r);
-                                    }
-                                });
-
-                                if (uniquePeriodRoots.length > 0) {
-                                    let T_sym = periodicity.periodLaTeX;
-                                    rootsLaTeX = uniquePeriodRoots.map(r => `x \\approx ${formatMathNumber(r)} + k${T_sym}`).join(',\\quad ') + ',\\quad k \\in \\mathbb{Z}';
-                                } else {
-                                    rootsLaTeX = "\\text{nessuno}";
-                                }
+                                rootsText = rootStrs.map(r => `x=${r}`).join(", ");
+                                rootsLaTeX = rootStrs.map(r => `x=${r}`).join(",\\quad ");
                             }
                         }
-                    } else {
-                        let uniqueRoots = [...new Set(roots.map(r => formatMathNumber(r)))];
-                        rootsLaTeX = uniqueRoots.length > 0 ? uniqueRoots.map(r => `x = ${r}`).join(',\\quad ') : '\\text{nessuno}';
+                    } catch(e){}
+
+                    try {
+                        let signCriticals = [...new Set([...domainExcluded, ...foundRoots])].sort((a, b) => a - b);
+                        let signPts = [-Infinity, ...signCriticals, Infinity];
+                        let posIntervals = [];
+                        let posLatexInts = [];
+                        for (let i = 0; i < signPts.length - 1; i++) {
+                            let start = signPts[i];
+                            let end = signPts[i+1];
+                            let testPt = (start === -Infinity && end === Infinity) ? 0 :
+                                         (start === -Infinity) ? end - 2 :
+                                         (end === Infinity) ? start + 2 :
+                                         (start + end) / 2;
+                            let yTest = NaN;
+                            try { yTest = node.evaluate({x: testPt}); } catch(e){}
+                            if (typeof yTest === 'number' && !isNaN(yTest) && yTest > 1e-6) {
+                                posIntervals.push(`(${start === -Infinity ? '-inf' : formatMathNumber(start)}, ${end === Infinity ? '+inf' : formatMathNumber(end)})`);
+                                posLatexInts.push(`\\left(${start === -Infinity ? '-\\infty' : formatMathNumber(start)}, ${end === Infinity ? '+\\infty' : formatMathNumber(end)}\\right)`);
+                            }
+                        }
+                        if (posIntervals.length > 0) {
+                            if (periodicity) {
+                                signText = posIntervals.map(i => i + " + k*" + periodicity.periodText).join(" U ");
+                                posLaTeX = posLatexInts.map(i => i + " + k" + periodicity.periodLaTeX).join(" \\cup ") + ",\\quad k \\in \\mathbb{Z}";
+                            } else {
+                                signText = posIntervals.join(" U ");
+                                posLaTeX = posLatexInts.join(" \\cup ");
+                            }
+                        } else {
+                            signText = "Mai positiva";
+                        }
+                    } catch(e) {
+                        signText = "Errore simbolico";
+                        posLaTeX = "\\text{errore}";
                     }
                 } else {
-                    rootsLaTeX = "\\text{nessuno}";
+                    posLaTeX = "\\text{non supportato}";
                 }
 
                 let derivStr = "calcolo non supportato";
@@ -2760,157 +2707,10 @@
                         let diffNode = nerdamer.diff(cleanedExpr, 'x');
                         derivStr = diffNode.text();
                         derivLaTeX = formatStrictLaTeX(diffNode.toTeX());
-                    } catch (e) {
-                        console.warn("Errore calcolo derivata simbolica:", e);
-                    }
-                }
-
-                let posLaTeX = "\\emptyset";
-                let crescLaTeX = "\\emptyset";
-                let maxLaTeX = "\\emptyset";
-                let minLaTeX = "\\emptyset";
-                let maxStrText = "nessuno";
-                let minStrText = "nessuno";
-
-                if (periodicity) {
-                    const omega = periodicity.omega;
-                    const isTanCot = periodicity.isTanCot;
-                    let periodVal = isTanCot ? Math.PI / omega : 2 * Math.PI / omega;
-                    let T_sym = periodicity.periodLaTeX;
-
-                    // Campioniamo su un singolo periodo
-                    let periodSamples = [];
-                    const N_SAMPLES = 200;
-                    for (let i = 0; i <= N_SAMPLES; i++) {
-                        let px = (i / N_SAMPLES) * periodVal;
-                        let py = NaN;
-                        try { py = node.evaluate({ x: px }); } catch (e) { }
-                        if (!isNaN(py)) {
-                            periodSamples.push({ x: px, y: py });
-                        }
-                    }
-
-                    // 1. Segno (Positività) nel periodo
-                    if (document.getElementById('chkMathSign')?.checked && periodSamples.length > 0) {
-                        let periodPosInt = [];
-                        let inPos = false, startPos = 0;
-                        periodSamples.forEach((s, i) => {
-                            if (s.y > 1e-5 && !inPos) { inPos = true; startPos = s.x; }
-                            if ((s.y <= 1e-5 || i === periodSamples.length - 1) && inPos) {
-                                inPos = false;
-                                periodPosInt.push(`\\left(${formatMathNumber(startPos)} + k${T_sym}, \\ ${formatMathNumber(s.x)} + k${T_sym}\\right)`);
-                            }
-                        });
-                        if (periodPosInt.length > 0) {
-                            posLaTeX = periodPosInt.join(' \\cup ') + ',\\quad k \\in \\mathbb{Z}';
-                        }
-                    }
-
-                    // 2. Crescenza nel periodo
-                    let periodMax = [], periodMin = [];
-                    if (document.getElementById('chkMathMono')?.checked && periodSamples.length > 0) {
-                        let periodCrescInt = [];
-                        let inCresc = false, startCresc = 0;
-                        for (let i = 1; i < periodSamples.length; i++) {
-                            let sPrev = periodSamples[i - 1], s = periodSamples[i];
-                            let dy = s.y - sPrev.y;
-                            if (dy > 1e-5 && !inCresc) { inCresc = true; startCresc = sPrev.x; }
-                            if ((dy <= 1e-5 || i === periodSamples.length - 1) && inCresc) {
-                                inCresc = false;
-                                periodCrescInt.push(`\\left(${formatMathNumber(startCresc)} + k${T_sym}, \\ ${formatMathNumber(s.x)} + k${T_sym}\\right)`);
-                            }
-                        }
-                        if (periodCrescInt.length > 0) {
-                            crescLaTeX = periodCrescInt.join(' \\cup ') + ',\\quad k \\in \\mathbb{Z}';
-                        }
-
-                        // Estremi nel periodo
-                        for (let i = 2; i < periodSamples.length; i++) {
-                            let d1 = periodSamples[i - 1].y - periodSamples[i - 2].y;
-                            let d2 = periodSamples[i].y - periodSamples[i - 1].y;
-                            if (d1 > 1e-5 && d2 < -1e-5) {
-                                periodMax.push(periodSamples[i - 1].x);
-                            }
-                            if (d1 < -1e-5 && d2 > 1e-5) {
-                                periodMin.push(periodSamples[i - 1].x);
-                            }
-                        }
-
-                        maxLaTeX = periodMax.length > 0 ? periodMax.map(x => `${formatMathNumber(x)} + k${T_sym}`).join(',\\ ') + ',\\ k \\in \\mathbb{Z}' : '\\emptyset';
-                        minLaTeX = periodMin.length > 0 ? periodMin.map(x => `${formatMathNumber(x)} + k${T_sym}`).join(',\\ ') + ',\\ k \\in \\mathbb{Z}' : '\\emptyset';
-
-                        maxStrText = periodMax.length > 0 ? periodMax.map(x => `${formatMathNumber(x)} + kT`).join(', ') + ' (k in Z)' : 'nessuno';
-                        minStrText = periodMin.length > 0 ? periodMin.map(x => `${formatMathNumber(x)} + kT`).join(', ') + ' (k in Z)' : 'nessuno';
-                    }
-
-                    // Aggiungiamo comunque i punti grafici stazionari nel range di visualizzazione xMin-xMax sul canvas/plotter
-                    if (document.getElementById('chkMathMono')?.checked) {
-                        for (let i = 2; i < samples.length; i++) {
-                            let d1 = samples[i - 1].y - samples[i - 2].y, d2 = samples[i].y - samples[i - 1].y;
-                            if (d1 > 0 && d2 < 0) {
-                                currentRawElements.push({ type: 'point', fill: '#10b981', x: normX(samples[i - 1].x), y: normY(samples[i - 1].y) });
-                            }
-                            if (d1 < 0 && d2 > 0) {
-                                currentRawElements.push({ type: 'point', fill: '#ef4444', x: normX(samples[i - 1].x), y: normY(samples[i - 1].y) });
-                            }
-                        }
-                    }
-                } else {
-                    // Non periodica: calcolo classico lungo tutto il range di campionamento
-                    let posInt = [];
-                    if (document.getElementById('chkMathSign')?.checked) {
-                        let inPos = false, startPos = 0;
-                        samples.forEach((s, i) => {
-                            if (s.y > 0 && !inPos) { inPos = true; startPos = s.x; }
-                            if ((s.y <= 0 || i === samples.length - 1) && inPos) {
-                                inPos = false;
-                                posInt.push(`\\left(${formatMathNumber(startPos)}, ${formatMathNumber(s.x)}\\right)`);
-                            }
-                        });
-                        if (posInt.length > 0) {
-                            posLaTeX = posInt.join(' \\cup ');
-                        }
-                    }
-
-                    let crescInt = [];
-                    let localMax = [], localMin = [];
-                    if (document.getElementById('chkMathMono')?.checked) {
-                        let inCresc = false, startCresc = 0;
-                        for (let i = 1; i < samples.length; i++) {
-                            let sPrev = samples[i - 1], s = samples[i], dy = s.y - sPrev.y;
-                            if (dy > 1e-4 && !inCresc) { inCresc = true; startCresc = sPrev.x; }
-                            if ((dy <= 1e-4 || i === samples.length - 1) && inCresc) {
-                                inCresc = false;
-                                crescInt.push(`\\left(${formatMathNumber(startCresc)}, ${formatMathNumber(s.x)}\\right)`);
-                            }
-                        }
-                        if (crescInt.length > 0) {
-                            crescLaTeX = crescInt.join(' \\cup ');
-                        }
-
-                        for (let i = 2; i < samples.length; i++) {
-                            let d1 = samples[i - 1].y - samples[i - 2].y, d2 = samples[i].y - samples[i - 1].y;
-                            if (d1 > 0 && d2 < 0) {
-                                localMax.push(samples[i - 1].x);
-                                currentRawElements.push({ type: 'point', fill: '#10b981', x: normX(samples[i - 1].x), y: normY(samples[i - 1].y) });
-                            }
-                            if (d1 < 0 && d2 > 0) {
-                                localMin.push(samples[i - 1].x);
-                                currentRawElements.push({ type: 'point', fill: '#ef4444', x: normX(samples[i - 1].x), y: normY(samples[i - 1].y) });
-                            }
-                        }
-                    }
-
-                    maxLaTeX = localMax.length > 0 ? `\\left\\{${localMax.map(n => formatMathNumber(n)).join(', ')}\\right\\}` : '\\emptyset';
-                    minLaTeX = localMin.length > 0 ? `\\left\\{${localMin.map(n => formatMathNumber(n)).join(', ')}\\right\\}` : '\\emptyset';
-
-                    maxStrText = localMax.length > 0 ? localMax.map(n => formatMathNumber(n)).join(', ') : 'nessuno';
-                    minStrText = localMin.length > 0 ? localMin.map(n => formatMathNumber(n)).join(', ') : 'nessuno';
+                    } catch (e) {}
                 }
 
                 let displayTexString = texString.replace(/\\frac/g, '\\dfrac');
-
-                // Popola il pannello HTML delle formule LaTeX a schermo
                 const analysisPanel = document.getElementById('math-analysis-panel');
                 const gcodePanel = document.getElementById('gcode-preview-panel');
                 if (analysisPanel) {
@@ -2922,18 +2722,10 @@
                     let htmlReport = `
                         <div class="space-y-3">
                             <div><strong>Funzione:</strong> $$ f(x) = ${displayTexString} $$</div>
-                            <div><strong>Insieme di Definizione (Dominio):</strong> $$ D: ${domainLaTeX} $$</div>
-                            <div><strong>Zeri (Intersezione X):</strong> $$ ${rootsLaTeX} $$</div>
+                            <div><strong>Dominio Analitico:</strong> $$ D: ${domainLaTeX} $$</div>
+                            <div><strong>Intersezione X:</strong> $$ ${rootsLaTeX} $$</div>
                             <div><strong>Segno ($f(x) > 0$):</strong> $$ ${posLaTeX} $$</div>
                             <div><strong>Derivata Prima:</strong> $$ f'(x) = ${derivLaTeX} $$</div>
-                            <div><strong>Crescenza:</strong> $$ ${crescLaTeX} $$</div>
-                            <div>
-                                <strong>Punti Stazionari:</strong>
-                                <div class="mt-1 pl-2 border-l border-slate-800 text-[10px] space-y-1">
-                                    <div>Max relativi: <span class="font-mono text-emerald-400">${maxStrText}</span></div>
-                                    <div>Min relativi: <span class="font-mono text-rose-400">${minStrText}</span></div>
-                                </div>
-                            </div>
                         </div>
                     `;
                     document.getElementById('mathAnalysisContent').innerHTML = htmlReport;
@@ -2943,270 +2735,41 @@
                 }
 
                 const chkShowTextVal = document.getElementById('chkShowMathText')?.checked || false;
-                const chkRootsVal = document.getElementById('chkMathRoots')?.checked || false;
-                const chkSignVal = document.getElementById('chkMathSign')?.checked || false;
-                const chkDerivVal = document.getElementById('chkMathDeriv')?.checked || false;
-                const chkMonoVal = document.getElementById('chkMathMono')?.checked || false;
-                const autoScaleYVal = document.getElementById('chkMathAutoScaleY')?.checked || false;
-                const currentMathSignature = `${evalExpr}_${chkRootsVal}_${chkSignVal}_${chkDerivVal}_${chkMonoVal}_${chkShowTextVal}_${autoScaleYVal}`;
-
                 const textScale = parseFloat(document.getElementById('mathTextSize').value);
                 const textStartX = parseFloat(document.getElementById('mathTextX').value);
                 let textCursorY = parseFloat(document.getElementById('mathTextY').value);
                 const isFlipped = document.getElementById('paramFlip180')?.checked || false;
 
-                // Funzione ausiliaria per posizionare, scalare e plottare le polilinee LaTeX sul piatto
-                function drawMathPolylines(cachedRowsPolylines) {
-                    currentRawElements = [...baseGraphElements];
-
-                    const formulaStartX = textStartX + 26 * textScale;
-                    const rowSpacing = 8.5 * textScale;
-                    const targetFormulaHeight = 5.2 * textScale;
-
-                    let minTotalX = Infinity, maxTotalX = -Infinity;
-                    let minTotalY = Infinity, maxTotalY = -Infinity;
-
-                    cachedRowsPolylines.forEach(row => {
-                        if (row.isTitle) {
-                            if (row.polylines && row.polylines.length > 0) {
-                                let minX = Infinity, maxX = -Infinity;
-                                let minY = Infinity, maxY = -Infinity;
-                                row.polylines.forEach(poly => {
-                                    poly.forEach(pt => {
-                                        if (pt.x < minX) minX = pt.x;
-                                        if (pt.x > maxX) maxX = pt.x;
-                                        if (pt.y < minY) minY = pt.y;
-                                        if (pt.y > maxY) maxY = pt.y;
-                                    });
-                                });
-                                let svgW = maxX - minX;
-                                let svgH = maxY - minY;
-                                if (svgW <= 0) svgW = 1;
-                                if (svgH <= 0) svgH = 1;
-
-                                const targetTitleHeight = 3.2;
-                                let scaleFactor = targetTitleHeight / svgH;
-                                if (svgW * scaleFactor > 80) {
-                                    scaleFactor = 80 / svgW;
-                                }
-
-                                const titleStartX = 50 - (svgW * scaleFactor) / 2;
-                                const titleCenterY = 97.2;
-
-                                row.polylines.forEach(poly => {
-                                    const transformedPoly = poly.map(pt => {
-                                        return {
-                                            x: titleStartX + (pt.x - minX) * scaleFactor,
-                                            y: titleCenterY - (pt.y - minY) * scaleFactor + (targetTitleHeight / 2)
-                                        };
-                                    });
-                                    currentRawElements.push({
-                                        type: 'path',
-                                        stroke: '#a5b4fc',
-                                        width: penWidth,
-                                        points: transformedPoly
-                                    });
-                                });
-                            }
-                            return;
-                        }
-
-                        // 1. Disegna l'etichetta a sinistra
-                        let paths = generateSingleLineTextPaths(row.label, textStartX, textCursorY, textScale * 0.9, false);
-                        paths.forEach(p => {
-                            currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: p });
-                            p.forEach(pt => {
-                                if (pt.x < minTotalX) minTotalX = pt.x;
-                                if (pt.x > maxTotalX) maxTotalX = pt.x;
-                                if (pt.y < minTotalY) minTotalY = pt.y;
-                                if (pt.y > maxTotalY) maxTotalY = pt.y;
-                            });
-                        });
-
-                        // 2. Posiziona e scala le polilinee della formula pre-compilata
-                        let scaleFactor = targetFormulaHeight;
-                        let effectiveHeight = targetFormulaHeight;
-                        if (row.polylines && row.polylines.length > 0) {
-                            let minX = Infinity, maxX = -Infinity;
-                            let minY = Infinity, maxY = -Infinity;
-                            row.polylines.forEach(poly => {
-                                poly.forEach(pt => {
-                                    if (pt.x < minX) minX = pt.x;
-                                    if (pt.x > maxX) maxX = pt.x;
-                                    if (pt.y < minY) minY = pt.y;
-                                    if (pt.y > maxY) maxY = pt.y;
-                                });
-                            });
-
-                            let svgH = maxY - minY;
-                            if (svgH <= 0) svgH = 1;
-                            
-                            // Scala standard per caratteri a singola riga (altezza ~750 unità MathJax)
-                            const baseScale = (5.2 * textScale) / 750;
-                            // Se l'altezza è notevole (frazioni, esponenti, radici), usiamo la scala base per non rimpicciolire i caratteri
-                            scaleFactor = svgH > 850 ? baseScale : (5.2 * textScale) / svgH;
-                            effectiveHeight = svgH * scaleFactor;
-
-                            const centerY = minY + svgH / 2;
-                            // Allineamento verticale sul centro geometrico della riga di testo (l'etichetta a sinistra)
-                            const targetCenterY = textCursorY + (2.6 * textScale);
-
-                            row.polylines.forEach(poly => {
-                                const transformedPoly = poly.map(pt => {
-                                    let px = formulaStartX + (pt.x - minX) * scaleFactor;
-                                    let py = targetCenterY - (pt.y - centerY) * scaleFactor;
-
-                                    if (px < minTotalX) minTotalX = px;
-                                    if (px > maxTotalX) maxTotalX = px;
-                                    if (py < minTotalY) minTotalY = py;
-                                    if (py > maxTotalY) maxTotalY = py;
-
-                                    return { x: px, y: py };
-                                });
-
-                                currentRawElements.push({
-                                    type: 'path',
-                                    stroke: '#a5b4fc',
-                                    width: penWidth,
-                                    points: transformedPoly
-                                });
-                            });
-                        }
-
-                        // Riga successiva: scendiamo dello spacing dinamico per prevenire sovrapposizioni
-                        const spacing = Math.max(rowSpacing, effectiveHeight + 3.0 * textScale);
-                        textCursorY -= spacing;
+                if (chkShowTextVal) {
+                    let summaryLines = [
+                        `Funzione: f(x) = ${exprStrRaw}`,
+                        `1. Dominio: ${domainText}`,
+                        `2. Segno: f(x) > 0 per x in ${signText}`,
+                        `3. Int. Assi: X: ${rootsText} ; Y: ${yIntText}`,
+                        `4. Periodo: ${periodText}`
+                    ];
+                    
+                    summaryLines.forEach(line => {
+                        let paths = generateSingleLineTextPaths(line, textStartX, textCursorY, textScale * 0.9, false);
+                        paths.forEach(p => currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: p }));
+                        textCursorY += 8 * textScale;
                     });
-
-                    // 3. Pannello di sfondo
-                    if (minTotalX !== Infinity && maxTotalX !== -Infinity) {
-                        const padding = 2 * textScale;
-                        const panelX = minTotalX - padding;
-                        const panelY = minTotalY - padding;
-                        const panelW = (maxTotalX - minTotalX) + 2 * padding;
-                        const panelH = (maxTotalY - minTotalY) + 2 * padding;
-
-                        currentRawElements.unshift({
-                            type: 'panel',
-                            x: panelX,
-                            y: panelY,
-                            w: panelW,
-                            h: panelH,
-                            rx: 1.5 * textScale
-                        });
-                    }
-
-                    // 4. Rotazione 180°
-                    if (isFlipped) {
-                        const cx = bedSizeX / 2;
-                        const cy = bedSizeY / 2;
-                        for (let i = baseGraphElements.length; i < currentRawElements.length; i++) {
-                            const el = currentRawElements[i];
-                            if (el.type === 'path') {
-                                el.points = el.points.map(pt => {
-                                    return {
-                                        x: 2 * cx - pt.x,
-                                        y: 2 * cy - pt.y
-                                    };
-                                });
-                            } else if (el.type === 'panel') {
-                                let newX = 2 * cx - (el.x + el.w);
-                                let newY = 2 * cy - (el.y + el.h);
-                                el.x = newX;
-                                el.y = newY;
-                            }
-                        }
-                    }
-
-                    applyGlobalTransformAndRender();
                 }
 
                 const baseGraphElements = [...currentRawElements];
 
-                // SE LA FIRMA MATEMATICA E GLI ELEMENTI NON SONO CAMBIATI, USIAMO LA CACHE
-                if (currentMathSignature === lastMathJaxSignature && lastMathJaxPolylines.length > 0) {
-                    drawMathPolylines(lastMathJaxPolylines);
-                    return;
-                }
-
-                // Generiamo la lista di formule da plottare
-                let latexRows = [];
-                latexRows.push({ isTitle: true, label: "TITOLO", latex: `f(x) = ${displayTexString}` });
-
-                if (chkShowTextVal) {
-                    latexRows.push({ label: "1. FUNZIONE:", latex: `f(x) = ${displayTexString}` });
-                    latexRows.push({ label: "2. DOMINIO:", latex: `D: ${domainLaTeX}` });
-
-                    if (chkRootsVal) {
-                        latexRows.push({ label: "3. ZERI X:", latex: rootsLaTeX });
-                    }
-                    if (chkSignVal) {
-                        latexRows.push({ label: "4. SEGNO > 0:", latex: posLaTeX });
-                    }
-                    if (chkDerivVal) {
-                        latexRows.push({ label: "5. DERIVATA:", latex: `f'(x) = ${derivLaTeX}` });
-                    }
-                    if (chkMonoVal) {
-                        latexRows.push({ label: "6. CRESCENZA:", latex: crescLaTeX });
-                        latexRows.push({ label: "7. ESTREMI:", latex: `\\text{Max}: ${maxLaTeX},\\ \\text{Min}: ${minLaTeX}` });
+                if (isFlipped) {
+                    const cx = bedSizeX / 2;
+                    const cy = bedSizeY / 2;
+                    for (let i = 0; i < currentRawElements.length; i++) {
+                        const el = currentRawElements[i];
+                        if (el.type === 'path') {
+                            el.points = el.points.map(pt => ({ x: 2 * cx - pt.x, y: 2 * cy - pt.y }));
+                        }
                     }
                 }
 
-                // Creiamo o recuperiamo il div temporaneo per MathJax SVG
-                let tempDiv = document.getElementById('math-svg-temp');
-                if (!tempDiv) {
-                    tempDiv = document.createElement('div');
-                    tempDiv.id = 'math-svg-temp';
-                    tempDiv.style.position = 'absolute';
-                    tempDiv.style.left = '-9999px';
-                    tempDiv.style.top = '-9999px';
-                    document.body.appendChild(tempDiv);
-                }
-                tempDiv.innerHTML = '';
-
-                // Creiamo i sotto-elementi per ciascuna formula
-                latexRows.forEach((row, idx) => {
-                    const rowDiv = document.createElement('div');
-                    rowDiv.id = `math-svg-row-${idx}`;
-                    rowDiv.innerHTML = `\\[ ${row.latex} \\]`;
-                    tempDiv.appendChild(rowDiv);
-                });
-
-                const currentReqId = ++mathJaxRequestId;
-
-                if (window.MathJax && window.MathJax.typesetPromise) {
-                    MathJax.typesetPromise([tempDiv]).then(() => {
-                        if (currentReqId !== mathJaxRequestId || currentMode !== 'math') return;
-
-                        let newPolylinesCache = [];
-                        latexRows.forEach((row, idx) => {
-                            const rowDiv = document.getElementById(`math-svg-row-${idx}`);
-                            const svgEl = rowDiv ? rowDiv.querySelector('svg') : null;
-                            let extracted = [];
-                            if (svgEl) {
-                                extracted = parseMathJaxSVGToPolylines(svgEl);
-                            }
-                            newPolylinesCache.push({
-                                isTitle: row.isTitle || false,
-                                label: row.label,
-                                polylines: extracted
-                            });
-                        });
-
-                        // Salviamo in cache
-                        lastMathJaxSignature = currentMathSignature;
-                        lastMathJaxPolylines = newPolylinesCache;
-
-                        // Disegnamo sul piatto
-                        drawMathPolylines(newPolylinesCache);
-                    }).catch(err => {
-                        console.error("Errore nel rendering di MathJax:", err);
-                        applyGlobalTransformAndRender();
-                    });
-                } else {
-                    applyGlobalTransformAndRender();
-                }
-
+                applyGlobalTransformAndRender();
             } else if (coordType === 'polar') {
                 document.getElementById('latex-overlay').innerHTML = ``;
                 const exprRaw = document.getElementById('mathInputPolar').value;
