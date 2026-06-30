@@ -2734,42 +2734,114 @@
                     }
                 }
 
+
                 const chkShowTextVal = document.getElementById('chkShowMathText')?.checked || false;
                 const textScale = parseFloat(document.getElementById('mathTextSize').value);
                 const textStartX = parseFloat(document.getElementById('mathTextX').value);
                 let textCursorY = parseFloat(document.getElementById('mathTextY').value);
                 const isFlipped = document.getElementById('paramFlip180')?.checked || false;
 
-                if (chkShowTextVal) {
-                    let summaryLines = [
-                        `Funzione: f(x) = ${exprStrRaw}`,
-                        `1. Dominio: ${domainText}`,
-                        `2. Segno: f(x) > 0 per x in ${signText}`,
-                        `3. Int. Assi: X: ${rootsText} ; Y: ${yIntText}`,
-                        `4. Periodo: ${periodText}`
-                    ];
-                    
-                    summaryLines.forEach(line => {
-                        let paths = generateSingleLineTextPaths(line, textStartX, textCursorY, textScale * 0.9, false);
-                        paths.forEach(p => currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: p }));
-                        textCursorY += 8 * textScale;
-                    });
-                }
-
-                const baseGraphElements = [...currentRawElements];
-
-                if (isFlipped) {
-                    const cx = bedSizeX / 2;
-                    const cy = bedSizeY / 2;
-                    for (let i = 0; i < currentRawElements.length; i++) {
-                        const el = currentRawElements[i];
-                        if (el.type === 'path') {
-                            el.points = el.points.map(pt => ({ x: 2 * cx - pt.x, y: 2 * cy - pt.y }));
+                function finalizePlot() {
+                    if (isFlipped) {
+                        const cx = bedSizeX / 2;
+                        const cy = bedSizeY / 2;
+                        for (let i = 0; i < currentRawElements.length; i++) {
+                            const el = currentRawElements[i];
+                            if (el.type === 'path') {
+                                el.points = el.points.map(pt => ({ x: 2 * cx - pt.x, y: 2 * cy - pt.y }));
+                            }
                         }
                     }
+                    applyGlobalTransformAndRender();
                 }
 
-                applyGlobalTransformAndRender();
+                if (chkShowTextVal) {
+                    let latexRows = [];
+                    latexRows.push(`\\text{Funzione: } f(x) = ${displayTexString}`);
+                    latexRows.push(`\\text{1. Dominio: } D: ${domainLaTeX}`);
+                    let signLatexClean = (posLaTeX === "\\emptyset" || posLaTeX === "\\text{errore}" || posLaTeX === "\\text{non supportato}") ? posLaTeX : `x \\in ${posLaTeX}`;
+                    latexRows.push(`\\text{2. Segno: } f(x) > 0 \\text{ per } ${signLatexClean}`);
+                    
+                    let yIntStr = yIntText === "Nessuna" ? "\\text{nessuna}" : yIntText.replace("y = ", "y=");
+                    latexRows.push(`\\text{3. Int. Assi: } \\text{X: } ${rootsLaTeX} \\quad \\text{Y: } ${yIntStr}`);
+                    
+                    let periodStr = periodText === "Non periodica" ? "\\text{non periodica}" : periodText.replace('T = ', 'T=');
+                    latexRows.push(`\\text{4. Periodo: } ${periodStr}`);
+
+                    let tempDiv = document.getElementById('math-svg-temp');
+                    if (!tempDiv) {
+                        tempDiv = document.createElement('div');
+                        tempDiv.id = 'math-svg-temp';
+                        tempDiv.style.position = 'absolute';
+                        tempDiv.style.left = '-9999px';
+                        tempDiv.style.top = '-9999px';
+                        document.body.appendChild(tempDiv);
+                    }
+                    tempDiv.innerHTML = '';
+                    latexRows.forEach((row, idx) => {
+                        const rowDiv = document.createElement('div');
+                        rowDiv.id = `math-svg-row-${idx}`;
+                        rowDiv.innerHTML = `\\[ ${row} \\]`;
+                        tempDiv.appendChild(rowDiv);
+                    });
+
+                    const currentReqId = ++mathJaxRequestId;
+
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise([tempDiv]).then(() => {
+                            if (currentReqId !== mathJaxRequestId || currentMode !== 'math') return;
+
+                            latexRows.forEach((row, idx) => {
+                                const rowDiv = document.getElementById(`math-svg-row-${idx}`);
+                                const svgEl = rowDiv ? rowDiv.querySelector('svg') : null;
+                                if (svgEl) {
+                                    let extracted = parseMathJaxSVGToPolylines(svgEl);
+                                    let minX = Infinity, maxX = -Infinity;
+                                    let minY = Infinity, maxY = -Infinity;
+                                    extracted.forEach(poly => {
+                                        poly.forEach(pt => {
+                                            if (pt.x < minX) minX = pt.x;
+                                            if (pt.x > maxX) maxX = pt.x;
+                                            if (pt.y < minY) minY = pt.y;
+                                            if (pt.y > maxY) maxY = pt.y;
+                                        });
+                                    });
+
+                                    let svgH = maxY - minY;
+                                    if (svgH <= 0) svgH = 1;
+                                    let scaleFactor = (5.2 * textScale) / svgH;
+                                    let effectiveHeight = svgH * scaleFactor;
+
+                                    extracted.forEach(poly => {
+                                        const transformedPoly = poly.map(pt => {
+                                            return {
+                                                x: textStartX + (pt.x - minX) * scaleFactor,
+                                                y: textCursorY - (pt.y - minY) * scaleFactor + (effectiveHeight / 2)
+                                            };
+                                        });
+                                        currentRawElements.push({
+                                            type: 'path',
+                                            stroke: '#6366f1',
+                                            width: penWidth,
+                                            points: transformedPoly
+                                        });
+                                    });
+                                    textCursorY += Math.max(8.5 * textScale, effectiveHeight + 3);
+                                }
+                            });
+
+                            finalizePlot();
+                        }).catch(err => {
+                            console.error("Errore nel rendering di MathJax:", err);
+                            finalizePlot();
+                        });
+                    } else {
+                        finalizePlot();
+                    }
+                } else {
+                    finalizePlot();
+                }
+
             } else if (coordType === 'polar') {
                 document.getElementById('latex-overlay').innerHTML = ``;
                 const exprRaw = document.getElementById('mathInputPolar').value;
