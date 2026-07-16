@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studio Plotter CNC - Ender 3 V2 Pen Plotter</title>
+    <meta name="description" content="Generatore ed elaboratore G-Code avanzato per pen plotter e CNC, con algoritmi generativi e simulatore 3D.">
+    <meta name="keywords" content="Pen Plotter, G-Code, CNC, Arte Generativa, Matematica, Algoritmi, Disegno, Laboratorio, L-System, Attrattori, Frattali">
+    <meta name="date" content="2026-07-16">
+    <script src="../assets/js/orfini-shared.js"></script>
+    <style>
+        .orfini-back-btn {
+            bottom: 20px !important;
+            right: 80px !important;
+            top: auto !important;
+            left: auto !important;
+        }
+    </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -921,7 +933,7 @@
                         <option value="pentant">Pentant di McWorter</option>
                         <option value="sierpinski_carpet">Tappeto di Sierpinski</option>
                         <option value="peano_quadratic">Curva di Peano Quadratica</option>
-                        <option value="pean_c">Curva Peandoan-c (Teachout)</option>
+                        <option value="peanoan_c">Curva Peanoan-c (Teachout)</option>
                         <option value="square_sierpinski">Sierpinski Quadrato</option>
                         <option value="symmetric_tree">Albero Simmetrico</option>
                         <option value="bourke_bush">Cespuglio (Bourke)</option>
@@ -5347,6 +5359,11 @@
                 'superformula': calculateSuperformula
             };
 
+            if (harmoType !== 'harmonograph' && attractorFunctions[harmoType]) {
+                attractorFunctions[harmoType](penWidth);
+                return;
+            }
+
             const getVal = (id) => parseFloat(document.getElementById(id)?.value || 0);
 
             const t_max = parseFloat(document.getElementById('paramHarmoSteps')?.value || 1000);
@@ -5603,7 +5620,7 @@
             pentant: { axiom: "X-X-X-X-X", rules: '{\n  "X": "FX-FX-FX+FY+FY+FX-FX",\n  "Y": "FY+FY-FX-FX-FY+FY+FY",\n  "F": ""\n}', angle: 72, gen: 3, initialDir: 90, draw: "F" },
             sierpinski_carpet: { axiom: "F", rules: '{\n  "F": "F+F-F-F-f+F+F+F-F",\n  "f": "fff"\n}', angle: 90, gen: 4, initialDir: 0, draw: "F", skip: "f" },
             peano_quadratic: { axiom: "X", rules: '{\n  "X": "XFYFX-F-YFXFY+F+XFYFX",\n  "Y": "YFXFY+F+XFYFX-F-YFXFY"\n}', angle: 90, gen: 3, initialDir: 0, draw: "F" },
-            pean_c: { axiom: "FX", rules: '{\n  "F": "",\n  "X": "FX-FY-FX+FY+FX+FY+FX+FY+FX-FY-FX-FY-FX-FY-FX+FY+FX",\n  "Y": "FY"\n}', angle: 45, gen: 3, initialDir: 0, draw: "F" },
+            peanoan_c: { axiom: "FX", rules: '{\n  "F": "",\n  "X": "FX-FY-FX+FY+FX+FY+FX+FY+FX-FY-FX-FY-FX-FY-FX+FY+FX",\n  "Y": "FY"\n}', angle: 45, gen: 3, initialDir: 0, draw: "F" },
             square_sierpinski: { axiom: "F+XF+F+XF", rules: '{\n  "X": "XF-F+F-XF+F+XF-F+F-X"\n}', angle: 90, gen: 4, initialDir: 0, draw: "F" },
             symmetric_tree: { axiom: "X", rules: '{\n  "F": "FF",\n  "X": "F-[[X]+X]+F[+FX]-X"\n}', angle: 22.5, gen: 4, initialDir: 90, draw: "F" },
             bourke_bush: { axiom: "Y", rules: '{\n  "X": "X[-FFF][+FFF]FX",\n  "Y": "YFX[+Y][-Y]"\n}', angle: 22.5, gen: 4, initialDir: 90, draw: "F" },
@@ -6133,6 +6150,7 @@
             }
         }
     }
+    applyGlobalTransformAndRender();
     randSeed = saveSeed;
 }
 
