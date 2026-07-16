@@ -283,7 +283,7 @@
 
 <body class="h-screen flex flex-col md:flex-row overflow-hidden">
 
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-30 hidden md:hidden"></div>
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/20 backdrop-blur-[1px] z-30 hidden md:hidden"></div>
 
     <div id="complexityModal" class="fixed inset-0 bg-black/85 z-50 flex items-center justify-center hidden-mode">
         <div class="glass-panel p-6 rounded-xl max-w-sm border border-slate-700/80 text-center space-y-4 shadow-2xl">
@@ -306,7 +306,7 @@
     </div>
 
     <aside id="sidebar"
-        class="fixed md:relative z-40 w-full max-w-full md:w-[28rem] h-full flex flex-col glass-panel border-r border-slate-900 -translate-x-full md:translate-x-0 transition-transform duration-300 overflow-x-hidden">
+        class="fixed md:relative z-40 w-[80vw] max-w-[340px] md:w-[28rem] h-full flex flex-col glass-panel border-r border-slate-900 -translate-x-full md:translate-x-0 transition-transform duration-300 overflow-x-hidden">
         <div class="p-4 border-b border-slate-800 flex items-center justify-between">
             <div>
                 <h1
@@ -5942,217 +5942,273 @@
             applyGlobalTransformAndRender();
         }
 
-        function calculateNoodles() {
-    document.getElementById('latex-overlay').style.display = 'none';
-    const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
-    
-    const density = parseInt(document.getElementById('paramNoodlesCount').value) || 6;
-    const gridSz = parseInt(document.getElementById('paramNoodlesGrid').value) || 8;
-    const numLines = parseInt(document.getElementById('paramNoodlesLines').value) || 3;
-    const lineSpacing = parseFloat(document.getElementById('paramNoodlesSpacing').value) || 1.2;
-    const maxLen = parseInt(document.getElementById('paramNoodlesLength').value) || 30;
-    const style = document.getElementById('paramNoodlesStyle').value;
-    const weave = document.getElementById('paramNoodlesWeave').checked;
-    const angleOpt = parseInt(document.getElementById('paramNoodlesAngle')?.value || "90");
+        function bevelSmoothPath(pts, bevelDist) {
+            if (pts.length < 3) return pts;
+            const result = [];
+            result.push({ ...pts[0] });
 
-    let saveSeed = randSeed;
-    randSeed = noodlesSeedVal;
-    
-    // Seed for pseudo-random
-    let localSeed = randSeed;
-    const fcRandom = () => { localSeed = (localSeed * 9301 + 49297) % 233280; return localSeed / 233280; };
+            for (let i = 1; i < pts.length - 1; i++) {
+                const prev = pts[i - 1];
+                const curr = pts[i];
+                const next = pts[i + 1];
 
-    // --- Vector Noodles Algorithm ---
-    const stepSize = gridSz * 2.0; // Lunghezza base del segmento
-    
-    // Calcolo delle direzioni consentite
-    const dirs = [];
-    const numDirs = Math.floor(360 / angleOpt);
-    for(let i=0; i<numDirs; i++) {
-        let a = (i * angleOpt) * Math.PI / 180;
-        dirs.push({ dx: Math.cos(a), dy: Math.sin(a) });
-    }
+                const d1x = prev.x - curr.x;
+                const d1y = prev.y - curr.y;
+                const len1 = Math.hypot(d1x, d1y);
 
-    const segments = []; // Memorizza i segmenti tracciati per collisione { p1, p2, pathId }
-    const rawPaths = [];
+                const d2x = next.x - curr.x;
+                const d2y = next.y - curr.y;
+                const len2 = Math.hypot(d2x, d2y);
 
-    function distToSegment(P, A, B) {
-        const l2 = (A.x - B.x)**2 + (A.y - B.y)**2;
-        if (l2 == 0) return Math.hypot(P.x - A.x, P.y - A.y);
-        let t = ((P.x - A.x) * (B.x - A.x) + (P.y - A.y) * (B.y - A.y)) / l2;
-        t = Math.max(0, Math.min(1, t));
-        const proj = { x: A.x + t * (B.x - A.x), y: A.y + t * (B.y - A.y) };
-        return Math.hypot(P.x - proj.x, P.y - proj.y);
-    }
-    
-    function getIntersection(A, B, C, D) {
-        const tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x);
-        const uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y);
-        const bottom = (D.y - C.y) * (B.x - A.x) - (D.x - C.x) * (B.y - A.y);
-        if (Math.abs(bottom) < 1e-6) return null; // paralleli
-        const t = tTop / bottom;
-        const u = uTop / bottom;
-        if (t > 1e-5 && t < 1 - 1e-5 && u > 1e-5 && u < 1 - 1e-5) {
-            return { x: A.x + t * (B.x - A.x), y: A.y + t * (B.y - A.y), t1: t, t2: u };
-        }
-        return null;
-    }
+                if (len1 < 1e-3 || len2 < 1e-3) {
+                    result.push({ ...curr });
+                    continue;
+                }
 
-    for (let i = 0; i < density * 3; i++) { // Tentativi
-        if (rawPaths.length >= density) break;
-        
-        let startPoint = { 
-            x: (fcRandom() - 0.5) * 160, 
-            y: (fcRandom() - 0.5) * 160 
-        };
-        
-        startPoint.x = Math.round(startPoint.x / stepSize) * stepSize;
-        startPoint.y = Math.round(startPoint.y / stepSize) * stepSize;
-        if (Math.hypot(startPoint.x, startPoint.y) > 95) continue;
+                const cross = d1x * d2y - d1y * d2x;
+                const dot = d1x * d2x + d1y * d2y;
+                const isAligned = Math.abs(cross) < 1e-2 && dot < 0;
 
-        let path = [startPoint];
-        let currentPt = startPoint;
-        let prevDirIdx = Math.floor(fcRandom() * dirs.length);
-        let localSegs = [];
-        
-        for (let step = 0; step < maxLen; step++) {
-            let possibleDirs = [];
-            for (let d = 0; d < dirs.length; d++) {
-                if (Math.abs(d - prevDirIdx) !== numDirs / 2) {
-                    possibleDirs.push(d);
+                if (isAligned) {
+                    result.push({ ...curr });
+                } else {
+                    const d = Math.min(bevelDist, len1 / 2, len2 / 2);
+
+                    const A = {
+                        x: curr.x + d1x * (d / len1),
+                        y: curr.y + d1y * (d / len1)
+                    };
+                    const B = {
+                        x: curr.x + d2x * (d / len2),
+                        y: curr.y + d2y * (d / len2)
+                    };
+
+                    result.push(A);
+
+                    const steps = 6;
+                    for (let s = 1; s < steps; s++) {
+                        const t = s / steps;
+                        const mt = 1 - t;
+                        result.push({
+                            x: mt * mt * A.x + 2 * mt * t * curr.x + t * t * B.x,
+                            y: mt * mt * A.y + 2 * mt * t * curr.y + t * t * B.y
+                        });
+                    }
+
+                    result.push(B);
                 }
             }
-            for (let j = possibleDirs.length - 1; j > 0; j--) {
-                const k = Math.floor(fcRandom() * (j + 1));
-                [possibleDirs[j], possibleDirs[k]] = [possibleDirs[k], possibleDirs[j]];
-            }
+
+            result.push({ ...pts[pts.length - 1] });
+            return result;
+        }
+
+        function calculateNoodles() {
+            currentRawElements.length = 0;
+            currentRawElements = [];
+            document.getElementById('latex-overlay').style.display = 'none';
+            const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
             
-            let moved = false;
-            for (let d of possibleDirs) {
-                let dir = dirs[d];
-                let nextPt = {
-                    x: currentPt.x + dir.dx * stepSize,
-                    y: currentPt.y + dir.dy * stepSize
+            const density = parseInt(document.getElementById('paramNoodlesCount').value) || 6;
+            const gridSz = parseInt(document.getElementById('paramNoodlesGrid').value) || 8;
+            const numLines = parseInt(document.getElementById('paramNoodlesLines').value) || 3;
+            const lineSpacing = parseFloat(document.getElementById('paramNoodlesSpacing').value) || 1.2;
+            const maxLen = parseInt(document.getElementById('paramNoodlesLength').value) || 30;
+            const style = document.getElementById('paramNoodlesStyle').value;
+            const weave = document.getElementById('paramNoodlesWeave').checked;
+            const angleOpt = parseInt(document.getElementById('paramNoodlesAngle')?.value || "90");
+
+            let saveSeed = randSeed;
+            randSeed = noodlesSeedVal;
+            
+            // Seed per PRNG deterministico
+            let localSeed = randSeed;
+            const fcRandom = () => { localSeed = (localSeed * 9301 + 49297) % 233280; return localSeed / 233280; };
+
+            const stepSize = gridSz * 2.0; // Lunghezza base del segmento
+            
+            // Calcolo delle direzioni consentite
+            const dirs = [];
+            const numDirs = Math.floor(360 / angleOpt);
+            for(let i=0; i<numDirs; i++) {
+                let a = (i * angleOpt) * Math.PI / 180;
+                dirs.push({ dx: Math.cos(a), dy: Math.sin(a) });
+            }
+
+            const segments = []; // Memorizza i segmenti tracciati per collisione { p1, p2, pathId }
+            const rawPaths = [];
+
+            function distToSegment(P, A, B) {
+                const l2 = (A.x - B.x)**2 + (A.y - B.y)**2;
+                if (l2 == 0) return Math.hypot(P.x - A.x, P.y - A.y);
+                let t = ((P.x - A.x) * (B.x - A.x) + (P.y - A.y) * (B.y - A.y)) / l2;
+                t = Math.max(0, Math.min(1, t));
+                const proj = { x: A.x + t * (B.x - A.x), y: A.y + t * (B.y - A.y) };
+                return Math.hypot(P.x - proj.x, P.y - proj.y);
+            }
+
+            for (let i = 0; i < density * 3; i++) { // Tentativi
+                if (rawPaths.length >= density) break;
+                
+                let startPoint = { 
+                    x: (fcRandom() - 0.5) * 160, 
+                    y: (fcRandom() - 0.5) * 160 
                 };
                 
-                if (Math.hypot(nextPt.x, nextPt.y) > 98) continue;
-                
-                let tooClose = false;
-                for (let seg of segments.concat(localSegs)) {
-                    let dToStart = Math.hypot(seg.p1.x - nextPt.x, seg.p1.y - nextPt.y);
-                    let dToEnd = Math.hypot(seg.p2.x - nextPt.x, seg.p2.y - nextPt.y);
-                    if (dToStart < stepSize * 0.1 || dToEnd < stepSize * 0.1) {
-                        tooClose = true;
-                        break;
-                    }
-                    let dSeg = distToSegment(nextPt, seg.p1, seg.p2);
-                    if (dSeg < stepSize * 0.2) {
-                        tooClose = true;
-                        break;
-                    }
-                }
-                
-                if (!tooClose) {
-                    localSegs.push({ p1: currentPt, p2: nextPt, pathId: rawPaths.length });
-                    currentPt = nextPt;
-                    path.push(currentPt);
-                    prevDirIdx = d;
-                    moved = true;
-                    break;
-                }
-            }
-            if (!moved) break;
-        }
-        
-        if (path.length > 2) {
-            rawPaths.push(path);
-            for (let seg of localSegs) {
-                segments.push(seg);
-            }
-        }
-    }
+                startPoint.x = Math.round(startPoint.x / stepSize) * stepSize;
+                startPoint.y = Math.round(startPoint.y / stepSize) * stepSize;
+                if (Math.hypot(startPoint.x, startPoint.y) > 95) continue;
 
-    for (let pIdx = 0; pIdx < rawPaths.length; pIdx++) {
-        let path = rawPaths[pIdx];
-        for (let l = 0; l < numLines; l++) {
-            let offsetRaw = (l - (numLines - 1) / 2) * lineSpacing;
-            let offsetPath = [];
-            
-            for (let i = 0; i < path.length - 1; i++) {
-                let p1 = path[i];
-                let p2 = path[i+1];
-                let dx = p2.x - p1.x;
-                let dy = p2.y - p1.y;
-                let len = Math.hypot(dx, dy);
-                let nx = -dy / len;
-                let ny = dx / len;
+                let path = [startPoint];
+                let currentPt = startPoint;
+                let prevDirIdx = Math.floor(fcRandom() * dirs.length);
+                let localSegs = [];
                 
-                let op1 = { x: p1.x + nx * offsetRaw, y: p1.y + ny * offsetRaw };
-                let op2 = { x: p2.x + nx * offsetRaw, y: p2.y + ny * offsetRaw };
-                
-                let crossings = [];
-                for (let seg of segments) {
-                    if (seg.pathId === pIdx) continue;
-                    let inter = getIntersection(p1, p2, seg.p1, seg.p2);
-                    if (inter) {
-                        crossings.push(inter);
-                    }
-                }
-                crossings.sort((a, b) => a.t1 - b.t1);
-                
-                if (crossings.length === 0 || !weave) {
-                    if (offsetPath.length === 0) offsetPath.push(op1);
-                    offsetPath.push(op2);
-                } else {
-                    if (offsetPath.length === 0) offsetPath.push(op1);
-                    
-                    for (let cr of crossings) {
-                        let hash = Math.floor(cr.x * 73856 + cr.y * 19349);
-                        let isOver = (hash % 2 === 0);
+                for (let step = 0; step < maxLen; step++) {
+                    let possibleDirs = [];
+                    for (let d = 0; d < dirs.length; d++) {
+                        let diff = Math.abs(d - prevDirIdx);
+                        if (diff > numDirs / 2) diff = numDirs - diff;
                         
-                        let gap = lineSpacing * 1.5;
-                        let tGap = gap / len;
-                        
-                        let tStart = Math.max(0, cr.t1 - tGap);
-                        let tEnd = Math.min(1, cr.t1 + tGap);
-                        
-                        let crossStart = { x: op1.x + (op2.x - op1.x) * tStart, y: op1.y + (op2.y - op1.y) * tStart };
-                        let crossEnd = { x: op1.x + (op2.x - op1.x) * tEnd, y: op1.y + (op2.y - op1.y) * tEnd };
-                        
-                        offsetPath.push(crossStart);
-                        
-                        if (isOver) {
-                            const bumpPts = 6;
-                            for (let b = 1; b < bumpPts; b++) {
-                                let bt = b / bumpPts;
-                                let bx = crossStart.x + (crossEnd.x - crossStart.x) * bt;
-                                let by = crossStart.y + (crossEnd.y - crossStart.y) * bt;
-                                let elevation = Math.sin(bt * Math.PI) * gap * 0.8;
-                                bx += nx * elevation;
-                                by += ny * elevation;
-                                offsetPath.push({ x: bx, y: by });
+                        if (angleOpt === 90) {
+                            if (diff !== numDirs / 2) {
+                                possibleDirs.push(d);
                             }
                         } else {
-                            currentRawElements.push({
-                                type: 'path', stroke: '#8b5cf6', width: penWidth, points: offsetPath
-                            });
-                            offsetPath = [];
+                            // Privilegia angoli interni ottusi limitando le svolte a dritto (diff=0) o singolo step angolare (diff=1)
+                            if (diff <= 1) {
+                                possibleDirs.push(d);
+                            }
                         }
-                        offsetPath.push(crossEnd);
                     }
-                    offsetPath.push(op2);
+                    for (let j = possibleDirs.length - 1; j > 0; j--) {
+                        const k = Math.floor(fcRandom() * (j + 1));
+                        [possibleDirs[j], possibleDirs[k]] = [possibleDirs[k], possibleDirs[j]];
+                    }
+                    
+                    let moved = false;
+                    for (let d of possibleDirs) {
+                        let dir = dirs[d];
+                        let nextPt = {
+                            x: currentPt.x + dir.dx * stepSize,
+                            y: currentPt.y + dir.dy * stepSize
+                        };
+                        
+                        if (Math.hypot(nextPt.x, nextPt.y) > 98) continue;
+                        
+                        let tooClose = false;
+                        for (let seg of segments.concat(localSegs)) {
+                            let dToStart = Math.hypot(seg.p1.x - nextPt.x, seg.p1.y - nextPt.y);
+                            let dToEnd = Math.hypot(seg.p2.x - nextPt.x, seg.p2.y - nextPt.y);
+                            if (dToStart < stepSize * 0.1 || dToEnd < stepSize * 0.1) {
+                                tooClose = true;
+                                break;
+                            }
+                            let dSeg = distToSegment(nextPt, seg.p1, seg.p2);
+                            if (dSeg < stepSize * 0.2) {
+                                tooClose = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!tooClose) {
+                            localSegs.push({ p1: currentPt, p2: nextPt, pathId: rawPaths.length });
+                            currentPt = nextPt;
+                            path.push(currentPt);
+                            prevDirIdx = d;
+                            moved = true;
+                            break;
+                        }
+                    }
+                    if (!moved) break;
+                }
+                
+                if (path.length > 2) {
+                    rawPaths.push(path);
+                    for (let seg of localSegs) {
+                        segments.push(seg);
+                    }
                 }
             }
-            if (offsetPath.length > 1) {
-                currentRawElements.push({
-                    type: 'path', stroke: '#8b5cf6', width: penWidth, points: offsetPath
-                });
+
+            // Generazione degli offset paralleli (binari paralleli lineari e continui, 2D stretto)
+            for (let pIdx = 0; pIdx < rawPaths.length; pIdx++) {
+                let path = rawPaths[pIdx];
+                if (path.length < 2) continue;
+
+                for (let l = 0; l < numLines; l++) {
+                    let offsetRaw = (l - (numLines - 1) / 2) * lineSpacing;
+                    let offsetPath = [];
+
+                    for (let i = 0; i < path.length; i++) {
+                        let p = path[i];
+                        let nx = 0, ny = 0;
+
+                        if (i === 0) {
+                            let pNext = path[1];
+                            let dx = pNext.x - p.x;
+                            let dy = pNext.y - p.y;
+                            let len = Math.hypot(dx, dy) || 1e-6;
+                            nx = -dy / len;
+                            ny = dx / len;
+                        } else if (i === path.length - 1) {
+                            let pPrev = path[path.length - 2];
+                            let dx = p.x - pPrev.x;
+                            let dy = p.y - pPrev.y;
+                            let len = Math.hypot(dx, dy) || 1e-6;
+                            nx = -dy / len;
+                            ny = dx / len;
+                        } else {
+                            let pPrev = path[i - 1];
+                            let pNext = path[i + 1];
+
+                            let dx1 = p.x - pPrev.x, dy1 = p.y - pPrev.y;
+                            let len1 = Math.hypot(dx1, dy1) || 1e-6;
+                            let nx1 = -dy1 / len1, ny1 = dx1 / len1;
+
+                            let dx2 = pNext.x - p.x, dy2 = pNext.y - p.y;
+                            let len2 = Math.hypot(dx2, dy2) || 1e-6;
+                            let nx2 = -dy2 / len2, ny2 = dx2 / len2;
+
+                            let bx = nx1 + nx2;
+                            let by = ny1 + ny2;
+                            let blen = Math.hypot(bx, by);
+
+                            if (blen > 1e-4) {
+                                let bnx = bx / blen;
+                                let bny = by / blen;
+                                let cosHalfAngle = nx1 * bnx + ny1 * bny;
+                                let factor = 1.0 / Math.max(0.3, cosHalfAngle);
+                                nx = bnx * factor;
+                                ny = bny * factor;
+                            } else {
+                                nx = nx1;
+                                ny = ny1;
+                            }
+                        }
+
+                        offsetPath.push({
+                            x: p.x + nx * offsetRaw,
+                            y: p.y + ny * offsetRaw
+                        });
+                    }
+
+                    let finalPoints = offsetPath;
+                    if (style === 'curved') {
+                        finalPoints = bevelSmoothPath(offsetPath, stepSize * 0.45);
+                    }
+
+                    currentRawElements.push({
+                        type: 'path',
+                        stroke: '#8b5cf6',
+                        width: penWidth,
+                        points: finalPoints
+                    });
+                }
             }
+            applyGlobalTransformAndRender();
+            randSeed = saveSeed;
         }
-    }
-    applyGlobalTransformAndRender();
-    randSeed = saveSeed;
-}
 
         function handleImageUpload(e) {
             const file = e.target.files[0]; if (!file) return;
@@ -16013,6 +16069,30 @@ ${document.getElementById('pathGroup').innerHTML}
             applyGlobalTransformAndRender();
         }
 
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const container = document.querySelector('.svg-container')?.parentElement;
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                if (window.innerWidth < 768 && container) {
+                    container.classList.remove('justify-center');
+                    container.classList.add('justify-end');
+                    container.style.paddingRight = '10px';
+                }
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                if (container) {
+                    container.classList.remove('justify-end');
+                    container.classList.add('justify-center');
+                    container.style.paddingRight = '';
+                }
+            }
+        }
+
         window.onload = () => {
             initWorldGeoJsonSelectors();
             initializeFontDensities();
@@ -16024,11 +16104,23 @@ ${document.getElementById('pathGroup').innerHTML}
             setTimeout(() => addNumberInputToSliders(), 100);
 
             window.addEventListener('resize', () => {
+                const container = document.querySelector('.svg-container')?.parentElement;
                 if (window.innerWidth >= 768) {
                     document.getElementById('sidebar').classList.remove('-translate-x-full');
                     document.getElementById('overlay').classList.add('hidden');
+                    if (container) {
+                        container.classList.remove('justify-end');
+                        container.classList.add('justify-center');
+                        container.style.paddingRight = '';
+                    }
                 } else {
                     document.getElementById('sidebar').classList.add('-translate-x-full');
+                    document.getElementById('overlay').classList.add('hidden');
+                    if (container) {
+                        container.classList.remove('justify-end');
+                        container.classList.add('justify-center');
+                        container.style.paddingRight = '';
+                    }
                 }
             });
 
