@@ -324,61 +324,71 @@
         </div>
 
         <div class="px-4 py-2 border-b border-slate-800 bg-slate-900/50">
-            <label class="block text-[9px] font-bold uppercase tracking-wider text-indigo-400 mb-1">Modalità
-                Generatore</label>
+            <label class="block text-[9px] font-bold uppercase tracking-wider text-indigo-400 mb-1">Modalità Generatore</label>
             <div class="grid grid-cols-2 gap-1.5 text-xs">
+                <!-- Riga 1: Curve Matematiche & Fibonacci -->
                 <button id="btnHarmonograph"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-transparent bg-indigo-600 text-white shadow"
-                    onclick="setMode('harmonograph')">🌀 Armonografo & Attrattori</button>
-                <button id="btnSpirograph"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('spirograph')">🌀 Spirograph</button>
-                <button id="btnLsystem"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('lsystem')">🌿 L-System</button>
-                <button id="btnFlowfield"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('flowfield')">🌊 Flow Field</button>
-                <button id="btnFractal"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('fractal')">❄️ Frattali</button>
-                <button id="btnImage"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('image')">🖼️ Immagini</button>
-                <button id="btnSvg"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('svg')">📐 Import SVG</button>
-                <button id="btnSketch"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('sketch')">🎨 Generativa</button>
-                <button id="btnTurtle"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('turtle')">🐢 Algoritmi Turtle</button>
-                <button id="btnText"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('text')">🔤 Testo</button>
-                <button id="btnPattern"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('pattern')">🕸️ Pattern</button>
+                    onclick="setMode('harmonograph')">🌀 Curve Armoniche</button>
                 <button id="btnFibonacci"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
                     onclick="setMode('fibonacci')">🌻 Fibonacci</button>
 
+                <!-- Riga 2: Frattali & Tassellazioni -->
+                <button id="btnFractal"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('fractal')">❄️ Frattali</button>
                 <button id="btnTessellation"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
                     onclick="setMode('tessellation')">📐 Tassellazioni</button>
-                <button id="btnThreeD"
+
+                <!-- Riga 3: L-System & Algoritmi Turtle -->
+                <button id="btnLsystem"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('threed')">📦 Cubi 3D (Three.js)</button>
-                <button id="btnAudio"
+                    onclick="setMode('lsystem')">🌿 L-System</button>
+                <button id="btnTurtle"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('audio')">🎵 Audio Ridgeline</button>
-                <button id="btnMap"
+                    onclick="setMode('turtle')">🐢 Algoritmi Turtle</button>
+
+                <!-- Riga 4: Flow Field & Generative Noodles -->
+                <button id="btnFlowfield"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('map')">🗺️ Mappe GeoJSON</button>
+                    onclick="setMode('flowfield')">🌊 Flow Field</button>
                 <button id="btnNoodles"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
                     onclick="setMode('noodles')">🍜 Generative Noodles</button>
+
+                <!-- Riga 5: Import SVG & Immagini Raster -->
+                <button id="btnSvg"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('svg')">📐 Import SVG</button>
+                <button id="btnImage"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('image')">🖼️ Immagini</button>
+
+                <!-- Riga 6: Generazione Disegno & Pattern Geometria -->
+                <button id="btnSketch"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('sketch')">🎨 Generativa</button>
+                <button id="btnPattern"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('pattern')">🕸️ Pattern</button>
+
+                <!-- Riga 7: Testo Grafico & Audio Ridgeline -->
+                <button id="btnText"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('text')">🔤 Testo</button>
+                <button id="btnAudio"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('audio')">🎵 Audio Ridgeline</button>
+
+                <!-- Riga 8: Mappe Topografiche & Cubi 3D -->
+                <button id="btnMap"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('map')">🗺️ Mappe GeoJSON</button>
+                <button id="btnThreeD"
+                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
+                    onclick="setMode('threed')">📦 Cubi 3D (Three.js)</button>
             </div>
         </div>
 
@@ -777,6 +787,14 @@
             </div>
 
             <div id="mode-spirograph" class="hidden-mode space-y-3">
+                <div class="glass-card p-3 space-y-2 border-indigo-950/40 bg-indigo-950/5">
+                    <label class="block text-[9px] font-bold uppercase tracking-wider text-indigo-400 mb-0.5">Tipo Curva Matematica</label>
+                    <select class="w-full glass-input text-xs rounded p-2 bg-slate-900 border border-indigo-500/25" onchange="setMode(this.value)">
+                        <option value="harmonograph">🌀 Armonografo & Attrattori</option>
+                        <option value="spirograph" selected>🌀 Spirograph (Epicicloidi)</option>
+                    </select>
+                </div>
+
                 <div class="glass-card p-3 space-y-2">
                     <label class="block text-[10px] font-bold text-slate-400">Tipo Spirograph</label>
                     <select id="paramSpiroType" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
@@ -1104,6 +1122,14 @@
             </div>
 
             <div id="mode-harmonograph" class="hidden-mode space-y-3">
+                <div class="glass-card p-3 space-y-2 border-indigo-950/40 bg-indigo-950/5">
+                    <label class="block text-[9px] font-bold uppercase tracking-wider text-indigo-400 mb-0.5">Tipo Curva Matematica</label>
+                    <select class="w-full glass-input text-xs rounded p-2 bg-slate-900 border border-indigo-500/25" onchange="setMode(this.value)">
+                        <option value="harmonograph" selected>🌀 Armonografo & Attrattori</option>
+                        <option value="spirograph">🌀 Spirograph (Epicicloidi)</option>
+                    </select>
+                </div>
+
                 <div class="glass-card p-3 space-y-2">
                     <label class="block text-[10px] font-bold text-slate-400">Algoritmo</label>
                     <select id="paramHarmoType" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
@@ -1780,6 +1806,14 @@
                                 <option value="hatching">Linee Monotoniche a 45°</option>
                             </select>
                         </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-0.5">
+                                <label class="block text-[9px] text-slate-400">Distanza Campitura (mm):</label>
+                                <span id="valFractalFillDensity" class="font-mono text-indigo-400 text-[10px] font-semibold">2.0</span>
+                            </div>
+                            <input type="range" id="paramFractalFillDensity" min="0.5" max="5.0" step="0.1" value="2.0" class="w-full accent-indigo-500"
+                                oninput="document.getElementById('valFractalFillDensity').innerText=parseFloat(this.value).toFixed(1); updateSimulation()">
+                        </div>
                         <div id="carpet-fill-warning"
                             class="hidden-mode text-rose-400 text-[10px] font-semibold mt-1 p-2 bg-rose-950/20 border border-rose-900/40 rounded">
                             ⚠️ Livello limitato a 3 con campitura attiva per prevenire il freeze del browser.
@@ -2231,9 +2265,27 @@
                 </div>
 
                 <div class="glass-card p-3 space-y-3">
-                    <h4 class="text-[10px] font-bold uppercase text-slate-400">Parametri Delaunay</h4>
+                    <div class="flex items-center justify-between border-b border-slate-800/40 pb-1.5 mb-2">
+                        <h4 class="text-[10px] font-bold uppercase text-slate-400">Opzioni Disegno & Triangoli</h4>
+                    </div>
+                    
+                    <div class="flex flex-col space-y-2 pb-1.5 border-b border-slate-800/40">
+                        <label class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer">
+                            <input type="checkbox" id="paramSketchUseDelaunay"
+                                onchange="toggleSketchDelaunayControls(); updateSimulation();" checked
+                                class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
+                            <span class="font-medium text-slate-200">Attiva Triangolazione Delaunay</span>
+                        </label>
+                        <label class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer">
+                            <input type="checkbox" id="paramSketchUseFill"
+                                onchange="toggleSketchFillControls(); updateSimulation();" checked
+                                class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
+                            <span class="font-medium text-slate-200">Campitura Area (Triangoli)</span>
+                        </label>
+                    </div>
+
                     <div>
-                        <label class="block text-[9px] text-slate-400 mb-0.5">Semplificazione: <span id="valSketchSimpl"
+                        <label class="block text-[9px] text-slate-400 mb-0.5">Semplificazione Linee: <span id="valSketchSimpl"
                                 class="font-mono text-indigo-400">9.0</span></label>
                         <input type="range" id="paramSketchSimpl" min="0.5" max="15.0" step="0.5" value="9.0"
                             class="w-full accent-indigo-500" oninput="updateSimulation()">
@@ -3954,6 +4006,8 @@
             const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
             const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
             const fillEnabled = document.getElementById('paramFractalFill')?.checked || false;
+            const fractalSpacing = parseFloat(document.getElementById('paramFractalFillDensity')?.value || 2.0);
+            const spacingVirtual = fractalSpacing * 100 / plotSize;
             const rotVal = parseFloat(document.getElementById('paramFractalRot')?.value || 0);
             const randVal = parseFloat(document.getElementById('paramFractalRand')?.value || 0);
 
@@ -4185,8 +4239,6 @@
                             if (outlineEnabled) {
                                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: [p1, p2, p3, p1] });
                             }
-                            const density = Math.max(3, Math.min(60, Math.round(0.8 * plotSize / penWidth)));
-                            const spacingVirtual = penWidth * 80 / plotSize;
 
                             if (fillStyle === 'concentric') {
                                 const spiralPoints = generateConcentricFill([p1, p2, p3], spacingVirtual);
@@ -4241,7 +4293,6 @@
                             if (outlineEnabled) {
                                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: [p1, p2, p3, p4, p1] });
                             }
-                            const spacingVirtual = penWidth * 80 / plotSize;
                             if (fillStyle === 'concentric') {
                                 const spiralPoints = generateConcentricFill([p1, p2, p3, p4], spacingVirtual);
                                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: spiralPoints });
@@ -4286,7 +4337,6 @@
                 const L0 = 80;
                 const fillStyle = document.getElementById('paramFractalFillStyle')?.value || 'concentric';
                 const outlineEnabled = document.getElementById('paramFractalOutline')?.checked ?? true;
-                const spacingVirtual = penWidth * 80 / plotSize;
 
                 if (outlineEnabled) {
                     currentRawElements.push({
@@ -5012,13 +5062,22 @@
         // ─── Helper: genera path 2D normalizzato da punti 3D ───────────────────
         function _attractorToPath(pts3d, projX, projY, penWidth) {
             let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-            const pts2d = pts3d.map(p => ({ x: p[projX], y: p[projY] }));
+            const pts2d = pts3d
+                .map(p => ({ x: p[projX], y: p[projY] }))
+                .filter(p => isFinite(p.x) && isFinite(p.y));
+                
+            if (pts2d.length < 2) return;
+
             pts2d.forEach(p => {
                 if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x;
                 if (p.y < minY) minY = p.y; if (p.y > maxY) maxY = p.y;
             });
-            const scaleX = 84 / (maxX - minX || 1);
-            const scaleY = 84 / (maxY - minY || 1);
+
+            if (maxX === minX) { minX -= 1; maxX += 1; }
+            if (maxY === minY) { minY -= 1; maxY += 1; }
+
+            const scaleX = 84 / (maxX - minX);
+            const scaleY = 84 / (maxY - minY);
             const scale = Math.min(scaleX, scaleY) * 0.95;
             const cx = (maxX + minX) / 2, cy = (maxY + minY) / 2;
             let path = pts2d.map(p => ({ x: (p.x - cx) * scale, y: (p.y - cy) * scale }));
@@ -5032,14 +5091,15 @@
             const a = parseFloat(document.getElementById('paramArneodoA')?.value ?? -5.5);
             const b = parseFloat(document.getElementById('paramArneodoB')?.value ?? 3.5);
             const c = parseFloat(document.getElementById('paramArneodoC')?.value ?? -1.0);
-            const dt = parseFloat(document.getElementById('paramArneodoDt')?.value ?? 0.02);
+            const dt = parseFloat(document.getElementById('paramArneodoDt')?.value ?? 0.01);
             const steps = parseInt(document.getElementById('paramArneodoSteps')?.value ?? 5000);
-            let x = 0.1, y = 0, z = 0, pts = [];
+            let x = 0.1, y = 0.1, z = 0.1, pts = [];
             for (let i = 0; i < steps; i++) {
                 addSafetyPoint();
                 const dx = y, dy = z;
                 const dz = -a * z - b * y - x + c * Math.pow(x, 3);
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z) || Math.abs(x) > 1e4) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 2, penWidth);
@@ -5058,6 +5118,7 @@
                 const dy = -y - s * x * z;
                 const dz = s * x * y + v;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -5068,7 +5129,7 @@
             const a = parseFloat(document.getElementById('paramChenA')?.value ?? 35.0);
             const b = parseFloat(document.getElementById('paramChenB')?.value ?? 3.0);
             const c = parseFloat(document.getElementById('paramChenC')?.value ?? 28.0);
-            const dt = parseFloat(document.getElementById('paramChenDt')?.value ?? 0.01);
+            const dt = parseFloat(document.getElementById('paramChenDt')?.value ?? 0.003);
             const steps = parseInt(document.getElementById('paramChenSteps')?.value ?? 4000);
             let x = -0.1, y = 0.5, z = -0.6, pts = [];
             for (let i = 0; i < steps; i++) {
@@ -5077,6 +5138,7 @@
                 const dy = (c - a) * x - x * z + c * y;
                 const dz = x * y - b * z;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 2, penWidth);
@@ -5089,7 +5151,7 @@
             const o = parseFloat(document.getElementById('paramDadrasO')?.value ?? 1.7);
             const c = parseFloat(document.getElementById('paramDadrasC')?.value ?? 2.0);
             const r = 9.0;
-            const dt = parseFloat(document.getElementById('paramDadrasDt')?.value ?? 0.01);
+            const dt = parseFloat(document.getElementById('paramDadrasDt')?.value ?? 0.005);
             const steps = parseInt(document.getElementById('paramDadrasSteps')?.value ?? 5000);
             let x = 0.1, y = 0.3, z = -0.6, pts = [];
             for (let i = 0; i < steps; i++) {
@@ -5098,6 +5160,7 @@
                 const dy = r * y - x * z + z;
                 const dz = c * x * y - o * z;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -5106,15 +5169,16 @@
         // ─── Halvorsen ────────────────────────────────────────────────────────
         function calculateHalvorsen(penWidth) {
             const a = parseFloat(document.getElementById('paramHalvorsenA')?.value ?? 1.89);
-            const dt = parseFloat(document.getElementById('paramHalvorsenDt')?.value ?? 0.02);
+            const dt = parseFloat(document.getElementById('paramHalvorsenDt')?.value ?? 0.005);
             const steps = parseInt(document.getElementById('paramHalvorsenSteps')?.value ?? 5000);
-            let x = 0.1, y = 0, z = 0, pts = [];
+            let x = -1.48, y = -1.51, z = 2.04, pts = [];
             for (let i = 0; i < steps; i++) {
                 addSafetyPoint();
                 const dx = -a * x - 4 * y - 4 * z - y * y;
                 const dy = -a * y - 4 * z - 4 * x - z * z;
                 const dz = -a * z - 4 * x - 4 * y - x * x;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -5137,6 +5201,7 @@
                 const dy = 1 - 5 * x * x - y;
                 const dz = r * (s * (x - x1) - z);
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 2, penWidth);
@@ -5152,7 +5217,7 @@
             const f = parseFloat(document.getElementById('paramLangfordF')?.value ?? 0.1);
             const dt = parseFloat(document.getElementById('paramLangfordDt')?.value ?? 0.01);
             const steps = parseInt(document.getElementById('paramLangfordSteps')?.value ?? 6000);
-            let x = 0.1, y = 0, z = 0, pts = [];
+            let x = 0.1, y = 0.1, z = 0.1, pts = [];
             for (let i = 0; i < steps; i++) {
                 addSafetyPoint();
                 const r2 = x*x + y*y;
@@ -5160,6 +5225,7 @@
                 const dy = d * x + (z - b) * y;
                 const dz = c + a * z - z*z*z/3 - r2 * (1 + e * z) + f * z * x*x*x;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 2, penWidth);
@@ -5202,6 +5268,7 @@
                 const dy = -x * z + c * y;
                 const dz = x * y - b * z;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 2, penWidth);
@@ -5220,6 +5287,7 @@
                 const dy = -x - 0.4 * y + 5 * x * z;
                 const dz = b * z - 5 * x * y;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -5237,6 +5305,7 @@
                 const dy = -x + y * z;
                 const dz = a - y * y;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -5246,7 +5315,7 @@
         function calculateRabinovichFabrikant(penWidth) {
             const alpha = parseFloat(document.getElementById('paramRabinovichA')?.value ?? 0.14);
             const gamma = parseFloat(document.getElementById('paramRabinovichG')?.value ?? 0.1);
-            const dt = parseFloat(document.getElementById('paramRabinovichDt')?.value ?? 0.02);
+            const dt = parseFloat(document.getElementById('paramRabinovichDt')?.value ?? 0.01);
             const steps = parseInt(document.getElementById('paramRabinovichSteps')?.value ?? 5000);
             let x = -1.0, y = 0.0, z = 0.5, pts = [];
             for (let i = 0; i < steps; i++) {
@@ -5263,17 +5332,18 @@
 
         // ─── Rikitake ─────────────────────────────────────────────────────────
         function calculateRikitake(penWidth) {
-            const a = parseFloat(document.getElementById('paramRikitakeA')?.value ?? 1.0);
+            const a = parseFloat(document.getElementById('paramRikitakeA')?.value ?? 5.0);
             const mu = parseFloat(document.getElementById('paramRikitakeMu')?.value ?? 1.0);
-            const dt = parseFloat(document.getElementById('paramRikitakeDt')?.value ?? 0.02);
+            const dt = parseFloat(document.getElementById('paramRikitakeDt')?.value ?? 0.01);
             const steps = parseInt(document.getElementById('paramRikitakeSteps')?.value ?? 5000);
-            let x = 1.0, y = 0.0, z = 0.7, pts = [];
+            let x = 1.0, y = 0.1, z = 0.7, pts = [];
             for (let i = 0; i < steps; i++) {
                 addSafetyPoint();
                 const dx = -mu * x + y * z;
                 const dy = -mu * y + x * (z - a);
                 const dz = 1 - x * y;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -5283,7 +5353,7 @@
         function calculateShimizuMorioka(penWidth) {
             const a = parseFloat(document.getElementById('paramShimizuA')?.value ?? 0.75);
             const b = parseFloat(document.getElementById('paramShimizuB')?.value ?? 0.45);
-            const dt = parseFloat(document.getElementById('paramShimizuDt')?.value ?? 0.02);
+            const dt = parseFloat(document.getElementById('paramShimizuDt')?.value ?? 0.01);
             const steps = parseInt(document.getElementById('paramShimizuSteps')?.value ?? 5000);
             let x = 0.1, y = 0.1, z = 0.0, pts = [];
             for (let i = 0; i < steps; i++) {
@@ -5292,6 +5362,7 @@
                 const dy = (1 - z) * x - a * y;
                 const dz = x * x - b * z;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -5300,7 +5371,7 @@
         // ─── Sprott B ─────────────────────────────────────────────────────────
         function calculateSprott(penWidth) {
             const a = parseFloat(document.getElementById('paramSprottA')?.value ?? 3.0);
-            const dt = parseFloat(document.getElementById('paramSprottDt')?.value ?? 0.01);
+            const dt = parseFloat(document.getElementById('paramSprottDt')?.value ?? 0.002);
             const steps = parseInt(document.getElementById('paramSprottSteps')?.value ?? 8000);
             let x = 0.1, y = 0.0, z = 0.0, pts = [];
             for (let i = 0; i < steps; i++) {
@@ -5309,6 +5380,7 @@
                 const dy = x + z;
                 const dz = x * z + a * y * y;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 2, penWidth);
@@ -5317,7 +5389,7 @@
         // ─── Thomas ───────────────────────────────────────────────────────────
         function calculateThomas(penWidth) {
             const b = parseFloat(document.getElementById('paramThomasB')?.value ?? 0.208);
-            const dt = parseFloat(document.getElementById('paramThomasDt')?.value ?? 0.05);
+            const dt = parseFloat(document.getElementById('paramThomasDt')?.value ?? 0.15);
             const steps = parseInt(document.getElementById('paramThomasSteps')?.value ?? 6000);
             let x = 0.1, y = 0.0, z = 0.0, pts = [];
             for (let i = 0; i < steps; i++) {
@@ -5326,6 +5398,7 @@
                 const dy = Math.sin(z) - b * y;
                 const dz = Math.sin(x) - b * z;
                 x += dx * dt; y += dy * dt; z += dz * dt;
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
                 pts.push([x, y, z]);
             }
             _attractorToPath(pts, 0, 1, penWidth);
@@ -6047,8 +6120,11 @@
                 return Math.hypot(P.x - proj.x, P.y - proj.y);
             }
 
-            for (let i = 0; i < density * 3; i++) { // Tentativi
+            for (let i = 0; i < density * 25; i++) { // Tentativi
                 if (rawPaths.length >= density) break;
+                
+                const attemptRatio = i / (density * 25);
+                const tolerance = Math.max(0.1, 1.0 - attemptRatio); // Si rilassa gradualmente da 1.0 a 0.1
                 
                 let startPoint = { 
                     x: (fcRandom() - 0.5) * 160, 
@@ -6100,12 +6176,12 @@
                         for (let seg of segments.concat(localSegs)) {
                             let dToStart = Math.hypot(seg.p1.x - nextPt.x, seg.p1.y - nextPt.y);
                             let dToEnd = Math.hypot(seg.p2.x - nextPt.x, seg.p2.y - nextPt.y);
-                            if (dToStart < stepSize * 0.1 || dToEnd < stepSize * 0.1) {
+                            if (dToStart < stepSize * 0.1 * tolerance || dToEnd < stepSize * 0.1 * tolerance) {
                                 tooClose = true;
                                 break;
                             }
                             let dSeg = distToSegment(nextPt, seg.p1, seg.p2);
-                            if (dSeg < stepSize * 0.2) {
+                            if (dSeg < stepSize * 0.2 * tolerance) {
                                 tooClose = true;
                                 break;
                             }
@@ -6123,7 +6199,8 @@
                     if (!moved) break;
                 }
                 
-                if (path.length > 2) {
+                const minLenNeeded = Math.max(3, Math.floor(Math.max(6, Math.floor(maxLen * 0.35)) * tolerance));
+                if (path.length >= minLenNeeded) {
                     rawPaths.push(path);
                     for (let seg of localSegs) {
                         segments.push(seg);
@@ -10762,13 +10839,37 @@ out body;`;
                 finalPoints.push({ x: 0, y: h });
             }
 
-            if (finalPoints.length < 3) {
+            const useDelaunay = document.getElementById('paramSketchUseDelaunay')?.checked ?? true;
+            const useFill = document.getElementById('paramSketchUseFill')?.checked ?? true;
+
+            const cw = sketchPadCanvas.width || 200;
+            const ch = sketchPadCanvas.height || 200;
+            const mapPt = p => ({
+                x: 10 + (p.x / cw) * 80,
+                y: 10 + (1 - p.y / ch) * 80
+            });
+
+            if (!useDelaunay) {
+                // Se Delaunay è disattivato, plottiamo direttamente le linee a mano libera semplificate
+                sketchStrokes.forEach(stroke => {
+                    if (stroke.length < 2) return;
+                    const simplified = simplifyDouglasPeucker(stroke, simplVal * simplVal);
+                    const mappedPts = simplified.map(mapPt);
+                    currentRawElements.push({
+                        type: 'path',
+                        stroke: '#818cf8',
+                        width: penWidth,
+                        points: mappedPts
+                    });
+                });
                 applyGlobalTransformAndRender();
                 return;
             }
 
-            const cw = sketchPadCanvas.width || 200;
-            const ch = sketchPadCanvas.height || 200;
+            if (finalPoints.length < 3) {
+                applyGlobalTransformAndRender();
+                return;
+            }
 
             try {
                 const delaunay = d3.Delaunay.from(finalPoints.map(p => [p.x, p.y]));
@@ -10782,17 +10883,11 @@ out body;`;
                     const p1 = finalPoints[t1];
                     const p2 = finalPoints[t2];
 
-                    // Mappa a [10, 90] abstract space
-                    const mapPt = p => ({
-                        x: 10 + (p.x / cw) * 80,
-                        y: 10 + (1 - p.y / ch) * 80
-                    });
-
                     const v0 = mapPt(p0);
                     const v1 = mapPt(p1);
                     const v2 = mapPt(p2);
 
-                    // Bordo Triangolo (perimetro chiuso solido per evitare disconnessioni grafiche)
+                    // Bordo Triangolo (perimetro chiuso solido)
                     currentRawElements.push({
                         type: 'path',
                         stroke: '#10b981',
@@ -10801,30 +10896,32 @@ out body;`;
                     });
                     addSafetyPoint();
 
-                    // Spirale o Hatching
-                    const fillStyle = document.getElementById('paramSketchFillStyle')?.value || 'concentric';
-                    const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
-                    const spacingVirtual = penWidth * 80 / plotSize;
+                    // Campitura opzionale
+                    if (useFill) {
+                        const fillStyle = document.getElementById('paramSketchFillStyle')?.value || 'concentric';
+                        const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
+                        const spacingVirtual = penWidth * 80 / plotSize;
 
-                    if (fillStyle === 'concentric') {
-                        const spiralPoints = generateConcentricFill([v0, v1, v2], spacingVirtual);
-                        spiralPoints.forEach(() => addSafetyPoint());
-                        currentRawElements.push({
-                            type: 'path',
-                            stroke: '#10b981',
-                            width: penWidth,
-                            points: spiralPoints
-                        });
-                    } else {
-                        const hatchPoints = generateHatching45Fill([v0, v1, v2], spacingVirtual);
-                        hatchPoints.forEach(() => addSafetyPoint());
-                        if (hatchPoints.length > 0) {
+                        if (fillStyle === 'concentric') {
+                            const spiralPoints = generateConcentricFill([v0, v1, v2], spacingVirtual);
+                            spiralPoints.forEach(() => addSafetyPoint());
                             currentRawElements.push({
                                 type: 'path',
                                 stroke: '#10b981',
                                 width: penWidth,
-                                points: hatchPoints
+                                points: spiralPoints
                             });
+                        } else {
+                            const hatchPoints = generateHatching45Fill([v0, v1, v2], spacingVirtual);
+                            hatchPoints.forEach(() => addSafetyPoint());
+                            if (hatchPoints.length > 0) {
+                                currentRawElements.push({
+                                    type: 'path',
+                                    stroke: '#10b981',
+                                    width: penWidth,
+                                    points: hatchPoints
+                                });
+                            }
                         }
                     }
                 }
@@ -11409,11 +11506,38 @@ out body;`;
         }
 
         function toggleSketchFillControls() {
-            const fill = document.getElementById('paramSketchFillBg')?.checked || false;
-            const extra = document.getElementById('sketch-fill-extra-controls');
-            if (extra) {
-                if (fill) extra.classList.remove('hidden-mode');
-                else extra.classList.add('hidden-mode');
+            const useDelaunay = document.getElementById('paramSketchUseDelaunay')?.checked ?? true;
+            const useFill = document.getElementById('paramSketchUseFill')?.checked ?? true;
+            const fillExtraDiv = document.getElementById('sketch-fill-extra-controls');
+            if (fillExtraDiv) {
+                if (useDelaunay && useFill) {
+                    fillExtraDiv.classList.remove('hidden-mode');
+                } else {
+                    fillExtraDiv.classList.add('hidden-mode');
+                }
+            }
+        }
+
+        function toggleSketchDelaunayControls() {
+            const useDelaunay = document.getElementById('paramSketchUseDelaunay')?.checked ?? true;
+            const distDiv = document.getElementById('paramSketchDist')?.parentElement;
+            const densDiv = document.getElementById('paramSketchDensity')?.parentElement;
+            const fillBgLabel = document.getElementById('paramSketchFillBg')?.parentElement;
+            const useFillLabel = document.getElementById('paramSketchUseFill')?.parentElement;
+            
+            if (useDelaunay) {
+                if (distDiv) distDiv.classList.remove('hidden-mode');
+                if (densDiv) densDiv.classList.remove('hidden-mode');
+                if (fillBgLabel) fillBgLabel.classList.remove('hidden-mode');
+                if (useFillLabel) useFillLabel.classList.remove('hidden-mode');
+                toggleSketchFillControls();
+            } else {
+                if (distDiv) distDiv.classList.add('hidden-mode');
+                if (densDiv) densDiv.classList.add('hidden-mode');
+                if (fillBgLabel) fillBgLabel.classList.add('hidden-mode');
+                if (useFillLabel) useFillLabel.classList.add('hidden-mode');
+                const fillExtraDiv = document.getElementById('sketch-fill-extra-controls');
+                if (fillExtraDiv) fillExtraDiv.classList.add('hidden-mode');
             }
         }
 
@@ -12936,7 +13060,7 @@ out body;`;
             const activeModeDiv = document.getElementById('mode-' + mode);
             if (activeModeDiv) activeModeDiv.classList.remove('hidden-mode');
 
-            ['btnHarmonograph', 'btnSpirograph', 'btnLsystem', 'btnFlowfield', 'btnFractal', 'btnImage', 'btnSvg', 'btnSketch', 'btnTurtle', 'btnText', 'btnPattern', 'btnFibonacci', 'btnTessellation', 'btnThreeD', 'btnAudio', 'btnMap', 'btnNoodles'].forEach(id => {
+            ['btnHarmonograph', 'btnLsystem', 'btnFlowfield', 'btnFractal', 'btnImage', 'btnSvg', 'btnSketch', 'btnTurtle', 'btnText', 'btnPattern', 'btnFibonacci', 'btnTessellation', 'btnThreeD', 'btnAudio', 'btnMap', 'btnNoodles'].forEach(id => {
                 const btn = document.getElementById(id);
                 if (btn) {
                     btn.className = "py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800";
@@ -12948,6 +13072,7 @@ out body;`;
             // Gestione nome ID speciale per bottone attivo
             let activeBtnId = 'btn' + mode.charAt(0).toUpperCase() + mode.slice(1);
             if (mode === 'threed') activeBtnId = 'btnThreeD';
+            if (mode === 'spirograph') activeBtnId = 'btnHarmonograph';
             const activeBtn = document.getElementById(activeBtnId);
             if (activeBtn) {
                 activeBtn.className = "py-1.5 px-2 rounded-md font-medium text-left transition-all border border-transparent bg-indigo-600 text-white shadow";
