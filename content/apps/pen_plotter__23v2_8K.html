@@ -35,8 +35,8 @@
     <style>
         body {
             font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-            background-color: #050811;
-            color: #f1f5f9;
+            background-color: #09090b;
+            color: #f8fafc;
         }
 
         .heading-font {
@@ -47,17 +47,17 @@
             font-family: 'Fira Code', monospace;
         }
 
-        /* Glassmorphism Custom */
+        /* Glassmorphism Custom AMOLED */
         .glass-panel {
-            background: rgba(10, 15, 30, 0.75);
+            background: rgba(9, 9, 11, 0.88);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
         }
 
         .glass-card {
-            background: rgba(30, 41, 59, 0.22);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(18, 18, 26, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 0.75rem;
             padding: 0.6rem 0.75rem !important;
             margin-bottom: 0.5rem !important;
@@ -576,7 +576,7 @@
                         <select id="paramTessFillType" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
                             onchange="toggleTessControls(); updateSimulation();">
                             <option value="none">Nessuna Campitura</option>
-                            <option value="concentric" selected>Spirale Concentrica</option>
+                            <option value="spiral" selected>Spiralizzata (Delaunay)</option>
                             <option value="geometric">Hatching Geometrico (Hatch)</option>
                             <option value="ascii">Campitura ASCII (Testo)</option>
                         </select>
@@ -1776,7 +1776,7 @@
                 <div class="glass-card p-3">
                     <label class="block text-[10px] text-slate-400 mb-1">Livello di Ricorsione: <span
                             id="valFractalLevel" class="font-mono text-indigo-400">3</span></label>
-                    <input type="range" id="paramFractalLevel" min="0" max="6" step="1" value="3"
+                    <input type="range" id="paramFractalLevel" min="0" max="17" step="1" value="3"
                         class="w-full accent-indigo-500" oninput="updateSimulation()">
                     <p class="text-[9px] text-slate-500 mt-1 font-mono">Frenata automatica a livelli elevati per
                         proteggere il browser.</p>
@@ -1786,7 +1786,7 @@
                     <div class="flex items-center justify-between">
                         <label class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer">
                             <input type="checkbox" id="paramFractalFill"
-                                onchange="toggleFractalFillControls(); updateSimulation();"
+                                onchange="toggleFractalFillControls(); adjustFractalLevelLimits(); updateSimulation();"
                                 class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
                             <span class="font-medium text-slate-200">Campitura / Riempimento Aree</span>
                         </label>
@@ -1802,8 +1802,8 @@
                             <select id="paramFractalFillStyle"
                                 class="w-full glass-input text-xs rounded p-2 bg-slate-900"
                                 onchange="updateSimulation()">
-                                <option value="concentric">Concentrico (dal perimetro all'interno)</option>
-                                <option value="hatching">Linee Monotoniche a 45°</option>
+                                <option value="spiral" selected>Spiralizzata (Delaunay)</option>
+                                <option value="hatching">Tratteggio (Linee a 45°)</option>
                             </select>
                         </div>
                         <div>
@@ -2278,7 +2278,7 @@
                         </label>
                         <label class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer">
                             <input type="checkbox" id="paramSketchUseFill"
-                                onchange="toggleSketchFillControls(); updateSimulation();" checked
+                                onchange="toggleSketchFillControls(); toggleSketchDelaunayControls(); updateSimulation();" checked
                                 class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
                             <span class="font-medium text-slate-200">Campitura Area (Triangoli)</span>
                         </label>
@@ -2296,15 +2296,9 @@
                         <input type="range" id="paramSketchDist" min="2" max="40" step="1" value="10"
                             class="w-full accent-indigo-500" oninput="updateSimulation()">
                     </div>
-                    <div>
-                        <label class="block text-[9px] text-slate-400 mb-0.5">Densità Spirale: <span
-                                id="valSketchDensity" class="font-mono text-indigo-400">12</span></label>
-                        <input type="range" id="paramSketchDensity" min="3" max="50" step="1" value="12"
-                            class="w-full accent-indigo-500" oninput="updateSimulation()">
-                    </div>
                     <label class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer">
                         <input type="checkbox" id="paramSketchFillBg"
-                            onchange="toggleSketchFillControls(); updateSimulation();"
+                            onchange="updateSimulation();"
                             class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
                         <span>Riempi Piatto (Delaunay Totale)</span>
                     </label>
@@ -2314,10 +2308,19 @@
                             <label class="block text-[9px] text-slate-400 mb-0.5">Stile Campitura</label>
                             <select id="paramSketchFillStyle"
                                 class="w-full glass-input text-xs rounded p-2 bg-slate-900"
-                                onchange="updateSimulation()">
-                                <option value="concentric">Concentrico (dal perimetro all'interno)</option>
-                                <option value="hatching">Linee Monotoniche a 45°</option>
+                                onchange="toggleSketchDelaunayControls(); updateSimulation()">
+                                <option value="spiral" selected>Spiralizzata (Delaunay)</option>
+                                <option value="hatching">Hatching (Linee a 45°)</option>
                             </select>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-0.5">
+                                <label class="block text-[9px] text-slate-400">Distanza Campitura (mm):</label>
+                                <span id="valSketchSpacingReal" class="font-mono text-indigo-400 text-[10px] font-semibold">1.5</span>
+                            </div>
+                            <input type="range" id="paramSketchSpacingReal" min="0.5" max="8.0" step="0.1" value="1.5"
+                                class="w-full accent-indigo-500"
+                                oninput="document.getElementById('valSketchSpacingReal').innerText=parseFloat(this.value).toFixed(1); updateSimulation()">
                         </div>
                     </div>
                 </div>
@@ -3604,6 +3607,17 @@
             return path;
         }
 
+        function getPolygonArea(poly) {
+            let area = 0;
+            let n = poly.length;
+            for (let i = 0; i < n; i++) {
+                let p1 = poly[i];
+                let p2 = poly[(i + 1) % n];
+                area += p1.x * p2.y - p2.x * p1.y;
+            }
+            return Math.abs(area) * 0.5;
+        }
+
         function insetPolygon(poly, d) {
             if (poly.length < 3) return null;
             let n = poly.length;
@@ -3659,10 +3673,24 @@
             }
             if ((area > 0 && newArea <= 1e-5) || (area < 0 && newArea >= -1e-5)) return null;
 
+            if (Math.abs(newArea) >= Math.abs(area)) return null;
+
             return newPoly;
         }
 
-        function generateConcentricFill(contour, spacing) {
+        function isPointInPolygon(p, poly) {
+            let inside = false;
+            for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+                let xi = poly[i].x, yi = poly[i].y;
+                let xj = poly[j].x, yj = poly[j].y;
+                let intersect = ((yi > p.y) !== (yj > p.y))
+                    && (p.x < (xj - xi) * (p.y - yi) / (yj - yi + 0.0001) + xi);
+                if (intersect) inside = !inside;
+            }
+            return inside;
+        }
+
+        function generateConcentricDelaunayFill(contour, spacing) {
             if (contour.length < 3) return [];
             let uniquePts = [];
             for (let p of contour) {
@@ -3690,16 +3718,32 @@
                 let t3 = triangles[i + 2];
                 let poly = [uniquePts[t1], uniquePts[t2], uniquePts[t3]];
                 
+                let bary = { x: (poly[0].x + poly[1].x + poly[2].x) / 3, y: (poly[0].y + poly[1].y + poly[2].y) / 3 };
+                if (!isPointInPolygon(bary, uniquePts)) continue;
+
+                // Calcolo inraggio del triangolo
+                let a = Math.hypot(poly[1].x - poly[0].x, poly[1].y - poly[0].y);
+                let b = Math.hypot(poly[2].x - poly[1].x, poly[2].y - poly[1].y);
+                let c = Math.hypot(poly[0].x - poly[2].x, poly[0].y - poly[2].y);
+                let s = (a + b + c) / 2;
+                let area = Math.abs(poly[0].x * (poly[1].y - poly[2].y) + poly[1].x * (poly[2].y - poly[0].y) + poly[2].x * (poly[0].y - poly[1].y)) / 2;
+                if (s < 1e-5 || area < 1e-5) continue;
+                let inradius = area / s;
+
+                // Passo adattivo affinché ogni triangolo generi spirali visibili e ben proporzionate
+                let step = Math.min(spacing, inradius * 0.35);
+                if (step < 1e-4) continue;
+
                 let isClockwise = (i / 3) % 2 === 0;
                 let curPoly = poly;
 
                 spiralPath.push({x: curPoly[0].x, y: curPoly[0].y});
                 let iters = 0;
                 while (curPoly && iters < 200) {
-                    let nextPoly = insetPolygon(curPoly, spacing);
+                    let nextPoly = insetPolygon(curPoly, step);
                     if (!nextPoly) {
-                        let cx = (curPoly[0].x + curPoly[1].x + curPoly[2].x)/3;
-                        let cy = (curPoly[0].y + curPoly[1].y + curPoly[2].y)/3;
+                        let cx = (curPoly[0].x + curPoly[1].x + curPoly[2].x) / 3;
+                        let cy = (curPoly[0].y + curPoly[1].y + curPoly[2].y) / 3;
                         spiralPath.push({x: cx, y: cy});
                         break;
                     }
@@ -3715,6 +3759,77 @@
                 }
             }
             return spiralPath;
+        }
+
+        function generateConcentricChaseFill(poly, spacing) {
+            if (poly.length < 3) return [];
+
+            let cur = poly.map(p => ({ ...p }));
+            let n = cur.length;
+            let cx = cur.reduce((sum, p) => sum + p.x, 0) / n;
+            let cy = cur.reduce((sum, p) => sum + p.y, 0) / n;
+
+            // Calcolo del lato medio iniziale L0 per fissare un rapporto t RIGOROSAMENTE COSTANTE
+            let initialSides = [];
+            for (let j = 0; j < n; j++) {
+                let p1 = cur[j];
+                let p2 = cur[(j + 1) % n];
+                initialSides.push(Math.hypot(p2.x - p1.x, p2.y - p1.y));
+            }
+            let L0 = initialSides.reduce((sum, s) => sum + s, 0) / n;
+            if (L0 < 1e-4) return [];
+
+            // Fattore t costante per mantenere l'angolo di deviazione identico e omogeneo da inizio a fine
+            let t = spacing / L0;
+            t = Math.max(0.02, Math.min(0.25, t));
+
+            // Iniziamo il percorso direttamente dal primo vertice contratto per evitare la discontinuità d'angolo iniziale
+            let firstNext = [];
+            for (let j = 0; j < n; j++) {
+                let p1 = cur[j];
+                let p2 = cur[(j + 1) % n];
+                firstNext.push({
+                    x: p1.x + (p2.x - p1.x) * t,
+                    y: p1.y + (p2.y - p1.y) * t
+                });
+            }
+            let path = [...firstNext];
+            cur = firstNext;
+
+            for (let i = 0; i < 250; i++) {
+                let maxDist = 0;
+                for (let j = 0; j < n; j++) {
+                    let dBary = Math.hypot(cur[j].x - cx, cur[j].y - cy);
+                    if (dBary > maxDist) maxDist = dBary;
+                }
+
+                // Quando la spirale si avvicina al centro, converge esattamente sul baricentro
+                if (maxDist < 0.05) {
+                    path.push({ x: cx, y: cy });
+                    break;
+                }
+
+                let next = [];
+                for (let j = 0; j < n; j++) {
+                    let p1 = cur[j];
+                    let p2 = cur[(j + 1) % n];
+                    next.push({
+                        x: p1.x + (p2.x - p1.x) * t,
+                        y: p1.y + (p2.y - p1.y) * t
+                    });
+                }
+                path.push(...next);
+                cur = next;
+            }
+            return path;
+        }
+
+        function generateConcentricFill(poly, spacing, isEinsteinHat = false) {
+            if (isEinsteinHat) {
+                return generateConcentricDelaunayFill(poly, spacing);
+            } else {
+                return generateConcentricChaseFill(poly, spacing);
+            }
         }
 
         function adjustFractalLevelLimits() {
@@ -3735,22 +3850,41 @@
                 lightningControls.className = (type === 'lightning') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             }
 
-            let maxL = 5;
-            if (type === 'carpet') maxL = 8;
+            const fillEnabled = document.getElementById('paramFractalFill')?.checked ?? false;
+            let maxL = 7;
+            if (type === 'carpet') {
+                maxL = fillEnabled ? 5 : 6;
+            }
             else if (type === 'koch') {
                 const sides = parseInt(document.getElementById('paramFractalKochSides')?.value || 3);
-                if (sides <= 4) maxL = 10;
-                else if (sides <= 6) maxL = 8;
-                else maxL = 6;
+                if (sides <= 4) maxL = fillEnabled ? 6 : 8;
+                else if (sides <= 6) maxL = fillEnabled ? 5 : 7;
+                else maxL = fillEnabled ? 5 : 6;
             }
-            else if (type === 'sierpinski') maxL = 12;
-            else if (type === 'dragon') maxL = 24;
-            else if (type === 'hilbert') maxL = 12;
-            else if (type === 'ricorsione_quadrati') maxL = 16;
-            else if (type === 'mandelbrot') maxL = 10;
-            else if (type === 'julia') maxL = 10;
-            else if (type === 'sierpinski_arrowhead') maxL = 14;
-            else if (type === 'lightning') maxL = 8;
+            else if (type === 'sierpinski') {
+                maxL = fillEnabled ? 7 : 9;
+            }
+            else if (type === 'dragon') {
+                maxL = 17;
+            }
+            else if (type === 'hilbert') {
+                maxL = 10;
+            }
+            else if (type === 'ricorsione_quadrati') {
+                maxL = fillEnabled ? 6 : 9;
+            }
+            else if (type === 'mandelbrot') {
+                maxL = 8;
+            }
+            else if (type === 'julia') {
+                maxL = 8;
+            }
+            else if (type === 'sierpinski_arrowhead') {
+                maxL = 12;
+            }
+            else if (type === 'lightning') {
+                maxL = 9;
+            }
 
             levelSlider.max = maxL;
             if (levelNum && levelNum.tagName === 'INPUT') levelNum.max = maxL;
@@ -3782,55 +3916,115 @@
         }
 
         function reduceComplexity() {
+            function triggerInputEvent(el) {
+                if (el) {
+                    el.dispatchEvent(new Event('input'));
+                    el.dispatchEvent(new Event('change'));
+                }
+            }
+
             if (currentMode === 'fractal') {
                 const slider = document.getElementById('paramFractalLevel');
-                if (slider) slider.value = Math.max(0, parseInt(slider.value) - 1);
+                if (slider) {
+                    slider.value = Math.max(0, parseInt(slider.value) - 1);
+                    triggerInputEvent(slider);
+                }
             } else if (currentMode === 'image') {
                 const procType = document.getElementById('imageProcessType').value;
                 if (procType === 'hatching') {
                     const slider = document.getElementById('paramHatchSpacing');
-                    if (slider) slider.value = Math.min(20, parseInt(slider.value) + 2);
+                    if (slider) {
+                        slider.value = Math.min(20, parseInt(slider.value) + 2);
+                        triggerInputEvent(slider);
+                    }
                 } else if (procType === 'spiral') {
                     const slider = document.getElementById('paramSpiralSpacing');
-                    if (slider) slider.value = Math.min(10.0, parseFloat(slider.value) + 1.0);
+                    if (slider) {
+                        slider.value = Math.min(10.0, parseFloat(slider.value) + 1.0);
+                        triggerInputEvent(slider);
+                    }
                 } else if (procType === 'contour') {
                     const slider = document.getElementById('paramVectorRes');
-                    if (slider) slider.value = Math.max(80, parseInt(slider.value) - 40);
+                    if (slider) {
+                        slider.value = Math.max(80, parseInt(slider.value) - 40);
+                        triggerInputEvent(slider);
+                    }
                 } else if (procType === 'ascii') {
                     const slider = document.getElementById('paramAsciiCols');
-                    if (slider) slider.value = Math.max(20, parseInt(slider.value) - 10);
+                    if (slider) {
+                        slider.value = Math.max(20, parseInt(slider.value) - 10);
+                        triggerInputEvent(slider);
+                    }
                 }
             } else if (currentMode === 'sketch') {
-                const slider = document.getElementById('paramSketchDensity');
-                if (slider) slider.value = Math.max(3, parseInt(slider.value) - 4);
+                const spacing = document.getElementById('paramSketchSpacingReal');
+                if (spacing) {
+                    spacing.value = Math.min(10.0, parseFloat(spacing.value) + 1.0);
+                    triggerInputEvent(spacing);
+                }
                 const simpl = document.getElementById('paramSketchSimpl');
-                if (simpl) simpl.value = Math.min(15.0, parseFloat(simpl.value) + 2.0);
+                if (simpl) {
+                    simpl.value = Math.min(15.0, parseFloat(simpl.value) + 2.0);
+                    triggerInputEvent(simpl);
+                }
+            } else if (currentMode === 'tessellation') {
+                const density = document.getElementById('paramTessDensity');
+                if (density) {
+                    density.value = Math.max(2, parseInt(density.value) - 2);
+                    triggerInputEvent(density);
+                }
+                const spacing = document.getElementById('paramTessSpacing');
+                if (spacing) {
+                    spacing.value = Math.min(10.0, parseFloat(spacing.value) + 1.0);
+                    triggerInputEvent(spacing);
+                }
             } else if (currentMode === 'harmonograph') {
                 const slider = document.getElementById('paramHarmoSteps');
-                if (slider) slider.value = Math.max(100, parseInt(slider.value) - 300);
+                if (slider) {
+                    slider.value = Math.max(100, parseInt(slider.value) - 300);
+                    triggerInputEvent(slider);
+                }
             } else if (currentMode === 'spirograph') {
                 const spiroType = document.getElementById('paramSpiroType').value;
                 if (spiroType === 'classic') {
                     const slider = document.getElementById('paramSpiroRevs');
-                    if (slider) slider.value = Math.max(1, parseInt(slider.value) - 5);
+                    if (slider) {
+                        slider.value = Math.max(1, parseInt(slider.value) - 5);
+                        triggerInputEvent(slider);
+                    }
                 } else if (spiroType === 'fractal') {
                     const slider = document.getElementById('paramSpiroFractalLevels');
-                    if (slider) slider.value = Math.max(1, parseInt(slider.value) - 1);
+                    if (slider) {
+                        slider.value = Math.max(1, parseInt(slider.value) - 1);
+                        triggerInputEvent(slider);
+                    }
                 } else if (spiroType === 'timestable') {
                     const slider = document.getElementById('paramSpiroTtPoints');
-                    if (slider) slider.value = Math.max(50, parseInt(slider.value) - 50);
+                    if (slider) {
+                        slider.value = Math.max(50, parseInt(slider.value) - 50);
+                        triggerInputEvent(slider);
+                    }
                 }
             } else if (currentMode === 'lsystem') {
                 const slider = document.getElementById('paramLsysGen');
-                if (slider) slider.value = Math.max(1, parseInt(slider.value) - 1);
+                if (slider) {
+                    slider.value = Math.max(1, parseInt(slider.value) - 1);
+                    triggerInputEvent(slider);
+                }
             } else if (currentMode === 'flowfield') {
                 const ffType = document.getElementById('paramFfType').value;
                 if (ffType === 'coherent_noise') {
                     const slider = document.getElementById('paramFfParts');
-                    if (slider) slider.value = Math.max(50, parseInt(slider.value) - 100);
+                    if (slider) {
+                        slider.value = Math.max(50, parseInt(slider.value) - 100);
+                        triggerInputEvent(slider);
+                    }
                 } else if (ffType === 'random_walk') {
                     const slider = document.getElementById('paramFfWalkSteps');
-                    if (slider) slider.value = Math.max(100, parseInt(slider.value) - 200);
+                    if (slider) {
+                        slider.value = Math.max(100, parseInt(slider.value) - 200);
+                        triggerInputEvent(slider);
+                    }
                 }
             } else if (currentMode === 'svg') {
                 svgSamplingStep = Math.min(5.0, svgSamplingStep + 1.0);
@@ -3838,10 +4032,16 @@
                 const sub = document.getElementById('fibonacciModule').value;
                 if (sub === 'spiral') {
                     const slider = document.getElementById('paramFibSpiralSteps');
-                    if (slider) slider.value = Math.max(1, parseInt(slider.value) - 1);
+                    if (slider) {
+                        slider.value = Math.max(1, parseInt(slider.value) - 1);
+                        triggerInputEvent(slider);
+                    }
                 } else if (sub === 'nature') {
                     const slider = document.getElementById('paramFibNatureSeeds');
-                    if (slider) slider.value = Math.max(50, parseInt(slider.value) - 50);
+                    if (slider) {
+                        slider.value = Math.max(50, parseInt(slider.value) - 50);
+                        triggerInputEvent(slider);
+                    }
                 }
             }
         }
@@ -4007,7 +4207,7 @@
             const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
             const fillEnabled = document.getElementById('paramFractalFill')?.checked || false;
             const fractalSpacing = parseFloat(document.getElementById('paramFractalFillDensity')?.value || 2.0);
-            const spacingVirtual = fractalSpacing * 100 / plotSize;
+            const spacingVirtual = fractalSpacing * 80 / plotSize;
             const rotVal = parseFloat(document.getElementById('paramFractalRot')?.value || 0);
             const randVal = parseFloat(document.getElementById('paramFractalRand')?.value || 0);
 
@@ -4230,17 +4430,18 @@
                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: pts });
             }
             else if (type === 'sierpinski') {
-                const fillStyle = document.getElementById('paramFractalFillStyle')?.value || 'concentric';
+                const fillStyle = document.getElementById('paramFractalFillStyle')?.value || 'spiral';
                 const outlineEnabled = document.getElementById('paramFractalOutline')?.checked ?? true;
 
                 function recurseSierpinski(p1, p2, p3, lvl) {
+                    addSafetyPoint();
                     if (lvl === 0) {
                         if (fillEnabled) {
                             if (outlineEnabled) {
                                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: [p1, p2, p3, p1] });
                             }
 
-                            if (fillStyle === 'concentric') {
+                            if (fillStyle === 'spiral') {
                                 const spiralPoints = generateConcentricFill([p1, p2, p3], spacingVirtual);
                                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: spiralPoints });
                             } else {
@@ -4276,10 +4477,11 @@
                 recurseSierpinski({ x: 10, y: 80 }, { x: 90, y: 80 }, { x: 50, y: 80 - 80 * Math.sqrt(3) / 2 }, level);
             }
             else if (type === 'carpet') {
-                const fillStyle = document.getElementById('paramFractalFillStyle')?.value || 'concentric';
+                const fillStyle = document.getElementById('paramFractalFillStyle')?.value || 'spiral';
                 const outlineEnabled = document.getElementById('paramFractalOutline')?.checked ?? true;
 
                 function recurseCarpet(x, y, size, lvl) {
+                    addSafetyPoint();
                     if (lvl === 0) {
                         let p1 = { x: x, y: y }, p2 = { x: x + size, y: y }, p3 = { x: x + size, y: y + size }, p4 = { x: x, y: y + size };
                         if (randVal > 0) {
@@ -4293,7 +4495,7 @@
                             if (outlineEnabled) {
                                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: [p1, p2, p3, p4, p1] });
                             }
-                            if (fillStyle === 'concentric') {
+                            if (fillStyle === 'spiral') {
                                 const spiralPoints = generateConcentricFill([p1, p2, p3, p4], spacingVirtual);
                                 currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: spiralPoints });
                             } else {
@@ -4335,7 +4537,7 @@
             else if (type === 'ricorsione_quadrati') {
                 const ox = 10, oy = 10;
                 const L0 = 80;
-                const fillStyle = document.getElementById('paramFractalFillStyle')?.value || 'concentric';
+                const fillStyle = document.getElementById('paramFractalFillStyle')?.value || 'spiral';
                 const outlineEnabled = document.getElementById('paramFractalOutline')?.checked ?? true;
 
                 if (outlineEnabled) {
@@ -4383,7 +4585,7 @@
                                 points: sqPoly
                             });
                         }
-                        if (fillStyle === 'concentric') {
+                        if (fillStyle === 'spiral') {
                             const spiralPoints = generateConcentricFill([p1, p2, p3, p4], spacingVirtual);
                             currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: spiralPoints });
                         } else {
@@ -4410,8 +4612,10 @@
             else if (type === 'mandelbrot') {
                 const plotAreaMm = 80;
                 const resolutionMm = Math.pow(10, -(level - 1) / 4);
-                const cols = Math.round(plotAreaMm / resolutionMm);
-                const rows = Math.round(plotAreaMm / resolutionMm);
+                let cols = Math.round(plotAreaMm / resolutionMm);
+                let rows = Math.round(plotAreaMm / resolutionMm);
+                if (cols > 250) cols = 250;
+                if (rows > 250) rows = 250;
                 const maxIter = 50 + level * 30;
 
                 const minReal = -2.0, maxReal = 0.5;
@@ -4452,8 +4656,10 @@
             else if (type === 'julia') {
                 const plotAreaMm = 80;
                 const resolutionMm = Math.pow(10, -(level - 1) / 4);
-                const cols = Math.round(plotAreaMm / resolutionMm);
-                const rows = Math.round(plotAreaMm / resolutionMm);
+                let cols = Math.round(plotAreaMm / resolutionMm);
+                let rows = Math.round(plotAreaMm / resolutionMm);
+                if (cols > 250) cols = 250;
+                if (rows > 250) rows = 250;
                 const maxIter = 50 + level * 30;
 
                 const minReal = -1.5, maxReal = 1.5;
@@ -10036,6 +10242,7 @@ out body;`;
 
             const maxPlotWidth = reachMaxX - reachMinX;
             const maxPlotHeight = reachMaxY - reachMinY;
+            
             const maxAllowedPlotSize = Math.max(30, Math.floor(Math.min(maxPlotWidth, maxPlotHeight)));
 
             const plotSizeSlider = document.getElementById('paramPlotSize');
@@ -10790,11 +10997,11 @@ out body;`;
                 return;
             }
 
-            const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
-            const simplVal = parseFloat(document.getElementById('paramSketchSimpl').value);
-            const distVal = parseFloat(document.getElementById('paramSketchDist').value);
-            const densityVal = parseInt(document.getElementById('paramSketchDensity').value);
-            const fillBg = document.getElementById('paramSketchFillBg').checked;
+            const penWidth = parseFloat(document.getElementById('paramPenWidth')?.value) || 0.6;
+            const simplVal = parseFloat(document.getElementById('paramSketchSimpl')?.value || 1.0);
+            const distVal = parseFloat(document.getElementById('paramSketchDist')?.value || 5.0);
+            const densityVal = parseInt(document.getElementById('paramSketchDensity')?.value || 12);
+            const fillBg = document.getElementById('paramSketchFillBg')?.checked || false;
 
             // Helper Ray-Casting per determinare se il baricentro del triangolo è interno allo sketch
             const isPointInPolygon = (p, poly) => {
@@ -10841,6 +11048,10 @@ out body;`;
 
             const useDelaunay = document.getElementById('paramSketchUseDelaunay')?.checked ?? true;
             const useFill = document.getElementById('paramSketchUseFill')?.checked ?? true;
+            const fillStyle = document.getElementById('paramSketchFillStyle')?.value || 'spiral';
+            const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
+            const spacingReal = parseFloat(document.getElementById('paramSketchSpacingReal')?.value || 1.5);
+            const spacingVirtual = spacingReal * 80 / plotSize;
 
             const cw = sketchPadCanvas.width || 200;
             const ch = sketchPadCanvas.height || 200;
@@ -10849,70 +11060,144 @@ out body;`;
                 y: 10 + (1 - p.y / ch) * 80
             });
 
+            // Creiamo i contorni chiusi mappati nello spazio [10, 90]
+            let polygonsMapped = polygons.map(poly => {
+                const simplified = simplifyDouglasPeucker(poly, simplVal * simplVal);
+                return simplified.map(mapPt);
+            });
+
+            // Se Delaunay è disattivato
             if (!useDelaunay) {
-                // Se Delaunay è disattivato, plottiamo direttamente le linee a mano libera semplificate
-                sketchStrokes.forEach(stroke => {
-                    if (stroke.length < 2) return;
-                    const simplified = simplifyDouglasPeucker(stroke, simplVal * simplVal);
-                    const mappedPts = simplified.map(mapPt);
+                // Plottiamo i contorni originali
+                polygonsMapped.forEach(poly => {
+                    if (poly.length < 2) return;
                     currentRawElements.push({
                         type: 'path',
                         stroke: '#818cf8',
                         width: penWidth,
-                        points: mappedPts
+                        points: poly
                     });
                 });
+
+                // Eseguiamo la campitura del perimetro originale
+                if (useFill) {
+                    if (fillStyle === 'spiral') {
+                        polygonsMapped.forEach(poly => {
+                            if (poly.length < 3) return;
+                            const spiralPoints = generateConcentricFill(poly, spacingVirtual);
+                            spiralPoints.forEach(() => addSafetyPoint());
+                            if (spiralPoints.length > 0) {
+                                currentRawElements.push({
+                                    type: 'path',
+                                    stroke: '#10b981',
+                                    width: penWidth,
+                                    points: spiralPoints
+                                });
+                            }
+                        });
+                    } else {
+                        polygonsMapped.forEach(poly => {
+                            if (poly.length < 3) return;
+                            try {
+                                const delaunay = d3.Delaunay.from(poly.map(p => [p.x, p.y]));
+                                for (let i = 0; i < delaunay.triangles.length; i += 3) {
+                                    const t0 = delaunay.triangles[i];
+                                    const t1 = delaunay.triangles[i + 1];
+                                    const t2 = delaunay.triangles[i + 2];
+                                    const p0 = poly[t0];
+                                    const p1 = poly[t1];
+                                    const p2 = poly[t2];
+
+                                    const bary = { x: (p0.x + p1.x + p2.x) / 3, y: (p0.y + p1.y + p2.y) / 3 };
+                                    if (!isPointInPolygon(bary, poly)) continue;
+
+                                    const hatchPoints = generateHatching45Fill([p0, p1, p2], spacingVirtual);
+                                    hatchPoints.forEach(() => addSafetyPoint());
+                                    if (hatchPoints.length > 0) {
+                                        currentRawElements.push({
+                                            type: 'path',
+                                            stroke: '#10b981',
+                                            width: penWidth,
+                                            points: hatchPoints
+                                        });
+                                    }
+                                }
+                            } catch (e) {
+                                console.error("Hatching triangulation error:", e);
+                            }
+                        });
+                    }
+                }
+
+
                 applyGlobalTransformAndRender();
                 return;
             }
 
+            // Se Delaunay è attivo
             if (finalPoints.length < 3) {
                 applyGlobalTransformAndRender();
                 return;
             }
 
             try {
-                const delaunay = d3.Delaunay.from(finalPoints.map(p => [p.x, p.y]));
+                // Generiamo la mesh di Delaunay globale
+                const finalPointsMapped = finalPoints.map(mapPt);
+                const delaunay = d3.Delaunay.from(finalPointsMapped.map(p => [p.x, p.y]));
+
+                // Teniamo traccia dei triangoli validi (interni se !fillBg)
+                const validTriangles = [];
 
                 for (let i = 0; i < delaunay.triangles.length; i += 3) {
                     const t0 = delaunay.triangles[i];
                     const t1 = delaunay.triangles[i + 1];
                     const t2 = delaunay.triangles[i + 2];
+                    const p0 = finalPointsMapped[t0];
+                    const p1 = finalPointsMapped[t1];
+                    const p2 = finalPointsMapped[t2];
 
-                    const p0 = finalPoints[t0];
-                    const p1 = finalPoints[t1];
-                    const p2 = finalPoints[t2];
+                    if (!fillBg) {
+                        const bary = { x: (p0.x + p1.x + p2.x) / 3, y: (p0.y + p1.y + p2.y) / 3 };
+                        let inside = false;
+                        for (let poly of polygonsMapped) {
+                            if (isPointInPolygon(bary, poly)) {
+                                inside = true;
+                                break;
+                            }
+                        }
+                        if (!inside) continue; // Triangolo esterno degenerato del convex hull, scarta!
+                    }
 
-                    const v0 = mapPt(p0);
-                    const v1 = mapPt(p1);
-                    const v2 = mapPt(p2);
+                    validTriangles.push([p0, p1, p2]);
 
                     // Bordo Triangolo (perimetro chiuso solido)
                     currentRawElements.push({
                         type: 'path',
                         stroke: '#10b981',
                         width: penWidth,
-                        points: [v0, v1, v2, v0]
+                        points: [p0, p1, p2, p0]
                     });
                     addSafetyPoint();
+                }
 
-                    // Campitura opzionale
-                    if (useFill) {
-                        const fillStyle = document.getElementById('paramSketchFillStyle')?.value || 'concentric';
-                        const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
-                        const spacingVirtual = penWidth * 80 / plotSize;
-
-                        if (fillStyle === 'concentric') {
-                            const spiralPoints = generateConcentricFill([v0, v1, v2], spacingVirtual);
+                // Eseguiamo la campitura
+                if (useFill) {
+                    if (fillStyle === 'spiral') {
+                        validTriangles.forEach(tri => {
+                            const spiralPoints = generateConcentricFill(tri, spacingVirtual);
                             spiralPoints.forEach(() => addSafetyPoint());
-                            currentRawElements.push({
-                                type: 'path',
-                                stroke: '#10b981',
-                                width: penWidth,
-                                points: spiralPoints
-                            });
-                        } else {
-                            const hatchPoints = generateHatching45Fill([v0, v1, v2], spacingVirtual);
+                            if (spiralPoints.length > 0) {
+                                currentRawElements.push({
+                                    type: 'path',
+                                    stroke: '#10b981',
+                                    width: penWidth,
+                                    points: spiralPoints
+                                });
+                            }
+                        });
+                    } else {
+                        validTriangles.forEach(tri => {
+                            const hatchPoints = generateHatching45Fill(tri, spacingVirtual);
                             hatchPoints.forEach(() => addSafetyPoint());
                             if (hatchPoints.length > 0) {
                                 currentRawElements.push({
@@ -10922,7 +11207,7 @@ out body;`;
                                     points: hatchPoints
                                 });
                             }
-                        }
+                        });
                     }
                 }
             } catch (err) {
@@ -10996,7 +11281,10 @@ out body;`;
 
         function toggleTessControls() {
             const pattern = document.getElementById('paramTessPattern').value;
-            const fillType = document.getElementById('paramTessFillType').value;
+            const fillTypeSelect = document.getElementById('paramTessFillType');
+            if (!fillTypeSelect) return;
+
+            const fillType = fillTypeSelect.value;
             
             const concentricControls = document.getElementById('tess-concentric-controls');
             const geometricControls = document.getElementById('tess-geometric-controls');
@@ -11006,7 +11294,7 @@ out body;`;
             // Regolazione label spaziatura dinamica
             const spacingLabel = document.querySelector('label[for="paramTessSpacing"]') || document.querySelector('#valTessSpacing')?.previousElementSibling;
             if (spacingLabel) {
-                if (fillType === 'concentric') {
+                if (fillType === 'spiral') {
                     spacingLabel.innerText = "Distanza Spirali (mm):";
                 } else if (fillType === 'geometric') {
                     spacingLabel.innerText = "Spaziatura Tratteggio (mm):";
@@ -11018,7 +11306,7 @@ out body;`;
             }
 
             // Tipo campitura
-            if (concentricControls) concentricControls.className = (fillType === 'concentric') ? 'space-y-3' : 'hidden-mode';
+            if (concentricControls) concentricControls.className = (fillType === 'spiral') ? 'space-y-3' : 'hidden-mode';
             if (geometricControls) geometricControls.className = (fillType === 'geometric') ? 'space-y-3' : 'hidden-mode';
             if (asciiControls) asciiControls.className = (fillType === 'ascii') ? 'space-y-3' : 'hidden-mode';
 
@@ -11506,38 +11794,33 @@ out body;`;
         }
 
         function toggleSketchFillControls() {
-            const useDelaunay = document.getElementById('paramSketchUseDelaunay')?.checked ?? true;
             const useFill = document.getElementById('paramSketchUseFill')?.checked ?? true;
             const fillExtraDiv = document.getElementById('sketch-fill-extra-controls');
             if (fillExtraDiv) {
-                if (useDelaunay && useFill) {
-                    fillExtraDiv.classList.remove('hidden-mode');
-                } else {
-                    fillExtraDiv.classList.add('hidden-mode');
-                }
+                if (useFill) fillExtraDiv.classList.remove('hidden-mode');
+                else fillExtraDiv.classList.add('hidden-mode');
             }
         }
 
         function toggleSketchDelaunayControls() {
             const useDelaunay = document.getElementById('paramSketchUseDelaunay')?.checked ?? true;
-            const distDiv = document.getElementById('paramSketchDist')?.parentElement;
-            const densDiv = document.getElementById('paramSketchDensity')?.parentElement;
-            const fillBgLabel = document.getElementById('paramSketchFillBg')?.parentElement;
-            const useFillLabel = document.getElementById('paramSketchUseFill')?.parentElement;
+            const useFill = document.getElementById('paramSketchUseFill')?.checked ?? true;
+            const fillStyle = document.getElementById('paramSketchFillStyle')?.value || 'spiral';
             
-            if (useDelaunay) {
+            const distDiv = document.getElementById('paramSketchDist')?.parentElement;
+            const fillBgLabel = document.getElementById('paramSketchFillBg')?.parentElement;
+            
+            // Mostriamo lo slider della distanza minima se Delaunay è attivo o se è attiva la campitura spiralizzata
+            if (useDelaunay || (useFill && fillStyle === 'spiral')) {
                 if (distDiv) distDiv.classList.remove('hidden-mode');
-                if (densDiv) densDiv.classList.remove('hidden-mode');
-                if (fillBgLabel) fillBgLabel.classList.remove('hidden-mode');
-                if (useFillLabel) useFillLabel.classList.remove('hidden-mode');
-                toggleSketchFillControls();
             } else {
                 if (distDiv) distDiv.classList.add('hidden-mode');
-                if (densDiv) densDiv.classList.add('hidden-mode');
+            }
+            
+            if (useDelaunay) {
+                if (fillBgLabel) fillBgLabel.classList.remove('hidden-mode');
+            } else {
                 if (fillBgLabel) fillBgLabel.classList.add('hidden-mode');
-                if (useFillLabel) useFillLabel.classList.add('hidden-mode');
-                const fillExtraDiv = document.getElementById('sketch-fill-extra-controls');
-                if (fillExtraDiv) fillExtraDiv.classList.add('hidden-mode');
             }
         }
 
@@ -12864,7 +13147,7 @@ out body;`;
                 const paramFractalFill = document.getElementById('paramFractalFill');
                 if (paramFractalFill) paramFractalFill.checked = false;
                 const paramFractalFillStyle = document.getElementById('paramFractalFillStyle');
-                if (paramFractalFillStyle) paramFractalFillStyle.value = 'concentric';
+                if (paramFractalFillStyle) paramFractalFillStyle.value = 'spiral';
                 const paramFractalOutline = document.getElementById('paramFractalOutline');
                 if (paramFractalOutline) paramFractalOutline.checked = true;
 
@@ -12910,13 +13193,18 @@ out body;`;
                 if (paramSketchSimpl) paramSketchSimpl.value = '9.0';
                 const paramSketchDist = document.getElementById('paramSketchDist');
                 if (paramSketchDist) paramSketchDist.value = '10';
-                const paramSketchDensity = document.getElementById('paramSketchDensity');
-                if (paramSketchDensity) paramSketchDensity.value = '12';
+                const paramSketchSpacingReal = document.getElementById('paramSketchSpacingReal');
+                if (paramSketchSpacingReal) paramSketchSpacingReal.value = '1.5';
                 const paramSketchFillBg = document.getElementById('paramSketchFillBg');
                 if (paramSketchFillBg) paramSketchFillBg.checked = false;
                 const paramSketchFillStyle = document.getElementById('paramSketchFillStyle');
-                if (paramSketchFillStyle) paramSketchFillStyle.value = 'concentric';
+                if (paramSketchFillStyle) paramSketchFillStyle.value = 'spiral';
+                const paramSketchUseDelaunay = document.getElementById('paramSketchUseDelaunay');
+                if (paramSketchUseDelaunay) paramSketchUseDelaunay.checked = true;
+                const paramSketchUseFill = document.getElementById('paramSketchUseFill');
+                if (paramSketchUseFill) paramSketchUseFill.checked = true;
 
+                toggleSketchDelaunayControls();
                 toggleSketchFillControls();
             }
             else if (mode === 'svg') {
@@ -14908,7 +15196,7 @@ ${document.getElementById('pathGroup').innerHTML}
 
             const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
             const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
-            const spacingVirtual = spacing * 100 / plotSize;
+            const spacingVirtual = spacing * 80 / plotSize;
 
             let tiles = [];
 
@@ -14949,16 +15237,6 @@ ${document.getElementById('pathGroup').innerHTML}
             } else if (pattern === 'p6_wallpaper') {
                 tiles = TessellationManager.generateWallpaperP6(density);
             } else if (pattern === 'einstein_hat') {
-                const sizeSlider = document.getElementById('paramPlotSize');
-                if (sizeSlider) {
-                    sizeSlider.max = 230;
-                    sizeSlider.value = 230;
-                    const valSize = document.getElementById('valPlotSize');
-                    if (valSize) {
-                        if (valSize.tagName === 'INPUT') valSize.value = 230;
-                        else valSize.innerText = 230;
-                    }
-                }
                 tiles = TessellationManager.generateEinsteinHatAperiodic(density);
             } else if (pattern === 'lloyd_voronoi') {
                 tiles = TessellationManager.generateLloydVoronoi(density + 3);
@@ -15080,7 +15358,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
 
                 if (fillType !== 'none') {
-                    if (fillType === 'concentric') {
+                    if (fillType === 'spiral') {
                         let triPoly = [...poly];
                         let shouldInvert = invertRot;
                         if (rotStyle === 'alternate') {
@@ -15090,7 +15368,7 @@ ${document.getElementById('pathGroup').innerHTML}
                             triPoly.reverse();
                         }
 
-                        const spiralPoints = generateConcentricFill(triPoly, spacingVirtual);
+                        const spiralPoints = generateConcentricFill(triPoly, spacingVirtual, isEinsteinHat);
                         if (spiralPoints.length >= 2) {
                             fillPaths.push(spiralPoints);
                         }
@@ -16218,14 +16496,114 @@ ${document.getElementById('pathGroup').innerHTML}
             }
         }
 
+        function safeSetVal(id, val) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.value = val;
+                const valLbl = document.getElementById('val' + id.replace('param', ''));
+                if (valLbl) {
+                    if (valLbl.tagName === 'INPUT') valLbl.value = val;
+                    else valLbl.innerText = val;
+                }
+            }
+        }
+
+        function loadRandomAppealingPreset() {
+            const presets = [
+                // Preset 1: Flow Field Cosmico
+                () => {
+                    setMode('flowfield', false);
+                    safeSetVal('paramFlowCount', Math.floor(150 + Math.random() * 100));
+                    safeSetVal('paramFlowStep', (0.8 + Math.random() * 0.4).toFixed(1));
+                    safeSetVal('paramFlowLength', Math.floor(80 + Math.random() * 40));
+                    safeSetVal('paramFlowNoiseScale', (0.015 + Math.random() * 0.015).toFixed(3));
+                    executeSimulationDirect();
+                },
+                // Preset 2: Einstein Hat Aperiodico con Spirale Delaunay
+                () => {
+                    setMode('tessellation', false);
+                    safeSetVal('paramTessPattern', 'einstein_hat');
+                    safeSetVal('paramTessFillType', 'spiral');
+                    safeSetVal('paramTessSpacing', (1.4 + Math.random() * 0.6).toFixed(1));
+                    safeSetVal('paramTessDensity', '5');
+                    toggleTessControls();
+                    executeSimulationDirect();
+                },
+                // Preset 3: Generative Noodles (Cadin Over-Under)
+                () => {
+                    setMode('noodles', false);
+                    safeSetVal('paramNoodlesCount', Math.floor(12 + Math.random() * 8));
+                    safeSetVal('paramNoodlesComplexity', Math.floor(6 + Math.random() * 4));
+                    safeSetVal('paramNoodlesMargin', '8');
+                    executeSimulationDirect();
+                },
+                // Preset 4: Harmonograph Armonico a 4 Pendoli
+                () => {
+                    setMode('harmonograph', false);
+                    safeSetVal('paramHarmF1', (1 + Math.floor(Math.random() * 3)).toString());
+                    safeSetVal('paramHarmF2', (2 + Math.floor(Math.random() * 3)).toString());
+                    safeSetVal('paramHarmF3', (1 + Math.floor(Math.random() * 2)).toString());
+                    safeSetVal('paramHarmF4', (3 + Math.floor(Math.random() * 3)).toString());
+                    safeSetVal('paramHarmP1', (Math.random() * 180).toFixed(0));
+                    safeSetVal('paramHarmP2', (Math.random() * 90).toFixed(0));
+                    safeSetVal('paramHarmDamp', '0.0015');
+                    executeSimulationDirect();
+                },
+                // Preset 5: Frattale Curva Arrowhead di Sierpinski
+                () => {
+                    setMode('fractal', false);
+                    safeSetVal('fractalType', 'sierpinski_arrowhead');
+                    safeSetVal('paramFractalLevel', '5');
+                    adjustFractalLevelLimits();
+                    executeSimulationDirect();
+                },
+                // Preset 6: Spirale di Fibonacci Aurea
+                () => {
+                    setMode('fibonacci', false);
+                    safeSetVal('paramFibPoints', Math.floor(500 + Math.random() * 300));
+                    safeSetVal('paramFibScale', '1.2');
+                    safeSetVal('paramFibFill', 'spiral');
+                    executeSimulationDirect();
+                },
+                // Preset 7: Tassellazione Esagonale con Spirale ad Inseguimento Omogenea
+                () => {
+                    setMode('tessellation', false);
+                    safeSetVal('paramTessPattern', 'hexagonal');
+                    safeSetVal('paramTessFillType', 'spiral');
+                    safeSetVal('paramTessSpacing', (1.2 + Math.random() * 0.5).toFixed(1));
+                    safeSetVal('paramTessDensity', '5');
+                    toggleTessControls();
+                    executeSimulationDirect();
+                },
+                // Preset 8: Harmonograph Bilanciato
+                () => {
+                    setMode('harmonograph', false);
+                    safeSetVal('paramHarmF1', '3');
+                    safeSetVal('paramHarmF2', '4');
+                    safeSetVal('paramHarmF3', '2');
+                    safeSetVal('paramHarmF4', '5');
+                    safeSetVal('paramHarmP1', '45');
+                    safeSetVal('paramHarmDamp', '0.0008');
+                    executeSimulationDirect();
+                }
+            ];
+
+            const chosen = presets[Math.floor(Math.random() * presets.length)];
+            try {
+                chosen();
+            } catch (e) {
+                console.warn("Preset init fallback:", e);
+                setMode('harmonograph', true);
+            }
+        }
+
         window.onload = () => {
             initWorldGeoJsonSelectors();
             initializeFontDensities();
             buildHarmonographUI();
             toggleCustomPenCommandsUI();
-            setMode('harmonograph', true); // Calcola e renderizza la funzione iniziale all'avvio!
+            loadRandomAppealingPreset(); // Avvio dinamico con preset generativo casuale ed accattivante!
             // Equipaggia tutti gli slider con un campo numerico diretto da tastiera
-            // (piccolo timeout per dare tempo al DOM di stabilizzarsi dopo setMode)
             setTimeout(() => addNumberInputToSliders(), 100);
 
             window.addEventListener('resize', () => {
