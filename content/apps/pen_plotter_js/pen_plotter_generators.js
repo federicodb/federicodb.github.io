@@ -154,4 +154,49 @@ function generateFractalElements(type, level, fillEnabled, spacingVirtual, penWi
 
         drawFractalSquares(ox, oy, L0, level);
     }
+    else if (type === 'sierpinski_arrowhead') {
+        let commands = "X";
+        for (let i = 0; i < level; i++) {
+            let next = "";
+            for (let c = 0; c < commands.length; c++) {
+                let ch = commands[c];
+                if (ch === 'X') next += "YF+XF+Y";
+                else if (ch === 'Y') next += "XF-YF-X";
+                else next += ch;
+            }
+            commands = next;
+        }
+
+        let pts = [];
+        let x = 10, y = 80;
+        pts.push({ x: x, y: y });
+
+        let angle = (level % 2 === 1) ? -60 : 0;
+        let stepSize = 80 / Math.pow(2, level);
+
+        for (let i = 0; i < commands.length; i++) {
+            let cmd = commands[i];
+            if (cmd === 'F') {
+                x += stepSize * Math.cos(angle * Math.PI / 180);
+                y += stepSize * Math.sin(angle * Math.PI / 180);
+                pts.push({ x: x, y: y });
+            } else if (cmd === '+') {
+                angle += 60;
+            } else if (cmd === '-') {
+                angle -= 60;
+            }
+        }
+
+        let minX = Math.min(...pts.map(p => p.x)), maxX = Math.max(...pts.map(p => p.x));
+        let minY = Math.min(...pts.map(p => p.y)), maxY = Math.max(...pts.map(p => p.y));
+        let w = maxX - minX, h = maxY - minY;
+        let scale = 80 / Math.max(w, h || 1);
+
+        let finalPts = pts.map(p => ({
+            x: 50 + (p.x - (minX + w / 2)) * scale,
+            y: 50 + (p.y - (minY + h / 2)) * scale
+        }));
+
+        currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: finalPts });
+    }
 }

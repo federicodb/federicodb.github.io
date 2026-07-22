@@ -1022,7 +1022,11 @@
                         <label class="block text-[10px] font-bold text-slate-400">Tipo Algoritmo Rumore</label>
                         <select id="paramFfNoiseType" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
                             onchange="updateSimulation()">
-                            <option value="perlin">Perlin Noise Nativi</option>
+                            <option value="perlin">Perlin Noise Standard</option>
+                            <option value="curl">Curl Noise (Vortici Solenoidali)</option>
+                            <option value="worley">Worley / Rumore Cellulare</option>
+                            <option value="fbm">fBm Frattale (Multi-Ottava)</option>
+                            <option value="vortex">Vortice Galattico Modulato</option>
                             <option value="simplex">Simplex-like (Turbolenza)</option>
                             <option value="sinusoidal">Onde Sinusoidali Geometriche</option>
                         </select>
@@ -1032,26 +1036,26 @@
                         <div>
                             <div class="flex justify-between items-center mb-0.5">
                                 <label class="block text-[11px] text-slate-400" id="labelFfParts">Numero Streamlines:</label>
-                                <span id="valFfParts" class="font-mono text-indigo-400 text-xs font-semibold">300</span>
+                                <span id="valFfParts" class="font-mono text-indigo-400 text-xs font-semibold">200</span>
                             </div>
-                            <input type="range" id="paramFfParts" min="10" max="1000" step="10" value="300"
+                            <input type="range" id="paramFfParts" min="10" max="200" step="5" value="200"
                                 class="w-full" oninput="updateSimulation()">
                         </div>
                         <div>
                             <div class="flex justify-between items-center mb-0.5">
                                 <label class="block text-[11px] text-slate-400" id="labelFfLen">Lunghezza Max Streamline:</label>
-                                <span id="valFfLen" class="font-mono text-indigo-400 text-xs font-semibold">35</span>
+                                <span id="valFfLen" class="font-mono text-indigo-400 text-xs font-semibold">20</span>
                             </div>
-                            <input type="range" id="paramFfLen" min="5" max="300" step="5" value="35" class="w-full"
+                            <input type="range" id="paramFfLen" min="1" max="80" step="1" value="20" class="w-full"
                                 oninput="updateSimulation()">
                         </div>
                         <div>
                             <div class="flex justify-between items-center mb-0.5">
                                 <label class="block text-[11px] text-slate-400">Scala Rumore (Noise Scale):</label>
                                 <span id="valFfScale"
-                                    class="font-mono text-indigo-400 text-xs font-semibold">0.02</span>
+                                    class="font-mono text-indigo-400 text-xs font-semibold">0.030</span>
                             </div>
-                            <input type="range" id="paramFfScale" min="0.001" max="0.100" step="0.001" value="0.02"
+                            <input type="range" id="paramFfScale" min="0.001" max="0.030" step="0.001" value="0.030"
                                 class="w-full" oninput="updateSimulation()">
                         </div>
                         <div>
@@ -3775,45 +3779,28 @@
             let cx = cur.reduce((sum, p) => sum + p.x, 0) / n;
             let cy = cur.reduce((sum, p) => sum + p.y, 0) / n;
 
-            // Calcolo del lato medio iniziale L0 per fissare un rapporto t RIGOROSAMENTE COSTANTE
-            let initialSides = [];
-            for (let j = 0; j < n; j++) {
-                let p1 = cur[j];
-                let p2 = cur[(j + 1) % n];
-                initialSides.push(Math.hypot(p2.x - p1.x, p2.y - p1.y));
-            }
-            let L0 = initialSides.reduce((sum, s) => sum + s, 0) / n;
-            if (L0 < 1e-4) return [];
-
-            // Fattore t costante per mantenere l'angolo di deviazione identico e omogeneo da inizio a fine
-            let t = spacing / L0;
-            t = Math.max(0.02, Math.min(0.25, t));
-
-            // Iniziamo il percorso direttamente dal primo vertice contratto per evitare la discontinuità d'angolo iniziale
-            let firstNext = [];
-            for (let j = 0; j < n; j++) {
-                let p1 = cur[j];
-                let p2 = cur[(j + 1) % n];
-                firstNext.push({
-                    x: p1.x + (p2.x - p1.x) * t,
-                    y: p1.y + (p2.y - p1.y) * t
-                });
-            }
-            let path = [...firstNext];
-            cur = firstNext;
+            let path = [...cur];
 
             for (let i = 0; i < 250; i++) {
                 let maxDist = 0;
+                let sideSum = 0;
                 for (let j = 0; j < n; j++) {
-                    let dBary = Math.hypot(cur[j].x - cx, cur[j].y - cy);
+                    let p1 = cur[j];
+                    let p2 = cur[(j + 1) % n];
+                    let sideLen = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+                    sideSum += sideLen;
+                    let dBary = Math.hypot(p1.x - cx, p1.y - cy);
                     if (dBary > maxDist) maxDist = dBary;
                 }
 
-                // Quando la spirale si avvicina al centro, converge esattamente sul baricentro
-                if (maxDist < 0.05) {
+                let Lcurr = sideSum / n;
+                if (Lcurr < 1e-4 || maxDist < 0.05) {
                     path.push({ x: cx, y: cy });
                     break;
                 }
+
+                let t = spacing / Lcurr;
+                t = Math.max(0.02, Math.min(0.35, t));
 
                 let next = [];
                 for (let j = 0; j < n; j++) {
@@ -3896,9 +3883,19 @@
             if (levelNum && levelNum.tagName === 'INPUT') levelNum.max = maxL;
 
             if (type !== adjustFractalLevelLimits.lastType) {
-                levelSlider.value = 1;
-                if (levelNum && levelNum.tagName === 'INPUT') levelNum.value = 1;
-                if (levelVal && levelVal.tagName !== 'INPUT') levelVal.innerText = 1;
+                let defaultL = 3;
+                if (type === 'sierpinski' || type === 'sierpinski_arrowhead') defaultL = 4;
+                else if (type === 'carpet') defaultL = 3;
+                else if (type === 'koch') defaultL = 4;
+                else if (type === 'dragon') defaultL = 10;
+                else if (type === 'hilbert') defaultL = 4;
+                else if (type === 'ricorsione_quadrati') defaultL = 3;
+                else if (type === 'mandelbrot' || type === 'julia') defaultL = 4;
+
+                defaultL = Math.min(defaultL, maxL);
+                levelSlider.value = defaultL;
+                if (levelNum && levelNum.tagName === 'INPUT') levelNum.value = defaultL;
+                if (levelVal && levelVal.tagName !== 'INPUT') levelVal.innerText = defaultL;
                 adjustFractalLevelLimits.lastType = type;
             } else {
                 if (parseInt(levelSlider.value) > maxL) {
@@ -4727,7 +4724,7 @@
                 let x = 10, y = 80;
                 pts.push({ x: x, y: y });
 
-                let angle = 0;
+                let angle = (level % 2 === 1) ? -60 : 0;
                 let stepSize = 80 / Math.pow(2, level);
 
                 for (let i = 0; i < commands.length; i++) {
@@ -5885,7 +5882,7 @@
         }
 
         const lsysPresets = {
-            sierpinski: { axiom: "F-G-G", rules: '{\n  "F": "F-G+F+G-F",\n  "G": "GG"\n}', angle: 120, gen: 5, initialDir: 60 },
+            sierpinski: { axiom: "X", rules: '{\n  "X": "YF+XF+Y",\n  "Y": "XF-YF-X"\n}', angle: 60, gen: 5, initialDir: 0, draw: "F" },
             koch: { axiom: "F", rules: '{\n  "F": "F+F-F-F+F"\n}', angle: 90, gen: 4, initialDir: 0 },
             dragon: { axiom: "FX", rules: '{\n  "X": "X+YF+",\n  "Y": "-FX-Y"\n}', angle: 90, gen: 10, initialDir: 0 },
             plant: { axiom: "X", rules: '{\n  "X": "F+[[X]-X]-F[-FX]+X",\n  "F": "FF"\n}', angle: 25, gen: 5, initialDir: 90 },
@@ -6067,6 +6064,38 @@
                         let angle = 0;
                         if (noiseType === 'perlin') {
                             angle = PerlinNoise.noise(baseX * noiseScale, baseY * noiseScale) * Math.PI * 4;
+                        } else if (noiseType === 'curl') {
+                            const sX = baseX * noiseScale;
+                            const sY = baseY * noiseScale;
+                            const eps = 0.1;
+                            const nX1 = PerlinNoise.noise(sX + eps, sY);
+                            const nX2 = PerlinNoise.noise(sX - eps, sY);
+                            const nY1 = PerlinNoise.noise(sX, sY + eps);
+                            const nY2 = PerlinNoise.noise(sX, sY - eps);
+                            const dNdx = (nX1 - nX2) / (2 * eps);
+                            const dNdy = (nY1 - nY2) / (2 * eps);
+                            angle = Math.atan2(-dNdx, dNdy) + (nX1 + nY1) * Math.PI;
+                        } else if (noiseType === 'worley') {
+                            const sX = baseX * noiseScale;
+                            const sY = baseY * noiseScale;
+                            const pVal = PerlinNoise.noise(sX, sY);
+                            const cellDist = Math.sin(sX * Math.PI * 2) * Math.cos(sY * Math.PI * 2);
+                            angle = (pVal + cellDist * 0.5) * Math.PI * 3;
+                        } else if (noiseType === 'fbm') {
+                            let fbmVal = 0, totalAmp = 0;
+                            let amp = 1.0, freq = noiseScale;
+                            for (let o = 0; o < 3; o++) {
+                                fbmVal += amp * PerlinNoise.noise(baseX * freq, baseY * freq);
+                                totalAmp += amp;
+                                freq *= 2.2;
+                                amp *= 0.45;
+                            }
+                            const normFbm = fbmVal / totalAmp;
+                            angle = normFbm * Math.PI * 4;
+                        } else if (noiseType === 'vortex') {
+                            const rAngle = Math.atan2(baseY, baseX) + Math.PI / 2;
+                            const nVal = PerlinNoise.noise(baseX * noiseScale, baseY * noiseScale);
+                            angle = rAngle + nVal * Math.PI * (1.0 + noiseScale * 30);
                         } else if (noiseType === 'simplex') {
                             const n1 = PerlinNoise.noise(baseX * noiseScale, baseY * noiseScale);
                             const n2 = PerlinNoise.noise(baseX * noiseScale * 2.5, baseY * noiseScale * 2.5);
@@ -10240,14 +10269,14 @@ out body;`;
             const offsetY = parseFloat(document.getElementById('paramOffsetY').value);
             const flip180 = document.getElementById('paramFlip180')?.checked || false;
 
-            // Centratura automatica all'interno dell'area utile reale (simmetrizzata per finecorsa)
-            const reachMinX = Math.abs(offsetX);
-            const reachMaxX = bedSizeX - Math.abs(offsetX);
-            const reachMinY = Math.abs(offsetY);
-            const reachMaxY = bedSizeY - Math.abs(offsetY);
+            // Centratura automatica all'interno dell'area utile reale della penna
+            const reachMinX = offsetX > 0 ? offsetX : 0;
+            const reachMaxX = offsetX > 0 ? bedSizeX : bedSizeX + offsetX;
+            const reachMinY = offsetY > 0 ? offsetY : 0;
+            const reachMaxY = offsetY > 0 ? bedSizeY : bedSizeY + offsetY;
 
-            const maxPlotWidth = reachMaxX - reachMinX;
-            const maxPlotHeight = reachMaxY - reachMinY;
+            const maxPlotWidth = Math.max(0, reachMaxX - reachMinX);
+            const maxPlotHeight = Math.max(0, reachMaxY - reachMinY);
             
             const maxAllowedPlotSize = Math.max(30, Math.floor(Math.min(maxPlotWidth, maxPlotHeight)));
 
@@ -10267,8 +10296,8 @@ out body;`;
             }
 
             const plotSize = parseFloat(document.getElementById('paramPlotSize').value);
-            const cx_reach = bedSizeX / 2;
-            const cy_reach = bedSizeY / 2;
+            const cx_reach = (reachMinX + reachMaxX) / 2;
+            const cy_reach = (reachMinY + reachMaxY) / 2;
 
             const scale = plotSize / Math.max(w, h || 1);
 
@@ -12999,9 +13028,9 @@ out body;`;
             else if (mode === 'flowfield') {
                 const ffType = document.getElementById('paramFfType'); if (ffType) ffType.value = 'coherent_noise';
                 const ffNoiseType = document.getElementById('paramFfNoiseType'); if (ffNoiseType) ffNoiseType.value = 'perlin';
-                const ffParts = document.getElementById('paramFfParts'); if (ffParts) ffParts.value = '300';
-                const ffLen = document.getElementById('paramFfLen'); if (ffLen) ffLen.value = '35';
-                const ffScale = document.getElementById('paramFfScale'); if (ffScale) ffScale.value = '0.02';
+                const ffParts = document.getElementById('paramFfParts'); if (ffParts) ffParts.value = '200';
+                const ffLen = document.getElementById('paramFfLen'); if (ffLen) ffLen.value = '10';
+                const ffScale = document.getElementById('paramFfScale'); if (ffScale) ffScale.value = '0.03';
                 const ffAmp = document.getElementById('paramFfAmp'); if (ffAmp) ffAmp.value = '15';
 
                 // Reset random walk
@@ -16538,8 +16567,13 @@ ${document.getElementById('pathGroup').innerHTML}
                     const offsetX = parseFloat(document.getElementById('paramOffsetX').value) || 0;
                     const offsetY = parseFloat(document.getElementById('paramOffsetY').value) || 0;
 
-                    const cx_reach = bedSizeX / 2;
-                    const cy_reach = bedSizeY / 2;
+                    const reachMinX = offsetX > 0 ? offsetX : 0;
+                    const reachMaxX = offsetX > 0 ? bedSizeX : bedSizeX + offsetX;
+                    const reachMinY = offsetY > 0 ? offsetY : 0;
+                    const reachMaxY = offsetY > 0 ? bedSizeY : bedSizeY + offsetY;
+
+                    const cx_reach = (reachMinX + reachMaxX) / 2;
+                    const cy_reach = (reachMinY + reachMaxY) / 2;
 
                     const flip180 = document.getElementById('paramFlip180')?.checked || false;
                     let mx = xMm - cx_reach;
@@ -16551,8 +16585,9 @@ ${document.getElementById('pathGroup').innerHTML}
                     const xNorm = mx / scale;
                     const yNorm = my / scale;
 
-                    // Aggiungiamo il punto se rientra nel range geometrico
-                    if (Math.abs(xNorm) <= 60 && Math.abs(yNorm) <= 60) {
+                    // Aggiungiamo il punto solo se rientra nell'area di sicurezza della penna
+                    const isInsideSafety = (xMm >= reachMinX && xMm <= reachMaxX && yMm >= reachMinY && yMm <= reachMaxY);
+                    if (isInsideSafety && Math.abs(xNorm) <= 60 && Math.abs(yNorm) <= 60) {
                         if (currentMode === 'pattern') {
                             patternPoints.push({ x: xNorm, y: yNorm });
                         }

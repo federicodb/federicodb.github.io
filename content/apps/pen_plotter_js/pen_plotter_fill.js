@@ -161,41 +161,28 @@ function generateConcentricChaseFill(poly, spacing, reverseSpiral = false) {
     let cx = cur.reduce((sum, p) => sum + p.x, 0) / n;
     let cy = cur.reduce((sum, p) => sum + p.y, 0) / n;
 
-    let initialSides = [];
-    for (let j = 0; j < n; j++) {
-        let p1 = cur[j];
-        let p2 = cur[(j + 1) % n];
-        initialSides.push(Math.hypot(p2.x - p1.x, p2.y - p1.y));
-    }
-    let L0 = initialSides.reduce((sum, s) => sum + s, 0) / n;
-    if (L0 < 1e-4) return [];
-
-    let t = spacing / L0;
-    t = Math.max(0.02, Math.min(0.25, t));
-
-    let firstNext = [];
-    for (let j = 0; j < n; j++) {
-        let p1 = cur[j];
-        let p2 = reverseSpiral ? cur[(j - 1 + n) % n] : cur[(j + 1) % n];
-        firstNext.push({
-            x: p1.x + (p2.x - p1.x) * t,
-            y: p1.y + (p2.y - p1.y) * t
-        });
-    }
-    let path = [...firstNext];
-    cur = firstNext;
+    let path = [...cur];
 
     for (let i = 0; i < 250; i++) {
         let maxDist = 0;
+        let sideSum = 0;
         for (let j = 0; j < n; j++) {
-            let dBary = Math.hypot(cur[j].x - cx, cur[j].y - cy);
+            let p1 = cur[j];
+            let p2 = reverseSpiral ? cur[(j - 1 + n) % n] : cur[(j + 1) % n];
+            let sideLen = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+            sideSum += sideLen;
+            let dBary = Math.hypot(p1.x - cx, p1.y - cy);
             if (dBary > maxDist) maxDist = dBary;
         }
 
-        if (maxDist < 0.05) {
+        let Lcurr = sideSum / n;
+        if (Lcurr < 1e-4 || maxDist < 0.05) {
             path.push({ x: cx, y: cy });
             break;
         }
+
+        let t = spacing / Lcurr;
+        t = Math.max(0.02, Math.min(0.35, t));
 
         let next = [];
         for (let j = 0; j < n; j++) {
