@@ -2809,19 +2809,53 @@
                         onchange="handleAudioUpload(event)">
                 </div>
 
-                <div class="glass-card p-3 space-y-3">
-                    <h4 class="text-[10px] font-bold uppercase text-slate-400">Opzioni Ridgeline</h4>
+                <div class="glass-card p-3 space-y-2">
+                    <label class="block text-[10px] font-bold text-slate-400">Modalità Visualizzazione Audio</label>
+                    <select id="paramAudioDisplayMode" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
+                        onchange="toggleAudioControls(); processAudio();">
+                        <option value="waveform" selected>🌊 Forma d'Onda (Oscillogramma X-Y)</option>
+                        <option value="ridgeline">🏔️ Spettrogramma Ridgeline (2.5D)</option>
+                    </select>
+                </div>
+
+                <!-- Controlli specifici per FORMA D'ONDA (Oscillogramma Continuo) -->
+                <div id="audio-waveform-controls" class="glass-card p-3 space-y-3">
+                    <h4 class="text-[10px] font-bold uppercase text-indigo-400">Oscillogramma Cartesiano (Traccia Continua)</h4>
+                    <div>
+                        <label class="block text-[9px] text-slate-400 mb-1">Tipo Inviluppo / Segnale:</label>
+                        <select id="paramAudioWaveType" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
+                            onchange="processAudio()">
+                            <option value="envelope_peak" selected>Inviluppo Continuo Picco-Picco (Min/Max)</option>
+                            <option value="direct_pcm">Campioni PCM Diretti Interpolati</option>
+                            <option value="symmetric_envelope">Inviluppo Simmetrico (Profilo Raccordato)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[9px] text-slate-400">Risoluzione Punti X (Campionamento):</label>
+                            <span id="valAudioRes" class="font-mono text-indigo-400 text-xs font-semibold">1500</span>
+                        </div>
+                        <input type="range" id="paramAudioRes" min="200" max="4000" step="100" value="1500"
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioRes').innerText=this.value; processAudio()">
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[9px] text-slate-400">Amplificazione Ampiezza Y (mm):</label>
+                            <span id="valAudioAmp" class="font-mono text-indigo-400 text-xs font-semibold">20</span>
+                        </div>
+                        <input type="range" id="paramAudioAmp" min="1" max="60" value="20" step="1"
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioAmp').innerText=this.value; processAudio()">
+                    </div>
+                </div>
+
+                <!-- Controlli specifici per RIDGELINE SPETTROGRAMMA -->
+                <div id="audio-ridgeline-controls" class="glass-card p-3 space-y-3 hidden-mode">
+                    <h4 class="text-[10px] font-bold uppercase text-slate-400">Opzioni Spettrogramma Ridgeline</h4>
                     <div>
                         <label class="block text-[9px] text-slate-400 mb-0.5">Numero Tracce (Linee): <span
                                 id="valAudioLines" class="font-mono text-indigo-400">40</span></label>
                         <input type="range" id="paramAudioLines" min="10" max="100" value="40" step="5"
                             class="w-full accent-indigo-500" oninput="document.getElementById('valAudioLines').innerText=this.value; processAudio()">
-                    </div>
-                    <div>
-                        <label class="block text-[9px] text-slate-400 mb-0.5">Amplificazione Ampiezza: <span
-                                id="valAudioAmp" class="font-mono text-indigo-400">15</span></label>
-                        <input type="range" id="paramAudioAmp" min="1" max="50" value="15" step="1"
-                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioAmp').innerText=this.value; processAudio()">
                     </div>
                     <div>
                         <label class="block text-[9px] text-slate-400 mb-0.5">Smoothing FFT: <span
@@ -7841,19 +7875,102 @@
             }
         }
 
+        function toggleAudioControls() {
+            const mode = document.getElementById('paramAudioDisplayMode')?.value || 'waveform';
+            const waveCtrl = document.getElementById('audio-waveform-controls');
+            const ridgeCtrl = document.getElementById('audio-ridgeline-controls');
+            if (waveCtrl) waveCtrl.className = (mode === 'waveform') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
+            if (ridgeCtrl) ridgeCtrl.className = (mode === 'ridgeline') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
+        }
+
         function processAudio() {
             document.getElementById('latex-overlay').style.display = 'none';
             if (!audioBuffer) return;
 
             currentRawElements = [];
-            const numLines = parseInt(document.getElementById('paramAudioLines').value) || 40;
-            const amp = parseFloat(document.getElementById('paramAudioAmp').value) || 15;
-            const smoothing = parseFloat(document.getElementById('paramAudioSmoothing').value) || 0.80;
-            const fftSize = parseInt(document.getElementById('paramAudioFFT').value) || 512;
+            const displayMode = document.getElementById('paramAudioDisplayMode')?.value || 'waveform';
             const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
+            const amp = parseFloat(document.getElementById('paramAudioAmp').value) || 20;
 
             const channelData = audioBuffer.getChannelData(0);
             const totalSamples = channelData.length;
+
+            if (displayMode === 'waveform') {
+                const waveType = document.getElementById('paramAudioWaveType')?.value || 'envelope_peak';
+                const nPts = parseInt(document.getElementById('paramAudioRes')?.value) || 1500;
+
+                let waveformPoints = [];
+
+                if (waveType === 'envelope_peak') {
+                    for (let i = 0; i < nPts; i++) {
+                        const pct = i / (nPts - 1);
+                        const x = -45 + 90 * pct;
+
+                        const sStart = Math.floor(pct * totalSamples);
+                        const sEnd = Math.min(totalSamples, Math.floor(((i + 1) / nPts) * totalSamples));
+
+                        let minVal = 0, maxVal = 0;
+                        if (sEnd > sStart) {
+                            minVal = channelData[sStart];
+                            maxVal = channelData[sStart];
+                            for (let s = sStart + 1; s < sEnd; s++) {
+                                const v = channelData[s];
+                                if (v < minVal) minVal = v;
+                                if (v > maxVal) maxVal = v;
+                            }
+                        }
+
+                        if (i % 2 === 0) {
+                            waveformPoints.push({ x: x, y: maxVal * amp });
+                            waveformPoints.push({ x: x, y: minVal * amp });
+                        } else {
+                            waveformPoints.push({ x: x, y: minVal * amp });
+                            waveformPoints.push({ x: x, y: maxVal * amp });
+                        }
+                    }
+                } else if (waveType === 'direct_pcm') {
+                    for (let i = 0; i < nPts; i++) {
+                        const pct = i / (nPts - 1);
+                        const x = -45 + 90 * pct;
+                        const sIdx = Math.min(totalSamples - 1, Math.floor(pct * totalSamples));
+                        const val = channelData[sIdx];
+                        waveformPoints.push({ x: x, y: val * amp });
+                    }
+                } else if (waveType === 'symmetric_envelope') {
+                    let topPts = [], botPts = [];
+                    for (let i = 0; i < nPts; i++) {
+                        const pct = i / (nPts - 1);
+                        const x = -45 + 90 * pct;
+
+                        const sStart = Math.floor(pct * totalSamples);
+                        const sEnd = Math.min(totalSamples, Math.floor(((i + 1) / nPts) * totalSamples));
+
+                        let maxPeak = 0;
+                        for (let s = sStart; s < sEnd; s++) {
+                            const absV = Math.abs(channelData[s]);
+                            if (absV > maxPeak) maxPeak = absV;
+                        }
+                        topPts.push({ x: x, y: maxPeak * amp });
+                        botPts.push({ x: x, y: -maxPeak * amp });
+                    }
+                    waveformPoints = [...topPts, ...botPts.reverse(), topPts[0]];
+                }
+
+                if (waveformPoints.length >= 2) {
+                    currentRawElements.push({
+                        type: 'path',
+                        stroke: '#818cf8',
+                        width: penWidth,
+                        points: waveformPoints
+                    });
+                }
+                applyGlobalTransformAndRender();
+                return;
+            }
+
+            const numLines = parseInt(document.getElementById('paramAudioLines').value) || 40;
+            const smoothing = parseFloat(document.getElementById('paramAudioSmoothing').value) || 0.80;
+            const fftSize = parseInt(document.getElementById('paramAudioFFT').value) || 512;
 
             let spectra = [];
             const numBins = fftSize / 2;
