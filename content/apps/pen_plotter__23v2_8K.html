@@ -26,6 +26,12 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
+    <!-- Moduli Javascript Separati Plotter Studio -->
+    <script src="pen_plotter_js/pen_plotter_fill.js"></script>
+    <script src="pen_plotter_js/pen_plotter_generators.js"></script>
+    <script src="pen_plotter_js/pen_plotter_gcode.js"></script>
+    <script src="pen_plotter_js/pen_plotter_ui.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -10999,94 +11005,94 @@ out body;`;
 
             const penWidth = parseFloat(document.getElementById('paramPenWidth')?.value) || 0.6;
             const simplVal = parseFloat(document.getElementById('paramSketchSimpl')?.value || 1.0);
-            const distVal = parseFloat(document.getElementById('paramSketchDist')?.value || 5.0);
-            const densityVal = parseInt(document.getElementById('paramSketchDensity')?.value || 12);
-            const fillBg = document.getElementById('paramSketchFillBg')?.checked || false;
-
-            // Helper Ray-Casting per determinare se il baricentro del triangolo è interno allo sketch
-            const isPointInPolygon = (p, poly) => {
-                let inside = false;
-                for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-                    let xi = poly[i].x, yi = poly[i].y;
-                    let xj = poly[j].x, yj = poly[j].y;
-                    let intersect = ((yi > p.y) !== (yj > p.y))
-                        && (p.x < (xj - xi) * (p.y - yi) / (yj - yi + 0.0001) + xi);
-                    if (intersect) inside = !inside;
-                }
-                return inside;
-            };
-
-            // Creiamo i poligoni chiusi dello schizzo (auto-close dei tratti aperti)
-            let polygons = [];
-            sketchStrokes.forEach(stroke => {
-                if (stroke.length < 2) return;
-                let strokeCopy = JSON.parse(JSON.stringify(stroke));
-                let pFirst = strokeCopy[0];
-                let pLast = strokeCopy[strokeCopy.length - 1];
-                if (strokeCopy.length >= 3 && Math.hypot(pLast.x - pFirst.x, pLast.y - pFirst.y) > 2) {
-                    strokeCopy.push({ x: pFirst.x, y: pFirst.y });
-                }
-                polygons.push(strokeCopy);
-            });
-
-            let allPoints = [];
-            polygons.forEach(poly => {
-                const simplified = simplifyDouglasPeucker(poly, simplVal * simplVal);
-                allPoints.push(...simplified);
-            });
-
-            let finalPoints = weldClosePoints(allPoints, distVal * distVal);
-
-            if (fillBg && sketchPadCanvas) {
-                const w = sketchPadCanvas.width;
-                const h = sketchPadCanvas.height;
-                finalPoints.push({ x: 0, y: 0 });
-                finalPoints.push({ x: w, y: 0 });
-                finalPoints.push({ x: w, y: h });
-                finalPoints.push({ x: 0, y: h });
-            }
-
             const useDelaunay = document.getElementById('paramSketchUseDelaunay')?.checked ?? true;
             const useFill = document.getElementById('paramSketchUseFill')?.checked ?? true;
             const fillStyle = document.getElementById('paramSketchFillStyle')?.value || 'spiral';
-            const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
+            const plotSize = parseFloat(document.getElementById('paramPlotSize')?.value) || 120;
             const spacingReal = parseFloat(document.getElementById('paramSketchSpacingReal')?.value || 1.5);
             const spacingVirtual = spacingReal * 80 / plotSize;
 
-            const cw = sketchPadCanvas.width || 200;
-            const ch = sketchPadCanvas.height || 200;
+            const cw = sketchPadCanvas?.width || 200;
+            const ch = sketchPadCanvas?.height || 200;
             const mapPt = p => ({
                 x: 10 + (p.x / cw) * 80,
                 y: 10 + (1 - p.y / ch) * 80
             });
 
-            // Creiamo i contorni chiusi mappati nello spazio [10, 90]
-            let polygonsMapped = polygons.map(poly => {
-                const simplified = simplifyDouglasPeucker(poly, simplVal * simplVal);
-                return simplified.map(mapPt);
+            // Raccogliamo i punti campionati da tutti i tratti dello sketch
+            let allPointsMapped = [];
+            sketchStrokes.forEach(stroke => {
+                if (stroke.length < 1) return;
+                const simplified = simplifyDouglasPeucker(stroke, simplVal * simplVal);
+                simplified.forEach(p => allPointsMapped.push(mapPt(p)));
             });
 
-            // Se Delaunay è disattivato
-            if (!useDelaunay) {
-                // Plottiamo i contorni originali
-                polygonsMapped.forEach(poly => {
-                    if (poly.length < 2) return;
+            if (allPointsMapped.length === 0) return;
+
+            // Se Delaunay è attivo (default): generiamo triangoli per ogni nuvola/segmento disegnato
+            if (useDelaunay && allPointsMapped.length >= 3) {
+                try {
+                    const delaunay = d3.Delaunay.from(allPointsMapped.map(p => [p.x, p.y]));
+                    const triangles = delaunay.triangles;
+                    for (let i = 0; i < triangles.length; i += 3) {
+                        const p0 = allPointsMapped[triangles[i]];
+                        const p1 = allPointsMapped[triangles[i + 1]];
+                        const p2 = allPointsMapped[triangles[i + 2]];
+                        const triPoly = [p0, p1, p2, p0];
+
+                        // Disegno del triangolo generato dallo sketch
+                        currentRawElements.push({
+                            type: 'path',
+                            stroke: '#818cf8',
+                            width: penWidth,
+                            points: triPoly
+                        });
+
+                        // Campitura ad inseguimento omogeneo ad angolo costante sul triangolo
+                        if (useFill) {
+                            if (fillStyle === 'spiral') {
+                                const spiralPoints = generateConcentricChaseFill([p0, p1, p2], spacingVirtual);
+                                if (spiralPoints.length >= 2) {
+                                    currentRawElements.push({
+                                        type: 'path',
+                                        stroke: '#10b981',
+                                        width: penWidth,
+                                        points: spiralPoints
+                                    });
+                                }
+                            } else {
+                                const hatchPoints = generateHatching45Fill([p0, p1, p2], spacingVirtual);
+                                if (hatchPoints.length > 0) {
+                                    currentRawElements.push({
+                                        type: 'path',
+                                        stroke: '#10b981',
+                                        width: penWidth,
+                                        points: hatchPoints
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Delaunay sketch error:", e);
+                }
+            } else {
+                // Se Delaunay è disattivato oppure ci sono meno di 3 punti: plottiamo i tratti aperti/chiusi
+                sketchStrokes.forEach(stroke => {
+                    if (stroke.length < 2) return;
+                    const simplified = simplifyDouglasPeucker(stroke, simplVal * simplVal);
+                    const mapped = simplified.map(mapPt);
                     currentRawElements.push({
                         type: 'path',
                         stroke: '#818cf8',
                         width: penWidth,
-                        points: poly
+                        points: mapped
                     });
-                });
 
-                // Eseguiamo la campitura del perimetro originale
-                if (useFill) {
-                    if (fillStyle === 'spiral') {
-                        polygonsMapped.forEach(poly => {
-                            if (poly.length < 3) return;
-                            const spiralPoints = generateConcentricFill(poly, spacingVirtual);
-                            spiralPoints.forEach(() => addSafetyPoint());
-                            if (spiralPoints.length > 0) {
+                    if (useFill && mapped.length >= 3) {
+                        if (fillStyle === 'spiral') {
+                            const spiralPoints = generateConcentricChaseFill(mapped, spacingVirtual);
+                            if (spiralPoints.length >= 2) {
                                 currentRawElements.push({
                                     type: 'path',
                                     stroke: '#10b981',
@@ -11094,45 +11100,13 @@ out body;`;
                                     points: spiralPoints
                                 });
                             }
-                        });
-                    } else {
-                        polygonsMapped.forEach(poly => {
-                            if (poly.length < 3) return;
-                            try {
-                                const delaunay = d3.Delaunay.from(poly.map(p => [p.x, p.y]));
-                                for (let i = 0; i < delaunay.triangles.length; i += 3) {
-                                    const t0 = delaunay.triangles[i];
-                                    const t1 = delaunay.triangles[i + 1];
-                                    const t2 = delaunay.triangles[i + 2];
-                                    const p0 = poly[t0];
-                                    const p1 = poly[t1];
-                                    const p2 = poly[t2];
-
-                                    const bary = { x: (p0.x + p1.x + p2.x) / 3, y: (p0.y + p1.y + p2.y) / 3 };
-                                    if (!isPointInPolygon(bary, poly)) continue;
-
-                                    const hatchPoints = generateHatching45Fill([p0, p1, p2], spacingVirtual);
-                                    hatchPoints.forEach(() => addSafetyPoint());
-                                    if (hatchPoints.length > 0) {
-                                        currentRawElements.push({
-                                            type: 'path',
-                                            stroke: '#10b981',
-                                            width: penWidth,
-                                            points: hatchPoints
-                                        });
-                                    }
-                                }
-                            } catch (e) {
-                                console.error("Hatching triangulation error:", e);
-                            }
-                        });
+                        }
                     }
-                }
-
-
-                applyGlobalTransformAndRender();
-                return;
+                });
             }
+
+            applyGlobalTransformAndRender();
+        }
 
             // Se Delaunay è attivo
             if (finalPoints.length < 3) {
