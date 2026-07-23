@@ -435,7 +435,7 @@
                     onclick="setMode('map')">🗺️ Mappe GeoJSON</button>
                 <button id="btnThreeD"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
-                    onclick="setMode('threed')">📦 Cubi 3D (Three.js)</button>
+                    onclick="setMode('threed')">Solidi Platonici 3D</button>
             </div>
         </div>
 
@@ -699,33 +699,90 @@
 
             <div id="mode-threed" class="hidden-mode space-y-3">
                 <div class="glass-card p-3 space-y-2">
-                    <label class="block text-[10px] font-bold text-slate-400">Algoritmo Frattale/Spirale 3D</label>
-                    <select id="paramThreeDPattern" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
-                        onchange="toggleThreeDControls(); updateSimulation();">
-                        <option value="spiral" selected>🌀 Tornado Spirale Cubica</option>
-                        <option value="tree">🌳 Albero Frattale 3D</option>
-                        <option value="menger">📦 Frattale di Menger 3D</option>
-                        <option value="vortex">🌀 Vortice Cubico Obliquo</option>
-                        <option value="fattammano">✍️ Disegno a mano (Fattammano)</option>
+                    <label class="block text-[10px] font-bold text-zinc-400">Solido Platonico di Base</label>
+                    <select id="paramThreeDSolidType" class="w-full glass-input text-xs rounded p-2 bg-zinc-900"
+                        onchange="updateSimulation();">
+                        <option value="cube" selected>Esassidro / Cubo (6 Facce)</option>
+                        <option value="tetrahedron">Tetraedro (4 Facce)</option>
+                        <option value="octahedron">Ottaedro (8 Facce)</option>
+                        <option value="dodecahedron">Dodecaedro (12 Facce)</option>
+                        <option value="icosahedron">Icosaedro (20 Facce)</option>
+                        <option value="mixed">Miscela Armonica Solidi Platonici</option>
                     </select>
                 </div>
 
-                <div class="glass-card p-3 space-y-3">
-                    <h4 class="text-[10px] font-bold uppercase text-indigo-400 mb-1">Parametri Generali</h4>
+                <div class="glass-card p-3 space-y-2">
+                    <label class="block text-[10px] font-bold text-zinc-400">Schema Disposizione Reciproca / Ricorsiva</label>
+                    <select id="paramThreeDPattern" class="w-full glass-input text-xs rounded p-2 bg-zinc-900"
+                        onchange="toggleThreeDControls(); updateSimulation();">
+                        <option value="single">Singolo Solido (Modulo Solitario)</option>
+                        <option value="vertex_fractal" selected>Frattale Ricorsivo dai Vertici (Scala Automatica)</option>
+                        <option value="fractal_nest">Nidiata Ricorsiva (Annidamento Concentrico)</option>
+                        <option value="spiral">Tornado Spirale Elicoidale 3D</option>
+                        <option value="matrix_grid">Matrice Cristallina Voxel 3D</option>
+                        <option value="platonic_ring">Anello Platonico Cinetico (Cluster Toroidale)</option>
+                        <option value="tree">Albero Frattale Ricorsivo 3D</option>
+                        <option value="menger">Frattale di Menger / Spugna Ricorsiva</option>
+                        <option value="vortex">Vortice Obliquo Incastrato</option>
+                        <option value="platonic_metatron">Reticolo Sacro / Cubo di Metatron 3D</option>
+                        <option value="random">Dispersione Casuale Spaziale</option>
+                        <option value="fattammano">Disegno Cinetico a Mano (Fattammano)</option>
+                    </select>
+                </div>
+                <div class="glass-card p-3 space-y-2">
+                    <label class="block text-[10px] font-bold text-zinc-400">Proiezione Camera 3D</label>
+                    <select id="paramThreeDCameraType" class="w-full glass-input text-xs rounded p-2 bg-zinc-900"
+                        onchange="toggleThreeDCamera(); updateSimulation();">
+                        <option value="perspective" selected>Prospettiva (PerspectiveCamera)</option>
+                        <option value="orthographic">Assonometria / Ortografica</option>
+                    </select>
+                </div>
+
+                <!-- Parametri specifici per Frattale Ricorsivo Vertici -->
+                <div id="threed-vertex-controls" class="glass-card p-3 space-y-3">
+                    <h4 class="text-[10px] font-bold uppercase text-zinc-400 mb-1">Trasformazioni Ricorsive Vertici</h4>
                     <div>
                         <div class="flex justify-between items-center mb-0.5">
-                            <label class="block text-[11px] text-slate-400">Numero di Cubi / Profondità:</label>
-                            <span id="valThreeDNumCubes" class="font-mono text-indigo-400 text-xs font-semibold">30</span>
+                            <label class="block text-[11px] text-zinc-400">Fattore di Scala Ricorsivo:</label>
+                            <span id="valThreeDFractalScale" class="font-mono text-zinc-100 text-xs font-semibold">1.00</span>
                         </div>
-                        <input type="range" id="paramThreeDNumCubes" min="5" max="80" step="1" value="30" class="w-full"
+                        <input type="range" id="paramThreeDFractalScale" min="0.20" max="1.00" step="0.02" value="1.00" class="w-full"
+                            oninput="document.getElementById('valThreeDFractalScale').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[11px] text-zinc-400">Spostamento / Offset Vertici:</label>
+                            <span id="valThreeDFractalOffset" class="font-mono text-zinc-100 text-xs font-semibold">0.00</span>
+                        </div>
+                        <input type="range" id="paramThreeDFractalOffset" min="-1.50" max="1.50" step="0.05" value="0.00" class="w-full"
+                            oninput="document.getElementById('valThreeDFractalOffset').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[11px] text-zinc-400">Rotazione Ricorsiva Vertici (°):</label>
+                            <span id="valThreeDFractalRotation" class="font-mono text-zinc-100 text-xs font-semibold">0</span>
+                        </div>
+                        <input type="range" id="paramThreeDFractalRotation" min="0" max="180" step="5" value="0" class="w-full"
+                            oninput="document.getElementById('valThreeDFractalRotation').innerText=this.value; updateSimulation()">
+                    </div>
+                </div>
+
+                <div class="glass-card p-3 space-y-3">
+                    <h4 class="text-[10px] font-bold uppercase text-zinc-400 mb-1">Parametri Generali</h4>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[11px] text-zinc-400">Numero di Solidi / Profondità:</label>
+                            <span id="valThreeDNumCubes" class="font-mono text-zinc-100 text-xs font-semibold">30</span>
+                        </div>
+                        <input type="range" id="paramThreeDNumCubes" min="3" max="80" step="1" value="30" class="w-full"
                             oninput="document.getElementById('valThreeDNumCubes').innerText=this.value; updateSimulation()">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-0.5">
-                            <label class="block text-[11px] text-slate-400">Dimensione Base Cubo:</label>
-                            <span id="valThreeDCubeSize" class="font-mono text-indigo-400 text-xs font-semibold">8.0</span>
+                            <label class="block text-[11px] text-zinc-400">Dimensione Base Solido:</label>
+                            <span id="valThreeDCubeSize" class="font-mono text-zinc-100 text-xs font-semibold">8.0</span>
                         </div>
-                        <input type="range" id="paramThreeDCubeSize" min="2.0" max="25.0" step="0.5" value="8.0" class="w-full"
+                        <input type="range" id="paramThreeDCubeSize" min="2.0" max="35.0" step="0.5" value="8.0" class="w-full"
                             oninput="document.getElementById('valThreeDCubeSize').innerText=parseFloat(this.value).toFixed(1); updateSimulation()">
                     </div>
                 </div>
@@ -12055,12 +12112,14 @@ out body;`;
         }
 
         function toggleThreeDControls() {
-            const pattern = document.getElementById('paramThreeDPattern')?.value || 'spiral';
+            const pattern = document.getElementById('paramThreeDPattern')?.value || 'single';
+            const vertexCtrls = document.getElementById('threed-vertex-controls');
             const spiralCtrls = document.getElementById('threed-spiral-controls');
             const treeCtrls = document.getElementById('threed-tree-controls');
             const randomCtrls = document.getElementById('threed-random-controls');
             const fattaCtrls = document.getElementById('threed-fattammano-controls');
 
+            if (vertexCtrls) vertexCtrls.className = (pattern === 'vertex_fractal') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (spiralCtrls) spiralCtrls.className = (pattern === 'spiral') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (treeCtrls) treeCtrls.className = (pattern === 'tree') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (randomCtrls) randomCtrls.className = (pattern === 'random') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
@@ -16011,10 +16070,53 @@ ${document.getElementById('pathGroup').innerHTML}
         // ========================================================
         let threeDScene = null;
         let threeDCamera = null;
+        let threeDPerspCamera = null;
+        let threeDOrthoCamera = null;
         let threeDRenderer = null;
         let threeDControls = null;
         let threeDInitialized = false;
         let threeDCubes = [];
+
+        function toggleThreeDCamera() {
+            const type = document.getElementById('paramThreeDCameraType')?.value || 'perspective';
+            const container = document.getElementById('threeDWebgl');
+            if (!container || !threeDRenderer) return;
+            const rect = container.getBoundingClientRect();
+            const aspect = rect.width / (rect.height || 1);
+
+            if (type === 'orthographic') {
+                const frustumSize = 120;
+                if (!threeDOrthoCamera) {
+                    threeDOrthoCamera = new THREE.OrthographicCamera(
+                        -frustumSize * aspect / 2, frustumSize * aspect / 2,
+                        frustumSize / 2, -frustumSize / 2,
+                        0.1, 2000
+                    );
+                } else {
+                    threeDOrthoCamera.left = -frustumSize * aspect / 2;
+                    threeDOrthoCamera.right = frustumSize * aspect / 2;
+                    threeDOrthoCamera.top = frustumSize / 2;
+                    threeDOrthoCamera.bottom = -frustumSize / 2;
+                    threeDOrthoCamera.updateProjectionMatrix();
+                }
+                if (threeDPerspCamera) {
+                    threeDOrthoCamera.position.copy(threeDPerspCamera.position);
+                    threeDOrthoCamera.rotation.copy(threeDPerspCamera.rotation);
+                }
+                threeDCamera = threeDOrthoCamera;
+            } else {
+                if (threeDPerspCamera) {
+                    threeDPerspCamera.aspect = aspect;
+                    threeDPerspCamera.updateProjectionMatrix();
+                    threeDCamera = threeDPerspCamera;
+                }
+            }
+
+            if (threeDControls && threeDCamera) {
+                threeDControls.object = threeDCamera;
+                threeDControls.update();
+            }
+        }
 
         function initThreeD() {
             if (threeDInitialized) return;
@@ -16027,7 +16129,8 @@ ${document.getElementById('pathGroup').innerHTML}
 
             // 2. Telecamera
             const rect = container.getBoundingClientRect();
-            threeDCamera = new THREE.PerspectiveCamera(45, rect.width / (rect.height || 1), 40, 160);
+            threeDPerspCamera = new THREE.PerspectiveCamera(45, rect.width / (rect.height || 1), 40, 160);
+            threeDCamera = threeDPerspCamera;
             resetThreeDCamera();
 
             // 3. Renderer
@@ -16041,13 +16144,12 @@ ${document.getElementById('pathGroup').innerHTML}
             threeDControls.dampingFactor = 0.05;
             threeDControls.maxPolarAngle = Math.PI; // orbita completa
             
-            // Quando l'utente muove la camera, aggiorniamo il disegno 2D proiettato
-            let lastHlrTime = 0;
-            let hlrThrottleTimeout = null;
+            // Aggiornamento differito (debounced) del piatto 2D solo al termine del movimento/inerzia della vista 3D
+            let plotterDebounceTimer = null;
             threeDControls.addEventListener('change', () => {
                 if (currentMode === 'threed') {
-                    const now = performance.now();
-                    const runProject = () => {
+                    if (plotterDebounceTimer) clearTimeout(plotterDebounceTimer);
+                    plotterDebounceTimer = setTimeout(() => {
                         try {
                             projectAndPlot3DScene(false);
                         } catch (e) {
@@ -16066,16 +16168,7 @@ ${document.getElementById('pathGroup').innerHTML}
                                 console.error(e);
                             }
                         }
-                    };
-                    if (now - lastHlrTime > 35) { // max 30 FPS per HLR reale durante il drag
-                        lastHlrTime = now;
-                        runProject();
-                    } else {
-                        if (hlrThrottleTimeout) clearTimeout(hlrThrottleTimeout);
-                        hlrThrottleTimeout = setTimeout(() => {
-                            runProject();
-                        }, 50);
-                    }
+                    }, 250); // Attende 250ms di fermo per calcolare il piatto 2D
                 }
             });
 
@@ -16121,15 +16214,55 @@ ${document.getElementById('pathGroup').innerHTML}
             }
         }
 
+        function createPlatonicGeometry(solidType, index = 0) {
+            let type = solidType;
+            if (type === 'mixed') {
+                const types = ['cube', 'tetrahedron', 'octahedron', 'dodecahedron', 'icosahedron'];
+                type = types[index % types.length];
+            }
+            switch (type) {
+                case 'tetrahedron':
+                    return new THREE.TetrahedronGeometry(1);
+                case 'octahedron':
+                    return new THREE.OctahedronGeometry(1);
+                case 'dodecahedron':
+                    return new THREE.DodecahedronGeometry(1);
+                case 'icosahedron':
+                    return new THREE.IcosahedronGeometry(1);
+                case 'cube':
+                default:
+                    return new THREE.BoxGeometry(1, 1, 1);
+            }
+        }
+
+        function createPlatonicMesh(solidType, index, material) {
+            const geo = createPlatonicGeometry(solidType, index);
+            const mesh = new THREE.Mesh(geo, material);
+            const edgeGeo = new THREE.EdgesGeometry(geo);
+            const edgeMat = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 1.5 });
+            const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
+            mesh.add(wireframe);
+            return mesh;
+        }
+
+        function getPlatonicScaleFactor(type) {
+            switch (type) {
+                case 'tetrahedron': return 0.5;
+                case 'cube': return 1 / Math.sqrt(3);
+                case 'octahedron': return Math.SQRT1_2;
+                case 'dodecahedron': return (Math.sqrt(5) - 1) / (2 * Math.sqrt(3));
+                case 'icosahedron': return 1 / Math.sqrt(10 + 2 * Math.sqrt(5));
+                default: return 0.5;
+            }
+        }
+
         function calculateThreeD() {
             document.getElementById('latex-overlay').style.display = 'none';
             currentRawElements = [];
 
-            // Inizializza o mostra la vista
             if (!threeDInitialized) {
                 initThreeD();
             } else {
-                // Ridimensionamento per sicurezza
                 const container = document.getElementById('threeDWebgl');
                 if (container && threeDRenderer && threeDCamera) {
                     const r = container.getBoundingClientRect();
@@ -16139,7 +16272,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
             }
 
-            // Svuota i vecchi cubi
+            // Svuota i vecchi solidi
             threeDCubes.forEach(c => {
                 threeDScene.remove(c);
                 c.geometry.dispose();
@@ -16148,10 +16281,7 @@ ${document.getElementById('pathGroup').innerHTML}
             });
             threeDCubes = [];
 
-            // Crea geometria e materiale per i cubi 3D
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            
-            // Materiale per Three.js: facce solide matte al 100% opache
+            // Materiale per Three.js: facce solide matte opache
             const material = new THREE.MeshLambertMaterial({
                 color: 0x111827,
                 transparent: false,
@@ -16161,14 +16291,95 @@ ${document.getElementById('pathGroup').innerHTML}
             });
 
             // Recupera parametri
-            const pattern = document.getElementById('paramThreeDPattern')?.value || 'spiral';
-            const numCubes = parseInt(document.getElementById('paramThreeDNumCubes').value) || 30;
-            const baseSize = parseFloat(document.getElementById('paramThreeDCubeSize').value) || 8.0;
+            const solidType = document.getElementById('paramThreeDSolidType')?.value || 'cube';
+            const pattern = document.getElementById('paramThreeDPattern')?.value || 'single';
+            const numCubes = parseInt(document.getElementById('paramThreeDNumCubes')?.value) || 30;
+            const baseSize = parseFloat(document.getElementById('paramThreeDCubeSize')?.value) || 8.0;
 
-            if (pattern === 'spiral') {
-                const radius = parseFloat(document.getElementById('paramThreeDSpiralRadius').value) || 25.0;
-                const turns = parseFloat(document.getElementById('paramThreeDSpiralTurns').value) || 3.0;
-                const totalHeight = parseFloat(document.getElementById('paramThreeDSpiralHeight').value) || 40.0;
+            if (pattern === 'single') {
+                // --- SINGOLO SOLIDO (MODULO SOLITARIO) ---
+                const mesh = createPlatonicMesh(solidType, 0, material);
+                mesh.position.set(0, 0, 0);
+                mesh.scale.setScalar(baseSize * 1.8);
+                mesh.rotation.set(0.3, 0.4, 0.1);
+                threeDScene.add(mesh);
+                threeDCubes.push(mesh);
+            }
+            else if (pattern === 'vertex_fractal') {
+                // --- FRATTALE RICORSIVO DAI VERTICI (USANDO TUTTI I VERTICI, SCALA, SPOSTA, RUOTA) ---
+                const maxLevel = Math.min(4, Math.max(1, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1));
+                
+                const userScaleMult = parseFloat(document.getElementById('paramThreeDFractalScale')?.value || 1.0);
+                const userOffset = parseFloat(document.getElementById('paramThreeDFractalOffset')?.value || 0.0);
+                const userRotDeg = parseFloat(document.getElementById('paramThreeDFractalRotation')?.value || 0.0);
+                const userRotRad = userRotDeg * Math.PI / 180;
+
+                let currentIdx = 0;
+
+                function buildFixedVertexFractal(centerPos, size, currentType, level, currentRotX, currentRotY, currentRotZ) {
+                    if (level > maxLevel || currentIdx >= numCubes) return;
+
+                    const mesh = createPlatonicMesh(currentType, currentIdx++, material);
+                    mesh.position.copy(centerPos);
+                    mesh.scale.setScalar(size);
+                    mesh.rotation.set(currentRotX, currentRotY, currentRotZ);
+                    mesh.updateMatrixWorld(true);
+
+                    threeDScene.add(mesh);
+                    threeDCubes.push(mesh);
+
+                    if (level >= maxLevel) return;
+
+                    const geoData = extractGeometryData(mesh);
+                    const baseScaleFactor = getPlatonicScaleFactor(currentType);
+                    const childSize = size * baseScaleFactor * userScaleMult;
+
+                    // Itera su TUTTI i vertici del solido originale
+                    geoData.vertices.forEach(localV => {
+                        if (currentIdx >= numCubes) return;
+                        
+                        // Calcola il vettore radiale e l'eventuale offset lungo la direzione radiale
+                        const radialDir = localV.clone().normalize();
+                        const shift = radialDir.clone().multiplyScalar(size * userOffset);
+                        const worldV = localV.clone().multiplyScalar(size).add(centerPos).add(shift);
+                        
+                        let nextType = currentType;
+                        if (solidType === 'mixed') {
+                            const types = ['cube', 'tetrahedron', 'octahedron', 'dodecahedron', 'icosahedron'];
+                            nextType = types[level % types.length];
+                        }
+
+                        buildFixedVertexFractal(
+                            worldV,
+                            childSize,
+                            nextType,
+                            level + 1,
+                            currentRotX + userRotRad,
+                            currentRotY + userRotRad,
+                            currentRotZ
+                        );
+                    });
+                }
+
+                buildFixedVertexFractal(new THREE.Vector3(0, 0, 0), baseSize * 1.5, solidType === 'mixed' ? 'cube' : solidType, 1, 0.3, 0.4, 0.1);
+            }
+            else if (pattern === 'fractal_nest') {
+                // --- NIDIATA RICORSIVA CONCENTRICA ---
+                for (let i = 0; i < numCubes; i++) {
+                    const t = i / Math.max(1, numCubes - 1);
+                    const mesh = createPlatonicMesh(solidType, i, material);
+                    const scale = baseSize * (2.2 - 1.8 * (i / numCubes));
+                    mesh.scale.set(scale, scale, scale);
+                    mesh.rotation.set(i * 0.35, i * 0.25, 0);
+                    threeDScene.add(mesh);
+                    threeDCubes.push(mesh);
+                }
+            }
+            else if (pattern === 'spiral') {
+                // --- TORNADO SPIRALE 3D ---
+                const radius = parseFloat(document.getElementById('paramThreeDSpiralRadius')?.value || 25.0);
+                const turns = parseFloat(document.getElementById('paramThreeDSpiralTurns')?.value || 3.0);
+                const totalHeight = parseFloat(document.getElementById('paramThreeDSpiralHeight')?.value || 40.0);
 
                 for (let i = 0; i < numCubes; i++) {
                     const t = i / (numCubes - 1 || 1);
@@ -16178,54 +16389,102 @@ ${document.getElementById('pathGroup').innerHTML}
                     const cy = r * Math.sin(theta);
                     const cz = -totalHeight / 2 + t * totalHeight;
 
-                    const mesh = new THREE.Mesh(geometry, material);
+                    const mesh = createPlatonicMesh(solidType, i, material);
                     mesh.position.set(cx, cy, cz);
                     
-                    // Applica scala progressiva
                     const currentScale = baseSize * (0.4 + 0.6 * t);
                     mesh.scale.set(currentScale, currentScale, currentScale);
                     mesh.rotation.set(t * Math.PI * 0.5, theta, t * Math.PI * 0.25);
-                    
-                    // Aggiunge anche i bordi visivi a Three.js per estetica
-                    const edgeGeo = new THREE.EdgesGeometry(geometry);
-                    const edgeMat = new THREE.LineBasicMaterial({ color: 0x6366f1, linewidth: 2 });
-                    const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
-                    mesh.add(wireframe);
+
+                    threeDScene.add(mesh);
+                    threeDCubes.push(mesh);
+                }
+            }
+            else if (pattern === 'matrix_grid') {
+                // --- MATRICE CRISTALLINA VOXEL 3D ---
+                const dim = Math.max(2, Math.cbrt(numCubes) | 0);
+                const step = baseSize * 1.6;
+                const offset = (dim - 1) * step / 2;
+                let count = 0;
+                for (let z = 0; z < dim; z++) {
+                    for (let y = 0; y < dim; y++) {
+                        for (let x = 0; x < dim; x++) {
+                            if (count >= numCubes) break;
+                            const mesh = createPlatonicMesh(solidType, count, material);
+                            mesh.position.set(x * step - offset, y * step - offset, z * step - offset);
+                            mesh.scale.setScalar(baseSize * 0.7);
+                            mesh.rotation.set((x + y) * 0.4, (y + z) * 0.4, (z + x) * 0.4);
+                            threeDScene.add(mesh);
+                            threeDCubes.push(mesh);
+                            count++;
+                        }
+                    }
+                }
+            }
+            else if (pattern === 'platonic_ring') {
+                // --- ANELLO PLATONICO CINETICO / TOROIDALE ---
+                const R = baseSize * 2.5;
+                for (let i = 0; i < numCubes; i++) {
+                    const theta = (i / numCubes) * Math.PI * 2;
+                    const cx = R * Math.cos(theta);
+                    const cy = R * Math.sin(theta);
+                    const cz = Math.sin(theta * 3) * (baseSize * 0.8);
+
+                    const mesh = createPlatonicMesh(solidType, i, material);
+                    mesh.position.set(cx, cy, cz);
+                    mesh.scale.setScalar(baseSize * 0.8);
+                    mesh.rotation.set(theta, theta * 2, 0);
+
+                    threeDScene.add(mesh);
+                    threeDCubes.push(mesh);
+                }
+            }
+            else if (pattern === 'platonic_metatron') {
+                // --- RETICOLO SACRO DI METATRON 3D ---
+                const R = baseSize * 2.2;
+                const centers = [{ x: 0, y: 0, z: 0 }];
+                for (let i = 0; i < 12; i++) {
+                    const phi = Math.acos(-1 + (2 * i + 1) / 12);
+                    const theta = Math.sqrt(12 * Math.PI) * phi;
+                    centers.push({
+                        x: R * Math.cos(theta) * Math.sin(phi),
+                        y: R * Math.sin(theta) * Math.sin(phi),
+                        z: R * Math.cos(phi)
+                    });
+                }
+                for (let i = 0; i < Math.min(numCubes, centers.length); i++) {
+                    const c = centers[i];
+                    const mesh = createPlatonicMesh(solidType, i, material);
+                    mesh.position.set(c.x, c.y, c.z);
+                    mesh.scale.setScalar(baseSize * 0.85);
+                    mesh.rotation.set(i * 0.5, i * 0.3, i * 0.7);
 
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
                 }
             }
             else if (pattern === 'tree') {
-                const scaleFactor = parseFloat(document.getElementById('paramThreeDTreeScale').value) || 0.75;
-                const angleDeg = parseFloat(document.getElementById('paramThreeDTreeAngle').value) || 35;
-                const angle = angleDeg * Math.PI / 180;
-                // Limitiamo la profondità ricorsiva per evitare esplosione computazionale di HLR
-                const maxDepth = Math.min(5, Math.ceil(numCubes / 12) + 2);
+                // --- ALBERO FRATTALE RICORSIVO 3D ---
+                const maxDepth = Math.min(4, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1);
+                const angle = 0.55;
+                const scaleFactor = 0.65;
+                let currentIdx = 0;
 
                 function buildBranch(position, direction, size, depth, rotX, rotY, rotZ) {
                     if (depth > maxDepth) return;
 
-                    const mesh = new THREE.Mesh(geometry, material);
+                    const mesh = createPlatonicMesh(solidType, currentIdx++, material);
                     mesh.position.copy(position);
                     mesh.scale.set(size, size, size);
                     mesh.rotation.set(rotX, rotY, rotZ);
 
-                    const edgeGeo = new THREE.EdgesGeometry(geometry);
-                    const edgeMat = new THREE.LineBasicMaterial({ color: 0x10b981, linewidth: 1.5 });
-                    const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
-                    mesh.add(wireframe);
-
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
 
-                    // Calcola il punto finale del ramo
                     const offset = direction.clone().multiplyScalar(size * 1.0);
                     const nextPos = position.clone().add(offset);
-
                     const nextSize = size * scaleFactor;
                     
-                    // Creiamo 3 deviazioni di direzione per fare una chioma 3D
                     const axis1 = new THREE.Vector3(1, 0, 0).applyEuler(new THREE.Euler(rotX, rotY, rotZ));
                     const axis2 = new THREE.Vector3(0, 1, 0).applyEuler(new THREE.Euler(rotX, rotY, rotZ));
                     
@@ -16241,51 +16500,52 @@ ${document.getElementById('pathGroup').innerHTML}
                 buildBranch(new THREE.Vector3(0, -20, 0), new THREE.Vector3(0, 1, 0), baseSize, 1, 0, 0, 0);
             }
             else if (pattern === 'menger') {
-                const maxDepth = Math.min(3, Math.ceil(numCubes / 15) + 1);
+                // --- SPUGNA DI MENGER SOTTRATTIVA RIGOROSA ---
+                const targetLevel = Math.min(3, Math.max(1, Math.floor((numCubes / 80) * 2) + 1));
+                let count = 0;
 
-                function buildMenger(position, size, depth, parentDir = null) {
-                    if (depth > maxDepth) return;
+                function buildMengerSubtractive(centerPos, size, level) {
+                    if (level === targetLevel) {
+                        const mesh = createPlatonicMesh(solidType, count++, material);
+                        mesh.position.copy(centerPos);
+                        mesh.scale.setScalar(size);
+                        mesh.rotation.set(0.3, 0.4, 0.1);
+                        threeDScene.add(mesh);
+                        threeDCubes.push(mesh);
+                        return;
+                    }
 
-                    const mesh = new THREE.Mesh(geometry, material);
-                    mesh.position.copy(position);
-                    mesh.scale.set(size, size, size);
+                    const step = size * 0.95;
+                    const childSize = size * 0.3333;
 
-                    const edgeGeo = new THREE.EdgesGeometry(geometry);
-                    const edgeMat = new THREE.LineBasicMaterial({ color: 0xf59e0b, linewidth: 1.5 });
-                    const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
-                    mesh.add(wireframe);
+                    for (let x = -1; x <= 1; x++) {
+                        for (let y = -1; y <= 1; y++) {
+                            for (let z = -1; z <= 1; z++) {
+                                // Regola sottrattiva Menger: elimina i tunnel centrali della croce 3D (almeno due coord ubbidienti a 0)
+                                const zeros = (x === 0 ? 1 : 0) + (y === 0 ? 1 : 0) + (z === 0 ? 1 : 0);
+                                if (zeros >= 2) continue; // SOTTRATTO!
 
-                    threeDScene.add(mesh);
-                    threeDCubes.push(mesh);
-
-                    const directions = [
-                        new THREE.Vector3(1, 0, 0),
-                        new THREE.Vector3(-1, 0, 0),
-                        new THREE.Vector3(0, 1, 0),
-                        new THREE.Vector3(0, -1, 0),
-                        new THREE.Vector3(0, 0, 1),
-                        new THREE.Vector3(0, 0, -1)
-                    ];
-
-                    const nextSize = size * 0.45;
-                    directions.forEach(dir => {
-                        if (parentDir && dir.dot(parentDir) < -0.1) return; // Non tornare indietro
-                        
-                        const offset = dir.clone().multiplyScalar(size * 0.72);
-                        const nextPos = position.clone().add(offset);
-                        buildMenger(nextPos, nextSize, depth + 1, dir);
-                    });
+                                const childPos = new THREE.Vector3(
+                                    centerPos.x + x * step,
+                                    centerPos.y + y * step,
+                                    centerPos.z + z * step
+                                );
+                                buildMengerSubtractive(childPos, childSize, level + 1);
+                            }
+                        }
+                    }
                 }
 
-                buildMenger(new THREE.Vector3(0, 0, 0), baseSize, 1);
+                buildMengerSubtractive(new THREE.Vector3(0, 0, 0), baseSize * 2.2, 1);
             }
             else if (pattern === 'vortex') {
+                // --- VORTICE OBLIQUO ---
                 let currentParent = threeDScene;
                 const scaleFactor = 0.88;
                 const angle = 22 * Math.PI / 180;
                 
                 for (let i = 0; i < numCubes; i++) {
-                    const mesh = new THREE.Mesh(geometry, material);
+                    const mesh = createPlatonicMesh(solidType, i, material);
                     
                     if (i > 0) {
                         mesh.position.set(0.5, 0.5, 0.2);
@@ -16297,26 +16557,20 @@ ${document.getElementById('pathGroup').innerHTML}
                         mesh.rotation.set(0.2, 0.4, 0.1);
                     }
 
-                    const edgeGeo = new THREE.EdgesGeometry(geometry);
-                    const edgeMat = new THREE.LineBasicMaterial({ color: 0x818cf8, linewidth: 1.5 });
-                    const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
-                    mesh.add(wireframe);
-
                     currentParent.add(mesh);
                     threeDCubes.push(mesh);
                     currentParent = mesh;
                 }
             }
             else if (pattern === 'random') {
+                // --- DISPERSIONE CASUALE SPAZIALE ---
                 const seedVal = parseInt(document.getElementById('paramThreeDRandomSeed')?.value || 1);
-                randSeed = seedVal * 12345; // Inizializza il seed generator globale per questa esecuzione
-                
+                randSeed = seedVal * 12345;
                 const scatterRadius = parseFloat(document.getElementById('paramThreeDRandomRadius')?.value || 30.0);
                 
                 for (let i = 0; i < numCubes; i++) {
-                    const mesh = new THREE.Mesh(geometry, material);
+                    const mesh = createPlatonicMesh(solidType, i, material);
                     
-                    // Posizione casuale sferica uniforme usando seededRandom
                     const theta = seededRandom() * Math.PI * 2;
                     const phi = Math.acos(2 * seededRandom() - 1);
                     const dist = seededRandom() * scatterRadius;
@@ -16326,22 +16580,13 @@ ${document.getElementById('pathGroup').innerHTML}
                     const cz = dist * Math.cos(phi);
                     
                     mesh.position.set(cx, cy, cz);
-                    
-                    // Dimensione casuale intorno alla baseSize
                     const scaleFactor = baseSize * (0.6 + 0.8 * seededRandom());
                     mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
-                    
-                    // Rotazione obliqua casuale
                     mesh.rotation.set(
                         seededRandom() * Math.PI * 2,
                         seededRandom() * Math.PI * 2,
                         seededRandom() * Math.PI * 2
                     );
-
-                    const edgeGeo = new THREE.EdgesGeometry(geometry);
-                    const edgeMat = new THREE.LineBasicMaterial({ color: 0x818cf8, linewidth: 1.5 });
-                    const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
-                    mesh.add(wireframe);
 
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
@@ -16503,9 +16748,9 @@ ${document.getElementById('pathGroup').innerHTML}
             const pts = [];
             
             // 1. Spigoli di A contro piano di B
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < faceA.worldPts.length; i++) {
                 const p1 = faceA.worldPts[i];
-                const p2 = faceA.worldPts[(i + 1) % 4];
+                const p2 = faceA.worldPts[(i + 1) % faceA.worldPts.length];
                 const inter = getSegmentPlaneIntersection3D(p1, p2, faceB.worldPts[0], faceB.normal);
                 if (inter && isPointInFace3D(inter, faceB.worldPts, faceB.normal)) {
                     pts.push(inter);
@@ -16513,9 +16758,9 @@ ${document.getElementById('pathGroup').innerHTML}
             }
             
             // 2. Spigoli di B contro piano di A
-            for (let i = 0; i < 4; i++) {
+            for (let i = 0; i < faceB.worldPts.length; i++) {
                 const p1 = faceB.worldPts[i];
-                const p2 = faceB.worldPts[(i + 1) % 4];
+                const p2 = faceB.worldPts[(i + 1) % faceB.worldPts.length];
                 const inter = getSegmentPlaneIntersection3D(p1, p2, faceA.worldPts[0], faceA.normal);
                 if (inter && isPointInFace3D(inter, faceA.worldPts, faceA.normal)) {
                     pts.push(inter);
@@ -16550,15 +16795,103 @@ ${document.getElementById('pathGroup').innerHTML}
             return null;
         }
 
-        // Algoritmo Principale Hidden Line Removal (HLR)
+        // Estrazione dinamica e rigorosa di vertici, facce e spigoli effettivi (senza diagonali interne complanari)
+        function extractGeometryData(mesh) {
+            const geo = mesh.geometry;
+            const posAttr = geo.attributes.position;
+            
+            // 1. Saldatura dei vertici duplicati (vertex welding) per unificare gli spigoli di poliedri triangolati
+            const uniqueVertices = [];
+            const vertexMap = new Map();
+            const weldedIndices = [];
+
+            for (let i = 0; i < posAttr.count; i++) {
+                const vx = Math.round(posAttr.getX(i) * 10000) / 10000;
+                const vy = Math.round(posAttr.getY(i) * 10000) / 10000;
+                const vz = Math.round(posAttr.getZ(i) * 10000) / 10000;
+                const key = `${vx}_${vy}_${vz}`;
+                
+                if (!vertexMap.has(key)) {
+                    vertexMap.set(key, uniqueVertices.length);
+                    uniqueVertices.push(new THREE.Vector3(vx, vy, vz));
+                }
+                weldedIndices.push(vertexMap.get(key));
+            }
+
+            // 2. Costruzione dei triangoli con gli indici unificati
+            const rawTriangles = [];
+            if (geo.index) {
+                const indexArr = geo.index.array;
+                for (let i = 0; i < indexArr.length; i += 3) {
+                    rawTriangles.push([
+                        weldedIndices[indexArr[i]],
+                        weldedIndices[indexArr[i + 1]],
+                        weldedIndices[indexArr[i + 2]]
+                    ]);
+                }
+            } else {
+                for (let i = 0; i < posAttr.count; i += 3) {
+                    rawTriangles.push([
+                        weldedIndices[i],
+                        weldedIndices[i + 1],
+                        weldedIndices[i + 2]
+                    ]);
+                }
+            }
+
+            // 3. Calcolo delle normali 3D reali di ciascun triangolo
+            const triangleNormals = rawTriangles.map(t => {
+                const v0 = uniqueVertices[t[0]];
+                const v1 = uniqueVertices[t[1]];
+                const v2 = uniqueVertices[t[2]];
+                const e1 = new THREE.Vector3().subVectors(v1, v0);
+                const e2 = new THREE.Vector3().subVectors(v2, v0);
+                return new THREE.Vector3().crossVectors(e1, e2).normalize();
+            });
+
+            // 4. Mappatura di ciascuno spigolo saldato ai triangoli adiacenti che lo condividono
+            const edgeTriangles = new Map();
+            rawTriangles.forEach((t, triIdx) => {
+                for (let k = 0; k < 3; k++) {
+                    const i1 = t[k];
+                    const i2 = t[(k + 1) % 3];
+                    if (i1 === i2) continue; // ignora spigoli degenerati
+                    const key = i1 < i2 ? `${i1}_${i2}` : `${i2}_${i1}`;
+                    if (!edgeTriangles.has(key)) {
+                        edgeTriangles.set(key, { edge: [Math.min(i1, i2), Math.max(i1, i2)], tris: [] });
+                    }
+                    edgeTriangles.get(key).tris.push(triIdx);
+                }
+            });
+
+            // 5. Filtro delle diagonali interne complanari (n1.dot(n2) < 0.8)
+            const realEdges = [];
+            edgeTriangles.forEach(info => {
+                if (info.tris.length === 1) {
+                    realEdges.push(info.edge);
+                } else if (info.tris.length >= 2) {
+                    const n1 = triangleNormals[info.tris[0]];
+                    const n2 = triangleNormals[info.tris[1]];
+                    // Se le normali sono quasi parallele (dot > 0.8), è una diagonale interna alla stessa faccia (es. pentagono o quadrato)!
+                    if (n1.dot(n2) < 0.8) {
+                        realEdges.push(info.edge);
+                    }
+                }
+            });
+
+            const faces = rawTriangles.map((indices, fIdx) => ({ indices, name: `face_${fIdx}` }));
+
+            return { vertices: uniqueVertices, edges: realEdges, faces };
+        }
+
+        // Algoritmo Principale Hidden Line Removal (HLR) per Solidi Platonici
         function projectAndPlot3DScene(quickPreview = false) {
             if (!threeDCamera || threeDCubes.length === 0) return;
             
-            safetyPointCounter = 0; // Previene il superamento della soglia massima di sicurezza durante gli aggiornamenti continui
+            safetyPointCounter = 0;
             const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
             currentRawElements = [];
 
-            // Calcolo dell'aspect ratio per non deformare e confinare in sicurezza l'area visibile sul piatto
             const aspect = threeDCamera.aspect;
             let scaleX = 42;
             let scaleY = 42;
@@ -16570,43 +16903,17 @@ ${document.getElementById('pathGroup').innerHTML}
                 scaleX = 42 * aspect;
             }
 
-            // 1. Definiamo i vertici locali del cubo unitario
-            const localVertices = [
-                new THREE.Vector3(-0.5, -0.5, -0.5),
-                new THREE.Vector3(0.5, -0.5, -0.5),
-                new THREE.Vector3(0.5, 0.5, -0.5),
-                new THREE.Vector3(-0.5, 0.5, -0.5),
-                new THREE.Vector3(-0.5, -0.5, 0.5),
-                new THREE.Vector3(0.5, -0.5, 0.5),
-                new THREE.Vector3(0.5, 0.5, 0.5),
-                new THREE.Vector3(-0.5, 0.5, 0.5)
-            ];
-
-            // Gli spigoli (coppie di indici)
-            const edges = [
-                [0, 1], [1, 2], [2, 3], [3, 0], // Faccia posteriore locale
-                [4, 5], [5, 6], [6, 7], [7, 4], // Faccia anteriore locale
-                [0, 4], [1, 5], [2, 6], [3, 7]  // Spigoli trasversali
-            ];
-
-            // Le 6 facce (ordinamento CCW locale per back-face culling)
-            const faces = [
-                { indices: [4, 5, 6, 7], name: 'front' },
-                { indices: [1, 0, 3, 2], name: 'back' },
-                { indices: [3, 7, 6, 2], name: 'top' },
-                { indices: [0, 1, 5, 4], name: 'bottom' },
-                { indices: [1, 2, 6, 5], name: 'right' },
-                { indices: [0, 4, 7, 3], name: 'left' }
-            ];
-
             const allProjectedCubes = [];
 
-            // 2. Proietta vertici, spigoli e facce per ciascun cubo
+            // Proietta vertici, spigoli e facce per ciascun solido platonico
             threeDCubes.forEach((cube, cubeIdx) => {
-                // Calcola i vertici nel mondo 3D
+                const geoData = extractGeometryData(cube);
+                const localVertices = geoData.vertices;
+                const edges = geoData.edges;
+                const faces = geoData.faces;
+
                 const worldVertices = localVertices.map(v => v.clone().applyMatrix4(cube.matrixWorld));
                 
-                // Proietta in 2D
                 const projectedPts = worldVertices.map(v => {
                     const vProj = v.clone().project(threeDCamera);
                     const dist = v.distanceTo(threeDCamera.position);
@@ -16618,16 +16925,16 @@ ${document.getElementById('pathGroup').innerHTML}
                     };
                 });
 
-                // Determina quali facce sono rivolte verso la telecamera (front-facing) tramite normale 3D reale
                 const allFaces = [];
                 const frontFaces = [];
                 faces.forEach((face, fIdx) => {
-                    const w0 = worldVertices[face.indices[0]];
-                    const w1 = worldVertices[face.indices[1]];
-                    const w2 = worldVertices[face.indices[2]];
-                    const w3 = worldVertices[face.indices[3]];
+                    const faceWorldPts = face.indices.map(idx => worldVertices[idx]);
+                    if (faceWorldPts.length < 3) return;
 
-                    // Calcolo della normale 3D nel mondo
+                    const w0 = faceWorldPts[0];
+                    const w1 = faceWorldPts[1];
+                    const w2 = faceWorldPts[2];
+
                     const v10 = new THREE.Vector3().subVectors(w1, w0);
                     const v21 = new THREE.Vector3().subVectors(w2, w1);
                     const normal = new THREE.Vector3().crossVectors(v10, v21).normalize();
@@ -16638,10 +16945,10 @@ ${document.getElementById('pathGroup').innerHTML}
                     const faceZValues = facePts.map(p => p.z);
 
                     const faceObj = {
-                        faceIndex: fIdx, // indice da 0 a 5
+                        faceIndex: fIdx,
                         indices: face.indices,
                         pts: facePts,
-                        worldPts: [w0, w1, w2, w3],
+                        worldPts: faceWorldPts,
                         normal: normal,
                         xMin: Math.min(...faceXValues),
                         xMax: Math.max(...faceXValues),
@@ -16649,13 +16956,15 @@ ${document.getElementById('pathGroup').innerHTML}
                         yMax: Math.max(...faceYValues),
                         zMin: Math.min(...faceZValues),
                         zMax: Math.max(...faceZValues),
-                        zAvg: faceZValues.reduce((a, b) => a + b, 0) / 4
+                        zAvg: faceZValues.reduce((a, b) => a + b, 0) / faceZValues.length
                     };
 
                     allFaces.push(faceObj);
 
-                    // Direzione della vista dal centro della faccia alla camera
-                    const center = new THREE.Vector3().add(w0).add(w1).add(w2).add(w3).multiplyScalar(0.25);
+                    const center = new THREE.Vector3();
+                    faceWorldPts.forEach(p => center.add(p));
+                    center.divideScalar(faceWorldPts.length);
+
                     const viewDir = new THREE.Vector3().subVectors(threeDCamera.position, center).normalize();
                     const dot = normal.dot(viewDir);
                     
@@ -16664,7 +16973,6 @@ ${document.getElementById('pathGroup').innerHTML}
                     }
                 });
 
-                // Uno spigolo è potenzialmente visibile se appartiene ad almeno una faccia front-facing
                 const visibleEdges = [];
                 edges.forEach(edge => {
                     const isEdgeVisible = frontFaces.some(face => 
@@ -16675,14 +16983,13 @@ ${document.getElementById('pathGroup').innerHTML}
                     }
                 });
 
-                // Salva i dati proiettati del cubo
                 allProjectedCubes.push({
                     cubeIndex: cubeIdx,
                     pts: projectedPts,
                     allFaces: allFaces,
                     frontFaces: frontFaces,
                     visibleEdges: visibleEdges,
-                    avgDist: projectedPts.reduce((acc, p) => acc + p.dist, 0) / 8
+                    avgDist: projectedPts.reduce((acc, p) => acc + p.dist, 0) / Math.max(1, projectedPts.length)
                 });
             });
 
@@ -16716,9 +17023,9 @@ ${document.getElementById('pathGroup').innerHTML}
                                 return;
                             }
 
-                            for (let idx = 0; idx < 4; idx++) {
+                            for (let idx = 0; idx < face.pts.length; idx++) {
                                 const f1 = face.pts[idx];
-                                const f2 = face.pts[(idx + 1) % 4];
+                                const f2 = face.pts[(idx + 1) % face.pts.length];
 
                                 const inter = getSegmentIntersection2D(p1.x, p1.y, p2.x, p2.y, f1.x, f1.y, f2.x, f2.y);
                                 if (inter) {
@@ -16840,9 +17147,9 @@ ${document.getElementById('pathGroup').innerHTML}
                             return;
                         }
 
-                        for (let idx = 0; idx < 4; idx++) {
+                        for (let idx = 0; idx < face.pts.length; idx++) {
                             const f1 = face.pts[idx];
-                            const f2 = face.pts[(idx + 1) % 4];
+                            const f2 = face.pts[(idx + 1) % face.pts.length];
 
                             const inter = getSegmentIntersection2D(p1.x, p1.y, p2.x, p2.y, f1.x, f1.y, f2.x, f2.y);
                             if (inter) {
