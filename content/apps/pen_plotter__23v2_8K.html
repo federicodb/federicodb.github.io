@@ -53,26 +53,74 @@
             font-family: 'Fira Code', monospace;
         }
 
-        /* Glassmorphism Custom AMOLED */
+        /* Theme Monochrome Retro High-Contrast (1956 CRT Monochromatic TV) */
+        html {
+            filter: grayscale(100%) !important;
+            -webkit-filter: grayscale(100%) !important;
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+
+        body {
+            filter: grayscale(100%) !important;
+            -webkit-filter: grayscale(100%) !important;
+            background-color: #09090b !important;
+            color: #f4f4f5 !important;
+        }
+
+        canvas, svg, img, video, iframe {
+            filter: grayscale(100%) !important;
+            -webkit-filter: grayscale(100%) !important;
+        }
+
+        /* Override completo di tutti i colori Tailwind per forzare la scala di grigi ad alto contrasto */
+        [class*="text-indigo-"], [class*="text-emerald-"], [class*="text-amber-"], 
+        [class*="text-pink-"], [class*="text-purple-"], [class*="text-cyan-"], 
+        [class*="text-rose-"], [class*="text-blue-"], [class*="text-teal-"],
+        [class*="text-violet-"], [class*="text-fuchsia-"] {
+            color: #f4f4f5 !important;
+        }
+
+        [class*="bg-indigo-"], [class*="bg-emerald-"], [class*="bg-amber-"], 
+        [class*="bg-pink-"], [class*="bg-purple-"], [class*="bg-cyan-"], 
+        [class*="bg-rose-"], [class*="bg-blue-"], [class*="bg-teal-"] {
+            background-color: #18181b !important;
+            border-color: #3f3f46 !important;
+            color: #ffffff !important;
+        }
+
+        [class*="border-indigo-"], [class*="border-emerald-"], [class*="border-amber-"], 
+        [class*="border-pink-"], [class*="border-purple-"], [class*="border-cyan-"], 
+        [class*="border-rose-"], [class*="border-blue-"], [class*="border-teal-"] {
+            border-color: #3f3f46 !important;
+        }
+
+        input[type="range"] {
+            accent-color: #e4e4e7 !important;
+        }
+        input[type="checkbox"] {
+            accent-color: #ffffff !important;
+        }
+
         .glass-panel {
-            background: rgba(9, 9, 11, 0.88);
+            background: rgba(18, 18, 20, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .glass-card {
-            background: rgba(18, 18, 26, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 0.75rem;
+            background: rgba(24, 24, 27, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
             padding: 0.6rem 0.75rem !important;
             margin-bottom: 0.5rem !important;
         }
 
         .glass-input {
-            background: rgba(10, 15, 30, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #f8fafc;
+            background: rgba(9, 9, 11, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #f4f4f5;
             font-size: 13px !important;
             padding: 0.4rem 0.5rem !important;
             transition: all 0.2s ease-in-out;
@@ -80,15 +128,15 @@
 
         .glass-input:focus {
             outline: none;
-            border-color: #818cf8;
-            box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2);
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
         }
 
         /* Campi numerici gemelli accanto agli slider */
         .num-twin {
-            background: rgba(2, 6, 23, 0.85) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            color: #e2e8f0 !important;
+            background: rgba(9, 9, 11, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            color: #ffffff !important;
             font-family: 'JetBrains Mono', 'Fira Code', monospace;
             border-radius: 4px;
             transition: border-color 0.15s;
@@ -98,8 +146,8 @@
 
         .num-twin:focus {
             outline: none;
-            border-color: #818cf8 !important;
-            box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.18);
+            border-color: #ffffff !important;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
         }
 
         /* Nasconde le frecce di incremento sui browser webkit */
@@ -113,47 +161,42 @@
             -moz-appearance: textfield;
         }
 
-        /* Scroller personalizzato */
+        /* Scroller personalizzato retro */
         .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
             height: 4px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.1);
+            background: rgba(9, 9, 11, 0.8);
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(129, 140, 248, 0.25);
+            background: rgba(255, 255, 255, 0.22);
             border-radius: 9999px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(129, 140, 248, 0.5);
+            background: rgba(255, 255, 255, 0.45);
         }
 
         .svg-container {
-            background: radial-gradient(circle, #0f172a 0%, #030712 100%);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(99, 102, 241, 0.04);
+            background: #09090b !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95), inset 0 0 40px rgba(255, 255, 255, 0.03);
             aspect-ratio: 1.1 / 1;
             width: 100%;
             max-width: 720px;
             margin: 0 auto;
             position: relative;
-            border-radius: 1.25rem;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 0.75rem;
+            border: 1px solid #27272a;
             overflow: hidden;
+            transition: background 0.25s ease, border-color 0.25s ease;
         }
 
-        /* Neon Glow sui percorsi SVG */
-        #pathGroup path,
-        #simGroup path {
-            filter: drop-shadow(0 0 1.2px rgba(129, 140, 248, 0.6)) drop-shadow(0 0 2px rgba(129, 140, 248, 0.35));
-        }
-
-        #pathGroup polyline,
-        #simGroup polyline {
-            filter: drop-shadow(0 0 1.2px rgba(129, 140, 248, 0.6)) drop-shadow(0 0 2px rgba(129, 140, 248, 0.35));
+        .svg-container.preview-light {
+            background: #09090b !important;
+            border-color: #3f3f46 !important;
         }
 
         .hidden-mode {
@@ -315,12 +358,10 @@
         class="fixed md:relative z-40 w-[80vw] max-w-[340px] md:w-[28rem] h-full flex flex-col glass-panel border-r border-slate-900 -translate-x-full md:translate-x-0 transition-transform duration-300 overflow-x-hidden">
         <div class="p-4 border-b border-slate-800 flex items-center justify-between">
             <div>
-                <h1
-                    class="text-xl font-bold heading-font bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-none">
-                    Studio Plotter CNC</h1>
-                <p class="text-[10px] text-slate-400 mt-1 font-mono">Klipper Edition - Ender 3 V2</p>
+                <h1 class="text-xl font-bold heading-font text-white tracking-tight leading-none">Studio Plotter CNC</h1>
+                <p class="text-[10px] text-zinc-400 mt-1 font-mono">Klipper Edition - Ender 3 V2</p>
             </div>
-            <button onclick="toggleSidebar()" class="md:hidden p-1 text-slate-400 hover:text-white">
+            <button onclick="toggleSidebar()" class="md:hidden p-1 text-zinc-400 hover:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -329,12 +370,12 @@
             </button>
         </div>
 
-        <div class="px-4 py-2 border-b border-slate-800 bg-slate-900/50">
-            <label class="block text-[9px] font-bold uppercase tracking-wider text-indigo-400 mb-1">Modalità Generatore</label>
+        <div class="px-4 py-2 border-b border-zinc-800 bg-zinc-900/90">
+            <label class="block text-[9px] font-bold uppercase tracking-wider text-zinc-300 mb-1">Modalità Generatore</label>
             <div class="grid grid-cols-2 gap-1.5 text-xs">
                 <!-- Riga 1: Curve Matematiche & Fibonacci -->
                 <button id="btnHarmonograph"
-                    class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-transparent bg-indigo-600 text-white shadow"
+                    class="py-1.5 px-2 rounded-md font-bold text-left transition-all border border-zinc-400 bg-zinc-100 text-black shadow-md"
                     onclick="setMode('harmonograph')">🌀 Curve Armoniche</button>
                 <button id="btnFibonacci"
                     class="py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800"
@@ -484,6 +525,10 @@
                         <select id="paramTurtleStyle" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
                             onchange="toggleTurtleControls(); updateSimulation();">
                             <option value="truchet" selected>Esagoni Truchet Interallacciati</option>
+                            <option value="moire_circles">Moiré Concentrico (Interferenza Onde)</option>
+                            <option value="moire_rotational">Moiré Griglie Ruotate (Lattice Distortion)</option>
+                            <option value="superellipse_nest">Superellissi Nidiate (Lamé Curves)</option>
+                            <option value="hyperbolic_moire">Moiré Iperbolico Polare</option>
                             <option value="torus">Toro 3D con Zebra Hatching</option>
                             <option value="cityscape">Cubic Cityscape (Città 3D)</option>
                             <option value="stringart">Corde Armoniche / String Art (StringyPlotter)</option>
@@ -558,10 +603,10 @@
                 <div class="glass-card p-3 space-y-3">
                     <div>
                         <div class="flex justify-between items-center mb-0.5">
-                            <label class="block text-[11px] text-slate-400">Densità Suddivisione:</label>
-                            <span id="valTessDensity" class="font-mono text-indigo-400 text-xs font-semibold">5</span>
+                            <label class="block text-[11px] text-zinc-400">Densità Suddivisione (Moduli):</label>
+                            <span id="valTessDensity" class="font-mono text-zinc-100 text-xs font-semibold">1</span>
                         </div>
-                        <input type="range" id="paramTessDensity" min="2" max="12" step="1" value="5" class="w-full"
+                        <input type="range" id="paramTessDensity" min="1" max="16" step="1" value="1" class="w-full"
                             oninput="document.getElementById('valTessDensity').innerText=this.value; updateSimulation()">
                     </div>
                     <div>
@@ -569,7 +614,7 @@
                             <label class="block text-[11px] text-slate-400">Distanza Spirali (mm):</label>
                             <span id="valTessSpacing" class="font-mono text-indigo-400 text-xs font-semibold">1.5</span>
                         </div>
-                        <input type="range" id="paramTessSpacing" min="0.5" max="5.0" step="0.1" value="1.5" class="w-full"
+                        <input type="range" id="paramTessSpacing" min="0.3" max="8.0" step="0.1" value="1.5" class="w-full"
                             oninput="document.getElementById('valTessSpacing').innerText=parseFloat(this.value).toFixed(1); updateSimulation()">
                     </div>
                     <div class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer py-1">
@@ -2813,8 +2858,10 @@
                     <label class="block text-[10px] font-bold text-slate-400">Modalità Visualizzazione Audio</label>
                     <select id="paramAudioDisplayMode" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
                         onchange="toggleAudioControls(); processAudio();">
-                        <option value="waveform" selected>🌊 Forma d'Onda (Oscillogramma X-Y)</option>
-                        <option value="ridgeline">🏔️ Spettrogramma Ridgeline (2.5D)</option>
+                        <option value="waveform" selected>🌊 Forma d'Onda Cartesiana (Oscillogramma X-Y)</option>
+                        <option value="circular">⭕ Visualizzazione Circolare / Radiale (Circular Waveform)</option>
+                        <option value="ridgeline">🏔️ Spettrogramma Ridgeline (2.5D HLR)</option>
+                        <option value="lissajous">⭐ Stella Armonica / Lissajous Polare</option>
                     </select>
                 </div>
 
@@ -2845,6 +2892,50 @@
                         </div>
                         <input type="range" id="paramAudioAmp" min="1" max="60" value="20" step="1"
                             class="w-full accent-indigo-500" oninput="document.getElementById('valAudioAmp').innerText=this.value; processAudio()">
+                    </div>
+                </div>
+
+                <!-- Controlli specifici per VISUALIZZAZIONE CIRCOLARE / RADIALE -->
+                <div id="audio-circular-controls" class="glass-card p-3 space-y-3 hidden-mode">
+                    <h4 class="text-[10px] font-bold uppercase text-indigo-400">Visualizzazione Circolare / Radiale</h4>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[9px] text-slate-400">Raggio Base R₀ (mm):</label>
+                            <span id="valAudioBaseRadius" class="font-mono text-indigo-400 text-xs font-semibold">25</span>
+                        </div>
+                        <input type="range" id="paramAudioBaseRadius" min="5" max="45" value="25" step="1"
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioBaseRadius').innerText=this.value; processAudio()">
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[9px] text-slate-400">Giri Spire / Spira Radiale:</label>
+                            <span id="valAudioTurns" class="font-mono text-indigo-400 text-xs font-semibold">1</span>
+                        </div>
+                        <input type="range" id="paramAudioTurns" min="1" max="10" value="1" step="1"
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioTurns').innerText=this.value; processAudio()">
+                    </div>
+                </div>
+
+                <!-- Controlli specifici per STELLA ARMONICA / LISSAJOUS -->
+                <div id="audio-lissajous-controls" class="glass-card p-3 space-y-3 hidden-mode">
+                    <h4 class="text-[10px] font-bold uppercase text-indigo-400">Stella Armonica / Lissajous Polare</h4>
+                    <div>
+                        <label class="block text-[9px] text-slate-400 mb-1">Rapporto Armonico F1:F2:</label>
+                        <select id="paramAudioLissRatio" class="w-full glass-input text-xs rounded p-2 bg-slate-900" onchange="processAudio()">
+                            <option value="1:1">1 : 1 (Circolare / Ellittica)</option>
+                            <option value="2:3" selected>2 : 3 (Trifoglio Armonico)</option>
+                            <option value="3:4">3 : 4 (Quadrifoglio Armonico)</option>
+                            <option value="5:6">5 : 6 (Stella a 5 Punte)</option>
+                            <option value="7:8">7 : 8 (Stella a 7 Punte)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[9px] text-slate-400">Modulazione di Fase (Deg):</label>
+                            <span id="valAudioPhase" class="font-mono text-indigo-400 text-xs font-semibold">90</span>
+                        </div>
+                        <input type="range" id="paramAudioPhase" min="0" max="360" value="90" step="15"
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioPhase').innerText=this.value; processAudio()">
                     </div>
                 </div>
 
@@ -3163,28 +3254,36 @@
             </button>
 
             <div class="flex items-center gap-4 text-xs">
+                <div class="flex items-center gap-1.5 bg-zinc-900 border border-zinc-700/80 rounded px-2.5 py-1 shadow-sm">
+                    <span class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Tema Anteprima:</span>
+                    <select id="paramPreviewTheme" class="bg-zinc-950 text-zinc-100 text-xs rounded px-2 py-0.5 border border-zinc-700 focus:outline-none cursor-pointer font-medium"
+                        onchange="applyPreviewTheme(); applyGlobalTransformAndRender();">
+                        <option value="dark" selected>⬛ Tratto Bianco su Fondo Nero</option>
+                        <option value="light">⬜ Tratto Nero su Fondo Bianco</option>
+                    </select>
+                </div>
                 <label class="flex items-center space-x-1.5 cursor-pointer">
                     <input type="checkbox" id="chkOptimizeTravel" checked onchange="updateSimulation()"
-                        class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
-                    <span class="text-slate-300 font-medium">🚀 Ottimizza Tracciato (TSP)</span>
+                        class="rounded bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-0">
+                    <span class="text-zinc-300 font-medium">🚀 Ottimizza Tracciato (TSP)</span>
                 </label>
                 <label class="flex items-center space-x-1.5 cursor-pointer">
                     <input type="checkbox" id="chkShowLimits" checked onchange="updateSimulation()"
-                        class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
-                    <span class="text-slate-300 font-medium">📏 Mostra Piatto e Area Utile</span>
+                        class="rounded bg-zinc-900 border-zinc-700 text-zinc-100 focus:ring-0">
+                    <span class="text-zinc-300 font-medium">📏 Mostra Piatto e Area Utile</span>
                 </label>
                 <button onclick="resetCurrentCanvas()"
-                    class="px-2.5 py-1 bg-rose-600/20 text-rose-300 border border-rose-500/30 hover:bg-rose-600/40 rounded text-xs font-semibold transition-colors flex items-center gap-1 shadow">
+                    class="px-2.5 py-1 bg-zinc-800 text-zinc-200 border border-zinc-700 hover:bg-zinc-700 rounded text-xs font-semibold transition-colors flex items-center gap-1 shadow">
                     🗑️ Reset Canvas
                 </button>
             </div>
 
-            <div class="flex items-center gap-2 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800/80">
-                <span class="text-[10px] text-slate-400">Percorsi:</span>
-                <span id="pathCountBadge" class="font-mono text-indigo-400 text-[10px] font-bold">—</span>
-                <span class="text-[10px] text-slate-400">|</span>
-                <span class="text-[10px] text-slate-400">Punti:</span>
-                <span id="pointCountBadge" class="font-mono text-indigo-400 text-[10px] font-bold">—</span>
+            <div class="flex items-center gap-2 bg-zinc-900/90 px-3 py-1.5 rounded-lg border border-zinc-800">
+                <span class="text-[10px] text-zinc-400">Percorsi:</span>
+                <span id="pathCountBadge" class="font-mono text-zinc-100 text-[10px] font-bold">—</span>
+                <span class="text-[10px] text-zinc-500">|</span>
+                <span class="text-[10px] text-zinc-400">Punti:</span>
+                <span id="pointCountBadge" class="font-mono text-zinc-100 text-[10px] font-bold">—</span>
             </div>
 
             <div id="warning-limits"
@@ -3195,6 +3294,22 @@
 
         <div class="flex-grow p-4 md:p-6 flex items-center justify-center overflow-hidden">
             <div class="svg-container">
+                <!-- Controlli Fluttuanti di Zoom & Pan per Desktop e Smartphone -->
+                <div class="absolute top-3 left-3 z-30 flex items-center gap-1 bg-zinc-900/90 border border-zinc-700/80 rounded-lg p-1 shadow-xl backdrop-blur-sm">
+                    <button onclick="zoomPreview(1.25)" title="Ingrandisci (Zoom In)"
+                        class="w-7 h-7 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-zinc-100 rounded text-xs font-bold transition-all shadow">
+                        ➕
+                    </button>
+                    <button onclick="zoomPreview(0.8)" title="Riduci (Zoom Out)"
+                        class="w-7 h-7 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-zinc-100 rounded text-xs font-bold transition-all shadow">
+                        ➖
+                    </button>
+                    <button onclick="resetPreviewZoom()" title="Reset Vista (100%)"
+                        class="px-2 h-7 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-zinc-200 rounded text-[10px] font-mono font-bold transition-all shadow">
+                        🎯 <span id="valZoomPercent" class="ml-1">100%</span>
+                    </button>
+                </div>
+
                 <svg id="previewCanvas" viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg"
                     preserveAspectRatio="xMidYMid meet">
                     <defs>
@@ -3213,11 +3328,15 @@
                             </feMerge>
                         </filter>
                     </defs>
-                    <rect width="100%" height="100%" fill="url(#dotGridLarge)" />
 
-                    <g id="guidesGroup"></g>
-                    <g id="pathGroup"></g>
-                    <g id="simGroup"></g>
+                    <!-- Stage con Trasformazione Fluida per Zoom & Pan -->
+                    <g id="zoomStage" style="transform-origin: center center; transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);">
+                        <rect width="100%" height="100%" fill="url(#dotGridLarge)" />
+
+                        <g id="guidesGroup"></g>
+                        <g id="pathGroup"></g>
+                        <g id="simGroup"></g>
+                    </g>
                 </svg>
 
                 <div id="latex-overlay"></div>
@@ -3805,7 +3924,7 @@
             return spiralPath;
         }
 
-        function generateConcentricChaseFill(poly, spacing) {
+        function generateConcentricChaseFill(poly, spacing, maxIters = 250) {
             if (poly.length < 3) return [];
 
             let cur = poly.map(p => ({ ...p }));
@@ -3815,7 +3934,7 @@
 
             let path = [...cur];
 
-            for (let i = 0; i < 250; i++) {
+            for (let i = 0; i < maxIters; i++) {
                 let maxDist = 0;
                 let sideSum = 0;
                 for (let j = 0; j < n; j++) {
@@ -3851,11 +3970,11 @@
             return path;
         }
 
-        function generateConcentricFill(poly, spacing, isEinsteinHat = false) {
+        function generateConcentricFill(poly, spacing, isEinsteinHat = false, maxIters = 250) {
             if (isEinsteinHat) {
                 return generateConcentricDelaunayFill(poly, spacing);
             } else {
-                return generateConcentricChaseFill(poly, spacing);
+                return generateConcentricChaseFill(poly, spacing, maxIters);
             }
         }
 
@@ -4007,7 +4126,7 @@
             } else if (currentMode === 'tessellation') {
                 const density = document.getElementById('paramTessDensity');
                 if (density) {
-                    density.value = Math.max(2, parseInt(density.value) - 2);
+                    density.value = Math.max(1, parseInt(density.value) - 2);
                     triggerInputEvent(density);
                 }
                 const spacing = document.getElementById('paramTessSpacing');
@@ -7878,9 +7997,14 @@
         function toggleAudioControls() {
             const mode = document.getElementById('paramAudioDisplayMode')?.value || 'waveform';
             const waveCtrl = document.getElementById('audio-waveform-controls');
+            const circCtrl = document.getElementById('audio-circular-controls');
             const ridgeCtrl = document.getElementById('audio-ridgeline-controls');
+            const lissCtrl = document.getElementById('audio-lissajous-controls');
+
             if (waveCtrl) waveCtrl.className = (mode === 'waveform') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
+            if (circCtrl) circCtrl.className = (mode === 'circular') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (ridgeCtrl) ridgeCtrl.className = (mode === 'ridgeline') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
+            if (lissCtrl) lissCtrl.className = (mode === 'lissajous') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
         }
 
         function processAudio() {
@@ -7962,6 +8086,88 @@
                         stroke: '#818cf8',
                         width: penWidth,
                         points: waveformPoints
+                    });
+                }
+                applyGlobalTransformAndRender();
+                return;
+            }
+
+            if (displayMode === 'circular') {
+                const nPts = parseInt(document.getElementById('paramAudioRes')?.value) || 1500;
+                const baseR = parseFloat(document.getElementById('paramAudioBaseRadius')?.value) || 25;
+                const turns = parseInt(document.getElementById('paramAudioTurns')?.value) || 1;
+                const waveType = document.getElementById('paramAudioWaveType')?.value || 'envelope_peak';
+
+                let circularPoints = [];
+                const maxAngle = turns * 2 * Math.PI;
+
+                for (let i = 0; i < nPts; i++) {
+                    const pct = i / (nPts - 1);
+                    const angle = pct * maxAngle;
+                    const sIdx = Math.min(totalSamples - 1, Math.floor(pct * totalSamples));
+                    
+                    let val = channelData[sIdx];
+                    if (waveType === 'symmetric_envelope') {
+                        val = Math.abs(val);
+                    }
+                    const r = baseR + val * (amp * 0.5);
+                    const x = r * Math.cos(angle);
+                    const y = r * Math.sin(angle);
+                    circularPoints.push({ x: x, y: y });
+                }
+
+                if (turns === 1 && circularPoints.length > 2) {
+                    circularPoints.push({ ...circularPoints[0] });
+                }
+
+                if (circularPoints.length >= 2) {
+                    currentRawElements.push({
+                        type: 'path',
+                        stroke: '#818cf8',
+                        width: penWidth,
+                        points: circularPoints
+                    });
+                }
+                applyGlobalTransformAndRender();
+                return;
+            }
+
+            if (displayMode === 'lissajous') {
+                const nPts = parseInt(document.getElementById('paramAudioRes')?.value) || 1500;
+                const ratioStr = document.getElementById('paramAudioLissRatio')?.value || '2:3';
+                const parts = ratioStr.split(':').map(Number);
+                const f1 = parts[0] || 2;
+                const f2 = parts[1] || 3;
+                const phaseDeg = parseFloat(document.getElementById('paramAudioPhase')?.value) || 90;
+                const phaseRad = phaseDeg * Math.PI / 180;
+                const baseR = 25;
+
+                let lissPoints = [];
+                const totalAngle = 2 * Math.PI * Math.max(f1, f2);
+
+                for (let i = 0; i < nPts; i++) {
+                    const pct = i / (nPts - 1);
+                    const angle = pct * totalAngle;
+                    const sIdx1 = Math.min(totalSamples - 1, Math.floor(pct * totalSamples));
+                    const sIdx2 = Math.min(totalSamples - 1, Math.floor(((pct + 0.25) % 1.0) * totalSamples));
+
+                    const v1 = channelData[sIdx1];
+                    const v2 = channelData[sIdx2];
+
+                    const rx = baseR + v1 * (amp * 0.4);
+                    const ry = baseR + v2 * (amp * 0.4);
+
+                    const x = rx * Math.cos(f1 * angle);
+                    const y = ry * Math.sin(f2 * angle + phaseRad);
+                    lissPoints.push({ x: x, y: y });
+                }
+
+                if (lissPoints.length >= 2) {
+                    currentRawElements.push({
+                        type: 'path',
+                        stroke: '#818cf8',
+                        width: penWidth,
+                        points: lissPoints
                     });
                 }
                 applyGlobalTransformAndRender();
@@ -9034,6 +9240,103 @@
                         points: path
                     });
                 });
+            } else if (style === 'moire_circles') {
+                // --- MOIRÉ A CERCHI CONCENTRICI INTERFERENTI ---
+                const numRings = density * 5;
+                const spacingR = paramA * 0.25;
+                const offsetCenter = paramB * 4.0;
+
+                const center1 = { x: -offsetCenter, y: 0 };
+                const center2 = { x: offsetCenter, y: 0 };
+
+                [center1, center2].forEach(c => {
+                    for (let r = 1; r <= numRings; r++) {
+                        const radius = r * spacingR;
+                        if (radius > 48) break;
+                        const pts = [];
+                        const steps = 180;
+                        for (let i = 0; i <= steps; i++) {
+                            const theta = (i / steps) * Math.PI * 2;
+                            pts.push({
+                                x: c.x + radius * Math.cos(theta),
+                                y: c.y + radius * Math.sin(theta)
+                            });
+                        }
+                        currentRawElements.push({ type: 'path', stroke: '#ffffff', width: penWidth, points: pts });
+                    }
+                });
+            } else if (style === 'moire_rotational') {
+                // --- MOIRÉ A GRIGLIE RUOTATE (ROTATIONAL LATTICE) ---
+                const numLines = density * 8;
+                const lineGap = paramA * 0.2;
+                const angleDeg = Math.max(0.2, paramB * 0.4); // Angolo di rotazione (0.2° - 8.0°)
+                const rad = angleDeg * Math.PI / 180;
+
+                // Griglia 1: Orizzontale
+                for (let i = -numLines; i <= numLines; i++) {
+                    const y = i * lineGap;
+                    if (Math.abs(y) > 48) continue;
+                    currentRawElements.push({ type: 'path', stroke: '#ffffff', width: penWidth, points: [{ x: -48, y }, { x: 48, y }] });
+                }
+                // Griglia 2: Ruotata
+                const cosA = Math.cos(rad);
+                const sinA = Math.sin(rad);
+                for (let i = -numLines; i <= numLines; i++) {
+                    const y = i * lineGap;
+                    if (Math.abs(y) > 48) continue;
+                    const p1 = { x: -48 * cosA - y * sinA, y: -48 * sinA + y * cosA };
+                    const p2 = { x: 48 * cosA - y * sinA, y: 48 * sinA + y * cosA };
+                    currentRawElements.push({ type: 'path', stroke: '#ffffff', width: penWidth, points: [p1, p2] });
+                }
+            } else if (style === 'superellipse_nest') {
+                // --- SUPERELLISSI NIDIATE (CURVE DI LAMÉ) ---
+                const count = density * 4;
+                const expN = Math.max(0.2, paramA * 0.15); // Esponente n
+                const rotStep = paramB * 1.5;
+
+                for (let i = 1; i <= count; i++) {
+                    const scale = (i / count) * 45;
+                    const rotAngle = (i * rotStep) * Math.PI / 180;
+                    const cosA = Math.cos(rotAngle);
+                    const sinA = Math.sin(rotAngle);
+                    const pts = [];
+                    const steps = 120;
+
+                    for (let s = 0; s <= steps; s++) {
+                        const t = (s / steps) * Math.PI * 2;
+                        const cosT = Math.cos(t);
+                        const sinT = Math.sin(t);
+                        const rx = Math.sign(cosT) * Math.pow(Math.abs(cosT), 2 / expN) * scale;
+                        const ry = Math.sign(sinT) * Math.pow(Math.abs(sinT), 2 / expN) * scale;
+                        
+                        const x = rx * cosA - ry * sinA;
+                        const y = rx * sinA + ry * cosA;
+                        pts.push({ x, y });
+                    }
+                    currentRawElements.push({ type: 'path', stroke: '#ffffff', width: penWidth, points: pts });
+                }
+            } else if (style === 'hyperbolic_moire') {
+                // --- MOIRÉ IPERBOLICO POLARE ---
+                const count = density * 3;
+                const mult = paramA * 0.4;
+
+                for (let i = 1; i <= count; i++) {
+                    const a = i * mult;
+                    const pts1 = [], pts2 = [];
+                    for (let t = -44; t <= 44; t += 1.0) {
+                        const rad = t * Math.PI / 180;
+                        const sec = 1 / Math.cos(rad);
+                        const tan = Math.tan(rad);
+                        const x = a * sec;
+                        const y = a * tan;
+                        if (Math.abs(x) <= 48 && Math.abs(y) <= 48) {
+                            pts1.push({ x, y });
+                            pts2.push({ x: -x, y });
+                        }
+                    }
+                    if (pts1.length > 1) currentRawElements.push({ type: 'path', stroke: '#ffffff', width: penWidth, points: pts1 });
+                    if (pts2.length > 1) currentRawElements.push({ type: 'path', stroke: '#ffffff', width: penWidth, points: pts2 });
+                }
             } else if (style === 'moire') {
                 // --- ALGORITMO 6: MOIRÉ WAVES (UJI/doersino) ---
                 const numCircles = density;
@@ -10463,10 +10766,48 @@ out body;`;
             if (ppb) ppb.textContent = totalPtsRendered.toLocaleString('it-IT');
         }
 
+        function applyPreviewTheme() {
+            const theme = document.getElementById('paramPreviewTheme')?.value || 'dark';
+            const container = document.querySelector('.svg-container');
+            const dotGrid = document.querySelector('#dotGrid circle');
+            const dotGridLarge = document.querySelector('#dotGridLarge circle');
+
+            if (theme === 'light') {
+                if (container) {
+                    container.classList.add('preview-light');
+                    container.classList.remove('preview-dark');
+                }
+                if (dotGrid) dotGrid.setAttribute('fill', 'rgba(0, 0, 0, 0.12)');
+                if (dotGridLarge) dotGridLarge.setAttribute('fill', 'rgba(0, 0, 0, 0.25)');
+            } else {
+                if (container) {
+                    container.classList.add('preview-dark');
+                    container.classList.remove('preview-light');
+                }
+                if (dotGrid) dotGrid.setAttribute('fill', 'rgba(255, 255, 255, 0.15)');
+                if (dotGridLarge) dotGridLarge.setAttribute('fill', 'rgba(255, 255, 255, 0.35)');
+            }
+        }
+
         function renderSVG(cx, cy, size) {
+            applyPreviewTheme();
             const guideGroup = document.getElementById('guidesGroup');
             const showLimits = document.getElementById('chkShowLimits').checked;
             const penWidth = parseFloat(document.getElementById('paramPenWidth')?.value || 0.6);
+
+            const previewTheme = document.getElementById('paramPreviewTheme')?.value || 'dark';
+            const isLight = previewTheme === 'light';
+
+            // Palette Retro Monocromatica 1956 CRT (TV B/N)
+            const defaultStroke = isLight ? '#000000' : '#ffffff';
+            const oobStroke = isLight ? '#7f1d1d' : '#f87171'; // Fuori limite segnalato ad alto contrasto
+            const bedBorderStroke = '#52525b'; // Perimetro piatto scuro sempre ben visibile
+            const penAreaFill = isLight ? '#d4d4d8' : '#18181b'; // Area utile grigio chiaro (non bianca) su piatto scuro!
+            const penAreaStroke = isLight ? '#52525b' : '#3f3f46';
+            const drawBoxStroke = isLight ? '#18181b' : '#a1a1aa';
+            const textFill = isLight ? '#09090b' : '#e4e4e7';
+            const panelFill = isLight ? 'rgba(212, 212, 216, 0.95)' : 'rgba(18, 18, 20, 0.95)';
+            const panelStroke = isLight ? '#71717a' : '#52525b';
 
             // Imposta viewBox SVG dinamico basato sulle dimensioni piatto X e Y
             document.getElementById('previewCanvas').setAttribute('viewBox', `0 0 ${bedSizeX} ${bedSizeY}`);
@@ -10488,45 +10829,43 @@ out body;`;
                 }
             });
 
-            if (showLimits) {
-                const reachMinX = offsetX > 0 ? offsetX : 0;
-                const reachMaxX = offsetX > 0 ? bedSizeX : bedSizeX + offsetX;
-                const reachMinY = offsetY > 0 ? offsetY : 0;
-                const reachMaxY = offsetY > 0 ? bedSizeY : bedSizeY + offsetY;
-                const reachW = reachMaxX - reachMinX;
-                const reachH = reachMaxY - reachMinY;
+            const reachMinX = offsetX > 0 ? offsetX : 0;
+            const reachMaxX = offsetX > 0 ? bedSizeX : bedSizeX + offsetX;
+            const reachMinY = offsetY > 0 ? offsetY : 0;
+            const reachMaxY = offsetY > 0 ? bedSizeY : bedSizeY + offsetY;
+            const reachW = reachMaxX - reachMinX;
+            const reachH = reachMaxY - reachMinY;
 
-                let guidesHtml = `
-                    <!-- 1. Area Totale del Piatto (Slate) -->
-                    <rect x="0" y="0" width="${bedSizeX}" height="${bedSizeY}" fill="none" stroke="#475569" stroke-width="1.2" />
-                    
-                    <!-- 2. Area Utile Penna (Verde tratteggiato) -->
-                    <rect x="${reachMinX}" y="${bedSizeY - reachMaxY}" width="${reachW}" height="${reachH}" fill="rgba(16, 185, 129, 0.02)" stroke="#10b981" stroke-dasharray="3, 3" stroke-width="0.8" />
-                    <text x="${reachMinX + 3}" y="${bedSizeY - reachMaxY + 9}" fill="#10b981" font-size="6px" font-family="monospace" font-weight="bold">AREA UTILE PENNA (${Math.round(reachW)}x${Math.round(reachH)})</text>
+            let guidesHtml = `
+                <!-- 1. Area Totale del Piatto (Sfondo Scuro con Perimetro Grigiastro Visibile) -->
+                <rect x="0" y="0" width="${bedSizeX}" height="${bedSizeY}" fill="#09090b" stroke="${bedBorderStroke}" stroke-width="1.2" />
+                
+                <!-- 2. Area Utile Penna (Grigio Chiaro in Light Mode, Scuro in Dark Mode) -->
+                <rect x="${reachMinX}" y="${bedSizeY - reachMaxY}" width="${reachW}" height="${reachH}" fill="${penAreaFill}" stroke="${penAreaStroke}" stroke-dasharray="2, 2" stroke-width="0.8" />
+            `;
+
+            if (showLimits) {
+                guidesHtml += `
+                    <text x="${reachMinX + 3}" y="${bedSizeY - reachMaxY + 9}" fill="${isLight ? '#27272a' : '#a1a1aa'}" font-size="6px" font-family="monospace" font-weight="bold">AREA UTILE PENNA (${Math.round(reachW)}x${Math.round(reachH)}mm)</text>
                 `;
 
                 if (drawMinX !== Infinity) {
-                    // 3. Area che verrà effettivamente disegnata (Rosa/Rosso tratteggiato)
+                    // 3. Area ingombro disegno
                     guidesHtml += `
-                        <rect x="${drawMinX}" y="${bedSizeY - drawMaxY}" width="${drawMaxX - drawMinX}" height="${drawMaxY - drawMinY}" fill="none" stroke="#f43f5e" stroke-width="0.7" stroke-dasharray="2, 2" />
-                        <text x="${drawMinX + 2}" y="${bedSizeY - drawMinY - 3}" fill="#f43f5e" font-size="5px" font-family="monospace">INGOMBRO DISEGNO (${Math.round(drawMaxX - drawMinX)}x${Math.round(drawMaxY - drawMinY)}mm)</text>
+                        <rect x="${drawMinX}" y="${bedSizeY - drawMaxY}" width="${drawMaxX - drawMinX}" height="${drawMaxY - drawMinY}" fill="none" stroke="${drawBoxStroke}" stroke-width="0.7" stroke-dasharray="2, 2" />
+                        <text x="${drawMinX + 2}" y="${bedSizeY - drawMinY - 3}" fill="${drawBoxStroke}" font-size="5px" font-family="monospace">INGOMBRO DISEGNO (${Math.round(drawMaxX - drawMinX)}x${Math.round(drawMaxY - drawMinY)}mm)</text>
                     `;
                 }
 
                 // Mirino centrale di riferimento area utile
                 guidesHtml += `
-                    <circle cx="${cx}" cy="${bedSizeY - cy}" r="3" fill="none" stroke="#f43f5e" stroke-width="0.5" />
-                    <line x1="${cx - 5}" y1="${bedSizeY - cy}" x2="${cx + 5}" y2="${bedSizeY - cy}" stroke="#f43f5e" stroke-width="0.5" />
-                    <line x1="${cx}" y1="${bedSizeY - (cy - 5)}" x2="${cx}" y2="${bedSizeY - (cy + 5)}" stroke="#f43f5e" stroke-width="0.5" />
-                `;
-
-                guideGroup.innerHTML = guidesHtml;
-            } else {
-                guideGroup.innerHTML = `
-                    <!-- Bordo base piatto -->
-                    <rect x="0" y="0" width="${bedSizeX}" height="${bedSizeY}" fill="none" stroke="#475569" stroke-width="1.0" />
+                    <circle cx="${cx}" cy="${bedSizeY - cy}" r="3" fill="none" stroke="${drawBoxStroke}" stroke-width="0.5" />
+                    <line x1="${cx - 5}" y1="${bedSizeY - cy}" x2="${cx + 5}" y2="${bedSizeY - cy}" stroke="${drawBoxStroke}" stroke-width="0.5" />
+                    <line x1="${cx}" y1="${bedSizeY - (cy - 5)}" x2="${cx}" y2="${bedSizeY - (cy + 5)}" stroke="${drawBoxStroke}" stroke-width="0.5" />
                 `;
             }
+
+            guideGroup.innerHTML = guidesHtml;
 
             const group = document.getElementById('pathGroup');
             let svgContent = '';
@@ -10537,7 +10876,7 @@ out body;`;
                     if (el.points.length < 2) return;
                     if (el.class === 'gcode-text-hidden') return;
 
-                    let color = el.stroke || '#818cf8';
+                    let color = defaultStroke;
                     let pathOOB = false;
 
                     el.points.forEach(pt => {
@@ -10549,22 +10888,23 @@ out body;`;
                         }
                     });
 
-                    if (pathOOB) color = '#ef4444';
+                    if (pathOOB) color = oobStroke;
 
                     let pts = el.points.map(p => `${p.x.toFixed(2)},${(bedSizeY - p.y).toFixed(2)}`).join(' ');
-                    svgContent += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="${el.width || penWidth}" stroke-linejoin="round" stroke-linecap="round" />`;
+                    // Spessore tratto legato DIRETTAMENTE allo spessore penna (penWidth in mm)
+                    svgContent += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="${penWidth}" stroke-linejoin="round" stroke-linecap="round" />`;
                 } else if (el.type === 'point') {
                     let nx = el.x - offsetX;
                     let ny = el.y - offsetY;
-                    let color = (nx < 0 || nx > bedSizeX || ny < 0 || ny > bedSizeY) ? '#ef4444' : (el.fill || '#f59e0b');
-                    if (color === '#ef4444') outOfBounds = true;
-                    svgContent += `<circle cx="${el.x.toFixed(2)}" cy="${(bedSizeY - el.y).toFixed(2)}" r="2" fill="${color}" />`;
+                    let color = (nx < 0 || nx > bedSizeX || ny < 0 || ny > bedSizeY) ? oobStroke : defaultStroke;
+                    if (color === oobStroke) outOfBounds = true;
+                    svgContent += `<circle cx="${el.x.toFixed(2)}" cy="${(bedSizeY - el.y).toFixed(2)}" r="${Math.max(1, penWidth * 1.2)}" fill="${color}" />`;
                 } else if (el.type === 'text') {
                     let rot = el.isFlipped ? `transform="rotate(180, ${el.x.toFixed(2)}, ${(bedSizeY - el.y).toFixed(2)})"` : '';
-                    let fontSize = el.scale * 3.6; // Calibrato su font monospace proporzionato
-                    svgContent += `<text x="${el.x.toFixed(2)}" y="${(bedSizeY - el.y).toFixed(2)}" class="code-font" fill="#a5b4fc" font-size="${fontSize}px" letter-spacing="0.02em" ${rot}>${el.text}</text>`;
+                    let fontSize = el.scale * 3.6;
+                    svgContent += `<text x="${el.x.toFixed(2)}" y="${(bedSizeY - el.y).toFixed(2)}" class="code-font" fill="${textFill}" font-size="${fontSize}px" letter-spacing="0.02em" ${rot}>${el.text}</text>`;
                 } else if (el.type === 'panel') {
-                    svgContent += `<rect x="${el.x.toFixed(2)}" y="${(bedSizeY - el.y).toFixed(2)}" width="${el.w.toFixed(2)}" height="${el.h.toFixed(2)}" rx="${el.rx || 0}" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(99, 102, 241, 0.4)" stroke-width="0.5" />`;
+                    svgContent += `<rect x="${el.x.toFixed(2)}" y="${(bedSizeY - el.y).toFixed(2)}" width="${el.w.toFixed(2)}" height="${el.h.toFixed(2)}" rx="${el.rx || 0}" fill="${panelFill}" stroke="${panelStroke}" stroke-width="0.5" />`;
                 }
             });
 
@@ -13292,7 +13632,7 @@ out body;`;
             }
             else if (mode === 'tessellation') {
                 const paramTessPattern = document.getElementById('paramTessPattern'); if (paramTessPattern) paramTessPattern.value = "square";
-                const paramTessDensity = document.getElementById('paramTessDensity'); if (paramTessDensity) paramTessDensity.value = "5";
+                const paramTessDensity = document.getElementById('paramTessDensity'); if (paramTessDensity) paramTessDensity.value = "1";
                 const paramTessSpacing = document.getElementById('paramTessSpacing'); if (paramTessSpacing) paramTessSpacing.value = "1.5";
                 const paramTessDrawOutline = document.getElementById('paramTessDrawOutline'); if (paramTessDrawOutline) paramTessDrawOutline.checked = true;
                 const paramTessInvertRot = document.getElementById('paramTessInvertRot'); if (paramTessInvertRot) paramTessInvertRot.checked = false;
@@ -13388,7 +13728,7 @@ out body;`;
             ['btnHarmonograph', 'btnLsystem', 'btnFlowfield', 'btnFractal', 'btnImage', 'btnSvg', 'btnSketch', 'btnTurtle', 'btnText', 'btnPattern', 'btnFibonacci', 'btnTessellation', 'btnThreeD', 'btnAudio', 'btnMap', 'btnNoodles'].forEach(id => {
                 const btn = document.getElementById(id);
                 if (btn) {
-                    btn.className = "py-1.5 px-2 rounded-md font-medium text-left transition-all border border-slate-800 text-slate-300 hover:bg-slate-800";
+                    btn.className = "py-1.5 px-2 rounded-md font-medium text-left transition-all border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white";
                 }
                 const modeEl = document.getElementById('mode-' + id.replace('btn', '').toLowerCase());
                 if (modeEl) modeEl.classList.add('hidden-mode');
@@ -13400,7 +13740,7 @@ out body;`;
             if (mode === 'spirograph') activeBtnId = 'btnHarmonograph';
             const activeBtn = document.getElementById(activeBtnId);
             if (activeBtn) {
-                activeBtn.className = "py-1.5 px-2 rounded-md font-medium text-left transition-all border border-transparent bg-indigo-600 text-white shadow";
+                activeBtn.className = "py-1.5 px-2 rounded-md font-bold text-left transition-all border border-zinc-400 bg-zinc-100 text-black shadow-md";
             }
 
             const activeModeEl = document.getElementById('mode-' + mode);
@@ -14533,18 +14873,17 @@ ${document.getElementById('pathGroup').innerHTML}
             static generateSquare(density) {
                 const tiles = [];
                 const L = 80 / density;
-                const limit = Math.ceil(density / 2) + 2;
-                for (let r = -limit; r <= limit; r++) {
-                    for (let c = -limit; c <= limit; c++) {
-                        const x = c * L;
-                        const y = r * L;
-                        const flatPts = new Float64Array([
+                const start = -40;
+                for (let r = 0; r < density; r++) {
+                    for (let c = 0; c < density; c++) {
+                        const x = start + c * L;
+                        const y = start + r * L;
+                        tiles.push(new Tile(new Float64Array([
                             x, y,
                             x + L, y,
                             x + L, y + L,
                             x, y + L
-                        ]);
-                        tiles.push(new Tile(flatPts));
+                        ])));
                     }
                 }
                 return tiles;
@@ -14554,13 +14893,23 @@ ${document.getElementById('pathGroup').innerHTML}
             static generateHexagonal(density) {
                 const tiles = [];
                 const R = 44 / density;
+                if (density === 1) {
+                    const flatPts = new Float64Array(12);
+                    for (let i = 0; i < 6; i++) {
+                        const angle = i * Math.PI / 3 + Math.PI / 6;
+                        flatPts[i * 2] = R * Math.cos(angle);
+                        flatPts[i * 2 + 1] = R * Math.sin(angle);
+                    }
+                    return [new Tile(flatPts)];
+                }
                 const W = R * Math.sqrt(3);
                 const H = R * 1.5;
-                const limit = Math.ceil(density) + 2;
-                for (let r = -limit; r <= limit; r++) {
-                    const cy = r * H;
-                    for (let c = -limit; c <= limit; c++) {
-                        let cx = c * W;
+                const maxR = Math.ceil(density / 2);
+                const maxC = Math.ceil(density / 2);
+                for (let r = -maxR; r < maxR; r++) {
+                    const cy = r * H + (density % 2 === 0 ? H / 2 : 0);
+                    for (let c = -maxC; c < maxC; c++) {
+                        let cx = c * W + (density % 2 === 0 ? W / 2 : 0);
                         if (Math.abs(r) % 2 === 1) cx += W / 2;
                         
                         const flatPts = new Float64Array(12);
@@ -14580,10 +14929,19 @@ ${document.getElementById('pathGroup').innerHTML}
                 const tiles = [];
                 const L = 80 / density;
                 const H = L * Math.sqrt(3) / 2;
-                const limit = Math.ceil(density) + 2;
-                for (let r = -limit; r <= limit; r++) {
+                if (density === 1) {
+                    const t1 = new Float64Array([
+                        -L / 2, -H / 3,
+                         L / 2, -H / 3,
+                         0,      2 * H / 3
+                    ]);
+                    return [new Tile(t1)];
+                }
+                const maxR = Math.ceil(density / 2);
+                const maxC = Math.ceil(density / 2);
+                for (let r = -maxR; r < maxR; r++) {
                     const yBase = r * H;
-                    for (let c = -limit; c <= limit; c++) {
+                    for (let c = -maxC; c < maxC; c++) {
                         const xBase = c * L + (Math.abs(r) % 2 === 0 ? 0 : L / 2);
                         
                         const t1 = new Float64Array([
@@ -14610,8 +14968,18 @@ ${document.getElementById('pathGroup').innerHTML}
                 const L = 32 / density;
                 const a = 0.58 * L;
                 const b = 0.42 * L;
+                if (density === 1) {
+                    const p1 = new Float64Array([
+                        -a/2, -a/2,
+                         a/2, -a/2,
+                         a/2 + b, b - a/2,
+                         b - a/2, a + b - a/2,
+                        -a/2, a - a/2
+                    ]);
+                    return [new Tile(p1)];
+                }
                 const step = 2 * (a + b);
-                const limit = Math.ceil(density) + 1;
+                const limit = Math.ceil(density / 2) + 1;
 
                 for (let r = -limit; r <= limit; r++) {
                     const cy = r * step;
@@ -14661,11 +15029,19 @@ ${document.getElementById('pathGroup').innerHTML}
             static generateKagome(density) {
                 const tiles = [];
                 const S = 32 / density; // lato comune
+                if (density === 1) {
+                    const hex = new Float64Array(12);
+                    for (let i = 0; i < 6; i++) {
+                        const angle = i * Math.PI / 3;
+                        hex[i * 2] = S * Math.cos(angle);
+                        hex[i * 2 + 1] = S * Math.sin(angle);
+                    }
+                    return [new Tile(hex)];
+                }
                 const step = 2 * S;
-                const limit = Math.ceil(density) + 2;
+                const limit = Math.ceil(density / 2) + 1;
 
                 // 1. Generiamo gli esagoni regolari flat-topped di lato S
-                // sui centri della griglia triangolare di passo 2S
                 for (let r = -limit; r <= limit; r++) {
                     const cy = r * step * Math.sqrt(3) / 2;
                     for (let c = -limit; c <= limit; c++) {
@@ -14683,8 +15059,6 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
 
                 // 2. Generiamo i triangoli del tassellamento
-                // Ciascun triangolo si trova al centro di tre esagoni e ha come vertici
-                // i loro punti medi di contatto.
                 for (let r = -limit; r < limit; r++) {
                     for (let c = -limit; c < limit; c++) {
                         const isOdd = (Math.abs(r) % 2 === 1);
@@ -14699,7 +15073,7 @@ ${document.getElementById('pathGroup').innerHTML}
                         const x01 = c * step + (isNextOdd ? step / 2 : 0);
                         const x11 = (c + 1) * step + (isNextOdd ? step / 2 : 0);
 
-                        // Cella Triangolare Up (punta in su)
+                        // Cella Triangolare Up
                         const pA = { x: x00, y: y0 };
                         const pB = { x: x10, y: y0 };
                         const pC = isOdd ? { x: x11, y: y1 } : { x: x01, y: y1 };
@@ -14711,7 +15085,7 @@ ${document.getElementById('pathGroup').innerHTML}
                         ]);
                         tiles.push(new Tile(t1));
 
-                        // Cella Triangolare Down (punta in giù)
+                        // Cella Triangolare Down
                         const pD = isOdd ? { x: x00, y: y0 } : { x: x10, y: y0 };
                         const pE = { x: x01, y: y1 };
                         const pF = { x: x11, y: y1 };
@@ -14735,7 +15109,20 @@ ${document.getElementById('pathGroup').innerHTML}
                 const Dc = L * (1 + Math.sqrt(2));
                 const H = L / 2;
                 const K = Dc / 2;
-                const limit = Math.ceil(density) + 1;
+                if (density === 1) {
+                    const flatOct = new Float64Array([
+                         H,  K,
+                        -H,  K,
+                        -K,  H,
+                        -K, -H,
+                        -H, -K,
+                         H, -K,
+                         K, -H,
+                         K,  H
+                    ]);
+                    return [new Tile(flatOct)];
+                }
+                const limit = Math.ceil(density / 2) + 1;
                 const addedPolys = new Set();
 
                 for (let r = -limit; r <= limit; r++) {
@@ -14790,7 +15177,7 @@ ${document.getElementById('pathGroup').innerHTML}
             // 7. Wallpaper Group p4
             static generateWallpaperP4(density) {
                 const tiles = [];
-                const limit = Math.ceil(density) + 1;
+                const limit = (density === 1) ? 0 : Math.ceil(density / 2) + 1;
                 const L = 80 / density;
                 const baseVerts = new Float64Array([
                     0, 0,
@@ -14798,6 +15185,7 @@ ${document.getElementById('pathGroup').innerHTML}
                     L / 2, L / 2
                 ]);
                 const proto = new Tile(baseVerts);
+                if (density === 1) return [proto];
 
                 for (let r = -limit; r <= limit; r++) {
                     for (let c = -limit; c <= limit; c++) {
@@ -14818,7 +15206,7 @@ ${document.getElementById('pathGroup').innerHTML}
             // 8. Wallpaper Group p6
             static generateWallpaperP6(density) {
                 const tiles = [];
-                const limit = Math.ceil(density) + 1;
+                const limit = (density === 1) ? 0 : Math.ceil(density / 2) + 1;
                 const L = 80 / density;
                 const R = L / Math.sqrt(3);
                 const baseVerts = new Float64Array([
@@ -14827,6 +15215,7 @@ ${document.getElementById('pathGroup').innerHTML}
                     R * 0.5, R * Math.sqrt(3) * 0.5
                 ]);
                 const proto = new Tile(baseVerts);
+                if (density === 1) return [proto];
 
                 for (let r = -limit; r <= limit; r++) {
                     for (let c = -limit; c <= limit; c++) {
@@ -15064,7 +15453,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 let sys = { H8: singleShape, H7: compMeta };
 
                 // Calcoliamo targetCount per far sì che la densità cambi in modo continuo e fluido
-                const targetCount = Math.min(800, Math.round(density * density * 3.0));
+                const targetCount = (density === 1) ? 1 : Math.min(800, Math.round(density * density * 3.0));
 
                 // Mappa la densità a una profondità ricorsiva adatta ad avere abbastanza tessere per targetCount * 2.2
                 let depth = 2;
@@ -15136,6 +15525,15 @@ ${document.getElementById('pathGroup').innerHTML}
 
             // 10. Voronoi Lloyd (Irregolare)
             static generateLloydVoronoi(density) {
+                if (density === 1) {
+                    const flatPts = new Float64Array([
+                        -35, -35,
+                         35, -35,
+                         35,  35,
+                        -35,  35
+                    ]);
+                    return [new Tile(flatPts)];
+                }
                 const maxW = 42;
                 let points = [];
                 let localSeed = 12345;
@@ -15233,7 +15631,21 @@ ${document.getElementById('pathGroup').innerHTML}
 
             const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
             const plotSize = parseFloat(document.getElementById('paramPlotSize').value) || 120;
-            const spacingVirtual = spacing * 80 / plotSize;
+
+            // Cap di sicurezza graduale sulla campitura per tessera in base al livello di densità
+            let maxFillPerTile = 200;
+            if (density === 1) maxFillPerTile = 200;
+            else if (density === 2) maxFillPerTile = 90;
+            else if (density === 3) maxFillPerTile = 55;
+            else if (density === 4) maxFillPerTile = 35;
+            else if (density === 5) maxFillPerTile = 25;
+            else if (density === 6) maxFillPerTile = 18;
+            else if (density === 7) maxFillPerTile = 14;
+            else if (density === 8) maxFillPerTile = 10;
+            else if (density >= 9 && density <= 12) maxFillPerTile = 7;
+            else if (density > 12) maxFillPerTile = 4;
+            const effectiveSpacing = spacing;
+            const spacingVirtual = effectiveSpacing * 80 / plotSize;
 
             let tiles = [];
 
@@ -15315,7 +15727,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 
                 // Usiamo un fattore di copertura per far sì che la tassellazione iniziale sia più grande
                 // dell'area utile di ritaglio [-42, 42], evitando buchi (effetto Pacman)
-                const coverageFactor = (method === 'plane') ? 1.5 : 1.0;
+                const coverageFactor = (density === 1) ? 1.0 : ((method === 'plane') ? 1.5 : 1.0);
                 const targetMin = -42 * coverageFactor;
                 const targetMax = 42 * coverageFactor;
                 const targetSize = targetMax - targetMin;
@@ -15395,6 +15807,10 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
 
                 if (fillType !== 'none') {
+                    if (fillPaths.length >= 2500) {
+                        console.warn("Limite di campiture raggiunto (2500 percorsi) per preservare la stabilità del browser.");
+                        break;
+                    }
                     if (fillType === 'spiral') {
                         let triPoly = [...poly];
                         let shouldInvert = invertRot;
@@ -15405,7 +15821,7 @@ ${document.getElementById('pathGroup').innerHTML}
                             triPoly.reverse();
                         }
 
-                        const spiralPoints = generateConcentricFill(triPoly, spacingVirtual, isEinsteinHat);
+                        const spiralPoints = generateConcentricFill(triPoly, spacingVirtual, isEinsteinHat, maxFillPerTile);
                         if (spiralPoints.length >= 2) {
                             fillPaths.push(spiralPoints);
                         }
@@ -16625,7 +17041,6 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
             ];
 
-            const chosen = presets[Math.floor(Math.random() * presets.length)];
             try {
                 chosen();
             } catch (e) {
@@ -16633,12 +17048,122 @@ ${document.getElementById('pathGroup').innerHTML}
                 setMode('harmonograph', true);
             }
         }
+        /* =========================================================
+           SISTEMA DI ZOOM & PAN FLUIDO ANTEPRIMA (DESKTOP & SMARTPHONE)
+        ========================================================= */
+        let zoomScale = 1.0;
+        let panX = 0;
+        let panY = 0;
+        let isPanning = false;
+        let startPanX = 0, startPanY = 0;
+        let initialPanX = 0, initialPanY = 0;
+        let initialTouchDist = 0;
+        let initialTouchScale = 1.0;
+
+        function applyZoomTransform(immediate = false) {
+            const zoomStage = document.getElementById('zoomStage');
+            const zoomBadge = document.getElementById('valZoomPercent');
+            if (zoomBadge) {
+                zoomBadge.textContent = `${Math.round(zoomScale * 100)}%`;
+            }
+            if (zoomStage) {
+                zoomStage.style.transition = immediate ? 'none' : 'transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                zoomStage.style.transform = `translate(${panX}px, ${panY}px) scale(${zoomScale})`;
+            }
+        }
+
+        function zoomPreview(factor) {
+            zoomScale = Math.min(10.0, Math.max(0.5, zoomScale * factor));
+            applyZoomTransform(false);
+        }
+
+        function resetPreviewZoom() {
+            zoomScale = 1.0;
+            panX = 0;
+            panY = 0;
+            applyZoomTransform(false);
+        }
+
+        function initZoomAndPanController() {
+            const canvas = document.getElementById('previewCanvas');
+            if (!canvas) return;
+
+            // 1. Mouse Wheel Zoom (Desktop)
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const factor = e.deltaY < 0 ? 1.15 : 0.85;
+                zoomPreview(factor);
+            }, { passive: false });
+
+            // 2. Double Click / Double Tap per Reset Vista
+            canvas.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                resetPreviewZoom();
+            });
+
+            // 3. Pointer Drag Pan
+            canvas.addEventListener('pointerdown', (e) => {
+                if (currentMode === 'pattern' && e.button === 0 && !e.shiftKey) return;
+                
+                isPanning = true;
+                startPanX = e.clientX;
+                startPanY = e.clientY;
+                initialPanX = panX;
+                initialPanY = panY;
+                canvas.setPointerCapture(e.pointerId);
+            });
+
+            canvas.addEventListener('pointermove', (e) => {
+                if (!isPanning) return;
+                const dx = e.clientX - startPanX;
+                const dy = e.clientY - startPanY;
+                panX = initialPanX + dx;
+                panY = initialPanY + dy;
+                applyZoomTransform(true);
+            });
+
+            const stopPan = (e) => {
+                if (isPanning) {
+                    isPanning = false;
+                    try { canvas.releasePointerCapture(e.pointerId); } catch(err) {}
+                    applyZoomTransform(false);
+                }
+            };
+
+            canvas.addEventListener('pointerup', stopPan);
+            canvas.addEventListener('pointercancel', stopPan);
+
+            // 4. Touch Multi-Touch Pinch Zoom (Smartphone)
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    isPanning = false;
+                    initialTouchDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    initialTouchScale = zoomScale;
+                }
+            }, { passive: true });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2 && initialTouchDist > 0) {
+                    const currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const factor = currentDist / initialTouchDist;
+                    zoomScale = Math.min(10.0, Math.max(0.5, initialTouchScale * factor));
+                    applyZoomTransform(true);
+                }
+            }, { passive: true });
+        }
 
         window.onload = () => {
             initWorldGeoJsonSelectors();
             initializeFontDensities();
             buildHarmonographUI();
             toggleCustomPenCommandsUI();
+            initZoomAndPanController(); // Inizializza il controller Zoom & Pan fluido per l'anteprima
             loadRandomAppealingPreset(); // Avvio dinamico con preset generativo casuale ed accattivante!
             // Equipaggia tutti gli slider con un campo numerico diretto da tastiera
             setTimeout(() => addNumberInputToSliders(), 100);
