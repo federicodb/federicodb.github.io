@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informativa sulla Privacy & Cookie Policy - Laboratorio Matematico Orfini</title>
+    <meta name="description" content="Informativa sul trattamento dei dati personali e cookie policy conforme al GDPR ed alle linee guida del Garante italiano per il Laboratorio Matematico Orfini Foligno.">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="cookie-consent.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Header minimale -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-lg font-bold text-indigo-400 hover:text-indigo-300 transition flex items-center gap-2">
+                <span>📐</span> Laboratorio Matematico Orfini
+            </a>
+            <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                ← Torna alla Home
+            </a>
+        </div>
+    </header>
+
+    <!-- Contenuto Principale Informativa Legale -->
+    <main class="max-w-4xl mx-auto px-4 py-10 flex-1">
+        <article class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 md:p-10 space-y-8 shadow-xl">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white mb-2">Informativa sulla Privacy & Cookie Policy</h1>
+                <p class="text-xs text-slate-400 font-mono">Ultimo aggiornamento: Luglio 2026 | Conforme al Regolamento UE 2016/679 (GDPR)</p>
+            </div>
+
+            <section class="space-y-3">
+                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">1. Titolarità del Trattamento</h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Il <strong>Laboratorio Matematico Orfini Foligno</strong> è un progetto didattico, creativo ed open source dedicato alla visualizzazione interattiva della matematica, della fisica e della modellazione 3D vettoriale per le scuole superiori. Questo sito è ospitato su piattaforma statica GitHub Pages ed opera nel pieno rispetto del principio di minimizzazione dei dati.
+                </p>
+            </div>
+
+            <section class="space-y-3">
+                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">2. Tipologia di Dati Trattati e Cookie Tecnici</h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Il sito è <strong>esclusivamente statico client-side</strong> (HTML/JS nativo). Nessun dato personale identificativo viene raccolto, memorizzato o inviato a server remoti.
+                </p>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Cookie Tecnici e Memoria Locale (`localStorage`)</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Utilizziamo esclusivamente memorizzazione tecnica di prima parte (local storage del browser) per consentire le seguenti funzionalità essenziali:
+                    </p>
+                    <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+                        <li><strong>Memorizzazione dello stato delle applicazioni</strong> (es. parametri 3D del Pen Plotter, impostazioni dei generatori vettoriali).</li>
+                        <li><strong>Registro del Consenso Privacy</strong> (chiave <code>orfini_cookie_consent</code> per salvare le scelte espresse nel banner).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">3. Blocco Preventivo e Gestione dei Cookie di Terze Parti</h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Nessun cookie analitico o tracciante di terze parti viene caricato all'atterraggio sulla pagina. In conformità alle direttive del Garante Privacy Italiano, gli script o widget non essenziali rimangono preventivamente bloccati finché non viene prestato un consenso esplicito e revocabile in qualsiasi momento.
+                </p>
+            </section>
+
+            <section class="space-y-3">
+                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">4. Diritti dell'Interessato e Modifica del Consenso</h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    In qualità di utente o studente, puoi in qualsiasi momento verificare, modificare o revocare il consenso fornito cliccando sul pulsante sottostante o tramite il link presente nel footer di ogni pagina del sito:
+                </p>
+                <div class="pt-2">
+                    <button onclick="if(window.OrfiniConsent) window.OrfiniConsent.openSettings();" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-lg flex items-center gap-2">
+                        <span>⚙️ Gestisci Preferenze Cookie</span>
+                    </button>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3">
+            <span>© Laboratorio Matematico Orfini Foligno - Software Libero & Didattica Aperta</span>
+            <button onclick="if(window.OrfiniConsent) window.OrfiniConsent.openSettings();" class="orfini-cookie-footer-link">
+                Gestione Cookie & Privacy
+            </button>
+        </div>
+    </footer>
+
+    <script src="cookie-consent.js"></script>
+</body>
+</html>

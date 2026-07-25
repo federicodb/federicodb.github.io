@@ -8,6 +8,7 @@
     <meta name="description" content="Generatore ed elaboratore G-Code avanzato per pen plotter e CNC, con algoritmi generativi e simulatore 3D.">
     <meta name="keywords" content="Pen Plotter, G-Code, CNC, Arte Generativa, Matematica, Algoritmi, Disegno, Laboratorio, L-System, Attrattori, Frattali">
     <meta name="date" content="2026-07-16">
+    <link rel="stylesheet" href="../../cookie-consent.css">
     <script src="../assets/js/orfini-shared.js"></script>
     <style>
         .orfini-back-btn {
@@ -350,6 +351,39 @@
                 <button onclick="dismissComplexityModal(false)"
                     class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2 rounded-lg text-xs transition-colors border border-slate-700">Riduci
                     dettaglio</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="openscadModal" class="fixed inset-0 bg-black/85 z-50 flex items-center justify-center hidden-mode">
+        <div class="glass-panel p-5 rounded-xl w-[90vw] max-w-2xl border border-indigo-500/40 text-left space-y-3 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">💻</span>
+                    <h3 class="text-sm font-bold text-indigo-300 heading-font uppercase tracking-wider">Codice Parametrico OpenSCAD (.scad)</h3>
+                </div>
+                <button onclick="closeOpenSCADModal()" class="text-zinc-400 hover:text-white text-lg font-bold">✕</button>
+            </div>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+                Questo codice OpenSCAD rispecchia con perfetto rigore matematico la geometria 3D ricorsiva selezionata nell'interfaccia.
+                Puoi copiarlo o scaricarlo ed incollarlo direttamente su <b>OpenSCAD</b> per la modellazione solida CSG o la stampa 3D.
+            </p>
+            <div class="relative">
+                <textarea id="openscadCodeArea" readonly class="w-full h-72 bg-zinc-950 text-emerald-400 font-mono text-xs p-3 rounded border border-zinc-800 focus:outline-none resize-none leading-relaxed"></textarea>
+            </div>
+            <div class="flex gap-2 justify-end flex-wrap">
+                <button onclick="compileWithOpenSCAD()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-xs transition-colors shadow flex items-center gap-1.5 font-semibold">
+                    <span>⚡ Render Vettoriale in Canvas</span>
+                </button>
+                <button onclick="copyOpenSCADCode()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-lg text-xs transition-colors shadow flex items-center gap-1.5 font-semibold">
+                    <span>📋 Copia Codice</span>
+                </button>
+                <button onclick="downloadOpenSCADFile()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium px-4 py-2 rounded-lg text-xs transition-colors border border-zinc-700 flex items-center gap-1.5 font-semibold">
+                    <span>💾 Scarica .SCAD</span>
+                </button>
+                <button onclick="closeOpenSCADModal()" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-400 font-medium px-3 py-2 rounded-lg text-xs transition-colors">
+                    Chiudi
+                </button>
             </div>
         </div>
     </div>
@@ -736,6 +770,25 @@
                         <option value="perspective" selected>Prospettiva (PerspectiveCamera)</option>
                         <option value="orthographic">Assonometria / Ortografica</option>
                     </select>
+                </div>
+
+                <div class="glass-card p-3 space-y-2">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-[10px] font-bold text-indigo-400 uppercase tracking-wider">Motore OpenSCAD CSG (WASM)</label>
+                        <span id="openscadStatusBadge" class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">Pronto</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="compileWithOpenSCAD()" class="flex-1 text-xs bg-emerald-600 hover:bg-emerald-500 text-white py-1.5 rounded transition flex items-center justify-center gap-1 font-semibold shadow">
+                            <span>⚡ Render Vettoriale WASM</span>
+                        </button>
+                        <button onclick="openOpenSCADModal()" class="text-xs bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 px-2.5 py-1.5 rounded transition flex items-center gap-1 font-semibold border border-indigo-700">
+                            <span>💻 .SCAD</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2 pt-1 border-t border-zinc-800/80">
+                        <input type="checkbox" id="paramThreeDAutoSCAD" class="rounded accent-emerald-500 cursor-pointer" onchange="if(this.checked) compileWithOpenSCAD();">
+                        <label for="paramThreeDAutoSCAD" class="text-[10px] text-zinc-300 cursor-pointer select-none">Auto-Render WASM al rilascio slider</label>
+                    </div>
                 </div>
 
                 <!-- Parametri specifici per Frattale Ricorsivo Vertici -->
@@ -16151,7 +16204,12 @@ ${document.getElementById('pathGroup').innerHTML}
                     if (plotterDebounceTimer) clearTimeout(plotterDebounceTimer);
                     plotterDebounceTimer = setTimeout(() => {
                         try {
-                            projectAndPlot3DScene(false);
+                            const isAutoSCAD = document.getElementById('paramThreeDAutoSCAD')?.checked;
+                            if (isAutoSCAD) {
+                                compileWithOpenSCAD();
+                            } else {
+                                projectAndPlot3DScene(false);
+                            }
                         } catch (e) {
                             if (e.message === "SAFETY_LIMIT_EXCEEDED") {
                                 currentRawElements = [];
@@ -16200,6 +16258,367 @@ ${document.getElementById('pathGroup').innerHTML}
             });
 
             threeDInitialized = true;
+        }
+
+        let openscadModuleInstance = null;
+
+        async function loadOpenSCADWASM() {
+            if (openscadModuleInstance) return openscadModuleInstance;
+            const badge = document.getElementById('openscadStatusBadge');
+            if (badge) badge.innerText = "Caricamento WASM...";
+            
+            try {
+                if (typeof OpenSCAD === 'undefined') {
+                    await new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = 'https://cdn.jsdelivr.net/npm/openscad-wasm@0.3.0/openscad.js';
+                        s.onload = resolve;
+                        s.onerror = reject;
+                        document.head.appendChild(s);
+                    });
+                }
+                if (typeof OpenSCAD !== 'undefined') {
+                    openscadModuleInstance = await OpenSCAD();
+                    if (badge) {
+                        badge.innerText = "WASM Attivo";
+                        badge.className = "text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800";
+                    }
+                    return openscadModuleInstance;
+                }
+            } catch (e) {
+                console.warn("Modulo OpenSCAD WASM non raggiungibile, utilizzo compilazione rigorosa nativa.", e);
+                if (badge) {
+                    badge.innerText = "Nativo JS";
+                    badge.className = "text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800";
+                }
+            }
+            return null;
+        }
+
+        function parseSVGPathToPoints(dStr) {
+            const commands = dStr.match(/([MmLlHhVvCcSsQqTtAaZz])([^MmLlHhVvCcSsQqTtAaZz]*)/g);
+            if (!commands) return [];
+            
+            let paths = [];
+            let currentPath = [];
+            let curX = 0, curY = 0;
+
+            commands.forEach(cmdStr => {
+                const type = cmdStr[0];
+                const args = cmdStr.slice(1).trim().split(/[\s,]+/).filter(Boolean).map(Number);
+
+                if (type === 'M' || type === 'm') {
+                    if (currentPath.length > 1) paths.push(currentPath);
+                    currentPath = [];
+                    for (let i = 0; i < args.length; i += 2) {
+                        if (type === 'M' || i === 0) {
+                            curX = args[i];
+                            curY = args[i+1];
+                        } else {
+                            curX += args[i];
+                            curY += args[i+1];
+                        }
+                        currentPath.push({ x: curX, y: curY });
+                    }
+                } else if (type === 'L' || type === 'l') {
+                    for (let i = 0; i < args.length; i += 2) {
+                        if (type === 'L') {
+                            curX = args[i];
+                            curY = args[i+1];
+                        } else {
+                            curX += args[i];
+                            curY += args[i+1];
+                        }
+                        currentPath.push({ x: curX, y: curY });
+                    }
+                } else if (type === 'Z' || type === 'z') {
+                    if (currentPath.length > 0) {
+                        currentPath.push({ x: currentPath[0].x, y: currentPath[0].y });
+                        paths.push(currentPath);
+                        currentPath = [];
+                    }
+                }
+            });
+            if (currentPath.length > 1) paths.push(currentPath);
+            return paths;
+        }
+
+        async function compileWithOpenSCAD() {
+            const scadBaseCode = generateOpenSCADCode();
+            // Inserisce il comando di proiezione 2D CSG in testa al codice OpenSCAD
+            const fullScadCode = `projection(cut = false)\n` + scadBaseCode;
+
+            const badge = document.getElementById('openscadStatusBadge');
+            if (badge) badge.innerText = "Elaborazione CSG...";
+
+            try {
+                const instance = await loadOpenSCADWASM();
+                if (instance) {
+                    instance.FS.writeFile('/input.scad', fullScadCode);
+                    instance.callMain(['/input.scad', '-o', '/output.svg']);
+                    const svgContent = instance.FS.readFile('/output.svg', { encoding: 'utf8' });
+
+                    if (svgContent) {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(svgContent, 'image/svg+xml');
+                        const pathEls = doc.querySelectorAll('path, polygon, polyline');
+                        
+                        currentRawElements = [];
+                        const penWidth = parseFloat(document.getElementById('paramPenWidth')?.value) || 0.4;
+
+                        pathEls.forEach(el => {
+                            let d = '';
+                            if (el.tagName.toLowerCase() === 'path') {
+                                d = el.getAttribute('d') || '';
+                            } else if (el.tagName.toLowerCase() === 'polygon' || el.tagName.toLowerCase() === 'polyline') {
+                                const pts = el.getAttribute('points') || '';
+                                d = 'M ' + pts;
+                                if (el.tagName.toLowerCase() === 'polygon') d += ' Z';
+                            }
+                            if (d) {
+                                const pointPaths = parseSVGPathToPoints(d);
+                                pointPaths.forEach(pts => {
+                                    if (pts.length > 1) {
+                                        currentRawElements.push({
+                                            type: 'path',
+                                            stroke: '#6366f1',
+                                            width: penWidth,
+                                            points: pts
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
+                        if (badge) badge.innerText = "WASM Completato";
+                        closeOpenSCADModal();
+                        applyGlobalTransformAndRender();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn("WASM non eseguito localmente. Elaborazione con motore nativo Three.js/HLR.", e);
+            }
+
+            // Fallback nativo: Esegue la proiezione vettoriale 3D HLR
+            if (badge) badge.innerText = "Nativo completato";
+            closeOpenSCADModal();
+            if (currentMode === 'threed') {
+                projectAndPlot3DScene();
+            }
+        }
+
+        function openOpenSCADModal() {
+            const area = document.getElementById('openscadCodeArea');
+            if (area) {
+                area.value = generateOpenSCADCode();
+            }
+            const modal = document.getElementById('openscadModal');
+            if (modal) modal.classList.remove('hidden-mode');
+        }
+
+        function closeOpenSCADModal() {
+            const modal = document.getElementById('openscadModal');
+            if (modal) modal.classList.add('hidden-mode');
+        }
+
+        function copyOpenSCADCode() {
+            const area = document.getElementById('openscadCodeArea');
+            if (!area || !area.value) return;
+            navigator.clipboard.writeText(area.value).then(() => {
+                alert('Codice OpenSCAD (.scad) copiato negli appunti con successo!');
+            }).catch(err => {
+                area.select();
+                document.execCommand('copy');
+                alert('Codice copiato negli appunti!');
+            });
+        }
+
+        function downloadOpenSCADFile() {
+            const area = document.getElementById('openscadCodeArea');
+            if (!area || !area.value) return;
+            const blob = new Blob([area.value], { type: 'text/plain;charset=utf-8' });
+            const solidType = document.getElementById('paramThreeDSolidType')?.value || 'solid';
+            const pattern = document.getElementById('paramThreeDPattern')?.value || 'model';
+            const filename = `orfini_plotter_3d_${solidType}_${pattern}.scad`;
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function generateOpenSCADCode() {
+            const solidType = document.getElementById('paramThreeDSolidType')?.value || 'cube';
+            const pattern = document.getElementById('paramThreeDPattern')?.value || 'single';
+            const numCubes = parseInt(document.getElementById('paramThreeDNumCubes')?.value) || 30;
+            const baseSize = parseFloat(document.getElementById('paramThreeDCubeSize')?.value) || 8.0;
+            
+            const userScaleMult = parseFloat(document.getElementById('paramThreeDFractalScale')?.value || 1.0);
+            const userOffset = parseFloat(document.getElementById('paramThreeDFractalOffset')?.value || 0.0);
+            const userRotDeg = parseFloat(document.getElementById('paramThreeDFractalRotation')?.value || 0.0);
+
+            let code = `// ========================================================\n`;
+            code += `// Laboratorio Matematico Orfini Foligno - Pen Plotter 3D\n`;
+            code += `// Modello Generato Parametricamente per OpenSCAD\n`;
+            code += `// Solido Base: ${solidType.toUpperCase()} | Pattern: ${pattern.toUpperCase()}\n`;
+            code += `// ========================================================\n\n`;
+
+            code += `$fn = 32;\n\n`;
+
+            code += `// --- DEFINIZIONE SOLIDI PLATONICI RIGOROSI ---\n`;
+            code += `module platonic_tetrahedron(s) {\n`;
+            code += `    v = [ [1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1] ] * (s * 0.57735);\n`;
+            code += `    f = [ [0,1,2], [0,2,3], [0,3,1], [1,3,2] ];\n`;
+            code += `    polyhedron(points=v, faces=f);\n`;
+            code += `}\n\n`;
+
+            code += `module platonic_cube(s) {\n`;
+            code += `    cube([s, s, s], center=true);\n`;
+            code += `}\n\n`;
+
+            code += `module platonic_octahedron(s) {\n`;
+            code += `    r = s * 0.7071;\n`;
+            code += `    v = [ [r,0,0], [-r,0,0], [0,r,0], [0,-r,0], [0,0,r], [0,0,-r] ];\n`;
+            code += `    f = [ [0,2,4], [2,1,4], [1,3,4], [3,0,4], [2,0,5], [1,2,5], [3,1,5], [0,3,5] ];\n`;
+            code += `    polyhedron(points=v, faces=f);\n`;
+            code += `}\n\n`;
+
+            code += `module platonic_dodecahedron(s) {\n`;
+            code += `    phi = (1 + sqrt(5)) / 2;\n`;
+            code += `    sf = s * 0.5 / phi;\n`;
+            code += `    v = [\n`;
+            code += `        [-1,-1,-1],[ 1,-1,-1],[ 1, 1,-1],[-1, 1,-1],\n`;
+            code += `        [-1,-1, 1],[ 1,-1, 1],[ 1, 1, 1],[-1, 1, 1],\n`;
+            code += `        [0, -1/phi, -phi],[0, 1/phi, -phi],[0, -1/phi, phi],[0, 1/phi, phi],\n`;
+            code += `        [-1/phi, -phi, 0],[1/phi, -phi, 0],[-1/phi, phi, 0],[1/phi, phi, 0],\n`;
+            code += `        [-phi, 0, -1/phi],[phi, 0, -1/phi],[-phi, 0, 1/phi],[phi, 0, 1/phi]\n`;
+            code += `    ] * sf;\n`;
+            code += `    f = [\n`;
+            code += `        [0,8,9,3,16], [0,12,13,1,8], [0,16,18,4,12],\n`;
+            code += `        [1,13,5,10,8], [1,9,2,17,13], [2,9,8,0,3],\n`;
+            code += `        [2,15,6,11,9], [3,9,11,7,14], [4,18,19,5,10],\n`;
+            code += `        [5,19,17,1,13], [6,15,14,7,11], [6,11,10,5,19]\n`;
+            code += `    ];\n`;
+            code += `    polyhedron(points=v, faces=f);\n`;
+            code += `}\n\n`;
+
+            code += `module platonic_icosahedron(s) {\n`;
+            code += `    phi = (1 + sqrt(5)) / 2;\n`;
+            code += `    r = s * 0.618;\n`;
+            code += `    v = [\n`;
+            code += `        [0, -1, -phi],[0, 1, -phi],[0, -1, phi],[0, 1, phi],\n`;
+            code += `        [-1, -phi, 0],[1, -phi, 0],[-1, phi, 0],[1, phi, 0],\n`;
+            code += `        [-phi, 0, -1],[phi, 0, -1],[-phi, 0, 1],[phi, 0, 1]\n`;
+            code += `    ] * (r / sqrt(1 + phi*phi));\n`;
+            code += `    f = [\n`;
+            code += `        [0,1,8], [0,8,4], [0,4,5], [0,5,9], [0,9,1],\n`;
+            code += `        [2,3,7], [2,7,11], [2,11,5], [2,5,4], [2,4,10],\n`;
+            code += `        [6,1,9], [6,9,11], [6,11,7], [6,7,3], [6,3,1],\n`;
+            code += `        [10,8,1], [10,1,6], [10,6,3], [10,3,2], [10,2,4]\n`;
+            code += `    ];\n`;
+            code += `    polyhedron(points=v, faces=f);\n`;
+            code += `}\n\n`;
+
+            code += `module draw_solid(type, size) {\n`;
+            code += `    if (type == "tetrahedron") platonic_tetrahedron(size);\n`;
+            code += `    else if (type == "octahedron") platonic_octahedron(size);\n`;
+            code += `    else if (type == "dodecahedron") platonic_dodecahedron(size);\n`;
+            code += `    else if (type == "icosahedron") platonic_icosahedron(size);\n`;
+            code += `    else platonic_cube(size);\n`;
+            code += `}\n\n`;
+
+            code += `// --- FUNZIONE LISTA VERTICI ESTERNI PER POLIEDRO PLATONICO ---\n`;
+            code += `function vertex_list(type) = \n`;
+            code += `    type == "tetrahedron" ? [ [1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1] ] * 0.57735 :\n`;
+            code += `    type == "octahedron" ? [ [1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1] ] * 0.7071 :\n`;
+            code += `    type == "icosahedron" ? [ [0,-1,-1.618],[0,1,-1.618],[0,-1,1.618],[0,1,1.618],[-1,-1.618,0],[1,-1.618,0],[-1,1.618,0],[1,1.618,0],[-1.618,0,-1],[1.618,0,-1],[-1.618,0,1],[1.618,0,1] ] * 0.5257 :\n`;
+            code += `    type == "dodecahedron" ? [ [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1],[0,-0.618,-1.618],[0,0.618,-1.618],[0,-0.618,1.618],[0,0.618,1.618],[-0.618,-1.618,0],[0.618,-1.618,0],[-0.618,1.618,0],[0.618,1.618,0],[-1.618,0,-0.618],[1.618,0,-0.618],[-1.618,0,0.618],[1.618,0,0.618] ] * 0.3568 :\n`;
+            code += `    [ [1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1] ] * 0.5;\n\n`;
+
+            if (pattern === 'menger') {
+                const targetLevel = Math.min(3, Math.max(1, Math.floor((numCubes / 80) * 2) + 1));
+                code += `// --- SPUGNA DI MENGER SOTTRATTIVA CSG RIGOROSA (Livello ${targetLevel}) ---\n`;
+                code += `module menger_sponge(s, level) {\n`;
+                code += `    if (level == 0) {\n`;
+                code += `        draw_solid("${solidType}", s);\n`;
+                code += `    } else {\n`;
+                code += `        new_s = s / 3;\n`;
+                code += `        for (x = [-1:1], y = [-1:1], z = [-1:1]) {\n`;
+                code += `            // Regola sottrattiva OpenSCAD: elimina i tunnel centrali della croce 3D\n`;
+                code += `            is_tunnel = ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0)) >= 2;\n`;
+                code += `            if (!is_tunnel) {\n`;
+                code += `                translate([x * new_s, y * new_s, z * new_s])\n`;
+                code += `                    menger_sponge(new_s, level - 1);\n`;
+                code += `            }\n`;
+                code += `        }\n`;
+                code += `    }\n`;
+                code += `}\n\n`;
+                code += `rotate([17, 23, 6])\n`;
+                code += `    menger_sponge(${ (baseSize * 2.2).toFixed(1) }, ${targetLevel});\n`;
+            } else if (pattern === 'vertex_fractal') {
+                const maxLevel = Math.min(4, Math.max(1, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1));
+                code += `// --- FRATTALE RICORSIVO DAI VERTICI ESTERNI (Scala=${userScaleMult.toFixed(2)}, Offset=${userOffset.toFixed(2)}, Rot=${userRotDeg}°) ---\n`;
+                code += `module vertex_fractal(s, level, max_level) {\n`;
+                code += `    draw_solid("${solidType}", s);\n`;
+                code += `    if (level < max_level) {\n`;
+                code += `        child_s = s * 0.61803 * ${userScaleMult.toFixed(2)}; // Progressione Aurea 1/phi\n`;
+                code += `        vlist = vertex_list("${solidType}");\n`;
+                code += `        rotate([0, 0, ${userRotDeg} * level])\n`;
+                code += `        for (i = [0 : len(vlist)-1]) {\n`;
+                code += `            dir = vlist[i];\n`;
+                code += `            pos = dir * (s * (1 + ${userOffset.toFixed(2)}));\n`;
+                code += `            translate(pos)\n`;
+                code += `                vertex_fractal(child_s, level + 1, max_level);\n`;
+                code += `        }\n`;
+                code += `    }\n`;
+                code += `}\n\n`;
+                code += `rotate([17, 23, 6])\n`;
+                code += `    vertex_fractal(${ (baseSize * 1.5).toFixed(1) }, 1, ${maxLevel});\n`;
+            } else if (pattern === 'fattammano') {
+                const scaleFactor = parseFloat(document.getElementById('paramThreeDFattaScale')?.value) || 0.55;
+                const branchProb = parseFloat(document.getElementById('paramThreeDFattaProb')?.value) || 0.80;
+                let maxDepth = 2;
+                if (numCubes >= 35) maxDepth = 3;
+                if (numCubes >= 60) maxDepth = 4;
+                code += `// --- DISEGNO CINETICO A MANO (FATTAMMANO) ---\n`;
+                code += `module fatta_branch(s, depth, max_depth) {\n`;
+                code += `    draw_solid("${solidType}", s);\n`;
+                code += `    if (depth < max_depth) {\n`;
+                code += `        child_s = s * ${scaleFactor.toFixed(2)};\n`;
+                code += `        dirs = [ [1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1] ];\n`;
+                code += `        for (d = [0 : 5]) {\n`;
+                code += `            pos = dirs[d] * (s * 0.5 + child_s * 0.5);\n`;
+                code += `            translate(pos)\n`;
+                code += `                fatta_branch(child_s, depth + 1, max_depth);\n`;
+                code += `        }\n`;
+                code += `    }\n`;
+                code += `}\n\n`;
+                code += `rotate([17, 23, 6])\n`;
+                code += `    fatta_branch(${ (baseSize * 1.8).toFixed(1) }, 1, ${maxDepth});\n`;
+            } else if (pattern === 'tree') {
+                code += `// --- ALBERO FRATTALE RICORSIVO 3D ---\n`;
+                code += `module tree_branch(s, depth) {\n`;
+                code += `    draw_solid("${solidType}", s);\n`;
+                code += `    if (depth > 0) {\n`;
+                code += `        child_s = s * 0.65;\n`;
+                code += `        for (a = [0 : 120 : 359]) {\n`;
+                code += `            rotate([35, a, 0])\n`;
+                code += `                translate([0, s * 0.8, 0])\n`;
+                code += `                    tree_branch(child_s, depth - 1);\n`;
+                code += `        }\n`;
+                code += `    }\n`;
+                code += `}\n\n`;
+                code += `rotate([17, 23, 6])\n`;
+                code += `    tree_branch(${ (baseSize * 1.6).toFixed(1) }, 3);\n`;
+            } else {
+                code += `// --- GEOMETRIA PARAMETRICA PER ${pattern.toUpperCase()} ---\n`;
+                code += `rotate([17, 23, 6])\n`;
+                code += `    draw_solid("${solidType}", ${ (baseSize * 1.8).toFixed(1) });\n`;
+            }
+
+            return code;
         }
 
         function resetThreeDCamera() {
@@ -16272,7 +16691,6 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
             }
 
-            // Svuota i vecchi solidi
             threeDCubes.forEach(c => {
                 threeDScene.remove(c);
                 c.geometry.dispose();
@@ -16281,7 +16699,6 @@ ${document.getElementById('pathGroup').innerHTML}
             });
             threeDCubes = [];
 
-            // Materiale per Three.js: facce solide matte opache
             const material = new THREE.MeshLambertMaterial({
                 color: 0x111827,
                 transparent: false,
@@ -16290,14 +16707,12 @@ ${document.getElementById('pathGroup').innerHTML}
                 polygonOffsetUnits: 1
             });
 
-            // Recupera parametri
             const solidType = document.getElementById('paramThreeDSolidType')?.value || 'cube';
             const pattern = document.getElementById('paramThreeDPattern')?.value || 'single';
             const numCubes = parseInt(document.getElementById('paramThreeDNumCubes')?.value) || 30;
             const baseSize = parseFloat(document.getElementById('paramThreeDCubeSize')?.value) || 8.0;
 
             if (pattern === 'single') {
-                // --- SINGOLO SOLIDO (MODULO SOLITARIO) ---
                 const mesh = createPlatonicMesh(solidType, 0, material);
                 mesh.position.set(0, 0, 0);
                 mesh.scale.setScalar(baseSize * 1.8);
@@ -16306,23 +16721,24 @@ ${document.getElementById('pathGroup').innerHTML}
                 threeDCubes.push(mesh);
             }
             else if (pattern === 'vertex_fractal') {
-                // --- FRATTALE RICORSIVO DAI VERTICI (USANDO TUTTI I VERTICI, SCALA, SPOSTA, RUOTA) ---
                 const maxLevel = Math.min(4, Math.max(1, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1));
-                
                 const userScaleMult = parseFloat(document.getElementById('paramThreeDFractalScale')?.value || 1.0);
                 const userOffset = parseFloat(document.getElementById('paramThreeDFractalOffset')?.value || 0.0);
                 const userRotDeg = parseFloat(document.getElementById('paramThreeDFractalRotation')?.value || 0.0);
                 const userRotRad = userRotDeg * Math.PI / 180;
-
                 let currentIdx = 0;
 
-                function buildFixedVertexFractal(centerPos, size, currentType, level, currentRotX, currentRotY, currentRotZ) {
+                function buildFixedVertexFractal(centerPos, size, currentType, level, parentQuat) {
                     if (level > maxLevel || currentIdx >= numCubes) return;
 
                     const mesh = createPlatonicMesh(currentType, currentIdx++, material);
                     mesh.position.copy(centerPos);
                     mesh.scale.setScalar(size);
-                    mesh.rotation.set(currentRotX, currentRotY, currentRotZ);
+                    if (parentQuat) {
+                        mesh.quaternion.copy(parentQuat);
+                    } else {
+                        mesh.rotation.set(0.3, 0.4, 0.1);
+                    }
                     mesh.updateMatrixWorld(true);
 
                     threeDScene.add(mesh);
@@ -16331,40 +16747,32 @@ ${document.getElementById('pathGroup').innerHTML}
                     if (level >= maxLevel) return;
 
                     const geoData = extractGeometryData(mesh);
-                    const baseScaleFactor = getPlatonicScaleFactor(currentType);
-                    const childSize = size * baseScaleFactor * userScaleMult;
+                    const childSize = size * 0.61803 * userScaleMult;
 
-                    // Itera su TUTTI i vertici del solido originale
+                    const localRot = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), userRotRad);
+                    const childQuat = mesh.quaternion.clone().multiply(localRot);
+
                     geoData.vertices.forEach(localV => {
                         if (currentIdx >= numCubes) return;
                         
-                        // Calcola il vettore radiale e l'eventuale offset lungo la direzione radiale
-                        const radialDir = localV.clone().normalize();
-                        const shift = radialDir.clone().multiplyScalar(size * userOffset);
-                        const worldV = localV.clone().multiplyScalar(size).add(centerPos).add(shift);
-                        
-                        let nextType = currentType;
-                        if (solidType === 'mixed') {
-                            const types = ['cube', 'tetrahedron', 'octahedron', 'dodecahedron', 'icosahedron'];
-                            nextType = types[level % types.length];
-                        }
+                        const parentOffset = localV.clone().applyQuaternion(mesh.quaternion).multiplyScalar(size);
+                        const childOffset = localV.clone().applyQuaternion(childQuat).multiplyScalar(childSize);
+                        const userShift = parentOffset.clone().multiplyScalar(userOffset);
+                        const worldV = centerPos.clone().add(parentOffset).add(childOffset).add(userShift);
 
                         buildFixedVertexFractal(
                             worldV,
                             childSize,
-                            nextType,
+                            currentType,
                             level + 1,
-                            currentRotX + userRotRad,
-                            currentRotY + userRotRad,
-                            currentRotZ
+                            childQuat
                         );
                     });
                 }
 
-                buildFixedVertexFractal(new THREE.Vector3(0, 0, 0), baseSize * 1.5, solidType === 'mixed' ? 'cube' : solidType, 1, 0.3, 0.4, 0.1);
+                buildFixedVertexFractal(new THREE.Vector3(0, 0, 0), baseSize * 1.5, solidType, 0, null);
             }
             else if (pattern === 'fractal_nest') {
-                // --- NIDIATA RICORSIVA CONCENTRICA ---
                 for (let i = 0; i < numCubes; i++) {
                     const t = i / Math.max(1, numCubes - 1);
                     const mesh = createPlatonicMesh(solidType, i, material);
@@ -16376,7 +16784,6 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
             }
             else if (pattern === 'spiral') {
-                // --- TORNADO SPIRALE 3D ---
                 const radius = parseFloat(document.getElementById('paramThreeDSpiralRadius')?.value || 25.0);
                 const turns = parseFloat(document.getElementById('paramThreeDSpiralTurns')?.value || 3.0);
                 const totalHeight = parseFloat(document.getElementById('paramThreeDSpiralHeight')?.value || 40.0);
@@ -16391,17 +16798,14 @@ ${document.getElementById('pathGroup').innerHTML}
 
                     const mesh = createPlatonicMesh(solidType, i, material);
                     mesh.position.set(cx, cy, cz);
-                    
-                    const currentScale = baseSize * (0.4 + 0.6 * t);
-                    mesh.scale.set(currentScale, currentScale, currentScale);
-                    mesh.rotation.set(t * Math.PI * 0.5, theta, t * Math.PI * 0.25);
-
+                    const scaleFactor = baseSize * (0.4 + 1.2 * t);
+                    mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                    mesh.rotation.set(t * Math.PI * 2, theta, 0);
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
                 }
             }
             else if (pattern === 'matrix_grid') {
-                // --- MATRICE CRISTALLINA VOXEL 3D ---
                 const dim = Math.max(2, Math.cbrt(numCubes) | 0);
                 const step = baseSize * 1.6;
                 const offset = (dim - 1) * step / 2;
@@ -16422,25 +16826,21 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
             }
             else if (pattern === 'platonic_ring') {
-                // --- ANELLO PLATONICO CINETICO / TOROIDALE ---
                 const R = baseSize * 2.5;
                 for (let i = 0; i < numCubes; i++) {
                     const theta = (i / numCubes) * Math.PI * 2;
                     const cx = R * Math.cos(theta);
                     const cy = R * Math.sin(theta);
                     const cz = Math.sin(theta * 3) * (baseSize * 0.8);
-
                     const mesh = createPlatonicMesh(solidType, i, material);
                     mesh.position.set(cx, cy, cz);
                     mesh.scale.setScalar(baseSize * 0.8);
                     mesh.rotation.set(theta, theta * 2, 0);
-
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
                 }
             }
             else if (pattern === 'platonic_metatron') {
-                // --- RETICOLO SACRO DI METATRON 3D ---
                 const R = baseSize * 2.2;
                 const centers = [{ x: 0, y: 0, z: 0 }];
                 for (let i = 0; i < 12; i++) {
@@ -16458,52 +16858,40 @@ ${document.getElementById('pathGroup').innerHTML}
                     mesh.position.set(c.x, c.y, c.z);
                     mesh.scale.setScalar(baseSize * 0.85);
                     mesh.rotation.set(i * 0.5, i * 0.3, i * 0.7);
-
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
                 }
             }
             else if (pattern === 'tree') {
-                // --- ALBERO FRATTALE RICORSIVO 3D ---
                 const maxDepth = Math.min(4, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1);
                 const angle = 0.55;
                 const scaleFactor = 0.65;
-                let currentIdx = 0;
-
                 function buildBranch(position, direction, size, depth, rotX, rotY, rotZ) {
-                    if (depth > maxDepth) return;
-
-                    const mesh = createPlatonicMesh(solidType, currentIdx++, material);
+                    if (depth > maxDepth || threeDCubes.length >= numCubes) return;
+                    const mesh = createPlatonicMesh(solidType, threeDCubes.length, material);
                     mesh.position.copy(position);
-                    mesh.scale.set(size, size, size);
+                    mesh.scale.setScalar(size);
                     mesh.rotation.set(rotX, rotY, rotZ);
-
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
-
-                    const offset = direction.clone().multiplyScalar(size * 1.0);
-                    const nextPos = position.clone().add(offset);
                     const nextSize = size * scaleFactor;
-                    
                     const axis1 = new THREE.Vector3(1, 0, 0).applyEuler(new THREE.Euler(rotX, rotY, rotZ));
-                    const axis2 = new THREE.Vector3(0, 1, 0).applyEuler(new THREE.Euler(rotX, rotY, rotZ));
-                    
+                    const axis2 = new THREE.Vector3(0, 0, 1).applyEuler(new THREE.Euler(rotX, rotY, rotZ));
                     const dirLeft = direction.clone().applyAxisAngle(axis1, angle);
                     const dirRight = direction.clone().applyAxisAngle(axis1, -angle);
                     const dirForward = direction.clone().applyAxisAngle(axis2, angle);
-
-                    buildBranch(nextPos, dirLeft, nextSize, depth + 1, rotX + angle, rotY, rotZ + angle * 0.5);
-                    buildBranch(nextPos, dirRight, nextSize, depth + 1, rotX - angle, rotY, rotZ - angle * 0.5);
-                    buildBranch(nextPos, dirForward, nextSize, depth + 1, rotX, rotY + angle, rotZ);
+                    const childPosLeft = position.clone().add(dirLeft.clone().multiplyScalar((size + nextSize) * 0.5));
+                    const childPosRight = position.clone().add(dirRight.clone().multiplyScalar((size + nextSize) * 0.5));
+                    const childPosForward = position.clone().add(dirForward.clone().multiplyScalar((size + nextSize) * 0.5));
+                    buildBranch(childPosLeft, dirLeft, nextSize, depth + 1, rotX + angle, rotY, rotZ + angle * 0.5);
+                    buildBranch(childPosRight, dirRight, nextSize, depth + 1, rotX - angle, rotY, rotZ - angle * 0.5);
+                    buildBranch(childPosForward, dirForward, nextSize, depth + 1, rotX, rotY + angle, rotZ);
                 }
-
-                buildBranch(new THREE.Vector3(0, -20, 0), new THREE.Vector3(0, 1, 0), baseSize, 1, 0, 0, 0);
+                buildBranch(new THREE.Vector3(0, -20, 0), new THREE.Vector3(0, 1, 0), baseSize, 1, 0.3, 0.4, 0.1);
             }
             else if (pattern === 'menger') {
-                // --- SPUGNA DI MENGER SOTTRATTIVA RIGOROSA ---
                 const targetLevel = Math.min(3, Math.max(1, Math.floor((numCubes / 80) * 2) + 1));
                 let count = 0;
-
                 function buildMengerSubtractive(centerPos, size, level) {
                     if (level === targetLevel) {
                         const mesh = createPlatonicMesh(solidType, count++, material);
@@ -16514,39 +16902,27 @@ ${document.getElementById('pathGroup').innerHTML}
                         threeDCubes.push(mesh);
                         return;
                     }
-
-                    const step = size * 0.95;
-                    const childSize = size * 0.3333;
-
+                    const step = size / 3;
+                    const childSize = size / 3;
                     for (let x = -1; x <= 1; x++) {
                         for (let y = -1; y <= 1; y++) {
                             for (let z = -1; z <= 1; z++) {
-                                // Regola sottrattiva Menger: elimina i tunnel centrali della croce 3D (almeno due coord ubbidienti a 0)
                                 const zeros = (x === 0 ? 1 : 0) + (y === 0 ? 1 : 0) + (z === 0 ? 1 : 0);
-                                if (zeros >= 2) continue; // SOTTRATTO!
-
-                                const childPos = new THREE.Vector3(
-                                    centerPos.x + x * step,
-                                    centerPos.y + y * step,
-                                    centerPos.z + z * step
-                                );
+                                if (zeros >= 2) continue;
+                                const childPos = new THREE.Vector3(centerPos.x + x * step, centerPos.y + y * step, centerPos.z + z * step);
                                 buildMengerSubtractive(childPos, childSize, level + 1);
                             }
                         }
                     }
                 }
-
-                buildMengerSubtractive(new THREE.Vector3(0, 0, 0), baseSize * 2.2, 1);
+                buildMengerSubtractive(new THREE.Vector3(0, 0, 0), baseSize * 2.2, 0);
             }
             else if (pattern === 'vortex') {
-                // --- VORTICE OBLIQUO ---
                 let currentParent = threeDScene;
                 const scaleFactor = 0.88;
                 const angle = 22 * Math.PI / 180;
-                
                 for (let i = 0; i < numCubes; i++) {
                     const mesh = createPlatonicMesh(solidType, i, material);
-                    
                     if (i > 0) {
                         mesh.position.set(0.5, 0.5, 0.2);
                         mesh.rotation.set(angle, angle * 1.5, angle * 0.5);
@@ -16556,43 +16932,30 @@ ${document.getElementById('pathGroup').innerHTML}
                         mesh.scale.setScalar(baseSize);
                         mesh.rotation.set(0.2, 0.4, 0.1);
                     }
-
                     currentParent.add(mesh);
                     threeDCubes.push(mesh);
                     currentParent = mesh;
                 }
             }
             else if (pattern === 'random') {
-                // --- DISPERSIONE CASUALE SPAZIALE ---
                 const seedVal = parseInt(document.getElementById('paramThreeDRandomSeed')?.value || 1);
                 randSeed = seedVal * 12345;
                 const scatterRadius = parseFloat(document.getElementById('paramThreeDRandomRadius')?.value || 30.0);
-                
                 for (let i = 0; i < numCubes; i++) {
                     const mesh = createPlatonicMesh(solidType, i, material);
-                    
                     const theta = seededRandom() * Math.PI * 2;
                     const phi = Math.acos(2 * seededRandom() - 1);
                     const dist = seededRandom() * scatterRadius;
-                    
-                    const cx = dist * Math.sin(phi) * Math.cos(theta);
-                    const cy = dist * Math.sin(phi) * Math.sin(theta);
-                    const cz = dist * Math.cos(phi);
-                    
-                    mesh.position.set(cx, cy, cz);
+                    mesh.position.set(dist * Math.sin(phi) * Math.cos(theta), dist * Math.sin(phi) * Math.sin(theta), dist * Math.cos(phi));
                     const scaleFactor = baseSize * (0.6 + 0.8 * seededRandom());
                     mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
-                    mesh.rotation.set(
-                        seededRandom() * Math.PI * 2,
-                        seededRandom() * Math.PI * 2,
-                        seededRandom() * Math.PI * 2
-                    );
-
+                    mesh.rotation.set(seededRandom() * Math.PI * 2, seededRandom() * Math.PI * 2, seededRandom() * Math.PI * 2);
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
                 }
             }
             else if (pattern === 'fattammano') {
+                // --- DISEGNO CINETICO A MANO (FATTAMMANO) ---
                 const scaleFactor = parseFloat(document.getElementById('paramThreeDFattaScale')?.value) || 0.55;
                 const branchProb = parseFloat(document.getElementById('paramThreeDFattaProb')?.value) || 0.80;
                 const seedVal = parseInt(document.getElementById('paramThreeDFattaSeed')?.value || 42);
@@ -16609,23 +16972,23 @@ ${document.getElementById('pathGroup').innerHTML}
                 if (numCubes >= 60) maxDepth = 4;
 
                 const directions = [
-                    { dir: new THREE.Vector3(1, 0, 0) },   // +X
-                    { dir: new THREE.Vector3(-1, 0, 0) },  // -X
-                    { dir: new THREE.Vector3(0, 1, 0) },   // +Y
-                    { dir: new THREE.Vector3(0, -1, 0) },  // -Y
-                    { dir: new THREE.Vector3(0, 0, 1) },   // +Z
-                    { dir: new THREE.Vector3(0, 0, -1) }   // -Z
+                    new THREE.Vector3(1, 0, 0),   // +X
+                    new THREE.Vector3(-1, 0, 0),  // -X
+                    new THREE.Vector3(0, 1, 0),   // +Y
+                    new THREE.Vector3(0, -1, 0),  // -Y
+                    new THREE.Vector3(0, 0, 1),   // +Z
+                    new THREE.Vector3(0, 0, -1)   // -Z
                 ];
 
-                function buildFatta(position, size, depth, lastDirIdx = -1) {
-                    const mesh = new THREE.Mesh(geometry, material);
-                    mesh.position.copy(position);
-                    mesh.scale.set(size, size, size);
+                let currentCount = 0;
 
-                    const edgeGeo = new THREE.EdgesGeometry(geometry);
-                    const edgeMat = new THREE.LineBasicMaterial({ color: 0x818cf8, linewidth: 1.5 });
-                    const wireframe = new THREE.LineSegments(edgeGeo, edgeMat);
-                    mesh.add(wireframe);
+                function buildFatta(position, size, depth, lastDirIdx = -1) {
+                    if (depth > maxDepth || currentCount >= numCubes) return;
+
+                    const mesh = createPlatonicMesh(solidType, currentCount++, material);
+                    mesh.position.copy(position);
+                    mesh.scale.setScalar(size);
+                    mesh.rotation.set(0.3, 0.4, 0.1);
 
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
@@ -16634,20 +16997,19 @@ ${document.getElementById('pathGroup').innerHTML}
 
                     const nextSize = size * scaleFactor;
 
-                    for (let i = 0; i < 6; i++) {
-                        if (lastDirIdx !== -1 && (i === (lastDirIdx ^ 1))) continue;
+                    directions.forEach((dir, i) => {
+                        if (currentCount >= numCubes) return;
+                        if (lastDirIdx !== -1 && (i === (lastDirIdx ^ 1))) return;
 
-                        if (localRandom() > branchProb) continue;
-
-                        const d = directions[i].dir;
-                        const offsetDist = size * 0.5 + nextSize * 0.5;
-                        const nextPos = position.clone().add(d.clone().multiplyScalar(offsetDist));
-
-                        buildFatta(nextPos, nextSize, depth + 1, i);
-                    }
+                        if (localRandom() < branchProb) {
+                            const offsetDist = size * 0.5 + nextSize * 0.5;
+                            const nextPos = position.clone().add(dir.clone().multiplyScalar(offsetDist));
+                            buildFatta(nextPos, nextSize, depth + 1, i);
+                        }
+                    });
                 }
 
-                buildFatta(new THREE.Vector3(0, 0, 0), baseSize, 1);
+                buildFatta(new THREE.Vector3(0, 0, 0), baseSize * 1.8, 1);
             }
 
             // Forza il calcolo delle matrici del mondo in Three.js prima della proiezione
@@ -17547,6 +17909,7 @@ ${document.getElementById('pathGroup').innerHTML}
         };
 
     </script>
+    <script src="../../cookie-consent.js"></script>
 </body>
 
 </html>

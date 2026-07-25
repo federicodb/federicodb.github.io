@@ -22,6 +22,7 @@
         content="Laboratorio Matematico dell'Istituto Orfini di Foligno. Esplora app 3D, frattali e strumenti di gamification per una didattica della matematica inclusiva e moderna.">
     <meta name="keywords" content="matematica, didattica, gamification, 3d, frattali, orfini, foligno, federico db">
     <link rel="canonical" href="https://federicodb.github.io/" />
+    <link rel="stylesheet" href="cookie-consent.css">
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -494,13 +495,14 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Prof. Federico DB. Realizzato con strumenti Open Source per una didattica inclusiva.</p>
+                <p>&copy; 2026 Prof. Federico DB. Realizzato con strumenti Open Source per una didattica inclusiva. | <a href="privacy-policy.html" style="color:var(--text-muted);text-decoration:underline;">Privacy & Cookie Policy</a> | <button onclick="if(window.OrfiniConsent) window.OrfiniConsent.openSettings();" class="orfini-cookie-footer-link">Gestione Cookie</button></p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="database.js"></script>
+    <script src="cookie-consent.js"></script>
     <script type="module">
         import { UIManager } from './content/assets/js/modules/UIManager.js';
 
