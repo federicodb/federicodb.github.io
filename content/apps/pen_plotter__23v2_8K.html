@@ -11312,16 +11312,21 @@ out body;`;
             const useCustom = chkCustom && chkCustom.checked;
             const safetyZ = "10.00"; // 10mm fisso per il viaggio di sicurezza iniziale e finale da/verso Home
             const printZHop = (zHopVal > 0 ? zHopVal : 3.0).toFixed(2); // Z-Hop intermedio di stampa (es. 3.0mm)
-            
-            const cmdUp = useCustom ? document.getElementById('paramPenUpCmd').value.trim() : `G1 Z${printZHop} F${travelSpeed}`;
-            const cmdDown = useCustom ? document.getElementById('paramPenDownCmd').value.trim() : `G1 Z0.00 F${plungeSpeed}`;
+            const zSpeed = 600; // Velocità di sollevamento Z sicura (10mm/s) per firmware Marlin Ender 3 v2 originale
+
+            const customUpVal = document.getElementById('paramPenUpCmd')?.value.trim();
+            const customDownVal = document.getElementById('paramPenDownCmd')?.value.trim();
+
+            const cmdUp = (useCustom && customUpVal) ? customUpVal : `G1 Z${printZHop} F${zSpeed}`;
+            const cmdDown = (useCustom && customDownVal) ? customDownVal : `G1 Z0.00 F${plungeSpeed}`;
 
             let gcode = [
                 "; ===============================================",
-                "; Generato da Plotter Studio CNC v2.2 (Klipper/Marlin)",
+                "; Generato da Plotter Studio CNC v2.2 (Marlin/Klipper)",
                 `	; Modalita: ${currentMode.toUpperCase()}`,
                 `	; Piatto: X${bedSizeX} Y${bedSizeY}`,
                 `	; Offset Penna Relativo Ugello: X${offsetX} Y${offsetY}`,
+                `	; Quota Disegno: Z0.00mm (Compatibile Marlin Ender 3 v2)`,
                 `	; Z-Hop Intermedio: ${printZHop}mm`,
                 `	; Ottimizzato Tracciato (TSP): ${document.getElementById('chkOptimizeTravel').checked ? 'SI' : 'NO'}`,
                 "; ===============================================",
@@ -11331,7 +11336,7 @@ out body;`;
                 `M204 S${accel}      ; Imposta accelerazione di disegno e travel`,
                 "M107            ; Disattiva ventole",
                 "G28             ; Auto Home di calibrazione iniziale",
-                `G1 Z${safetyZ} F${travelSpeed} ; Sicurezza sollevamento penna iniziale a 10mm`,
+                `G1 Z${safetyZ} F${zSpeed} ; Sicurezza sollevamento penna iniziale a 10mm`,
                 "G92 E0          ; Azzera estrusore virtuale",
                 "",
                 "; --- INIZIO TRACCIATURA ---"
@@ -11339,7 +11344,6 @@ out body;`;
 
             let penIsDown = false;
             let lastPos = null;
-            let isFirstMove = true;
 
             const toNozzle = pt => ({
                 x: pt.x - offsetX,
@@ -11349,7 +11353,7 @@ out body;`;
             localGlobalElements.forEach(el => {
                 if (el.type === 'path' || el.type === 'axis' || el.type === 'gcode-text') {
                     const points = el.points;
-                    if (points.length === 0) return;
+                    if (!points || points.length === 0) return;
 
                     const start = toNozzle(points[0]);
 
@@ -11371,25 +11375,26 @@ out body;`;
                             gcode.push(cmdUp + " ; Sollevamento Z-Hop (" + printZHop + "mm)");
                             penIsDown = false;
                         }
-                        
-                        if (isFirstMove) {
-                            // Primissimo spostamento da Home al primo punto: quota di sicurezza 10mm
-                            gcode.push(`G0 X${start.x.toFixed(3)} Y${start.y.toFixed(3)} Z${safetyZ} F${travelSpeed} ; Primo spostamento da Home a 10mm`);
-                            isFirstMove = false;
-                        } else {
-                            // Spostamenti rapidi intermedi a vuoto con la penna alzata a Z-Hop (es. 3mm)
-                            gcode.push(`G0 X${start.x.toFixed(3)} Y${start.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido G0`);
-                        }
 
-                        // Abbassiamo la penna
-                        gcode.push(cmdDown + " ; Abbassamento penna sul foglio");
+                        // Spostamento orizzontale XY veloce (senza forzare Z nell'istruzione XY per compatibilità Marlin)
+                        gcode.push(`G0 X${start.x.toFixed(3)} Y${start.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido XY`);
+
+                        // Abbassiamo tassativamente la penna a quota Z=0.00mm
+                        gcode.push(cmdDown + " ; Abbassamento penna a quota Z=0.00mm");
                         penIsDown = true;
                     }
 
-                    // Scrittura del percorso
-                    for (let i = 1; i < points.length; i++) {
-                        const pt = toNozzle(points[i]);
-                        gcode.push(`G1 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} F${feedrate}`);
+                    // Se c'è un punto solo isolato nel path, tracciamo una micro-linea sul posto a quota 0
+                    if (points.length === 1) {
+                        const r = 0.3;
+                        gcode.push(`G1 X${(start.x - r).toFixed(3)} Y${start.y.toFixed(3)} F${feedrate}`);
+                        gcode.push(`G1 X${(start.x + r).toFixed(3)} Y${start.y.toFixed(3)} F${feedrate}`);
+                    } else {
+                        // Scrittura del percorso a quota Z=0.00mm
+                        for (let i = 1; i < points.length; i++) {
+                            const pt = toNozzle(points[i]);
+                            gcode.push(`G1 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} F${feedrate}`);
+                        }
                     }
 
                     lastPos = toNozzle(points[points.length - 1]);
@@ -11400,14 +11405,8 @@ out body;`;
                         penIsDown = false;
                     }
 
-                    if (isFirstMove) {
-                        gcode.push(`G0 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} Z${safetyZ} F${travelSpeed} ; Primo spostamento da Home a 10mm`);
-                        isFirstMove = false;
-                    } else {
-                        gcode.push(`G0 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido G0`);
-                    }
-
-                    gcode.push(cmdDown + " ; Abbassamento penna");
+                    gcode.push(`G0 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido XY`);
+                    gcode.push(cmdDown + " ; Abbassamento penna a quota Z=0.00mm");
                     penIsDown = true;
 
                     const r = 0.4;
@@ -11422,17 +11421,17 @@ out body;`;
 
             // 3. Validazione dello stato finale della penna e Ritorno ad Home a quota sicurezza 10mm
             if (penIsDown) {
-                gcode.push(`G1 Z${safetyZ} F${travelSpeed} ; Sollevamento finale di sicurezza a 10mm`);
+                gcode.push(`G1 Z${safetyZ} F${zSpeed} ; Sollevamento finale di sicurezza a 10mm`);
                 penIsDown = false;
             }
 
             gcode.push(
                 "",
                 "; --- FINE TRACCIATURA ---",
-                `G1 Z${safetyZ} F${travelSpeed} ; Sollevamento di sicurezza penna a 10mm`,
-                `G0 X0.000 Y0.000 Z${safetyZ} F${travelSpeed} ; Ritorno ad Home a penna alzata di 10mm`,
+                `G1 Z${safetyZ} F${zSpeed} ; Sollevamento di sicurezza penna a 10mm`,
+                `G0 X0.000 Y0.000 F${travelSpeed} ; Ritorno ad Home XY a penna alzata di 10mm`,
                 "G28 X0 Y0       ; Auto Home finale per azzeramento e parcheggio sicuro",
-                "END_PRINT       ; Reset Klipper",
+                "END_PRINT       ; Macro Klipper per Mainsail/Moonraker",
                 "; --- END G-CODE ---"
             );
 
