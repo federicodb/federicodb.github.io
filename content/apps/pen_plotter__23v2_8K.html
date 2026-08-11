@@ -6861,6 +6861,22 @@
 
             let canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
+            const imgAspect = sourceImage.width / sourceImage.height;
+
+            // Helper per la mappatura omogenea 1:1 senza alcuna deformazione d'aspetto
+            const mapPt = (x, y, w, h) => {
+                if (imgAspect >= 1) {
+                    return {
+                        x: (x / w) * 100 - 50,
+                        y: ((1 - y / h) * 100 - 50) / imgAspect
+                    };
+                } else {
+                    return {
+                        x: ((x / w) * 100 - 50) * imgAspect,
+                        y: (1 - y / h) * 100 - 50
+                    };
+                }
+            };
 
             if (['hatching', 'spiral', 'linedraw_waves', 'sawtooth_halftone', 'boxes_halftone', 'spiral_polygon', 'springs_image', 'implode_grid', 'concentric_waves', 'scribble_art', 'floyd_dither'].includes(processType)) {
                 // Impostiamo una risoluzione ottimale del canvas temporaneo per le immagini
@@ -6890,7 +6906,7 @@
                             if (invert) val = 255 - val;
 
                             if (val < threshold) {
-                                segment.push({ x: (x / w) * 100 - 50, y: (1 - y / h) * 100 - 50 });
+                                segment.push(mapPt(x, y, w, h));
                             } else {
                                 if (segment.length > 1) {
                                     currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: segment });
@@ -6915,7 +6931,7 @@
                             if (invert) val = 255 - val;
 
                             if (val < (threshold - 40)) {
-                                segment.push({ x: (x / w) * 100 - 50, y: (1 - y / h) * 100 - 50 });
+                                segment.push(mapPt(x, y, w, h));
                             } else {
                                 if (segment.length > 1) {
                                     currentRawElements.push({ type: 'path', stroke: '#047857', width: penWidth, points: segment });
@@ -6960,7 +6976,7 @@
                         const mx = cx + rMod * Math.cos(theta);
                         const my = cy + rMod * Math.sin(theta);
 
-                        path.push({ x: (mx / w) * 100 - 50, y: (1 - my / h) * 100 - 50 });
+                        path.push(mapPt(mx, my, w, h));
                     }
                     currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
                 } else if (processType === 'linedraw_waves') {
@@ -6986,10 +7002,7 @@
                             const yOffset = darkness * amp * (h / 100) * Math.sin(x * freq * 0.05);
                             const yFinal = yBase + yOffset;
 
-                            segment.push({
-                                x: (x / w) * 100 - 50,
-                                y: (1 - yFinal / h) * 100 - 50
-                            });
+                            segment.push(mapPt(x, yFinal, w, h));
                         }
                         currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: segment });
                     }
@@ -7016,10 +7029,7 @@
                             const triangle = (x % 8 < 4) ? -1 : 1;
                             const yOffset = darkness * maxAmp * (h / 100) * triangle;
 
-                            segment.push({
-                                x: (x / w) * 100 - 50,
-                                y: (1 - (yBase + yOffset) / h) * 100 - 50
-                            });
+                            segment.push(mapPt(x, yBase + yOffset, w, h));
                         }
                         currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: segment });
                     }
@@ -7053,19 +7063,13 @@
                             const dx = (cellW * darkness * maxScale * 0.45);
                             const dy = (cellH * darkness * maxScale * 0.45);
 
-                            // Convertiamo in coordinate plotter -50 a 50
-                            const pLeft = (cx - dx) / w * 100 - 50;
-                            const pRight = (cx + dx) / w * 100 - 50;
-                            const pTop = (1 - (cy - dy) / h) * 100 - 50;
-                            const pBottom = (1 - (cy + dy) / h) * 100 - 50;
+                            // Convertiamo in coordinate plotter conservando l'aspect ratio
+                            const p1 = mapPt(cx - dx, cy - dy, w, h);
+                            const p2 = mapPt(cx + dx, cy - dy, w, h);
+                            const p3 = mapPt(cx + dx, cy + dy, w, h);
+                            const p4 = mapPt(cx - dx, cy + dy, w, h);
 
-                            const pts = [
-                                { x: pLeft, y: pTop },
-                                { x: pRight, y: pTop },
-                                { x: pRight, y: pBottom },
-                                { x: pLeft, y: pBottom },
-                                { x: pLeft, y: pTop }
-                            ];
+                            const pts = [p1, p2, p3, p4, p1];
 
                             currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: pts });
                         }
@@ -7104,7 +7108,7 @@
                         const mx = cx + rMod * Math.cos(theta);
                         const my = cy + rMod * Math.sin(theta);
 
-                        path.push({ x: (mx / w) * 100 - 50, y: (1 - my / h) * 100 - 50 });
+                        path.push(mapPt(mx, my, w, h));
                     }
                     if (path.length >= 2) {
                         currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
@@ -7136,10 +7140,7 @@
                             const mx = x + Math.cos(angle) * coilAmp * 0.8;
                             const my = yBase + Math.sin(angle) * coilAmp;
 
-                            segment.push({
-                                x: (mx / w) * 100 - 50,
-                                y: (1 - my / h) * 100 - 50
-                            });
+                            segment.push(mapPt(mx, my, w, h));
                         }
                         currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: segment });
                     }
@@ -7184,7 +7185,7 @@
                                 my = yBase - (dy / dist) * shift;
                             }
 
-                            path.push({ x: (mx / w) * 100 - 50, y: (1 - my / h) * 100 - 50 });
+                            path.push(mapPt(mx, my, w, h));
                         }
                         currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
                     }
@@ -7216,7 +7217,7 @@
                                 my = yBase - (dy / dist) * shift;
                             }
 
-                            path.push({ x: (mx / w) * 100 - 50, y: (1 - my / h) * 100 - 50 });
+                            path.push(mapPt(mx, my, w, h));
                         }
                         currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
                     }
@@ -7255,7 +7256,7 @@
                             const mx = cx + rMod * Math.cos(theta);
                             const my = cy + rMod * Math.sin(theta);
 
-                            path.push({ x: (mx / w) * 100 - 50, y: (1 - my / h) * 100 - 50 });
+                            path.push(mapPt(mx, my, w, h));
                         }
                         if (path.length >= 2) {
                             currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
@@ -7291,9 +7292,10 @@
                             const gray = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
                             const darkness = 1.0 - (gray / 255.0);
 
-                            // Punto base
-                            const bx = (x / w) * 100 - 50;
-                            const by = (1 - yBase / h) * 100 - 50;
+                            // Punto base conservando l'aspect ratio
+                            const bPt = mapPt(x, yBase, w, h);
+                            const bx = bPt.x;
+                            const by = bPt.y;
 
                             if (darkness > 0.12) {
                                 // Eseguiamo micro-scarabocchi casuali continui
@@ -7306,7 +7308,7 @@
                                     path.push({ x: sx, y: sy });
                                 }
                             } else {
-                                path.push({ x: bx, y: by });
+                                path.push(bPt);
                             }
                         }
                     }
@@ -7356,8 +7358,9 @@
 
                             // Se il dither indica un punto scuro, tracciamo un cerchietto concentrico
                             if (newVal === 0) {
-                                const cx = (x / dw) * 100 - 50;
-                                const cy = (1 - y / dh) * 100 - 50;
+                                const cPt = mapPt(x, y, dw, dh);
+                                const cx = cPt.x;
+                                const cy = cPt.y;
 
                                 let circle = [];
                                 const steps = 6; // Cerchi piccoli a 6 lati per non appesantire il plotter
@@ -7410,7 +7413,7 @@
                                 let dir = 0;
 
                                 do {
-                                    path.push({ x: (currX / w) * 100 - 50, y: (1 - currY / h) * 100 - 50 });
+                                    path.push(mapPt(currX, currY, w, h));
                                     visited[currY][currX] = true;
 
                                     let found = false;
@@ -7505,8 +7508,9 @@
 
                         if (chosenChar === ' ') continue;
 
-                        let cellStartX = (x / cols) * 100 - 50;
-                        let cellStartY = (1 - (y + 0.95) / rows) * 100 - 50;
+                        let cellPt = mapPt(x, y + 0.95, cols, rows);
+                        let cellStartX = cellPt.x;
+                        let cellStartY = cellPt.y;
 
                         currentRawElements.push({
                             type: 'text',
@@ -7666,10 +7670,7 @@
                     }
                 }
 
-                let pts = tour.map(p => ({
-                    x: (p.x / w) * 100 - 50,
-                    y: (1 - p.y / h) * 100 - 50
-                }));
+                let pts = tour.map(p => mapPt(p.x, p.y, w, h));
 
                 currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: pts });
             }
@@ -7745,11 +7746,8 @@
                     }
                 }
 
-                // Proiettiamo i punti in coordinate plotter da -50 a 50
-                const ptsPlot = points.map(p => ({
-                    x: (p.x / w) * 100 - 50,
-                    y: (1 - p.y / h) * 100 - 50
-                }));
+                // Proiettiamo i punti in coordinate plotter conservando l'aspect ratio
+                const ptsPlot = points.map(p => mapPt(p.x, p.y, w, h));
 
                 // Algoritmo Bowyer-Watson per Triangolazione di Delaunay
                 // Aggiungiamo 3 punti fittizi esterni per il super-triangolo
@@ -10799,15 +10797,15 @@ out body;`;
             const offsetY = parseFloat(document.getElementById('paramOffsetY').value);
             const flip180 = document.getElementById('paramFlip180')?.checked || false;
 
-            // Centratura automatica all'interno dell'area utile reale della penna
-            const reachMinX = offsetX > 0 ? offsetX : 0;
-            const reachMaxX = offsetX > 0 ? bedSizeX : bedSizeX + offsetX;
-            const reachMinY = offsetY > 0 ? offsetY : 0;
-            const reachMaxY = offsetY > 0 ? bedSizeY : bedSizeY + offsetY;
+            // Centratura automatica all'interno dell'area utile reale (simmetrizzata per finecorsa)
+            const reachMinX = Math.abs(offsetX);
+            const reachMaxX = bedSizeX - Math.abs(offsetX);
+            const reachMinY = Math.abs(offsetY);
+            const reachMaxY = bedSizeY - Math.abs(offsetY);
 
-            const maxPlotWidth = Math.max(0, reachMaxX - reachMinX);
-            const maxPlotHeight = Math.max(0, reachMaxY - reachMinY);
-            
+            const maxPlotWidth = reachMaxX - reachMinX;
+            const maxPlotHeight = reachMaxY - reachMinY;
+
             const maxAllowedPlotSize = Math.max(30, Math.floor(Math.min(maxPlotWidth, maxPlotHeight)));
 
             const plotSizeSlider = document.getElementById('paramPlotSize');
@@ -10826,8 +10824,8 @@ out body;`;
             }
 
             const plotSize = parseFloat(document.getElementById('paramPlotSize').value);
-            const cx_reach = (reachMinX + reachMaxX) / 2;
-            const cy_reach = (reachMinY + reachMaxY) / 2;
+            const cx_reach = bedSizeX / 2;
+            const cy_reach = bedSizeY / 2;
 
             const scale = plotSize / Math.max(w, h || 1);
 
@@ -10939,10 +10937,10 @@ out body;`;
                 }
             });
 
-            const reachMinX = offsetX > 0 ? offsetX : 0;
-            const reachMaxX = offsetX > 0 ? bedSizeX : bedSizeX + offsetX;
-            const reachMinY = offsetY > 0 ? offsetY : 0;
-            const reachMaxY = offsetY > 0 ? bedSizeY : bedSizeY + offsetY;
+            const reachMinX = Math.abs(offsetX);
+            const reachMaxX = bedSizeX - Math.abs(offsetX);
+            const reachMinY = Math.abs(offsetY);
+            const reachMaxY = bedSizeY - Math.abs(offsetY);
             const reachW = reachMaxX - reachMinX;
             const reachH = reachMaxY - reachMinY;
 
@@ -11312,7 +11310,10 @@ out body;`;
             // Comandi personalizzati (Klipper/Laser)
             const chkCustom = document.getElementById('chkUseCustomPenCommands');
             const useCustom = chkCustom && chkCustom.checked;
-            const cmdUp = useCustom ? document.getElementById('paramPenUpCmd').value.trim() : `G1 Z${zHop} F${travelSpeed}`;
+            const safetyZ = "10.00"; // 10mm fisso per il viaggio di sicurezza iniziale e finale da/verso Home
+            const printZHop = (zHopVal > 0 ? zHopVal : 3.0).toFixed(2); // Z-Hop intermedio di stampa (es. 3.0mm)
+            
+            const cmdUp = useCustom ? document.getElementById('paramPenUpCmd').value.trim() : `G1 Z${printZHop} F${travelSpeed}`;
             const cmdDown = useCustom ? document.getElementById('paramPenDownCmd').value.trim() : `G1 Z0.00 F${plungeSpeed}`;
 
             let gcode = [
@@ -11321,6 +11322,7 @@ out body;`;
                 `	; Modalita: ${currentMode.toUpperCase()}`,
                 `	; Piatto: X${bedSizeX} Y${bedSizeY}`,
                 `	; Offset Penna Relativo Ugello: X${offsetX} Y${offsetY}`,
+                `	; Z-Hop Intermedio: ${printZHop}mm`,
                 `	; Ottimizzato Tracciato (TSP): ${document.getElementById('chkOptimizeTravel').checked ? 'SI' : 'NO'}`,
                 "; ===============================================",
                 "",
@@ -11328,23 +11330,16 @@ out body;`;
                 "G90             ; Coordinate assolute",
                 `M204 S${accel}      ; Imposta accelerazione di disegno e travel`,
                 "M107            ; Disattiva ventole",
-                "G28             ; Auto Home di calibrazione iniziale (richiesto da Klipper per sblocco)"
-            ];
-
-            if (useCustom) {
-                gcode.push(`${cmdUp} ; Sicurezza sollevamento penna iniziale`);
-            } else if (useZHop) {
-                gcode.push(`G1 Z${zHop} F${travelSpeed} ; Sicurezza sollevamento penna iniziale`);
-            }
-
-            gcode.push(
+                "G28             ; Auto Home di calibrazione iniziale",
+                `G1 Z${safetyZ} F${travelSpeed} ; Sicurezza sollevamento penna iniziale a 10mm`,
                 "G92 E0          ; Azzera estrusore virtuale",
                 "",
                 "; --- INIZIO TRACCIATURA ---"
-            );
+            ];
 
             let penIsDown = false;
             let lastPos = null;
+            let isFirstMove = true;
 
             const toNozzle = pt => ({
                 x: pt.x - offsetX,
@@ -11373,16 +11368,22 @@ out body;`;
                     } else {
                         // Alziamo la penna se era giù
                         if (penIsDown) {
-                            gcode.push(cmdUp + " ; Sollevamento");
+                            gcode.push(cmdUp + " ; Sollevamento Z-Hop (" + printZHop + "mm)");
                             penIsDown = false;
                         }
-                        // Spostamento rapido a vuoto (G0 per Klipper!)
-                        gcode.push(`G0 X${start.x.toFixed(3)} Y${start.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido G0`);
-                        // Abbassiamo la penna
-                        if (useCustom || useZHop) {
-                            gcode.push(cmdDown + " ; Abbassamento");
-                            penIsDown = true;
+                        
+                        if (isFirstMove) {
+                            // Primissimo spostamento da Home al primo punto: quota di sicurezza 10mm
+                            gcode.push(`G0 X${start.x.toFixed(3)} Y${start.y.toFixed(3)} Z${safetyZ} F${travelSpeed} ; Primo spostamento da Home a 10mm`);
+                            isFirstMove = false;
+                        } else {
+                            // Spostamenti rapidi intermedi a vuoto con la penna alzata a Z-Hop (es. 3mm)
+                            gcode.push(`G0 X${start.x.toFixed(3)} Y${start.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido G0`);
                         }
+
+                        // Abbassiamo la penna
+                        gcode.push(cmdDown + " ; Abbassamento penna sul foglio");
+                        penIsDown = true;
                     }
 
                     // Scrittura del percorso
@@ -11395,39 +11396,43 @@ out body;`;
                 } else if (el.type === 'point') {
                     const pt = toNozzle(el);
                     if (penIsDown) {
-                        gcode.push(cmdUp + " ; Sollevamento");
+                        gcode.push(cmdUp + " ; Sollevamento Z-Hop (" + printZHop + "mm)");
                         penIsDown = false;
                     }
-                    // Spostamento rapido a vuoto (G0 per Klipper!)
-                    gcode.push(`G0 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido G0`);
 
-                    if (useCustom || useZHop) {
-                        gcode.push(cmdDown + " ; Abbassamento");
-                        penIsDown = true;
+                    if (isFirstMove) {
+                        gcode.push(`G0 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} Z${safetyZ} F${travelSpeed} ; Primo spostamento da Home a 10mm`);
+                        isFirstMove = false;
+                    } else {
+                        gcode.push(`G0 X${pt.x.toFixed(3)} Y${pt.y.toFixed(3)} F${travelSpeed} ; Spostamento rapido G0`);
                     }
+
+                    gcode.push(cmdDown + " ; Abbassamento penna");
+                    penIsDown = true;
 
                     const r = 0.4;
                     gcode.push(`G1 X${(pt.x - r).toFixed(3)} Y${pt.y.toFixed(3)} F${feedrate}`);
                     gcode.push(`G1 X${(pt.x + r).toFixed(3)} Y${pt.y.toFixed(3)} F${feedrate}`);
 
-                    if (useCustom || useZHop) {
-                        gcode.push(cmdUp + " ; Sollevamento");
-                        penIsDown = false;
-                    }
+                    gcode.push(cmdUp + " ; Sollevamento Z-Hop (" + printZHop + "mm)");
+                    penIsDown = false;
                     lastPos = pt;
                 }
             });
 
-            // 3. Validazione dello stato finale della penna prima di END_PRINT
+            // 3. Validazione dello stato finale della penna e Ritorno ad Home a quota sicurezza 10mm
             if (penIsDown) {
-                gcode.push(cmdUp + " ; Sollevamento di sicurezza (Validazione fine tracciato)");
+                gcode.push(`G1 Z${safetyZ} F${travelSpeed} ; Sollevamento finale di sicurezza a 10mm`);
                 penIsDown = false;
             }
 
             gcode.push(
                 "",
                 "; --- FINE TRACCIATURA ---",
-                "END_PRINT       ; Chiamata macro Klipper per reset e parcheggio sicuro",
+                `G1 Z${safetyZ} F${travelSpeed} ; Sollevamento di sicurezza penna a 10mm`,
+                `G0 X0.000 Y0.000 Z${safetyZ} F${travelSpeed} ; Ritorno ad Home a penna alzata di 10mm`,
+                "G28 X0 Y0       ; Auto Home finale per azzeramento e parcheggio sicuro",
+                "END_PRINT       ; Reset Klipper",
                 "; --- END G-CODE ---"
             );
 

@@ -95,11 +95,11 @@ function loadRandomAppealingPreset() {
         }
     ];
 
-    const chosen = presets[Math.floor(Math.random() * presets.length)];
     try {
-        chosen();
+        const chosen = presets[Math.floor(Math.random() * presets.length)];
+        if (typeof chosen === 'function') chosen();
     } catch (e) {
         console.warn("Preset init fallback:", e);
-        setMode('harmonograph', true);
+        if (typeof setMode === 'function') setMode('harmonograph', true);
     }
 }
