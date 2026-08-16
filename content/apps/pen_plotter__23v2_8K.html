@@ -3339,12 +3339,25 @@
                     G-Code</button>
             </div>
             <hr class="border-slate-800/50 my-1">
-            <div class="flex gap-2 items-center">
-                <input type="text" id="moonrakerIp" placeholder="http://192.168.1.197" value="http://192.168.1.197"
-                    class="flex-grow glass-input text-xs rounded p-2 bg-slate-900 border-slate-700 font-mono">
-                <button id="btnMoonraker" onclick="sendToMoonraker()"
-                    class="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-3 rounded-lg text-xs transition-colors shadow-lg shadow-orange-900/20 whitespace-nowrap">🚀
-                    Invia a Klipper</button>
+            <div class="space-y-1.5 pt-1">
+                <div class="flex items-center justify-between text-[9px] text-slate-400">
+                    <span>Profilo Rete Klipper / Moonraker:</span>
+                    <select id="moonrakerPreset" onchange="selectMoonrakerPreset(this.value)" class="bg-slate-900 text-indigo-400 border border-slate-700 text-[10px] rounded px-1.5 py-0.5 font-mono">
+                        <option value="http://192.168.1.197">🏠 Casa 1 (192.168.1.197)</option>
+                        <option value="http://192.168.178.30">🏡 Casa 2 LAN (192.168.178.30)</option>
+                        <option value="http://192.168.178.31">📶 Casa 2 Wi-Fi (192.168.178.31)</option>
+                        <option value="http://mainsail.local">🏷️ Hostname (mainsail.local)</option>
+                        <option value="custom">✏️ Personalizzato...</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <input type="text" id="moonrakerIp" placeholder="http://192.168.178.30" value="http://192.168.178.30"
+                        onchange="saveMoonrakerIp(this.value)"
+                        class="flex-grow glass-input text-xs rounded p-2 bg-slate-900 border-slate-700 font-mono text-indigo-300">
+                    <button id="btnMoonraker" onclick="sendToMoonraker()"
+                        class="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-3 rounded-lg text-xs transition-colors shadow-lg shadow-orange-900/20 whitespace-nowrap">🚀
+                        Invia a Klipper</button>
+                </div>
             </div>
         </div>
     </aside>
@@ -11439,12 +11452,46 @@ out body;`;
         }
 
 
+        function selectMoonrakerPreset(val) {
+            const ipInput = document.getElementById('moonrakerIp');
+            if (val !== 'custom') {
+                ipInput.value = val;
+                saveMoonrakerIp(val);
+            }
+        }
+
+        function saveMoonrakerIp(val) {
+            try {
+                localStorage.setItem('moonraker_saved_ip', val);
+            } catch(e){}
+        }
+
+        function initMoonrakerIp() {
+            try {
+                const saved = localStorage.getItem('moonraker_saved_ip');
+                if (saved) {
+                    const ipInput = document.getElementById('moonrakerIp');
+                    const select = document.getElementById('moonrakerPreset');
+                    if (ipInput) ipInput.value = saved;
+                    if (select) {
+                        const optExists = Array.from(select.options).some(o => o.value === saved);
+                        select.value = optExists ? saved : 'custom';
+                    }
+                }
+            } catch(e){}
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initMoonrakerIp();
+        });
+
         async function sendToMoonraker() {
             const ip = document.getElementById('moonrakerIp').value.trim();
             if (!ip) {
-                alert("Inserisci l'indirizzo IP di Moonraker!");
+                alert("Inserisci l'indirizzo IP o l'Hostname di Moonraker!");
                 return;
             }
+            saveMoonrakerIp(ip);
 
             const gcodeText = generateGCode();
             if (!gcodeText) {
