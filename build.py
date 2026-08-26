@@ -504,7 +504,7 @@ KEYWORD_TO_RIFORMA_ID = {
     # Indirizzo Tecnico & Soft Skills
     "3d": "IND_C1", "openscad": "IND_C1", "parametr": "IND_C1", "modellazione": "IND_C1",
     "python": "IND_C2", "p5.js": "IND_C2", "algoritmo": "IND_C2", "computazionale": "IND_C2",
-    "stampa": "IND_C3", "slicing": "IND_C3", "fabbricazione": "IND_C3",
+    "stampa": "IND_C3", "slicing": "IND_C3", "fabbricazione": "IND_C3", "cnc": "IND_C3", "g-code": "IND_C1", "plotter": "IND_C1", "manifattura": "IND_C3",
     "dsa": "IND_C4", "adhd": "IND_C4", "accessibil": "IND_C4", "inclusiv": "IND_C4",
     "open source": "IND_K1", "arduino": "IND_K3", "raspberry": "IND_K3",
     "ai": "SOFT_3", "intelligenza": "SOFT_3", "metacognizion": "SOFT_2",
