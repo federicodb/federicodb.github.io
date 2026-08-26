@@ -389,7 +389,7 @@ class DeepContentScanner:
             count = len(re.findall(kw, text_lower))
             if count > 0:
                 # Ricostruzione della parola in leggibile
-                true_word = next((w for w in SEMANTIC_MAP.values() if w.lower().startswith(kw)), kw.capitalize())
+                true_word = KEYWORD_STEM_MAP.get(kw, next((w for w in SEMANTIC_MAP.values() if w.lower().startswith(kw)), kw.capitalize()))
                 if true_word not in new_topics:
                     new_topics.append(true_word)
                     
@@ -401,6 +401,32 @@ class DeepContentScanner:
         return found_class, list(set(new_topics)), sintesi
 
 scanner = DeepContentScanner()
+
+KEYWORD_STEM_MAP = {
+    "equazion": "Equazioni",
+    "disequazion": "Disequazioni",
+    "funzion": "Funzioni",
+    "derivata": "Derivate",
+    "limite": "Limiti",
+    "dominio": "Dominio",
+    "grafico": "Grafici",
+    "parabola": "Parabola",
+    "retta": "Retta",
+    "polinom": "Polinomi",
+    "scomposizion": "Scomposizione",
+    "frizion": "Frazioni",
+    "trigonometri": "Trigonometria",
+    "seno": "Seno e Coseno",
+    "coseno": "Seno e Coseno",
+    "fasor": "Fasori",
+    "corrente": "Elettricità",
+    "elettric": "Elettricità",
+    "pitagora": "Pitagora",
+    "geometria": "Geometria",
+    "insiem": "Insiemi",
+    "probabilità": "Probabilità",
+    "statistica": "Statistica"
+}
 
 SEMANTIC_MAP = {
     "eq": "Equazioni",
@@ -524,7 +550,7 @@ def map_topics_to_riforma(topics):
             label = get_riforma_label(ref_id)
             if label:
                 # Formato: ID:Label_Breve (troncata se troppo lunga per la UI)
-                short_label = label[:45] + "..." if len(label) > 48 else label
+                short_label = label[:45] + "..." if len(label) > 45 else label
                 extra_tags.append(f"{ref_id}:{short_label}")
     
     return list(set(extra_tags))
@@ -810,7 +836,22 @@ def main():
                         meta["tags"] = list(set(meta.get("tags", []) + riforma_extra))
                         
                     # Ri-normalizzazione post-riforma per sicurezza
-                    meta["tags"] = list(set([normalize_class_tag(t) for t in meta["tags"]]))
+                    TAG_CLEANUP_MAP = {
+                        "FUNZION": "FUNZIONI",
+                        "INSIEM": "INSIEMI",
+                        "POLINOM": "POLINOMI",
+                        "SCOMPOSIZION": "SCOMPOSIZIONE",
+                        "ELETTRIC": "ELETTRICITÀ",
+                        "DISEQ": "DISEQUAZIONI",
+                        "EQUAZION": "EQUAZIONI",
+                        "FRIZION": "FRAZIONI",
+                        "TRIGONOMETRI": "TRIGONOMETRIA",
+                        "FASOR": "FASORI",
+                        "COMUNI02": "ERRORI COMUNI",
+                        "SIERPINSKI01": "SIERPINSKI",
+                        "DUESFIGHE": "PROBABILITÀ"
+                    }
+                    meta["tags"] = list(set([TAG_CLEANUP_MAP.get(normalize_class_tag(t), normalize_class_tag(t)) for t in meta["tags"]]))
                     
                     if not meta.get("tags"):
                         print(f"  ⚠️  WARNING: Tags mancanti o vuoti per '{filename}'")
