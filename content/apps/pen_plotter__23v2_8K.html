@@ -2403,6 +2403,24 @@
                         class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-indigo-600 file:text-white file:font-semibold hover:file:bg-indigo-700 cursor-pointer"
                         onchange="handleSVGUpload(event)">
                 </div>
+
+                <div class="glass-card p-3 space-y-2 border-indigo-900/30">
+                    <label class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer">
+                        <input type="checkbox" id="chkSvgHumanOrder" onchange="toggleSvgClusterDist(); applyGlobalTransformAndRender();"
+                            class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
+                        <span class="font-medium text-slate-200">✍️ Ordine Umano (Completamento Oggetti/Lettere)</span>
+                    </label>
+                    <div id="svgClusterDistContainer" class="hidden-mode flex items-center justify-between text-[10px] text-slate-400 pl-5">
+                        <span>Soglia Distanza Oggetto:</span>
+                        <div class="flex items-center gap-1">
+                            <input type="number" id="paramSvgClusterDist" value="5" min="1" max="50" step="1"
+                                onchange="applyGlobalTransformAndRender()"
+                                class="w-12 bg-slate-900 border border-slate-700 text-slate-200 rounded px-1 text-[10px] text-center font-mono">
+                            <span>mm</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="glass-card p-3 space-y-1 font-mono text-[9px] text-slate-400">
                     <p class="font-bold text-slate-200 uppercase mb-1">Standard Supportati:</p>
                     <p>✔ percorsi (&lt;path&gt;) lineari e curvi</p>
@@ -4411,6 +4429,166 @@
             }
 
             return [...nonDrawable, ...merged];
+        }
+
+        function toggleSvgClusterDist() {
+            const chk = document.getElementById('chkSvgHumanOrder');
+            const container = document.getElementById('svgClusterDistContainer');
+            if (chk && container) {
+                if (chk.checked) {
+                    container.classList.remove('hidden-mode');
+                } else {
+                    container.classList.add('hidden-mode');
+                }
+            }
+        }
+
+        function optimizePathsHumanOrder(elements, thresholdMm = 5.0) {
+            let drawable = [];
+            let nonDrawable = [];
+
+            elements.forEach(el => {
+                if ((el.type === 'path' || el.type === 'axis' || el.type === 'gcode-text') && el.points && el.points.length > 0) {
+                    drawable.push(JSON.parse(JSON.stringify(el)));
+                } else {
+                    nonDrawable.push(el);
+                }
+            });
+
+            if (drawable.length <= 1) return elements;
+
+            let boxes = drawable.map(el => {
+                let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                el.points.forEach(pt => {
+                    if (pt.x < minX) minX = pt.x;
+                    if (pt.x > maxX) maxX = pt.x;
+                    if (pt.y < minY) minY = pt.y;
+                    if (pt.y > maxY) maxY = pt.y;
+                });
+                return { minX, maxX, minY, maxY };
+            });
+
+            function minPolylineDistance(el1, el2, b1, b2) {
+                if (b1.maxX + thresholdMm < b2.minX || b2.maxX + thresholdMm < b1.minX ||
+                    b1.maxY + thresholdMm < b2.minY || b2.maxY + thresholdMm < b1.minY) {
+                    return Infinity;
+                }
+
+                const pts1 = el1.points;
+                const pts2 = el2.points;
+
+                const e1 = [pts1[0], pts1[pts1.length - 1]];
+                const e2 = [pts2[0], pts2[pts2.length - 1]];
+                let minD = Infinity;
+                for (let a of e1) {
+                    for (let b of e2) {
+                        let d = Math.hypot(a.x - b.x, a.y - b.y);
+                        if (d < minD) minD = d;
+                    }
+                }
+                if (minD <= thresholdMm) return minD;
+
+                const step1 = Math.max(1, Math.floor(pts1.length / 6));
+                const step2 = Math.max(1, Math.floor(pts2.length / 6));
+                for (let i = 0; i < pts1.length; i += step1) {
+                    for (let j = 0; j < pts2.length; j += step2) {
+                        let d = Math.hypot(pts1[i].x - pts2[j].x, pts1[i].y - pts2[j].y);
+                        if (d < minD) minD = d;
+                        if (minD <= thresholdMm) return minD;
+                    }
+                }
+                return minD;
+            }
+
+            const n = drawable.length;
+            const parent = Array.from({ length: n }, (_, i) => i);
+            function find(i) {
+                if (parent[i] === i) return i;
+                return parent[i] = find(parent[i]);
+            }
+            function union(i, j) {
+                let rI = find(i);
+                let rJ = find(j);
+                if (rI !== rJ) parent[rI] = rJ;
+            }
+
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    if (minPolylineDistance(drawable[i], drawable[j], boxes[i], boxes[j]) <= thresholdMm) {
+                        union(i, j);
+                    }
+                }
+            }
+
+            const clustersMap = new Map();
+            for (let i = 0; i < n; i++) {
+                const root = find(i);
+                if (!clustersMap.has(root)) clustersMap.set(root, []);
+                clustersMap.get(root).push(drawable[i]);
+            }
+
+            const clusters = [];
+            clustersMap.forEach((pathList) => {
+                let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+                let sumX = 0, sumY = 0, count = 0;
+
+                pathList.forEach(el => {
+                    el.points.forEach(pt => {
+                        if (pt.x < minX) minX = pt.x;
+                        if (pt.x > maxX) maxX = pt.x;
+                        if (pt.y < minY) minY = pt.y;
+                        if (pt.y > maxY) maxY = pt.y;
+                        sumX += pt.x;
+                        sumY += pt.y;
+                        count++;
+                    });
+                });
+
+                clusters.push({
+                    paths: pathList,
+                    minX, maxX, minY, maxY,
+                    centerX: sumX / (count || 1),
+                    centerY: sumY / (count || 1)
+                });
+            });
+
+            let sortedClusters = [];
+            let unvisitedClusters = [...clusters];
+            unvisitedClusters.sort((a, b) => (a.minX - b.minX) || (b.maxY - a.maxY));
+            
+            let currentCluster = unvisitedClusters.shift();
+            sortedClusters.push(currentCluster);
+
+            while (unvisitedClusters.length > 0) {
+                let lastPos = { x: currentCluster.centerX, y: currentCluster.centerY };
+                let bestIdx = -1;
+                let bestDist = Infinity;
+
+                for (let i = 0; i < unvisitedClusters.length; i++) {
+                    let c = unvisitedClusters[i];
+                    let d = Math.hypot(c.centerX - lastPos.x, c.centerY - lastPos.y);
+                    if (d < bestDist) {
+                        bestDist = d;
+                        bestIdx = i;
+                    }
+                }
+
+                let nextCluster = unvisitedClusters.splice(bestIdx, 1)[0];
+                sortedClusters.push(nextCluster);
+                currentCluster = nextCluster;
+            }
+
+            let finalPaths = [];
+            sortedClusters.forEach(cluster => {
+                if (cluster.paths.length > 1) {
+                    let opt = optimizePaths(cluster.paths);
+                    finalPaths.push(...opt);
+                } else {
+                    finalPaths.push(...cluster.paths);
+                }
+            });
+
+            return [...nonDrawable, ...finalPaths];
         }
 
         const FONT = {
@@ -10865,7 +11043,11 @@ out body;`;
                 }
             }).filter(Boolean);
 
-            if (document.getElementById('chkOptimizeTravel').checked && currentMode !== 'svg') {
+            const chkHuman = document.getElementById('chkSvgHumanOrder');
+            if (chkHuman && chkHuman.checked) {
+                const clusterThreshold = parseFloat(document.getElementById('paramSvgClusterDist')?.value || 5.0);
+                elements = optimizePathsHumanOrder(elements, clusterThreshold);
+            } else if (document.getElementById('chkOptimizeTravel').checked && currentMode !== 'svg') {
                 elements = optimizePaths(elements);
             }
 
