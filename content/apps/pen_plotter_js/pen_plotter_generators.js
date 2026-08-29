@@ -200,3 +200,5 @@ function generateFractalElements(type, level, fillEnabled, spacingVirtual, penWi
         currentRawElements.push({ type: 'path', stroke: '#818cf8', width: penWidth, points: finalPts });
     }
 }
+
+

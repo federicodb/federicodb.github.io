@@ -29,11 +29,11 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
-    <!-- Moduli Javascript Separati Plotter Studio -->
-    <script src="pen_plotter_js/pen_plotter_fill.js"></script>
-    <script src="pen_plotter_js/pen_plotter_generators.js"></script>
-    <script src="pen_plotter_js/pen_plotter_gcode.js"></script>
-    <script src="pen_plotter_js/pen_plotter_ui.js"></script>
+    <!-- Moduli Javascript Separati Plotter Studio (con cache-buster per Brave / Chrome) -->
+    <script src="pen_plotter_js/pen_plotter_fill.js?v=20260827_02"></script>
+    <script src="pen_plotter_js/pen_plotter_generators.js?v=20260827_02"></script>
+    <script src="pen_plotter_js/pen_plotter_gcode.js?v=20260827_02"></script>
+    <script src="pen_plotter_js/pen_plotter_ui.js?v=20260827_02"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2518,7 +2518,7 @@
                     <label class="block text-xs font-bold text-indigo-400">TESTO DA GENERARE</label>
                     <textarea id="paramTextInput" rows="4"
                         class="w-full glass-input p-2 rounded text-xs font-mono bg-slate-900"
-                        oninput="updateSimulation()">CNC Studio</textarea>
+                        oninput="isPDFModeActive = false; const s = document.getElementById('pdfModeStatus'); if (s) s.classList.add('hidden-mode'); updateSimulation()">CNC Studio</textarea>
                 </div>
 
                 <div class="glass-card p-3 space-y-3">
@@ -2608,22 +2608,38 @@
                         <input type="range" id="paramTextHatchSpacing" min="2" max="15" step="1" value="4"
                             class="w-full accent-indigo-500" oninput="updateSimulation()">
                     </div>
+                    <div class="flex items-center space-x-2 pt-1 border-t border-slate-800">
+                        <input type="checkbox" id="chkTextHumanOrder" class="rounded accent-indigo-500" checked
+                            onchange="updateSimulation()">
+                        <label for="chkTextHumanOrder" class="text-[10px] text-slate-200 cursor-pointer font-medium">
+                            ✍️ Tratto Umano (Prossimità / Completa area per area)
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Importazione File PDF Vettoriale -->
                 <div class="glass-card p-3 space-y-3 border-indigo-900/30 bg-indigo-950/10">
                     <h4 class="text-[10px] font-bold uppercase text-indigo-400">Importa File PDF Vettoriale</h4>
+                    <div id="pdfModeStatus" class="hidden-mode p-2 rounded bg-indigo-950/80 border border-indigo-500/50 flex items-center justify-between text-[9px] text-indigo-200">
+                        <span>📄 Pagina PDF Vettoriale Attiva</span>
+                        <button type="button" onclick="clearPDFMode()" class="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[8px] transition-colors">✖ Torna a Testo</button>
+                    </div>
                     <div>
                         <label class="block text-[9px] text-slate-400 mb-1">Seleziona File PDF</label>
                         <input type="file" id="pdfInput" accept=".pdf"
                             class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-indigo-600 file:text-white file:font-semibold hover:file:bg-indigo-700 cursor-pointer"
                             onchange="handlePDFUpload(event)">
                     </div>
-                    <div id="pdfPageContainer" class="hidden-mode">
-                        <label class="block text-[9px] text-slate-400 mb-1">Seleziona Pagina PDF</label>
-                        <select id="pdfPageSelector" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
-                            onchange="handlePDFPageChange()">
-                        </select>
+                    <div id="pdfPageContainer" class="hidden-mode space-y-2">
+                        <div>
+                            <label class="block text-[9px] text-slate-400 mb-1">Seleziona Pagina PDF</label>
+                            <select id="pdfPageSelector" class="w-full glass-input text-xs rounded p-2 bg-slate-900"
+                                onchange="handlePDFPageChange()">
+                            </select>
+                        </div>
+                        <button type="button" onclick="extractPDFTextToInput()" class="w-full py-1.5 px-2 rounded text-[10px] bg-slate-800 hover:bg-slate-700 text-indigo-300 font-semibold border border-indigo-800/50 flex items-center justify-center gap-1.5 transition-colors">
+                            📝 Estrai Testo nel Box Modificabile
+                        </button>
                     </div>
                     <!-- Anteprima visiva della pagina PDF -->
                     <div id="pdfVisualPreviewContainer" class="hidden-mode">
@@ -3222,26 +3238,33 @@
 
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Hardware &
-                        Calibrazione</h2>
-                    <span
-                        class="text-[9px] font-bold text-amber-500 uppercase bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-900/40">Ender
-                        3 V2</span>
+                    <h2 class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Hardware & Calibrazione</h2>
+                    <span id="badgeActivePrinter"
+                        class="text-[9px] font-bold text-amber-500 uppercase bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-900/40">Ender 3 V2</span>
                 </div>
 
                 <div class="glass-card p-3 bg-amber-950/5 border-amber-900/20 space-y-3">
+                    <div>
+                        <label class="block text-[9px] text-slate-400 mb-1">Preset Modello Stampante</label>
+                        <select id="paramPrinterPreset" class="w-full glass-input text-xs rounded p-2 bg-slate-900 border border-amber-500/40 text-amber-300 font-bold" onchange="applyPrinterPreset(this.value)">
+                            <option value="ender3v2" selected>🖨️ Creality Ender 3 V2 (Piatto 220×220 mm)</option>
+                            <option value="ender2pro">📐 Creality Ender 2 Pro (Piatto 150×150 mm)</option>
+                            <option value="custom">⚙️ Personalizzato / Manuale</option>
+                        </select>
+                    </div>
+
                     <div class="flex gap-2">
                         <div class="flex-1">
                             <label class="block text-[9px] text-slate-400 mb-0.5">Offset Penna X: <span id="valOffsetX"
                                     class="font-mono text-amber-400 font-bold">-50</span>mm</label>
                             <input type="range" id="paramOffsetX" min="-100" max="100" step="1" value="-50"
-                                class="w-full accent-amber-500" oninput="updateSimulation()">
+                                class="w-full accent-amber-500" oninput="onManualMachineSliderChange(); updateSimulation()">
                         </div>
                         <div class="flex-1">
                             <label class="block text-[9px] text-slate-400 mb-0.5">Offset Penna Y: <span id="valOffsetY"
                                     class="font-mono text-amber-400 font-bold">-20</span>mm</label>
                             <input type="range" id="paramOffsetY" min="-100" max="100" step="1" value="-20"
-                                class="w-full accent-amber-500" oninput="updateSimulation()">
+                                class="w-full accent-amber-500" oninput="onManualMachineSliderChange(); updateSimulation()">
                         </div>
                     </div>
 
@@ -3249,14 +3272,14 @@
                         <div class="flex-1">
                             <label class="block text-[9px] text-slate-400 mb-0.5">Piatto X (W): <span id="valBedSizeX"
                                     class="font-mono text-amber-400">220</span>mm</label>
-                            <input type="range" id="paramBedSizeX" min="100" max="400" step="5" value="220"
-                                class="w-full accent-amber-500" oninput="updateSimulation()">
+                            <input type="range" id="paramBedSizeX" min="80" max="400" step="5" value="220"
+                                class="w-full accent-amber-500" oninput="onManualMachineSliderChange(); updateSimulation()">
                         </div>
                         <div class="flex-1">
                             <label class="block text-[9px] text-slate-400 mb-0.5">Piatto Y (H): <span id="valBedSizeY"
                                     class="font-mono text-amber-400">220</span>mm</label>
-                            <input type="range" id="paramBedSizeY" min="100" max="400" step="5" value="220"
-                                class="w-full accent-amber-500" oninput="updateSimulation()">
+                            <input type="range" id="paramBedSizeY" min="80" max="400" step="5" value="220"
+                                class="w-full accent-amber-500" oninput="onManualMachineSliderChange(); updateSimulation()">
                         </div>
                     </div>
 
@@ -3545,6 +3568,8 @@
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
         }
         const PI = Math.PI;
+        let isPDFModeActive = false;
+        let cachedPDFPageElements = [];
 
         let currentMode = 'harmonograph';
         let audioBuffer = null;
@@ -8597,7 +8622,7 @@
         }
 
         function simplifyRDP(points, epsilon) {
-            if (points.length <= 2 || epsilon <= 0) return points;
+            if (!points || points.length <= 2 || epsilon <= 0) return points || [];
 
             let maxDist = 0;
             let index = 0;
@@ -8615,6 +8640,8 @@
                 const results1 = simplifyRDP(points.slice(0, index + 1), epsilon);
                 const results2 = simplifyRDP(points.slice(index), epsilon);
                 return results1.slice(0, results1.length - 1).concat(results2);
+            } else {
+                return [points[0], points[end]];
             }
         }
         // =====================================================================
@@ -10105,9 +10132,9 @@
                 const page = await currentPDFDocument.getPage(pageNumber);
                 
                 const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 
-                const scale = 3.0; 
+                const scale = 2.0; 
                 const viewport = page.getViewport({ scale: scale });
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
@@ -10135,48 +10162,78 @@
                     previewContainer.classList.remove('hidden-mode');
                     if (previewInfo) {
                         const totalPages = currentPDFDocument.numPages;
-                        previewInfo.textContent = `Pag. ${pageNumber}/${totalPages} — ${Math.round(viewport.width/scale*0.353)}×${Math.round(viewport.height/scale*0.353)} mm`;
+                        const mmW = Math.round(viewport.width / scale * 0.352778);
+                        const mmH = Math.round(viewport.height / scale * 0.352778);
+                        previewInfo.textContent = `Pag. ${pageNumber}/${totalPages} — ${mmW}×${mmH} mm`;
                     }
                 }
                 
-                console.log("Vettorializzazione WYSIWYG della pagina PDF...");
+                console.log("Vettorializzazione WYSIWYG ad alta fedeltà della pagina PDF...");
                 
                 const w = canvas.width;
                 const h = canvas.height;
                 const imgData = ctx.getImageData(0, 0, w, h);
                 const data = imgData.data;
                 
-                const hatchSpacing = 6; 
-                const threshold = 180; 
+                // Calcolo dimensioni reali in millimetri della pagina PDF (1 pt = 0.352778 mm)
+                const pdfWidthPt = viewport.width / scale;
+                const pdfHeightPt = viewport.height / scale;
+                const pdfWidthMm = pdfWidthPt * 0.352778;
+                const pdfHeightMm = pdfHeightPt * 0.352778;
+                
+                // Limiti massimi standard Formato A5: 148 x 210 mm
+                const A5_MAX_W = 148.0;
+                const A5_MAX_H = 210.0;
+                
+                // Margini e area utile raggiungibile dalla penna (safe area del piatto)
+                const offsetX = parseFloat(document.getElementById('paramOffsetX')?.value || "50");
+                const offsetY = parseFloat(document.getElementById('paramOffsetY')?.value || "20");
+                const reachMinX = Math.abs(offsetX);
+                const reachMaxX = bedSizeX - Math.abs(offsetX);
+                const reachMinY = Math.abs(offsetY);
+                const reachMaxY = bedSizeY - Math.abs(offsetY);
+                
+                const safeBedW = Math.max(40, (reachMaxX - reachMinX) - 4.0);
+                const safeBedH = Math.max(40, (reachMaxY - reachMinY) - 4.0);
+                
+                // Orientamento pagina (Portrait o Landscape) con vincolo massimo A5
+                const isLandscape = pdfWidthMm > pdfHeightMm;
+                const limitW = isLandscape ? Math.min(A5_MAX_H, safeBedW) : Math.min(A5_MAX_W, safeBedW);
+                const limitH = isLandscape ? Math.min(A5_MAX_W, safeBedH) : Math.min(A5_MAX_H, safeBedH);
+                
+                // Scala uniforme isotropa per occupare al 100% il massimo spazio sicuro A5
+                const uniformScale = Math.min(limitW / pdfWidthMm, limitH / pdfHeightMm);
+                const finalMmW = pdfWidthMm * uniformScale;
+                const finalMmH = pdfHeightMm * uniformScale;
+                
+                if (previewInfo) {
+                    const totalPages = currentPDFDocument.numPages;
+                    previewInfo.textContent = `Pag. ${pageNumber}/${totalPages} — A5 Plot: ${Math.round(finalMmW)}×${Math.round(finalMmH)} mm (Orig: ${Math.round(pdfWidthMm)}×${Math.round(pdfHeightMm)} mm)`;
+                }
                 
                 currentRawElements = [];
-                const penWidth = parseFloat(document.getElementById('paramPenWidth').value) || 0.6;
+                const penWidth = parseFloat(document.getElementById('paramPenWidth')?.value) || 0.6;
                 
-                const maxDim = Math.max(w, h);
-                const scaleX = 100 / maxDim;
-                const scaleY = 100 / maxDim;
-                const cx = w / 2;
-                const cy = h / 2;
-                
-                function mapPoint(x, y) {
+                function mapPoint(px, py) {
                     return {
-                        x: (x - cx) * scaleX,
-                        y: -(y - cy) * scaleY
+                        x: (px / w - 0.5) * finalMmW,
+                        y: -(py / h - 0.5) * finalMmH
                     };
                 }
                 
-                for (let y = 0; y < h; y += hatchSpacing) {
+                // Campitura lineare stile Inkjet per riempimento testi e grafiche piene
+                const hatchMm = Math.max(0.35, penWidth * 0.8);
+                const hatchSpacingPx = Math.max(2, Math.round((hatchMm / finalMmH) * h));
+                const threshold = 170;
+                
+                for (let y = 0; y < h; y += hatchSpacingPx) {
                     let inBlack = false;
                     let startX = 0;
                     
                     for (let x = 0; x < w; x++) {
                         const idx = (y * w + x) * 4;
-                        const r = data[idx];
-                        const g = data[idx+1];
-                        const b = data[idx+2];
-                        const a = data[idx+3];
-                        
-                        const luma = a < 50 ? 255 : (0.299 * r + 0.587 * g + 0.114 * b);
+                        const a = data[idx + 3];
+                        const luma = a < 50 ? 255 : (0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
                         const isBlack = luma < threshold;
                         
                         if (isBlack && !inBlack) {
@@ -10187,31 +10244,30 @@
                             if (x - startX >= 2) {
                                 currentRawElements.push({
                                     type: 'path',
-                                    stroke: '#4f46e5', 
+                                    stroke: '#4f46e5',
                                     width: penWidth,
                                     points: [mapPoint(startX, y), mapPoint(x - 1, y)]
                                 });
                             }
                         }
                     }
-                    if (inBlack) {
-                        if (w - startX >= 2) {
-                            currentRawElements.push({
-                                type: 'path',
-                                stroke: '#4f46e5',
-                                width: penWidth,
-                                points: [mapPoint(startX, y), mapPoint(w - 1, y)]
-                            });
-                        }
+                    if (inBlack && w - startX >= 2) {
+                        currentRawElements.push({
+                            type: 'path',
+                            stroke: '#4f46e5',
+                            width: penWidth,
+                            points: [mapPoint(startX, y), mapPoint(w - 1, y)]
+                        });
                     }
                 }
                 
+                // Tracciamento contorni precisi per lettere nitide
                 const edgeMask = new Uint8Array(w * h);
                 for (let y = 1; y < h - 1; y++) {
                     for (let x = 1; x < w - 1; x++) {
                         const idx = (y * w + x) * 4;
-                        const a = data[idx+3];
-                        const luma = a < 50 ? 255 : (0.299 * data[idx] + 0.587 * data[idx+1] + 0.114 * data[idx+2]);
+                        const a = data[idx + 3];
+                        const luma = a < 50 ? 255 : (0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
                         
                         if (luma < threshold) {
                             let isEdge = false;
@@ -10219,8 +10275,8 @@
                                 for (let dx = -1; dx <= 1; dx++) {
                                     if (dx === 0 && dy === 0) continue;
                                     const nIdx = ((y + dy) * w + (x + dx)) * 4;
-                                    const nA = data[nIdx+3];
-                                    const nLuma = nA < 50 ? 255 : (0.299 * data[nIdx] + 0.587 * data[nIdx+1] + 0.114 * data[nIdx+2]);
+                                    const nA = data[nIdx + 3];
+                                    const nLuma = nA < 50 ? 255 : (0.299 * data[nIdx] + 0.587 * data[nIdx + 1] + 0.114 * data[nIdx + 2]);
                                     if (nLuma >= threshold) {
                                         isEdge = true;
                                         break;
@@ -10228,9 +10284,7 @@
                                 }
                                 if (isEdge) break;
                             }
-                            if (isEdge) {
-                                edgeMask[y * w + x] = 1;
-                            }
+                            if (isEdge) edgeMask[y * w + x] = 1;
                         }
                     }
                 }
@@ -10270,10 +10324,10 @@
                             }
                             
                             if (ptList.length >= 2) {
-                                const simplified = simplifyRDP(ptList, 0.3);
+                                const simplified = simplifyRDP(ptList, 0.25);
                                 currentRawElements.push({
                                     type: 'path',
-                                    stroke: '#4338ca', 
+                                    stroke: '#4338ca',
                                     width: penWidth,
                                     points: simplified
                                 });
@@ -10282,6 +10336,17 @@
                     }
                 }
                 
+                // Ordina per prossimità / tratto umano se attivo
+                const chkHuman = document.getElementById('chkTextHumanOrder');
+                if (chkHuman && chkHuman.checked && typeof optimizePathsHumanOrder === 'function') {
+                    currentRawElements = optimizePathsHumanOrder(currentRawElements, 4.0);
+                }
+                
+                cachedPDFPageElements = JSON.parse(JSON.stringify(currentRawElements));
+                isPDFModeActive = true;
+                const pdfStatus = document.getElementById('pdfModeStatus');
+                if (pdfStatus) pdfStatus.classList.remove('hidden-mode');
+
                 applyGlobalTransformAndRender();
                 
             } catch (err) {
@@ -10293,6 +10358,55 @@
         async function handlePDFPageChange() {
             const pageNum = parseInt(document.getElementById('pdfPageSelector').value) || 1;
             await loadPDFPage(pageNum);
+        }
+
+        async function extractPDFTextToInput() {
+            if (!currentPDFDocument) {
+                alert("Carica prima un file PDF.");
+                return;
+            }
+            try {
+                const pageNum = parseInt(document.getElementById('pdfPageSelector').value) || 1;
+                const page = await currentPDFDocument.getPage(pageNum);
+                const textContent = await page.getTextContent();
+                let lastY = null;
+                let text = '';
+                textContent.items.forEach(item => {
+                    if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+                        text += '\n';
+                    } else if (text.length > 0 && !text.endsWith(' ') && !text.endsWith('\n')) {
+                        text += ' ';
+                    }
+                    text += item.str;
+                    lastY = item.transform[5];
+                });
+                if (text.trim()) {
+                    document.getElementById('paramTextInput').value = text.trim();
+                    isPDFModeActive = false;
+                    const pdfStatus = document.getElementById('pdfModeStatus');
+                    if (pdfStatus) pdfStatus.classList.add('hidden-mode');
+                    updateSimulation();
+                } else {
+                    alert("Nessun testo estraibile trovato nella pagina (potrebbe essere una scansione grafica).");
+                }
+            } catch (err) {
+                console.error("Errore estrazione testo PDF:", err);
+                alert("Impossibile estrarre il testo dalla pagina PDF.");
+            }
+        }
+
+        function clearPDFMode() {
+            isPDFModeActive = false;
+            cachedPDFPageElements = [];
+            const pdfStatus = document.getElementById('pdfModeStatus');
+            if (pdfStatus) pdfStatus.classList.add('hidden-mode');
+            const pdfInp = document.getElementById('pdfInput');
+            if (pdfInp) pdfInp.value = '';
+            const previewContainer = document.getElementById('pdfVisualPreviewContainer');
+            if (previewContainer) previewContainer.classList.add('hidden-mode');
+            const pageContainer = document.getElementById('pdfPageContainer');
+            if (pageContainer) pageContainer.classList.add('hidden-mode');
+            updateSimulation();
         }
 
         // =====================================================================
@@ -11020,7 +11134,7 @@ out body;`;
             const cx_reach = bedSizeX / 2;
             const cy_reach = bedSizeY / 2;
 
-            const scale = plotSize / Math.max(w, h || 1);
+            const scale = (isPDFModeActive && currentMode === 'text') ? 1.0 : (plotSize / Math.max(w, h || 1));
 
             let elements = currentRawElements.map(el => {
                 const tX = x => {
@@ -11045,11 +11159,15 @@ out body;`;
                 }
             }).filter(Boolean);
 
-            const chkHuman = document.getElementById('chkSvgHumanOrder');
-            if (chkHuman && chkHuman.checked) {
-                const clusterThreshold = parseFloat(document.getElementById('paramSvgClusterDist')?.value || 5.0);
+            const isHumanOrderActive = (currentMode === 'svg' && document.getElementById('chkSvgHumanOrder')?.checked) ||
+                                       (currentMode === 'text' && document.getElementById('chkTextHumanOrder')?.checked);
+
+            if (isHumanOrderActive) {
+                const clusterThreshold = currentMode === 'svg'
+                    ? parseFloat(document.getElementById('paramSvgClusterDist')?.value || 5.0)
+                    : 4.0;
                 elements = optimizePathsHumanOrder(elements, clusterThreshold);
-            } else if (document.getElementById('chkOptimizeTravel').checked && currentMode !== 'svg') {
+            } else if (document.getElementById('chkOptimizeTravel')?.checked && currentMode !== 'svg') {
                 elements = optimizePaths(elements);
             }
 
@@ -13784,18 +13902,28 @@ out body;`;
                     });
 
                     if (tempDiv.parentNode) document.body.removeChild(tempDiv);
+                    applyTextHumanOrderIfNeeded();
                     applyGlobalTransformAndRender();
                 }).catch(err => {
                     console.error("Errore typesetting MathJax:", err);
                     if (reqId === textRequestId) {
                         currentRawElements.push(...standardElements);
+                        applyTextHumanOrderIfNeeded();
                         applyGlobalTransformAndRender();
                     }
                     if (tempDiv.parentNode) document.body.removeChild(tempDiv);
                 });
             } else {
                 currentRawElements.push(...standardElements);
+                applyTextHumanOrderIfNeeded();
                 applyGlobalTransformAndRender();
+            }
+        }
+
+        function applyTextHumanOrderIfNeeded() {
+            const chkHuman = document.getElementById('chkTextHumanOrder');
+            if (chkHuman && chkHuman.checked && currentRawElements.length > 1) {
+                currentRawElements = optimizePathsHumanOrder(currentRawElements, 4.0);
             }
         }
 
@@ -14348,7 +14476,14 @@ out body;`;
                 else if (currentMode === 'image') processImage();
                 else if (currentMode === 'svg') applyGlobalTransformAndRender();
                 else if (currentMode === 'sketch') processSketch();
-                else if (currentMode === 'text') processText();
+                else if (currentMode === 'text') {
+                    if (isPDFModeActive && cachedPDFPageElements && cachedPDFPageElements.length > 0) {
+                        currentRawElements = JSON.parse(JSON.stringify(cachedPDFPageElements));
+                        applyGlobalTransformAndRender();
+                    } else {
+                        processText();
+                    }
+                }
                 else if (currentMode === 'turtle') generateTurtletoyPattern();
                 else if (currentMode === 'pattern') processPattern();
                 else if (currentMode === 'fibonacci') processFibonacci();
@@ -14427,10 +14562,14 @@ out body;`;
             const day = String(now.getDate()).padStart(2, '0');
             const dateStr = `${year}${month}${day}`;
 
-            // Contatore progressivo in localStorage
-            let count = parseInt(localStorage.getItem('gcode_export_counter') || '0');
-            count++;
-            localStorage.setItem('gcode_export_counter', count);
+            // Contatore progressivo in localStorage protetto per Brave/sandbox
+            let count = 1;
+            try {
+                count = parseInt(localStorage.getItem('gcode_export_counter') || '0') + 1;
+                localStorage.setItem('gcode_export_counter', count);
+            } catch(e) {
+                count = Math.floor(Math.random() * 900) + 100;
+            }
             const progress = String(count).padStart(3, '0');
 
             return `${prefix}_${algo}_${dateStr}_${progress}`;
@@ -17946,10 +18085,102 @@ ${document.getElementById('pathGroup').innerHTML}
             ];
 
             try {
+                const chosen = presets[Math.floor(Math.random() * presets.length)];
                 chosen();
             } catch (e) {
                 console.warn("Preset init fallback:", e);
                 setMode('harmonograph', true);
+            }
+        }
+
+        /**
+         * Gestione Preset Macchine Plotter (Ender 3 V2, Ender 2 Pro, Custom)
+         */
+        function applyPrinterPreset(presetKey) {
+            const badge = document.getElementById('badgeActivePrinter');
+            if (presetKey === 'ender3v2') {
+                safeSetVal('paramBedSizeX', '220');
+                safeSetVal('paramBedSizeY', '220');
+                safeSetVal('paramOffsetX', '-50');
+                safeSetVal('paramOffsetY', '-20');
+                safeSetVal('paramPlotSize', '120');
+                safeSetVal('paramSpeed', '3000');
+                safeSetVal('paramTravelSpeed', '12000');
+                safeSetVal('paramZHop', '3.0');
+                safeSetVal('paramAccel', '2000');
+                if (badge) {
+                    badge.innerText = "Ender 3 V2";
+                    badge.className = "text-[9px] font-bold text-amber-500 uppercase bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-900/40";
+                }
+            } else if (presetKey === 'ender2pro') {
+                safeSetVal('paramBedSizeX', '150');
+                safeSetVal('paramBedSizeY', '150');
+                safeSetVal('paramOffsetX', '0');
+                safeSetVal('paramOffsetY', '0');
+                safeSetVal('paramPlotSize', '130');
+                safeSetVal('paramSpeed', '3000');
+                safeSetVal('paramTravelSpeed', '10000');
+                safeSetVal('paramZHop', '3.0');
+                safeSetVal('paramAccel', '2000');
+                if (badge) {
+                    badge.innerText = "Ender 2 Pro";
+                    badge.className = "text-[9px] font-bold text-emerald-400 uppercase bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-900/40";
+                }
+            } else {
+                if (badge) {
+                    badge.innerText = "Manuale / Custom";
+                    badge.className = "text-[9px] font-bold text-indigo-400 uppercase bg-indigo-950/50 px-1.5 py-0.5 rounded border border-indigo-900/40";
+                }
+            }
+
+            try {
+                localStorage.setItem('plotter_printer_preset', presetKey);
+            } catch (e) { }
+
+            if (typeof updateSharedLabels === 'function') updateSharedLabels();
+            if (typeof updateSimulation === 'function') updateSimulation();
+        }
+
+        function onManualMachineSliderChange() {
+            const bx = parseFloat(document.getElementById('paramBedSizeX')?.value);
+            const by = parseFloat(document.getElementById('paramBedSizeY')?.value);
+            const ox = parseFloat(document.getElementById('paramOffsetX')?.value);
+            const oy = parseFloat(document.getElementById('paramOffsetY')?.value);
+            const sel = document.getElementById('paramPrinterPreset');
+            const badge = document.getElementById('badgeActivePrinter');
+            if (sel) {
+                if (bx === 220 && by === 220 && ox === -50 && oy === -20) {
+                    sel.value = 'ender3v2';
+                    if (badge) {
+                        badge.innerText = "Ender 3 V2";
+                        badge.className = "text-[9px] font-bold text-amber-500 uppercase bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-900/40";
+                    }
+                } else if (bx === 150 && by === 150 && ox === 0 && oy === 0) {
+                    sel.value = 'ender2pro';
+                    if (badge) {
+                        badge.innerText = "Ender 2 Pro";
+                        badge.className = "text-[9px] font-bold text-emerald-400 uppercase bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-900/40";
+                    }
+                } else {
+                    sel.value = 'custom';
+                    if (badge) {
+                        badge.innerText = "Manuale / Custom";
+                        badge.className = "text-[9px] font-bold text-indigo-400 uppercase bg-indigo-950/50 px-1.5 py-0.5 rounded border border-indigo-900/40";
+                    }
+                }
+            }
+        }
+
+        function initPrinterPreset() {
+            try {
+                const saved = localStorage.getItem('plotter_printer_preset') || 'ender3v2';
+                const sel = document.getElementById('paramPrinterPreset');
+                if (sel) {
+                    sel.value = saved;
+                    applyPrinterPreset(saved);
+                }
+            } catch (e) {
+                console.warn("Init printer preset:", e);
             }
         }
         /* =========================================================
@@ -18068,6 +18299,7 @@ ${document.getElementById('pathGroup').innerHTML}
             buildHarmonographUI();
             toggleCustomPenCommandsUI();
             initZoomAndPanController(); // Inizializza il controller Zoom & Pan fluido per l'anteprima
+            initPrinterPreset(); // Ripristina il preset stampante memorizzato (Ender 3 V2 / Ender 2 Pro / Custom)
             loadRandomAppealingPreset(); // Avvio dinamico con preset generativo casuale ed accattivante!
             // Equipaggia tutti gli slider con un campo numerico diretto da tastiera
             setTimeout(() => addNumberInputToSliders(), 100);

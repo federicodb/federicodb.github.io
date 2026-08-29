@@ -100,6 +100,97 @@ function loadRandomAppealingPreset() {
         if (typeof chosen === 'function') chosen();
     } catch (e) {
         console.warn("Preset init fallback:", e);
-        if (typeof setMode === 'function') setMode('harmonograph', true);
+        setMode('harmonograph', true);
+    }
+}
+
+/**
+ * Gestione Preset Macchine Plotter (Ender 3 V2, Ender 2 Pro, Custom)
+ */
+function applyPrinterPreset(presetKey) {
+    const badge = document.getElementById('badgeActivePrinter');
+    if (presetKey === 'ender3v2') {
+        safeSetVal('paramBedSizeX', '220');
+        safeSetVal('paramBedSizeY', '220');
+        safeSetVal('paramOffsetX', '-50');
+        safeSetVal('paramOffsetY', '-20');
+        safeSetVal('paramPlotSize', '120');
+        safeSetVal('paramSpeed', '3000');
+        safeSetVal('paramTravelSpeed', '12000');
+        safeSetVal('paramZHop', '3.0');
+        safeSetVal('paramAccel', '2000');
+        if (badge) {
+            badge.innerText = "Ender 3 V2";
+            badge.className = "text-[9px] font-bold text-amber-500 uppercase bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-900/40";
+        }
+    } else if (presetKey === 'ender2pro') {
+        safeSetVal('paramBedSizeX', '150');
+        safeSetVal('paramBedSizeY', '150');
+        safeSetVal('paramOffsetX', '0');
+        safeSetVal('paramOffsetY', '0');
+        safeSetVal('paramPlotSize', '130');
+        safeSetVal('paramSpeed', '3000');
+        safeSetVal('paramTravelSpeed', '10000');
+        safeSetVal('paramZHop', '3.0');
+        safeSetVal('paramAccel', '2000');
+        if (badge) {
+            badge.innerText = "Ender 2 Pro";
+            badge.className = "text-[9px] font-bold text-emerald-400 uppercase bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-900/40";
+        }
+    } else {
+        if (badge) {
+            badge.innerText = "Manuale / Custom";
+            badge.className = "text-[9px] font-bold text-indigo-400 uppercase bg-indigo-950/50 px-1.5 py-0.5 rounded border border-indigo-900/40";
+        }
+    }
+
+    try {
+        localStorage.setItem('plotter_printer_preset', presetKey);
+    } catch (e) { }
+
+    if (typeof updateSharedLabels === 'function') updateSharedLabels();
+    if (typeof updateSimulation === 'function') updateSimulation();
+}
+
+function onManualMachineSliderChange() {
+    const bx = parseFloat(document.getElementById('paramBedSizeX')?.value);
+    const by = parseFloat(document.getElementById('paramBedSizeY')?.value);
+    const ox = parseFloat(document.getElementById('paramOffsetX')?.value);
+    const oy = parseFloat(document.getElementById('paramOffsetY')?.value);
+    const sel = document.getElementById('paramPrinterPreset');
+    const badge = document.getElementById('badgeActivePrinter');
+    if (sel) {
+        if (bx === 220 && by === 220 && ox === -50 && oy === -20) {
+            sel.value = 'ender3v2';
+            if (badge) {
+                badge.innerText = "Ender 3 V2";
+                badge.className = "text-[9px] font-bold text-amber-500 uppercase bg-amber-950/50 px-1.5 py-0.5 rounded border border-amber-900/40";
+            }
+        } else if (bx === 150 && by === 150 && ox === 0 && oy === 0) {
+            sel.value = 'ender2pro';
+            if (badge) {
+                badge.innerText = "Ender 2 Pro";
+                badge.className = "text-[9px] font-bold text-emerald-400 uppercase bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-900/40";
+            }
+        } else {
+            sel.value = 'custom';
+            if (badge) {
+                badge.innerText = "Manuale / Custom";
+                badge.className = "text-[9px] font-bold text-indigo-400 uppercase bg-indigo-950/50 px-1.5 py-0.5 rounded border border-indigo-900/40";
+            }
+        }
+    }
+}
+
+function initPrinterPreset() {
+    try {
+        const saved = localStorage.getItem('plotter_printer_preset') || 'ender3v2';
+        const sel = document.getElementById('paramPrinterPreset');
+        if (sel) {
+            sel.value = saved;
+            applyPrinterPreset(saved);
+        }
+    } catch (e) {
+        console.warn("Init printer preset:", e);
     }
 }
