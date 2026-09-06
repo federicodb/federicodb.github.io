@@ -3199,7 +3199,18 @@
                     </div>
                     <div id="mapHatchingOptions" class="hidden-mode space-y-2.5 pt-1 border-t border-slate-800/40">
                         <div>
-                            <label class="block text-[9px] text-slate-400 mb-0.5">Stile Hatching</label>
+                            <label class="block text-[9px] text-slate-400 mb-0.5">Sorgente Altimetria</label>
+                            <select id="paramMapElevationSource" class="w-full glass-input text-xs rounded p-1.5 bg-slate-900" onchange="onElevationSourceChange(); processMap();">
+                                <option value="dem" selected>📡 DEM Reale Satellitare (Copernicus 90m / SRTM)</option>
+                                <option value="synthetic">🎨 Rumore Sintetico Procedurale (fBm Noise)</option>
+                            </select>
+                        </div>
+                        <div id="demElevationInfo" class="text-[9px] text-emerald-400 font-mono bg-emerald-950/40 p-2 rounded border border-emerald-900/50 flex items-center justify-between">
+                            <span id="demElevationLabel">📡 DEM: pronto</span>
+                            <span id="demElevationRange" class="font-bold text-slate-300">-- m</span>
+                        </div>
+                        <div>
+                            <label class="block text-[9px] text-slate-400 mb-0.5">Stile Rilievo / Hatching</label>
                             <select id="paramMapHatchingStyle" class="w-full glass-input text-xs rounded p-1.5 bg-slate-900" onchange="processMap();">
                                 <option value="relief" selected>Rilievo 3D (Joy Division Style)</option>
                                 <option value="contour">Isolinee Topografiche (Curved)</option>
@@ -3219,13 +3230,13 @@
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <div class="flex-1">
-                                <label class="block text-[9px] text-slate-400 mb-0.5">Scala Rilievo (Noise): <span id="valMapHatchingScale" class="font-mono text-emerald-400 font-bold">0.05</span></label>
+                            <div class="flex-1" id="containerHatchingScale">
+                                <label class="block text-[9px] text-slate-400 mb-0.5">Dettaglio / Frequenza: <span id="valMapHatchingScale" class="font-mono text-emerald-400 font-bold">0.05</span></label>
                                 <input type="range" id="paramMapHatchingScale" min="0.01" max="0.25" step="0.01" value="0.05"
                                     class="w-full accent-emerald-500" oninput="document.getElementById('valMapHatchingScale').innerText=parseFloat(this.value).toFixed(2); processMap();">
                             </div>
                             <div class="flex-1">
-                                <label class="block text-[9px] text-slate-400 mb-0.5">Altezza / Forza Rilievo: <span id="valMapHatchingAmp" class="font-mono text-emerald-400 font-bold">4.0</span></label>
+                                <label class="block text-[9px] text-slate-400 mb-0.5">Esagerazione Quota (mm): <span id="valMapHatchingAmp" class="font-mono text-emerald-400 font-bold">4.0</span></label>
                                 <input type="range" id="paramMapHatchingAmp" min="0.5" max="15.0" step="0.5" value="4.0"
                                     class="w-full accent-emerald-500" oninput="document.getElementById('valMapHatchingAmp').innerText=parseFloat(this.value).toFixed(1); processMap();">
                             </div>
@@ -8737,6 +8748,184 @@
             return Math.sqrt(minSqDist);
         }
 
+        // =====================================================================
+        // MOTORE DEM SATELLITARE REALE (COPERNICUS GLO-90 / NASA SRTM via Open-Meteo)
+        // =====================================================================
+        window.lastMapGeoTransform = null;
+        window.demGridCache = {};
+        let isDemLoading = false;
+        let activeDemGrid = null;
+
+        function mapPlotterToLatLon(px, py) {
+            if (!window.lastMapGeoTransform) return null;
+            const { cx, cy, scale } = window.lastMapGeoTransform;
+            const xMerc = px / scale + cx;
+            const yMerc = py / scale + cy;
+            const lon = (xMerc * 180) / Math.PI;
+            const latRad = 2 * Math.atan(Math.exp(yMerc)) - Math.PI / 2;
+            const lat = (latRad * 180) / Math.PI;
+            return {
+                lat: Math.max(-85.0511, Math.min(85.0511, lat)),
+                lon: Math.max(-180, Math.min(180, lon))
+            };
+        }
+
+        function getInterpolatedDemHeight(lat, lon, gridData) {
+            if (!gridData || !gridData.elevations) return 0;
+            const { minLat, maxLat, minLon, maxLon, gridRes, dLat, dLon, elevations, minElev, maxElev } = gridData;
+
+            const u = Math.max(0, Math.min(gridRes - 1.0001, (lon - minLon) / (dLon || 1)));
+            const v = Math.max(0, Math.min(gridRes - 1.0001, (lat - minLat) / (dLat || 1)));
+
+            const j0 = Math.floor(u);
+            const j1 = Math.min(gridRes - 1, j0 + 1);
+            const i0 = Math.floor(v);
+            const i1 = Math.min(gridRes - 1, i0 + 1);
+
+            const fu = u - j0;
+            const fv = v - i0;
+
+            const e00 = elevations[i0 * gridRes + j0] ?? 0;
+            const e10 = elevations[i0 * gridRes + j1] ?? 0;
+            const e01 = elevations[i1 * gridRes + j0] ?? 0;
+            const e11 = elevations[i1 * gridRes + j1] ?? 0;
+
+            const top = e00 + fu * (e10 - e00);
+            const bottom = e01 + fu * (e11 - e01);
+            const rawElev = top + fv * (bottom - top);
+
+            const baseline = Math.min(0, minElev);
+            const span = Math.max(1, maxElev - baseline);
+            const norm = Math.max(0, Math.min(1, (rawElev - baseline) / span));
+            return norm;
+        }
+
+        function updateDemInfoUi(msg) {
+            const labelEl = document.getElementById('demElevationLabel');
+            const rangeEl = document.getElementById('demElevationRange');
+            const srcSelect = document.getElementById('paramMapElevationSource');
+            if (!labelEl || !rangeEl) return;
+
+            if (srcSelect && srcSelect.value === 'synthetic') {
+                labelEl.textContent = "🎨 Procedurale (fBm Noise)";
+                rangeEl.textContent = "Simulato";
+                return;
+            }
+
+            if (msg) {
+                labelEl.textContent = msg;
+                rangeEl.textContent = "...";
+                return;
+            }
+
+            if (activeDemGrid) {
+                labelEl.textContent = "📡 DEM Reale:";
+                rangeEl.textContent = `${Math.round(activeDemGrid.minElev)}m – ${Math.round(activeDemGrid.maxElev)}m s.l.m.`;
+            } else {
+                labelEl.textContent = "📡 In attesa mappa...";
+                rangeEl.textContent = "-- m";
+            }
+        }
+
+        function onElevationSourceChange() {
+            updateDemInfoUi();
+            const srcSelect = document.getElementById('paramMapElevationSource');
+            const containerScale = document.getElementById('containerHatchingScale');
+            if (containerScale && srcSelect) {
+                if (srcSelect.value === 'synthetic') {
+                    containerScale.style.opacity = '1';
+                } else {
+                    containerScale.style.opacity = '0.7';
+                }
+            }
+        }
+
+        async function checkAndLoadDemForCurrentMap() {
+            if (!window.lastMapGeoTransform) return;
+            const { minLat, maxLat, minLon, maxLon } = window.lastMapGeoTransform;
+            if (minLat >= maxLat || minLon >= maxLon) return;
+
+            const key = `${minLat.toFixed(2)}_${maxLat.toFixed(2)}_${minLon.toFixed(2)}_${maxLon.toFixed(2)}`;
+            if (window.demGridCache[key]) {
+                activeDemGrid = window.demGridCache[key];
+                updateDemInfoUi();
+                return;
+            }
+
+            if (isDemLoading) return;
+            isDemLoading = true;
+            updateDemInfoUi("Caricamento altimetria DEM...");
+
+            try {
+                const gridRes = 25; // 25x25 = 625 nodi di campionamento
+                const lats = [];
+                const lons = [];
+                const dLat = (maxLat - minLat) / (gridRes - 1);
+                const dLon = (maxLon - minLon) / (gridRes - 1);
+
+                for (let i = 0; i < gridRes; i++) {
+                    const latVal = minLat + i * dLat;
+                    for (let j = 0; j < gridRes; j++) {
+                        const lonVal = minLon + j * dLon;
+                        lats.push(Number(latVal.toFixed(4)));
+                        lons.push(Number(lonVal.toFixed(4)));
+                    }
+                }
+
+                const batchSize = 80;
+                const elevations = new Array(lats.length);
+                const promises = [];
+
+                for (let b = 0; b < lats.length; b += batchSize) {
+                    const bLats = lats.slice(b, b + batchSize);
+                    const bLons = lons.slice(b, b + batchSize);
+                    const url = `https://api.open-meteo.com/v1/elevation?latitude=${bLats.join(',')}&longitude=${bLons.join(',')}`;
+                    promises.push(
+                        fetch(url)
+                            .then(res => {
+                                if (!res.ok) throw new Error("HTTP " + res.status);
+                                return res.json();
+                            })
+                            .then(data => {
+                                const elevs = data.elevation || [];
+                                for (let k = 0; k < elevs.length; k++) {
+                                    elevations[b + k] = typeof elevs[k] === 'number' ? elevs[k] : 0;
+                                }
+                            })
+                    );
+                }
+
+                await Promise.all(promises);
+
+                let minE = Infinity, maxE = -Infinity;
+                for (let k = 0; k < elevations.length; k++) {
+                    const ev = elevations[k];
+                    if (ev < minE) minE = ev;
+                    if (ev > maxE) maxE = ev;
+                }
+                if (minE === Infinity) { minE = 0; maxE = 1; }
+                if (maxE <= minE) maxE = minE + 1;
+
+                activeDemGrid = {
+                    key,
+                    minLat, maxLat, minLon, maxLon,
+                    gridRes, dLat, dLon,
+                    elevations,
+                    minElev: minE,
+                    maxElev: maxE
+                };
+                window.demGridCache[key] = activeDemGrid;
+                updateDemInfoUi();
+                // Ridisegna con la mappa DEM caricata
+                processMap();
+            } catch (err) {
+                console.warn("DEM fetch fallito, fallback procedurale:", err);
+                updateDemInfoUi("Offline (fallback procedurale)");
+            } finally {
+                isDemLoading = false;
+            }
+        }
+
         function processMap() {
             document.getElementById('latex-overlay').style.display = 'none';
             if (!geoJsonData) return;
@@ -8800,14 +8989,23 @@
 
             let projectedSegments = [];
             let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
 
             rawSegments.forEach(seg => {
                 let projSeg = [];
                 seg.forEach(coord => {
                     const lon = coord[0];
                     const lat = coord[1];
+
+                    if (lon < minLon) minLon = lon;
+                    if (lon > maxLon) maxLon = lon;
+                    if (lat < minLat) minLat = lat;
+                    if (lat > maxLat) maxLat = lat;
+
+                    // Stabilità numerica ai poli per planisfero e antartide
+                    const clampedLat = Math.max(-85.0511, Math.min(85.0511, lat));
                     const x = (lon * Math.PI) / 180;
-                    const latRad = (lat * Math.PI) / 180;
+                    const latRad = (clampedLat * Math.PI) / 180;
                     const y = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
 
                     projSeg.push({ x: x, y: y });
@@ -8830,6 +9028,13 @@
             const cx = minX + w / 2;
             const cy = minY + h / 2;
             const scale = 100 / Math.max(w, h);
+
+            // Salvataggio georeferenziazione per inversione e campionamento DEM
+            window.lastMapGeoTransform = {
+                cx, cy, scale,
+                minLon, maxLon, minLat, maxLat,
+                minX, maxX, minY, maxY
+            };
 
             let segments = projectedSegments.map(seg => {
                 return seg.map(p => ({
@@ -8921,11 +9126,24 @@
             }
 
             if (hatchingEnabled && segments.length > 0) {
+                const elevSource = document.getElementById('paramMapElevationSource')?.value || 'dem';
                 const style = document.getElementById('paramMapHatchingStyle').value;
                 const spacing = parseFloat(document.getElementById('paramMapHatchingSpacing').value) || 2.0;
                 const resolution = parseFloat(document.getElementById('paramMapHatchingResolution').value) || 1.0;
                 const noiseScale = parseFloat(document.getElementById('paramMapHatchingScale').value) || 0.05;
                 const amplitude = parseFloat(document.getElementById('paramMapHatchingAmp').value) || 4.0;
+
+                // Controllo e download DEM reale se necessario
+                const mapGeoKey = `${minLat.toFixed(2)}_${maxLat.toFixed(2)}_${minLon.toFixed(2)}_${maxLon.toFixed(2)}`;
+                if (elevSource === 'dem') {
+                    if (!activeDemGrid || activeDemGrid.key !== mapGeoKey) {
+                        checkAndLoadDemForCurrentMap();
+                    } else {
+                        updateDemInfoUi();
+                    }
+                } else {
+                    updateDemInfoUi();
+                }
 
                 // Calcoliamo i limiti del paese
                 let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
@@ -8943,7 +9161,17 @@
                     const d = getDistanceToBoundary(x, y, segments);
                     // L'altezza cresce addentrandosi nel territorio
                     const baseHeight = Math.min(1.0, d / 12.0);
-                    // Dettaglio catene montuose tramite fBm noise
+
+                    if (elevSource === 'dem' && activeDemGrid && activeDemGrid.key === mapGeoKey) {
+                        const geo = mapPlotterToLatLon(x, y);
+                        if (geo) {
+                            const demH = getInterpolatedDemHeight(geo.lat, geo.lon, activeDemGrid);
+                            // Quota reale combinata con leggera attenuazione perimetrale
+                            return demH * (0.15 + 0.85 * baseHeight);
+                        }
+                    }
+
+                    // Dettaglio catene montuose tramite fBm noise (fallback o sintetico)
                     const n = fbmNoise2D(x * noiseScale, y * noiseScale, 3);
                     return baseHeight * (0.2 + n * 0.8);
                 }
@@ -10670,17 +10898,44 @@ out body;`;
         const WORLD_GEOJSON_AREAS = {"azerbaijan": [["mainland", "Mainland"], ["nakhchivan", "Nakhchivan"]], "denmark": [["faroe_islands", "Faroe Islands"], ["greenland", "Greenland"], ["mainland", "Mainland"]], "ecuador": [["galapagos_islands", "Galapagos Islands"], ["mainland", "Mainland"]], "france": [["clipperton_island", "Clipperton Island"], ["corsica", "Corsica"], ["french_guiana", "French Guiana"], ["french_polynesia", "French Polynesia"], ["french_southern_and_antarctic_lands", "French Southern And Antarctic Lands"], ["guadeloupe", "Guadeloupe"], ["mainland", "Mainland"], ["martinique", "Martinique"], ["mayotte", "Mayotte"], ["new_caledonia", "New Caledonia"], ["reunion", "Reunion"], ["saint_barthelemy", "Saint Barthelemy"], ["saint_martin", "Saint Martin"], ["saint_pierre_and_miquelon", "Saint Pierre And Miquelon"], ["wallis_and_futuna", "Wallis And Futuna"]], "italy": [["mainland", "Mainland"], ["sardinia", "Sardinia"], ["sicily", "Sicily"]], "netherlands": [["aruba", "Aruba"], ["bonaire", "Bonaire"], ["curacao", "Curacao"], ["mainland", "Mainland"], ["saba", "Saba"], ["sint_eustatius", "Sint Eustatius"], ["sint_maarten", "Sint Maarten"]], "new_zealand": [["antipodes_islands", "Antipodes Islands"], ["auckland_islands", "Auckland Islands"], ["bounty_islands", "Bounty Islands"], ["campbell_island", "Campbell Island"], ["chatham_island", "Chatham Island"], ["kermadec_islands", "Kermadec Islands"], ["mainland", "Mainland"], ["north_island", "North Island"], ["snares_islands", "Snares Islands"], ["south_island", "South Island"], ["three_kings_islands", "Three Kings Islands"], ["tokelau", "Tokelau"]], "norway": [["bouvet_island", "Bouvet Island"], ["jan_mayen", "Jan Mayen"], ["mainland", "Mainland"], ["svalbard", "Svalbard"]], "portugal": [["azores", "Azores"], ["madeira", "Madeira"], ["mainland", "Mainland"]], "spain": [["balearic_islands", "Balearic Islands"], ["canary_islands", "Canary Islands"], ["mainland", "Mainland"]], "united_kingdom": [["akrotiri_and_dhekelia", "Akrotiri And Dhekelia"], ["anguilla", "Anguilla"], ["bermuda", "Bermuda"], ["british_indian_ocean_territory", "British Indian Ocean Territory"], ["british_virgin_islands", "British Virgin Islands"], ["cayman_islands", "Cayman Islands"], ["england", "England"], ["falkland_islands", "Falkland Islands"], ["gibraltar", "Gibraltar"], ["guernsey", "Guernsey"], ["isle_of_man", "Isle Of Man"], ["jersey", "Jersey"], ["montserrat", "Montserrat"], ["northern_ireland", "Northern Ireland"], ["pitcairn_islands", "Pitcairn Islands"], ["saint_helena_ascension_and_tristan_da_cunha", "Saint Helena Ascension And Tristan Da Cunha"], ["scotland", "Scotland"], ["south_georgia_and_south_sandwich_islands", "South Georgia And South Sandwich Islands"], ["turks_and_caicos_islands", "Turks And Caicos Islands"], ["united_kingdom", "United Kingdom"], ["wales", "Wales"]], "usa": [["american_samoa", "American Samoa"], ["bajo_nuevo_bank", "Bajo Nuevo Bank"], ["baker_island", "Baker Island"], ["guam", "Guam"], ["howland_island", "Howland Island"], ["jarvis_island", "Jarvis Island"], ["johnston_atoll", "Johnston Atoll"], ["kingman_reef", "Kingman Reef"], ["mainland", "Mainland"], ["midway_atoll", "Midway Atoll"], ["navassa_island", "Navassa Island"], ["northern_mariana_islands", "Northern Mariana Islands"], ["palmyra_atoll", "Palmyra Atoll"], ["puerto_rico", "Puerto Rico"], ["seranilla_bank", "Seranilla Bank"], ["us_virgin_islands", "Us Virgin Islands"], ["wake_island", "Wake Island"]]};
         const WORLD_GEOJSON_STATES = {"australia": [["new_south_wales", "New South Wales"], ["northern_territory", "Northern Territory"], ["queensland", "Queensland"], ["south_australia", "South Australia"], ["tasmania", "Tasmania"], ["victoria", "Victoria"], ["western_australia", "Western Australia"]], "canada": [["alberta", "Alberta"], ["british_columbia", "British Columbia"], ["manitoba", "Manitoba"], ["new_brunswick", "New Brunswick"], ["newfoundland_and_labrador", "Newfoundland And Labrador"], ["northwest_territories", "Northwest Territories"], ["nova_scotia", "Nova Scotia"], ["nunavut", "Nunavut"], ["ontario", "Ontario"], ["prince_edward_island", "Prince Edward Island"], ["quebec", "Quebec"], ["saskatchewan", "Saskatchewan"], ["yukon", "Yukon"]], "india": [["andaman_nicobar_island", "Andaman Nicobar Island"], ["andhra_pradesh", "Andhra Pradesh"], ["arunachal_pradesh", "Arunachal Pradesh"], ["assam", "Assam"], ["bihar", "Bihar"], ["chandigarh", "Chandigarh"], ["chhattisgarh", "Chhattisgarh"], ["dadara_nagar_havelli", "Dadara Nagar Havelli"], ["daman_diu", "Daman Diu"], ["goa", "Goa"], ["gujarat", "Gujarat"], ["haryana", "Haryana"], ["himachal_pradesh", "Himachal Pradesh"], ["jammu_kashmir", "Jammu Kashmir"], ["jharkhand", "Jharkhand"], ["karnataka", "Karnataka"], ["kerala", "Kerala"], ["ladakh", "Ladakh"], ["lakshadweep", "Lakshadweep"], ["madhya_pradesh", "Madhya Pradesh"], ["maharashtra", "Maharashtra"], ["manipur", "Manipur"], ["meghalaya", "Meghalaya"], ["mizoram", "Mizoram"], ["nagaland", "Nagaland"], ["nct_of_delhi", "Nct Of Delhi"], ["odisha", "Odisha"], ["puducherry", "Puducherry"], ["punjab", "Punjab"], ["rajasthan", "Rajasthan"], ["sikkim", "Sikkim"], ["tamil_nadu", "Tamil Nadu"], ["telangana", "Telangana"], ["tripura", "Tripura"], ["uttar_pradesh", "Uttar Pradesh"], ["uttarakhand", "Uttarakhand"], ["west_bengal", "West Bengal"]], "thailand": [["amnatcharoen", "Amnatcharoen"], ["angthong", "Angthong"], ["bangkok", "Bangkok"], ["buengkan", "Buengkan"], ["buriram", "Buriram"], ["chachoengsao", "Chachoengsao"], ["chainat", "Chainat"], ["chaiyaphum", "Chaiyaphum"], ["chanthaburi", "Chanthaburi"], ["chiangmai", "Chiangmai"], ["chiangrai", "Chiangrai"], ["chonburi", "Chonburi"], ["chumphon", "Chumphon"], ["kalasin", "Kalasin"], ["kamphaengphet", "Kamphaengphet"], ["kanchanaburi", "Kanchanaburi"], ["khonkean", "Khonkean"], ["krabi", "Krabi"], ["lampang", "Lampang"], ["lamphun", "Lamphun"], ["loei", "Loei"], ["lopburi", "Lopburi"], ["maehongson", "Maehongson"], ["mahasarakham", "Mahasarakham"], ["mukdahan", "Mukdahan"], ["nakhonnayok", "Nakhonnayok"], ["nakhonpathom", "Nakhonpathom"], ["nakhonphanom", "Nakhonphanom"], ["nakhonratchasima", "Nakhonratchasima"], ["nakhonsawan", "Nakhonsawan"], ["nakhonsithammarat", "Nakhonsithammarat"], ["nan", "Nan"], ["narathiwat", "Narathiwat"], ["nongbualamphu", "Nongbualamphu"], ["nongkhai", "Nongkhai"], ["nonthaburi", "Nonthaburi"], ["pattani", "Pattani"], ["phangnga", "Phangnga"], ["phatthalung", "Phatthalung"], ["phayao", "Phayao"], ["phetchabun", "Phetchabun"], ["phetchaburi", "Phetchaburi"], ["phichit", "Phichit"], ["phitsanulok", "Phitsanulok"], ["phrae", "Phrae"], ["phuket", "Phuket"], ["prachinburi", "Prachinburi"], ["prachuapkhirikhan", "Prachuapkhirikhan"], ["pranakhonsriayutthaya", "Pranakhonsriayutthaya"], ["prathumthani", "Prathumthani"], ["ranong", "Ranong"], ["ratchaburi", "Ratchaburi"], ["rayong", "Rayong"], ["roiet", "Roiet"], ["sakaeo", "Sakaeo"], ["sakonnakhon", "Sakonnakhon"], ["samutprakan", "Samutprakan"], ["samutsakhon", "Samutsakhon"], ["samutsongkhram", "Samutsongkhram"], ["saraburi", "Saraburi"], ["satun", "Satun"], ["singburi", "Singburi"], ["sisaket", "Sisaket"], ["songkhla", "Songkhla"], ["sukhothai", "Sukhothai"], ["suphanburi", "Suphanburi"], ["suratthani", "Suratthani"], ["surin", "Surin"], ["tak", "Tak"], ["trang", "Trang"], ["trat", "Trat"], ["ubonratchathani", "Ubonratchathani"], ["udonthani", "Udonthani"], ["uthaithani", "Uthaithani"], ["uttaradit", "Uttaradit"], ["yala", "Yala"], ["yasothon", "Yasothon"]], "usa": [["alabama", "Alabama"], ["alaska", "Alaska"], ["arizona", "Arizona"], ["arkansas", "Arkansas"], ["california", "California"], ["colorado", "Colorado"], ["connecticut", "Connecticut"], ["delaware", "Delaware"], ["district_of_columbia", "District Of Columbia"], ["florida", "Florida"], ["georgia", "Georgia"], ["idaho", "Idaho"], ["illinois", "Illinois"], ["indiana", "Indiana"], ["iowa", "Iowa"], ["kansas", "Kansas"], ["kentucky", "Kentucky"], ["louisiana", "Louisiana"], ["maine", "Maine"], ["maryland", "Maryland"], ["massachusetts", "Massachusetts"], ["michigan", "Michigan"], ["minnesota", "Minnesota"], ["mississippi", "Mississippi"], ["missouri", "Missouri"], ["montana", "Montana"], ["nebraska", "Nebraska"], ["nevada", "Nevada"], ["new_hampshire", "New Hampshire"], ["new_jersey", "New Jersey"], ["new_mexico", "New Mexico"], ["new_york", "New York"], ["north_carolina", "North Carolina"], ["north_dakota", "North Dakota"], ["ohio", "Ohio"], ["oklahoma", "Oklahoma"], ["oregon", "Oregon"], ["pennsylvania", "Pennsylvania"], ["rhode_island", "Rhode Island"], ["south_carolina", "South Carolina"], ["south_dakota", "South Dakota"], ["tennessee", "Tennessee"], ["texas", "Texas"], ["utah", "Utah"], ["vermont", "Vermont"], ["virginia", "Virginia"], ["washington", "Washington"], ["west_virginia", "West Virginia"], ["wisconsin", "Wisconsin"], ["wyoming", "Wyoming"]]};
 
+        const WORLD_SPECIAL_REGIONS = [
+            ["world_all", "🌍 Planisfero Completo (Tutto il Mondo)"],
+            ["continent_europe", "🇪🇺 Continente: Europa"],
+            ["continent_africa", "🌍 Continente: Africa"],
+            ["continent_asia", "🌏 Continente: Asia"],
+            ["continent_north_america", "🌎 Continente: Nord America"],
+            ["continent_south_america", "🌎 Continente: Sud America"],
+            ["continent_oceania", "🌏 Continente: Oceania"],
+            ["continent_antarctica", "❄️ Continente: Antartide"]
+        ];
+
         function initWorldGeoJsonSelectors() {
             const countrySelect = document.getElementById('worldMapCountrySelect');
             if (!countrySelect) return;
             
-            countrySelect.innerHTML = '<option value="">-- Seleziona una Nazione --</option>';
+            countrySelect.innerHTML = '<option value="">-- Seleziona Mappa --</option>';
+
+            // Gruppo 1: Planisfero e Continenti
+            const optgroupSpecial = document.createElement('optgroup');
+            optgroupSpecial.label = "🌍 Planisfero & Continenti";
+            WORLD_SPECIAL_REGIONS.forEach(([val, label]) => {
+                const opt = document.createElement('option');
+                opt.value = val;
+                opt.textContent = label;
+                optgroupSpecial.appendChild(opt);
+            });
+            countrySelect.appendChild(optgroupSpecial);
+
+            // Gruppo 2: Singole Nazioni (A-Z)
+            const optgroupCountries = document.createElement('optgroup');
+            optgroupCountries.label = "🏛️ Singole Nazioni (A-Z)";
             WORLD_GEOJSON_COUNTRIES.forEach(([val, label]) => {
                 const opt = document.createElement('option');
                 opt.value = val;
                 opt.textContent = label;
-                countrySelect.appendChild(opt);
+                optgroupCountries.appendChild(opt);
             });
+            countrySelect.appendChild(optgroupCountries);
         }
 
         function onWorldCountryChange() {
@@ -10693,6 +10948,12 @@ out body;`;
             const country = countrySelect.value;
             subregionSelect.innerHTML = '';
             
+            // Se è planisfero o continente, nascondi sotto-regioni
+            if (country === 'world_all' || country.startsWith('continent_')) {
+                subregionContainer.classList.add('hidden-mode');
+                return;
+            }
+
             const hasAreas = WORLD_GEOJSON_AREAS[country];
             const hasStates = WORLD_GEOJSON_STATES[country];
 
@@ -10730,33 +10991,75 @@ out body;`;
             const previewSvg = document.getElementById('mapPreviewSvg');
 
             if (!countrySelect || !countrySelect.value) {
-                alert('Seleziona una nazione dalla lista.');
+                alert('Seleziona una nazione o continente dalla lista.');
                 return;
             }
 
-            const country = countrySelect.value;
-            const subregion = (!subregionContainer.classList.contains('hidden-mode') && subregionSelect) ? subregionSelect.value : '';
+            const val = countrySelect.value;
+            const label = countrySelect.options[countrySelect.selectedIndex].text;
 
-            let url = '';
-            let label = '';
-
-            if (subregion) {
-                const isArea = WORLD_GEOJSON_AREAS[country];
-                const folder = isArea ? 'areas' : 'states';
-                url = `https://raw.githubusercontent.com/georgique/world-geojson/develop/${folder}/${country}/${subregion}.json`;
-                label = `${countrySelect.options[countrySelect.selectedIndex].text} (${subregionSelect.options[subregionSelect.selectedIndex].text})`;
-            } else {
-                url = `https://raw.githubusercontent.com/georgique/world-geojson/develop/countries/${country}.json`;
-                label = countrySelect.options[countrySelect.selectedIndex].text;
-            }
-
-            statusEl.textContent = `⬇ Scarico confini di "${label}" da GitHub...`;
+            statusEl.textContent = `⬇ Carico dati per "${label}"...`;
             statusEl.classList.remove('hidden');
 
             try {
-                const resp = await fetch(url);
-                if (!resp.ok) throw new Error('Mappa non disponibile per questa selezione o errore di connessione.');
-                const geojson = await resp.json();
+                let geojson = null;
+
+                if (val === 'world_all' || val.startsWith('continent_')) {
+                    // Carica dataset mondiale/continentale
+                    let rawData = window._worldContinentsDataCache;
+                    if (!rawData) {
+                        try {
+                            const r = await fetch('assets/world_continents_110m.geojson');
+                            if (r.ok) rawData = await r.json();
+                        } catch(e) {}
+                        if (!rawData) {
+                            const r2 = await fetch('https://raw.githubusercontent.com/datasets/geo-boundaries-world-110m/master/countries.geojson');
+                            if (!r2.ok) throw new Error("Impossibile scaricare dataset mondiale");
+                            rawData = await r2.json();
+                        }
+                        window._worldContinentsDataCache = rawData;
+                    }
+
+                    if (val === 'world_all') {
+                        geojson = rawData;
+                    } else {
+                        const continentMap = {
+                            'continent_europe': 'Europe',
+                            'continent_africa': 'Africa',
+                            'continent_asia': 'Asia',
+                            'continent_north_america': 'North America',
+                            'continent_south_america': 'South America',
+                            'continent_oceania': 'Oceania',
+                            'continent_antarctica': 'Antarctica'
+                        };
+                        const targetContinent = continentMap[val];
+                        const filteredFeatures = (rawData.features || []).filter(f => {
+                            const c = f.properties && (f.properties.continent || f.properties.CONTINENT);
+                            return c === targetContinent;
+                        });
+                        geojson = {
+                            type: 'FeatureCollection',
+                            features: filteredFeatures
+                        };
+                    }
+                } else {
+                    // Singola nazione da world-geojson
+                    const country = val;
+                    const subregion = (!subregionContainer.classList.contains('hidden-mode') && subregionSelect) ? subregionSelect.value : '';
+
+                    let url = '';
+                    if (subregion) {
+                        const isArea = WORLD_GEOJSON_AREAS[country];
+                        const folder = isArea ? 'areas' : 'states';
+                        url = `https://raw.githubusercontent.com/georgique/world-geojson/develop/${folder}/${country}/${subregion}.json`;
+                    } else {
+                        url = `https://raw.githubusercontent.com/georgique/world-geojson/develop/countries/${country}.json`;
+                    }
+
+                    const resp = await fetch(url);
+                    if (!resp.ok) throw new Error('Mappa non disponibile per questa selezione o errore di connessione.');
+                    geojson = await resp.json();
+                }
 
                 // Salva e processa
                 geoJsonData = geojson;
@@ -10771,7 +11074,7 @@ out body;`;
                     previewContainer.classList.remove('hidden');
                 }
                 
-                // Genera il GCode
+                // Genera il GCode e il tracciato
                 processMap();
                 statusEl.textContent = `✔ Caricato confini di: ${label}`;
 
