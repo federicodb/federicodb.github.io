@@ -184,9 +184,9 @@ ICON_MAP = {
     "mcd": "🔢", "mcm": "🔢", "numeri": "🔢", "calcolo": "🔢", "aritmetica": "🔢", "divisibilità": "🔢",
     
     # Fisica & Scienze
+    "luna": "🌕", "astronomia": "🪐", "spazio": "🚀",
     "fisica": "⚡", "elettricità": "⚡", "corrente": "⚡", "fasori": "⚡", "onde": "🌊",
     "caos": "🌀", "attrattori": "🌀", "sistemi": "🌀",
-    "spazio": "🚀", "astronomia": "🪐",
     
     # Informatica & Tech
     "coding": "💻", "algoritmi": "💻", "binario": "0️⃣1️⃣",
