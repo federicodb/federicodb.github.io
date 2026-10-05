@@ -21,6 +21,8 @@ for i, arg in enumerate(sys.argv):
         SCREENSHOT_DIR = os.path.abspath(sys.argv[i + 1])
     elif arg == "--dopo-fase4":
         SCREENSHOT_DIR = os.path.join(BASE_DIR, "tools", "screenshots", "dopo-fase4")
+    elif arg == "--dopo":
+        SCREENSHOT_DIR = os.path.join(BASE_DIR, "tools", "screenshots", "dopo")
 
 VIEWPORTS = [
     {"name": "lim", "width": 1920, "height": 1080},
