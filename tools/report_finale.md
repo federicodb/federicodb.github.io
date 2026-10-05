@@ -28,11 +28,12 @@ L'intervento è stato condotto seguendo una rigida regola aurea di **conservazio
 | **1** | **Baseline & Fotografia** | `0fc08ab` | Catturati 168 screenshot di riferimento su 4 viewport (LIM, Proiettore, Tablet, Smartphone). 0 link rotti. |
 | **2** | **Pulizia File di Lavoro** | `7d4d817` | Rimossi 19 file tracciati obsoleti/temporanei e 4 file orfani. **Risparmiati 14.2 MB**. |
 | **3** | **Catalogo & Normativa 2017** | `add66bf` | Indicizzati 5 PDF ufficiali della Riforma D.Lgs. 61/2017. Normalizzati i sidecar JSON. |
-| **4** | **Pulsante di Ritorno alle App** | `36b886c` | Iniettato pulsante `← Orfini Lab` in 37 app didattiche, con auto-occultamento in modalità schermo intero. |
-| **5** | **Tema Chiaro per la LIM** | `d2436f9` | Toggle Sole/Luna su tutte le pagine principali. Regole isolate al 100% in `theme-light.css` con zero impatto sul tema scuro originale. Contrasto > 12:1. |
+| **4** | **Pulsante di Ritorno alle App** | `36b886c` | Iniettato pulsante `← Orfini Lab` in 37 app didattiche, con auto-occultamento in modalità schermo intero (corretto in Fase 9). |
+| **5** | **Tema Chiaro per la LIM** | `d2436f9` | Toggle Sole/Luna su tutte le pagine principali. Regole isolate al 100% in `theme-light.css` con zero impatto sul tema scuro originale. Contrasto testi ≥ 4.5:1 (WCAG AA, verificato in Fase 9). |
 | **6** | **Alleggerimento Conservativo** | `a4db53c` | Ottimizzati PDF pesanti con profilo `prepress` (300 DPI, PSNR > 47 dB) e PNG lossless. **Risparmiati 23.19 MB (-52.1%)**. |
 | **7** | **Micro-miglioramenti & Determinismo** | `9f97e85` | Risolto non-determinismo nei set di `build.py`. OpenGraph completo su `galaxy.html`. Pinning di `marked@15.0.12`. |
-| **8** | **Verifica Finale & Report** | `da verificare` | Catturata serie completa di 168 screenshot post-modifica. Check d'integrità globale con 0 errori. |
+| **8** | **Verifica Finale & Report** | `2fdf22a` | Catturata serie completa di 168 screenshot post-modifica. Check d'integrità globale con 0 errori. |
+| **9** | **Correzioni post-revisione** | (vedi git log) | Ripristinate le date reali di 12 risorse, corretto l'auto-occultamento del pulsante a schermo intero, leggibilità del tema chiaro, configurazione Tailwind in 10 app, screenshot esclusi dal repository. |
 
 ---
 
@@ -67,7 +68,7 @@ L'intervento è stato condotto seguendo una rigida regola aurea di **conservazio
 
 2. **Navigazione Senza Vicoli Ciechi nelle App Didattiche**:
    - 37 laboratori interattivi ora offrono un comodo pulsante di uscita verso la pagina principale dell'Orfini Math Lab.
-   - Quando uno studente o il docente attiva la visualizzazione a schermo intero (Full Screen F11), il pulsante scompare automaticamente per non disturbare l'attività visiva o la simulazione.
+   - Quando un'app attiva lo schermo intero (pulsante Fullscreen dell'app), il pulsante scompare automaticamente. Con il tasto F11 del browser l'occultamento è affidato a `@media (display-mode: fullscreen)`, il cui supporto varia tra browser: da verificare sulla LIM.
 
 3. **Integrazione della Normativa D.Lgs. 61/2017**:
    - I documenti ministeriali sono consultabili direttamente dal catalogo generale e collegati alle competenze dei singoli laboratori.
@@ -101,24 +102,23 @@ Prova a:
 
 ## 6. Opzioni per il Rilascio
 
-Il lavoro è attualmente confinato nel branch locale `miglioramenti-2026`. Non è stata fatta alcuna modifica su `main` né alcun `git push`.
+Il branch `miglioramenti-2026` è già stato unito in `master` **in locale**. Non è stato eseguito alcun `git push`: il sito pubblicato è ancora quello precedente (`db8051d`).
 
-Quando sarai pienamente soddisfatto e vorrai pubblicare le modifiche su GitHub Pages:
+Per pubblicare su GitHub Pages:
 
 ```bash
-# 1. Torna sul branch principale
-git checkout master   # (oppure main)
-
-# 2. Unisci il branch miglioramenti
-git merge miglioramenti-2026
-
-# 3. Pubblica su GitHub Pages
 git push origin master
 ```
 
-Se invece volessi annullare tutto e tornare esattamente al punto di partenza:
+Per tornare al punto di partenza (prima di qualsiasi push):
 ```bash
-git checkout master
-git branch -D miglioramenti-2026
-# Il tuo backup intatto è anche nel tag: backup-pre-miglioramenti
+git reset --hard backup-pre-miglioramenti
 ```
+
+## 7. Fase 9 — Correzioni post-revisione
+
+- **Date delle risorse**: `build.py` usava la data di ultima modifica del file quando mancava una data esplicita; le Fasi 4 e 6, modificando i file, avevano datato 12 risorse al 05/10/2026 alterando l'ordine della home e i `lastmod` della sitemap. Ora le date sono esplicite (`<meta name="date">` nelle app, campo `"date"` nei sidecar JSON) e `build.py` rispetta la data del sidecar anche per i file media.
+- **Pulsante a schermo intero**: il selettore non standard `:fullscreen-ancestor` invalidava l'intera regola CSS; le regole sono ora separate (37 app + `tools/standardize_apps.py`).
+- **Tema chiaro**: rimossa l'ombra del testo pensata per il tema scuro; etichette e codici colorati scuriti per raggiungere il contrasto minimo WCAG AA.
+- **Tailwind**: in 10 app la configurazione aveva virgolette annidate errate (`"[data-theme="dark"]"`) e non veniva mai applicata; corretta (es. Percent Lab: slider e anello ora con la traccia scura prevista).
+- **Repository**: `tools/screenshots/` (48 MB) non è più tracciata né pubblicata; gli screenshot restano in locale. Nota: i commit locali precedenti li contengono ancora nella cronologia.

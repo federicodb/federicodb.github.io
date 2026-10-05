@@ -194,11 +194,10 @@
   font-size: 14px;
   line-height: 1;
 }
-:fullscreen .orfini-back-btn, 
-:-webkit-full-screen .orfini-back-btn,
-:fullscreen-ancestor .orfini-back-btn {
-  display: none !important;
-}
+/* Regole separate: un selettore non riconosciuto invaliderebbe l'intera lista */
+:fullscreen .orfini-back-btn { display: none !important; }
+:-webkit-full-screen .orfini-back-btn { display: none !important; }
+@media (display-mode: fullscreen) { .orfini-back-btn { display: none !important; } }
 @media (max-width: 640px) {
   .orfini-back-btn .orfini-back-text {
     display: none;

@@ -791,7 +791,9 @@ def main():
                             if "title" in meta: clean_title = meta["title"]
                             if "excerpt" in meta: excerpt = meta["excerpt"]
                             if "tags" in meta: tags = sorted(list(set(tags + meta["tags"])))
-                        
+                            # Data esplicita nel sidecar: prevale su nome file e mtime (che cambia a ogni modifica del file)
+                            if re.match(r'^\d{4}-\d{2}-\d{2}$', str(meta.get("date", ""))): date_str = meta["date"]
+
                         meta = {
                              "title": clean_title.strip(),
                              "excerpt": excerpt,

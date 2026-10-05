@@ -18,16 +18,16 @@ html.theme-light {
     --text-on-accent: #ffffff;
 
     /* Primari e accenti per contrasto su sfondo chiaro */
-    --primary: hsl(190, 85%, 32%);
-    --primary-glow: hsla(190, 85%, 32%, 0.15);
+    --primary: hsl(190, 85%, 28%);
+    --primary-glow: hsla(190, 85%, 28%, 0.15);
     --accent: hsl(280, 75%, 45%);
 
     /* Token Material 3 versione Light */
     --md-sys-color-outline: rgba(15, 23, 42, 0.15);
-    --md-sys-color-primary: hsl(190, 85%, 32%);
+    --md-sys-color-primary: hsl(190, 85%, 28%);
     --md-sys-color-surface-variant: #f1f5f9;
     --md-sys-color-on-surface-variant: #1e293b;
-    --md-sys-color-focus-glow: hsla(190, 85%, 32%, 0.15);
+    --md-sys-color-focus-glow: hsla(190, 85%, 28%, 0.15);
 
     /* Card Themes M3 per Light Mode */
     --card-blue: #d3e3fd;
@@ -62,7 +62,7 @@ html.theme-light .brand-title {
 }
 
 html.theme-light .brand-sub {
-    color: #64748b !important;
+    color: #526077 !important;
 }
 
 html.theme-light .nav-link {
@@ -100,7 +100,7 @@ html.theme-light .search-input::placeholder {
 }
 
 html.theme-light .search-icon {
-    color: #64748b !important;
+    color: #526077 !important;
 }
 
 /* Pillole e Filtri */
@@ -167,8 +167,17 @@ html.theme-light .card-desc {
     color: #475569 !important;
 }
 
+/* L'ombra pensata per il testo chiaro su fondo scuro sbava il testo scuro su fondo bianco */
+html.theme-light .card-content {
+    text-shadow: none !important;
+}
+
+/* Gli accenti neon (ciano, rosa, giallo) su bianco hanno contrasto < 2:1: li scuriamo
+   mantenendone la tinta. Prima riga = fallback per browser senza color-mix. */
 html.theme-light .type-badge {
-    color: var(--card-accent, var(--primary)) !important;
+    color: #334155 !important;
+    color: color-mix(in srgb, var(--card-accent, var(--primary)) 40%, #0f172a) !important;
+    font-weight: 700;
 }
 
 html.theme-light .class-badge {
@@ -226,7 +235,7 @@ html.theme-light .breadcrumbs-bar {
 }
 
 html.theme-light .breadcrumbs {
-    color: #64748b !important;
+    color: #526077 !important;
 }
 
 html.theme-light .breadcrumbs a {
@@ -338,7 +347,7 @@ html.theme-light .site-footer a {
 
 html.theme-light .footer-bottom {
     border-top: 1px solid #e2e8f0 !important;
-    color: #64748b !important;
+    color: #526077 !important;
 }
 
 /* Menu Filtri & Dropdown */
@@ -361,7 +370,7 @@ html.theme-light .filter-dropdown {
 }
 
 html.theme-light .filter-group-title {
-    color: #64748b !important;
+    color: #526077 !important;
 }
 
 html.theme-light .filter-banner {
@@ -443,4 +452,10 @@ html.theme-light .theme-icon-sun {
 }
 html.theme-light .theme-icon-moon {
     display: block;
+}
+
+/* Competenze: ID colorati (viola/ciano neon) scuriti per il contrasto su bianco */
+html.theme-light .skill-id {
+    color: #334155 !important;
+    color: color-mix(in srgb, var(--accent-color, var(--primary)) 40%, #0f172a) !important;
 }
