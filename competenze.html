@@ -106,6 +106,51 @@
             background: hsla(325, 85%, 65%, 0.1);
         }
 
+        /* ORFINI-NORMATIVA START */
+        .cat-btn.active[data-target="documenti_normativa_61"] {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: hsla(199, 89%, 48%, 0.1);
+        }
+
+        .orfini-norm-card {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .orfini-norm-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-3px);
+        }
+
+        .orfini-norm-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: hsla(199, 89%, 48%, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            width: fit-content;
+            margin-top: auto;
+        }
+
+        .orfini-norm-btn:hover {
+            background: #38bdf8;
+            color: #000;
+        }
+        /* ORFINI-NORMATIVA END */
+
         .section-header {
             margin-bottom: 3rem;
             padding-bottom: 2rem;
@@ -284,6 +329,16 @@
                         </svg>
                         Soft Skills
                     </button>
+                    <button class="cat-btn" data-target="documenti_normativa_61">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                        Testi Normativi (PDF)
+                    </button>
                 </div>
             </aside>
 
@@ -401,19 +456,88 @@
             area_generale_matematica: { color: 'var(--color-math)', bg: 'hsla(280, 85%, 65%, 0.1)' },
             area_indirizzo_tecnico: { color: 'var(--color-tech)', bg: 'hsla(155, 100%, 50%, 0.1)' },
             competenze_cittadinanza: { color: 'var(--color-citizen)', bg: 'hsla(38, 100%, 60%, 0.1)' },
-            competenze_trasversali_soft_skills: { color: 'var(--color-soft)', bg: 'hsla(325, 85%, 65%, 0.1)' }
+            competenze_trasversali_soft_skills: { color: 'var(--color-soft)', bg: 'hsla(325, 85%, 65%, 0.1)' },
+            documenti_normativa_61: { color: '#38bdf8', bg: 'hsla(199, 89%, 48%, 0.1)' }
         };
+
+        const normativeDocs = [
+            {
+                id: "DLGS_61_LEGGE",
+                title: "D.Lgs. 13 aprile 2017, n. 61",
+                label: "Revisione dei percorsi dell'istruzione professionale",
+                description: "Testo normativo fondamentale per il riordino degli istituti professionali in attuazione dell'art. 1, commi 180 e 181, lettera d), della legge n. 107/2015.",
+                url: "rif_norm_2017/decreto-legislativo-13-04-2017-n-61.pdf"
+            },
+            {
+                id: "DLGS_61_TESTO",
+                title: "D.Lgs. 61/2017 - Testo Integrale",
+                label: "Quadro normativo generale",
+                description: "Testo integrale del decreto legislativo 61/2017 con le disposizioni generali sui nuovi assetti didattici.",
+                url: "rif_norm_2017/dlgs-61-2017.pdf"
+            },
+            {
+                id: "ALLEGATO_A",
+                title: "Allegato A - Profilo Educativo e Professionale (PECUP)",
+                label: "Risultati di apprendimento comuni",
+                description: "Declinazione del profilo educativo, culturale e professionale comune a tutti i percorsi di istruzione professionale.",
+                url: "rif_norm_2017/Allegato-A_dlgs61_2017.pdf"
+            },
+            {
+                id: "ALLEGATO_1",
+                title: "Allegato 1 - Competenze Area Generale (PECUP)",
+                label: "Asse matematico, linguistico e storico-sociale",
+                description: "Definizione delle competenze, abilità e conoscenze dell'area di istruzione generale per il biennio e il triennio.",
+                url: "rif_norm_2017/ALLEGATO-1_-Competenze-pecup-professionali-area-generale-Def-1.pdf"
+            },
+            {
+                id: "LINEE_GUIDA",
+                title: "Linee Guida Nazionali (Parte I e II)",
+                label: "Linee guida per i nuovi istituti professionali",
+                description: "Indicazioni metodologiche e didattiche del Ministero dell'Istruzione per la progettazione curricolare per UDA e la valutazione per competenze.",
+                url: "rif_norm_2017/Linee-guida_PARTE-PRIMA-e-SECONDA.pdf"
+            }
+        ];
 
         function renderContent(filter = '') {
             const container = document.getElementById('main-content');
             container.innerHTML = '';
 
-            const data = schemaData[activeCategory];
-            if (!data) return;
-
             const theme = categoryThemes[activeCategory] || { color: 'var(--primary)', bg: 'hsla(190, 100%, 45%, 0.1)' };
             container.style.setProperty('--accent-color', theme.color);
             container.style.setProperty('--accent-bg', theme.bg);
+
+            if (activeCategory === 'documenti_normativa_61') {
+                const filteredDocs = normativeDocs.filter(d =>
+                    d.title.toLowerCase().includes(filter) ||
+                    d.label.toLowerCase().includes(filter) ||
+                    d.description.toLowerCase().includes(filter)
+                );
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <div class="section-header">
+                        <h2>DOCUMENTI NORMATIVI UFFICIALI (D.LGS. 61/2017)</h2>
+                        <p style="color: var(--text-muted); margin-top: 0.5rem;">Testi legislativi, allegati PECUP e Linee Guida per la progettazione didattica e UDA negli Istituti Professionali.</p>
+                    </div>
+                    <div class="skills-grid">
+                        ${filteredDocs.map(d => `
+                            <div class="orfini-norm-card animate-in">
+                                <span class="skill-id">${d.title}</span>
+                                <div class="skill-label" style="font-weight:700;">${d.label}</div>
+                                <div class="skill-desc" style="color:var(--text-muted); font-size:0.9rem; line-height:1.5;">${d.description}</div>
+                                <a href="${d.url}" target="_blank" class="orfini-norm-btn">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Apri Documento PDF
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+                return;
+            }
+
+            const data = schemaData ? schemaData[activeCategory] : null;
+            if (!data) return;
 
             if (Array.isArray(data)) {
                 const filtered = data.filter(item =>

@@ -232,6 +232,8 @@ def get_icon_for_type(content_type, tags=[], title=""):
 
 def get_game_type(content_type, tags=[], title="", excerpt=""):
     """ Assegna deterministica del target UX (arcade, memory, sim, document) da usare nel frontend UI. """
+    if content_type == "normativa":
+        return "document"
     search_corpus = set([t.lower() for t in tags] + [w.lower() for w in title.split()] + [w.lower() for w in excerpt.split()])
     
     if content_type == "document" or any(k in search_corpus for k in ['verifica', 'pdf', 'prova', 'test']):
@@ -549,9 +551,8 @@ def map_topics_to_riforma(topics):
         if keyword in text_to_search:
             label = get_riforma_label(ref_id)
             if label:
-                # Formato: ID:Label_Breve (troncata se troppo lunga per la UI)
-                short_label = label[:45] + "..." if len(label) > 45 else label
-                extra_tags.append(f"{ref_id}:{short_label}")
+                # Formato: ID:Label pulita senza troncamenti artificiali
+                extra_tags.append(f"{ref_id}:{label.strip()}")
     
     return list(set(extra_tags))
 
@@ -714,7 +715,7 @@ def main():
 
                         # Fallback temi dal nome file
                         raw_words = fn_clean[:-4].split()
-                        stopwords = ['verifica', 'fila', 'a', 'b', 'c', 'correttore', 'mappa', 'pdf', 'di', 'del', 'recupero', 'debito', 'it', 'en', 'ukr', 'classe', 'manuale', 'operativa'] + months_it
+                        stopwords = ['verifica', 'fila', 'a', 'b', 'c', 'correttore', 'mappa', 'pdf', 'di', 'del', 'della', 'delle', 'dei', 'degli', 'da', 'dal', 'in', 'con', 'su', 'per', 'tra', 'fra', 'il', 'lo', 'la', 'i', 'gli', 'le', 'un', 'uno', 'una', 'al', 'allo', 'alla', 'ai', 'agli', 'alle', 'parte', 'guida', 'linee', 'mondo', 'recupero', 'debito', 'it', 'en', 'ukr', 'classe', 'manuale', 'operativa'] + months_it
                         # Filtra anche codici classe (es. 2el, 4gp)
                         meaningful_words = [w for w in raw_words if w.lower() not in stopwords and not re.match(r'^\d+$', w) and not re.match(r'^[1-5][a-z]{2,3}$', w) and len(w) > 2]
                         
@@ -963,10 +964,12 @@ def generate_sitemap(items):
     xml += '  </url>\n'
     
     for item in items:
-        # Codifica URL per sicurezza
-        safe_url = item['url'].replace(" ", "%20")
-        # Se è un'app HTML, l'URL è diretto. Se è un media, potrebbe essere gestito diversamente, 
-        # ma per ora puntiamo al file fisico che è comunque accessibile.
+        raw_url = item.get('url', '')
+        # Escludi link esterni assoluti dalla sitemap di questo dominio
+        if raw_url.startswith("http://") or raw_url.startswith("https://"):
+            continue
+            
+        safe_url = raw_url.replace(" ", "%20").lstrip("/")
         full_url = BASE_URL + safe_url
         
         priority = "0.8" if item.get('type') == 'app' else "0.6"
@@ -993,7 +996,12 @@ def update_index_seo(items):
             content = f.read()
             
         catalog_html = ""
+        seo_count = 0
         for item in items:
+            # Escludi normativa dalla vetrina delle attività didattiche
+            if item.get('type') == 'normativa':
+                continue
+            seo_count += 1
             tags_str = ", ".join(item.get('tags', []))
             # Utilizzo di tag semantici article e microdati Schema.org
             catalog_html += f"""<article itemscope itemtype="https://schema.org/LearningResource">
@@ -1003,7 +1011,7 @@ def update_index_seo(items):
                 <meta itemprop="keywords" content="{tags_str}">
             </article>\n"""
         
-        print(f"  🔍 SEO Catalog: generati {len(items)} elementi")
+        print(f"  🔍 SEO Catalog: generati {seo_count} elementi (esclusa normativa)")
             
         pattern = re.compile(r'<!-- SEO_CATALOG_START -->.*?<!-- SEO_CATALOG_END -->', re.DOTALL)
         # Escapiamo le backslash per evitare che re.sub le interpreti come sequenze di escape (es. \p in LaTeX)
