@@ -1,0 +1,446 @@
+/* ==========================================================================
+   ORFINI MATH LAB - TEMA CHIARO (LIGHT MODE PER LIM / PROIETTORI)
+   Attivo ESCLUSIVAMENTE quando <html> possiede la classe .theme-light.
+   In dark mode (default) queste regole NON hanno alcun effetto.
+   ========================================================================== */
+
+html.theme-light {
+    /* Palette chiara ad alto contrasto */
+    --bg-color: #f8fafc;
+    --bg-dark: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --glass-border: rgba(15, 23, 42, 0.08);
+
+    /* Testo scuro leggibile */
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-on-accent: #ffffff;
+
+    /* Primari e accenti per contrasto su sfondo chiaro */
+    --primary: hsl(190, 85%, 32%);
+    --primary-glow: hsla(190, 85%, 32%, 0.15);
+    --accent: hsl(280, 75%, 45%);
+
+    /* Token Material 3 versione Light */
+    --md-sys-color-outline: rgba(15, 23, 42, 0.15);
+    --md-sys-color-primary: hsl(190, 85%, 32%);
+    --md-sys-color-surface-variant: #f1f5f9;
+    --md-sys-color-on-surface-variant: #1e293b;
+    --md-sys-color-focus-glow: hsla(190, 85%, 32%, 0.15);
+
+    /* Card Themes M3 per Light Mode */
+    --card-blue: #d3e3fd;
+    --card-on-blue: #041e49;
+    --card-green: #c4eed0;
+    --card-on-green: #07210e;
+    --card-red: #f9dedc;
+    --card-on-red: #410e0b;
+    --card-yellow: #fdf2b4;
+    --card-on-yellow: #261d00;
+    --card-purple: #e9ddff;
+    --card-on-purple: #21005d;
+    --card-teal: #bce9eb;
+    --card-on-teal: #001f20;
+}
+
+/* Base Body */
+html.theme-light body {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+}
+
+/* Header & Navigazione */
+html.theme-light #main-nav {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+}
+
+html.theme-light .brand-title {
+    color: #0f172a !important;
+}
+
+html.theme-light .brand-sub {
+    color: #64748b !important;
+}
+
+html.theme-light .nav-link {
+    color: #475569 !important;
+}
+
+html.theme-light .nav-link:hover {
+    color: #0f172a !important;
+}
+
+html.theme-light .nav-link.active {
+    color: var(--primary) !important;
+    border-bottom-color: var(--primary) !important;
+}
+
+/* Barra di Ricerca */
+html.theme-light .search-container {
+    background: transparent !important;
+}
+
+html.theme-light .search-input {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.theme-light .search-input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-glow) !important;
+}
+
+html.theme-light .search-input::placeholder {
+    color: #94a3b8 !important;
+}
+
+html.theme-light .search-icon {
+    color: #64748b !important;
+}
+
+/* Pillole e Filtri */
+html.theme-light .filter-pill,
+html.theme-light .filter-chip,
+html.theme-light .cat-btn {
+    background: #ffffff !important;
+    color: #334155 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+html.theme-light .filter-pill:hover,
+html.theme-light .filter-chip:hover,
+html.theme-light .cat-btn:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+}
+
+html.theme-light .filter-pill.active,
+html.theme-light .filter-chip.active,
+html.theme-light .cat-btn.active {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary) !important;
+}
+
+/* Schede Didattiche (Cards) */
+html.theme-light .card {
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+    color: #0f172a !important;
+}
+
+html.theme-light .card:hover {
+    border-color: var(--class-border, var(--primary)) !important;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.theme-light .card-bg {
+    opacity: 0.12 !important;
+}
+
+html.theme-light .card-overlay {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.95) 45%, #ffffff 75%) !important;
+}
+
+html.theme-light .card-competencies {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+html.theme-light .comp-text {
+    color: #334155 !important;
+}
+
+html.theme-light .card-title {
+    color: #0f172a !important;
+}
+
+html.theme-light .card-desc {
+    color: #475569 !important;
+}
+
+html.theme-light .type-badge {
+    color: var(--card-accent, var(--primary)) !important;
+}
+
+html.theme-light .class-badge {
+    background: var(--class-bg, #f1f5f9) !important;
+    color: var(--class-fg, #0f172a) !important;
+    border: 1px solid rgba(15, 23, 42, 0.1) !important;
+}
+
+html.theme-light .topic-chip {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+html.theme-light .topic-chip:hover {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+html.theme-light .card-footer {
+    border-top: 1px solid #e2e8f0 !important;
+}
+
+/* Pulsanti nelle Card */
+html.theme-light .v-btn {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.theme-light .v-btn:hover {
+    background: #f8fafc !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 12px var(--primary-glow) !important;
+}
+
+html.theme-light .main-cta-btn {
+    background: #ffffff !important;
+    color: var(--primary) !important;
+    border: 2px solid var(--primary) !important;
+}
+
+html.theme-light .main-cta-btn:hover {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 20px var(--primary-glow) !important;
+}
+
+/* Breadcrumbs & Header Compatti */
+html.theme-light .breadcrumbs-bar {
+    border-bottom: 1px solid #e2e8f0 !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+html.theme-light .breadcrumbs {
+    color: #64748b !important;
+}
+
+html.theme-light .breadcrumbs a {
+    color: #475569 !important;
+}
+
+html.theme-light .breadcrumbs .current {
+    color: #0f172a !important;
+}
+
+html.theme-light .hero-manifesto {
+    color: #475569 !important;
+}
+
+/* Modale & Finestre di Dettaglio */
+html.theme-light .modal-overlay {
+    background: rgba(15, 23, 42, 0.6) !important;
+}
+
+html.theme-light .modal-content,
+html.theme-light .bio-modal-content {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Pagina Competenze */
+html.theme-light .section-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html.theme-light .section-header h2 {
+    color: #0f172a !important;
+}
+
+html.theme-light .skill-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #0f172a !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.theme-light .skill-card:hover {
+    border-color: var(--accent-color, var(--primary)) !important;
+    background: #ffffff !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.theme-light .skill-desc {
+    color: #475569 !important;
+}
+
+html.theme-light .orfini-norm-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    color: #0f172a !important;
+}
+
+html.theme-light .orfini-norm-card h3 {
+    color: #0f172a !important;
+}
+
+html.theme-light .orfini-norm-card p {
+    color: #475569 !important;
+}
+
+html.theme-light .orfini-norm-btn {
+    background: #e0f2fe !important;
+    color: #0284c7 !important;
+    border-color: #bae6fd !important;
+}
+
+html.theme-light .orfini-norm-btn:hover {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+/* Pagina Galaxy */
+html.theme-light .galaxy-ui .back-btn {
+    background: rgba(255, 255, 255, 0.85) !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+html.theme-light .galaxy-controls .control-btn {
+    background: rgba(255, 255, 255, 0.85) !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Footer del Sito */
+html.theme-light .site-footer {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border-top: 1px solid #e2e8f0 !important;
+}
+
+html.theme-light .site-footer h4,
+html.theme-light .site-footer .footer-logo-title {
+    color: #0f172a !important;
+}
+
+html.theme-light .site-footer a {
+    color: #0284c7 !important;
+}
+
+html.theme-light .footer-bottom {
+    border-top: 1px solid #e2e8f0 !important;
+    color: #64748b !important;
+}
+
+/* Menu Filtri & Dropdown */
+html.theme-light .burger-btn {
+    background: #ffffff !important;
+    border: 2px solid #cbd5e1 !important;
+    color: #475569 !important;
+}
+
+html.theme-light .burger-btn:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+}
+
+html.theme-light .filter-dropdown {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.theme-light .filter-group-title {
+    color: #64748b !important;
+}
+
+html.theme-light .filter-banner {
+    background: #e0f2fe !important;
+    border: 1px solid #bae6fd !important;
+    color: #0369a1 !important;
+}
+
+html.theme-light .filter-close {
+    background: #bae6fd !important;
+    color: #0369a1 !important;
+}
+
+html.theme-light .filter-close:hover {
+    background: #7dd3fc !important;
+    color: #0c4a6e !important;
+}
+
+/* Matematica KaTeX */
+html.theme-light .katex {
+    color: inherit !important;
+}
+
+/* Stile Toggle Sole/Luna */
+.orfini-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    padding: 0;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.orfini-theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    transform: scale(1.08);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+html.theme-light .orfini-theme-toggle {
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #334155 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.theme-light .orfini-theme-toggle:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #94a3b8 !important;
+    transform: scale(1.08);
+}
+
+.orfini-theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+}
+
+/* Mostra icona Sole in dark mode (per passare a light) e icona Luna in light mode (per passare a dark) */
+.theme-icon-sun {
+    display: block;
+}
+.theme-icon-moon {
+    display: none;
+}
+
+html.theme-light .theme-icon-sun {
+    display: none;
+}
+html.theme-light .theme-icon-moon {
+    display: block;
+}
