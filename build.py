@@ -400,7 +400,7 @@ class DeepContentScanner:
         if new_topics:
             sintesi = f"Punto focale sulle tematiche di: {', '.join(new_topics[:3])}."
             
-        return found_class, list(set(new_topics)), sintesi
+        return found_class, list(dict.fromkeys(new_topics)), sintesi
 
 scanner = DeepContentScanner()
 
@@ -554,7 +554,7 @@ def map_topics_to_riforma(topics):
                 # Formato: ID:Label pulita senza troncamenti artificiali
                 extra_tags.append(f"{ref_id}:{label.strip()}")
     
-    return list(set(extra_tags))
+    return sorted(list(set(extra_tags)))
 
 def main():
     items = []
@@ -784,18 +784,18 @@ def main():
                         fn_slug = "_".join(meaningful_words[:2]).lower() if not topics else ""
                         group_ref = f"{found_class}_{date_str}_{topic_slug}_{fn_slug}".lower().replace(" ", "_").strip("_") if found_class else clean_title.lower()
                         
-                        tags = list(set(topics + ([found_class] if found_class else [])))
+                        tags = sorted(list(set(topics + ([found_class] if found_class else []))))
 
                         # Se abbiamo già i metadati dal sidecar JSON, usiamoli come base e integriamo
                         if meta:
                             if "title" in meta: clean_title = meta["title"]
                             if "excerpt" in meta: excerpt = meta["excerpt"]
-                            if "tags" in meta: tags = list(set(tags + meta["tags"]))
+                            if "tags" in meta: tags = sorted(list(set(tags + meta["tags"])))
                         
                         meta = {
                              "title": clean_title.strip(),
                              "excerpt": excerpt,
-                             "tags": list(set([normalize_class_tag(t) for t in tags + riforma_tags])),
+                             "tags": sorted(list(set([normalize_class_tag(t) for t in tags + riforma_tags]))),
                              "date": date_str,
                              "group_ref": group_ref,
                              "version_label": fila_label

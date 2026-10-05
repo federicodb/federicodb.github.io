@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-05 10:57:13
+   Data: 2026-10-05 14:49:22
 */
 
 const db_verifiche = [
@@ -39,7 +39,7 @@ const db_verifiche = [
             "SIERPINSKI"
         ],
         "date": "2026-05-15",
-        "group_ref": "1_el_2026-05-15_scomposizione",
+        "group_ref": "1_el_2026-05-15_pemdas",
         "version_label": "Versione Unica",
         "url": "content/verifiche/1EL/1EL___verifica_15_maggio_2026.pdf",
         "type": "document",
@@ -56,7 +56,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 GP, Maggio 2026",
-        "excerpt": "Verifica sommativa strutturata su Retta, Geometria, Distanza fra due punti, Equazioni, Punto medio, Equazione della retta in forma esplicita, Piano cartesiano, Grafici, Pitagora. Tempo a disposizione stimato: 40 min.",
+        "excerpt": "Verifica sommativa strutturata su Piano cartesiano, Distanza fra due punti, Punto medio, Equazione della retta in forma esplicita, Equazioni, Grafici, Retta, Pitagora, Geometria. Tempo a disposizione stimato: 40 min.",
         "tags": [
             "2 GP",
             "DISTANZA FRA DUE PUNTI",
@@ -73,7 +73,7 @@ const db_verifiche = [
             "RETTA"
         ],
         "date": "2026-05-13",
-        "group_ref": "2_gp_2026-05-13_retta",
+        "group_ref": "2_gp_2026-05-13_piano_cartesiano",
         "version_label": "Versione Unica",
         "url": "content/verifiche/2GP/2GP___verifica_13_maggio_2026.pdf",
         "type": "document",
@@ -90,7 +90,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 GP, Marzo 2026",
-        "excerpt": "Verifica sommativa strutturata su Scomposizione, Sistemi di disequazioni, Retta, Equazioni, Insiemi, Disequazioni frazionarie, Disequazioni lineari, Problemi risolvibili attraverso disequazioni, Disequazioni. Tempo a disposizione stimato: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Disequazioni lineari, Sistemi di disequazioni, Disequazioni frazionarie, Problemi risolvibili attraverso disequazioni, Equazioni, Disequazioni, Retta, Scomposizione, Insiemi. Tempo a disposizione stimato: 70 min.",
         "tags": [
             "2 GP",
             "CIT_6:COMPETENZE SOCIALI E CIVICHE",
@@ -107,7 +107,7 @@ const db_verifiche = [
             "SISTEMI DI DISEQUAZIONI"
         ],
         "date": "2026-03-31",
-        "group_ref": "2_gp_2026-03-31_scomposizione",
+        "group_ref": "2_gp_2026-03-31_disequazioni_lineari",
         "version_label": "Fila A",
         "url": "content/verifiche/2GP/2GP___verifica_31_marzo_2026_fila_A.pdf",
         "type": "document",
@@ -129,7 +129,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 4 EL, Marzo 2026",
-        "excerpt": "Verifica sommativa strutturata su Retta, Funzioni, Polinomi, Studio di funzione, Dominio, Elettricità, Grafici, Classificazione e dominio. Tempo a disposizione stimato: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Studio di funzione, Classificazione e dominio, Funzioni, Dominio, Grafici, Retta, Polinomi, Elettricità. Tempo a disposizione stimato: 70 min.",
         "tags": [
             "4 EL",
             "CLASSIFICAZIONE E DOMINIO",
@@ -146,7 +146,7 @@ const db_verifiche = [
             "STUDIO DI FUNZIONE"
         ],
         "date": "2026-03-27",
-        "group_ref": "4_el_2026-03-27_retta",
+        "group_ref": "4_el_2026-03-27_studio_di_funzione",
         "version_label": "Fila A",
         "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_A.pdf",
         "type": "document",
@@ -163,17 +163,12 @@ const db_verifiche = [
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_B.pdf",
                 "date": "2026-03-27",
                 "label": "Fila B"
-            },
-            {
-                "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_it.pdf",
-                "date": "2026-03-27",
-                "label": "Mappa IT"
             }
         ]
     },
     {
         "title": "Verifica Classe 4 EL, Marzo 2026",
-        "excerpt": "Verifica sommativa strutturata su Dominio, Funzioni, Grafici.",
+        "excerpt": "Verifica sommativa strutturata su Funzioni, Dominio, Grafici.",
         "tags": [
             "4 EL",
             "DOMINIO",
@@ -185,7 +180,7 @@ const db_verifiche = [
             "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE"
         ],
         "date": "2026-03-27",
-        "group_ref": "4_el_2026-03-27_dominio",
+        "group_ref": "4_el_2026-03-27_funzioni",
         "version_label": "Mappa EN",
         "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_en.pdf",
         "type": "document",
@@ -197,12 +192,17 @@ const db_verifiche = [
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_en.pdf",
                 "date": "2026-03-27",
                 "label": "Mappa EN"
+            },
+            {
+                "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_it.pdf",
+                "date": "2026-03-27",
+                "label": "Mappa IT"
             }
         ]
     },
     {
         "title": "Verifica Classe 3 MEC, Marzo 2026",
-        "excerpt": "Verifica sommativa strutturata su Retta, Polinomi, Equazioni, Equazioni di secondo grado e parabola, Grafici, Parabola. Tempo a disposizione stimato: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni di secondo grado e parabola, Equazioni, Grafici, Parabola, Retta, Polinomi. Tempo a disposizione stimato: 70 min.",
         "tags": [
             "3 MEC",
             "EQUAZIONI",
@@ -215,7 +215,7 @@ const db_verifiche = [
             "RETTA"
         ],
         "date": "2026-03-26",
-        "group_ref": "3_mec_2026-03-26_retta",
+        "group_ref": "3_mec_2026-03-26_equazioni_di_secondo_grado_e_parabola",
         "version_label": "Fila A",
         "url": "content/verifiche/3MEC/3MEC___verifica_26_marzo_2026_fila_A.pdf",
         "type": "document",
@@ -237,7 +237,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Marzo 2026",
-        "excerpt": "Verifica sommativa strutturata su Scomposizione, Retta, Frazioni e modelli logici, Polinomi, Equazioni, Dominio, Elettricità, Disequazioni, Algebra 2el manuale di analisi: scomposizioni, Grafici.",
+        "excerpt": "Verifica sommativa strutturata su Algebra 2el manuale di analisi: scomposizioni, Frazioni e modelli logici, Equazioni, Disequazioni, Dominio, Grafici, Retta, Polinomi, Scomposizione, Elettricità.",
         "tags": [
             "2 EL",
             "ALGEBRA 2EL MANUALE DI ANALISI: SCOMPOSIZIONI",
@@ -258,7 +258,7 @@ const db_verifiche = [
             "SCOMPOSIZIONE"
         ],
         "date": "2026-03-16",
-        "group_ref": "2_el_2026-03-16_scomposizione",
+        "group_ref": "2_el_2026-03-16_algebra_2el_manuale_di_analisi:_scomposizioni",
         "version_label": "Mappa",
         "url": "content/verifiche/2EL/2EL___verifica_16_mar_2026_mappa.pdf",
         "type": "document",
@@ -275,7 +275,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Marzo 2026",
-        "excerpt": "Verifica sommativa strutturata su Retta, Equazioni frazionarie, Sistemi di disequazioni lineari, Equazioni, Polinomi, Disequazioni frazionarie, Disequazioni lineari, Disequazioni, Grafici. Tempo a disposizione stimato: 70 min.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni frazionarie, Disequazioni lineari, Sistemi di disequazioni lineari, Disequazioni frazionarie, Equazioni, Disequazioni, Grafici, Retta, Polinomi. Tempo a disposizione stimato: 70 min.",
         "tags": [
             "2 EL",
             "DISEQUAZIONI",
@@ -291,7 +291,7 @@ const db_verifiche = [
             "SISTEMI DI DISEQUAZIONI LINEARI"
         ],
         "date": "2026-03-16",
-        "group_ref": "2_el_2026-03-16_retta",
+        "group_ref": "2_el_2026-03-16_equazioni_frazionarie",
         "version_label": "Fila A",
         "url": "content/verifiche/2EL/2EL___verifica_16_mar_2026_Fila_A.pdf",
         "type": "document",
@@ -313,7 +313,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 1 EL, Marzo 2026",
-        "excerpt": "Verifica sommativa strutturata su Mcm/mcd, Numeri interi e relativi, Retta, Proprietà delle potenze, Numeri razionali, Insiemi, Proporzioni e percentuali, Elettricità, Pemdas. Tempo a disposizione stimato: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Pemdas, Numeri interi e relativi, Proprietà delle potenze, Numeri razionali, Proporzioni e percentuali, Mcm/mcd, Retta, Elettricità, Insiemi. Tempo a disposizione stimato: 50 min.",
         "tags": [
             "1 EL",
             "ELETTRICITÀ",
@@ -327,7 +327,7 @@ const db_verifiche = [
             "RETTA"
         ],
         "date": "2026-03-06",
-        "group_ref": "1_el_2026-03-06_mcm/mcd",
+        "group_ref": "1_el_2026-03-06_pemdas",
         "version_label": "Fila A",
         "url": "content/verifiche/1EL/1EL___verifica_6_mar_2026_filaA.pdf",
         "type": "document",
@@ -349,7 +349,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 GP, Febbraio 2026",
-        "excerpt": "Verifica sommativa strutturata su Modellizzazione, Scomposizione, Scomposizioni, Retta, Equazioni frazionarie, Polinomi, Frazioni algebriche, Equazioni, Insiemi, M.c.m./m.c.d. Tempo a disposizione stimato: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizioni, Frazioni algebriche, Equazioni frazionarie, Modellizzazione, M.c.m./m.c.d, Equazioni, Retta, Polinomi, Scomposizione, Insiemi. Tempo a disposizione stimato: 50 min.",
         "tags": [
             "2 GP",
             "EQUAZIONI",
@@ -367,7 +367,7 @@ const db_verifiche = [
             "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA"
         ],
         "date": "2026-02-24",
-        "group_ref": "2_gp_2026-02-24_modellizzazione",
+        "group_ref": "2_gp_2026-02-24_scomposizioni",
         "version_label": "Fila A",
         "url": "content/verifiche/2GP/verifica 2gp 24 feb 2026_fila A.pdf",
         "type": "document",
@@ -389,7 +389,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Febbraio 2026",
-        "excerpt": "Verifica sommativa strutturata su Scomposizione, Mcm/mcd, Scomposizioni, Retta, Polinomi, Equazioni, Frazioni algebriche, Insiemi, Modellizzazione. Tempo a disposizione stimato: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Scomposizioni, Frazioni algebriche, Modellizzazione, Mcm/mcd, Equazioni, Retta, Polinomi, Scomposizione, Insiemi. Tempo a disposizione stimato: 50 min.",
         "tags": [
             "2 EL",
             "EQUAZIONI",
@@ -406,7 +406,7 @@ const db_verifiche = [
             "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA"
         ],
         "date": "2026-02-02",
-        "group_ref": "2_el_2026-02-02_scomposizione",
+        "group_ref": "2_el_2026-02-02_scomposizioni",
         "version_label": "Fila A",
         "url": "content/verifiche/2EL/2EL___verifica_2_feb_2026_fila_A.pdf",
         "type": "document",
@@ -428,7 +428,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 3 MEC, Gennaio 2026",
-        "excerpt": "Verifica sommativa strutturata su Scomposizione, Retta, Polinomi, Equazioni, Frazioni algebriche, Dominio, Equazioni e sistemi lineari, Fattorizzazione di polinomi, Equazione della retta in forma esplicita, Geometria. Tempo a disposizione stimato: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni e sistemi lineari, Equazione della retta in forma esplicita, Fattorizzazione di polinomi, Frazioni algebriche, Equazioni, Dominio, Retta, Polinomi, Scomposizione, Geometria. Tempo a disposizione stimato: 50 min.",
         "tags": [
             "3 MEC",
             "DOMINIO",
@@ -450,7 +450,7 @@ const db_verifiche = [
             "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA"
         ],
         "date": "2026-01-29",
-        "group_ref": "3_mec_2026-01-29_scomposizione",
+        "group_ref": "3_mec_2026-01-29_equazioni_e_sistemi_lineari",
         "version_label": "Fila A",
         "url": "content/verifiche/3MEC/3MEC___verifica_29_gennaio_2026_fila_A.pdf",
         "type": "document",
@@ -472,7 +472,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 GP, Dicembre 2025",
-        "excerpt": "Verifica sommativa strutturata su Scomposizione, Retta, Scomposizione di polinomi algebriche e condizioni di esistenza, Equazioni con prodotti notevoli, Polinomi, Equazioni, Frazioni, Geometria, Equazioni di primo grado, Calcolo mentale di quadrati e radici. Tempo a disposizione stimato: 100 min. Nota: calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni di primo grado, Equazioni con prodotti notevoli, Scomposizione di polinomi algebriche e condizioni di esistenza, Frazioni, Calcolo mentale di quadrati e radici, Equazioni, Retta, Polinomi, Scomposizione, Geometria. Tempo a disposizione stimato: 100 min. Nota: calcolatrice ammessa.",
         "tags": [
             "2 GP",
             "CALCOLO MENTALE DI QUADRATI E RADICI",
@@ -490,7 +490,7 @@ const db_verifiche = [
             "SCOMPOSIZIONE DI POLINOMI ALGEBRICHE E CONDIZIONI DI ESISTENZA"
         ],
         "date": "2025-12-02",
-        "group_ref": "2_gp_2025-12-02_scomposizione",
+        "group_ref": "2_gp_2025-12-02_equazioni_di_primo_grado",
         "version_label": "Fila B",
         "url": "content/verifiche/2GP/2GP___verifica_2_dic_2025_filaA.pdf",
         "type": "document",
@@ -512,7 +512,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 4 EL, Novembre 2025",
-        "excerpt": "Verifica sommativa strutturata su Angoli (gradi e radianti), Retta, Funzioni, Equazioni, Disequazioni, Equazioni e disequazioni di secondo grado intere, Seno e coseno, Circonferenza goniometrica, Grafici, Seno e Coseno. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni e disequazioni di secondo grado intere, Circonferenza goniometrica, Seno e coseno, Angoli (gradi e radianti), Equazioni, Disequazioni, Funzioni, Grafici, Retta, Seno e Coseno. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
         "tags": [
             "4 EL",
             "ANGOLI (GRADI E RADIANTI)",
@@ -528,7 +528,7 @@ const db_verifiche = [
             "SENO E COSENO"
         ],
         "date": "2025-11-21",
-        "group_ref": "4_el_2025-11-21_angoli_(gradi_e_radianti)",
+        "group_ref": "4_el_2025-11-21_equazioni_e_disequazioni_di_secondo_grado_intere",
         "version_label": "Fila A",
         "url": "content/verifiche/4EL/4EL___verifica_21_nov_2025_filaA.pdf",
         "type": "document",
@@ -550,7 +550,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 1 EL, Novembre 2025",
-        "excerpt": "Verifica sommativa strutturata su Retta, Proprietà delle potenze, Insiemi ed operazioni fra insiemi, Insiemi, Proprietà delle operazioni in n e z, Insiemi numerici, Minimo comune multiplo e massimo. Tempo a disposizione stimato: 80 min. Nota: calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Insiemi ed operazioni fra insiemi, Insiemi numerici, Proprietà delle operazioni in n e z, Proprietà delle potenze, Minimo comune multiplo e massimo, Retta, Insiemi. Tempo a disposizione stimato: 80 min. Nota: calcolatrice ammessa.",
         "tags": [
             "1 EL",
             "INSIEMI",
@@ -562,7 +562,7 @@ const db_verifiche = [
             "RETTA"
         ],
         "date": "2025-11-21",
-        "group_ref": "1_el_2025-11-21_retta",
+        "group_ref": "1_el_2025-11-21_insiemi_ed_operazioni_fra_insiemi",
         "version_label": "Fila A",
         "url": "content/verifiche/1EL/1EL___verifica_21_nov_2025_filaA.pdf",
         "type": "document",
@@ -584,7 +584,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 EL, Novembre 2025",
-        "excerpt": "Verifica sommativa strutturata su Scomposizione, Retta, Equazioni con prodotti notevoli, Polinomi, Equazioni, Scomposizione di polinomi, Equazioni di primo grado, Calcolo mentale di quadrati e radici. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni di primo grado, Equazioni con prodotti notevoli, Scomposizione di polinomi, Calcolo mentale di quadrati e radici, Equazioni, Retta, Polinomi, Scomposizione. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
         "tags": [
             "2 EL",
             "CALCOLO MENTALE DI QUADRATI E RADICI",
@@ -599,7 +599,7 @@ const db_verifiche = [
             "SCOMPOSIZIONE DI POLINOMI"
         ],
         "date": "2025-11-10",
-        "group_ref": "2_el_2025-11-10_scomposizione",
+        "group_ref": "2_el_2025-11-10_equazioni_di_primo_grado",
         "version_label": "Fila A",
         "url": "content/verifiche/2EL/2EL___verifica_10_nov_2025_filaA.pdf",
         "type": "document",
@@ -621,7 +621,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 3 MEC, Ottobre 2025",
-        "excerpt": "Verifica sommativa strutturata su Retta, Equazione della retta, Equazioni, Equazioni e sistemi lineari, Grafici. Tempo a disposizione stimato: 50 min.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni e sistemi lineari, Equazione della retta, Equazioni, Grafici, Retta. Tempo a disposizione stimato: 50 min.",
         "tags": [
             "3 MEC",
             "EQUAZIONE DELLA RETTA",
@@ -632,7 +632,7 @@ const db_verifiche = [
             "RETTA"
         ],
         "date": "2025-10-03",
-        "group_ref": "3_mec_2025-10-03_retta",
+        "group_ref": "3_mec_2025-10-03_equazioni_e_sistemi_lineari",
         "version_label": "Versione Unica",
         "url": "content/verifiche/3MEC/3MEC___verifica_3_ottobre_2025.pdf",
         "type": "document",
@@ -649,7 +649,7 @@ const db_verifiche = [
     },
     {
         "title": "Verifica Classe 2 GP, Ottobre 2025",
-        "excerpt": "Verifica sommativa strutturata su Retta, Equazioni, Equazioni di primo grado. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
+        "excerpt": "Verifica sommativa strutturata su Equazioni di primo grado, Equazioni, Retta. Tempo a disposizione stimato: 50 min. Nota: calcolatrice ammessa.",
         "tags": [
             "2 GP",
             "EQUAZIONI",
@@ -658,7 +658,7 @@ const db_verifiche = [
             "RETTA"
         ],
         "date": "2025-10-01",
-        "group_ref": "2_gp_2025-10-01_retta",
+        "group_ref": "2_gp_2025-10-01_equazioni_di_primo_grado",
         "version_label": "Versione Unica",
         "url": "content/verifiche/2GP/2GP___verifica_1_ottobre_2025.pdf",
         "type": "document",

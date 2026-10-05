@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-05 10:57:13
+   Data: 2026-10-05 14:49:22
 */
 
 const db = [
@@ -24,6 +24,97 @@ const db = [
         "icon": "🌐",
         "game_type": "sim",
         "date": "2026-10-05"
+    },
+    {
+        "title": "Guida al Mondo delle Funzioni Matematiche",
+        "excerpt": "Mappa concettuale e infografica sinottica per orientarsi tra dominio, codominio, proprietà (iniettività, suriettività) e classificazione analitica delle funzioni elementari.",
+        "tags": [
+            "ANALISI MATEMATICA",
+            "CODOMINIO",
+            "DOMINIO",
+            "FUNZIONI",
+            "INFOGRAFICA",
+            "MATEMATICHE",
+            "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI E FUNZIONI",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "VISUAL"
+        ],
+        "date": "2026-10-05",
+        "group_ref": "guida mondo delle funzioni matematiche",
+        "version_label": "Versione Unica",
+        "url": "content/infografiche/guida_al_mondo_delle_funzioni_matematiche.pdf",
+        "type": "infographic",
+        "icon": "🖼️",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.jpg"
+    },
+    {
+        "title": "Decodifica la Matematica: grammatica dei simboli",
+        "excerpt": "Smetti di indovinare, inizia a capire: prontuario visuale per decodificare il formalismo, i simboli e la sintassi matematica, trasformando un insieme di regole mnemoniche in un linguaggio chiaro e accessibile.",
+        "tags": [
+            "DECODIFICA",
+            "DIDATTICA INCLUSIVA",
+            "INFOGRAFICA",
+            "LINGUAGGIO MATEMATICO",
+            "MATEMATICA",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "SIMBOLI",
+            "VISUAL"
+        ],
+        "date": "2026-10-05",
+        "group_ref": "decodifica matematica",
+        "version_label": "Versione Unica",
+        "url": "content/infografiche/decodifica_la_matematica.pdf",
+        "type": "infographic",
+        "icon": "🖼️",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.jpg"
+    },
+    {
+        "title": "Errori Comuni - Potenze, Espressioni",
+        "excerpt": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "tags": [
+            "1 EL",
+            "CALCOLO",
+            "ERRORI",
+            "ERRORI COMUNI",
+            "ESPRESSIONI",
+            "INFOGRAFICA",
+            "PEMDAS",
+            "POTENZE",
+            "VISUAL"
+        ],
+        "date": "2026-10-05",
+        "group_ref": "errori comuni (parte 2)",
+        "version_label": "Versione Unica",
+        "url": "content/infografiche/errori_comuni02.png",
+        "type": "infographic",
+        "icon": "🖼️",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/errori_comuni02.jpg"
+    },
+    {
+        "title": "Formula del Delta: $\\Delta = b^2 - 4ac$ (Tattoo)",
+        "excerpt": "Il discriminante delle equazioni di secondo grado impresso sulla pelle: un promemoria visivo e ironico per ricordare una volta per tutte che il segno del $\\Delta$ decide quante soluzioni reali esistono.",
+        "tags": [
+            "ALGEBRA",
+            "DELTA",
+            "DISCRIMINANTE",
+            "EQUAZIONI DI SECONDO GRADO",
+            "IMMAGINE",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "PARABOLA",
+            "TATTOO"
+        ],
+        "date": "2026-10-05",
+        "group_ref": "tattoo matematico delta",
+        "version_label": "Versione Unica",
+        "url": "content/images/tattoo_delta.png",
+        "type": "image",
+        "icon": "🖼️",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
     },
     {
         "title": "Palestra: Memory delle Scomposizioni",
@@ -147,6 +238,59 @@ const db = [
         "type": "app",
         "icon": "⚡",
         "game_type": "sim"
+    },
+    {
+        "title": "D.Lgs. 61/2017 - Testo Integrale",
+        "excerpt": "Testo e quadro normativo del Decreto Legislativo 61/2017 relativo alla riforma degli istituti professionali.",
+        "tags": [
+            "3 MEC",
+            "D.LGS. 61/2017",
+            "DLGS",
+            "ELETTRICITÀ",
+            "FUNZIONI",
+            "INSIEMI",
+            "LIMITI",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ",
+            "NORMATIVA",
+            "RETTA",
+            "RIFORMA 2017",
+            "STATISTICA"
+        ],
+        "date": "2026-10-05",
+        "group_ref": "3_mec_2026-10-05_dlgs",
+        "version_label": "Versione Unica",
+        "url": "rif_norm_2017/dlgs-61-2017.pdf",
+        "type": "normativa",
+        "icon": "📈",
+        "game_type": "document"
+    },
+    {
+        "title": "Linee Guida Nazionali - Parte I e II",
+        "excerpt": "Linee guida ministeriali per il passaggio al nuovo ordinamento degli istituti professionali (D.Lgs. 61/2017), progettazione per UDA e certificazione delle competenze.",
+        "tags": [
+            "3 MEC",
+            "COMPETENZE",
+            "FUNZIONI",
+            "INSIEMI",
+            "LIMITI",
+            "LINEE GUIDA",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ",
+            "NORMATIVA",
+            "PRIMA",
+            "RETTA",
+            "SECONDA",
+            "STATISTICA",
+            "UDA"
+        ],
+        "date": "2026-10-05",
+        "group_ref": "3_mec_2026-10-05_prima",
+        "version_label": "Versione Unica",
+        "url": "rif_norm_2017/Linee-guida_PARTE-PRIMA-e-SECONDA.pdf",
+        "type": "normativa",
+        "icon": "📈",
+        "game_type": "document"
     },
     {
         "title": "Le fasi della Luna",
@@ -485,35 +629,9 @@ const db = [
             "RETTA"
         ],
         "date": "2026-04-19",
-        "group_ref": "3_mec_2026-04-19_retta",
+        "group_ref": "3_mec_2026-04-19_allegato",
         "version_label": "Versione Unica",
         "url": "rif_norm_2017/Allegato-A_dlgs61_2017.pdf",
-        "type": "normativa",
-        "icon": "📈",
-        "game_type": "document"
-    },
-    {
-        "title": "D.Lgs. 61/2017 - Testo Integrale",
-        "excerpt": "Testo e quadro normativo del Decreto Legislativo 61/2017 relativo alla riforma degli istituti professionali.",
-        "tags": [
-            "3 MEC",
-            "D.LGS. 61/2017",
-            "DLGS",
-            "ELETTRICITÀ",
-            "FUNZIONI",
-            "INSIEMI",
-            "LIMITI",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ",
-            "NORMATIVA",
-            "RETTA",
-            "RIFORMA 2017",
-            "STATISTICA"
-        ],
-        "date": "2026-04-19",
-        "group_ref": "3_mec_2026-04-19_retta",
-        "version_label": "Versione Unica",
-        "url": "rif_norm_2017/dlgs-61-2017.pdf",
         "type": "normativa",
         "icon": "📈",
         "game_type": "document"
@@ -549,38 +667,11 @@ const db = [
             "TRIGONOMETRIA"
         ],
         "date": "2026-04-19",
-        "group_ref": "3_mec_2026-04-19_scomposizione",
+        "group_ref": "3_mec_2026-04-19_allegato",
         "version_label": "Versione Unica",
         "url": "rif_norm_2017/ALLEGATO-1_-Competenze-pecup-professionali-area-generale-Def-1.pdf",
         "type": "normativa",
         "icon": "🧱",
-        "game_type": "document"
-    },
-    {
-        "title": "Linee Guida Nazionali - Parte I e II",
-        "excerpt": "Linee guida ministeriali per il passaggio al nuovo ordinamento degli istituti professionali (D.Lgs. 61/2017), progettazione per UDA e certificazione delle competenze.",
-        "tags": [
-            "3 MEC",
-            "COMPETENZE",
-            "FUNZIONI",
-            "INSIEMI",
-            "LIMITI",
-            "LINEE GUIDA",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ",
-            "NORMATIVA",
-            "PRIMA",
-            "RETTA",
-            "SECONDA",
-            "STATISTICA",
-            "UDA"
-        ],
-        "date": "2026-04-19",
-        "group_ref": "3_mec_2026-04-19_retta",
-        "version_label": "Versione Unica",
-        "url": "rif_norm_2017/Linee-guida_PARTE-PRIMA-e-SECONDA.pdf",
-        "type": "normativa",
-        "icon": "📈",
         "game_type": "document"
     },
     {
@@ -603,7 +694,7 @@ const db = [
             "STATISTICA"
         ],
         "date": "2026-04-19",
-        "group_ref": "3_mec_2026-04-19_retta",
+        "group_ref": "3_mec_2026-04-19_decreto",
         "version_label": "Versione Unica",
         "url": "rif_norm_2017/decreto-legislativo-13-04-2017-n-61.pdf",
         "type": "normativa",
@@ -754,97 +845,6 @@ const db = [
         "icon": "🧱",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.jpg"
-    },
-    {
-        "title": "Decodifica la Matematica: grammatica dei simboli",
-        "excerpt": "Smetti di indovinare, inizia a capire: prontuario visuale per decodificare il formalismo, i simboli e la sintassi matematica, trasformando un insieme di regole mnemoniche in un linguaggio chiaro e accessibile.",
-        "tags": [
-            "DECODIFICA",
-            "DIDATTICA INCLUSIVA",
-            "INFOGRAFICA",
-            "LINGUAGGIO MATEMATICO",
-            "MATEMATICA",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "SIMBOLI",
-            "VISUAL"
-        ],
-        "date": "2025-12-15",
-        "group_ref": "decodifica matematica",
-        "version_label": "Versione Unica",
-        "url": "content/infografiche/decodifica_la_matematica.pdf",
-        "type": "infographic",
-        "icon": "🖼️",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.jpg"
-    },
-    {
-        "title": "Errori Comuni - Potenze, Espressioni",
-        "excerpt": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
-        "tags": [
-            "1 EL",
-            "CALCOLO",
-            "ERRORI",
-            "ERRORI COMUNI",
-            "ESPRESSIONI",
-            "INFOGRAFICA",
-            "PEMDAS",
-            "POTENZE",
-            "VISUAL"
-        ],
-        "date": "2025-12-15",
-        "group_ref": "errori comuni (parte 2)",
-        "version_label": "Versione Unica",
-        "url": "content/infografiche/errori_comuni02.png",
-        "type": "infographic",
-        "icon": "🖼️",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/errori_comuni02.jpg"
-    },
-    {
-        "title": "Guida al Mondo delle Funzioni Matematiche",
-        "excerpt": "Mappa concettuale e infografica sinottica per orientarsi tra dominio, codominio, proprietà (iniettività, suriettività) e classificazione analitica delle funzioni elementari.",
-        "tags": [
-            "ANALISI MATEMATICA",
-            "CODOMINIO",
-            "DOMINIO",
-            "FUNZIONI",
-            "INFOGRAFICA",
-            "MATEMATICHE",
-            "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI E FUNZIONI",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "VISUAL"
-        ],
-        "date": "2025-12-12",
-        "group_ref": "guida mondo delle funzioni matematiche",
-        "version_label": "Versione Unica",
-        "url": "content/infografiche/guida_al_mondo_delle_funzioni_matematiche.pdf",
-        "type": "infographic",
-        "icon": "🖼️",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.jpg"
-    },
-    {
-        "title": "Formula del Delta: $\\Delta = b^2 - 4ac$ (Tattoo)",
-        "excerpt": "Il discriminante delle equazioni di secondo grado impresso sulla pelle: un promemoria visivo e ironico per ricordare una volta per tutte che il segno del $\\Delta$ decide quante soluzioni reali esistono.",
-        "tags": [
-            "ALGEBRA",
-            "DELTA",
-            "DISCRIMINANTE",
-            "EQUAZIONI DI SECONDO GRADO",
-            "IMMAGINE",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "PARABOLA",
-            "TATTOO"
-        ],
-        "date": "2025-12-12",
-        "group_ref": "tattoo matematico delta",
-        "version_label": "Versione Unica",
-        "url": "content/images/tattoo_delta.png",
-        "type": "image",
-        "icon": "🖼️",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
     },
     {
         "title": "PIP",
