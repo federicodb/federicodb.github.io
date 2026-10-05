@@ -852,7 +852,7 @@ def main():
                         "SIERPINSKI01": "SIERPINSKI",
                         "DUESFIGHE": "PROBABILITÀ"
                     }
-                    meta["tags"] = list(set([TAG_CLEANUP_MAP.get(normalize_class_tag(t), normalize_class_tag(t)) for t in meta["tags"]]))
+                    meta["tags"] = sorted(list(set([TAG_CLEANUP_MAP.get(normalize_class_tag(t), normalize_class_tag(t)) for t in meta["tags"]])))
                     
                     if not meta.get("tags"):
                         print(f"  ⚠️  WARNING: Tags mancanti o vuoti per '{filename}'")
