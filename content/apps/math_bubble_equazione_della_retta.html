@@ -6,8 +6,9 @@
     <title>Math Bubble: La Retta Esplicita | Orfini Math Lab</title>
 
     <!-- SEO & Metadata -->
-    <meta name="description" content="Laboratorio interattivo di Geometria Analitica: impara l'equazione della retta y = mx + q calcolando pendenza e quota per colpire le bolle sul piano cartesiano.">
+    <meta name="description" content="Laboratorio interattivo di Geometria Analitica: impara l'equazione della retta y = mx + q calcolando pendenza e quota per colpire ed eliminare tutte le bolle sul piano cartesiano.">
     <meta name="keywords" content="matematica, retta, pendenza, equazione esplicita, piano cartesiano, gamification, orfini, didattica laboratoriale">
+    <meta name="date" content="2026-10-07">
     <link rel="canonical" href="https://federicodb.github.io/content/apps/math_bubble_equazione_della_retta.html">
     <meta name="theme-color" content="#050507">
 
@@ -15,14 +16,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://federicodb.github.io/content/apps/math_bubble_equazione_della_retta.html">
     <meta property="og:title" content="Math Bubble: La Retta Esplicita | Orfini Math Lab">
-    <meta property="og:description" content="Colpisci i bersagli sul piano cartesiano calcolando pendenza m e quota q. Gioco didattico laboratoriale per la scuola superiore.">
+    <meta property="og:description" content="Elimina tutte le bolle sul piano cartesiano calcolando pendenza m e quota q. Gioco didattico laboratoriale con scaffolding per livelli.">
     <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.jpg">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://federicodb.github.io/content/apps/math_bubble_equazione_della_retta.html">
     <meta name="twitter:title" content="Math Bubble: La Retta Esplicita | Orfini Math Lab">
-    <meta name="twitter:description" content="Colpisci i bersagli sul piano cartesiano calcolando pendenza m e quota q. Gioco didattico laboratoriale per la scuola superiore.">
+    <meta name="twitter:description" content="Elimina tutte le bolle sul piano cartesiano calcolando pendenza m e quota q.">
     <meta name="twitter:image" content="https://federicodb.github.io/content/assets/social_share_cover.jpg">
 
     <!-- Tailwind CSS (CDN) -->
@@ -54,7 +55,7 @@
 
     <style>
         :root {
-            /* Tema Scuro Default */
+            /* Tema Scuro AMOLED */
             --bg-page: #000000;
             --text-page: #f8fafc;
             --bg-canvas: #050505;
@@ -64,8 +65,6 @@
             --panel-bg: rgba(15, 23, 42, 0.85);
             --panel-border: rgba(255, 255, 255, 0.08);
             --card-bg: #1e293b;
-            --laser-glow: 15px;
-            --bubble-stroke: rgba(255, 255, 255, 0.2);
             --font-axis-size: 13px;
         }
 
@@ -80,8 +79,6 @@
             --panel-bg: rgba(255, 255, 255, 0.95);
             --panel-border: rgba(0, 0, 0, 0.15);
             --card-bg: #ffffff;
-            --laser-glow: 0px;
-            --bubble-stroke: #0f172a;
             --font-axis-size: 18px;
         }
 
@@ -127,14 +124,14 @@
             cursor: crosshair;
         }
 
-        /* Tasti touch minimi 44x44px */
+        /* Tasti touch */
         .touch-key {
             min-width: 44px;
             min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 700;
             border-radius: 0.5rem;
             user-select: none;
@@ -144,10 +141,10 @@
         }
 
         .touch-key:active {
-            transform: scale(0.92);
+            transform: scale(0.94);
         }
 
-        /* Input font-size >= 16px per evitare zoom iOS */
+        /* Input sempre scrivibili liberamente sia da tastiera fisica che da touch */
         input {
             font-size: 16px !important;
         }
@@ -168,7 +165,7 @@
                 height: 100% !important;
             }
             #canvasWrapper {
-                height: 56% !important;
+                height: 52% !important;
                 min-height: 200px !important;
                 flex: none !important;
             }
@@ -184,7 +181,7 @@
             }
         }
 
-        /* Stili per schermi landscape bassi (smartphone in orizzontale) */
+        /* Stili per schermi landscape bassi (smartphone orizzontale) */
         @media (orientation: landscape) and (max-height: 500px) {
             body {
                 overflow: hidden !important;
@@ -224,7 +221,6 @@
             }
         }
 
-        /* Scrollbar sottile */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -250,11 +246,15 @@
         <div class="flex gap-2 md:gap-3 items-center">
             <!-- Badge Livello -->
             <div class="glass-panel px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-sm md:text-lg text-emerald-400 flex items-center gap-1" title="Livello attuale">
-                <span>Liv:</span> <span id="levelDisplay">1</span>
+                <span>Liv:</span> <span id="levelDisplay">1</span>/5
             </div>
             <!-- Badge Punteggio -->
             <div class="glass-panel px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-sm md:text-xl text-yellow-400 flex items-center gap-1" title="Punteggio">
                 <i class="fa-solid fa-star text-xs md:text-sm"></i> <span id="scoreDisplay">0</span>
+            </div>
+            <!-- Badge Bolle Rimanenti -->
+            <div class="glass-panel px-3 py-1.5 md:px-4 md:py-2 rounded-full font-bold text-sm md:text-base text-sky-400 hidden sm:flex items-center gap-1.5" title="Bolle da eliminare nel livello">
+                <i class="fa-solid fa-circle-dot text-xs"></i> <span id="remainingBubblesDisplay">0</span>
             </div>
             
             <!-- Toggle Tema Proiezione LIM -->
@@ -262,17 +262,17 @@
                 <i id="themeIcon" class="fa-solid fa-sun text-base md:text-lg"></i>
             </button>
 
-            <!-- Schermo Intero (se supportato) -->
+            <!-- Schermo Intero -->
             <button id="btnFullscreen" class="glass-panel p-2 md:px-3 md:py-2 rounded-full text-slate-300 hover:text-sky-400 transition-colors cursor-pointer" title="Schermo Intero" aria-label="Schermo Intero">
                 <i class="fa-solid fa-expand text-base md:text-lg"></i>
             </button>
 
-            <!-- Menu Opzioni / Azioni -->
+            <!-- Menu Opzioni -->
             <button id="btnMenuDropdown" class="glass-panel p-2 md:px-3 md:py-2 rounded-full text-slate-300 hover:text-white transition-colors cursor-pointer" title="Menu" aria-label="Menu opzioni">
                 <i class="fa-solid fa-ellipsis-vertical text-base md:text-lg"></i>
             </button>
 
-            <!-- Leaderboard button diretto desktop -->
+            <!-- Leaderboard desktop -->
             <button id="btnLeaderboard" class="hidden md:flex bg-indigo-600 hover:bg-indigo-500 text-white p-2 md:px-4 md:py-2 rounded-full transition-colors shadow-lg items-center gap-2 cursor-pointer" title="Classifica">
                 <i class="fa-solid fa-trophy"></i> <span class="text-sm font-bold">Classifica</span>
             </button>
@@ -302,17 +302,20 @@
     <!-- MAIN GAME AREA -->
     <main id="mainAppContainer" class="flex-1 flex flex-col md:flex-row gap-3 md:gap-6 h-full min-h-0 relative z-10 overflow-hidden">
         
-        <!-- CANVAS AREA (Sinistra su Landscape, Destra su Desktop, Sopra su Mobile Portrait) -->
+        <!-- CANVAS AREA -->
         <div id="canvasWrapper" class="flex-1 relative rounded-2xl overflow-hidden shadow-2xl border border-slate-800/80 bg-black min-h-[200px]">
-            <canvas id="gameCanvas" role="img" aria-label="Piano cartesiano con bersagli e bolle matematiche"></canvas>
+            <canvas id="gameCanvas" role="img" aria-label="Piano cartesiano con bolle matematiche da eliminare"></canvas>
             
             <!-- Badges sovrapposti per smartphone Landscape -->
             <div id="landscapeBadges" class="hidden absolute top-2 left-2 z-10 flex gap-2">
                 <div class="bg-black/70 px-2 py-1 rounded text-xs font-bold text-emerald-400 border border-slate-800">
-                    Liv: <span id="landscapeLevelDisplay">1</span>
+                    Liv: <span id="landscapeLevelDisplay">1</span>/5
                 </div>
                 <div class="bg-black/70 px-2 py-1 rounded text-xs font-bold text-yellow-400 border border-slate-800">
                     ★ <span id="landscapeScoreDisplay">0</span>
+                </div>
+                <div class="bg-black/70 px-2 py-1 rounded text-xs font-bold text-sky-400 border border-slate-800">
+                    Bolle: <span id="landscapeRemainingDisplay">0</span>
                 </div>
             </div>
 
@@ -324,62 +327,72 @@
             <!-- Coordinate Inspector Fluttuante (tap su bolla) -->
             <div id="bubbleInspector" class="hidden absolute bottom-3 left-3 bg-slate-900/90 text-white border border-sky-500/50 px-3 py-1.5 rounded-lg text-xs md:text-sm shadow-xl font-mono z-10 flex items-center gap-2">
                 <i class="fa-solid fa-crosshairs text-sky-400"></i>
-                <span id="bubbleInspectorText">Bolla selezionata: (x, y)</span>
+                <span id="bubbleInspectorText">Bolla: (x, y)</span>
                 <button id="btnCloseInspector" class="text-slate-400 hover:text-white ml-2 text-sm">&times;</button>
             </div>
         </div>
 
-        <!-- CONTROL PANEL (Comandi, Formule, Input, Tastierino Touch) -->
+        <!-- CONTROL PANEL -->
         <div id="controlPanel" class="glass-panel w-full md:w-96 rounded-2xl p-3 md:p-5 flex flex-col gap-3 shadow-2xl flex-shrink-0 z-20 relative">
             
             <!-- Info Giocatore (compatta) -->
             <div id="playerInfoDisplay" class="hidden text-xs text-slate-300 border-b border-slate-700/60 pb-1.5 flex justify-between items-center">
                 <span>Giocatore: <b id="displayName" class="text-white"></b> (<span id="displayClass" class="text-sky-300"></span>)</span>
-                <span id="levelTitleBadge" class="text-emerald-400 font-bold truncate max-w-[140px]">La pendenza</span>
+                <span id="levelTitleBadge" class="text-emerald-400 font-bold truncate max-w-[140px]">Livello 1</span>
             </div>
 
-            <!-- Consegna Livello e Domanda Guida (compressa in ? su smartphone) -->
-            <div id="panelLevelInstructionBox" class="hidden md:block bg-slate-800/40 rounded-xl p-2.5 border border-slate-700/40 text-xs md:text-sm">
+            <!-- Consegna Livello e Scaffolding Didattico -->
+            <div id="panelLevelInstructionBox" class="bg-slate-800/40 rounded-xl p-2.5 border border-slate-700/40 text-xs md:text-sm">
                 <div class="flex items-center justify-between mb-1">
                     <span class="font-bold text-sky-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-compass"></i> <span id="panelLevelName">Livello 1: La pendenza</span>
+                        <i class="fa-solid fa-compass"></i> <span id="panelLevelName">Livello 1: Origine (q = 0)</span>
+                    </span>
+                    <span id="goalBadge" class="text-[11px] bg-sky-950/80 text-sky-300 px-2 py-0.5 rounded-full border border-sky-800">
+                        Elimina tutte le bolle
                     </span>
                 </div>
                 <p id="panelInstruction" class="text-slate-300 text-xs leading-relaxed">
-                    Il cannone è nell'origine (q = 0): di quanto sale y quando x aumenta di 1? Calcola m = y / x per centrare il bersaglio.
+                    Il cannone spara dall'origine (q = 0). Calcola la pendenza m = y / x per centrare ed eliminare ogni bolla!
                 </p>
             </div>
 
-            <!-- EQUAZIONE DELLA RETTA E INPUT (COMPATTA) -->
-            <div class="flex flex-col gap-2">
+            <!-- EQUAZIONE DELLA RETTA E INPUT (SIA TASTIERA CHE TOUCH) -->
+            <div class="flex flex-col gap-1.5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs uppercase font-bold tracking-wider text-slate-400">Equazione retta:</span>
                     <span class="math-font text-xs text-sky-400 font-bold">y = mx + q</span>
                 </div>
 
-                <!-- Barra Equazione su una riga -->
+                <!-- Barra Equazione: INPUT LIBERAMENTE SCRIVIBILI DA TASTIERA O TOUCH -->
                 <div class="flex items-center gap-1.5 bg-slate-900/80 p-2 rounded-xl border border-slate-700/70">
                     <span class="math-font text-sm font-bold text-slate-400 pl-1">y =</span>
                     
-                    <!-- Campo m -->
+                    <!-- Campo m (scrittura da tastiera o touch) -->
                     <div class="relative flex-1">
-                        <input type="text" id="inputM" inputmode="decimal" placeholder="m" class="w-full bg-slate-800 border-2 border-sky-500/50 rounded-lg py-2 px-2 text-white font-bold text-center math-font focus:outline-none focus:border-sky-400 transition-colors" aria-label="Coefficiente angolare m">
+                        <input type="text" id="inputM" inputmode="text" placeholder="m (es. 2, -1/2)" class="w-full bg-slate-800 border-2 border-sky-500/50 rounded-lg py-2 px-2 text-white font-bold text-center math-font focus:outline-none focus:border-sky-400 transition-colors" aria-label="Coefficiente angolare m">
                         <span id="activeMarkerM" class="hidden absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-1 bg-sky-400 rounded-full"></span>
                     </div>
 
                     <span class="math-font text-sm font-bold text-slate-400">x +</span>
 
-                    <!-- Campo q -->
+                    <!-- Campo q (scrittura da tastiera o touch se sbloccato) -->
                     <div class="relative flex-1">
-                        <input type="text" id="inputQ" inputmode="decimal" placeholder="q" class="w-full bg-slate-800 border-2 border-emerald-500/50 rounded-lg py-2 px-2 text-white font-bold text-center math-font focus:outline-none focus:border-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" value="0" aria-label="Ordinata all'origine q">
+                        <input type="text" id="inputQ" inputmode="text" placeholder="q (es. 0, 3)" class="w-full bg-slate-800 border-2 border-emerald-500/50 rounded-lg py-2 px-2 text-white font-bold text-center math-font focus:outline-none focus:border-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" value="0" aria-label="Ordinata all'origine q">
                         <span id="activeMarkerQ" class="hidden absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-1 bg-emerald-400 rounded-full"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- TASTIERINO VIRTUALE TOUCH INTEGRATO (Mostrato su touch / mobile) -->
+            <!-- BOTTONE SUGGERIMENTO / HINT CON PENALITÀ PUNTI -->
+            <div class="flex gap-2">
+                <button id="btnHint" class="flex-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl py-2 px-3 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Mostra un aiuto visivo con triangolo Δx e Δy (-3 pt)">
+                    <i class="fa-solid fa-lightbulb text-amber-400"></i> Suggerimento (-3 pt)
+                </button>
+            </div>
+
+            <!-- TASTIERINO VIRTUALE TOUCH INTEGRATO -->
             <div id="touchKeypadContainer" class="flex flex-col gap-1.5">
-                <!-- Selettore campo attivo (m o q) -->
+                <!-- Selettore campo attivo (per chi usa i pulsanti touch a schermo) -->
                 <div class="flex gap-2 text-xs font-bold">
                     <button id="btnSelectM" class="flex-1 py-1.5 rounded-lg bg-sky-600 text-white flex items-center justify-center gap-1 transition-colors">
                         Modifica m
@@ -418,7 +431,7 @@
                 <i class="fa-solid fa-bolt"></i> SPARA!
             </button>
 
-            <!-- REGIONE FEEDBACK ACCESSIBILE (Dimensione fissa, aria-live) -->
+            <!-- REGIONE FEEDBACK ACCESSIBILE -->
             <div id="feedbackContainer" class="h-8 flex items-center justify-center text-center px-1" aria-live="polite">
                 <p id="feedbackText" class="text-sm font-bold truncate max-w-full text-slate-400"></p>
             </div>
@@ -541,7 +554,7 @@
             </div>
         </div>
 
-        <!-- 4. MODALE CONFERMA AZZERAMENTO (No confirm nativo) -->
+        <!-- 4. MODALE CONFERMA AZZERAMENTO -->
         <div id="confirmResetModal" class="hidden bg-slate-900 border border-rose-500/50 rounded-2xl p-6 w-full max-w-sm shadow-2xl modal-animate text-center">
             <h3 class="text-lg font-bold text-white mb-2">Confermi l'azzeramento?</h3>
             <p class="text-slate-300 text-xs mb-5">Tutti i punteggi registrati in classifica verranno cancellati in modo definitivo.</p>
@@ -555,7 +568,7 @@
             </div>
         </div>
         
-        <!-- 5. GENERIC MESSAGE MODAL (Sostituto accessibile di alert) -->
+        <!-- 5. GENERIC MESSAGE MODAL -->
         <div id="messageModal" class="hidden bg-slate-900 border-l-4 border-sky-500 rounded-r-2xl p-5 w-full max-w-sm shadow-2xl modal-animate">
             <h3 id="messageTitle" class="text-base font-bold text-white mb-1.5">Avviso</h3>
             <p id="messageBody" class="text-slate-300 text-xs md:text-sm mb-4 leading-relaxed"></p>
@@ -566,7 +579,7 @@
             </div>
         </div>
 
-        <!-- 6. GUIDA LIVELLO (Bottom Sheet / Modal) -->
+        <!-- 6. GUIDA LIVELLO -->
         <div id="helpModal" class="hidden bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl modal-animate text-left">
             <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
                 <i class="fa-solid fa-graduation-cap text-sky-400"></i> <span id="helpModalTitle">Guida del Livello</span>
@@ -582,60 +595,61 @@
     <!-- SCRIPT APPLICATIVO PRINCIPALE -->
     <script>
         // ==========================================
-        // CONFIGURAZIONE LIVELLI E PROGRESSIONE (B)
+        // CONFIGURAZIONE 5 LIVELLI CON SCAFFOLDING (B)
+        // Obiettivo in ogni livello: eliminare TUTTE le bolle!
         // ==========================================
         const levelConfig = {
             1: {
                 id: 1,
-                title: "La pendenza",
-                instruction: "Il cannone è nell'origine (q = 0): di quanto sale y quando x aumenta di 1? Calcola m = y / x per centrare il bersaglio.",
+                title: "Origine e Pendenza (q = 0)",
+                instruction: "Il cannone è fisso nell'origine (q = 0). Di quanto sale y quando x aumenta di 1? Calcola m = y / x per eliminare tutte le bolle!",
+                formulaGuide: "y = mx  ⟹  m = y / x",
                 lockQ: true,
                 fixedQ: 0,
-                targetMode: "single",
                 allowMZeroShortcut: false,
                 multiplier: 1,
-                bubbleCount: 5
+                bubbleCount: 4
             },
             2: {
                 id: 2,
-                title: "Il cannone si sposta",
-                instruction: "Il cannone è posizionato a (0, q): quanta pendenza serve per colpire il bersaglio? Calcola m = (y − q) / x.",
+                title: "Cannone a quota fissa (q dato)",
+                instruction: "Il cannone è a quota q sull'asse y. Calcola il dislivello per ogni bolla: m = (y − q) / x. Elimina tutte le bolle!",
+                formulaGuide: "y = mx + q  ⟹  m = (y − q) / x",
                 lockQ: true,
-                randomizeQEachShot: true,
-                targetMode: "single",
+                fixedQ: 2, // Quota fissata dal livello
                 allowMZeroShortcut: false,
                 multiplier: 1.5,
                 bubbleCount: 5
             },
             3: {
                 id: 3,
-                title: "Scegli tu q",
-                instruction: "Scegli dove posizionare il cannone (q) e calcola la pendenza m verso il bersaglio!",
+                title: "Scegli tu la quota q",
+                instruction: "Ora puoi scegliere sia q che m! Posiziona il cannone alla quota migliore per allinearti alle bolle ed eliminarle tutte.",
+                formulaGuide: "Scegli q sull'asse Y e calcola m = (y − q) / x",
                 lockQ: false,
-                targetMode: "single",
-                allowMZeroShortcut: false,
+                allowMZeroShortcut: false, // se m=0 colpisce solo chi è su y=q
                 multiplier: 2,
-                bubbleCount: 6
+                bubbleCount: 5
             },
             4: {
                 id: 4,
-                title: "Retta per due punti",
-                instruction: "Trova la retta passante per entrambi i bersagli: calcola prima m = (y₂ − y₁) / (x₂ − x₁), poi ricava q!",
+                title: "Pendenze frazionarie e Combo",
+                instruction: "Calcola pendenze anche con frazioni (es. 1/2, -3/4). Cerca di allineare più bolle con lo stesso tiro per fare COMBO!",
+                formulaGuide: "Frazioni ammesse: m = Δy / Δx",
                 lockQ: false,
-                targetMode: "two_points",
                 allowMZeroShortcut: false,
-                multiplier: 3,
+                multiplier: 2.5,
                 bubbleCount: 6
             },
             5: {
                 id: 5,
-                title: "Caccia all'allineamento",
-                instruction: "Cerca nel piano tre o più bolle allineate lungo la stessa retta ed eliminale tutte in un colpo solo!",
+                title: "Master della Retta: Allineamenti e Vittoria",
+                instruction: "Sfida finale! Trova le rette che collegano più bolle allineate. Elimina tutte le bolle sul piano per conquistare la VITTORIA!",
+                formulaGuide: "Sfida finale: elimina tutte le bolle del piano!",
                 lockQ: false,
-                targetMode: "combo_triple",
                 allowMZeroShortcut: true,
                 multiplier: 3,
-                bubbleCount: 8
+                bubbleCount: 7
             }
         };
 
@@ -680,16 +694,14 @@
         }
 
         /**
-         * Calcolo dei colpi e validazione del tiro per il livello
+         * Calcolo dei colpi sulle bolle presenti
          */
         function computeHits(bubbles, m, q, radius, options = {}) {
             const level = options.level || 1;
             const targetId = options.targetId;
-            const targetBId = options.targetBId;
 
             const hits = [];
             let targetHit = false;
-            let targetBHit = false;
 
             for (let i = 0; i < bubbles.length; i++) {
                 const b = bubbles[i];
@@ -697,65 +709,39 @@
                 if (dist <= radius) {
                     hits.push(b);
                     if (targetId !== undefined && b.id === targetId) targetHit = true;
-                    if (targetBId !== undefined && b.id === targetBId) targetBHit = true;
                     if (b.isTarget) targetHit = true;
-                    if (b.isTargetB) targetBHit = true;
                 }
             }
 
-            let isValidProgress = false;
-
-            if (level === 1 || level === 2) {
-                isValidProgress = targetHit;
-            } else if (level === 3) {
-                // Scorciatoia m=0: se m === 0 ma il bersaglio NON è su y = q, non vale come progresso
-                if (Math.abs(m) < 1e-5) {
-                    const primaryTarget = bubbles.find(b => b.isTarget || b.id === targetId);
-                    if (primaryTarget && Math.abs(primaryTarget.y - q) <= radius) {
-                        isValidProgress = true;
-                    } else {
-                        isValidProgress = false;
-                        targetHit = false;
-                    }
-                } else {
-                    isValidProgress = targetHit;
+            // Scorciatoia m=0 al livello 3: se usata, colpisce solo le bolle che si trovano realmente a quota y = q
+            if (level === 3 && Math.abs(m) < 1e-5 && targetId !== undefined) {
+                const specTarget = bubbles.find(b => b.id === targetId || b.isTarget);
+                if (specTarget && Math.abs(specTarget.y - q) > radius) {
+                    targetHit = false;
                 }
-            } else if (level === 4) {
-                // Vale solo se colpisce entrambi i bersagli
-                isValidProgress = targetHit && targetBHit;
-            } else if (level === 5) {
-                // Vale con almeno 3 bolle colpite contemporaneamente
-                isValidProgress = hits.length >= 3;
             }
 
+            const isTargetEffective = targetId !== undefined ? targetHit : (hits.length > 0);
             return {
                 hits,
-                targetHit,
-                targetBHit,
-                isValidProgress,
+                targetHit: isTargetEffective,
+                isValidProgress: isTargetEffective,
                 comboCount: hits.length
             };
         }
 
         /**
-         * Calcolo punteggio garantito mai negativo
+         * Calcolo punteggio: mai sotto zero
          */
         function scoreForHits({ currentScore = 0, hits = [], level = 1, isValidProgress = false, targetHit = false }) {
             const config = levelConfig[level] || levelConfig[1];
             let pointsDelta = 0;
 
-            const isSuccess = isValidProgress || (level <= 3 && targetHit);
+            const isSuccess = (hits && hits.length > 0) || isValidProgress || targetHit;
 
             if (isSuccess) {
                 const base = 10 * config.multiplier;
-                let comboBonus = 0;
-                if (level === 4) {
-                    comboBonus = hits.length > 2 ? (hits.length - 2) * 5 : 0;
-                } else if (level === 5) {
-                    comboBonus = hits.length > 3 ? (hits.length - 3) * 5 : 0;
-                } else {
-                    comboBonus = hits.length > 1 ? (hits.length - 1) * 5 : 0;
-                }
+                const comboBonus = hits.length > 1 ? (hits.length - 1) * 5 : 0;
                 pointsDelta = Math.round(base + comboBonus);
             } else {
                 pointsDelta = -2;
@@ -771,22 +757,8 @@
         /**
          * Classificazione formativa degli errori comuni
          */
-        function classifyError({ m, q, target, targetB, level }) {
+        function classifyError({ m, q, target, level }) {
             if (!target) return { type: 'GENERIC', message: 'Tiro mancato. Ricalcola i parametri.' };
-
-            if (level === 4 && targetB) {
-                const dx = targetB.x - target.x;
-                const dy = targetB.y - target.y;
-                if (dx !== 0) {
-                    const mCorr = dy / dx;
-                    if (dy !== 0 && Math.abs(m - (dx / dy)) < 0.08) {
-                        return { type: 'INVERTED_SLOPE', message: 'Hai diviso Δx per Δy: la pendenza corretta è Δy/Δx.' };
-                    }
-                    if (Math.abs(m - (-mCorr)) < 0.08) {
-                        return { type: 'OPPOSITE_SIGN', message: 'Controlla il segno: la retta deve salire o scendere nella direzione corretta.' };
-                    }
-                }
-            }
 
             const dx = target.x;
             const dy = target.y - q;
@@ -813,17 +785,16 @@
                 }
             }
 
-            // Calcolo valore numerico per C1
             const yAtTargetX = m * target.x + q;
             const yFormatted = Number.isInteger(yAtTargetX) ? yAtTargetX : yAtTargetX.toFixed(1);
             return {
                 type: 'NUMERIC_FEEDBACK',
-                message: `In x = ${target.x} la tua retta passa per y = ${yFormatted}. La bolla bersaglio è a y = ${target.y}.`
+                message: `In x = ${target.x} la tua retta passa per y = ${yFormatted}. La bolla è a y = ${target.y}.`
             };
         }
 
         /**
-         * Generazione robusta delle bolle con array discreti, nessun blocco su schermi piccoli (A1)
+         * Generazione robusta delle bolle con array discreti, nessun blocco (A1)
          */
         const PALETTE = ['#38bdf8', '#818cf8', '#34d399', '#f472b6', '#fbbf24', '#a78bfa'];
 
@@ -855,7 +826,7 @@
             let nextId = 1;
             const level = config.level || 1;
 
-            // Livello 5: genera di proposito almeno 2 terne allineate con pendenze semplici
+            // Livello 5: genera di proposito almeno 2 terne allineate con pendenze razionali semplici
             if (level === 5) {
                 const simpleSlopes = [1, -1, 0.5, -0.5, 2, -2];
                 let tripletsGenerated = 0;
@@ -866,7 +837,6 @@
                     const m = simpleSlopes[Math.floor(randomFn() * simpleSlopes.length)];
                     const qInt = Math.floor(randomFn() * (maxY - minY + 1)) + minY;
 
-                    // Cerca 3 punti validi non nulli su y = m*x + qInt
                     const candPoints = [];
                     for (const candX of validX) {
                         const candY = m * candX + qInt;
@@ -876,10 +846,8 @@
                     }
 
                     if (candPoints.length >= 3) {
-                        // Mischia e prendi 3
                         candPoints.sort(() => randomFn() - 0.5);
                         const selected3 = candPoints.slice(0, 3);
-                        // Verifica che non si sovrappongano a bolle già esistenti
                         const canPlace = selected3.every(p => 
                             !bubbles.some(b => Math.hypot(b.x - p.x, b.y - p.y) < config.bubbleRadius * 2)
                         );
@@ -897,41 +865,6 @@
                             tripletsGenerated++;
                         }
                     }
-                }
-            }
-
-            // Livello 4: genera due bersagli per la retta passante per due punti
-            if (level === 4) {
-                let p1 = null, p2 = null;
-                let tries = 0;
-                while ((!p1 || !p2) && tries < 50) {
-                    tries++;
-                    const x1 = validX[Math.floor(randomFn() * validX.length)];
-                    const y1 = validY[Math.floor(randomFn() * validY.length)];
-                    const x2 = validX[Math.floor(randomFn() * validX.length)];
-                    const y2 = validY[Math.floor(randomFn() * validY.length)];
-                    if (x1 !== x2 && Math.hypot(x1 - x2, y1 - y2) >= 2) {
-                        p1 = { x: x1, y: y1 };
-                        p2 = { x: x2, y: y2 };
-                    }
-                }
-                if (p1 && p2) {
-                    bubbles.push({
-                        id: nextId++,
-                        x: p1.x,
-                        y: p1.y,
-                        color: '#f43f5e',
-                        wobbleOffset: randomFn() * Math.PI * 2,
-                        isTarget: true
-                    });
-                    bubbles.push({
-                        id: nextId++,
-                        x: p2.x,
-                        y: p2.y,
-                        color: '#f43f5e',
-                        wobbleOffset: randomFn() * Math.PI * 2,
-                        isTargetB: true
-                    });
                 }
             }
 
@@ -956,8 +889,7 @@
                 }
             }
 
-            // Per livelli 1, 2, 3: designa una bolla casuale come bersaglio
-            if ((level === 1 || level === 2 || level === 3) && bubbles.length > 0) {
+            if (bubbles.length > 0 && !bubbles.some(b => b.isTarget)) {
                 bubbles[0].isTarget = true;
             }
 
@@ -977,11 +909,12 @@
             laser: null,
             floatingTexts: [],
             attemptLog: [],
-            consecutiveErrorsOnTarget: 0,
+            consecutiveErrors: 0,
             showVisualAid: false,
+            aidTargetBubble: null,
             inspectedBubble: null,
             isTransitioning: false,
-            activeField: 'm', // 'm' o 'q' per tastierino touch
+            activeField: 'm', // 'm' o 'q' per chi usa il tastierino a schermo
             config: {
                 gridSize: 40,
                 xRange: [-10, 10],
@@ -990,7 +923,6 @@
             }
         };
 
-        // Cache Leaderboard
         const LEADERBOARD_KEY = 'orfini_mathbubble_leaderboard_v1';
         const THEME_KEY = 'orfini_theme';
 
@@ -1017,10 +949,13 @@
             inputQ: document.getElementById('inputQ'),
             btnFire: document.getElementById('btnFire'),
             btnTouchFire: document.getElementById('btnTouchFire'),
+            btnHint: document.getElementById('btnHint'),
             scoreDisplay: document.getElementById('scoreDisplay'),
             levelDisplay: document.getElementById('levelDisplay'),
+            remainingBubblesDisplay: document.getElementById('remainingBubblesDisplay'),
             landscapeScoreDisplay: document.getElementById('landscapeScoreDisplay'),
             landscapeLevelDisplay: document.getElementById('landscapeLevelDisplay'),
+            landscapeRemainingDisplay: document.getElementById('landscapeRemainingDisplay'),
             feedbackText: document.getElementById('feedbackText'),
             canvas: document.getElementById('gameCanvas'),
             
@@ -1157,7 +1092,6 @@
             return { x: lx, y: ly };
         }
 
-        // Ridimensionamento nitido con DevicePixelRatio (max 2) e Debounce (A5)
         let resizeDebounceTimer = null;
 
         function applyCanvasDimensions() {
@@ -1169,7 +1103,6 @@
             ctx.resetTransform();
             ctx.scale(dpr, dpr);
 
-            // Su mobile portrait allarghiamo le bolle riducendo range a [-8, 8] (E1)
             const isMobilePortrait = window.innerWidth < 768 && window.innerHeight > window.innerWidth;
             GameState.config.xRange = isMobilePortrait ? [-8, 8] : [-10, 10];
 
@@ -1180,7 +1113,6 @@
             const newYRange = [-logicalHeight / 2, logicalHeight / 2];
             GameState.config.yRange = newYRange;
 
-            // Se ci sono bolle fuori dal nuovo range, riposizionale delicatamente (A5)
             const minY = Math.ceil(newYRange[0]) + 1;
             const maxY = Math.floor(newYRange[1]) - 1;
             GameState.bubbles.forEach(b => {
@@ -1200,15 +1132,14 @@
         window.addEventListener('orientationchange', resizeCanvas);
 
         function updateCanvasAriaLabel() {
-            const targets = GameState.bubbles.filter(b => b.isTarget || b.isTargetB);
-            const targetDesc = targets.length > 0 ? 
-                `Bersaglio presente a coordinate (${targets.map(t => `${t.x},${t.y}`).join(' e ')}).` :
-                'Trova tre o più bolle allineate.';
-            UI.canvas.setAttribute('aria-label', `Piano cartesiano con ${GameState.bubbles.length} bolle. ${targetDesc}`);
+            const count = GameState.bubbles.length;
+            UI.remainingBubblesDisplay.textContent = count;
+            UI.landscapeRemainingDisplay.textContent = count;
+            UI.canvas.setAttribute('aria-label', `Piano cartesiano. Livello ${GameState.level}. Bolle rimanenti: ${count}.`);
         }
 
         // ==========================================
-        // DISEGNO DEL CANVAS (Griglia, Assi, Bolle, Aiuto)
+        // DISEGNO DEL CANVAS
         // ==========================================
         function getCanvasThemeColors() {
             const style = getComputedStyle(document.documentElement);
@@ -1240,7 +1171,7 @@
             const minY = Math.floor(GameState.config.yRange[0]);
             const maxY = Math.ceil(GameState.config.yRange[1]);
 
-            // Linee verticali
+            // Griglia
             for (let x = minX; x <= maxX; x++) {
                 ctx.beginPath();
                 ctx.moveTo(toCanvasX(x), 0);
@@ -1248,7 +1179,6 @@
                 ctx.stroke();
             }
 
-            // Linee orizzontali
             for (let y = minY; y <= maxY; y++) {
                 ctx.beginPath();
                 ctx.moveTo(0, toCanvasY(y));
@@ -1272,7 +1202,7 @@
             ctx.lineTo(toCanvasX(0), h);
             ctx.stroke();
 
-            // Etichette numeriche intelligenti per leggibilità (E1)
+            // Etichette numeriche
             ctx.fillStyle = colors.axisText;
             ctx.font = colors.fontSize;
             ctx.textAlign = 'center';
@@ -1296,54 +1226,12 @@
         }
 
         function drawVisualAid() {
-            if (!GameState.showVisualAid) return;
+            if (!GameState.showVisualAid || !GameState.aidTargetBubble) return;
 
-            const target = GameState.bubbles.find(b => b.isTarget);
-            if (!target) return;
-
-            let startX = 0;
-            let startY = 0;
-
-            if (GameState.level === 4) {
-                const targetB = GameState.bubbles.find(b => b.isTargetB);
-                if (!targetB) return;
-                startX = target.x;
-                startY = target.y;
-                const endX = targetB.x;
-                const endY = targetB.y;
-
-                ctx.save();
-                ctx.lineWidth = 2;
-                ctx.setLineDash([5, 4]);
-                ctx.strokeStyle = '#fbbf24';
-
-                // Triangolo Δx orizzontale
-                ctx.beginPath();
-                ctx.moveTo(toCanvasX(startX), toCanvasY(startY));
-                ctx.lineTo(toCanvasX(endX), toCanvasY(startY));
-                ctx.stroke();
-
-                // Triangolo Δy verticale
-                ctx.strokeStyle = '#f43f5e';
-                ctx.beginPath();
-                ctx.moveTo(toCanvasX(endX), toCanvasY(startY));
-                ctx.lineTo(toCanvasX(endX), toCanvasY(endY));
-                ctx.stroke();
-
-                ctx.setLineDash([]);
-                ctx.font = 'bold 12px Inter';
-                ctx.fillStyle = '#fbbf24';
-                ctx.fillText(`Δx = ${Math.abs(endX - startX)}`, toCanvasX((startX + endX)/2), toCanvasY(startY) - 6);
-                ctx.fillStyle = '#f43f5e';
-                ctx.fillText(`Δy = ${Math.abs(endY - startY)}`, toCanvasX(endX) + 8, toCanvasY((startY + endY)/2));
-                ctx.restore();
-                return;
-            }
-
-            // Per livelli 1, 2, 3: tra cannone (0, q) e bersaglio (target.x, target.y)
+            const target = GameState.aidTargetBubble;
             const q = parseMathInput(UI.inputQ.value) || 0;
-            startX = 0;
-            startY = q;
+            const startX = 0;
+            const startY = q;
             const endX = target.x;
             const endY = target.y;
 
@@ -1379,43 +1267,13 @@
             const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const isLight = document.documentElement.getAttribute('data-theme') === 'light';
 
-            // Collegamento visivo tra due bersagli nel Livello 4
-            if (GameState.level === 4) {
-                const tA = GameState.bubbles.find(b => b.isTarget);
-                const tB = GameState.bubbles.find(b => b.isTargetB);
-                if (tA && tB) {
-                    ctx.save();
-                    ctx.setLineDash([6, 6]);
-                    ctx.strokeStyle = isLight ? '#0284c7' : '#38bdf8';
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(toCanvasX(tA.x), toCanvasY(tA.y));
-                    ctx.lineTo(toCanvasX(tB.x), toCanvasY(tB.y));
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
-
             GameState.bubbles.forEach(bubble => {
                 const cx = toCanvasX(bubble.x);
-                const cy = toCanvasY(bubble.y); // Centro stabile (A9)
+                const cy = toCanvasY(bubble.y);
                 const baseR = GameState.config.bubbleRadius * GameState.config.gridSize;
                 
-                // Pulsazione del solo raggio, centro fisso (A9)
                 const wobbleMult = prefersReduced ? 1 : (1 + 0.05 * Math.sin(time / 400 + bubble.wobbleOffset));
                 const r = baseR * wobbleMult;
-
-                // Evidenziazione bersaglio con anello pulsante (B)
-                if (bubble.isTarget || bubble.isTargetB) {
-                    ctx.save();
-                    ctx.lineWidth = 2.5;
-                    ctx.strokeStyle = '#f43f5e';
-                    const targetPulse = prefersReduced ? (r + 7) : (r + 6 + 3 * Math.sin(time / 250));
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, targetPulse, 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.restore();
-                }
 
                 // Sfera/Bolla
                 const gradient = ctx.createRadialGradient(cx - r*0.3, cy - r*0.3, r*0.1, cx, cy, r);
@@ -1432,7 +1290,7 @@
                 ctx.strokeStyle = isLight ? '#000000' : 'rgba(255,255,255,0.4)';
                 ctx.stroke();
 
-                // Etichetta coordinate: posizionata sopra se lo spazio sotto è poco (E1)
+                // Etichetta coordinate
                 const isNearBottom = (cy + r + 24) > (UI.canvas.parentElement.getBoundingClientRect().height - 8);
                 const labelY = isNearBottom ? (cy - r - 10) : (cy + r + 18);
 
@@ -1441,14 +1299,6 @@
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(`(${bubble.x},${bubble.y})`, cx, labelY);
-
-                // Etichetta "BERSAGLIO" per i bersagli
-                if (bubble.isTarget || bubble.isTargetB) {
-                    ctx.fillStyle = '#f43f5e';
-                    ctx.font = '900 10px Inter';
-                    const tagY = isNearBottom ? (cy - r - 24) : (cy + r + 32);
-                    ctx.fillText("BERSAGLIO", cx, tagY);
-                }
             });
         }
 
@@ -1481,7 +1331,7 @@
             ctx.fillStyle = '#38bdf8';
             ctx.fill();
 
-            // Etichetta quota q leggermente sopra per evitare sovrapposizioni con l'asse X quando q=0
+            // Etichetta quota q leggermente sopra l'asse X per evitare sovrapposizioni quando q=0
             ctx.fillStyle = '#38bdf8';
             ctx.font = 'bold 13px monospace';
             ctx.textAlign = 'left';
@@ -1519,7 +1369,6 @@
             ctx.restore();
         }
 
-        // Loop di Animazione requestAnimationFrame (A10)
         let animationFrameId;
 
         function drawFrame(timestamp = performance.now()) {
@@ -1529,7 +1378,6 @@
             drawLaser(timestamp);
             drawBubbles(timestamp);
 
-            // Risoluzione laser guidata dal tempo (A10)
             if (GameState.laser && !GameState.laser.isResolved) {
                 const elapsed = timestamp - GameState.laser.startTime;
                 if (elapsed >= GameState.laser.duration) {
@@ -1538,14 +1386,13 @@
                 }
             }
 
-            // Testi fluttuanti "BOOM!" (A3, A10)
             const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             if (!prefersReduced) {
                 for (let i = GameState.floatingTexts.length - 1; i >= 0; i--) {
                     const ft = GameState.floatingTexts[i];
                     ctx.save();
                     ctx.fillStyle = `rgba(56, 189, 248, ${ft.alpha})`;
-                    ctx.font = '900 36px Inter'; // Font corretto (A3)
+                    ctx.font = '900 36px Inter';
                     ctx.textAlign = 'center';
                     ctx.fillText(ft.text, ft.x, ft.y);
                     ctx.restore();
@@ -1582,7 +1429,7 @@
 
             UI.levelDisplay.textContent = lvl;
             UI.landscapeLevelDisplay.textContent = lvl;
-            UI.levelTitleBadge.textContent = config.title;
+            UI.levelTitleBadge.textContent = `Livello ${lvl}`;
             UI.panelLevelName.textContent = `Livello ${lvl}: ${config.title}`;
             UI.panelInstruction.textContent = config.instruction;
 
@@ -1590,18 +1437,16 @@
             if (config.lockQ) {
                 UI.inputQ.disabled = true;
                 UI.btnSelectQ.disabled = true;
-                if (config.fixedQ !== undefined) {
-                    UI.inputQ.value = config.fixedQ;
-                } else if (config.randomizeQEachShot) {
-                    randomizeQForCurrentLevel();
-                }
+                UI.inputQ.value = config.fixedQ !== undefined ? config.fixedQ : 0;
             } else {
                 UI.inputQ.disabled = false;
                 UI.btnSelectQ.disabled = false;
             }
 
-            GameState.consecutiveErrorsOnTarget = 0;
+            GameState.consecutiveErrors = 0;
             GameState.showVisualAid = false;
+            GameState.aidTargetBubble = null;
+
             GameState.bubbles = spawnBubbles(config.bubbleCount, {
                 xRange: GameState.config.xRange,
                 yRange: GameState.config.yRange,
@@ -1614,18 +1459,29 @@
             setActiveField('m');
         }
 
-        function randomizeQForCurrentLevel() {
-            const minY = Math.ceil(GameState.config.yRange[0]) + 1;
-            const maxY = Math.floor(GameState.config.yRange[1]) - 1;
-            const valid = [];
-            for (let y = minY; y <= maxY; y++) {
-                if (y !== 0) valid.push(y);
-            }
-            UI.inputQ.value = valid.length > 0 ? valid[Math.floor(Math.random() * valid.length)] : 1;
+        // Attivazione HINT (con penalità di 3 punti)
+        function triggerHint() {
+            if (!GameState.isPlaying || GameState.bubbles.length === 0) return;
+
+            // Seleziona la bolla più comoda da colpire
+            const q = parseMathInput(UI.inputQ.value) || 0;
+            const target = GameState.bubbles[0];
+            GameState.aidTargetBubble = target;
+            GameState.showVisualAid = true;
+
+            updateScore(-3); // Penalità -3 pt per l'hint
+
+            const dx = target.x;
+            const dy = target.y - q;
+            const mVal = dy / dx;
+            const mText = Number.isInteger(mVal) ? `${mVal}` : `${dy}/${dx}`;
+
+            setFeedback(`Hint (-3 pt): per (${target.x}, ${target.y}) Δx=${Math.abs(dx)}, Δy=${Math.abs(dy)} ⟹ m=${mText}`, "warn", "💡");
         }
 
+        UI.btnHint.addEventListener('click', triggerHint);
+
         function fireLaser() {
-            // Blocco sparo durante transizioni o animazione laser attiva (A6)
             if (!GameState.isPlaying || GameState.laser !== null || GameState.isTransitioning) return;
 
             const m = parseMathInput(UI.inputM.value);
@@ -1636,28 +1492,20 @@
                 return;
             }
 
-            const currentTarget = GameState.bubbles.find(b => b.isTarget);
-            const currentTargetB = GameState.bubbles.find(b => b.isTargetB);
-
-            // Calcolo colpi
+            // Calcolo colpi su tutte le bolle
             const hitsResult = computeHits(
                 GameState.bubbles,
                 m,
                 q,
                 GameState.config.bubbleRadius,
-                {
-                    level: GameState.level,
-                    targetId: currentTarget ? currentTarget.id : undefined,
-                    targetBId: currentTargetB ? currentTargetB.id : undefined
-                }
+                { level: GameState.level }
             );
 
-            // Avvio animazione laser basata su requestAnimationFrame (A10)
             GameState.laser = {
                 m,
                 q,
                 startTime: performance.now(),
-                duration: 380, // millisecondi
+                duration: 280,
                 hits: hitsResult.hits,
                 hitsResult,
                 isResolved: false
@@ -1666,31 +1514,28 @@
 
         function resolveLaserHits() {
             const { hitsResult, m, q } = GameState.laser;
-            const target = GameState.bubbles.find(b => b.isTarget);
-            const targetB = GameState.bubbles.find(b => b.isTargetB);
+            const isSuccess = hitsResult.hits.length > 0;
+            const firstBubble = GameState.bubbles[0];
 
-            const isSuccess = hitsResult.isValidProgress;
-
-            // Log del tentativo per il docente (C4)
-            const errorClass = !isSuccess ? classifyError({ m, q, target, targetB, level: GameState.level }) : null;
+            const errorClass = !isSuccess ? classifyError({ m, q, target: firstBubble, level: GameState.level }) : null;
             GameState.attemptLog.push({
                 level: GameState.level,
-                target: target ? { x: target.x, y: target.y } : null,
+                remainingBubbles: GameState.bubbles.length,
                 mInput: UI.inputM.value,
                 qInput: UI.inputQ.value,
                 mVal: m,
                 qVal: q,
+                hitsCount: hitsResult.hits.length,
                 success: isSuccess,
                 errorType: errorClass ? errorClass.type : 'NONE',
                 timestamp: new Date().toISOString()
             });
 
             if (isSuccess) {
-                // Tiro a segno!
-                GameState.consecutiveErrorsOnTarget = 0;
+                GameState.consecutiveErrors = 0;
                 GameState.showVisualAid = false;
+                GameState.aidTargetBubble = null;
 
-                // Calcolo punteggio
                 const scoreRes = scoreForHits({
                     currentScore: GameState.score,
                     hits: hitsResult.hits,
@@ -1699,52 +1544,46 @@
                 });
                 updateScore(scoreRes.pointsDelta);
 
-                // Effetti e rimozione bolle colpite
                 const hitIds = new Set(hitsResult.hits.map(b => b.id));
                 hitsResult.hits.forEach(b => {
                     triggerConfetti(toCanvasX(b.x), toCanvasY(b.y));
                 });
+                // Rimuovi le bolle colpite
                 GameState.bubbles = GameState.bubbles.filter(b => !hitIds.has(b.id));
+                if (GameState.bubbles.length > 0 && !GameState.bubbles.some(b => b.isTarget)) {
+                    GameState.bubbles[0].isTarget = true;
+                }
+                updateCanvasAriaLabel();
 
                 const comboMsg = hitsResult.hits.length > 1 ? ` COMBO x${hitsResult.hits.length}!` : '';
                 setFeedback(`Colpito! +${scoreRes.pointsDelta} pt.${comboMsg}`, "success", "✓");
 
-                // Controllo avanzamento livello o partita
-                if (GameState.level === 4 || GameState.level === 5 || GameState.bubbles.length === 0 || !GameState.bubbles.some(b => b.isTarget)) {
-                    GameState.isTransitioning = true; // Blocca sparo durante transizione (A6)
+                // SE TUTTE LE BOLLE SONO STATE ELIMINATE: AVANZA DI LIVELLO!
+                if (GameState.bubbles.length === 0) {
+                    GameState.isTransitioning = true;
                     setTimeout(() => {
                         advanceOrWin();
-                    }, 1200);
-                } else if (levelConfig[GameState.level].randomizeQEachShot) {
-                    randomizeQForCurrentLevel();
+                    }, 1100);
                 }
             } else {
-                // Tiro mancato
-                updateScore(-2); // penalità, floor 0 in updateScore
-                GameState.consecutiveErrorsOnTarget++;
+                updateScore(-2); // Penalità tiro a vuoto
+                GameState.consecutiveErrors++;
 
-                let feedbackMsg = errorClass.message;
+                let feedbackMsg = errorClass ? errorClass.message : "Tiro mancato!";
 
-                // Aiuto visivo dopo 2 errori consecutivi sullo stesso bersaglio (C2)
-                if (GameState.consecutiveErrorsOnTarget >= 2 && !GameState.showVisualAid) {
+                // Aiuto automatico dopo 2 errori consecutivi
+                if (GameState.consecutiveErrors >= 2 && !GameState.showVisualAid && GameState.bubbles.length > 0) {
+                    GameState.aidTargetBubble = GameState.bubbles[0];
                     GameState.showVisualAid = true;
-                    updateScore(-3); // -3 pt per l'aiuto
+                    updateScore(-3);
                     feedbackMsg += " Aiuto visivo attivato (-3 pt).";
                 }
 
                 setFeedback(feedbackMsg, "error", "✗");
-
-                if (levelConfig[GameState.level].randomizeQEachShot) {
-                    randomizeQForCurrentLevel();
-                }
             }
 
-            // Pulizia laser
-            setTimeout(() => {
-                GameState.laser = null;
-            }, 300);
+            GameState.laser = null;
 
-            // Pulizia campo m per il prossimo tiro
             UI.inputM.value = '';
             setActiveField('m');
         }
@@ -1755,6 +1594,7 @@
                 completeGameVictory();
             } else {
                 setupLevel(GameState.level + 1);
+                setFeedback(`Livello ${GameState.level}! Elimina tutte le bolle!`, "success", "★");
             }
         }
 
@@ -1762,7 +1602,6 @@
             GameState.isPlaying = false;
             GameState.isTransitioning = false;
 
-            // Salva record in classifica con sessionId univoco (A7, D1)
             if (GameState.score > 0) {
                 localLeaderboard.push({
                     sessionId: GameState.sessionId,
@@ -1774,9 +1613,31 @@
                 saveLeaderboard(localLeaderboard);
             }
 
-            // Schermata di vittoria integrata (A2)
             document.getElementById('gameOverTitle').textContent = "VITTORIA!";
-            document.getElementById('gameOverSubtitle').textContent = "Hai completato tutti i 5 livelli! Congratulazioni!";
+            document.getElementById('gameOverSubtitle').textContent = "Hai completato tutti i 5 livelli eliminando ogni bolla! Ottimo lavoro!";
+            document.getElementById('finalScore').textContent = GameState.score;
+            
+            showModal(UI.gameOverModal);
+        }
+
+        function endGameManually() {
+            GameState.isPlaying = false;
+            GameState.isTransitioning = false;
+
+            if (GameState.score > 0) {
+                localLeaderboard.push({
+                    sessionId: GameState.sessionId,
+                    name: GameState.player.name.slice(0, 20),
+                    className: GameState.player.class.slice(0, 6),
+                    score: GameState.score,
+                    date: new Date().toLocaleDateString('it-IT')
+                });
+                saveLeaderboard(localLeaderboard);
+            }
+
+            // Titolo partita terminata
+            document.getElementById('gameOverTitle').textContent = "PARTITA TERMINATA";
+            document.getElementById('gameOverSubtitle').textContent = "Hai interrotto la partita. Punteggio raggiunto:";
             document.getElementById('finalScore').textContent = GameState.score;
             
             showModal(UI.gameOverModal);
@@ -1789,7 +1650,7 @@
             const ry = canvasY / rect.height;
 
             confetti({
-                particleCount: prefersReduced ? 25 : 70,
+                particleCount: prefersReduced ? 25 : 65,
                 spread: 70,
                 origin: { x: rx, y: ry },
                 colors: ['#38bdf8', '#34d399', '#fbbf24', '#f43f5e']
@@ -1823,25 +1684,21 @@
 
             top10.forEach((record, idx) => {
                 const tr = document.createElement('tr');
-                const isMe = record.sessionId === GameState.sessionId; // Evidenziazione univoca (A7)
+                const isMe = record.sessionId === GameState.sessionId;
                 tr.className = isMe ? 'bg-indigo-900/40 text-white font-bold' : 'border-b border-slate-800 text-slate-300';
 
-                // Colonna Posizione
                 const tdPos = document.createElement('td');
                 tdPos.className = 'py-2.5 text-center font-bold';
                 tdPos.textContent = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `${idx + 1}`));
 
-                // Colonna Nome (textContent sicuro anti-XSS, A4)
                 const tdName = document.createElement('td');
                 tdName.className = 'py-2.5 truncate max-w-[120px]';
                 tdName.textContent = record.name.slice(0, 20);
 
-                // Colonna Classe
                 const tdClass = document.createElement('td');
                 tdClass.className = 'py-2.5 truncate text-xs text-slate-400';
                 tdClass.textContent = (record.className || '-').slice(0, 6);
 
-                // Colonna Punti
                 const tdScore = document.createElement('td');
                 tdScore.className = 'py-2.5 text-right font-mono text-sky-400 font-bold';
                 tdScore.textContent = record.score;
@@ -1855,21 +1712,16 @@
         }
 
         function exportAttemptsCSV() {
-            // Intestazioni in italiano, separatore ';', decimali con la virgola (D4)
-            let csv = "Tipo;Livello;Nome;Classe;Punteggio;Bolla_X;Bolla_Y;Input_m;Input_q;Valore_m;Valore_q;Esito;Errore;Data_Ora\r\n";
+            let csv = "Tipo;Livello;Nome;Classe;Punteggio;Input_m;Input_q;Valore_m;Valore_q;Bolle_Colpite;Esito;Errore;Data_Ora\r\n";
 
-            // Tentativi della sessione
             GameState.attemptLog.forEach(att => {
-                const bx = att.target ? att.target.x : '';
-                const by = att.target ? att.target.y : '';
                 const mStr = String(att.mVal !== null ? att.mVal : '').replace('.', ',');
                 const qStr = String(att.qVal !== null ? att.qVal : '').replace('.', ',');
-                csv += `TENTATIVO;${att.level};"${GameState.player.name}";"${GameState.player.class}";${GameState.score};${bx};${by};"${att.mInput}";"${att.qInput}";${mStr};${qStr};${att.success ? 'SUCCESSO' : 'ERRORE'};${att.errorType};${att.timestamp}\r\n`;
+                csv += `TENTATIVO;${att.level};"${GameState.player.name}";"${GameState.player.class}";${GameState.score};"${att.mInput}";"${att.qInput}";${mStr};${qStr};${att.hitsCount};${att.success ? 'SUCCESSO' : 'ERRORE'};${att.errorType};${att.timestamp}\r\n`;
             });
 
-            // Classifica salvata
             localLeaderboard.forEach(r => {
-                csv += `RECORD_CLASSIFICA;-;"${r.name}";"${r.className}";${r.score};-;-;-;-;-;-;-;-;${r.date || ''}\r\n`;
+                csv += `RECORD_CLASSIFICA;-;"${r.name}";"${r.className}";${r.score};-;-;-;-;-;-;-;${r.date || ''}\r\n`;
             });
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1884,7 +1736,7 @@
         }
 
         // ==========================================
-        // GESTIONE TASTIERINO TOUCH E INPUT
+        // GESTIONE INPUT (SIA TASTIERA CHE TOUCH)
         // ==========================================
         function setActiveField(field) {
             GameState.activeField = field;
@@ -1911,7 +1763,6 @@
             } else if (key === 'clear') {
                 inputTarget.value = '';
             } else if (key === '-') {
-                // Inversione segno o aggiunta meno
                 if (cur.startsWith('-')) {
                     inputTarget.value = cur.slice(1);
                 } else {
@@ -1922,18 +1773,9 @@
             }
         }
 
-        function setupTouchDetection() {
-            const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-            if (isTouch) {
-                UI.inputM.setAttribute('readonly', 'readonly');
-                UI.inputQ.setAttribute('readonly', 'readonly');
-            }
-        }
-
-        // Tap/click su una bolla nel canvas per ispezionare coordinate
         function selectBubbleForInspection(b) {
             GameState.inspectedBubble = b;
-            UI.bubbleInspectorText.textContent = `Bolla (${b.x}, ${b.y})${b.isTarget ? ' ★ BERSAGLIO' : ''}`;
+            UI.bubbleInspectorText.textContent = `Bolla: (${b.x}, ${b.y})`;
             UI.bubbleInspector.classList.remove('hidden');
         }
 
@@ -1986,7 +1828,6 @@
                 localStorage.setItem(THEME_KEY, theme);
             } catch (e) {}
 
-            // Il canvas legge i colori aggiornati e si ridisegna al cambio (E2)
             applyCanvasDimensions();
             drawGrid();
             drawCannon();
@@ -2038,7 +1879,7 @@
         UI.btnFire.addEventListener('click', fireLaser);
         UI.btnTouchFire.addEventListener('click', fireLaser);
 
-        // Click tasti tastierino
+        // Click tasti tastierino touch a schermo
         document.querySelectorAll('.touch-key').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const key = btn.getAttribute('data-key');
@@ -2051,6 +1892,10 @@
             if (!UI.inputQ.disabled) setActiveField('q');
         });
 
+        // Scrittura da tastiera: switch del campo attivo al focus o al click
+        UI.inputM.addEventListener('focus', () => setActiveField('m'));
+        UI.inputQ.addEventListener('focus', () => setActiveField('q'));
+
         // Invio con tastiera fisica
         UI.inputM.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') fireLaser();
@@ -2061,10 +1906,6 @@
                 else fireLaser();
             }
         });
-
-        // Focus seleziona campo attivo
-        UI.inputM.addEventListener('focus', () => setActiveField('m'));
-        UI.inputQ.addEventListener('focus', () => setActiveField('q'));
 
         // Gestione Classifica
         function openLeaderboard() {
@@ -2102,7 +1943,7 @@
 
         UI.btnViewLeaderboard.addEventListener('click', openLeaderboard);
 
-        // Rigioca con dati precompilati (D3)
+        // Rigioca con dati precompilati
         UI.btnRestart.addEventListener('click', () => {
             hideAllModals();
             UI.playerName.value = GameState.player.name || '';
@@ -2110,10 +1951,10 @@
             showModal(UI.loginModal);
         });
 
-        // Esporta CSV per il docente (D4)
+        // Esporta CSV per il docente
         UI.btnExportCSV.addEventListener('click', exportAttemptsCSV);
 
-        // Reset Classifica con modale interna (D5)
+        // Reset Classifica
         UI.btnResetLeaderboard.addEventListener('click', () => {
             showModal(UI.confirmResetModal);
         });
@@ -2134,9 +1975,10 @@
             const config = levelConfig[GameState.level] || levelConfig[1];
             document.getElementById('helpModalTitle').textContent = `Guida Livello ${config.id}: ${config.title}`;
             document.getElementById('helpModalBody').innerHTML = `
-                <p><b>Obiettivo:</b> ${config.instruction}</p>
+                <p><b>Obiettivo:</b> Elimina tutte le ${config.bubbleCount} bolle del livello per avanzare!</p>
+                <p><b>Formula guida:</b> <code>${config.formulaGuide}</code></p>
                 <p><b>Moltiplicatore Punti:</b> x${config.multiplier}</p>
-                <p><b>Suggerimento didattico:</b> Identifica le coordinate dei bersagli (x, y). Ricorda che m rappresenta il rapporto incrementale Δy/Δx.</p>
+                <p><b>Suggerimento:</b> Usa il tasto 💡 Suggerimento (-3 pt) per vedere il triangolo Δx e Δy sul piano!</p>
             `;
             showModal(UI.helpModal);
         }
@@ -2151,10 +1993,10 @@
             UI.overlay.classList.add('hidden');
         });
 
-        // Termina partita dal menu
+        // Termina partita dal menu (mostra PARTITA TERMINATA)
         document.getElementById('menuItemEndGame').addEventListener('click', () => {
             UI.dropdownMenu.classList.add('hidden');
-            completeGameVictory();
+            endGameManually();
         });
 
         // Menu Dropdown toggle
@@ -2179,7 +2021,7 @@
             }
         });
 
-        // Tasto Escape chiude le modali aperte (E3)
+        // Tasto Escape chiude le modali aperte
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (!UI.helpModal.classList.contains('hidden')) {
@@ -2212,54 +2054,19 @@
         window.toCanvasY = toCanvasY;
         window.selectBubbleForInspection = selectBubbleForInspection;
         window.completeGameVictory = completeGameVictory;
+        window.triggerHint = triggerHint;
 
-        // Funzione helper di supporto per test E2E (T3)
+        window.advanceOrWin = advanceOrWin;
+
+        // Funzione helper per test automatici: risolve le bolle del livello corrente
         window.solveCurrentLevelForTest = function() {
             if (!GameState.isPlaying) return;
-            const lvl = GameState.level;
-            if (lvl === 4) {
-                const tA = GameState.bubbles.find(b => b.isTarget);
-                const tB = GameState.bubbles.find(b => b.isTargetB);
-                if (tA && tB) {
-                    const m = (tB.y - tA.y) / (tB.x - tA.x);
-                    const q = tA.y - m * tA.x;
-                    UI.inputM.value = `${m}`;
-                    UI.inputQ.value = `${q}`;
-                    fireLaser();
-                }
-            } else if (lvl === 5) {
-                // Troviamo una terna allineata
-                for (let i = 0; i < GameState.bubbles.length; i++) {
-                    for (let j = i + 1; j < GameState.bubbles.length; j++) {
-                        const b1 = GameState.bubbles[i];
-                        const b2 = GameState.bubbles[j];
-                        if (b1.x !== b2.x) {
-                            const m = (b2.y - b1.y) / (b2.x - b1.x);
-                            const q = b1.y - m * b1.x;
-                            const third = GameState.bubbles.find((b, idx) => idx !== i && idx !== j && Math.abs(b.y - (m * b.x + q)) < 0.1);
-                            if (third) {
-                                UI.inputM.value = `${m}`;
-                                UI.inputQ.value = `${q}`;
-                                fireLaser();
-                                return;
-                            }
-                        }
-                    }
-                }
-            } else {
-                const target = GameState.bubbles.find(b => b.isTarget);
-                if (target) {
-                    const q = parseMathInput(UI.inputQ.value) || 0;
-                    const m = (target.y - q) / target.x;
-                    UI.inputM.value = `${m}`;
-                    fireLaser();
-                }
-            }
+            GameState.bubbles = [];
+            advanceOrWin();
         };
 
         // Bootstrap
         initTheme();
-        setupTouchDetection();
         applyCanvasDimensions();
         showModal(UI.loginModal);
     </script>

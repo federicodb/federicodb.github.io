@@ -1,58 +1,12 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-07 16:01:21
+   Data: 2026-10-07 16:50:34
 */
 
 const db = [
     {
-        "title": "Video: Sistemi vs Disequazioni frazionarie (\"Due sfighe non fanno una gioia\")",
-        "excerpt": "Perché dal punto di vista del calcolo sembrano simili ma concettualmente sono opposti: nei sistemi cerchiamo le intersezioni (due 'sfighe' non fanno una gioia!), nelle frazionarie studiamo il segno (meno per meno fa più).",
-        "tags": [
-            "ALGEBRA",
-            "CIT_6:COMPETENZE SOCIALI E CIVICHE",
-            "DISEQUAZIONI",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "PROBABILITÀ",
-            "REGOLA DEI SEGNI",
-            "SISTEMI",
-            "VIDEO"
-        ],
-        "date": "2026-10-07",
-        "group_ref": "disequazioni duesfighe",
-        "version_label": "Versione Unica",
-        "url": "content/video/diseq_duesfighe.mp4",
-        "type": "video",
-        "icon": "🎬",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.jpg"
-    },
-    {
-        "title": "Il Triangolo di Sierpinski (Video)",
-        "excerpt": "Costruzione ricorsiva del frattale di Sierpinski animata con Manim. A ogni passo l'area viene moltiplicata per 3/4 (tendendo a zero), mentre il perimetro viene moltiplicato per 3/2 (tendendo all'infinito): un'area nulla racchiusa da un confine infinito!",
-        "tags": [
-            "FRATTALI",
-            "GEOMETRIA",
-            "IND_C1:MODELLAZIONE ALGORITMICA E PARAMETRICA",
-            "MANIM",
-            "MAT_C4:MODELLI GEOMETRICI E SPAZIALI",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "RICORSIONE",
-            "SIERPINSKI",
-            "VIDEO"
-        ],
-        "date": "2026-10-07",
-        "group_ref": "sierpinski (parte 1)",
-        "version_label": "Versione Unica",
-        "url": "content/video/sierpinski01.mp4",
-        "type": "video",
-        "icon": "🎬",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sierpinski01.jpg"
-    },
-    {
         "title": "Math Bubble: La Retta Esplicita | Orfini Math Lab",
-        "excerpt": "Laboratorio interattivo di Geometria Analitica: impara l'equazione della retta y = mx + q calcolando pendenza e quota per colpire le bolle sul piano cartesiano.",
+        "excerpt": "Laboratorio interattivo di Geometria Analitica: impara l'equazione della retta y = mx + q calcolando pendenza e quota per colpire ed eliminare tutte le bolle sul piano cartesiano.",
         "tags": [
             "DIDATTICA LABORATORIALE",
             "EQUAZIONE ESPLICITA",
@@ -446,29 +400,6 @@ const db = [
         "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.jpg"
     },
     {
-        "title": "Lissajous Curves 3D",
-        "excerpt": "Esplorazione interattiva delle curve di Lissajous in 2D e 3D. Simulatore matematico con morphing sferico e decadimento visivo.",
-        "tags": [
-            "3D",
-            "DIDATTICA",
-            "FISICA",
-            "GEOMETRIA",
-            "LABORATORIO",
-            "LISSAJOUS",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "ONDE",
-            "OSCILLAZIONI",
-            "WEBGL"
-        ],
-        "date": "2026-04-21",
-        "url": "content/apps/lissajous_curves_01.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/lissajous_curves_01.jpg"
-    },
-    {
         "title": "$\\pi$ is irrational: visualizzare l'incommensurabilità",
         "excerpt": "Esplorazione geometrica e visiva del numero $\\pi$. Scopri l'incommensurabilità tra circonferenza e diametro osservando la rettificazione del cerchio e la natura non periodica delle sue cifre decimali.",
         "tags": [
@@ -512,6 +443,29 @@ const db = [
         "icon": "📐",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/sqrt2_is_irrational.jpg"
+    },
+    {
+        "title": "Lissajous Curves 3D",
+        "excerpt": "Esplorazione interattiva delle curve di Lissajous in 2D e 3D. Simulatore matematico con morphing sferico e decadimento visivo.",
+        "tags": [
+            "3D",
+            "DIDATTICA",
+            "FISICA",
+            "GEOMETRIA",
+            "LABORATORIO",
+            "LISSAJOUS",
+            "MATEMATICA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "ONDE",
+            "OSCILLAZIONI",
+            "WEBGL"
+        ],
+        "date": "2026-04-21",
+        "url": "content/apps/lissajous_curves_01.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/lissajous_curves_01.jpg"
     },
     {
         "title": "Allegato A - Profilo Educativo, Culturale e Professionale (PECUP)",
@@ -655,6 +609,52 @@ const db = [
         "type": "normativa",
         "icon": "📈",
         "game_type": "document"
+    },
+    {
+        "title": "Il Triangolo di Sierpinski (Video)",
+        "excerpt": "Costruzione ricorsiva del frattale di Sierpinski animata con Manim. A ogni passo l'area viene moltiplicata per 3/4 (tendendo a zero), mentre il perimetro viene moltiplicato per 3/2 (tendendo all'infinito): un'area nulla racchiusa da un confine infinito!",
+        "tags": [
+            "FRATTALI",
+            "GEOMETRIA",
+            "IND_C1:MODELLAZIONE ALGORITMICA E PARAMETRICA",
+            "MANIM",
+            "MAT_C4:MODELLI GEOMETRICI E SPAZIALI",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "RICORSIONE",
+            "SIERPINSKI",
+            "VIDEO"
+        ],
+        "date": "2026-04-10",
+        "group_ref": "sierpinski (parte 1)",
+        "version_label": "Versione Unica",
+        "url": "content/video/sierpinski01.mp4",
+        "type": "video",
+        "icon": "🎬",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/sierpinski01.jpg"
+    },
+    {
+        "title": "Video: Sistemi vs Disequazioni frazionarie (\"Due sfighe non fanno una gioia\")",
+        "excerpt": "Perché dal punto di vista del calcolo sembrano simili ma concettualmente sono opposti: nei sistemi cerchiamo le intersezioni (due 'sfighe' non fanno una gioia!), nelle frazionarie studiamo il segno (meno per meno fa più).",
+        "tags": [
+            "ALGEBRA",
+            "CIT_6:COMPETENZE SOCIALI E CIVICHE",
+            "DISEQUAZIONI",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "PROBABILITÀ",
+            "REGOLA DEI SEGNI",
+            "SISTEMI",
+            "VIDEO"
+        ],
+        "date": "2026-04-03",
+        "group_ref": "disequazioni duesfighe",
+        "version_label": "Versione Unica",
+        "url": "content/video/diseq_duesfighe.mp4",
+        "type": "video",
+        "icon": "🎬",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.jpg"
     },
     {
         "title": "$\\phi$ is irrational: il rapporto aureo",
@@ -908,6 +908,29 @@ const db = [
         "thumbnail": "content/assets/thumbnails/percentuali_001.jpg"
     },
     {
+        "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
+        "excerpt": "Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.",
+        "tags": [
+            "3 MEC",
+            "4 EL",
+            "ANGOLI",
+            "FUNZIONI",
+            "GAMIFICATION",
+            "GONIOMETRIA",
+            "LAB",
+            "MAT:ANALISI",
+            "MATEMATICA",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "TRIGONOMETRIA"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/gioco_sin_cos_01.html",
+        "type": "app",
+        "icon": "📈",
+        "game_type": "memory",
+        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.jpg"
+    },
+    {
         "title": "Mappe & Distorsioni: Mercatore",
         "excerpt": "Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le aree reali dei paesi.",
         "tags": [
@@ -934,6 +957,33 @@ const db = [
         "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.jpg"
     },
     {
+        "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
+        "excerpt": "Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "3 MEC",
+            "4 EL",
+            "ALGEBRA",
+            "EU:STEM",
+            "GEOMETRIA",
+            "LAB",
+            "MAT:GEOMETRIA",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "VISUALIZZAZIONE"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/scomp_3d_grafica_002.html",
+        "type": "app",
+        "icon": "🧱",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.jpg"
+    },
+    {
         "title": "Sketch to Pattern: Arte Generativa",
         "excerpt": "Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.",
         "tags": [
@@ -956,57 +1006,6 @@ const db = [
         "icon": "📐",
         "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.jpg"
-    },
-    {
-        "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
-        "excerpt": "Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "ANGOLI",
-            "FUNZIONI",
-            "GAMIFICATION",
-            "GONIOMETRIA",
-            "LAB",
-            "MAT:ANALISI",
-            "MATEMATICA",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "TRIGONOMETRIA"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/gioco_sin_cos_01.html",
-        "type": "app",
-        "icon": "📈",
-        "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.jpg"
-    },
-    {
-        "title": "Esploratore Numerico: Pitagora & Tartaglia",
-        "excerpt": "Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo di Tartaglia (Combinatoria) e regole di divisibilità.",
-        "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "4 EL",
-            "ARITMETICA",
-            "DIVISIBILITÀ",
-            "LAB",
-            "MAT:CALCOLO",
-            "MAT:DATI",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
-            "NUMERI",
-            "PITAGORA",
-            "TARTAGLIA"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/tavola_tart_canva0003.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.jpg"
     },
     {
         "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
@@ -1060,31 +1059,32 @@ const db = [
         "thumbnail": "content/assets/thumbnails/insiemi004.jpg"
     },
     {
-        "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
-        "excerpt": "Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.",
+        "title": "Esploratore Numerico: Pitagora & Tartaglia",
+        "excerpt": "Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo di Tartaglia (Combinatoria) e regole di divisibilità.",
         "tags": [
             "1 EL",
             "2 EL",
             "2 GP",
-            "3 MEC",
             "4 EL",
-            "ALGEBRA",
-            "EU:STEM",
-            "GEOMETRIA",
+            "ARITMETICA",
+            "DIVISIBILITÀ",
             "LAB",
-            "MAT:GEOMETRIA",
+            "MAT:CALCOLO",
+            "MAT:DATI",
             "MAT:MODELLIZZAZIONE",
             "MATEMATICA",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "VISUALIZZAZIONE"
+            "MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
+            "NUMERI",
+            "PITAGORA",
+            "TARTAGLIA"
         ],
         "date": "2025-12-08",
-        "url": "content/apps/scomp_3d_grafica_002.html",
+        "url": "content/apps/tavola_tart_canva0003.html",
         "type": "app",
-        "icon": "🧱",
+        "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.jpg"
+        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.jpg"
     },
     {
         "title": "Albero di Pitagora: Frattali 3D",
