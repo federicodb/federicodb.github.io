@@ -1,9 +1,75 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-05 15:14:37
+   Data: 2026-10-07 16:01:21
 */
 
 const db = [
+    {
+        "title": "Video: Sistemi vs Disequazioni frazionarie (\"Due sfighe non fanno una gioia\")",
+        "excerpt": "Perché dal punto di vista del calcolo sembrano simili ma concettualmente sono opposti: nei sistemi cerchiamo le intersezioni (due 'sfighe' non fanno una gioia!), nelle frazionarie studiamo il segno (meno per meno fa più).",
+        "tags": [
+            "ALGEBRA",
+            "CIT_6:COMPETENZE SOCIALI E CIVICHE",
+            "DISEQUAZIONI",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "PROBABILITÀ",
+            "REGOLA DEI SEGNI",
+            "SISTEMI",
+            "VIDEO"
+        ],
+        "date": "2026-10-07",
+        "group_ref": "disequazioni duesfighe",
+        "version_label": "Versione Unica",
+        "url": "content/video/diseq_duesfighe.mp4",
+        "type": "video",
+        "icon": "🎬",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.jpg"
+    },
+    {
+        "title": "Il Triangolo di Sierpinski (Video)",
+        "excerpt": "Costruzione ricorsiva del frattale di Sierpinski animata con Manim. A ogni passo l'area viene moltiplicata per 3/4 (tendendo a zero), mentre il perimetro viene moltiplicato per 3/2 (tendendo all'infinito): un'area nulla racchiusa da un confine infinito!",
+        "tags": [
+            "FRATTALI",
+            "GEOMETRIA",
+            "IND_C1:MODELLAZIONE ALGORITMICA E PARAMETRICA",
+            "MANIM",
+            "MAT_C4:MODELLI GEOMETRICI E SPAZIALI",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "RICORSIONE",
+            "SIERPINSKI",
+            "VIDEO"
+        ],
+        "date": "2026-10-07",
+        "group_ref": "sierpinski (parte 1)",
+        "version_label": "Versione Unica",
+        "url": "content/video/sierpinski01.mp4",
+        "type": "video",
+        "icon": "🎬",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/sierpinski01.jpg"
+    },
+    {
+        "title": "Math Bubble: La Retta Esplicita | Orfini Math Lab",
+        "excerpt": "Laboratorio interattivo di Geometria Analitica: impara l'equazione della retta y = mx + q calcolando pendenza e quota per colpire le bolle sul piano cartesiano.",
+        "tags": [
+            "DIDATTICA LABORATORIALE",
+            "EQUAZIONE ESPLICITA",
+            "GAMIFICATION",
+            "MATEMATICA",
+            "ORFINI",
+            "PENDENZA",
+            "PIANO CARTESIANO",
+            "RETTA"
+        ],
+        "date": "2026-10-07",
+        "url": "content/apps/math_bubble_equazione_della_retta.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.jpg"
+    },
     {
         "title": "Simulatore di Automi Cellulari e Particelle",
         "excerpt": "Laboratorio interattivo su automi cellulari e dinamica di particelle a soglia. Esplorazione visiva di sistemi complessi, transizioni di fase ed emergenza computazionale.",
@@ -24,7 +90,8 @@ const db = [
         "url": "content/apps/soglie_particelle_automa_cellulare.html",
         "type": "app",
         "icon": "⚡",
-        "game_type": "sim"
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.jpg"
     },
     {
         "title": "Le fasi della Luna",
@@ -590,52 +657,6 @@ const db = [
         "game_type": "document"
     },
     {
-        "title": "Il Triangolo di Sierpinski (Video)",
-        "excerpt": "Costruzione ricorsiva del frattale di Sierpinski animata con Manim. A ogni passo l'area viene moltiplicata per 3/4 (tendendo a zero), mentre il perimetro viene moltiplicato per 3/2 (tendendo all'infinito): un'area nulla racchiusa da un confine infinito!",
-        "tags": [
-            "FRATTALI",
-            "GEOMETRIA",
-            "IND_C1:MODELLAZIONE ALGORITMICA E PARAMETRICA",
-            "MANIM",
-            "MAT_C4:MODELLI GEOMETRICI E SPAZIALI",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "RICORSIONE",
-            "SIERPINSKI",
-            "VIDEO"
-        ],
-        "date": "2026-04-10",
-        "group_ref": "sierpinski (parte 1)",
-        "version_label": "Versione Unica",
-        "url": "content/video/sierpinski01.mp4",
-        "type": "video",
-        "icon": "🎬",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sierpinski01.jpg"
-    },
-    {
-        "title": "Video: Sistemi vs Disequazioni frazionarie (\"Due sfighe non fanno una gioia\")",
-        "excerpt": "Perché dal punto di vista del calcolo sembrano simili ma concettualmente sono opposti: nei sistemi cerchiamo le intersezioni (due 'sfighe' non fanno una gioia!), nelle frazionarie studiamo il segno (meno per meno fa più).",
-        "tags": [
-            "ALGEBRA",
-            "CIT_6:COMPETENZE SOCIALI E CIVICHE",
-            "DISEQUAZIONI",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "PROBABILITÀ",
-            "REGOLA DEI SEGNI",
-            "SISTEMI",
-            "VIDEO"
-        ],
-        "date": "2026-04-03",
-        "group_ref": "disequazioni duesfighe",
-        "version_label": "Versione Unica",
-        "url": "content/video/diseq_duesfighe.mp4",
-        "type": "video",
-        "icon": "🎬",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.jpg"
-    },
-    {
         "title": "$\\phi$ is irrational: il rapporto aureo",
         "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
         "tags": [
@@ -780,9 +801,7 @@ const db = [
         "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.jpg"
     },
     {
-        "title": "AI Math Assistant: Tutor Didattico Sperimentale",
-        "url": "https://ais-pre-evi2uqxownrirtwtzubadt-238287108414.europe-west2.run.app/",
-        "type": "link",
+        "date": "2025-12-12",
         "description": "Assistente conversazionale basato su modelli linguistici per la didattica della matematica: guida lo studente nel ragionamento socratico, nell'analisi degli errori e nella formulazione di ipotesi.",
         "tags": [
             "AI",
@@ -795,7 +814,9 @@ const db = [
             "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA",
             "TUTOR SOCRATICO"
         ],
-        "date": "2025-12-12",
+        "title": "AI Math Assistant: Tutor Didattico Sperimentale",
+        "type": "link",
+        "url": "https://ais-pre-evi2uqxownrirtwtzubadt-238287108414.europe-west2.run.app/",
         "excerpt": "Assistente conversazionale basato su modelli linguistici per la didattica della matematica: guida lo studente nel ragionamento socratico, nell'analisi degli errori e nella formulazione di ipotesi.",
         "icon": "🌐",
         "game_type": "sim"
