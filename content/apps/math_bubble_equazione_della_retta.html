@@ -159,25 +159,75 @@
         }
 
         /* Stili per schermi piccoli / portrait */
+        /* Smartphone verticale: il pannello occupa solo lo spazio necessario
+           (niente scroll) e il piano cartesiano prende tutto il resto */
         @media (max-width: 767px) and (orientation: portrait) {
-            #mainAppContainer {
-                flex-direction: column !important;
-                height: 100% !important;
-            }
-            #canvasWrapper {
-                height: 52% !important;
-                min-height: 200px !important;
-                flex: none !important;
-            }
-            #controlPanel {
-                flex: 1 !important;
-                overflow-y: auto !important;
-                padding: 0.75rem !important;
-                gap: 0.5rem !important;
+            body {
+                padding: 0.25rem 0.375rem !important;
             }
             #headerBar {
-                padding: 0.35rem 0.75rem !important;
+                padding: 0 0.125rem !important;
                 margin-bottom: 0.25rem !important;
+            }
+            #headerBar h1 {
+                font-size: 1.1rem !important;
+                white-space: nowrap;
+            }
+            #headerBar h1 i {
+                display: none;
+            }
+            #mainAppContainer {
+                flex-direction: column !important;
+                gap: 0.25rem !important;
+                min-height: 0 !important;
+            }
+            #canvasWrapper {
+                flex: 1 1 auto !important;
+                height: auto !important;
+                min-height: 200px !important;
+            }
+            #controlPanel {
+                flex: none !important;
+                padding: 0.5rem !important;
+                gap: 0.375rem !important;
+            }
+            /* Elementi ridondanti su schermo piccolo: consegna completa nel "?",
+               suggerimento nel pulsante sul piano, campo attivo scelto toccando m o q */
+            #playerInfoDisplay, #panelInstruction, #goalBadge,
+            #equationHeader, #hintRow, #fieldSelectorRow {
+                display: none !important;
+            }
+            #panelLevelInstructionBox {
+                padding: 0.2rem 0.6rem !important;
+            }
+            #touchKeypad {
+                gap: 4px !important;
+            }
+            #panelLevelInstructionBox > div {
+                margin-bottom: 0 !important;
+            }
+            #panelLevelName {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #btnFire {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+                font-size: 1.15rem !important;
+            }
+            #feedbackContainer {
+                height: 1rem !important;
+            }
+            #btnCanvasHint {
+                display: flex !important;
+            }
+        }
+
+        /* Smartphone stretti: il titolo cede spazio ai pulsanti dell'header */
+        @media (max-width: 440px) and (orientation: portrait) {
+            #headerBar h1 {
+                display: none;
             }
         }
 
@@ -209,6 +259,23 @@
             }
             #landscapeBadges {
                 display: flex !important;
+            }
+            /* Pannello essenziale: equazione + tastierino (🎯 spara), il resto è nel "?" e sul piano */
+            #playerInfoDisplay, #panelLevelInstructionBox, #equationHeader,
+            #hintRow, #fieldSelectorRow, #btnFire, #controlPanel footer {
+                display: none !important;
+            }
+            #btnCanvasHint {
+                display: flex !important;
+            }
+            #feedbackContainer {
+                height: auto !important;
+                min-height: 1.25rem;
+            }
+            #feedbackText {
+                white-space: normal !important;
+                font-size: 0.75rem !important;
+                line-height: 1.1;
             }
             #touchKeypad {
                 display: grid !important;
@@ -324,6 +391,11 @@
                 ?
             </button>
 
+            <!-- Suggerimento sul piano (solo smartphone verticale, dove la riga del pannello è nascosta) -->
+            <button id="btnCanvasHint" class="hidden absolute top-12 right-2 bg-slate-900/80 hover:bg-slate-800 text-amber-300 w-9 h-9 rounded-full items-center justify-center text-sm border border-amber-500/50 shadow-lg z-10" title="Suggerimento (-3 pt)" aria-label="Suggerimento, costa 3 punti">
+                <i class="fa-solid fa-lightbulb"></i>
+            </button>
+
             <!-- Coordinate Inspector Fluttuante (tap su bolla) -->
             <div id="bubbleInspector" class="hidden absolute bottom-3 left-3 bg-slate-900/90 text-white border border-sky-500/50 px-3 py-1.5 rounded-lg text-xs md:text-sm shadow-xl font-mono z-10 flex items-center gap-2">
                 <i class="fa-solid fa-crosshairs text-sky-400"></i>
@@ -344,8 +416,8 @@
             <!-- Consegna Livello e Scaffolding Didattico -->
             <div id="panelLevelInstructionBox" class="bg-slate-800/40 rounded-xl p-2.5 border border-slate-700/40 text-xs md:text-sm">
                 <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold text-sky-400 flex items-center gap-1.5">
-                        <i class="fa-solid fa-compass"></i> <span id="panelLevelName">Livello 1: Origine (q = 0)</span>
+                    <span class="font-bold text-sky-400 flex items-center gap-1.5 min-w-0">
+                        <i class="fa-solid fa-compass"></i> <span id="panelLevelName" class="min-w-0">Livello 1: Origine (q = 0)</span>
                     </span>
                     <span id="goalBadge" class="text-[11px] bg-sky-950/80 text-sky-300 px-2 py-0.5 rounded-full border border-sky-800">
                         Elimina tutte le bolle
@@ -358,7 +430,7 @@
 
             <!-- EQUAZIONE DELLA RETTA E INPUT (SIA TASTIERA CHE TOUCH) -->
             <div class="flex flex-col gap-1.5">
-                <div class="flex items-center justify-between">
+                <div id="equationHeader" class="flex items-center justify-between">
                     <span class="text-xs uppercase font-bold tracking-wider text-slate-400">Equazione retta:</span>
                     <span class="math-font text-xs text-sky-400 font-bold">y = mx + q</span>
                 </div>
@@ -384,7 +456,7 @@
             </div>
 
             <!-- BOTTONE SUGGERIMENTO / HINT CON PENALITÀ PUNTI -->
-            <div class="flex gap-2">
+            <div id="hintRow" class="flex gap-2">
                 <button id="btnHint" class="flex-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl py-2 px-3 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Mostra un aiuto visivo con triangolo Δx e Δy (-3 pt)">
                     <i class="fa-solid fa-lightbulb text-amber-400"></i> Suggerimento (-3 pt)
                 </button>
@@ -393,7 +465,7 @@
             <!-- TASTIERINO VIRTUALE TOUCH INTEGRATO -->
             <div id="touchKeypadContainer" class="flex flex-col gap-1.5">
                 <!-- Selettore campo attivo (per chi usa i pulsanti touch a schermo) -->
-                <div class="flex gap-2 text-xs font-bold">
+                <div id="fieldSelectorRow" class="flex gap-2 text-xs font-bold">
                     <button id="btnSelectM" class="flex-1 py-1.5 rounded-lg bg-sky-600 text-white flex items-center justify-center gap-1 transition-colors">
                         Modifica m
                     </button>
@@ -1071,14 +1143,14 @@
         // COORDINATE E RENDERING CANVAS
         // ==========================================
         function toCanvasX(logicalX) {
-            const width = UI.canvas.width;
+            const width = GameState.config.cssWidth || UI.canvas.clientWidth;
             const logicalWidth = GameState.config.xRange[1] - GameState.config.xRange[0];
             const pixelsPerUnit = width / logicalWidth;
             return (logicalX - GameState.config.xRange[0]) * pixelsPerUnit;
         }
 
         function toCanvasY(logicalY) {
-            const height = UI.canvas.height;
+            const height = GameState.config.cssHeight || UI.canvas.clientHeight;
             const logicalHeight = GameState.config.yRange[1] - GameState.config.yRange[0];
             const pixelsPerUnit = height / logicalHeight;
             return height - ((logicalY - GameState.config.yRange[0]) * pixelsPerUnit);
@@ -1087,8 +1159,10 @@
         function fromCanvasPoint(canvasX, canvasY) {
             const logicalWidth = GameState.config.xRange[1] - GameState.config.xRange[0];
             const logicalHeight = GameState.config.yRange[1] - GameState.config.yRange[0];
-            const lx = GameState.config.xRange[0] + (canvasX / UI.canvas.width) * logicalWidth;
-            const ly = GameState.config.yRange[0] + ((UI.canvas.height - canvasY) / UI.canvas.height) * logicalHeight;
+            const w = GameState.config.cssWidth || UI.canvas.clientWidth;
+            const h = GameState.config.cssHeight || UI.canvas.clientHeight;
+            const lx = GameState.config.xRange[0] + (canvasX / w) * logicalWidth;
+            const ly = GameState.config.yRange[0] + ((h - canvasY) / h) * logicalHeight;
             return { x: lx, y: ly };
         }
 
@@ -1098,8 +1172,11 @@
             const rect = UI.canvas.parentElement.getBoundingClientRect();
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-            UI.canvas.width = rect.width * dpr;
-            UI.canvas.height = rect.height * dpr;
+            // Coordinate logiche in pixel CSS: il contesto è già scalato per il DPR
+            GameState.config.cssWidth = rect.width;
+            GameState.config.cssHeight = rect.height;
+            UI.canvas.width = Math.round(rect.width * dpr);
+            UI.canvas.height = Math.round(rect.height * dpr);
             ctx.resetTransform();
             ctx.scale(dpr, dpr);
 
@@ -1480,6 +1557,7 @@
         }
 
         UI.btnHint.addEventListener('click', triggerHint);
+        document.getElementById('btnCanvasHint').addEventListener('click', triggerHint);
 
         function fireLaser() {
             if (!GameState.isPlaying || GameState.laser !== null || GameState.isTransitioning) return;
@@ -1646,8 +1724,8 @@
         function triggerConfetti(canvasX, canvasY) {
             const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const rect = UI.canvas.parentElement.getBoundingClientRect();
-            const rx = canvasX / rect.width;
-            const ry = canvasY / rect.height;
+            const rx = (rect.left + canvasX) / window.innerWidth;
+            const ry = (rect.top + canvasY) / window.innerHeight;
 
             confetti({
                 particleCount: prefersReduced ? 25 : 65,
@@ -1893,6 +1971,10 @@
         });
 
         // Scrittura da tastiera: switch del campo attivo al focus o al click
+        if (window.matchMedia('(pointer: coarse)').matches) {
+            UI.inputM.setAttribute('inputmode', 'none');
+            UI.inputQ.setAttribute('inputmode', 'none');
+        }
         UI.inputM.addEventListener('focus', () => setActiveField('m'));
         UI.inputQ.addEventListener('focus', () => setActiveField('q'));
 

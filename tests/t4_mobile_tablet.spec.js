@@ -98,8 +98,9 @@ for (const vp of viewports) {
         await keyBtn.tap();
       }
 
-      // Tap sul pulsante SPARA
-      await page.locator('#btnFire').tap();
+      // Tap sul pulsante SPARA (in orizzontale su smartphone è nascosto: si usa il tasto 🎯 del tastierino)
+      const fireBtn = (await page.locator('#btnFire').isVisible()) ? '#btnFire' : '#btnTouchFire';
+      await page.locator(fireBtn).tap();
       await page.waitForTimeout(600);
 
       // Verifichiamo che il punteggio sia aumentato
