@@ -1,9 +1,43 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-07 16:50:34
+   Data: 2026-10-09 19:27:03
 */
 
 const db = [
+    {
+        "title": "Math Invaders: MCM & MCD",
+        "excerpt": "Gioco arcade per allenare m.c.m., M.C.D. e scomposizione in fattori primi: sincronie spaziali, teglie da tagliare, casi da detective e Factor Blaster.",
+        "tags": [
+            "1 EL",
+            "1 GP",
+            "1 MA",
+            "ARCADE",
+            "ARITMETICA",
+            "BIENNIO",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CIT_5:IMPARARE A IMPARARE",
+            "DIVISIBILITÀ",
+            "EU:DIGITALE",
+            "EU:IMPARAREIMPARARE",
+            "EU:STEM",
+            "FATTORI PRIMI",
+            "GAMIFICATION",
+            "LAB",
+            "MAT:CALCOLO",
+            "MAT:MODELLIZZAZIONE",
+            "MAT:PROBLEMSOLVING",
+            "MATEMATICA",
+            "MCD",
+            "MCM",
+            "VIDEOGIOCO"
+        ],
+        "date": "2026-10-09",
+        "url": "content/apps/MCD_mcm_1el_001.html",
+        "type": "app",
+        "icon": "🔢",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp"
+    },
     {
         "title": "Math Bubble: La Retta Esplicita | Orfini Math Lab",
         "excerpt": "Laboratorio interattivo di Geometria Analitica: impara l'equazione della retta y = mx + q calcolando pendenza e quota per colpire ed eliminare tutte le bolle sul piano cartesiano.",
@@ -22,7 +56,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.jpg"
+        "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.webp"
     },
     {
         "title": "Simulatore di Automi Cellulari e Particelle",
@@ -45,7 +79,7 @@ const db = [
         "type": "app",
         "icon": "⚡",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.jpg"
+        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp"
     },
     {
         "title": "Le fasi della Luna",
@@ -81,7 +115,7 @@ const db = [
         "type": "app",
         "icon": "🌕",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.jpg"
+        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.webp"
     },
     {
         "title": "FuncLab AI: Esploratore di Funzioni",
@@ -106,7 +140,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/functions_lab_008.jpg"
+        "thumbnail": "content/assets/thumbnails/functions_lab_008.webp"
     },
     {
         "title": "Studio Plotter CNC",
@@ -142,7 +176,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.jpg"
+        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp"
     },
     {
         "title": "Teoria dei giochi e valutazione consapevole",
@@ -166,7 +200,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.jpg"
+        "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.webp"
     },
     {
         "title": "PixelGrid",
@@ -193,7 +227,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/eq_2_gr_teoria_giochi_01.jpg"
+        "thumbnail": "content/assets/thumbnails/eq_2_gr_teoria_giochi_01.webp"
     },
     {
         "title": "Challenge: Scomposizione di Polinomi (PRO)",
@@ -214,7 +248,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/polinomi_challenge_v2_pro.jpg"
+        "thumbnail": "content/assets/thumbnails/polinomi_challenge_v2_pro.webp"
     },
     {
         "title": "Experience Fibonacci",
@@ -237,7 +271,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/fibonacci_anim.jpg"
+        "thumbnail": "content/assets/thumbnails/fibonacci_anim.webp"
     },
     {
         "title": "Esploratore di Scale Logaritmiche",
@@ -259,7 +293,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/scale_logaritmiche.jpg"
+        "thumbnail": "content/assets/thumbnails/scale_logaritmiche.webp"
     },
     {
         "title": "Math Pool: Biliardo Cartesiano e retta",
@@ -280,7 +314,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.jpg"
+        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.webp"
     },
     {
         "title": "Random Walk 3D | Hypercaos & Chromatic Memory",
@@ -305,7 +339,7 @@ const db = [
         "type": "app",
         "icon": "🌀",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/random_walk.jpg"
+        "thumbnail": "content/assets/thumbnails/random_walk.webp"
     },
     {
         "title": "Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola",
@@ -329,7 +363,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.jpg"
+        "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp"
     },
     {
         "date": "2026-05-13",
@@ -372,7 +406,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/cards_polinomi_memory004.jpg"
+        "thumbnail": "content/assets/thumbnails/cards_polinomi_memory004.webp"
     },
     {
         "title": "C.E. Match",
@@ -397,7 +431,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.jpg"
+        "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.webp"
     },
     {
         "title": "$\\pi$ is irrational: visualizzare l'incommensurabilità",
@@ -419,7 +453,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/pi_is_irrational.jpg"
+        "thumbnail": "content/assets/thumbnails/pi_is_irrational.webp"
     },
     {
         "title": "$\\sqrt{2}$ is irrational: la diagonale incommensurabile",
@@ -442,7 +476,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/sqrt2_is_irrational.jpg"
+        "thumbnail": "content/assets/thumbnails/sqrt2_is_irrational.webp"
     },
     {
         "title": "Lissajous Curves 3D",
@@ -465,7 +499,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/lissajous_curves_01.jpg"
+        "thumbnail": "content/assets/thumbnails/lissajous_curves_01.webp"
     },
     {
         "title": "Allegato A - Profilo Educativo, Culturale e Professionale (PECUP)",
@@ -631,7 +665,7 @@ const db = [
         "type": "video",
         "icon": "🎬",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sierpinski01.jpg"
+        "thumbnail": "content/assets/thumbnails/sierpinski01.webp"
     },
     {
         "title": "Video: Sistemi vs Disequazioni frazionarie (\"Due sfighe non fanno una gioia\")",
@@ -654,7 +688,7 @@ const db = [
         "type": "video",
         "icon": "🎬",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.jpg"
+        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.webp"
     },
     {
         "title": "$\\phi$ is irrational: il rapporto aureo",
@@ -677,7 +711,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.jpg"
+        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp"
     },
     {
         "title": "Il metodo di esaustione",
@@ -699,7 +733,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/esaustione_01.jpg"
+        "thumbnail": "content/assets/thumbnails/esaustione_01.webp"
     },
     {
         "title": "Esploratore Grafico: Operazioni con i Polinomi",
@@ -726,7 +760,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.jpg"
+        "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.webp"
     },
     {
         "title": "Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie",
@@ -753,7 +787,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.jpg"
+        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp"
     },
     {
         "title": "Errori Comuni - Potenze, Espressioni",
@@ -776,7 +810,7 @@ const db = [
         "type": "infographic",
         "icon": "🖼️",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/errori_comuni02.jpg"
+        "thumbnail": "content/assets/thumbnails/errori_comuni02.webp"
     },
     {
         "title": "Decodifica la Matematica: grammatica dei simboli",
@@ -798,7 +832,7 @@ const db = [
         "type": "infographic",
         "icon": "🖼️",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.jpg"
+        "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.webp"
     },
     {
         "date": "2025-12-12",
@@ -842,7 +876,7 @@ const db = [
         "type": "infographic",
         "icon": "🖼️",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.jpg"
+        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.webp"
     },
     {
         "title": "Formula del Delta: $\\Delta = b^2 - 4ac$ (Tattoo)",
@@ -865,7 +899,7 @@ const db = [
         "type": "image",
         "icon": "🖼️",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/tattoo_delta.jpg"
+        "thumbnail": "content/assets/thumbnails/tattoo_delta.webp"
     },
     {
         "title": "PIP",
@@ -887,7 +921,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/retta_fallout_002.jpg"
+        "thumbnail": "content/assets/thumbnails/retta_fallout_002.webp"
     },
     {
         "title": "Percent Lab",
@@ -905,7 +939,7 @@ const db = [
         "type": "app",
         "icon": "🍰",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/percentuali_001.jpg"
+        "thumbnail": "content/assets/thumbnails/percentuali_001.webp"
     },
     {
         "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
@@ -928,7 +962,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.jpg"
+        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.webp"
     },
     {
         "title": "Mappe & Distorsioni: Mercatore",
@@ -954,7 +988,7 @@ const db = [
         "type": "app",
         "icon": "🌍",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.jpg"
+        "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.webp"
     },
     {
         "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
@@ -981,7 +1015,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.jpg"
+        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.webp"
     },
     {
         "title": "Sketch to Pattern: Arte Generativa",
@@ -1005,7 +1039,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.jpg"
+        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp"
     },
     {
         "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
@@ -1032,7 +1066,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.jpg"
+        "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.webp"
     },
     {
         "title": "Logic Lab: Insiemi & Venn",
@@ -1056,7 +1090,7 @@ const db = [
         "type": "app",
         "icon": "🔴",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/insiemi004.jpg"
+        "thumbnail": "content/assets/thumbnails/insiemi004.webp"
     },
     {
         "title": "Esploratore Numerico: Pitagora & Tartaglia",
@@ -1084,7 +1118,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.jpg"
+        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.webp"
     },
     {
         "title": "Albero di Pitagora: Frattali 3D",
@@ -1114,7 +1148,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.jpg"
+        "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.webp"
     },
     {
         "title": "Simulazione CA: Fasori & Onde",
@@ -1136,7 +1170,7 @@ const db = [
         "type": "app",
         "icon": "⚡",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.jpg"
+        "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.webp"
     },
     {
         "title": "Parabola Challenge: Disequazioni",
@@ -1160,7 +1194,7 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.jpg"
+        "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.webp"
     },
     {
         "title": "Laboratorio di operazioni tra Frazioni",
@@ -1183,7 +1217,7 @@ const db = [
         "type": "app",
         "icon": "🍰",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/fractions_lab_001.jpg"
+        "thumbnail": "content/assets/thumbnails/fractions_lab_001.webp"
     },
     {
         "title": "Math Underground: Mappa per la classificazione di Funzioni",
@@ -1207,27 +1241,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/math_underground003_4el.jpg"
-    },
-    {
-        "title": "Math Invaders",
-        "excerpt": "Laboratorio procedurale per il calcolo del Massimo Comune Divisore e Minimo Comune Multiplo tramite scomposizione in fattori primi.",
-        "tags": [
-            "1 EL",
-            "ARITMETICA",
-            "GAMIFICATION",
-            "MAT:CALCOLO",
-            "MATEMATICA",
-            "MCD",
-            "MCM",
-            "VIDEOGIOCO"
-        ],
-        "date": "2025-12-02",
-        "url": "content/apps/MCD_mcm_1el_001.html",
-        "type": "app",
-        "icon": "🔢",
-        "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.jpg"
+        "thumbnail": "content/assets/thumbnails/math_underground003_4el.webp"
     },
     {
         "title": "Chaos Lab: Sistemi Dinamici",
@@ -1255,7 +1269,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.jpg"
+        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp"
     },
     {
         "title": "Caccia all'Errore: Memory su Operazioni in Z",
@@ -1278,6 +1292,6 @@ const db = [
         "type": "app",
         "icon": "🔢",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/memory_1el_numeri_004.jpg"
+        "thumbnail": "content/assets/thumbnails/memory_1el_numeri_004.webp"
     }
 ];

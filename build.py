@@ -819,11 +819,14 @@ def main():
                          meta["date"] = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
 
                     # --- NEW: Thumbnail Linking ---
-                    # Cerca se esiste una thumbnail generata automaticamente
+                    # Cerca se esiste una thumbnail generata automaticamente (webp o jpg)
                     base_name = os.path.splitext(filename)[0]
-                    thumb_rel_path = f"content/assets/thumbnails/{base_name}.jpg"
-                    if os.path.exists(thumb_rel_path):
-                        meta["thumbnail"] = thumb_rel_path
+                    thumb_webp = f"content/assets/thumbnails/{base_name}.webp"
+                    thumb_jpg = f"content/assets/thumbnails/{base_name}.jpg"
+                    if os.path.exists(thumb_webp):
+                        meta["thumbnail"] = thumb_webp
+                    elif os.path.exists(thumb_jpg):
+                        meta["thumbnail"] = thumb_jpg
                     # ------------------------------
 
                     # --- NEW: Data Consistency Check ---

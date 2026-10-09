@@ -36,7 +36,7 @@ def get_thumb_path(file_path):
     """Calcola il percorso di destinazione della thumbnail basato sul nome file."""
     filename = os.path.basename(file_path)
     name, _ = os.path.splitext(filename)
-    return os.path.join(THUMB_DIR, f"{name}.jpg")
+    return os.path.join(THUMB_DIR, f"{name}.webp")
 
 def get_semantic_selector(filename):
     """Restituisce un selettore CSS specifico basato sul nome del file."""
@@ -148,7 +148,7 @@ def generate_app_thumbnail(file_path, thumb_path):
         if HAS_PIL:
             with Image.open(thumb_path) as img:
                 img.thumbnail(THUMB_SIZE)
-                img.save(thumb_path, "JPEG", quality=85)
+                img.save(thumb_path, "WEBP", quality=85)
                 
         return True
     except Exception as e:
@@ -165,7 +165,7 @@ def generate_pdf_thumbnail(file_path, thumb_path):
         if images:
             image = images[0]
             image.thumbnail(THUMB_SIZE)
-            image.save(thumb_path, "JPEG", quality=85)
+            image.save(thumb_path, "WEBP", quality=85)
             return True
     except Exception as e:
         print(f"  ❌ Errore PDF: {e}")
@@ -178,9 +178,9 @@ def generate_image_thumbnail(file_path, thumb_path):
     print(f"🖼️  Resize Immagine: {os.path.basename(file_path)}...")
     try:
         with Image.open(file_path) as img:
-            img = img.convert('RGB') # Assicura compatibilità JPEG
+            img = img.convert('RGB') # Assicura compatibilità WEBP
             img.thumbnail(THUMB_SIZE)
-            img.save(thumb_path, "JPEG", quality=85)
+            img.save(thumb_path, "WEBP", quality=85)
             return True
     except Exception as e:
         print(f"  ❌ Errore Immagine: {e}")

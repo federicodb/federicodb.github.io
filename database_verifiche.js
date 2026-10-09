@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-07 16:50:34
+   Data: 2026-10-09 19:27:03
 */
 
 const db_verifiche = [
@@ -45,7 +45,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/1EL___verifica_15_maggio_2026.jpg",
+        "thumbnail": "content/assets/thumbnails/1EL___verifica_15_maggio_2026.webp",
         "versions": [
             {
                 "url": "content/verifiche/1EL/1EL___verifica_15_maggio_2026.pdf",
@@ -79,7 +79,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2GP___verifica_13_maggio_2026.jpg",
+        "thumbnail": "content/assets/thumbnails/2GP___verifica_13_maggio_2026.webp",
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_13_maggio_2026.pdf",
@@ -113,7 +113,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2GP___verifica_31_marzo_2026_fila_A.jpg",
+        "thumbnail": "content/assets/thumbnails/2GP___verifica_31_marzo_2026_fila_A.webp",
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_31_marzo_2026_fila_A.pdf",
@@ -152,7 +152,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/4EL___verifica_27_marzo_2026_fila_A.jpg",
+        "thumbnail": "content/assets/thumbnails/4EL___verifica_27_marzo_2026_fila_A.webp",
         "versions": [
             {
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_A.pdf",
@@ -186,7 +186,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/4EL___verifica_27_marzo_2026_mappa_en.jpg",
+        "thumbnail": "content/assets/thumbnails/4EL___verifica_27_marzo_2026_mappa_en.webp",
         "versions": [
             {
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_en.pdf",
@@ -221,7 +221,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/3MEC___verifica_26_marzo_2026_fila_A.jpg",
+        "thumbnail": "content/assets/thumbnails/3MEC___verifica_26_marzo_2026_fila_A.webp",
         "versions": [
             {
                 "url": "content/verifiche/3MEC/3MEC___verifica_26_marzo_2026_fila_A.pdf",
@@ -264,7 +264,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2EL___verifica_16_mar_2026_mappa.jpg",
+        "thumbnail": "content/assets/thumbnails/2EL___verifica_16_mar_2026_mappa.webp",
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_16_mar_2026_mappa.pdf",
@@ -297,7 +297,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2EL___verifica_16_mar_2026_Fila_A.jpg",
+        "thumbnail": "content/assets/thumbnails/2EL___verifica_16_mar_2026_Fila_A.webp",
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_16_mar_2026_Fila_A.pdf",
@@ -333,7 +333,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/1EL___verifica_6_mar_2026_filaA.jpg",
+        "thumbnail": "content/assets/thumbnails/1EL___verifica_6_mar_2026_filaA.webp",
         "versions": [
             {
                 "url": "content/verifiche/1EL/1EL___verifica_6_mar_2026_filaA.pdf",
@@ -373,7 +373,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/verifica 2gp 24 feb 2026_fila A.jpg",
+        "thumbnail": "content/assets/thumbnails/verifica 2gp 24 feb 2026_fila A.webp",
         "versions": [
             {
                 "url": "content/verifiche/2GP/verifica 2gp 24 feb 2026_fila A.pdf",
@@ -412,7 +412,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2EL___verifica_2_feb_2026_fila_A.jpg",
+        "thumbnail": "content/assets/thumbnails/2EL___verifica_2_feb_2026_fila_A.webp",
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_2_feb_2026_fila_A.pdf",
@@ -456,7 +456,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/3MEC___verifica_29_gennaio_2026_fila_A.jpg",
+        "thumbnail": "content/assets/thumbnails/3MEC___verifica_29_gennaio_2026_fila_A.webp",
         "versions": [
             {
                 "url": "content/verifiche/3MEC/3MEC___verifica_29_gennaio_2026_fila_A.pdf",
@@ -496,7 +496,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2GP___verifica_2_dic_2025_filaB.jpg",
+        "thumbnail": "content/assets/thumbnails/2GP___verifica_2_dic_2025_filaB.webp",
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_2_dic_2025_filaA.pdf",
@@ -534,7 +534,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/4EL___verifica_21_nov_2025_filaA.jpg",
+        "thumbnail": "content/assets/thumbnails/4EL___verifica_21_nov_2025_filaA.webp",
         "versions": [
             {
                 "url": "content/verifiche/4EL/4EL___verifica_21_nov_2025_filaA.pdf",
@@ -568,7 +568,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/1EL___verifica_21_nov_2025_filaA.jpg",
+        "thumbnail": "content/assets/thumbnails/1EL___verifica_21_nov_2025_filaA.webp",
         "versions": [
             {
                 "url": "content/verifiche/1EL/1EL___verifica_21_nov_2025_filaA.pdf",
@@ -605,7 +605,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2EL___verifica_10_nov_2025_filaA.jpg",
+        "thumbnail": "content/assets/thumbnails/2EL___verifica_10_nov_2025_filaA.webp",
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_10_nov_2025_filaA.pdf",
@@ -638,7 +638,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/3MEC___verifica_3_ottobre_2025.jpg",
+        "thumbnail": "content/assets/thumbnails/3MEC___verifica_3_ottobre_2025.webp",
         "versions": [
             {
                 "url": "content/verifiche/3MEC/3MEC___verifica_3_ottobre_2025.pdf",
@@ -664,7 +664,7 @@ const db_verifiche = [
         "type": "document",
         "icon": "📄",
         "game_type": "document",
-        "thumbnail": "content/assets/thumbnails/2GP___verifica_1_ottobre_2025.jpg",
+        "thumbnail": "content/assets/thumbnails/2GP___verifica_1_ottobre_2025.webp",
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_1_ottobre_2025.pdf",
