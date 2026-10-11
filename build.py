@@ -175,6 +175,7 @@ def extract_sidecar_meta(file_path):
 # Mappa avanzata per icone contestuali
 ICON_MAP = {
     # Matematica Specifica
+    "dedalo": "🏛️", "labirinto": "🏛️", "minotauro": "🐂",
     "frazioni": "🍰", "torta": "🍰", "percentuali": "🍰",
     "polinomi": "🧱", "algebra": "🧱", "scomposizione": "🧱", "tiles": "🧱",
     "funzioni": "📈", "analisi": "📈", "grafico": "📈", "studio": "📈", "limiti": "📈", "derivate": "📈",

@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="date" content="2026-10-11">
+<meta name="author" content="Prof. Federico De Bartolomei">
+<meta name="theme-color" content="#f4e9d2">
+<title>Il Filo di Dedalo: Labirinto Matematico 2.5D</title>
+<meta name="description" content="Laboratorio matematico e gioco 2.5D ambientato a Cnosso: affronta il labirinto di Dedalo e il Minotauro risolvendo sigilli su frazioni, percentuali, proporzioni, caccia all'errore e lessico. Modalità cooperativa LIM per la classe e Arena.">
+<meta name="keywords" content="Matematica, Aritmetica, Frazioni, Percentuali, Proporzioni, Caccia all'errore, Logica, Dedalo, Minotauro, Mat:Calcolo, Mat:ProblemSolving, Mat:Modellizzazione, EU:STEM, EU:Digitale, EU:ImparareImparare, CIT_3, CIT_4:COMPETENZA DIGITALE, CIT_5:IMPARARE A IMPARARE, Gamification, Videogioco, Arcade, Lab, LIM, 1 EL, 2 EL, Biennio, Trasversale">
+<!-- Open Graph / Social Sharing -->
+<meta property="og:title" content="Il Filo di Dedalo: Labirinto Matematico 2.5D">
+<meta property="og:description" content="Laboratorio didattico a squadre e individuale: supera il labirinto del Minotauro risolvendo enigmi matematici su frazioni, percentuali e proporzioni.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cinzel+Decorative:wght@900&family=Nunito:wght@600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1b130d; --ink-soft:#54402e;
+  --plaster:#fff8ea; --alabaster:#f4e9d2; --sand:#ead8b2;
+  --terra:#b8432b; --terra-d:#8a2c19; --ochre:#e8a93a; --ochre-d:#a8700f;
+  --lapis:#1f6fb2; --lapis-d:#123f6b; --sea:#3fa9d4;
+  --leaf:#2f9a5a; --leaf-d:#1e6e3f; --purple:#7b2d8e; --danger:#d32f2f;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background-color:var(--alabaster);
+  background-image:radial-gradient(rgba(184,67,43,.11) 1.6px,transparent 1.8px),radial-gradient(rgba(31,111,178,.09) 1.6px,transparent 1.8px);
+  background-size:34px 34px;background-position:0 0,17px 17px;
+  color:var(--ink);font-family:'Nunito',system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;overflow-x:hidden;
+}
+input{user-select:text;-webkit-user-select:text}
+.hidden{display:none !important}
+.ic{width:20px;height:20px;flex-shrink:0;fill:currentColor}
+
+/* Fregio a spirali minoiche */
+.spiral-band{height:30px;flex-shrink:0;border-top:4px solid var(--terra);border-bottom:4px solid var(--ink);
+  background:#f4e9d2 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='22' viewBox='0 0 48 22'%3E%3Cg fill='none' stroke='%231f6fb2' stroke-width='2.6' stroke-linecap='round'%3E%3Ccircle cx='12' cy='11' r='6'/%3E%3Ccircle cx='36' cy='11' r='6'/%3E%3Cpath d='M18 11C21.5 2 26.5 20 30 11'/%3E%3Cpath d='M42 11C45.5 2 50.5 20 54 11'/%3E%3Cpath d='M-6 11C-2.5 2 2.5 20 6 11'/%3E%3C/g%3E%3Cg fill='%23b8432b'%3E%3Ccircle cx='12' cy='11' r='2.6'/%3E%3Ccircle cx='36' cy='11' r='2.6'/%3E%3C/g%3E%3C/svg%3E") repeat-x center/auto 22px}
+.frieze{height:10px;background:repeating-linear-gradient(90deg,var(--ink) 0 6px,var(--ochre) 6px 22px,var(--ink) 22px 28px,var(--lapis) 28px 44px)}
+
+/* Intestazione */
+.topbar{max-width:1200px;margin:0 auto;width:100%;padding:10px 14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:54px;height:54px;flex-shrink:0;filter:drop-shadow(0 3px 0 rgba(27,19,13,.35))}
+.brand h1{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:clamp(18px,2.4vw,28px);margin:0;color:var(--terra);letter-spacing:.04em;line-height:1.05}
+.brand p{margin:2px 0 0;font-size:12.5px;font-weight:800;color:var(--ink-soft)}
+.hud{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.chip{background:var(--plaster);border:2.5px solid var(--ink);border-radius:12px;padding:5px 10px;display:flex;gap:6px;align-items:center;font-weight:900;font-size:15px;box-shadow:0 3px 0 var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip.small{font-size:13px;padding:3px 8px;box-shadow:0 2px 0 var(--ink)}
+.chip.small .ic{width:17px;height:17px}
+.team-name{max-width:130px;overflow:hidden;text-overflow:ellipsis}
+.hearts .ic{width:22px;height:22px;color:var(--danger)}
+.hearts .ic.empty{color:#cdbb98}
+.meter{width:70px;height:12px;border:2px solid var(--ink);border-radius:8px;background:#f1e3c4;overflow:hidden}
+.meter i{display:block;height:100%;width:10%;background:linear-gradient(90deg,var(--ochre),var(--danger));transition:width .3s}
+.combo{background:#fff0dc;border-color:#c2410c}
+.icon-btn{width:42px;height:42px;display:grid;place-items:center;background:var(--plaster);border:2.5px solid var(--ink);border-radius:12px;box-shadow:0 3px 0 var(--ink);cursor:pointer;color:var(--ink);padding:0}
+.icon-btn:active{transform:translateY(3px);box-shadow:none}
+
+/* Colonne di Cnosso */
+.palace-col{position:fixed;top:120px;bottom:70px;width:40px;display:none;flex-direction:column;align-items:center;z-index:0;pointer-events:none}
+.palace-col.l{left:calc(50% - 680px)} .palace-col.r{right:calc(50% - 680px)}
+@media(min-width:1400px){.palace-col{display:flex}}
+.col-cap{width:62px;height:24px;background:var(--ink);border-radius:14px 14px 6px 6px;position:relative}
+.col-cap::after{content:"";position:absolute;left:8px;right:8px;bottom:-9px;height:8px;background:var(--ochre);border:2px solid var(--ink)}
+.col-shaft{flex:1;width:40px;margin-top:10px;background:linear-gradient(90deg,#8a2c19,#d55a36 40%,#9a321d);clip-path:polygon(0 0,100% 0,80% 100%,20% 100%)}
+.col-base{width:34px;height:12px;background:var(--ink);border-radius:3px}
+
+/* Palcoscenico */
+main{flex:1;display:flex;justify-content:center;padding:4px 12px 14px;position:relative;z-index:1}
+.stage{background:var(--plaster);border:4px solid var(--ink);border-radius:24px;box-shadow:0 8px 0 var(--ink),0 18px 40px rgba(60,30,10,.22);padding:12px;width:100%;max-width:1200px}
+.stage-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.stage-top .grp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.level-badge{background:var(--terra);color:var(--plaster);border:2.5px solid var(--ink);border-radius:10px;padding:5px 12px;font-family:'Cinzel',serif;font-weight:900;font-size:14px;letter-spacing:.06em;box-shadow:0 3px 0 var(--ink);white-space:nowrap}
+.level-name{font-family:'Cinzel',serif;font-weight:900;font-size:15px;color:var(--ink)}
+.code-badge{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;color:var(--ink-soft);background:#f1e3c4;border:2px dashed var(--ink-soft);border-radius:8px;padding:3px 8px}
+.seals{display:flex;gap:6px;align-items:center}
+.seal{width:32px;height:32px;border:2.5px solid var(--ink);border-radius:9px;display:grid;place-items:center;background:#e9dcbf;color:#a8987a;transition:all .3s}
+.seal .ic{width:21px;height:21px}
+.seal.done{color:var(--plaster);transform:scale(1.08)}
+.view-btn{display:flex;align-items:center;gap:6px;font-family:'Cinzel',serif;font-weight:900;font-size:13px;padding:6px 12px;border:2.5px solid var(--ink);border-radius:10px;background:var(--lapis);color:var(--plaster);box-shadow:0 3px 0 var(--ink);cursor:pointer}
+.view-btn:active{transform:translateY(3px);box-shadow:none}
+.view-btn .ic{width:18px;height:18px}
+
+#canvas-wrap{position:relative;width:100%;aspect-ratio:16/9;max-height:66vh;border:3px solid var(--ink);border-radius:16px;overflow:hidden;
+  background:radial-gradient(circle at 50% 35%,#2f86c6 0%,#174d7d 60%,#0f3557 100%)}
+@media(max-width:640px){#canvas-wrap{aspect-ratio:4/3}}
+#labyrinthCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(211,47,47,.75) 100%);opacity:0;transition:opacity .35s;z-index:5}
+.hitflash{position:absolute;inset:0;pointer-events:none;background:rgba(211,47,47,.45);opacity:0;z-index:6}
+.roar{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:9;background:var(--terra);color:var(--plaster);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);border-radius:12px;padding:7px 16px;font-family:'Cinzel',serif;font-weight:900;letter-spacing:.08em;font-size:clamp(12px,1.6vw,17px);white-space:nowrap;pointer-events:none}
+.toasts{position:absolute;bottom:12px;left:0;right:0;z-index:9;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+.toast{background:var(--plaster);border:3px solid var(--ink);border-left-width:10px;border-radius:12px;padding:7px 12px;font-weight:800;font-size:14px;box-shadow:0 4px 0 var(--ink);max-width:92%;text-align:center;animation:pop-in .25s ease both;transition:opacity .3s,transform .3s}
+.toast.good{border-left-color:var(--leaf)} .toast.bad{border-left-color:var(--danger)} .toast.warn{border-left-color:var(--ochre)} .toast.info{border-left-color:var(--lapis)}
+.toast.out{opacity:0;transform:translateY(8px)}
+.level-banner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:8;opacity:0}
+.level-banner.show{animation:banner 2.6s ease forwards}
+.lb-num{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:clamp(30px,6vw,66px);color:var(--plaster);-webkit-text-stroke:2px var(--ink);text-shadow:0 5px 0 var(--ink)}
+.lb-name{background:var(--ink);color:var(--ochre);font-family:'Cinzel',serif;font-weight:900;padding:6px 16px;border-radius:10px;margin-top:8px;font-size:clamp(13px,2vw,20px)}
+
+.stage-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.legend{font-size:13.5px;font-weight:700;color:var(--ink-soft);line-height:1.6}
+.legend b{color:var(--terra)}
+.dpad{display:grid;grid-template-columns:repeat(3,60px);grid-template-rows:repeat(2,54px);gap:6px;margin-left:auto}
+.dpad .btn{font-size:22px;padding:0;font-family:'Nunito',sans-serif;touch-action:none}
+@media(max-width:700px){.legend{display:none}.dpad{margin:0 auto}}
+
+/* Pulsanti a rilievo */
+.btn{font-family:'Cinzel',serif;font-weight:900;letter-spacing:.04em;border:3px solid var(--ink);border-radius:14px;box-shadow:0 5px 0 var(--ink);padding:12px 18px;cursor:pointer;color:var(--ink);background:var(--plaster);transition:transform .08s,box-shadow .08s,filter .15s;font-size:15px}
+.btn:hover:not(:disabled){filter:brightness(1.07)}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-lapis{background:var(--lapis);color:var(--plaster)} .btn-terra{background:var(--terra);color:var(--plaster)}
+.btn-ochre{background:var(--ochre)} .btn-leaf{background:var(--leaf);color:var(--plaster)}
+.btn-big{width:100%;font-size:18px;padding:15px}
+
+/* Modali */
+.backdrop{position:fixed;inset:0;background:rgba(27,19,13,.58);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:12px;z-index:50}
+.panel{background:var(--plaster);border:4px solid var(--ink);border-radius:24px;box-shadow:0 10px 0 var(--ink);max-width:740px;width:100%;max-height:94vh;overflow:auto;position:relative;animation:pop-in .28s cubic-bezier(.16,1,.3,1) both}
+.panel .spiral-band{border-top:none;border-radius:20px 20px 0 0;border-bottom:3px solid var(--ink)}
+.panel-body{padding:16px 22px 22px}
+.label{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--terra);margin:0 0 6px}
+.field{width:100%;border:3px solid var(--ink);border-radius:12px;padding:10px 14px;font:800 16px 'Nunito',sans-serif;background:#fff;color:var(--ink);outline:none}
+.field:focus{box-shadow:0 0 0 4px rgba(232,169,58,.45)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.pick{border:3px solid var(--ink);border-radius:14px;background:#fff;padding:10px 12px;text-align:left;cursor:pointer;box-shadow:0 4px 0 var(--ink);font-family:inherit;color:var(--ink)}
+.pick.selected{background:#fff1cf;outline:4px solid var(--ochre)}
+.pick h4{margin:0 0 4px;font-family:'Cinzel',serif;font-weight:900;font-size:15px}
+.pick p{margin:0;font-size:13px;font-weight:700;color:var(--ink-soft);line-height:1.35}
+.avatars{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.avatar{padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:900}
+.avatar canvas{width:54px;height:54px}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;background:#f8eed8;border:2.5px solid var(--ink);border-radius:14px;padding:12px 14px;font-size:13px;font-weight:700;line-height:1.35}
+@media(max-width:560px){.rules{grid-template-columns:1fr}}
+.rules b{color:var(--terra)}
+.welcome-title{text-align:center;margin-bottom:12px}
+.welcome-title h2{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:clamp(24px,4vw,36px);margin:4px 0;color:var(--terra)}
+.welcome-title p{margin:0;font-weight:800;color:var(--ink-soft)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.muted{font-size:12px;font-weight:800;color:var(--ink-soft);text-align:center;font-family:'JetBrains Mono',monospace}
+
+/* Sigillo */
+.gate-head{display:flex;align-items:center;gap:12px;justify-content:space-between;border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:12px}
+.gate-head .left{display:flex;align-items:center;gap:12px;min-width:0}
+.medal{width:50px;height:50px;border:3px solid var(--ink);border-radius:14px;display:grid;place-items:center;color:var(--plaster);flex-shrink:0;box-shadow:0 3px 0 var(--ink)}
+.medal .ic{width:30px;height:30px}
+.gate-title{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(16px,2.2vw,22px);margin:0;line-height:1.15}
+.gate-lore{font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+.tag{display:inline-block;color:var(--plaster);border:2px solid var(--ink);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.gate-count{font-size:11px;font-weight:800;color:var(--ink-soft);margin-top:4px;text-align:right}
+.gate-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.combo-chip{background:#fff0dc;border:2.5px solid #c2410c;border-radius:10px;padding:4px 10px;font-weight:900;font-size:13px;display:flex;align-items:center;gap:5px}
+.combo-chip .ic{color:#e8590c;width:18px;height:18px}
+.speed{flex:1;min-width:150px}
+.speed-top{display:flex;justify-content:space-between;font-size:12px;font-weight:900;margin-bottom:3px}
+.speed-bar{height:12px;border:2px solid var(--ink);border-radius:8px;background:#f1e3c4;overflow:hidden}
+.speed-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd766,var(--ochre));width:100%}
+.scroll-btn{display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 12px}
+.scroll-btn .ic{color:var(--terra)}
+.story{background:#fff3d9;border:3px solid var(--ink);border-left:10px solid var(--terra);border-radius:14px;padding:14px 16px;font-size:clamp(15px,1.7vw,18px);font-weight:700;line-height:1.5;margin-bottom:12px}
+.mathbox{background:var(--lapis-d);color:var(--plaster);border:3px solid var(--ink);border-radius:12px;padding:12px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(18px,2.6vw,28px);margin-top:10px;letter-spacing:.03em}
+.interactive{position:relative;min-height:130px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opts.single{grid-template-columns:1fr}
+@media(max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:11px 14px;box-shadow:0 4px 0 var(--ink);font:800 clamp(15px,1.6vw,18px) 'Nunito',sans-serif;color:var(--ink);cursor:pointer;transition:transform .1s,box-shadow .1s}
+.opts.single .opt{font-size:15px}
+.opt:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.opt:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.badge{width:36px;height:36px;border-radius:10px;border:2.5px solid var(--ink);color:#fff;font-weight:900;display:grid;place-items:center;flex-shrink:0;font-size:17px}
+.opt[data-i="0"] .badge{background:var(--lapis)} .opt[data-i="1"] .badge{background:var(--terra)}
+.opt[data-i="2"] .badge{background:var(--ochre);color:var(--ink)} .opt[data-i="3"] .badge{background:var(--leaf)}
+.opt.wrong{background:#fde3e0;border-color:var(--danger);text-decoration:line-through;text-decoration-color:var(--danger);opacity:.75}
+.opt.correct{background:#dcf5e5;border-color:var(--leaf-d);box-shadow:0 4px 0 var(--leaf-d),0 0 0 5px rgba(47,154,90,.3)}
+.cooldown{position:absolute;inset:-6px;background:rgba(255,248,234,.88);border-radius:14px;display:grid;place-items:center;z-index:3}
+.cooldown-card{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:14px 18px;text-align:center;box-shadow:0 5px 0 var(--ink);max-width:300px}
+.cooldown-card h4{margin:0 0 4px;font-family:'Cinzel',serif;font-weight:900;color:var(--terra)}
+.cooldown-card p{margin:0;font-size:13px;font-weight:700}
+.cooldown-num{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:800;color:var(--terra)}
+.feedback{margin-top:14px;border:3px solid var(--ink);border-radius:14px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+.feedback.good{background:#dcf5e5} .feedback.bad{background:#fde3e0} .feedback.hint{background:#fff1cf}
+.fb-icon{width:38px;height:38px;flex-shrink:0;border:2.5px solid var(--ink);border-radius:10px;display:grid;place-items:center;color:var(--plaster)}
+.fb-icon .ic{width:24px;height:24px}
+.fb-title{font-family:'Cinzel',serif;font-weight:900;font-size:13px;letter-spacing:.05em;margin:0 0 4px}
+.fb-text{font-size:15px;font-weight:700;line-height:1.5;white-space:pre-line;margin:0}
+.fb-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.fb-chip{background:#fff;border:2px solid var(--ink);border-radius:8px;padding:3px 8px;font-size:12.5px;font-weight:900;animation:pop .35s both}
+.gate-foot{margin-top:16px;text-align:right}
+.ana-target{min-height:68px;border:3px dashed var(--ink);border-radius:14px;background:#fff;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:10px;margin-bottom:12px}
+.ana-target .ph{font-size:13px;font-weight:800;color:#9a8a70}
+.ana-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tile{width:44px;height:50px;border:3px solid var(--ink);border-radius:10px;font-family:'Cinzel',serif;font-weight:900;font-size:22px;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 0 var(--ink);background:linear-gradient(180deg,#f6e3bf,#e1bf85);color:var(--ink);padding:0}
+.tile.placed{background:var(--ochre);animation:pop .3s both}
+.tile:disabled{opacity:.22;cursor:default}
+.linkbtn{background:none;border:none;color:var(--lapis);font-weight:900;text-decoration:underline;cursor:pointer;font-size:13px;margin-top:10px;font-family:inherit}
+
+/* Fine schema */
+.end-rank{display:flex;justify-content:center;margin-bottom:6px}
+.end-rank svg{animation:rank-in .7s cubic-bezier(.2,.9,.3,1.2) both}
+.end-title{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:clamp(22px,3.6vw,32px);text-align:center;margin:4px 0}
+.end-desc{text-align:center;font-weight:700;margin:0 0 12px;line-height:1.45}
+.sq-rows{display:flex;flex-direction:column;gap:6px;align-items:center;margin-bottom:12px}
+.sq-row{display:flex;gap:6px;align-items:center}
+.sq-row small{font-family:'Cinzel',serif;font-weight:900;font-size:12px;width:34px;text-align:right}
+.sq{width:26px;height:26px;border:2.5px solid var(--ink);border-radius:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:#fff;border:2.5px solid var(--ink);border-radius:12px;padding:8px;text-align:center}
+.stat small{display:block;font-size:11px;font-weight:900;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em}
+.stat b{font-family:'JetBrains Mono',monospace;font-size:22px}
+.breakdown{background:#f8eed8;border:2.5px solid var(--ink);border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:700;margin-bottom:14px}
+.breakdown .row{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.breakdown .note{border-top:2px solid rgba(27,19,13,.15);margin-top:6px;padding-top:6px;line-height:1.45}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+table.lb{width:100%;border-collapse:collapse;font-size:14px;font-weight:700}
+table.lb th{background:var(--ink);color:var(--ochre);font-family:'Cinzel',serif;text-align:left;padding:8px;position:sticky;top:0}
+table.lb td{padding:8px;border-bottom:2px solid #eadbb9}
+table.lb tr:first-child td{background:#fff1cf}
+.lb-wrap{max-height:55vh;overflow:auto;border:3px solid var(--ink);border-radius:12px;background:#fff}
+@media(max-width:560px){.hide-sm{display:none}}
+
+/* Animazioni */
+@keyframes pop-in{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.3)}100%{transform:scale(1)}}
+.pop{animation:pop .35s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes shakeX{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake-x{animation:shakeX .38s ease}
+@keyframes quake{0%,100%{transform:translate(0,0)}15%{transform:translate(-6px,3px)}30%{transform:translate(6px,-3px)}45%{transform:translate(-4px,-2px)}60%{transform:translate(4px,4px)}75%{transform:translate(-2px,1px)}}
+.quake{animation:quake .45s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes flame{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.18) rotate(5deg)}}
+.flame{animation:flame .55s ease-in-out infinite}
+@keyframes banner{0%{opacity:0;transform:scale(.8)}12%{opacity:1;transform:scale(1.06)}20%{transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+@keyframes rank-in{0%{transform:scale(.2) rotate(-25deg);opacity:0}70%{transform:scale(1.12) rotate(6deg);opacity:1}100%{transform:none}}
+#fx-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:70}
+</style>
+</head>
+<body>
+
+<!-- ===================== ICONE VETTORIALI MINOICHE ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-labrys" viewBox="0 0 24 24"><rect x="11" y="1.5" width="2" height="21" rx="1"/><path d="M11 8Q6.5 8 2.2 3.5Q4.6 12 2.2 20.5Q6.5 16 11 16Z"/><path d="M13 8Q17.5 8 21.8 3.5Q19.4 12 21.8 20.5Q17.5 16 13 16Z"/></symbol>
+    <symbol id="i-horns" viewBox="0 0 24 24"><path d="M2.5 21h19v-3.2h-2.1c.7-4.2.3-9.2-2.4-13c.5 4.3-.6 8.8-3.7 10.4h-2.6C7.6 13.6 6.5 9.1 7 4.8C4.3 8.6 3.9 13.6 4.6 17.8H2.5z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21.3s-7.7-4.7-9.7-9.5C1 8.4 3.2 4.4 7 4.4c2.1 0 3.6 1.2 5 3c1.4-1.8 2.9-3 5-3c3.8 0 6 4 4.7 7.4C19.7 16.6 12 21.3 12 21.3z"/></symbol>
+    <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g fill="#fff8ea"><rect x="11.3" y="6" width="1.4" height="12"/><path d="M11.3 9.2Q8.6 9.2 6.6 7Q7.9 12 6.6 17Q8.6 14.8 11.3 14.8Z"/><path d="M12.7 9.2Q15.4 9.2 17.4 7Q16.1 12 17.4 17Q15.4 14.8 12.7 14.8Z"/></g></symbol>
+    <symbol id="i-time" viewBox="0 0 24 24"><path d="M5.5 2h13v2.2h-1.3c0 3.6-2 5.6-3.8 7.8c1.8 2.2 3.8 4.2 3.8 7.8h1.3V22h-13v-2.2h1.3c0-3.6 2-5.6 3.8-7.8C8.8 9.8 6.8 7.8 6.8 4.2H5.5zM9.3 4.2c0 2.3 1.2 3.9 2.7 5.6c1.5-1.7 2.7-3.3 2.7-5.6zM8.6 19.8h6.8c-.4-1.8-1.8-3.1-3.4-4.6c-1.6 1.5-3 2.8-3.4 4.6z"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12.4 1.5c1 3.8 6.1 6.4 6.1 12.2A6.5 6.5 0 0 1 12 20.5a6.5 6.5 0 0 1-6.5-6.7c0-2.8 1.4-4.7 3-6.1c0 2.3.9 3.9 2.3 4.6c-.7-4.1.7-7.8 1.6-10.8z"/></symbol>
+    <symbol id="i-bull" viewBox="0 0 24 24"><path d="M1.8 4.2c.2 3.3 1.9 5.4 4.7 5.9v4.2c0 4.1 2.4 7.2 5.5 7.2s5.5-3.1 5.5-7.2v-4.2c2.8-.5 4.5-2.6 4.7-5.9c-1.7 1.9-3.9 2.6-6.7 2.6H8.5c-2.8 0-5-.7-6.7-2.6zM9.3 11.5a1.2 1.2 0 1 0 0 2.4a1.2 1.2 0 0 0 0-2.4zm5.4 0a1.2 1.2 0 1 0 0 2.4a1.2 1.2 0 0 0 0-2.4z"/></symbol>
+    <symbol id="i-yarn" viewBox="0 0 24 24"><circle cx="11" cy="11.5" r="8.5"/><g fill="none" stroke="#fff8ea" stroke-width="1.5" stroke-linecap="round"><path d="M4.4 8c4.2-.1 8.8 2 11.6 6.4"/><path d="M3 12.8c3.7-.6 8.4 1.6 10.5 5.4"/><path d="M7.6 3.8c3.2 1.5 6.9 5.4 8 9.7"/></g><path d="M17.5 17.2c2.4 1 3.7 2.8 3.9 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><ellipse cx="12" cy="7" rx="6.2" ry="5.6"/><ellipse cx="12" cy="16.6" rx="7.4" ry="6.2"/><rect x="11.2" y="2" width="1.6" height="20" fill="#fff8ea" opacity=".7"/></symbol>
+    <symbol id="i-ship" viewBox="0 0 24 24"><path d="M1.5 14.8h21c-1.6 3.7-4.7 5.4-8.4 5.4H8.3c-3.2 0-5.6-1.6-6.8-5.4zM11 2.5h1.7v11.4H11zM12.7 3.6l6.8 8.6h-6.8zM11 5.2l-5.8 7H11z"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4.5 2.5h15V5c0 4.4-1.7 7.6-5.4 8.6v3.6h3.4V21h-11v-3.8h3.4v-3.6C6.2 12.6 4.5 9.4 4.5 5z"/><path d="M19.5 5.5h1.3a1.7 1.7 0 0 1 0 3.4h-1.9" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M3 9h4.2L13 4.3v15.4L7.2 15H3z"/><path d="M16 8.4a5 5 0 0 1 0 7.2M18.6 5.8a8.6 8.6 0 0 1 0 12.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M3 9h4.2L13 4.3v15.4L7.2 15H3z"/><path d="M16.5 9l5 6M21.5 9l-5 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M12 5C6.5 5 2.6 9 1.3 12c1.3 3 5.2 7 10.7 7s9.4-4 10.7-7C21.4 9 17.5 5 12 5zm0 11.2a4.2 4.2 0 1 1 0-8.4a4.2 4.2 0 0 1 0 8.4zm0-6.3a2.1 2.1 0 1 0 0 4.2a2.1 2.1 0 0 0 0-4.2z"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M2 5.5l6.5-2.3l7 2.3l6.5-2.3v15.3l-6.5 2.3l-7-2.3L2 20.8zM9.5 5.7v12l5 1.6v-12z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-scroll" viewBox="0 0 24 24"><path d="M6 3h11a3 3 0 0 1 3 3v1h-3v11a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-1h3V6a3 3 0 0 1 1-3zm2 5v1.6h7V8zm0 3.5v1.6h7v-1.6z"/></symbol>
+  </defs>
+</svg>
+
+<div class="spiral-band"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="29" fill="#b8432b" stroke="#1b130d" stroke-width="4"/>
+      <circle cx="32" cy="32" r="22.5" fill="none" stroke="#e8a93a" stroke-width="2.5" stroke-dasharray="4 3"/>
+      <g transform="translate(14 14.5) scale(1.5)"><path d="M2.5 21h19v-3.2h-2.1c.7-4.2.3-9.2-2.4-13c.5 4.3-.6 8.8-3.7 10.4h-2.6C7.6 13.6 6.5 9.1 7 4.8C4.3 8.6 3.9 13.6 4.6 17.8H2.5z" fill="#fff8ea" stroke="#1b130d" stroke-width="1"/></g>
+      <g fill="#ffd766" stroke="#1b130d" stroke-width="1.1"><rect x="31" y="13" width="2" height="24" rx="1"/><path d="M31 18.5Q27 18.5 23.5 15.5Q25.5 21.5 23.5 27.5Q27 24.5 31 24.5Z"/><path d="M33 18.5Q37 18.5 40.5 15.5Q38.5 21.5 40.5 27.5Q37 24.5 33 24.5Z"/></g>
+    </svg>
+    <div>
+      <h1>Il Filo di Dedalo</h1>
+      <p>Fuga razionale da Cnosso · Matematica per il Liceo</p>
+    </div>
+  </div>
+  <div class="hud">
+    <div class="chip"><canvas id="hud-avatar" width="60" height="60" style="width:28px;height:28px"></canvas><span id="hud-team-name" class="team-name">Squadra Teseo</span></div>
+    <div class="chip hearts" id="hud-hearts" title="Vite"></div>
+    <div class="chip" title="Tempo dello schema"><svg class="ic" style="color:var(--lapis)"><use href="#i-time"/></svg><span id="hud-timer">00:00</span></div>
+    <div class="chip" title="Oboli (punti)"><svg class="ic" style="color:var(--ochre-d)"><use href="#i-coin"/></svg><span id="hud-oboli">100</span></div>
+    <div class="chip combo hidden" id="hud-combo" title="Serie di risposte esatte al primo colpo"><svg class="ic flame" style="color:#e8590c"><use href="#i-flame"/></svg><span id="hud-combo-text">×1</span></div>
+    <div class="chip" title="Distanza dal Minotauro"><svg class="ic" style="color:var(--terra)"><use href="#i-bull"/></svg><div class="meter"><i id="hud-minotaur-bar"></i></div><span id="hud-minotaur-status">—</span></div>
+    <button class="icon-btn" id="btn-sound" title="Audio on/off" aria-label="Audio on/off"><svg class="ic"><use id="sound-use" href="#i-sound"/></svg></button>
+    <button class="icon-btn" id="btn-show-leaderboard" title="Classifica" aria-label="Classifica"><svg class="ic" style="color:var(--ochre-d)"><use href="#i-cup"/></svg></button>
+  </div>
+</header>
+
+<div class="palace-col l"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+<div class="palace-col r"><div class="col-cap"></div><div class="col-shaft"></div><div class="col-base"></div></div>
+
+<main>
+  <section class="stage" id="labyrinth-container">
+    <div class="stage-top">
+      <div class="grp">
+        <span class="level-badge" id="level-badge">SCHEMA I</span>
+        <span class="level-name" id="level-name">Corridoi delle Giare</span>
+        <span class="code-badge" id="code-badge" title="Con lo stesso codice si gioca lo stesso schema">Codice ——</span>
+      </div>
+      <div class="seals" id="seals" title="Sigilli da spezzare"></div>
+      <div class="grp">
+        <span class="chip small" title="Lunghezza del filo"><svg class="ic" style="color:var(--terra)"><use href="#i-yarn"/></svg><span id="hud-thread-meters">0 m</span></span>
+        <span class="chip small hidden" id="inv-shield" title="Scudo di Atena"><svg class="ic" style="color:var(--lapis)"><use href="#i-shield"/></svg>Scudo</span>
+        <span class="chip small hidden" id="inv-scroll" title="Gomitoli di Arianna (indizi)"><svg class="ic" style="color:var(--terra)"><use href="#i-scroll"/></svg>×<span id="inv-scroll-n">0</span></span>
+        <button class="view-btn" id="btn-view" title="Cambia visuale (tasto V)"><svg class="ic"><use id="view-use" href="#i-eye"/></svg><span id="view-label">Prima persona</span></button>
+      </div>
+    </div>
+
+    <div id="canvas-wrap">
+      <canvas id="labyrinthCanvas"></canvas>
+      <div class="vignette" id="danger-vignette"></div>
+      <div class="hitflash" id="hit-flash"></div>
+      <div class="roar hidden" id="minotaur-roar-banner">IL MINOTAURO RUGGISCE E CARICA!</div>
+      <div class="level-banner" id="level-banner"><div class="lb-num" id="lb-num">SCHEMA I</div><div class="lb-name" id="lb-name">Corridoi delle Giare</div></div>
+      <div class="toasts" id="toast-stack"></div>
+    </div>
+
+    <div class="stage-bottom">
+      <div class="legend" id="legend"></div>
+      <div class="dpad">
+        <div></div>
+        <button class="btn btn-ochre" id="btn-dir-up" aria-label="Su / Avanti">▲</button>
+        <div></div>
+        <button class="btn btn-ochre" id="btn-dir-left" aria-label="Sinistra / Gira a sinistra">◀</button>
+        <button class="btn btn-ochre" id="btn-dir-down" aria-label="Giù / Indietro">▼</button>
+        <button class="btn btn-ochre" id="btn-dir-right" aria-label="Destra / Gira a destra">▶</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="spiral-band"></div>
+
+<!-- ===================== MODALE: BENVENUTO ===================== -->
+<div class="backdrop" id="welcomeModal">
+  <div class="panel">
+    <div class="spiral-band"></div>
+    <div class="panel-body stack">
+      <div class="welcome-title">
+        <h2>Sfida di Cnosso</h2>
+        <p>Sei sigilli matematici per schema. Un Minotauro. Un solo filo per uscire.</p>
+      </div>
+      <div>
+        <p class="label">Nome squadra o studente</p>
+        <input class="field" type="text" id="input-team-name" maxlength="24" value="Squadra Teseo">
+      </div>
+      <div>
+        <p class="label">Il colore del tuo eroe</p>
+        <div class="avatars" id="avatar-picker"></div>
+      </div>
+      <div>
+        <p class="label">Modalità</p>
+        <div class="grid2">
+          <button type="button" class="pick mode-card selected" data-mode="classe"><h4>Classe (LIM)</h4><p>Il Minotauro avanza solo quando si sbaglia. Ideale a squadre, alla lavagna.</p></button>
+          <button type="button" class="pick mode-card" data-mode="arena"><h4>Arena</h4><p>Il Minotauro insegue in tempo reale e accelera a ogni sigillo e a ogni schema.</p></button>
+        </div>
+      </div>
+      <div class="grid2">
+        <div>
+          <p class="label">Visuale iniziale</p>
+          <div class="grid2" style="grid-template-columns:1fr 1fr;gap:8px">
+            <button type="button" class="pick view-card selected" data-view="iso"><h4>Assonometria</h4><p>Mappa 2.5D intera.</p></button>
+            <button type="button" class="pick view-card" data-view="fpv"><h4>Prima persona</h4><p>Con minimappa.</p></button>
+          </div>
+        </div>
+        <div>
+          <p class="label">Codice schema (facoltativo)</p>
+          <input class="field" type="text" id="input-code" maxlength="8" placeholder="es. K7Q2XM" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace">
+          <p style="margin:6px 0 0;font-size:12px;font-weight:700;color:var(--ink-soft)">Stesso codice = stessi labirinti e stessi esercizi per tutte le squadre. Vuoto = sfida sempre nuova.</p>
+        </div>
+      </div>
+      <div class="rules">
+        <div><b>Sigilli:</b> 6 per schema, uno per ogni abilità. Spezzali tutti per aprire il porto.</div>
+        <div><b>Schemi:</b> ogni uscita apre un nuovo labirinto, più grande e più difficile.</div>
+        <div><b>Serie:</b> risposte esatte al primo colpo di fila = moltiplicatore fino a ×3.</div>
+        <div><b>Rapidità:</b> chi risponde presto guadagna oboli extra.</div>
+        <div><b>Filo:</b> più è corto, più è alto il bonus efficienza.</div>
+        <div><b>Reperti:</b> scudo, clessidra e gomitolo aiutano, ma le deviazioni allungano il filo.</div>
+      </div>
+      <button class="btn btn-terra btn-big" id="btn-start-game">VARCA LA SOGLIA DEL LABIRINTO ❯</button>
+      <p class="muted" id="welcome-best"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALE: SIGILLO ===================== -->
+<div class="backdrop hidden" id="gateModal">
+  <div class="panel" id="gate-panel">
+    <div class="frieze"></div>
+    <div class="panel-body">
+      <div class="gate-head">
+        <div class="left">
+          <div class="medal" id="modal-medal"><svg class="ic"><use href="#i-labrys"/></svg></div>
+          <div style="min-width:0">
+            <h2 class="gate-title" id="modal-gate-title">Portale</h2>
+            <div class="gate-lore" id="modal-gate-lore"></div>
+          </div>
+        </div>
+        <div>
+          <span class="tag" id="modal-gate-tag"></span>
+          <div class="gate-count" id="modal-gate-count"></div>
+        </div>
+      </div>
+      <div class="gate-meta">
+        <span class="combo-chip" id="modal-combo-chip"><svg class="ic"><use href="#i-flame"/></svg><span id="modal-combo-text">Moltiplicatore ×1</span></span>
+        <div class="speed">
+          <div class="speed-top"><span>Bonus rapidità</span><span id="modal-speed-val">+20</span></div>
+          <div class="speed-bar"><i id="modal-speed-bar"></i></div>
+        </div>
+        <button class="btn scroll-btn" id="btn-use-scroll"><svg class="ic"><use href="#i-scroll"/></svg>Indizio (<span id="scroll-count">0</span>)</button>
+      </div>
+      <div class="story">
+        <div id="modal-question-story"></div>
+        <div class="mathbox" id="modal-math-display"></div>
+      </div>
+      <div class="interactive">
+        <div id="modal-interactive-body"></div>
+        <div class="cooldown hidden" id="modal-cooldown">
+          <div class="cooldown-card">
+            <h4>Riflessione di Arianna</h4>
+            <p>Non tentare alla cieca: leggi il consiglio qui sotto e ricalcola.</p>
+            <div class="cooldown-num" id="modal-cooldown-count">3</div>
+          </div>
+        </div>
+      </div>
+      <div class="feedback hidden" id="modal-feedback-box">
+        <div class="fb-icon" id="modal-feedback-icon"></div>
+        <div style="flex:1;min-width:0">
+          <h4 class="fb-title" id="modal-feedback-title"></h4>
+          <p class="fb-text" id="modal-feedback-text"></p>
+          <div class="fb-chips" id="modal-feedback-chips"></div>
+        </div>
+      </div>
+      <div class="gate-foot hidden" id="modal-footer">
+        <button class="btn btn-leaf" id="modal-btn-proceed">IL SIGILLO È SPEZZATO: PROCEDI ❯</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALE: CLASSIFICA ===================== -->
+<div class="backdrop hidden" id="leaderboardModal" style="z-index:55">
+  <div class="panel" style="max-width:680px">
+    <div class="frieze"></div>
+    <div class="panel-body stack">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 class="gate-title" style="display:flex;gap:8px;align-items:center"><svg class="ic" style="color:var(--ochre-d);width:28px;height:28px"><use href="#i-cup"/></svg>Tavoletta d'argilla</h3>
+        <button class="icon-btn" id="btn-close-lb-x" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="lb-wrap">
+        <table class="lb">
+          <thead><tr><th>#</th><th>Squadra</th><th>Schemi</th><th class="hide-sm">Rango</th><th>Punti</th><th class="hide-sm">Tempo</th></tr></thead>
+          <tbody id="leaderboard-table-body"></tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button class="linkbtn" id="btn-clear-leaderboard" style="color:var(--danger);margin:0">Azzera archivio locale</button>
+        <button class="btn" id="btn-close-lb">CHIUDI</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODALE: FINE SCHEMA / EPILOGO ===================== -->
+<div class="backdrop hidden" id="endgameModal">
+  <div class="panel" style="max-width:580px">
+    <div class="spiral-band"></div>
+    <div class="panel-body">
+      <div class="end-rank" id="endgame-rank"></div>
+      <h2 class="end-title" id="endgame-title"></h2>
+      <p class="end-desc" id="endgame-desc"></p>
+      <div class="sq-rows" id="endgame-squares"></div>
+      <div class="stats">
+        <div class="stat"><small id="endgame-score-label">Punti</small><b id="endgame-score" style="color:var(--ochre-d)">0</b></div>
+        <div class="stat"><small>Tempo</small><b id="endgame-time" style="color:var(--lapis)">00:00</b></div>
+        <div class="stat"><small id="endgame-third-label">Filo</small><b id="endgame-thread" style="color:var(--terra)">0 m</b></div>
+      </div>
+      <div class="breakdown" id="endgame-breakdown"></div>
+      <div class="btn-row">
+        <button class="btn btn-leaf" id="btn-next-level">SCHEMA SUCCESSIVO ❯</button>
+        <button class="btn" id="btn-finish-run">TERMINA E SALVA</button>
+        <button class="btn btn-ochre" id="btn-end-lb">CLASSIFICA</button>
+        <button class="btn btn-terra" id="btn-restart">NUOVA SPEDIZIONE ↺</button>
+        <button class="btn btn-lapis" id="btn-share">CONDIVIDI</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<canvas id="fx-canvas"></canvas>
+
+<script>
+/* =====================================================================
+   1. UTILITÀ E GENERATORE PSEUDOCASUALE (riproducibile con un codice)
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+/*GEN-START*/
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function hashStr(s){ let h=1779033703^s.length; for(let i=0;i<s.length;i++){ h=Math.imul(h^s.charCodeAt(i),3432918353); h=h<<13|h>>>19; } h=Math.imul(h^h>>>16,2246822507); h=Math.imul(h^h>>>13,3266489909); return (h^h>>>16)>>>0; }
+let RNG = Math.random;
+const rnd = () => RNG();
+const rint = (a,b) => Math.floor(rnd()*(b-a+1))+a;
+const pick = arr => arr[Math.floor(rnd()*arr.length)];
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const gcd = (a,b) => b ? gcd(b,a%b) : Math.abs(a);
+const lcm = (a,b) => a/gcd(a,b)*b;
+function frac(n,d){ const g=gcd(n,d); n/=g; d/=g; return d===1 ? `${n}` : `${n}/${d}`; }
+const nf = n => String(Math.round(n*100)/100).replace('.', ',');
+const isInt = n => Math.abs(n-Math.round(n))<1e-9;
+function coprimes(d){ const r=[]; for(let n=1;n<d;n++) if(gcd(n,d)===1) r.push(n); return r; }
+
+/* Costruisce 4 opzioni distinte: la corretta + distrattori (ognuno con il suo feedback formativo).
+   Un distrattore con lo stesso valore numerico della risposta corretta viene scartato. */
+function buildOptions(correct, distractors, fallback){
+  const seen = new Set([correct.text]);
+  const out = [{ text: correct.text, isCorrect: true }];
+  const ok = (text, val) => text && !seen.has(text) && !/NaN|undefined|Infinity/.test(text) && !/^-|^0(\/| |$)|\/0\b|\/1(?!\d)|= -|= 0(?![\d,])/.test(text) && !(val !== undefined && correct.val !== undefined && Math.abs(val - correct.val) < 1e-9);
+  for (const [text, fb, val] of distractors){
+    if (out.length >= 4) break;
+    if (!ok(text, val)) continue;
+    seen.add(text); out.push({ text, isCorrect: false, errorFeedback: fb });
+  }
+  for (let i=1; out.length<4 && i<80; i++){
+    const f = fallback(i);
+    if (f && ok(f[0], f[2])){ seen.add(f[0]); out.push({ text: f[0], isCorrect: false, errorFeedback: f[1] }); }
+  }
+  return shuffle(out);
+}
+const near = i => (i%2 ? 1 : -1) * Math.ceil(i/2);
+
+/* ---------- FRAZIONI ---------- */
+function fracPairs(d){
+  return d===1 ? [[2,3],[3,4],[2,5],[3,5],[4,5],[2,7]]
+       : d===2 ? [[3,7],[4,6],[6,8],[5,6],[4,10],[6,9],[3,8]]
+               : [[6,10],[8,12],[9,12],[10,15],[6,15],[4,9],[5,8]];
+}
+function qFracSum(d){
+  let [d1,d2] = pick(fracPairs(d)); if (rnd()<.5) [d1,d2]=[d2,d1];
+  const n1=pick(coprimes(d1)), n2=pick(coprimes(d2));
+  const L=lcm(d1,d2), a1=n1*L/d1, a2=n2*L/d2, N=a1+a2;
+  const story = pick([
+    `Un messaggero versa ${n1}/${d1} di moggio di grano sacro in una giara e poi ne aggiunge altri ${n2}/${d2}. Quanto grano contiene ora la giara?`,
+    `Teseo percorre ${n1}/${d1} di stadio nel corridoio orientale e poi altri ${n2}/${d2} di stadio. Quanta strada ha fatto in tutto?`,
+    `Un vasaio versa ${n1}/${d1} di litro d'olio in una lucerna e poi altri ${n2}/${d2} di litro. Quanto olio ha versato in tutto?`,
+    `Le ancelle filano ${n1}/${d1} di matassa di lana al mattino e ${n2}/${d2} di matassa la sera. Quanta lana hanno filato in tutto?`
+  ]);
+  const simp=frac(N,L), raw=`${N}/${L}`;
+  return { type:'choice', story, mathDisplay:`${n1}/${d1} + ${n2}/${d2} = ?`,
+    options: buildOptions({text:simp,val:N/L}, [
+      [`${n1+n2}/${d1+d2}`, `Hai sommato numeratori con numeratori e denominatori con denominatori. Ma ${d1}-esimi e ${d2}-esimi sono parti di grandezza diversa: prima serve un denominatore comune.`, (n1+n2)/(d1+d2)],
+      [`${N}/${d1+d2}`, `Numeratore giusto, ma il denominatore comune è il m.c.m. tra ${d1} e ${d2}, cioè ${L}, non la somma ${d1} + ${d2}.`, N/(d1+d2)],
+      [`${n1+n2}/${L}`, `Denominatore comune giusto, ma i numeratori vanno trasformati: ${n1}/${d1} diventa ${a1}/${L}.`, (n1+n2)/L],
+      [`${n1*n2}/${d1*d2}`, `Hai moltiplicato: questa è la regola del prodotto, non della somma.`, n1*n2/(d1*d2)]
+    ], i => [`${N+near(i)}/${L}`, `Quasi! Ricontrolla i numeratori dopo aver portato tutto al denominatore ${L}.`, (N+near(i))/L]),
+    hint:`Il m.c.m. tra ${d1} e ${d2} è ${L}. Riscrivi le due frazioni con denominatore ${L}, poi somma solo i numeratori.`,
+    explanation:`${n1}/${d1} = ${a1}/${L} e ${n2}/${d2} = ${a2}/${L}.\nSomma: (${a1} + ${a2})/${L} = ${raw}${simp!==raw ? ` = ${simp}` : ''}.` };
+}
+function qFracDiff(d){
+  let d1,d2,n1,n2,L,a1,a2;
+  for (let k=0;k<60;k++){
+    [d1,d2]=pick(fracPairs(d)); if (rnd()<.5) [d1,d2]=[d2,d1];
+    n1=pick(coprimes(d1)); n2=pick(coprimes(d2)); L=lcm(d1,d2); a1=n1*L/d1; a2=n2*L/d2;
+    if (a1<a2){ [d1,d2,n1,n2,a1,a2]=[d2,d1,n2,n1,a2,a1]; }
+    if (a1>a2) break;
+  }
+  const N=a1-a2, simp=frac(N,L), raw=`${N}/${L}`;
+  const story = pick([
+    `Una giara contiene ${n1}/${d1} di anfora di vino. Il coppiere ne versa ${n2}/${d2} di anfora per il banchetto del re. Quanto vino resta nella giara?`,
+    `Il corridoio dei Gigli è lungo ${n1}/${d1} di stadio. Teseo ne ha già percorso ${n2}/${d2} di stadio. Quanta strada gli manca?`,
+    `Dedalo possiede ${n1}/${d1} di talento di bronzo e ne usa ${n2}/${d2} per forgiare una bipenne. Quanto bronzo gli rimane?`
+  ]);
+  return { type:'choice', story, mathDisplay:`${n1}/${d1} − ${n2}/${d2} = ?`,
+    options: buildOptions({text:simp,val:N/L}, [
+      [`${n1-n2}/${d1-d2}`, `Hai sottratto numeratori e denominatori separatamente: senza un denominatore comune le parti non sono confrontabili.`, (n1-n2)/(d1-d2)],
+      [`${n1-n2}/${L}`, `Denominatore comune giusto, ma i numeratori vanno trasformati prima di sottrarre: ${n1}/${d1} = ${a1}/${L}.`, (n1-n2)/L],
+      [`${a1+a2}/${L}`, `Hai sommato invece di sottrarre!`, (a1+a2)/L],
+      [`${N}/${d1+d2}`, `Il denominatore comune è il m.c.m. (${L}), non la somma dei denominatori.`, N/(d1+d2)]
+    ], i => [`${N+near(i)}/${L}`, `Ricontrolla la sottrazione dei numeratori dopo aver portato tutto a ${L}-esimi.`, (N+near(i))/L]),
+    hint:`Porta entrambe le frazioni al denominatore ${L} (il m.c.m. tra ${d1} e ${d2}), poi sottrai i numeratori.`,
+    explanation:`${n1}/${d1} = ${a1}/${L} e ${n2}/${d2} = ${a2}/${L}.\nDifferenza: (${a1} − ${a2})/${L} = ${raw}${simp!==raw ? ` = ${simp}` : ''}.` };
+}
+function qFracCompare(d){
+  const dens = d===1 ? [2,3,4,5,6,8,10] : [3,4,5,6,7,8,9,10,12];
+  for (let tries=0; tries<300; tries++){
+    const fr=[], vals=new Set();
+    let guard=0;
+    while (fr.length<4 && guard++<100){ const q=pick(dens), p=rint(1,q-1); if (gcd(p,q)!==1) continue; const key=(p/q).toFixed(6); if (vals.has(key)) continue; vals.add(key); fr.push({p,q,v:p/q}); }
+    if (fr.length<4) continue;
+    const maxV=fr.reduce((a,b)=>b.v>a.v?b:a), maxDen=fr.reduce((a,b)=>b.q>a.q?b:a), maxNum=fr.reduce((a,b)=>b.p>a.p?b:a);
+    if (maxDen===maxV || maxNum===maxV) continue;
+    if (fr.filter(f=>f.q===maxDen.q).length>1 || fr.filter(f=>f.p===maxNum.p).length>1) continue;
+    const sorted=[...fr].sort((a,b)=>b.v-a.v);
+    if (sorted[0].v-sorted[1].v < (d===1?0.06:0.025)) continue;
+    const opts = fr.map(f => {
+      const text=`${f.p}/${f.q}`;
+      if (f===maxV) return { text, isCorrect:true };
+      const fb = f===maxDen ? `${text} ha il denominatore più grande, ma un denominatore grande vuol dire dividere l'intero in parti più piccole!`
+               : f===maxNum ? `${text} ha il numeratore più grande, ma non basta: conta il rapporto tra numeratore e denominatore.`
+               : `${text} vale circa ${nf(f.v)}: c'è una frazione più grande.`;
+      return { text, isCorrect:false, errorFeedback:fb };
+    });
+    const L = fr.reduce((a,f)=>lcm(a,f.q),1);
+    const story = pick([
+      `Quattro corridoi portano alla Sala del Trono; le loro lunghezze sono frazioni di stadio. Quale corridoio è il più lungo?`,
+      `Quattro sacerdotesse offrono alla dea parti di focacce identiche. Quale offerta è la più grande?`,
+      `Quattro rematori dichiarano quale parte del viaggio hanno remato. Chi ha remato di più?`
+    ]);
+    return { type:'choice', story, mathDisplay: fr.map(f=>`${f.p}/${f.q}`).join('  ·  ') + '  →  la maggiore?', options: shuffle(opts),
+      hint:`Confronta ciascuna frazione con 1/2, oppure portale tutte allo stesso denominatore.`,
+      explanation: L<=120 ? `Con denominatore comune ${L}: ` + fr.map(f=>`${f.p}/${f.q} = ${f.p*L/f.q}/${L}`).join(' · ') + `.\nLa maggiore è ${maxV.p}/${maxV.q}.`
+                          : `Valori approssimati: ` + sorted.map(f=>`${f.p}/${f.q} ≈ ${nf(f.v)}`).join(' > ') + '.' };
+  }
+  return qFracSum(d);
+}
+function qFracSimplify(d){
+  const q = rint(3, d===1?7:11); let p; do { p=rint(1,q-1); } while (gcd(p,q)!==1);
+  const k = d===1 ? rint(2,4) : d===2 ? pick([4,6,8,9]) : pick([6,8,9,12,15]);
+  const A=p*k, B=q*k, s=rint(1, Math.min(A-1, 4));
+  const f = [2,3,4,5,6].find(x => k%x===0 && x<k);
+  const story = pick([
+    `Lo scriba deve incidere la frazione ${A}/${B} su una tavoletta d'argilla piccolissima: la deve ridurre ai minimi termini.`,
+    `Il tesoriere annota che ${A} giare su ${B} contengono olio. Quale frazione ridotta ai minimi termini esprime la stessa parte?`,
+    `Nella sala dei delfini, ${A} affreschi su ${B} sono blu. Riduci la frazione ai minimi termini.`
+  ]);
+  return { type:'choice', story, mathDisplay:`${A}/${B} = ?   (minimi termini)`,
+    options: buildOptions({text:`${p}/${q}`, val:p/q}, [
+      [`${A-s}/${B-s}`, `Hai tolto lo stesso numero sopra e sotto: così il valore cambia! Numeratore e denominatore vanno DIVISI per lo stesso numero.`, (A-s)/(B-s)],
+      f ? [`${A/f}/${B/f}`, `Frazione equivalente, ma non ancora ridotta ai minimi termini: puoi dividere ancora per ${k/f}.`] : null,
+      [`${q}/${p}`, `Hai capovolto la frazione: numeratore e denominatore non si scambiano.`, q/p],
+      [`${p}/${B}`, `Hai diviso solo il numeratore: anche il denominatore va diviso per lo stesso numero.`, p/B]
+    ].filter(Boolean), i => [`${p+i}/${q}`, `Ricontrolla: quale numero divide sia ${A} sia ${B}?`, (p+i)/q]),
+    hint:`Cerca il M.C.D. tra ${A} e ${B} e dividi per esso sia il numeratore sia il denominatore.`,
+    explanation:`M.C.D.(${A}, ${B}) = ${k}.\n${A} : ${k} = ${p} e ${B} : ${k} = ${q}, quindi ${A}/${B} = ${p}/${q}.` };
+}
+
+/* ---------- FRAZIONE DI UNA QUANTITÀ ---------- */
+function qtyFracs(d, minN=1){
+  const l = d===1 ? [[1,4],[3,4],[2,3],[2,5],[3,5],[1,3]] : d===2 ? [[3,8],[5,6],[4,7],[3,10],[5,8],[2,9]] : [[7,12],[5,9],[7,10],[4,15],[11,20],[5,12]];
+  return l.filter(([n])=>n>=minN);
+}
+function qQtyRemain(d){
+  const [n,dd] = pick(qtyFracs(d));
+  const k = rint(d===1?3:4, d===1?9:12), base=dd*k, part=k, taken=n*part, rem=base-taken;
+  const c = pick([
+    { s:`La flotta cretese trasporta ${base} anfore d'olio. I pirati ne rubano i ${n}/${dd}. Quante anfore restano ai Cretesi?`, u:'anfore' },
+    { s:`Il gregge di Minosse conta ${base} pecore. I ${n}/${dd} salgono a pascolare sul monte Ida. Quante pecore restano nella valle?`, u:'pecore' },
+    { s:`Nei magazzini del palazzo ci sono ${base} pithoi di grano. I ${n}/${dd} vengono distribuiti al popolo. Quanti pithoi restano?`, u:'pithoi' },
+    { s:`Dedalo ha ${base} piume per le ali di Icaro. I ${n}/${dd} si rovinano con la cera calda. Quante piume restano intatte?`, u:'piume' }
+  ]);
+  const u=c.u;
+  return { type:'choice', story:c.s, mathDisplay:`${base} − ${n}/${dd} di ${base} = ?`,
+    options: buildOptions({text:`${rem} ${u}`, val:rem}, [
+      [`${taken} ${u}`, `Questa è la parte tolta, non quella che resta: manca l'ultima sottrazione!`, taken],
+      [`${base-part} ${u}`, `Hai tolto solo 1/${dd}. La parte tolta è di ${n} parti su ${dd}.`, base-part],
+      [`${base-n} ${u}`, `Hai sottratto il numeratore come se fosse un numero di ${u}: ${n}/${dd} indica una parte del totale.`, base-n],
+      [`${base+taken} ${u}`, `La parte tolta va sottratta, non sommata.`, base+taken],
+      [`${rem+part} ${u}`, `Quasi: hai tolto una parte in meno. Le parti tolte sono ${n}, da ${part} ciascuna.`, rem+part]
+    ], i => { const v=rem+near(i)*part; return [`${v} ${u}`, `Ricontrolla: quanto vale una parte (1/${dd} di ${base})?`, v]; }),
+    hint:`Dividi ${base} in ${dd} parti uguali: quanto vale una parte? Ne vengono tolte ${n}, ne restano ${dd-n}.`,
+    explanation:`1/${dd} di ${base} = ${part}. Tolte: ${n} × ${part} = ${taken}.\nRestano ${base} − ${taken} = ${rem} ${u} (cioè i ${frac(dd-n,dd)} del totale).` };
+}
+function qQtyPart(d){
+  const [n,dd] = pick(qtyFracs(d,2));
+  const k = rint(3, d===1?10:14), N=dd*k, val=n*k;
+  const c = pick([
+    { s:`Dei ${N} rematori della nave di Teseo, i ${n}/${dd} sono ateniesi. Quanti sono gli ateniesi?`, u:'rematori' },
+    { s:`Dei ${N} affreschi del palazzo, i ${n}/${dd} raffigurano delfini. Quanti affreschi con delfini ci sono?`, u:'affreschi' },
+    { s:`Dei ${N} talenti del tesoro, i ${n}/${dd} sono offerti al santuario del monte Giuttas. Quanti talenti vanno al santuario?`, u:'talenti' }
+  ]);
+  return { type:'choice', story:c.s, mathDisplay:`${n}/${dd} di ${N} = ?`,
+    options: buildOptions({text:`${val} ${c.u}`, val}, [
+      [`${k} ${c.u}`, `Questo è il valore di una sola parte (1/${dd}). Le parti richieste sono ${n}.`, k],
+      [`${N-val} ${c.u}`, `Questa è la parte restante, non quella richiesta.`, N-val],
+      [`${N-n} ${c.u}`, `Hai sottratto il numeratore: ${n}/${dd} indica una parte del totale, non ${n} ${c.u}.`, N-n],
+      [`${N*n} ${c.u}`, `Hai moltiplicato per il numeratore ma non hai diviso per il denominatore.`, N*n]
+    ], i => { const v=val+near(i)*k; return [`${v} ${c.u}`, `Ricontrolla quanto vale 1/${dd} di ${N}.`, v]; }),
+    hint:`Prima trova 1/${dd} di ${N} (dividi per ${dd}), poi moltiplica per ${n}.`,
+    explanation:`1/${dd} di ${N} = ${N} : ${dd} = ${k}.\n${n}/${dd} di ${N} = ${n} × ${k} = ${val} ${c.u}.` };
+}
+function qQtyInverse(d){
+  const [n,dd] = pick(qtyFracs(d,2));
+  const k=rint(3,10), P=n*k, tot=dd*k;
+  const c = pick([
+    { s:`I ${n}/${dd} della flotta di Minosse, cioè ${P} navi, sono in porto. Da quante navi è composta l'intera flotta?`, u:'navi' },
+    { s:`${P} anfore corrispondono ai ${n}/${dd} del carico di una nave. Quante anfore ci sono in tutto?`, u:'anfore' },
+    { s:`Teseo ha percorso ${P} passi, pari ai ${n}/${dd} del corridoio. Quanto è lungo il corridoio?`, u:'passi' }
+  ]);
+  const ofP = P*n/dd;
+  return { type:'choice', story:c.s, mathDisplay:`${n}/${dd} di ? = ${P}`,
+    options: buildOptions({text:`${tot} ${c.u}`, val:tot}, [
+      isInt(ofP) ? [`${ofP} ${c.u}`, `Hai calcolato i ${n}/${dd} di ${P}, ma ${P} è già la parte: si cerca il tutto!`, ofP] : null,
+      [`${P*dd} ${c.u}`, `Hai moltiplicato per ${dd}, ma ${P} corrisponde a ${n} parti, non a una sola.`, P*dd],
+      [`${k} ${c.u}`, `Questo è il valore di una sola parte (1/${dd}): il tutto è formato da ${dd} parti.`, k],
+      [`${P+dd-n} ${c.u}`, `Ragionamento additivo: aggiungere le parti mancanti come numeri non funziona.`, P+dd-n]
+    ].filter(Boolean), i => { const v=tot+near(i)*k; return [`${v} ${c.u}`, `Ricontrolla: quanto vale una parte?`, v]; }),
+    hint:`Se ${n} parti valgono ${P}, una parte vale ${P} : ${n}. Il tutto è formato da ${dd} parti.`,
+    explanation:`Una parte (1/${dd}) = ${P} : ${n} = ${k}.\nIl tutto = ${dd} × ${k} = ${tot} ${c.u}.` };
+}
+function qQtyTwoStep(d){
+  const [a1,b1,a2,b2] = pick([[1,2,1,3],[1,3,1,2],[1,4,1,3],[2,5,1,3],[1,3,1,4],[1,2,2,5],[3,4,1,2],[1,5,1,4]]);
+  const N = b1*b2*rint(2, d===3?9:6);
+  const first=N*a1/b1, rest1=N-first, second=rest1*a2/b2, rem=rest1-second, wrong=N-first-N*a2/b2;
+  const c = pick([
+    { s:`Il tesoro di ${N} monete viene diviso: ${frac(a1,b1)} va al tempio, poi ${frac(a2,b2)} di ciò che resta va ai soldati. Quante monete restano nel tesoro?`, u:'monete' },
+    { s:`Ci sono ${N} giare d'olio: ${frac(a1,b1)} parte per Atene e ${frac(a2,b2)} delle rimanenti per Micene. Quante giare restano a Cnosso?`, u:'giare' }
+  ]);
+  return { type:'choice', story:c.s, mathDisplay:`${N} → − ${frac(a1,b1)} → − ${frac(a2,b2)} del resto`,
+    options: buildOptions({text:`${rem} ${c.u}`, val:rem}, [
+      [`${wrong} ${c.u}`, `Hai calcolato la seconda frazione sul totale: va calcolata su ciò che resta dopo il primo passaggio!`, wrong],
+      [`${rest1} ${c.u}`, `Ti sei fermato dopo il primo passaggio: manca la seconda sottrazione.`, rest1],
+      [`${second} ${c.u}`, `Questa è la seconda quota, non ciò che resta.`, second],
+      [`${first} ${c.u}`, `Questa è la prima quota.`, first]
+    ], i => { const v=rem+near(i)*b2; return [`${v} ${c.u}`, `Ricontrolla i due passaggi uno alla volta.`, v]; }),
+    hint:`Lavora in due passaggi: prima togli ${frac(a1,b1)} di ${N}, poi calcola ${frac(a2,b2)} di ciò che rimane.`,
+    explanation:`${frac(a1,b1)} di ${N} = ${first}; restano ${rest1}.\n${frac(a2,b2)} di ${rest1} = ${second}; restano ${rest1} − ${second} = ${rem} ${c.u}.` };
+}
+
+/* ---------- PERCENTUALI ---------- */
+function priceFor(p, lo, hi){ const step = 100/gcd(p,100); const a=Math.ceil(lo/step), b=Math.max(a, Math.floor(hi/step)); return step*rint(a,b); }
+function pctHow(p, X){
+  const t=X/10;
+  if (p===50) return { s:'il 50% è la metà', c:`${X} : 2` };
+  if (p===25) return { s:'il 25% è un quarto: dividi per 4', c:`${X} : 4` };
+  if (p===75) return { s:'il 75% sono tre quarti', c:`3 × (${X} : 4)` };
+  if (p%10===0) return { s:`il ${p}% è ${p/10} volte il 10%`, c:`${p/10} × ${nf(t)}` };
+  if (p%5===0) return { s:`${p-5}% + 5% (il 5% è la metà del 10%)`, c:`${nf((p-5)/10*t)} + ${nf(t/2)}` };
+  return { s:`calcola l'1% (${nf(X/100)}) e moltiplica per ${p}`, c:`${p} × ${nf(X/100)}` };
+}
+const pctSet = d => d===1 ? [10,20,25,50] : d===2 ? [15,30,35,40,75] : [12,15,35,45,65];
+function qPctDiscount(d){
+  const p=pick(pctSet(d)), X=priceFor(p,40,d===1?300:600), disc=X*p/100, fin=X-disc, h=pctHow(p,X);
+  const story = pick([
+    `Un vaso cerimoniale è valutato ${X} oboli. Re Minosse concede uno sconto del ${p}%. Qual è il prezzo finale?`,
+    `Al mercato del porto un rhyton d'argento costa ${X} oboli; per la festa del Toro è scontato del ${p}%. Quanto costa ora?`,
+    `Un mercante fenicio offre una collana di corniola da ${X} oboli con uno sconto del ${p}%. Quanto si paga?`
+  ]);
+  return { type:'choice', story, mathDisplay:`${X} − ${p}% di ${X} = ?`,
+    options: buildOptions({text:`${nf(fin)} oboli`, val:fin}, [
+      [`${X-p} oboli`, `Il ${p}% non significa togliere ${p} oboli: è una parte proporzionale al prezzo (${p} su 100).`, X-p],
+      [`${nf(disc)} oboli`, `Questo è l'importo dello sconto, non il prezzo finale!`, disc],
+      [`${nf(X-X/10)} oboli`, `Hai sottratto solo il 10%: lo sconto è del ${p}%.`, X-X/10],
+      [`${nf(X+disc)} oboli`, `Uno sconto diminuisce il prezzo, non lo aumenta.`, X+disc]
+    ], i => { const v=fin+near(i)*X/20; return [`${nf(v)} oboli`, `Ricontrolla il calcolo del ${p}%.`, v]; }),
+    hint:`Strategia a mente: ${h.s}. Il 10% di ${X} è ${nf(X/10)}.`,
+    explanation:`Il ${p}% di ${X} = ${h.c} = ${nf(disc)} oboli.\nPrezzo finale: ${X} − ${nf(disc)} = ${nf(fin)} oboli.` };
+}
+function qPctOf(d){
+  const p=pick(pctSet(d)), Q=priceFor(p,40,d===1?400:900), val=Q*p/100, h=pctHow(p,Q);
+  const c = pick([
+    { s:`Il ${p}% dei ${Q} guerrieri del palazzo viene da Festo. Quanti sono i guerrieri di Festo?`, u:'guerrieri' },
+    { s:`Il ${p}% delle ${Q} tavolette dell'archivio è scritto in Lineare A. Quante sono queste tavolette?`, u:'tavolette' },
+    { s:`Il ${p}% dei ${Q} spettatori della taurocatapsia è arrivato da Mallia. Quanti spettatori vengono da Mallia?`, u:'spettatori' }
+  ]);
+  return { type:'choice', story:c.s, mathDisplay:`${p}% di ${Q} = ?`,
+    options: buildOptions({text:`${nf(val)} ${c.u}`, val}, [
+      [`${nf(Q-val)} ${c.u}`, `Questi sono gli altri, non quelli richiesti.`, Q-val],
+      [`${nf(Q*p/10)} ${c.u}`, `Hai diviso per 10 invece che per 100: "per cento" significa su 100.`, Q*p/10],
+      [`${p} ${c.u}`, `Il ${p}% non corrisponde a ${p} unità: è una parte proporzionale al totale.`, p],
+      [`${nf(Q-p)} ${c.u}`, `Hai sottratto la percentuale come se fosse un numero di ${c.u}.`, Q-p]
+    ], i => { const v=val+near(i)*Math.max(1,Math.round(Q/20)); return [`${nf(v)} ${c.u}`, `Ricontrolla il calcolo del ${p}%.`, v]; }),
+    hint:`Strategia: ${h.s}.`,
+    explanation:`Il ${p}% di ${Q} = ${h.c} = ${nf(val)} ${c.u}.` };
+}
+function qPctIncrease(d){
+  const p=pick(pctSet(d)), X=priceFor(p,40,d===1?300:600), inc=X*p/100, fin=X+inc, h=pctHow(p,X);
+  const story = pick([
+    `Il tributo annuo di ${X} talenti che Atene paga a Creta aumenta del ${p}%. Quanto pagherà ora Atene?`,
+    `Durante la carestia, un sacco di grano da ${X} oboli rincara del ${p}%. Quanto costa adesso?`
+  ]);
+  return { type:'choice', story, mathDisplay:`${X} + ${p}% di ${X} = ?`,
+    options: buildOptions({text:`${nf(fin)}`, val:fin}, [
+      [`${X+p}`, `Aumentare del ${p}% non significa aggiungere ${p}: va calcolata la parte proporzionale.`, X+p],
+      [`${nf(inc)}`, `Questo è solo l'aumento: va aggiunto al valore iniziale.`, inc],
+      [`${nf(X-inc)}`, `Hai sottratto: un aumento fa crescere il valore.`, X-inc],
+      [`${nf(X+X/10)}`, `Hai aggiunto solo il 10%: l'aumento è del ${p}%.`, X+X/10]
+    ], i => { const v=fin+near(i)*X/20; return [`${nf(v)}`, `Ricontrolla il calcolo del ${p}%.`, v]; }),
+    hint:`Calcola prima il ${p}% di ${X} (${h.s}), poi aggiungilo a ${X}.`,
+    explanation:`Il ${p}% di ${X} = ${h.c} = ${nf(inc)}.\nNuovo valore: ${X} + ${nf(inc)} = ${nf(fin)}.` };
+}
+function qPctFind(d){
+  const N = pick(d===1 ? [20,25,40,50,200] : [20,25,40,50,80,200,300,400,500]);
+  const step = 100/gcd(N,100);
+  const opts=[]; for (let p=step; p<100; p+=step) if (d>1 || p%5===0) opts.push(p);
+  let pct, K; let g=0;
+  do { pct=pick(opts); K=N*pct/100; } while ((K===pct || !isInt(K)) && g++<50);
+  const c = pick([
+    `Su ${N} anfore ispezionate al porto, ${K} sono incrinate. Che percentuale delle anfore è incrinata?`,
+    `Dei ${N} giovani che tentano il salto del toro, ${K} ci riescono. Qual è la percentuale di successo?`,
+    `In una flotta di ${N} navi, ${K} sono navi da guerra. Che percentuale della flotta rappresentano?`
+  ]);
+  return { type:'choice', story:c, mathDisplay:`${K} su ${N} = ?%`,
+    options: buildOptions({text:`${pct}%`, val:pct}, [
+      [`${K}%`, `Il numero contato non è già la percentuale: va rapportato al totale (${K} su ${N}).`, K],
+      [`${100-pct}%`, `Questa è la percentuale della parte restante.`, 100-pct],
+      [`${nf(K/N)}%`, `Hai calcolato il rapporto ${K}/${N} ma non l'hai trasformato in centesimi: va moltiplicato per 100.`],
+      [`${N-K}%`, `Hai calcolato la differenza, non il rapporto.`, N-K]
+    ], i => { const v=pct+near(i)*5; return [`${v}%`, `Ricontrolla: ${K} : ${N} = ? : 100.`, v]; }),
+    hint:`Imposta la proporzione ${K} : ${N} = x : 100, oppure calcola ${K}/${N} e moltiplica per 100.`,
+    explanation:`${K} : ${N} = x : 100  →  x = ${K} × 100 : ${N} = ${pct}%.` };
+}
+function qPctSuccessive(d){
+  const p=pick([10,20,50]), P=100*rint(2,d===3?12:8);
+  const up=P*(100+p)/100, fin=up*(100-p)/100;
+  const story = pick([
+    `Un'anfora di vino costa ${P} oboli. Durante la carestia il prezzo aumenta del ${p}%, poi con il nuovo raccolto cala del ${p}%. Quanto costa ora?`,
+    `Il tributo di ${P} talenti aumenta del ${p}% e l'anno dopo diminuisce del ${p}%. A quanto ammonta ora?`
+  ]);
+  return { type:'choice', story, mathDisplay:`${P} → +${p}% → −${p}% = ?`,
+    options: buildOptions({text:`${nf(fin)}`, val:fin}, [
+      [`${P}`, `Il secondo ${p}% si calcola su ${nf(up)}, non su ${P}: aumento e calo non si annullano!`, P],
+      [`${nf(up)}`, `Ti sei fermato dopo l'aumento.`, up],
+      [`${nf(P*(100-p)/100)}`, `Hai applicato solo il calo, al valore iniziale.`, P*(100-p)/100],
+      [`${nf(up-P*p/100)}`, `Il calo va calcolato sul nuovo valore ${nf(up)}, non su ${P}.`, up-P*p/100]
+    ], i => { const v=fin+near(i)*P/20; return [`${nf(v)}`, `Ricontrolla i due passaggi.`, v]; }),
+    hint:`Calcola il valore dopo l'aumento, poi applica il calo del ${p}% a quel nuovo valore.`,
+    explanation:`Dopo l'aumento: ${P} + ${p}% = ${nf(up)}.\nDopo il calo: ${nf(up)} − ${p}% di ${nf(up)} = ${nf(fin)}. Variazione complessiva: −${nf(p*p/100)}%.` };
+}
+
+/* ---------- PROPORZIONI ---------- */
+function propPair(d){
+  return d===1 ? pick([[2,3],[3,4],[2,5],[4,5],[3,5]]) : d===2 ? pick([[3,7],[5,6],[4,9],[3,8],[5,7]]) : pick([[5,7],[7,9],[4,11],[8,9],[7,12]]);
+}
+function qPropXFirst(d){
+  const [B,C]=propPair(d), k=rint(2,d===1?5:d===2?7:9), A=C*k, x=B*k;
+  return { type:'choice', story:pick([`Nel progetto del labirinto, l'incognita aurea x rispetta la proporzione x : ${A} = ${B} : ${C}. Quanto vale x?`,`Dedalo disegna una sala in proporzione: x : ${A} = ${B} : ${C}. Trova x.`]),
+    mathDisplay:`x : ${A} = ${B} : ${C}`,
+    options: buildOptions({text:`x = ${x}`, val:x}, [
+      [`x = ${A+B-C}`, `Ragionamento additivo! In una proporzione sono uguali i rapporti, non le differenze: conta "quante volte", non "quanto in più".`, A+B-C],
+      [`x = ${frac(A*C,B)}`, `Hai scambiato i termini: il prodotto dei medi (${A} × ${B}) è uguale al prodotto degli estremi (x × ${C}).`, A*C/B],
+      [`x = ${A-B}`, `Una proporzione è un'uguaglianza di rapporti, non una differenza.`, A-B],
+      [`x = ${frac(B*C,A)}`, `Hai diviso "al contrario": x = (${A} × ${B}) : ${C}.`, B*C/A]
+    ], i => { const v=x+near(i)*B; return [`x = ${v}`, `Ricontrolla il fattore di scala: quante volte ${C} sta in ${A}?`, v]; }),
+    hint:`Confronta ${C} e ${A}: quante volte ${C} sta in ${A}? Applica lo stesso fattore a ${B}.`,
+    explanation:`${A} = ${k} × ${C}, quindi x = ${k} × ${B} = ${x}.\nVerifica (medi ed estremi): ${x} × ${C} = ${A} × ${B} = ${A*B}.` };
+}
+function qPropXMid(d){
+  const [B,C]=propPair(d), k=rint(2,d===1?5:8), A=B*k, x=C*k;
+  return { type:'choice', story:pick([`Le colonne del propileo seguono la proporzione ${A} : x = ${B} : ${C}. Quanto vale x?`,`Nella pianta del palazzo: ${A} : x = ${B} : ${C}. Trova il medio incognito.`]),
+    mathDisplay:`${A} : x = ${B} : ${C}`,
+    options: buildOptions({text:`x = ${x}`, val:x}, [
+      [`x = ${A+C-B}`, `Ragionamento additivo: hai mantenuto la differenza, ma una proporzione conserva il rapporto.`, A+C-B],
+      [`x = ${frac(A*B,C)}`, `Hai scambiato medi ed estremi: x × ${B} = ${A} × ${C}.`, A*B/C],
+      [`x = ${A*C}`, `Hai moltiplicato gli estremi ma non hai diviso per il medio ${B}.`, A*C],
+      [`x = ${frac(B*C,A)}`, `Ricontrolla: x = (${A} × ${C}) : ${B}.`, B*C/A]
+    ], i => { const v=x+near(i)*C; return [`x = ${v}`, `Quante volte ${B} sta in ${A}?`, v]; }),
+    hint:`${A} è ${k} volte ${B}: anche x deve essere ${k} volte ${C}. Oppure: prodotto dei medi = prodotto degli estremi.`,
+    explanation:`${A} = ${k} × ${B}, quindi x = ${k} × ${C} = ${x}.\nVerifica: ${A} × ${C} = ${x} × ${B} = ${A*C}.` };
+}
+function qPropDirect(d){
+  let a,b,c;
+  if (d===1){ a=rint(2,6); b=a*rint(2,6); do { c=rint(2,10); } while (c===a); }
+  else { let g=0; do { a=rint(2,9); b=rint(3,30); g++; } while ((b%a===0 || gcd(a,b)===a) && g<50); const step=a/gcd(a,b); do { c=step*rint(2,6); } while (c===a); }
+  const x=c*b/a;
+  const ctx = pick([
+    { s:`Sulla mappa del labirinto ${a} cm corrispondono a ${b} passi. A quanti passi corrispondono ${c} cm?`, u:'passi' },
+    { s:`Con ${a} misure di farina si sfornano ${b} focacce per i rematori. Quante focacce si sfornano con ${c} misure?`, u:'focacce' },
+    { s:`Con ${a} lingotti di rame si forgiano ${b} punte di lancia. Quante punte si forgiano con ${c} lingotti?`, u:'punte' }
+  ]);
+  return { type:'choice', story:ctx.s, mathDisplay:`${a} : ${b} = ${c} : x`,
+    options: buildOptions({text:`${x} ${ctx.u}`, val:x}, [
+      [`${b+(c-a)} ${ctx.u}`, `Ragionamento additivo: hai aggiunto la stessa differenza (${c-a}), ma le grandezze direttamente proporzionali crescono "di volte", non "di tanto".`, b+(c-a)],
+      [`${b*c} ${ctx.u}`, `Hai moltiplicato senza poi dividere per ${a}.`, b*c],
+      [`${frac(a*c,b)} ${ctx.u}`, `Hai invertito il rapporto: x = ${b} × ${c} : ${a}.`, a*c/b],
+      [`${frac(a*b,c)} ${ctx.u}`, `Così le grandezze sarebbero inversamente proporzionali: qui crescono insieme.`, a*b/c]
+    ], i => { const v=x+near(i)*Math.max(1,Math.round(b/a)); return [`${v} ${ctx.u}`, `Ricontrolla il valore unitario: quanto corrisponde a 1?`, v]; }),
+    hint:`Trova il valore unitario (quanto corrisponde a 1), oppure usa la proporzione ${a} : ${b} = ${c} : x.`,
+    explanation:`${a} : ${b} = ${c} : x  →  x = ${b} × ${c} : ${a} = ${x} ${ctx.u}.` };
+}
+function qPropInverse(d){
+  let W,D,W2,x,g=0;
+  do { W=rint(2,8); D=rint(3,15); const P=W*D; const divs=[]; for(let i=2;i<=P;i++) if(P%i===0 && i!==W && i<=24 && P/i>=2) divs.push(i); if(!divs.length){g++;continue;} W2=pick(divs); x=P/W2; g++; } while ((!W2 || x===D) && g<80);
+  const c = pick([
+    { s:`${W} operai costruiscono un muro del labirinto in ${D} giorni. Quanti giorni servono a ${W2} operai, lavorando allo stesso ritmo?`, u:'giorni' },
+    { s:`Con ${W} rematori la nave raggiunge Atene in ${D} giorni. Con ${W2} rematori, alla stessa forza ciascuno, quanti giorni servono?`, u:'giorni' },
+    { s:`Usando giare da ${W} litri servono ${D} giare per conservare l'olio. Quante giare da ${W2} litri servono?`, u:'giare' }
+  ]);
+  const dir = D*W2/W;
+  return { type:'choice', story:c.s, mathDisplay:`${W} × ${D} = ${W2} × x`,
+    options: buildOptions({text:`${x} ${c.u}`, val:x}, [
+      isInt(dir) ? [`${dir} ${c.u}`, `Le hai trattate come direttamente proporzionali: qui se una grandezza aumenta, l'altra diminuisce.`, dir] : null,
+      [`${D-(W2-W)} ${c.u}`, `Ragionamento additivo: non basta togliere la differenza. È il prodotto a restare costante.`, D-(W2-W)],
+      [`${D+(W2-W)} ${c.u}`, `Ragionamento additivo: è il prodotto ${W} × ${D} a restare costante.`, D+(W2-W)],
+      [`${W*D} ${c.u}`, `Questo è il prodotto costante: va ancora diviso per ${W2}.`, W*D]
+    ].filter(Boolean), i => { const v=x+near(i); return [`${v} ${c.u}`, `Ricontrolla: ${W} × ${D} deve essere uguale a ${W2} × x.`, v]; }),
+    hint:`Sono grandezze inversamente proporzionali: il prodotto ${W} × ${D} = ${W*D} resta costante.`,
+    explanation:`Prodotto costante: ${W} × ${D} = ${W*D}.\nx = ${W*D} : ${W2} = ${x} ${c.u}.` };
+}
+
+/* ---------- CACCIA ALL'ERRORE (sofismi) ---------- */
+const ERR_TEMPLATES = [
+  () => { const E=pick([40,60,80,120,150,200]), R=E/5; return { story:`Uno scriba calcola una decurtazione del 20% su ${E} talenti. Il risultato sembra giusto... ma il ragionamento regge?`, steps:[`Si deve calcolare il 20% di ${E} talenti.`,`Il 20% corrisponde alla ventesima parte (1/20) del totale.`,`Si calcola quindi ${E} : 5 = ${R} talenti.`,`La decurtazione è di ${R} talenti.`], correct:2, hint:`Che cosa significa "per cento"? 20% = 20/100: riduci la frazione ai minimi termini.`, explanation:`Errore nel passaggio 2: 20% = 20/100 = 1/5, non 1/20.\nIl risultato finale è giusto per caso: in matematica conta la coerenza di ogni passaggio, non solo il numero finale!` }; },
+  () => { const P=pick([200,300,500,800]), up=P+P/10; return { story:`Un mercante sostiene che aumentare e poi ridurre un prezzo dello stesso 10% lo riporta sempre al valore iniziale.`, steps:[`Un vaso vale ${P} oboli. Aumenta del 10%: ${P} + ${P/10} = ${up}.`,`In seguito il prezzo cala del 10%.`,`Il calo del 10% vale ${P/10} oboli, quindi si torna a ${up} − ${P/10} = ${P}.`,`Conclusione: aumento e calo dello stesso 10% si annullano sempre.`], correct:3, hint:`Il secondo 10% si calcola sullo stesso valore del primo?`, explanation:`Errore nel passaggio 3: il calo va calcolato sul nuovo prezzo ${up}, quindi vale ${nf(up/10)}. Prezzo finale: ${nf(up-up/10)} oboli, non ${P}.\nIl passaggio 4 è falso, ma è solo una conseguenza: l'errore nasce al 3.` }; },
+  () => { const [a,b]=pick([[2,3],[3,4],[2,5],[4,5],[3,5]]), ab=a*b; return { story:`Uno scriba somma due frazioni unitarie sulla sua tavoletta.`, steps:[`Per sommare 1/${a} e 1/${b} serve un denominatore comune.`,`Il m.c.m. tra ${a} e ${b} è ${ab}.`,`1/${a} = ${b}/${ab} e 1/${b} = ${a}/${ab}.`,`Quindi 1/${a} + 1/${b} = ${a+b}/${2*ab}.`], correct:4, hint:`Quando due frazioni hanno lo stesso denominatore, che cosa si somma?`, explanation:`Errore nel passaggio 4: con lo stesso denominatore si sommano solo i numeratori.\n${b}/${ab} + ${a}/${ab} = ${a+b}/${ab}.` }; },
+  () => { const W=pick([2,3,4]), D=pick([12,18,24,30]); return { story:`Il capomastro di Dedalo pianifica la costruzione di un muro del labirinto.`, steps:[`${W} operai costruiscono un muro in ${D} giorni.`,`Raddoppiando gli operai, raddoppia il lavoro svolto ogni giorno.`,`Quindi operai e giorni sono grandezze direttamente proporzionali.`,`Perciò ${2*W} operai impiegano ${2*D} giorni.`], correct:3, hint:`Se lavorano più operai, servono più o meno giorni?`, explanation:`Errore nel passaggio 3: se il lavoro giornaliero raddoppia, i giorni si dimezzano. Operai e giorni sono inversamente proporzionali: il prodotto ${W} × ${D} = ${W*D} resta costante.\n${2*W} operai impiegano ${D/2} giorni.` }; },
+  () => { const a=pick([4,5,6,8,9]), b=pick([2,3,7].filter(x=>x!==a)); return { story:`Un apprendista semplifica una frazione per fare prima.`, steps:[`Bisogna calcolare (${a} + ${b}) / ${a}.`,`Il ${a} compare sopra e sotto la linea di frazione: lo semplifichiamo.`,`Rimane soltanto ${b}.`,`Quindi (${a} + ${b}) / ${a} = ${b}.`], correct:2, hint:`Si possono semplificare gli addendi di una somma, o solo i fattori di un prodotto?`, explanation:`Errore nel passaggio 2: si semplificano solo i fattori di un prodotto, mai gli addendi di una somma.\n(${a} + ${b}) / ${a} = ${a+b}/${a}${gcd(a+b,a)>1?` = ${frac(a+b,a)}`:''}.` }; },
+  () => { const P=pick([100,200,500,1000]), p1=pick([10,20,30]), p2=pick([10,20,30,40].filter(x=>x!==p1)); const after1=P*(100-p1)/100, fin=after1*(100-p2)/100, tot=100-fin/P*100; return { story:`Al mercato del porto un mercante annuncia due sconti consecutivi.`, steps:[`Un vaso costa ${P} oboli. Primo sconto del ${p1}%: ora costa ${after1}.`,`Si applica un secondo sconto del ${p2}% sul nuovo prezzo.`,`Gli sconti si sommano: ${p1}% + ${p2}% = ${p1+p2}%.`,`Il prezzo finale è quindi ${P*(100-p1-p2)/100} oboli.`], correct:3, hint:`Il secondo sconto si applica a ${P} o a ${after1}?`, explanation:`Errore nel passaggio 3: il secondo sconto si calcola su ${after1}, non su ${P}.\nPrezzo finale: ${nf(fin)} oboli. Lo sconto complessivo è del ${nf(tot)}%, non del ${p1+p2}%.` }; },
+  () => { const N=pick([3,5,6,8,12]); return { story:`Il dispensiere divide il grano in porzioni da mezzo moggio.`, steps:[`Ci sono ${N} moggi di grano da dividere in porzioni da 1/2 moggio.`,`Bisogna calcolare ${N} : 1/2.`,`Dividere per 1/2 equivale a dividere per 2.`,`Quindi si ottengono ${nf(N/2)} porzioni.`], correct:3, hint:`Quante mezze porzioni ci sono in un moggio intero?`, explanation:`Errore nel passaggio 3: dividere per 1/2 equivale a moltiplicare per 2 (il reciproco).\n${N} : 1/2 = ${N} × 2 = ${2*N} porzioni.` }; },
+  () => { const [a,b]=pick([[2,3],[3,5],[4,6],[2,8],[5,9]]); return { story:`Due sacerdotesse ricevono una parte della stessa focaccia sacra.`, steps:[`La prima riceve 1/${a} della focaccia, la seconda 1/${b}.`,`Per sapere chi riceve di più si confrontano 1/${a} e 1/${b}.`,`Poiché ${b} è maggiore di ${a}, la frazione 1/${b} è la maggiore.`,`Quindi la seconda sacerdotessa riceve più focaccia.`], correct:3, hint:`Se dividi la focaccia in più parti, ogni parte è più grande o più piccola?`, explanation:`Errore nel passaggio 3: a parità di numeratore, la frazione con il denominatore maggiore è la minore (l'intero è diviso in più parti).\n1/${a} > 1/${b}: riceve di più la prima.` }; },
+  () => { const F=pick([80,160,240,400]), orig=F/0.8, wrong=F*1.2; return { story:`Un tesoriere vuole risalire al prezzo originale di un vaso scontato.`, steps:[`Dopo uno sconto del 20% un vaso costa ${F} oboli.`,`Il prezzo scontato è l'80% del prezzo originale.`,`Per tornare al prezzo originale basta aggiungere il 20% di ${F}.`,`Prezzo originale: ${F} + ${F/5} = ${wrong} oboli.`], correct:3, hint:`Il 20% di sconto era calcolato su ${F} o sul prezzo originale?`, explanation:`Errore nel passaggio 3: lo sconto del 20% era calcolato sul prezzo originale, non su ${F}.\nSe ${F} è l'80% dell'originale: ${F} : 0,8 = ${orig} oboli.` }; },
+  () => { const N=pick([12,18,20,30]), m=pick([3,4]); return { story:`Un giovane scriba enuncia una "regola" sulle moltiplicazioni.`, steps:[`Moltiplicando ${N} per ${m} si ottiene un numero più grande: ${N} × ${m} = ${N*m}.`,`La moltiplicazione è un'addizione ripetuta: ${N} × ${m} = ${Array(m).fill(N).join(' + ')}.`,`Perciò ogni moltiplicazione fa sempre crescere il numero di partenza.`,`Quindi ${N} × 1/2 è maggiore di ${N}.`], correct:3, hint:`Che cosa succede se moltiplichi per un numero minore di 1?`, explanation:`Errore nel passaggio 3: è una generalizzazione falsa. Moltiplicare per un numero tra 0 e 1 rimpicciolisce.\n${N} × 1/2 = ${N/2}, che è minore di ${N}.` }; }
+];
+function makeErr(f){ return { type:'find_error', mathDisplay:`In quale passaggio nasce l'errore?`, ...f() }; }
+
+/* ---------- ANAGRAMMI ---------- */
+const WORDS = [
+  ['TESEO',"L'eroe ateniese che sfidò il Minotauro"],['CRETA','L\'isola di re Minosse'],['ICARO','Volò troppo vicino al sole'],
+  ['DEDALO',"L'architetto che progettò il labirinto"],['CNOSSO','Il palazzo-labirinto di Minosse'],['SCONTO','Riduzione di prezzo, spesso in percentuale'],
+  ['ANFORA','Vaso a due anse per olio e vino'],['MINOSSE','Il re di Creta'],['ARIANNA','Donò a Teseo il gomitolo'],
+  ['PASIFAE','La madre del Minotauro'],['DELFINO','Nuota negli affreschi della sala della regina'],['MULTIPLO','12 lo è sia di 3 sia di 4'],
+  ['RAPPORTO','Quoziente tra due grandezze'],['FRAZIONE','Numeratore sopra, denominatore sotto'],['DIVISORE','3 lo è di 12'],
+  ['AFFRESCO',"Pittura su intonaco fresco, vanto di Cnosso"],['LABIRINTO','Intrico di corridoi progettato da Dedalo'],['MINOTAURO','Metà uomo, metà toro'],
+  ['QUOZIENTE','Il risultato di una divisione'],['NUMERATORE','Sta sopra la linea di frazione'],['PROPORZIONE','Uguaglianza tra due rapporti'],
+  ['PERCENTUALE','Rapporto espresso in centesimi'],['EQUIVALENTE','Così sono 2/4 e 1/2']
+].map(([word,clue])=>({word,clue}));
+function anagramOk(w,d){ const L=w.word.length; return d===1 ? L<=7 : d===2 ? (L>=6 && L<=9) : L>=8; }
+function makeAnagram(w){
+  let letters, g=0;
+  do { letters = shuffle(w.word.split('').map((char,id)=>({char,id}))); } while (letters.map(l=>l.char).join('')===w.word && g++<20);
+  return { type:'anagram', word:w.word, letters, story:`Ricomponi la parola-chiave toccando le tessere d'argilla nell'ordine giusto. Indizio: «${w.clue}».`,
+    mathDisplay:`ANAGRAMMA · ${w.word.length} lettere`, hint:`Inizia con "${w.word.slice(0,2)}…".`, explanation:`${w.word}: ${w.clue.charAt(0).toLowerCase()+w.clue.slice(1)}.` };
+}
+
+/* ---------- REGISTRO DELLE ABILITÀ (obiettivi didattici invariati) ---------- */
+const CATS = [
+  { key:'frac', tag:'Frazioni', color:'#1f6fb2', titles:['Soglia delle Partizioni','Atrio delle Parti Uguali','Sala del Moggio Diviso'], lores:['Codicillo di Cnosso sui tributi di grano','Tavoletta in Lineare A dei magazzini','Registro delle ancelle tessitrici'],
+    items:[{id:'sum',min:1,gen:qFracSum},{id:'diff',min:1,gen:qFracDiff},{id:'cmp',min:1,gen:qFracCompare},{id:'simp',min:1,gen:qFracSimplify}] },
+  { key:'qty', tag:'Frazione di quantità', color:'#c77d0a', titles:['Bivio del Natural Number Bias','Magazzino dei Pithoi','Porto delle Anfore'], lores:['Iscrizione del Sacerdote di Poseidone','Inventario del palazzo','Registro del capitano della flotta'],
+    items:[{id:'rem',min:1,gen:qQtyRemain},{id:'part',min:1,gen:qQtyPart},{id:'inv',min:2,gen:qQtyInverse},{id:'two',min:2,gen:qQtyTwoStep}] },
+  { key:'pct', tag:'Percentuali', color:'#b8432b', titles:['Atrio degli Sconti Veloci','Mercato del Porto','Banco del Tesoriere'], lores:['Tributo di bronzo per Re Minosse','Listino del mercante fenicio','Conti della festa del Toro'],
+    items:[{id:'disc',min:1,gen:qPctDiscount},{id:'of',min:1,gen:qPctOf},{id:'inc',min:1,gen:qPctIncrease},{id:'find',min:1,gen:qPctFind},{id:'succ',min:2,gen:qPctSuccessive}] },
+  { key:'prop', tag:'Proporzioni', color:'#2f9a5a', titles:['Corridoio della Proporzione Aurea','Scala del Propileo','Cantiere di Dedalo'], lores:["Canone geometrico dell'architetto Dedalo",'Pianta del grande cortile','Diario del capomastro'],
+    items:[{id:'xf',min:1,gen:qPropXFirst},{id:'xm',min:1,gen:qPropXMid},{id:'dir',min:1,gen:qPropDirect},{id:'inv',min:2,gen:qPropInverse}] },
+  { key:'err', tag:"Caccia all'errore", color:'#7b2d8e', titles:['Sala del Sofisma','Tribunale degli Scribi','Loggia dei Paradossi'], lores:['Tavoletta argomentativa dello scriba','Disputa davanti al re','Pergamena di un sofista'],
+    items: ERR_TEMPLATES.map((f,i)=>({id:'e'+i,min:1,gen:()=>makeErr(f)})) },
+  { key:'ana', tag:'Anagramma', color:'#13858a', titles:['Portale delle Lettere','Archivio della Lineare A','Soglia dei Segni'], lores:['Sigillo alfabetico minoico','Tavoletta mescolata dal vento','Iscrizione del santuario'],
+    items: WORDS.map(w=>({id:w.word, ok:d=>anagramOk(w,d), gen:()=>makeAnagram(w)})) }
+];
+const eligible = (item,d) => item.ok ? item.ok(d) : (item.min||1) <= d;
+/*GEN-END*/
+
+/* Sacchetti senza reinserimento: in uno stesso percorso non si ripete la stessa variante
+   finché non sono uscite tutte; tra un avvio e l'altro le ultime uscite finiscono in fondo. */
+let BAGS = {}, RECENT = {};
+function loadRecent(){ try { RECENT = JSON.parse(localStorage.getItem('dedalo_recent')||'{}') || {}; } catch(e){ RECENT = {}; } }
+function saveRecent(){ try { localStorage.setItem('dedalo_recent', JSON.stringify(RECENT)); } catch(e){} }
+function refillBag(cat){
+  const bag = shuffle(cat.items.slice());
+  if (!GAME.fixedSeed){ const rec = RECENT[cat.key] || []; bag.sort((a,b) => (rec.includes(b.id)?1:0) - (rec.includes(a.id)?1:0)); }
+  return bag;
+}
+function noteRecent(key, id, total){
+  const r = RECENT[key] || (RECENT[key] = []);
+  const i = r.indexOf(id); if (i >= 0) r.splice(i,1);
+  r.push(id);
+  while (r.length > Math.max(1, Math.floor(total/2))) r.shift();
+}
+function drawItem(cat, d){
+  for (let pass=0; pass<2; pass++){
+    let bag = BAGS[cat.key];
+    if (!bag || !bag.some(it => eligible(it,d))) bag = BAGS[cat.key] = refillBag(cat);
+    for (let i=bag.length-1; i>=0; i--) if (eligible(bag[i],d)){ const item = bag.splice(i,1)[0]; if (!GAME.fixedSeed) noteRecent(cat.key, item.id, cat.items.length); return item; }
+  }
+  return cat.items.find(it => eligible(it,d)) || cat.items[0];
+}
+function generateQuestion(cat, d){
+  let q;
+  for (let a=0; a<8; a++){
+    q = drawItem(cat,d).gen(d);
+    const sig = q.mathDisplay + '|' + q.story;
+    if (!GAME.seen.has(sig)){ GAME.seen.add(sig); break; }
+  }
+  return q;
+}
+
+/* =====================================================================
+   2. MOTORE SONORO PROCEDURALE (Web Audio, nessun file esterno)
+   ===================================================================== */
+class MinoanAudioEngine {
+  constructor(){ this.ctx=null; this.enabled=true; }
+  init(){ if (!this.ctx){ const AC=window.AudioContext||window.webkitAudioContext; if (!AC) return; this.ctx=new AC(); } if (this.ctx.state==='suspended') this.ctx.resume(); }
+  tone({ type='sine', f0, f1, dur=0.2, vol=0.2, delay=0, filter=0 }){
+    if (!this.ctx || !this.enabled) return;
+    const t=this.ctx.currentTime+delay, o=this.ctx.createOscillator(), g=this.ctx.createGain();
+    o.type=type; o.frequency.setValueAtTime(f0,t); if (f1) o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    let node=o; if (filter){ const fl=this.ctx.createBiquadFilter(); fl.type='lowpass'; fl.frequency.value=filter; o.connect(fl); node=fl; }
+    node.connect(g); g.connect(this.ctx.destination); o.start(t); o.stop(t+dur+0.03);
+  }
+  footstep(){ this.tone({ type:'triangle', f0:110+Math.random()*25, f1:45, dur:0.08, vol:0.14, filter:320 }); }
+  turn(){ this.tone({ type:'triangle', f0:300, f1:200, dur:0.06, vol:0.06 }); }
+  roar(){ this.tone({ type:'sawtooth', f0:75, f1:36, dur:0.95, vol:0.32, filter:380 }); this.tone({ type:'triangle', f0:82, f1:38, dur:0.95, vol:0.28, filter:380 }); }
+  gateOpen(){ [293.66,349.23,440,523.25,587.33].forEach((f,i)=>this.tone({ f0:f, dur:0.6, vol:0.17, delay:i*0.08 })); }
+  clang(){ this.tone({ type:'square', f0:160, f1:60, dur:0.35, vol:0.16 }); }
+  click(){ this.tone({ f0:640, dur:0.05, vol:0.1 }); }
+  pickup(){ [523.25,659.25,783.99,1046.5].forEach((f,i)=>this.tone({ type:'triangle', f0:f, dur:0.18, vol:0.14, delay:i*0.06 })); }
+  combo(level){ const b=440*Math.pow(2,Math.min(level,6)/6); [b,b*1.25,b*1.5].forEach((f,i)=>this.tone({ type:'square', f0:f, dur:0.12, vol:0.06, delay:0.45+i*0.06 })); }
+  heartbeat(){ this.tone({ f0:62, f1:40, dur:0.13, vol:0.4, filter:220 }); this.tone({ f0:56, f1:38, dur:0.13, vol:0.28, delay:0.18, filter:220 }); }
+  hurt(){ this.tone({ type:'sawtooth', f0:320, f1:70, dur:0.45, vol:0.2, filter:900 }); }
+  victory(){ [392,523.25,659.25,783.99,1046.5].forEach((f,i)=>this.tone({ type:'triangle', f0:f, dur:0.5, vol:0.15, delay:i*0.12 })); [523.25,659.25,783.99].forEach(f=>this.tone({ f0:f, dur:1.5, vol:0.09, delay:0.7 })); }
+}
+const sound = new MinoanAudioEngine();
+const vibrate = p => { try { if (navigator.vibrate) navigator.vibrate(p); } catch(e){} };
+
+/* =====================================================================
+   3. LABIRINTO PROCEDURALE (backtracking + anelli + cortile centrale)
+   ===================================================================== */
+let MAZE=[], COLS=17, ROWS=11, START={x:1,y:1}, EXIT={x:15,y:9}, LAIR={x:15,y:1}, COURT={x0:0,y0:0,x1:-1,y1:-1};
+let WALLVAR=[], FPVAR=[], FLOORDEC=[], LAIRMAP=null, REVEALED=[];
+const DIRS=[[0,-1],[0,1],[-1,0],[1,0]];
+const DIRV=[[0,-1],[1,0],[0,1],[-1,0]];          // N E S O (per la prima persona)
+const DIRNAME=['N','E','S','O'];
+const LEVEL_SIZES=[[8,5],[9,6],[10,6],[11,7]];
+const LEVEL_NAMES=['Corridoi delle Giare','Sala dei Delfini','Cortile dei Tori','Cripta della Bipenne','Megaron della Regina','Abisso di Pasifae','Santuario del Monte Ida'];
+const key = p => p.x+','+p.y;
+const inB = (x,y) => y>=0 && y<ROWS && x>=0 && x<COLS;
+const isFloor = (x,y) => inB(x,y) && MAZE[y][x]===0;
+const isWallAt = (x,y) => inB(x,y) && MAZE[y][x]===1;
+const floorNeighbors = (x,y) => DIRS.reduce((n,[dx,dy])=>n+(isFloor(x+dx,y+dy)?1:0),0);
+const inCourt = p => p.x>=COURT.x0 && p.x<=COURT.x1 && p.y>=COURT.y0 && p.y<=COURT.y1;
+
+function carveMaze(cw, ch, braid){
+  const C=2*cw+1, R=2*ch+1;
+  const g = Array.from({length:R},()=>Array(C).fill(1));
+  const vis = Array.from({length:ch},()=>Array(cw).fill(false));
+  const stack=[[0,0]]; vis[0][0]=true; g[1][1]=0;
+  while (stack.length){
+    const [x,y] = stack[stack.length-1];
+    const nb = DIRS.map(([dx,dy])=>[x+dx,y+dy,dx,dy]).filter(([nx,ny])=>nx>=0&&ny>=0&&nx<cw&&ny<ch&&!vis[ny][nx]);
+    if (!nb.length){ stack.pop(); continue; }
+    const [nx,ny,dx,dy] = pick(nb);
+    vis[ny][nx]=true; g[2*y+1+dy][2*x+1+dx]=0; g[2*ny+1][2*nx+1]=0; stack.push([nx,ny]);
+  }
+  const walls=[];
+  for (let y=1;y<R-1;y++) for (let x=1;x<C-1;x++){
+    if (g[y][x]!==1) continue;
+    if ((y%2===1 && x%2===0) || (x%2===1 && y%2===0)) walls.push([x,y]);
+  }
+  shuffle(walls);
+  const n=Math.round(walls.length*braid);
+  for (let i=0;i<n;i++){ const [x,y]=walls[i]; g[y][x]=0; }
+  return g;
+}
+
+function bfsFrom(sx, sy, blockExit=false){
+  const d = Array.from({length:ROWS},()=>Array(COLS).fill(Infinity));
+  d[sy][sx]=0; const q=[[sx,sy]]; let h=0;
+  while (h<q.length){
+    const [x,y]=q[h++];
+    if (blockExit && x===EXIT.x && y===EXIT.y && !(x===sx&&y===sy)) continue;
+    for (const [dx,dy] of DIRS){ const nx=x+dx, ny=y+dy; if (!isFloor(nx,ny) || d[ny][nx]!==Infinity) continue; d[ny][nx]=d[y][x]+1; q.push([nx,ny]); }
+  }
+  return d;
+}
+
+function buildMap(n){
+  RNG = mulberry32(hashStr(GAME.code+'#'+n));
+  const [cw,ch] = LEVEL_SIZES[Math.min(n-1, LEVEL_SIZES.length-1)];
+  COLS=2*cw+1; ROWS=2*ch+1;
+  MAZE = carveMaze(cw, ch, 0.13 + Math.min(n-1,3)*0.012);
+  const rx=2*Math.floor((cw-1)/2)+1, ry=2*Math.floor((ch-1)/2)+1;
+  for (let y=ry;y<=ry+2;y++) for (let x=rx;x<=rx+2;x++) MAZE[y][x]=0;
+  COURT={x0:rx,y0:ry,x1:rx+2,y1:ry+2};
+  START={x:1,y:1};
+  EXIT={x:-1,y:-1};
+  const dS=bfsFrom(1,1);
+  const floors=[]; for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++) if (isFloor(x,y)) floors.push({x,y,d:dS[y][x]});
+  const maxD=Math.max(...floors.map(f=>f.d));
+  const far=floors.filter(f=>f.d>=maxD*0.85 && !inCourt(f)), farDead=far.filter(f=>floorNeighbors(f.x,f.y)===1);
+  const ex=pick(farDead.length?farDead:far.length?far:[floors.reduce((a,b)=>b.d>a.d?b:a)]);
+  EXIT={x:ex.x,y:ex.y};
+  const dE=bfsFrom(EXIT.x,EXIT.y);
+  const isExit = f => f.x===EXIT.x && f.y===EXIT.y;
+  const deads=floors.filter(f=>floorNeighbors(f.x,f.y)===1 && !isExit(f) && f.d>0);
+  const farFromStart = f => Math.abs(f.x-START.x)+Math.abs(f.y-START.y) >= Math.max(6, Math.floor((COLS+ROWS)/4));
+  let lc=deads.filter(f=>f.d>=maxD*0.5 && dE[f.y][f.x]>=6 && farFromStart(f));
+  if (!lc.length) lc=deads.filter(f=>f.d>=maxD*0.4 && farFromStart(f));
+  if (!lc.length) lc=floors.filter(f=>f.d>=maxD*0.5 && !isExit(f));
+  const lr=pick(lc); LAIR={x:lr.x,y:lr.y};
+  const used=new Set([key(START),key(EXIT),key(LAIR)]);
+  const cand=floors.filter(f=>f.d>=3 && !used.has(key(f)) && dE[f.y][f.x]>=2 && Math.abs(f.x-LAIR.x)+Math.abs(f.y-LAIR.y)>=3);
+  const pts=[];
+  for (let i=0;i<6;i++){
+    const ref=[START,EXIT,...pts];
+    const scored=cand.filter(c=>!used.has(key(c))).map(c=>({c, s:Math.min(...ref.map(p=>Math.abs(p.x-c.x)+Math.abs(p.y-c.y))) + rnd()*1.5}));
+    scored.sort((a,b)=>b.s-a.s);
+    const top=scored.slice(0,Math.max(1,Math.ceil(scored.length*0.18)));
+    const c=pick(top).c; pts.push({x:c.x,y:c.y,d:c.d}); used.add(key(c));
+  }
+  pts.sort((a,b)=>a.d-b.d);
+  let pc=shuffle(deads.filter(f=>!used.has(key(f)) && f.d>=4));
+  if (pc.length<3) pc=pc.concat(shuffle(floors.filter(f=>!used.has(key(f)) && f.d>=4 && !pc.includes(f))));
+  const types=shuffle(['shield','hourglass','scroll']);
+  const pickups=types.map((t,i)=>({x:pc[i].x,y:pc[i].y,type:t,taken:false}));
+  WALLVAR=[]; FPVAR=[]; FLOORDEC=[];
+  for (let y=0;y<ROWS;y++){ WALLVAR.push([]); FPVAR.push([]); FLOORDEC.push([]);
+    for (let x=0;x<COLS;x++){
+      let v=0;
+      if (MAZE[y][x]===1 && isFloor(x,y+1)){ const r=rnd(); v = r<0.48?0 : r<0.68?1 : r<0.84?2 : 3; }
+      WALLVAR[y].push(v);
+      const r2=rnd(); FPVAR[y].push(r2<0.5?0 : r2<0.68?1 : r2<0.84?2 : 3);
+      FLOORDEC[y].push(rnd()<0.07?1:0);
+    }
+  }
+  LAIRMAP=bfsFrom(LAIR.x,LAIR.y);
+  return { pts, pickups };
+}
+
+function buildGates(pts, n){
+  const d=Math.min(3,n);
+  const cats=shuffle(CATS.slice());
+  return pts.map((p,i)=>{
+    const cat=cats[i], q=generateQuestion(cat,d);
+    return { id:i+1, x:p.x, y:p.y, cat, tag:cat.tag, color:cat.color, title:pick(cat.titles), lore:pick(cat.lores), ...q, solved:false, attempts:0, usedScroll:false, gain:0 };
+  });
+}
+
+function computeOptimalSteps(gates){
+  const pts=[START, ...gates.map(g=>({x:g.x,y:g.y})), EXIT];
+  const maps=pts.map(p=>bfsFrom(p.x,p.y,true));
+  const D=(i,j)=>maps[i][pts[j].y][pts[j].x];
+  const n=gates.length; let best=Infinity;
+  const perm=Array.from({length:n},(_,i)=>i+1);
+  const permute=k=>{
+    if (k===n){ let s=D(0,perm[0]); for (let i=0;i<n-1;i++) s+=D(perm[i],perm[i+1]); s+=D(perm[n-1],n+1); if (s<best) best=s; return; }
+    for (let i=k;i<n;i++){ [perm[k],perm[i]]=[perm[i],perm[k]]; permute(k+1); [perm[k],perm[i]]=[perm[i],perm[k]]; }
+  };
+  permute(0);
+  return best;
+}
+
+/* =====================================================================
+   4. STATO DI GIOCO
+   ===================================================================== */
+const COMBO_MULT=[1,1.5,2,2.5,3];
+const HERO_COLORS=[{name:'Delfino',c:'#1f6fb2'},{name:'Croco',c:'#f0a21a'},{name:'Porpora',c:'#7b2d8e'},{name:'Ulivo',c:'#3c8c3f'},{name:'Corallo',c:'#e0533a'},{name:'Ebano',c:'#2b2b33'}];
+const RANKS=[
+  {min:650,name:'Leggenda di Cnosso',color:'#9b3fb5'},
+  {min:500,name:'Mitico',color:'#1f6fb2'},
+  {min:380,name:'Oro',color:'#e8a93a'},
+  {min:250,name:'Argento',color:'#b9c0c9'},
+  {min:-1e9,name:'Bronzo',color:'#c27a45'}
+];
+const getRank = s => RANKS.find(r => s>=r.min);
+const roman = n => ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'][n-1] || String(n);
+
+const GAME = {
+  mode:'classe', view:'iso', heroColor:HERO_COLORS[0].c, teamName:'Squadra Teseo',
+  code:'', fixedSeed:false, level:1, levelName:'',
+  running:false, over:false, isPaused:true,
+  player:{...START}, rp:{...START}, dir:2, face:1, rAngle:Math.PI/2,
+  minotaur:{...LAIR}, rm:{...LAIR},
+  pathHistory:[{...START}], steps:0, optimalSteps:0,
+  oboli:100, levelStartOboli:100, banked:0, hearts:3, combo:0, bestCombo:0,
+  gates:[], activeGate:null, solvedCount:0, pickups:[], shield:false, scrolls:0,
+  playTime:0, frozenUntil:0, freezeKind:'', invulnUntil:0, minoAcc:0, exitAnim:0,
+  levelSeconds:0, totalSeconds:0, timerInterval:null, cooldownTimer:null, speedInterval:null,
+  modalLocked:false, gateOpenedAt:0, lastMoveAt:0, lastBeat:0, distMap:null, anagramReset:null,
+  seen:new Set(), history:[], levelsDone:0, bestRank:null
+};
+
+/* =====================================================================
+   5. GRAFICA VETTORIALE MINOICA (condivisa tra 2.5D, prima persona e menu)
+   ===================================================================== */
+const INK='#1b130d';
+function rr(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+
+function drawHero(c,x,y,s,color,t,moving,face,alpha=1){
+  const ink=INK, skin='#c98552', L=Math.max(1.4,s*0.04);
+  c.save(); c.globalAlpha=alpha; c.translate(x,y);
+  c.fillStyle='rgba(27,19,13,0.28)'; c.beginPath(); c.ellipse(0,0,s*0.26,s*0.085,0,0,Math.PI*2); c.fill();
+  c.strokeStyle=color; c.lineWidth=Math.max(1.5,s*0.045); c.beginPath(); c.ellipse(0,0,s*0.33,s*0.12,0,0,Math.PI*2); c.stroke();
+  c.scale(face,1);
+  const ph=t/85, bob=moving?-Math.abs(Math.sin(ph))*s*0.05:Math.sin(t/420)*s*0.012;
+  c.translate(0,bob);
+  c.lineWidth=L; c.strokeStyle=ink; c.lineJoin='round'; c.lineCap='round';
+  const sw=moving?Math.sin(ph)*s*0.06:0;
+  c.fillStyle=skin;
+  rr(c,-s*0.11+sw,-s*0.25,s*0.085,s*0.25,s*0.03); c.fill(); c.stroke();
+  rr(c,s*0.025-sw,-s*0.25,s*0.085,s*0.25,s*0.03); c.fill(); c.stroke();
+  c.fillStyle='#6b3d1f'; c.fillRect(-s*0.12+sw,-s*0.04,s*0.1,s*0.04); c.fillRect(s*0.02-sw,-s*0.04,s*0.1,s*0.04);
+  c.fillStyle=color; c.beginPath(); c.moveTo(-s*0.15,-s*0.42); c.lineTo(s*0.15,-s*0.42); c.lineTo(s*0.2,-s*0.2); c.lineTo(-s*0.2,-s*0.2); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle='#f4e9d2'; c.fillRect(-s*0.18,-s*0.27,s*0.36,s*0.035);
+  c.fillStyle=skin; c.beginPath(); c.moveTo(-s*0.2,-s*0.67); c.lineTo(s*0.2,-s*0.67); c.lineTo(s*0.12,-s*0.44); c.lineTo(-s*0.12,-s*0.44); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle='#e8a93a'; rr(c,-s*0.16,-s*0.47,s*0.32,s*0.065,s*0.02); c.fill(); c.stroke();
+  const asw=moving?-Math.sin(ph)*s*0.05:0;
+  c.beginPath(); c.moveTo(s*0.17,-s*0.63); c.lineTo(s*0.25,-s*0.46+asw);
+  c.lineWidth=s*0.09; c.strokeStyle=ink; c.stroke(); c.lineWidth=Math.max(1,s*0.09-2*L); c.strokeStyle=skin; c.stroke();
+  c.lineWidth=L; c.strokeStyle=ink;
+  c.fillStyle='#d1352b'; c.beginPath(); c.arc(s*0.26,-s*0.43+asw,s*0.075,0,Math.PI*2); c.fill(); c.stroke();
+  c.fillStyle=skin; c.beginPath(); c.arc(0,-s*0.81,s*0.16,0,Math.PI*2); c.fill(); c.stroke();
+  c.fillStyle=ink; c.beginPath(); c.arc(0,-s*0.83,s*0.168,Math.PI*0.92,Math.PI*2.08); c.closePath(); c.fill();
+  c.beginPath(); c.moveTo(-s*0.13,-s*0.8); c.quadraticCurveTo(-s*0.27,-s*0.68,-s*0.19,-s*0.55); c.lineWidth=s*0.055; c.stroke();
+  c.fillStyle=color; c.fillRect(-s*0.165,-s*0.9,s*0.33,s*0.045);
+  c.fillStyle=ink; c.beginPath(); c.arc(s*0.075,-s*0.79,s*0.026,0,Math.PI*2); c.fill();
+  c.restore();
+}
+
+function drawMinotaurSprite(c,x,y,s,t,st){
+  const ink=INK, fur='#4b2c1a', furL='#86562f', horn='#f5ecd7', L=Math.max(1.4,s*0.035);
+  c.save(); c.globalAlpha=st.alpha==null?1:st.alpha; c.translate(x,y);
+  c.fillStyle='rgba(27,19,13,0.3)'; c.beginPath(); c.ellipse(0,0,s*0.32,s*0.1,0,0,Math.PI*2); c.fill();
+  const br=Math.sin(t/300)*s*0.015, sh=(st.rage>0.6 && !st.frozen)?Math.sin(t/25)*s*0.02:0;
+  c.translate(sh,-br);
+  c.lineWidth=L; c.strokeStyle=ink; c.lineJoin='round'; c.lineCap='round';
+  c.fillStyle=fur;
+  rr(c,-s*0.18,-s*0.27,s*0.13,s*0.27,s*0.03); c.fill(); c.stroke();
+  rr(c,s*0.05,-s*0.27,s*0.13,s*0.27,s*0.03); c.fill(); c.stroke();
+  c.fillStyle=ink; c.fillRect(-s*0.19,-s*0.05,s*0.15,s*0.05); c.fillRect(s*0.04,-s*0.05,s*0.15,s*0.05);
+  c.fillStyle='#b8432b'; c.beginPath(); c.moveTo(-s*0.21,-s*0.44); c.lineTo(s*0.21,-s*0.44); c.lineTo(s*0.25,-s*0.22); c.lineTo(-s*0.25,-s*0.22); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle='#1b130d'; for (let i=-2;i<=2;i++) c.fillRect(i*s*0.09-s*0.012,-s*0.4,s*0.024,s*0.16);
+  [-1,1].forEach(sd=>{
+    c.beginPath(); c.moveTo(sd*s*0.25,-s*0.7); c.quadraticCurveTo(sd*s*0.38,-s*0.56,sd*s*0.32,-s*0.4);
+    c.lineWidth=s*0.13; c.strokeStyle=ink; c.stroke(); c.lineWidth=Math.max(1,s*0.13-2*L); c.strokeStyle=fur; c.stroke();
+    c.lineWidth=L; c.strokeStyle=ink; c.fillStyle=furL; c.beginPath(); c.arc(sd*s*0.32,-s*0.38,s*0.065,0,Math.PI*2); c.fill(); c.stroke();
+  });
+  c.fillStyle=fur; c.beginPath(); c.moveTo(-s*0.29,-s*0.76); c.quadraticCurveTo(0,-s*0.83,s*0.29,-s*0.76); c.lineTo(s*0.17,-s*0.46); c.lineTo(-s*0.17,-s*0.46); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle='#e8a93a'; rr(c,-s*0.21,-s*0.49,s*0.42,s*0.07,s*0.02); c.fill(); c.stroke();
+  c.fillStyle=furL; c.beginPath(); c.ellipse(0,-s*0.62,s*0.12,s*0.09,0,0,Math.PI*2); c.fill();
+  c.fillStyle=horn;
+  [-1,1].forEach(sd=>{ c.beginPath(); c.moveTo(sd*s*0.11,-s*0.97); c.quadraticCurveTo(sd*s*0.42,-s*0.98,sd*s*0.38,-s*1.24); c.quadraticCurveTo(sd*s*0.31,-s*1.05,sd*s*0.09,-s*1.03); c.closePath(); c.fill(); c.stroke(); });
+  c.fillStyle=fur;
+  [-1,1].forEach(sd=>{ c.beginPath(); c.ellipse(sd*s*0.19,-s*0.93,s*0.07,s*0.035,sd*0.5,0,Math.PI*2); c.fill(); c.stroke(); });
+  c.beginPath(); c.ellipse(0,-s*0.92,s*0.165,s*0.155,0,0,Math.PI*2); c.fill(); c.stroke();
+  c.fillStyle=furL; c.beginPath(); c.ellipse(0,-s*0.81,s*0.125,s*0.078,0,0,Math.PI*2); c.fill(); c.stroke();
+  c.fillStyle=ink; c.beginPath(); c.arc(-s*0.05,-s*0.81,s*0.02,0,Math.PI*2); c.arc(s*0.05,-s*0.81,s*0.02,0,Math.PI*2); c.fill();
+  c.strokeStyle='#e8a93a'; c.lineWidth=Math.max(1.2,s*0.028); c.beginPath(); c.arc(0,-s*0.76,s*0.042,0.1*Math.PI,0.9*Math.PI); c.stroke();
+  if (st.sleep){ c.strokeStyle=ink; c.lineWidth=Math.max(1.2,s*0.025); c.beginPath(); c.moveTo(-s*0.11,-s*0.95); c.lineTo(-s*0.04,-s*0.94); c.moveTo(s*0.04,-s*0.94); c.lineTo(s*0.11,-s*0.95); c.stroke(); }
+  else { c.fillStyle=st.frozen?'#9fd8ff':'#ff3b2f'; c.shadowColor=c.fillStyle; c.shadowBlur=s*0.25; c.beginPath(); c.arc(-s*0.075,-s*0.95,s*0.032,0,Math.PI*2); c.arc(s*0.075,-s*0.95,s*0.032,0,Math.PI*2); c.fill(); c.shadowBlur=0; }
+  c.restore();
+  if (st.frozen){ c.save(); c.globalAlpha=0.32*(st.alpha==null?1:st.alpha); c.fillStyle='#7cc7ff'; c.beginPath(); c.ellipse(x,y-s*0.58,s*0.36,s*0.66,0,0,Math.PI*2); c.fill(); c.restore(); }
+  if (st.sleep){ c.save(); c.font=`900 ${Math.max(10,s*0.22)}px Cinzel, serif`; c.fillStyle='#fff8ea'; c.strokeStyle=INK; c.lineWidth=3; const zz='Z z'; const zy=y-s*1.3+Math.sin(t/400)*s*0.05; c.strokeText(zz,x+s*0.2,zy); c.fillText(zz,x+s*0.2,zy); c.restore(); }
+}
+
+function drawLabrys(c,x,y,s,sx){
+  c.save(); c.translate(x,y); c.scale(Math.abs(sx)<0.08?0.08*Math.sign(sx||1):sx,1);
+  c.lineWidth=Math.max(1.2,s*0.06); c.strokeStyle=INK; c.lineJoin='round';
+  c.fillStyle='#7a4a1c'; c.fillRect(-s*0.045,-s*0.58,s*0.09,s*1.16); c.strokeRect(-s*0.045,-s*0.58,s*0.09,s*1.16);
+  const g=c.createLinearGradient(-s*0.5,0,s*0.5,0); g.addColorStop(0,'#ffe08a'); g.addColorStop(0.5,'#f2b632'); g.addColorStop(1,'#c98714');
+  c.fillStyle=g;
+  [-1,1].forEach(sd=>{ c.beginPath(); c.moveTo(sd*s*0.045,-s*0.25); c.quadraticCurveTo(sd*s*0.25,-s*0.25,sd*s*0.52,-s*0.46); c.quadraticCurveTo(sd*s*0.36,0,sd*s*0.52,s*0.46); c.quadraticCurveTo(sd*s*0.25,s*0.25,sd*s*0.045,s*0.25); c.closePath(); c.fill(); c.stroke(); });
+  c.restore();
+}
+
+function drawGateSprite(c,x,y,s,t,g,pulse){
+  const L=Math.max(1.4,s*0.035), pw=s*0.64, ph=s*0.2, pt=s*0.13;
+  c.save(); c.lineWidth=L; c.strokeStyle=INK; c.lineJoin='round';
+  c.fillStyle='rgba(27,19,13,0.25)'; c.beginPath(); c.ellipse(x,y,pw*0.62,s*0.1,0,0,Math.PI*2); c.fill();
+  c.fillStyle=g.solved?'#3c8c3f':'#b8432b'; c.fillRect(x-pw/2,y-ph,pw,ph); c.strokeRect(x-pw/2,y-ph,pw,ph);
+  c.fillStyle='#e8a93a'; c.fillRect(x-pw/2,y-ph,pw,ph*0.3); c.strokeRect(x-pw/2,y-ph,pw,ph*0.3);
+  c.fillStyle='#f6ead0'; c.fillRect(x-pw/2,y-ph-pt,pw,pt); c.strokeRect(x-pw/2,y-ph-pt,pw,pt);
+  const bx=x, by=y-ph-pt*0.4, hw=s*0.28, hh=s*0.32;
+  c.beginPath(); c.moveTo(bx-hw,by); c.lineTo(bx-hw,by-hh*0.25);
+  c.quadraticCurveTo(bx-hw*1.08,by-hh*0.8,bx-hw*0.76,by-hh); c.quadraticCurveTo(bx-hw*0.62,by-hh*0.55,bx-hw*0.26,by-hh*0.34);
+  c.quadraticCurveTo(bx,by-hh*0.24,bx+hw*0.26,by-hh*0.34); c.quadraticCurveTo(bx+hw*0.62,by-hh*0.55,bx+hw*0.76,by-hh);
+  c.quadraticCurveTo(bx+hw*1.08,by-hh*0.8,bx+hw,by-hh*0.25); c.lineTo(bx+hw,by); c.closePath();
+  c.fillStyle=g.solved?'#7fdc9f':'#fff3d6'; c.fill(); c.stroke();
+  if (!g.solved){
+    const ly=by-hh-s*0.2+Math.sin(t/420+g.id)*s*0.04;
+    c.save(); c.shadowColor='#ffcf4d'; c.shadowBlur=s*(0.25+0.3*pulse);
+    drawLabrys(c,bx,ly,s*0.42,Math.cos(t/520+g.id));
+    c.restore();
+    const r=s*0.13, cx=x+s*0.36, cy=by-hh+s*0.02;
+    c.fillStyle=g.color||'#1f6fb2'; c.beginPath(); c.arc(cx,cy,r,0,Math.PI*2); c.fill(); c.stroke();
+    c.fillStyle='#fff8ea'; c.font=`900 ${Math.max(9,r*1.35)}px Nunito, sans-serif`; c.textAlign='center'; c.textBaseline='middle'; c.fillText(String(g.id),cx,cy+r*0.06);
+  } else {
+    const r=s*0.15, cy=by-hh-s*0.14+Math.sin(t/500)*s*0.03;
+    c.fillStyle='#2f9a5a'; c.beginPath(); c.arc(bx,cy,r,0,Math.PI*2); c.fill(); c.stroke();
+    c.strokeStyle='#fff8ea'; c.lineWidth=Math.max(1.6,r*0.32); c.lineCap='round'; c.beginPath(); c.moveTo(bx-r*0.45,cy); c.lineTo(bx-r*0.1,cy+r*0.38); c.lineTo(bx+r*0.5,cy-r*0.35); c.stroke();
+  }
+  c.restore();
+}
+
+function drawPickupSprite(c,x,y,s,type,t,i){
+  const bob=Math.sin(t/350+i*2)*s*0.06, cy=y-s*0.45+bob, L=Math.max(1.3,s*0.04);
+  const col={shield:'#60a5fa',hourglass:'#a78bfa',scroll:'#f87171'}[type];
+  c.save();
+  c.fillStyle='rgba(27,19,13,0.22)'; c.beginPath(); c.ellipse(x,y,s*(0.2-bob/s*0.5),s*0.07,0,0,Math.PI*2); c.fill();
+  c.globalAlpha=0.35+0.15*Math.sin(t/300+i); c.fillStyle=col; c.beginPath(); c.arc(x,cy,s*0.32,0,Math.PI*2); c.fill(); c.globalAlpha=1;
+  c.lineWidth=L; c.strokeStyle=INK; c.lineJoin='round';
+  if (type==='shield'){
+    c.fillStyle='#f3e6cd';
+    c.beginPath(); c.ellipse(x,cy-s*0.11,s*0.14,s*0.13,0,0,Math.PI*2); c.fill(); c.stroke();
+    c.beginPath(); c.ellipse(x,cy+s*0.1,s*0.17,s*0.15,0,0,Math.PI*2); c.fill(); c.stroke();
+    c.fillStyle='#6b3d1f';
+    [[-0.06,-0.14,0.04],[0.05,-0.08,0.035],[-0.08,0.08,0.05],[0.07,0.14,0.04],[0.02,0.04,0.03]].forEach(([dx,dy,r])=>{ c.beginPath(); c.arc(x+dx*s,cy+dy*s,r*s,0,Math.PI*2); c.fill(); });
+    c.strokeStyle='#e8a93a'; c.lineWidth=Math.max(1.2,s*0.03); c.beginPath(); c.moveTo(x,cy-s*0.24); c.lineTo(x,cy+s*0.25); c.stroke();
+  } else if (type==='hourglass'){
+    c.fillStyle='#7a4a1c'; c.fillRect(x-s*0.16,cy-s*0.25,s*0.32,s*0.06); c.strokeRect(x-s*0.16,cy-s*0.25,s*0.32,s*0.06);
+    c.fillRect(x-s*0.16,cy+s*0.19,s*0.32,s*0.06); c.strokeRect(x-s*0.16,cy+s*0.19,s*0.32,s*0.06);
+    c.fillStyle='#d8f0fb'; c.beginPath(); c.moveTo(x-s*0.12,cy-s*0.19); c.lineTo(x+s*0.12,cy-s*0.19); c.lineTo(x,cy); c.lineTo(x+s*0.12,cy+s*0.19); c.lineTo(x-s*0.12,cy+s*0.19); c.lineTo(x,cy); c.closePath(); c.fill(); c.stroke();
+    const k=(t/2500)%1;
+    c.fillStyle='#e8a93a'; c.beginPath(); c.moveTo(x-s*0.1*(1-k),cy-s*0.17*(1-k)); c.lineTo(x+s*0.1*(1-k),cy-s*0.17*(1-k)); c.lineTo(x,cy-s*0.01); c.closePath(); c.fill();
+    c.beginPath(); c.moveTo(x-s*0.1*(0.3+k*0.7),cy+s*0.18); c.lineTo(x+s*0.1*(0.3+k*0.7),cy+s*0.18); c.lineTo(x,cy+s*0.18-s*0.12*(0.3+k*0.7)); c.closePath(); c.fill();
+  } else {
+    c.fillStyle='#d1352b'; c.beginPath(); c.arc(x,cy,s*0.17,0,Math.PI*2); c.fill(); c.stroke();
+    c.strokeStyle='#f6a08f'; c.lineWidth=Math.max(1,s*0.025);
+    c.beginPath(); c.arc(x-s*0.05,cy+s*0.02,s*0.12,-1.2,1.0); c.stroke();
+    c.beginPath(); c.arc(x+s*0.06,cy-s*0.03,s*0.1,1.8,4.2); c.stroke();
+    c.beginPath(); c.moveTo(x-s*0.15,cy-s*0.05); c.quadraticCurveTo(x,cy-s*0.1,x+s*0.14,cy+s*0.06); c.stroke();
+    c.strokeStyle='#d1352b'; c.lineWidth=Math.max(1.2,s*0.03); c.beginPath(); c.moveTo(x+s*0.14,cy+s*0.1); c.quadraticCurveTo(x+s*0.3,cy+s*0.2,x+s*0.22,cy+s*0.34); c.stroke();
+  }
+  c.restore();
+}
+
+function drawShipSprite(c,x,y,s,t,open,grilleK){
+  const bob=Math.sin(t/380)*s*0.035, rock=Math.sin(t/520)*0.05, L=Math.max(1.3,s*0.035);
+  c.save(); c.translate(x,y+bob); c.rotate(rock); c.lineWidth=L; c.strokeStyle=INK; c.lineJoin='round';
+  c.fillStyle='#7a4a1c'; c.fillRect(-s*0.025,-s*0.82,s*0.05,s*0.72); c.strokeRect(-s*0.025,-s*0.82,s*0.05,s*0.72);
+  c.fillStyle='#fff8ea'; c.fillRect(-s*0.3,-s*0.76,s*0.6,s*0.42); c.strokeRect(-s*0.3,-s*0.76,s*0.6,s*0.42);
+  c.fillStyle='#1f6fb2'; for (let i=0;i<3;i++) c.fillRect(-s*0.3,-s*0.72+i*s*0.13,s*0.6,s*0.05);
+  c.strokeRect(-s*0.3,-s*0.76,s*0.6,s*0.42);
+  c.fillStyle='#b8432b'; c.beginPath(); c.moveTo(s*0.025,-s*0.82); c.lineTo(s*0.2,-s*0.88); c.lineTo(s*0.025,-s*0.94); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle='#5a3220'; c.beginPath(); c.moveTo(-s*0.5,-s*0.3); c.quadraticCurveTo(-s*0.36,s*0.04,0,s*0.03); c.quadraticCurveTo(s*0.36,s*0.04,s*0.5,-s*0.36); c.lineTo(s*0.38,-s*0.18); c.lineTo(-s*0.4,-s*0.17); c.closePath(); c.fill(); c.stroke();
+  c.fillStyle='#e8a93a'; c.fillRect(-s*0.36,-s*0.14,s*0.72,s*0.04);
+  c.strokeStyle=INK; c.lineWidth=Math.max(1,s*0.02); for (let i=-3;i<=3;i++){ c.beginPath(); c.moveTo(i*s*0.1,-s*0.08); c.lineTo(i*s*0.1-s*0.05+Math.sin(t/200+i)*s*0.03,s*0.12); c.stroke(); }
+  c.restore();
+  if (grilleK<1){
+    const H=s*1.05, off=grilleK*H*1.1;
+    c.save(); c.globalAlpha=1-grilleK; c.lineWidth=L; c.strokeStyle=INK;
+    const gx0=x-s*0.5, top=y+s*0.05-H-off;
+    c.fillStyle='#b07a2a';
+    for (let i=0;i<6;i++){ const bx=gx0+i*s*0.2; c.fillRect(bx-s*0.025,top,s*0.05,H); c.strokeRect(bx-s*0.025,top,s*0.05,H); }
+    [0.15,0.55].forEach(k=>{ c.fillRect(gx0-s*0.05,top+H*k,s*1.1,s*0.06); c.strokeRect(gx0-s*0.05,top+H*k,s*1.1,s*0.06); });
+    if (!open){ const cy=top+H*0.38; c.fillStyle='#e8a93a'; c.beginPath(); c.arc(x,cy,s*0.13,0,Math.PI*2); c.fill(); c.stroke(); c.fillStyle=INK; c.fillRect(x-s*0.025,cy-s*0.02,s*0.05,s*0.08); c.beginPath(); c.arc(x,cy-s*0.03,s*0.035,0,Math.PI*2); c.fill(); }
+    c.restore();
+  }
+}
+
+/* Texture "pixel art" per la prima persona (stile Minecraft/Doom) */
+const TEXN=32;
+let TEX=[];
+function buildTextures(){
+  const mk=()=>{ const cv=document.createElement('canvas'); cv.width=TEXN; cv.height=TEXN; return cv; };
+  const noise=(c,base,amt)=>{ for (let y=0;y<TEXN;y++) for (let x=0;x<TEXN;x++){ const r=(Math.sin(x*12.9898+y*78.233)*43758.5453)%1; if (Math.abs(r)<amt){ c.fillStyle=base; c.fillRect(x,y,1,1); } } };
+  const frieze=c=>{ c.fillStyle='#e8a93a'; c.fillRect(0,0,TEXN,7); c.fillStyle=INK; c.fillRect(0,7,TEXN,1); for (let i=0;i<4;i++) c.fillRect(i*8+3,1,2,5); };
+  const plinth=c=>{ c.fillStyle='#3d2014'; c.fillRect(0,TEXN-4,TEXN,4); c.fillStyle=INK; c.fillRect(0,TEXN-5,TEXN,1); };
+  // 0: muro rosso
+  let cv=mk(), c=cv.getContext('2d');
+  c.fillStyle='#b8432b'; c.fillRect(0,0,TEXN,TEXN); noise(c,'#a23a24',0.12); noise(c,'#c95136',0.06);
+  c.fillStyle='#8a2c19'; c.fillRect(0,18,TEXN,1); c.fillRect(15,8,1,10); c.fillRect(6,19,1,9); c.fillRect(24,19,1,9);
+  frieze(c); plinth(c); TEX.push(cv);
+  // 1: colonna di Cnosso
+  cv=mk(); c=cv.getContext('2d');
+  c.fillStyle='#e0a83e'; c.fillRect(0,0,TEXN,TEXN); noise(c,'#d39a33',0.1);
+  c.fillStyle=INK; c.fillRect(7,2,18,5); c.fillStyle='#e8a93a'; c.fillRect(9,5,14,1);
+  for (let y=7;y<TEXN-3;y++){ const w=Math.round(11-(y-7)*4/(TEXN-10)); c.fillStyle='#b8432b'; c.fillRect(16-w/2|0,y,w,1); c.fillStyle='#d55a36'; c.fillRect((16-w/2|0)+2,y,2,1); c.fillStyle='#8a2c19'; c.fillRect((16+w/2|0)-2,y,2,1); }
+  c.fillStyle=INK; c.fillRect(10,TEXN-3,12,3); TEX.push(cv);
+  // 2: affresco blu con spirali
+  cv=mk(); c=cv.getContext('2d');
+  c.fillStyle='#2a78b8'; c.fillRect(0,0,TEXN,TEXN); noise(c,'#2470ad',0.1);
+  c.strokeStyle='#f4e9d2'; c.lineWidth=1.6; c.beginPath(); c.arc(9,19,4.5,0,Math.PI*2); c.stroke(); c.beginPath(); c.arc(23,19,4.5,0,Math.PI*2); c.stroke();
+  c.beginPath(); c.moveTo(13.5,19); c.bezierCurveTo(15,13,17,25,18.5,19); c.stroke();
+  c.fillStyle='#e8a93a'; c.fillRect(8,18,2,2); c.fillRect(22,18,2,2);
+  frieze(c); plinth(c); TEX.push(cv);
+  // 3: rosetta su rosso
+  cv=mk(); c=cv.getContext('2d');
+  c.fillStyle='#b8432b'; c.fillRect(0,0,TEXN,TEXN); noise(c,'#a23a24',0.12);
+  c.fillStyle='#fff3d6'; for (let k=0;k<8;k++){ const a=k*Math.PI/4; c.beginPath(); c.ellipse(16+Math.cos(a)*5,19+Math.sin(a)*5,3,1.6,a,0,Math.PI*2); c.fill(); }
+  c.fillStyle='#e8a93a'; c.beginPath(); c.arc(16,19,2.6,0,Math.PI*2); c.fill();
+  frieze(c); plinth(c); TEX.push(cv);
+}
+
+/* =====================================================================
+   6. RENDERING 2.5D (vista assonometrica obliqua, ordinata per profondità)
+   ===================================================================== */
+const canvas=$('labyrinthCanvas'), ctx=canvas.getContext('2d'), wrap=$('canvas-wrap');
+const TH=0.62, WHR=0.5;
+let W=0, H=0, DPR=1, tw=40, th=24, wh=20, ox=0, oy=0, floorLayer=null, wallSprites=[], edgeW=1.5;
+const particles=[], floaters=[];
+const gx = x => ox + x*tw, gy = y => oy + y*th;
+const cxp = x => ox + (x+0.5)*tw, cyp = y => oy + (y+0.5)*th;
+
+function resizeCanvas(){
+  const r=wrap.getBoundingClientRect(); if (r.width<10 || r.height<10) return;
+  DPR=Math.min(2, window.devicePixelRatio||1); W=r.width; H=r.height;
+  canvas.width=Math.round(W*DPR); canvas.height=Math.round(H*DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  const margin=Math.min(W,H)*0.03;
+  tw=Math.min((W-margin*2)/COLS, (H-margin*2)/(ROWS*TH+WHR+0.25));
+  th=tw*TH; wh=tw*WHR; edgeW=Math.max(1.2,tw*0.045);
+  ox=(W-COLS*tw)/2; oy=(H-(ROWS*th+wh))/2+wh+tw*0.1;
+  buildWallSprites(); buildFloorLayer();
+}
+
+function paintWall(c,v,w,t,h){
+  const L=Math.max(1,w*0.04), fy=t;
+  if (v===1){
+    c.fillStyle='#e0a83e'; c.fillRect(0,fy,w,h);
+    const cx=w/2, capH=h*0.22, baseH=h*0.1;
+    c.fillStyle='#b8432b'; c.beginPath(); c.moveTo(cx-w*0.17,fy+capH); c.lineTo(cx+w*0.17,fy+capH); c.lineTo(cx+w*0.12,fy+h-baseH); c.lineTo(cx-w*0.12,fy+h-baseH); c.closePath(); c.fill();
+    c.strokeStyle=INK; c.lineWidth=L; c.stroke();
+    c.fillStyle=INK; rr(c,cx-w*0.27,fy+h*0.04,w*0.54,capH-h*0.02,capH*0.45); c.fill();
+    c.fillStyle='#e8a93a'; c.fillRect(cx-w*0.2,fy+h*0.04+capH*0.5,w*0.4,Math.max(1,capH*0.14));
+    c.fillStyle=INK; c.fillRect(cx-w*0.16,fy+h-baseH,w*0.32,baseH);
+  } else if (v===2){
+    c.fillStyle='#2a78b8'; c.fillRect(0,fy,w,h);
+    c.strokeStyle='#f4e9d2'; c.lineWidth=Math.max(1.2,w*0.045);
+    const my=fy+h*0.6, r=h*0.17;
+    c.beginPath(); c.arc(w*0.27,my,r,0,Math.PI*2); c.stroke(); c.beginPath(); c.arc(w*0.73,my,r,0,Math.PI*2); c.stroke();
+    c.beginPath(); c.moveTo(w*0.27+r,my); c.bezierCurveTo(w*0.45,my-r*2.2,w*0.55,my+r*2.2,w*0.73-r,my); c.stroke();
+    c.fillStyle='#e8a93a'; c.beginPath(); c.arc(w*0.27,my,r*0.4,0,Math.PI*2); c.arc(w*0.73,my,r*0.4,0,Math.PI*2); c.fill();
+  } else {
+    c.fillStyle='#b8432b'; c.fillRect(0,fy,w,h);
+    if (v===3){
+      c.fillStyle='#fff3d6'; const cx=w/2, cy=fy+h*0.6, R=h*0.2;
+      for (let k=0;k<8;k++){ const a=k*Math.PI/4; c.beginPath(); c.ellipse(cx+Math.cos(a)*R,cy+Math.sin(a)*R,R*0.55,R*0.3,a,0,Math.PI*2); c.fill(); }
+      c.fillStyle='#e8a93a'; c.beginPath(); c.arc(cx,cy,R*0.45,0,Math.PI*2); c.fill();
+    } else { c.fillStyle='#a23a24'; c.fillRect(0,fy+h*0.58,w,Math.max(1,h*0.04)); c.fillRect(w*0.5,fy+h*0.22,Math.max(1,w*0.03),h*0.36); }
+  }
+  if (v!==1){ const bh=h*0.22; c.fillStyle='#e8a93a'; c.fillRect(0,fy,w,bh); c.fillStyle=INK; for (let i=0;i<4;i++) c.fillRect(w*i/4+w*0.09,fy+bh*0.18,w*0.05,bh*0.64); c.fillRect(0,fy+bh-L*0.5,w,L*0.7); }
+  c.fillStyle='rgba(27,19,13,0.55)'; c.fillRect(0,fy+h*0.9,w,h*0.1);
+  const g=c.createLinearGradient(0,fy,0,fy+h); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,0.16)'); c.fillStyle=g; c.fillRect(0,fy,w,h);
+  c.strokeStyle=INK; c.lineWidth=L; c.strokeRect(L/2,fy,w-L,h-L/2);
+  const tg=c.createLinearGradient(0,0,0,t); tg.addColorStop(0,'#f8edd4'); tg.addColorStop(1,'#e8d5a9'); c.fillStyle=tg; c.fillRect(0,0,w,t);
+  c.strokeStyle='rgba(168,112,15,0.35)'; c.lineWidth=Math.max(1,w*0.022); c.strokeRect(w*0.1,t*0.14,w*0.8,t*0.72);
+}
+function buildWallSprites(){
+  wallSprites=[0,1,2,3].map(v=>{
+    const cv=document.createElement('canvas'); cv.width=Math.ceil(tw*DPR); cv.height=Math.ceil((th+wh)*DPR);
+    const c=cv.getContext('2d'); c.scale(DPR,DPR); paintWall(c,v,tw,th,wh); return cv;
+  });
+}
+function buildFloorLayer(){
+  floorLayer=document.createElement('canvas'); floorLayer.width=canvas.width; floorLayer.height=canvas.height;
+  const c=floorLayer.getContext('2d'); c.scale(DPR,DPR);
+  c.fillStyle='rgba(8,25,45,0.45)'; rr(c,ox+tw*0.25,oy-wh+tw*0.3,COLS*tw,ROWS*th+wh,tw*0.2); c.fill();
+  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++){
+    if (MAZE[y][x]!==0) continue;
+    const X=gx(x), Y=gy(y), court=inCourt({x,y});
+    c.fillStyle = court ? ((x+y)%2?'#f2cf8c':'#e9bb6c') : ((x+y)%2?'#f5ebd3':'#ede0c3');
+    c.fillRect(X,Y,tw+0.6,th+0.6);
+    c.strokeStyle='rgba(140,100,50,0.28)'; c.lineWidth=1; c.strokeRect(X+0.5,Y+0.5,tw-1,th-1);
+    const cx=X+tw/2, cy=Y+th/2;
+    if (court){ c.fillStyle='#1f6fb2'; c.beginPath(); c.moveTo(cx,cy-th*0.22); c.lineTo(cx+tw*0.16,cy); c.lineTo(cx,cy+th*0.22); c.lineTo(cx-tw*0.16,cy); c.closePath(); c.fill(); }
+    else if (FLOORDEC[y][x]){ c.save(); c.translate(cx,cy); c.scale(1,TH); c.fillStyle='rgba(31,111,178,0.55)'; for (let k=0;k<4;k++){ c.beginPath(); c.ellipse(Math.cos(k*Math.PI/2)*tw*0.1,Math.sin(k*Math.PI/2)*tw*0.1,tw*0.07,tw*0.04,k*Math.PI/2,0,Math.PI*2); c.fill(); } c.fillStyle='rgba(232,169,58,0.8)'; c.beginPath(); c.arc(0,0,tw*0.045,0,Math.PI*2); c.fill(); c.restore(); }
+    if (isWallAt(x,y-1)){ const g=c.createLinearGradient(0,Y,0,Y+th*0.55); g.addColorStop(0,'rgba(50,25,8,0.38)'); g.addColorStop(1,'rgba(50,25,8,0)'); c.fillStyle=g; c.fillRect(X,Y,tw,th*0.55); }
+    if (isWallAt(x-1,y)){ const g=c.createLinearGradient(X,0,X+tw*0.3,0); g.addColorStop(0,'rgba(50,25,8,0.25)'); g.addColorStop(1,'rgba(50,25,8,0)'); c.fillStyle=g; c.fillRect(X,Y,tw*0.3,th); }
+  }
+  const sx=cxp(START.x), sy=cyp(START.y);
+  c.save(); c.translate(sx,sy); c.scale(1,TH); c.strokeStyle='#b8432b'; c.lineWidth=Math.max(1.5,tw*0.05); c.setLineDash([tw*0.08,tw*0.06]); c.beginPath(); c.arc(0,0,tw*0.36,0,Math.PI*2); c.stroke(); c.restore();
+}
+
+function drawWall(x,y){
+  const X=gx(x), Y=gy(y)-wh, front=!isWallAt(x,y+1);
+  ctx.drawImage(wallSprites[WALLVAR[y][x]],X,Y,tw,th+wh);
+  ctx.strokeStyle=INK; ctx.lineWidth=edgeW; ctx.beginPath();
+  const bottom=Y+th+(front?wh:0);
+  if (!isWallAt(x-1,y)){ ctx.moveTo(X+edgeW/2,Y); ctx.lineTo(X+edgeW/2,bottom); }
+  if (!isWallAt(x+1,y)){ ctx.moveTo(X+tw-edgeW/2,Y); ctx.lineTo(X+tw-edgeW/2,bottom); }
+  if (!isWallAt(x,y-1)){ ctx.moveTo(X,Y+edgeW/2); ctx.lineTo(X+tw,Y+edgeW/2); }
+  if (front){ ctx.moveTo(X,Y+th); ctx.lineTo(X+tw,Y+th); }
+  ctx.stroke();
+}
+
+const exitOpen = () => GAME.gates.length>0 && GAME.solvedCount===GAME.gates.length;
+
+function drawIso(t){
+  ctx.clearRect(0,0,W,H);
+  if (floorLayer) ctx.drawImage(floorLayer,0,0,W,H);
+  const pulse=0.5+0.5*Math.sin(t/280), open=exitOpen();
+  // porto (pavimento animato)
+  const X=gx(EXIT.x), Y=gy(EXIT.y);
+  const sg=ctx.createLinearGradient(0,Y,0,Y+th); sg.addColorStop(0,'#2b8fd0'); sg.addColorStop(1,'#1a5f99'); ctx.fillStyle=sg; ctx.fillRect(X,Y,tw,th);
+  ctx.strokeStyle='rgba(255,255,255,0.75)'; ctx.lineWidth=Math.max(1,tw*0.03);
+  for (let i=0;i<3;i++){ const yy=Y+th*(0.25+i*0.27); ctx.beginPath(); for (let k=0;k<=8;k++){ const xx=X+tw*k/8, yv=yy+Math.sin(t/300+k*1.3+i)*th*0.05; k?ctx.lineTo(xx,yv):ctx.moveTo(xx,yv); } ctx.stroke(); }
+  if (open){ ctx.save(); ctx.strokeStyle='#7dd3fc'; ctx.lineWidth=2+2*pulse; ctx.shadowColor='#38bdf8'; ctx.shadowBlur=10+12*pulse; ctx.strokeRect(X+1,Y+1,tw-2,th-2); ctx.restore(); }
+  // aloni dei sigilli
+  GAME.gates.forEach(g=>{ ctx.save(); ctx.translate(cxp(g.x),cyp(g.y)); ctx.scale(1,TH); ctx.fillStyle=g.solved?'rgba(47,154,90,0.35)':`rgba(232,169,58,${0.3+0.3*pulse})`; ctx.beginPath(); ctx.arc(0,0,tw*0.48,0,Math.PI*2); ctx.fill(); ctx.restore(); });
+  drawThreadIso(t);
+  const heroRow=Math.round(GAME.rp.y), minoRow=Math.round(GAME.rm.y);
+  for (let y=0;y<ROWS;y++){
+    for (let x=0;x<COLS;x++) if (MAZE[y][x]===1) drawWall(x,y);
+    if (EXIT.y===y) drawShipSprite(ctx,cxp(EXIT.x),cyp(EXIT.y)+th*0.15,tw*0.95,t,open,GAME.exitAnim);
+    GAME.gates.forEach(g=>{ if (g.y===y) drawGateSprite(ctx,cxp(g.x),cyp(g.y)+th*0.18,tw,t,g,pulse); });
+    GAME.pickups.forEach((p,i)=>{ if (!p.taken && p.y===y) drawPickupSprite(ctx,cxp(p.x),cyp(p.y)+th*0.15,tw,p.type,t,i); });
+    if (minoRow===y) drawMinoIso(t,1);
+    if (heroRow===y) drawHeroIso(t,1);
+  }
+  if (isWallAt(Math.round(GAME.rp.x),heroRow+1)) drawHeroIso(t,0.45);
+  if (isWallAt(Math.round(GAME.rm.x),minoRow+1)) drawMinoIso(t,0.45);
+  drawFx();
+}
+function drawThreadIso(t){
+  const ph=GAME.pathHistory; if (ph.length<2) return;
+  ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(cxp(ph[0].x),cyp(ph[0].y));
+  for (let i=1;i<ph.length-1;i++) ctx.lineTo(cxp(ph[i].x),cyp(ph[i].y));
+  ctx.lineTo(cxp(GAME.rp.x),cyp(GAME.rp.y));
+  ctx.strokeStyle='rgba(27,19,13,0.35)'; ctx.lineWidth=Math.max(4,tw*0.15); ctx.stroke();
+  ctx.strokeStyle='#d1352b'; ctx.lineWidth=Math.max(2.5,tw*0.09); ctx.stroke();
+  ctx.setLineDash([tw*0.12,tw*0.5]); ctx.lineDashOffset=-t*0.04; ctx.strokeStyle='rgba(255,240,230,0.9)'; ctx.lineWidth=Math.max(1.2,tw*0.035); ctx.stroke();
+  ctx.restore();
+}
+const heroMoving = () => performance.now()-GAME.lastMoveAt<230;
+function drawHeroIso(t,alpha){
+  const inv=GAME.playTime<GAME.invulnUntil && GAME.running;
+  const a = inv ? alpha*(Math.floor(t/100)%2?0.35:1) : alpha;
+  drawHero(ctx,cxp(GAME.rp.x),cyp(GAME.rp.y)+th*0.15,tw*1.02,GAME.heroColor,t,heroMoving(),GAME.face,a);
+}
+function minoState(alpha){
+  const d=getMinotaurDistance();
+  return { alpha, rage:Math.max(0,Math.min(1,(8-d)/8)), frozen:GAME.running && GAME.playTime<GAME.frozenUntil && GAME.freezeKind==='freeze', sleep:GAME.running && GAME.playTime<GAME.frozenUntil && GAME.freezeKind==='sleep' };
+}
+function drawMinoIso(t,alpha){ drawMinotaurSprite(ctx,cxp(GAME.rm.x),cyp(GAME.rm.y)+th*0.15,tw*1.12,t,minoState(alpha)); }
+
+function drawFx(){
+  particles.forEach(p=>{ ctx.save(); ctx.globalAlpha=Math.max(0,p.life/p.max); ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); ctx.restore(); });
+  floaters.forEach(f=>{ ctx.save(); ctx.globalAlpha=Math.max(0,Math.min(1,f.life/600)); ctx.font=`900 ${Math.max(15,Math.min(W,H)*0.045)}px Cinzel, serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.lineWidth=5; ctx.strokeStyle=INK; ctx.strokeText(f.text,f.x,f.y); ctx.fillStyle=f.color; ctx.fillText(f.text,f.x,f.y); ctx.restore(); });
+}
+
+/* =====================================================================
+   7. RENDERING IN PRIMA PERSONA (raycasting a griglia + sprite)
+   ===================================================================== */
+const SPR=192, SPR_FEET=180;
+const sprCanvas=document.createElement('canvas'); sprCanvas.width=SPR; sprCanvas.height=SPR;
+const sprCtx=sprCanvas.getContext('2d');
+let zbuf=new Float32Array(1);
+
+function screenPos(x,y){ // posizione 2.5D per effetti (particelle) – in prima persona usiamo il centro schermo
+  if (GAME.view==='iso') return { x:cxp(x), y:cyp(y)-tw*0.4 };
+  return { x:W/2, y:H*0.45 };
+}
+
+function drawFPV(t){
+  const half=H/2, moving=heroMoving();
+  const bob=moving?Math.sin(t/70)*H*0.008:0, horizon=half+bob;
+  const px=GAME.rp.x+0.5, py=GAME.rp.y+0.5, a=GAME.rAngle;
+  const dX=Math.cos(a), dY=Math.sin(a), pX=-dY*0.72, pY=dX*0.72;
+  // soffitto a travi e pavimento d'alabastro
+  let g=ctx.createLinearGradient(0,0,0,horizon); g.addColorStop(0,'#2a140c'); g.addColorStop(1,'#7a4026'); ctx.fillStyle=g; ctx.fillRect(0,0,W,horizon);
+  g=ctx.createLinearGradient(0,horizon,0,H); g.addColorStop(0,'#7d6a4e'); g.addColorStop(1,'#f3e7cb'); ctx.fillStyle=g; ctx.fillRect(0,horizon,W,H-horizon);
+  const rays=Math.max(60,Math.min(Math.floor(W/2),480)), colW=W/rays;
+  if (zbuf.length!==rays) zbuf=new Float32Array(rays);
+  ctx.imageSmoothingEnabled=false;
+  for (let i=0;i<rays;i++){
+    const camX=2*(i+0.5)/rays-1, rdx=dX+pX*camX, rdy=dY+pY*camX;
+    let mx=Math.floor(px), my=Math.floor(py);
+    const ddx=Math.abs(1/rdx), ddy=Math.abs(1/rdy);
+    let stepX, stepY, sdx, sdy;
+    if (rdx<0){ stepX=-1; sdx=(px-mx)*ddx; } else { stepX=1; sdx=(mx+1-px)*ddx; }
+    if (rdy<0){ stepY=-1; sdy=(py-my)*ddy; } else { stepY=1; sdy=(my+1-py)*ddy; }
+    let side=0, guard=0;
+    while (guard++<80){
+      if (sdx<sdy){ sdx+=ddx; mx+=stepX; side=0; } else { sdy+=ddy; my+=stepY; side=1; }
+      if (!inB(mx,my) || MAZE[my][mx]===1) break;
+    }
+    const dist=Math.max(0.05, side===0 ? sdx-ddx : sdy-ddy);
+    zbuf[i]=dist;
+    const lh=H/dist, top=horizon-lh/2;
+    let wx = side===0 ? py+dist*rdy : px+dist*rdx; wx-=Math.floor(wx);
+    if ((side===0 && rdx<0) || (side===1 && rdy>0)) wx=1-wx;
+    const v = inB(mx,my) ? FPVAR[my][mx] : 0;
+    const tx=Math.min(TEXN-1,Math.floor(wx*TEXN));
+    ctx.drawImage(TEX[v],tx,0,1,TEXN,i*colW,top,colW+0.7,lh);
+    const shade=Math.min(0.82,dist/11)+(side===1?0.14:0);
+    if (shade>0.02){ ctx.fillStyle=`rgba(22,10,4,${shade.toFixed(3)})`; ctx.fillRect(i*colW,top,colW+0.7,lh); }
+  }
+  ctx.imageSmoothingEnabled=true;
+  // sprite (sigilli, reperti, nave, Minotauro) con occlusione per colonna
+  const pulse=0.5+0.5*Math.sin(t/280), open=exitOpen();
+  const list=[];
+  GAME.gates.forEach(gt=>list.push({x:gt.x+0.5,y:gt.y+0.5,kind:'gate',ref:gt}));
+  GAME.pickups.forEach((p,i)=>{ if (!p.taken) list.push({x:p.x+0.5,y:p.y+0.5,kind:'pickup',ref:p,i}); });
+  list.push({x:EXIT.x+0.5,y:EXIT.y+0.5,kind:'ship'});
+  list.push({x:GAME.rm.x+0.5,y:GAME.rm.y+0.5,kind:'mino'});
+  list.forEach(s=>{ s.dx=s.x-px; s.dy=s.y-py; s.d2=s.dx*s.dx+s.dy*s.dy; });
+  list.sort((a,b)=>b.d2-a.d2);
+  const invDet=1/(pX*dY-dX*pY);
+  for (const s of list){
+    const tX=invDet*(dY*s.dx-dX*s.dy), tY=invDet*(-pY*s.dx+pX*s.dy);
+    if (tY<0.25) continue;
+    const size=H/tY, scx=(W/2)*(1+tX/tY), left=scx-size/2;
+    if (left>W || left+size<0) continue;
+    sprCtx.clearRect(0,0,SPR,SPR);
+    if (s.kind==='gate') drawGateSprite(sprCtx,SPR/2,SPR_FEET,SPR*0.62,t,s.ref,pulse);
+    else if (s.kind==='pickup') drawPickupSprite(sprCtx,SPR/2,SPR_FEET,SPR*0.5,s.ref.type,t,s.i);
+    else if (s.kind==='ship'){ sprCtx.fillStyle='#2378bd'; sprCtx.beginPath(); sprCtx.ellipse(SPR/2,SPR_FEET-4,SPR*0.46,SPR*0.08,0,0,Math.PI*2); sprCtx.fill(); drawShipSprite(sprCtx,SPR/2,SPR_FEET-6,SPR*0.7,t,open,GAME.exitAnim); }
+    else drawMinotaurSprite(sprCtx,SPR/2,SPR_FEET,SPR*0.66,t,minoState(1));
+    const yFloor=horizon+size/2, top=yFloor-size*SPR_FEET/SPR;
+    const i0=Math.max(0,Math.floor(left/colW)), i1=Math.min(rays-1,Math.floor((left+size)/colW));
+    for (let i=i0;i<=i1;i++){
+      if (tY>=zbuf[i]) continue;
+      const sx=((i*colW-left)/size)*SPR, sw=Math.max(0.6,colW/size*SPR);
+      ctx.drawImage(sprCanvas,Math.max(0,sx),0,Math.min(sw,SPR-Math.max(0,sx)),SPR,i*colW,top,colW+0.7,size);
+    }
+  }
+  // nebbia calda verso l'orizzonte
+  g=ctx.createLinearGradient(0,horizon-H*0.12,0,horizon+H*0.12); g.addColorStop(0,'rgba(60,30,15,0)'); g.addColorStop(0.5,'rgba(60,30,15,0.18)'); g.addColorStop(1,'rgba(60,30,15,0)'); ctx.fillStyle=g; ctx.fillRect(0,horizon-H*0.12,W,H*0.24);
+  drawHandFPV(t,moving);
+  drawCompass();
+  drawMinimap(t);
+  drawFx();
+}
+
+function drawHandFPV(t,moving){
+  const s=Math.min(W,H)*0.36, sw=moving?Math.sin(t/140)*s*0.06:Math.sin(t/600)*s*0.01;
+  const bx=W*0.8+sw, by=H+(moving?Math.abs(Math.cos(t/140))*s*0.05:0);
+  const ink=INK, skin='#c98552';
+  ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.strokeStyle='#d1352b'; ctx.lineWidth=Math.max(2,s*0.025);
+  ctx.beginPath(); ctx.moveTo(bx-s*0.08,by-s*0.62); ctx.quadraticCurveTo(W*0.62,H*0.95,W*0.5,H+10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bx+s*0.45,by+s*0.1); ctx.lineTo(bx+s*0.02,by-s*0.42);
+  ctx.lineWidth=s*0.24; ctx.strokeStyle=ink; ctx.stroke(); ctx.lineWidth=s*0.24-6; ctx.strokeStyle=skin; ctx.stroke();
+  ctx.lineWidth=3; ctx.strokeStyle=ink; ctx.fillStyle='#e8a93a';
+  ctx.save(); ctx.translate(bx+s*0.17,by-s*0.2); ctx.rotate(-0.9); rr(ctx,-s*0.14,-s*0.035,s*0.28,s*0.07,s*0.02); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.fillStyle='#d1352b'; ctx.beginPath(); ctx.arc(bx-s*0.06,by-s*0.6,s*0.2,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle='#f6a08f'; ctx.lineWidth=Math.max(1.5,s*0.02);
+  ctx.beginPath(); ctx.arc(bx-s*0.1,by-s*0.58,s*0.14,-1.2,1.0); ctx.stroke();
+  ctx.beginPath(); ctx.arc(bx,by-s*0.63,s*0.12,1.8,4.2); ctx.stroke();
+  ctx.fillStyle=skin; ctx.strokeStyle=ink; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.ellipse(bx+s*0.04,by-s*0.47,s*0.12,s*0.08,-0.6,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+function drawCompass(){
+  const s=Math.max(34,Math.min(W,H)*0.09), x=12, y=12;
+  ctx.save(); ctx.fillStyle='rgba(255,248,234,0.94)'; ctx.strokeStyle=INK; ctx.lineWidth=2.5; rr(ctx,x,y,s,s,10); ctx.fill(); ctx.stroke();
+  ctx.translate(x+s/2,y+s/2); ctx.rotate(GAME.rAngle+Math.PI/2);
+  ctx.fillStyle='#b8432b'; ctx.beginPath(); ctx.moveTo(0,-s*0.34); ctx.lineTo(s*0.14,s*0.08); ctx.lineTo(-s*0.14,s*0.08); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.rotate(-(GAME.rAngle+Math.PI/2));
+  ctx.fillStyle=INK; ctx.font=`900 ${s*0.3}px Cinzel, serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(DIRNAME[GAME.dir],0,s*0.3);
+  ctx.restore();
+}
+function revealFrom(x,y){
+  if (!REVEALED.length) return;
+  for (let dy=-1;dy<=1;dy++) for (let dx=-1;dx<=1;dx++) if (inB(x+dx,y+dy)) REVEALED[y+dy][x+dx]=1;
+  for (const [dx,dy] of DIRS){
+    let cx=x, cy=y;
+    for (let k=0;k<30;k++){ cx+=dx; cy+=dy; if (!inB(cx,cy)) break; REVEALED[cy][cx]=1;
+      if (inB(cx+dy,cy+dx)) REVEALED[cy+dx][cx+dy]=1; if (inB(cx-dy,cy-dx)) REVEALED[cy-dx][cx-dy]=1;
+      if (MAZE[cy][cx]===1) break; }
+  }
+}
+function drawMinimap(t){
+  const maxW=Math.min(W*0.3,230), cs=Math.max(3,Math.floor(maxW/COLS)), mw=cs*COLS, mh=cs*ROWS, x0=W-mw-12, y0=12;
+  ctx.save();
+  ctx.fillStyle='rgba(27,19,13,0.82)'; ctx.strokeStyle=INK; ctx.lineWidth=3; rr(ctx,x0-6,y0-6,mw+12,mh+12,10); ctx.fill(); ctx.stroke();
+  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++){
+    if (!REVEALED[y][x]) continue;
+    ctx.fillStyle = MAZE[y][x]===1 ? '#b8432b' : (inCourt({x,y})?'#f2cf8c':'#f5ebd3');
+    ctx.fillRect(x0+x*cs,y0+y*cs,cs,cs);
+  }
+  const ph=GAME.pathHistory;
+  if (ph.length>1){ ctx.strokeStyle='#d1352b'; ctx.lineWidth=Math.max(1.5,cs*0.35); ctx.lineJoin='round'; ctx.beginPath(); ph.forEach((p,i)=>{ const X=x0+(p.x+0.5)*cs, Y=y0+(p.y+0.5)*cs; i?ctx.lineTo(X,Y):ctx.moveTo(X,Y); }); ctx.lineTo(x0+(GAME.rp.x+0.5)*cs,y0+(GAME.rp.y+0.5)*cs); ctx.stroke(); }
+  GAME.gates.forEach(g=>{ if (!REVEALED[g.y][g.x]) return; ctx.fillStyle=g.solved?'#2f9a5a':g.color; ctx.fillRect(x0+g.x*cs+1,y0+g.y*cs+1,cs-2,cs-2); });
+  GAME.pickups.forEach(p=>{ if (p.taken || !REVEALED[p.y][p.x]) return; ctx.fillStyle='#e8a93a'; ctx.beginPath(); ctx.arc(x0+(p.x+0.5)*cs,y0+(p.y+0.5)*cs,cs*0.32,0,Math.PI*2); ctx.fill(); });
+  if (REVEALED[EXIT.y][EXIT.x]){ ctx.fillStyle=exitOpen()?'#38bdf8':'#1f6fb2'; ctx.fillRect(x0+EXIT.x*cs,y0+EXIT.y*cs,cs,cs); }
+  const md=getMinotaurDistance();
+  if (REVEALED[GAME.minotaur.y][GAME.minotaur.x] || md<=6){ ctx.fillStyle='#ff3b2f'; ctx.beginPath(); ctx.arc(x0+(GAME.rm.x+0.5)*cs,y0+(GAME.rm.y+0.5)*cs,cs*0.45*(1+0.2*Math.sin(t/150)),0,Math.PI*2); ctx.fill(); }
+  ctx.translate(x0+(GAME.rp.x+0.5)*cs,y0+(GAME.rp.y+0.5)*cs); ctx.rotate(GAME.rAngle);
+  ctx.fillStyle='#fff8ea'; ctx.strokeStyle=INK; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(cs*0.7,0); ctx.lineTo(-cs*0.45,cs*0.45); ctx.lineTo(-cs*0.45,-cs*0.45); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+
+/* =====================================================================
+   8. CICLO DI GIOCO
+   ===================================================================== */
+let lastFrame=performance.now();
+function loop(now){
+  const dt=Math.min(60,now-lastFrame); lastFrame=now;
+  if (GAME.running && !GAME.isPaused){
+    GAME.playTime+=dt;
+    if (GAME.mode==='arena') arenaTick(dt);
+    const d=getMinotaurDistance();
+    if (d<=4 && now-GAME.lastBeat>(d<=2?520:850)){ GAME.lastBeat=now; sound.heartbeat(); }
+  }
+  if (exitOpen() && GAME.exitAnim<1) GAME.exitAnim=Math.min(1,GAME.exitAnim+dt/900);
+  const k=Math.min(1,dt/70);
+  GAME.rp.x+=(GAME.player.x-GAME.rp.x)*k; GAME.rp.y+=(GAME.player.y-GAME.rp.y)*k;
+  GAME.rm.x+=(GAME.minotaur.x-GAME.rm.x)*k*0.8; GAME.rm.y+=(GAME.minotaur.y-GAME.rm.y)*k*0.8;
+  const target=(GAME.dir-1)*Math.PI/2; let da=target-GAME.rAngle; da=Math.atan2(Math.sin(da),Math.cos(da)); GAME.rAngle+=da*Math.min(1,dt/80);
+  for (let i=particles.length-1;i>=0;i--){ const p=particles[i]; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=0.0003*dt; p.life-=dt; if (p.life<=0) particles.splice(i,1); }
+  for (let i=floaters.length-1;i>=0;i--){ const f=floaters[i]; f.y-=dt*0.03; f.life-=dt; if (f.life<=0) floaters.splice(i,1); }
+  if (W>0 && MAZE.length){ if (GAME.view==='fpv') drawFPV(now); else drawIso(now); }
+  requestAnimationFrame(loop);
+}
+function arenaTick(dt){
+  if (GAME.playTime<GAME.frozenUntil) return;
+  GAME.minoAcc+=dt;
+  const interval=Math.max(430,1150-85*GAME.solvedCount-80*(GAME.level-1));
+  if (GAME.minoAcc>=interval){ GAME.minoAcc=0; stepMinotaurToward(); updateDangerHUD(); checkCatch(); }
+}
+
+/* =====================================================================
+   9. MOVIMENTO, REPERTI, MINOTAURO
+   ===================================================================== */
+function moveHero(dx,dy,turnToMove=true){
+  if (!GAME.running || GAME.isPaused) return;
+  const now=performance.now();
+  if (now-GAME.lastMoveAt<85) return;
+  if (turnToMove){ const di=DIRV.findIndex(([a,b])=>a===dx&&b===dy); if (di>=0) GAME.dir=di; if (dx) GAME.face=dx; }
+  const nx=GAME.player.x+dx, ny=GAME.player.y+dy;
+  if (!isFloor(nx,ny)){ GAME.rp.x+=dx*0.12; GAME.rp.y+=dy*0.12; return; }
+  GAME.lastMoveAt=now;
+  if (nx===EXIT.x && ny===EXIT.y){
+    const missing=GAME.gates.length-GAME.solvedCount;
+    if (missing>0){ toast(`Il porto è sigillato: mancano ${missing} sigill${missing===1?'o':'i'}!`,'warn'); sound.clang(); GAME.rp.x+=dx*0.2; GAME.rp.y+=dy*0.2; return; }
+    GAME.player={x:nx,y:ny}; registerStep(); GAME.isPaused=true; stopHold();
+    setTimeout(completeLevel,420); return;
+  }
+  GAME.player={x:nx,y:ny}; registerStep(); sound.footstep(); updateDistances(); revealFrom(nx,ny);
+  const pu=GAME.pickups.find(p=>!p.taken && p.x===nx && p.y===ny); if (pu) collectPickup(pu);
+  if (checkCatch()) return;
+  const gate=GAME.gates.find(g=>!g.solved && g.x===nx && g.y===ny);
+  if (gate){ GAME.isPaused=true; stopHold(); setTimeout(()=>openGateChallenge(gate),240); }
+}
+function fpvAction(act){
+  if (!GAME.running || GAME.isPaused) return;
+  const [dx,dy]=DIRV[GAME.dir];
+  if (act==='fwd') moveHero(dx,dy,false);
+  else if (act==='back') moveHero(-dx,-dy,false);
+  else { const now=performance.now(); if (now-GAME.lastTurnAt<170) return; GAME.lastTurnAt=now; GAME.dir=(GAME.dir+(act==='left'?3:1))%4; sound.turn(); }
+}
+function registerStep(){
+  const last=GAME.pathHistory[GAME.pathHistory.length-1];
+  if (last.x!==GAME.player.x || last.y!==GAME.player.y){ GAME.pathHistory.push({...GAME.player}); GAME.steps++; $('hud-thread-meters').textContent=`${GAME.steps*2} m`; }
+}
+function collectPickup(p){
+  p.taken=true; sound.pickup(); vibrate(40);
+  const col={shield:'#60a5fa',hourglass:'#a78bfa',scroll:'#f87171'}[p.type];
+  spawnBurst(p.x,p.y,col,28);
+  if (p.type==='shield'){ GAME.shield=true; floatText(p.x,p.y,'SCUDO!','#93c5fd'); toast("Scudo di Atena: respingerà il prossimo assalto del Minotauro!",'good'); }
+  else if (p.type==='hourglass'){ respawnMinotaurFar(); GAME.frozenUntil=GAME.playTime+8000; GAME.freezeKind='freeze'; floatText(p.x,p.y,'TEMPO!','#c4b5fd'); toast(GAME.mode==='arena'?'Clessidra di Crono: il Minotauro è respinto e congelato per 8 secondi!':'Clessidra di Crono: il Minotauro è respinto nei recessi del labirinto!','good'); }
+  else { GAME.scrolls++; floatText(p.x,p.y,'+1 INDIZIO','#fecaca'); toast('Gomitolo di Arianna: usalo in un sigillo per ricevere un indizio.','good'); }
+  updateInventory(); updateDangerHUD();
+}
+function updateDistances(){ GAME.distMap=bfsFrom(GAME.player.x,GAME.player.y); updateDangerHUD(); }
+function getMinotaurDistance(){ if (!GAME.distMap) return 99; const r=GAME.distMap[GAME.minotaur.y]; const d=r?r[GAME.minotaur.x]:Infinity; return Number.isFinite(d)?d:99; }
+function stepMinotaurToward(){
+  const m=GAME.minotaur, d=GAME.distMap; if (!d) return;
+  let best=null, bd=d[m.y][m.x];
+  for (const [dx,dy] of DIRS){ const nx=m.x+dx, ny=m.y+dy; if (isFloor(nx,ny) && d[ny][nx]<bd){ bd=d[ny][nx]; best={x:nx,y:ny}; } }
+  if (best) GAME.minotaur=best;
+}
+function stepMinotaurToLair(){
+  const m=GAME.minotaur, d=LAIRMAP; if (!d) return;
+  let best=null, bd=d[m.y][m.x];
+  for (const [dx,dy] of DIRS){ const nx=m.x+dx, ny=m.y+dy; if (isFloor(nx,ny) && d[ny][nx]<bd && !(nx===GAME.player.x&&ny===GAME.player.y)){ bd=d[ny][nx]; best={x:nx,y:ny}; } }
+  if (best) GAME.minotaur=best;
+}
+function respawnMinotaurFar(){
+  const d=GAME.distMap||bfsFrom(GAME.player.x,GAME.player.y);
+  let best={...LAIR}, bd=-1;
+  for (let y=0;y<ROWS;y++) for (let x=0;x<COLS;x++){
+    if (!isFloor(x,y) || !Number.isFinite(d[y][x])) continue;
+    if (x===EXIT.x && y===EXIT.y) continue;
+    if (GAME.gates.some(g=>g.x===x&&g.y===y) || GAME.pickups.some(p=>!p.taken&&p.x===x&&p.y===y)) continue;
+    const score=d[y][x]+(floorNeighbors(x,y)===1?6:0);
+    if (score>bd){ bd=score; best={x,y}; }
+  }
+  spawnBurst(GAME.minotaur.x,GAME.minotaur.y,'#dc2626',18);
+  GAME.minotaur=best; GAME.rm={...best}; GAME.minoAcc=0;
+}
+function checkCatch(){
+  if (!GAME.running || GAME.over) return GAME.over;
+  if (GAME.player.x!==GAME.minotaur.x || GAME.player.y!==GAME.minotaur.y) return false;
+  if (GAME.playTime<GAME.invulnUntil) return false;
+  return onCaught();
+}
+function onCaught(){
+  if (GAME.shield){
+    GAME.shield=false; sound.clang(); spawnBurst(GAME.player.x,GAME.player.y,'#93c5fd',36); floatText(GAME.player.x,GAME.player.y,'PARATA!','#93c5fd');
+    toast("Lo Scudo di Atena respinge l'assalto!",'good'); respawnMinotaurFar(); GAME.invulnUntil=GAME.playTime+1500; updateInventory(); updateDangerHUD(); return false;
+  }
+  GAME.hearts--; GAME.combo=0; updateHearts(true); updateCombo();
+  sound.hurt(); sound.roar(); triggerQuake(); flashHit(); vibrate([120,60,200]);
+  if (GAME.hearts<=0){ concludeDefeat(); return true; }
+  toast(`Il Minotauro ti ha travolto! ${GAME.hearts===1?'Resta 1 vita':'Restano '+GAME.hearts+' vite'}.`,'bad');
+  respawnMinotaurFar(); GAME.invulnUntil=GAME.playTime+2000; updateDangerHUD(); return false;
+}
+
+/* Input: tastiera, croce direzionale (pressione prolungata), swipe */
+function dirInput(dx,dy){
+  if (GAME.view==='fpv'){ if (dy===-1) fpvAction('fwd'); else if (dy===1) fpvAction('back'); else fpvAction(dx<0?'left':'right'); }
+  else moveHero(dx,dy);
+}
+window.addEventListener('keydown',e=>{
+  sound.init();
+  if (!$('gateModal').classList.contains('hidden')){
+    if (['1','2','3','4'].includes(e.key)){ const b=[...document.querySelectorAll('#modal-interactive-body .opt')][+e.key-1]; if (b){ e.preventDefault(); b.click(); } }
+    else if (e.key==='Enter' && !$('modal-footer').classList.contains('hidden')){ e.preventDefault(); proceedFromGate(); }
+    return;
+  }
+  if (!$('welcomeModal').classList.contains('hidden')){ if (e.key==='Enter'){ e.preventDefault(); startRun(); } return; }
+  if (!$('endgameModal').classList.contains('hidden') || !$('leaderboardModal').classList.contains('hidden')) return;
+  if (e.key==='v' || e.key==='V'){ e.preventDefault(); toggleView(); return; }
+  const map={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]};
+  if (map[e.key]){ e.preventDefault(); dirInput(...map[e.key]); }
+});
+let holdTimer=null;
+function stopHold(){ clearInterval(holdTimer); holdTimer=null; }
+function bindHold(id,dx,dy){
+  const b=$(id);
+  b.addEventListener('pointerdown',e=>{
+    e.preventDefault(); sound.init();
+    try { b.setPointerCapture(e.pointerId); } catch(err){}
+    GAME.lastMoveAt=0; GAME.lastTurnAt=0; dirInput(dx,dy); stopHold();
+    holdTimer=setInterval(()=>dirInput(dx,dy), (GAME.view==='fpv' && dx) ? 320 : 165);
+  });
+  ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,stopHold));
+}
+bindHold('btn-dir-up',0,-1); bindHold('btn-dir-down',0,1); bindHold('btn-dir-left',-1,0); bindHold('btn-dir-right',1,0);
+let touchStart=null;
+wrap.addEventListener('touchstart',e=>{ const t=e.touches[0]; touchStart={x:t.clientX,y:t.clientY}; sound.init(); },{passive:true});
+wrap.addEventListener('touchend',e=>{
+  if (!touchStart) return; const t=e.changedTouches[0]; const dx=t.clientX-touchStart.x, dy=t.clientY-touchStart.y; touchStart=null;
+  if (Math.max(Math.abs(dx),Math.abs(dy))<24) return;
+  if (Math.abs(dx)>Math.abs(dy)) dirInput(dx>0?1:-1,0); else dirInput(0,dy>0?1:-1);
+},{passive:true});
+
+/* Cambio visuale */
+function setView(v,announce){
+  GAME.view=v;
+  $('view-use').setAttribute('href', v==='fpv'?'#i-map':'#i-eye');
+  $('view-label').textContent = v==='fpv' ? 'Assonometria' : 'Prima persona';
+  $('btn-dir-left').textContent = v==='fpv' ? '↺' : '◀';
+  $('btn-dir-right').textContent = v==='fpv' ? '↻' : '▶';
+  $('legend').innerHTML = v==='fpv'
+    ? `<div><b>Prima persona:</b> ▲/W avanti · ▼/S indietro · ◀▶ / A D girati di 90°.</div><div><b>Minimappa:</b> si scopre man mano che il filo avanza. <b>V</b> torna alla mappa.</div><div><b>Bussola:</b> in alto a sinistra indica la direzione (N, E, S, O).</div>`
+    : `<div><b>Comandi:</b> frecce / W A S D, croce direzionale (tieni premuto) o swipe.</div><div><b>Reperti:</b> scudo di Atena · clessidra di Crono · gomitolo di Arianna (indizio).</div><div><b>Regola aurea:</b> filo più corto = bonus efficienza più alto. <b>V</b> = prima persona.</div>`;
+  try { localStorage.setItem('dedalo_view',v); } catch(e){}
+  if (announce) toast(v==='fpv'?'Visuale in prima persona: la minimappa si scopre con il filo.':'Visuale assonometrica: tutta la mappa del labirinto.','info');
+}
+function toggleView(){ sound.click(); setView(GAME.view==='fpv'?'iso':'fpv',true); }
+$('btn-view').addEventListener('click',toggleView);
+
+/* =====================================================================
+   10. SIGILLI: MODALE, FEEDBACK FORMATIVO, SERIE, RAPIDITÀ
+   ===================================================================== */
+const speedBonus = () => Math.max(0,20-Math.floor((performance.now()-GAME.gateOpenedAt)/3000));
+const nextMult = () => COMBO_MULT[Math.min(GAME.combo,COMBO_MULT.length-1)];
+
+function openGateChallenge(gate){
+  if (GAME.over) return;
+  GAME.isPaused=true; GAME.activeGate=gate; GAME.modalLocked=false; GAME.anagramReset=null; GAME.gateOpenedAt=performance.now();
+  $('modal-medal').style.background=gate.color;
+  $('modal-gate-title').textContent=gate.title;
+  $('modal-gate-lore').textContent=gate.lore;
+  const tag=$('modal-gate-tag'); tag.textContent=gate.tag; tag.style.background=gate.color;
+  $('modal-gate-count').textContent=`Sigillo ${gate.id} · ${GAME.solvedCount}/6 spezzati`;
+  $('modal-question-story').textContent=gate.story;
+  $('modal-math-display').textContent=gate.mathDisplay;
+  $('modal-feedback-box').classList.add('hidden'); $('modal-footer').classList.add('hidden'); $('modal-cooldown').classList.add('hidden');
+  const m=nextMult(); $('modal-combo-text').textContent=`Moltiplicatore ×${m}`;
+  updateScrollButton();
+  const body=$('modal-interactive-body'); body.innerHTML='';
+  if (gate.type==='choice' || gate.type==='find_error'){
+    const grid=document.createElement('div'); grid.className='opts'+(gate.type==='find_error'?' single':'');
+    const items = gate.type==='choice' ? gate.options.map(o=>({text:o.text,ok:o.isCorrect,fb:o.errorFeedback}))
+      : gate.steps.map((s,i)=>({text:s,ok:i+1===gate.correct,fb:"Questo passaggio è corretto, oppure è solo una conseguenza dei precedenti. Cerca il punto esatto in cui nasce l'errore."}));
+    items.forEach((it,i)=>{
+      const btn=document.createElement('button'); btn.className='opt'; btn.dataset.i=i;
+      const b=document.createElement('span'); b.className='badge'; b.textContent=gate.type==='choice'?'ABCD'[i]:String(i+1);
+      const tx=document.createElement('span'); tx.style.flex='1'; tx.textContent=it.text;
+      btn.append(b,tx); btn.onclick=()=>answer(btn,it.ok,it.fb); grid.appendChild(btn);
+    });
+    body.appendChild(grid);
+  } else renderAnagram(gate,body);
+  $('gateModal').classList.remove('hidden');
+  startSpeedBar();
+}
+function startSpeedBar(){
+  clearInterval(GAME.speedInterval);
+  const tick=()=>{ const b=speedBonus(); $('modal-speed-val').textContent=`+${b}`; $('modal-speed-bar').style.width=`${b/20*100}%`; };
+  tick(); GAME.speedInterval=setInterval(tick,250);
+}
+function stopSpeedBar(zero){ clearInterval(GAME.speedInterval); if (zero){ $('modal-speed-val').textContent='—'; $('modal-speed-bar').style.width='0%'; } }
+function updateScrollButton(){ const g=GAME.activeGate; $('scroll-count').textContent=GAME.scrolls; $('btn-use-scroll').disabled=!g || GAME.scrolls<=0 || g.usedScroll || GAME.modalLocked; }
+$('btn-use-scroll').addEventListener('click',()=>{
+  const g=GAME.activeGate; if (!g || GAME.scrolls<=0 || g.usedScroll || GAME.modalLocked) return;
+  GAME.scrolls--; g.usedScroll=true; sound.pickup(); showFeedback('hint','IL GOMITOLO DI ARIANNA',g.hint); updateScrollButton(); updateInventory();
+});
+function answer(btn,ok,fb){
+  if (GAME.modalLocked || btn.disabled) return;
+  sound.init();
+  if (ok){ btn.classList.add('correct'); handleSuccessGate(); }
+  else { btn.classList.add('wrong','shake-x'); btn.disabled=true; handleMistakeGate(fb); }
+}
+function renderAnagram(gate,container){
+  const word=gate.word, letters=gate.letters; let sel=[];
+  const target=document.createElement('div'); target.className='ana-target';
+  const pool=document.createElement('div'); pool.className='ana-pool';
+  const reset=document.createElement('button'); reset.className='linkbtn'; reset.textContent='↺ Ricomincia la parola';
+  const wrapDiv=document.createElement('div'); wrapDiv.style.textAlign='center';
+  const update=()=>{
+    target.innerHTML='';
+    if (!sel.length){ const s=document.createElement('span'); s.className='ph'; s.textContent="Tocca le tessere qui sotto nell'ordine giusto…"; target.appendChild(s); }
+    else sel.forEach((item,i)=>{ const t=document.createElement('button'); t.className='tile placed'; t.textContent=item.char; t.onclick=()=>{ if (GAME.modalLocked) return; sound.click(); sel.splice(i,1); update(); }; target.appendChild(t); });
+    pool.innerHTML='';
+    letters.forEach(item=>{
+      const used=sel.some(s=>s.id===item.id);
+      const t=document.createElement('button'); t.className='tile'; t.textContent=item.char; t.disabled=used;
+      t.onclick=()=>{
+        if (GAME.modalLocked) return; sound.click(); sel.push(item); update();
+        if (sel.length===word.length){
+          const built=sel.map(s=>s.char).join('');
+          if (built===word) handleSuccessGate();
+          else { target.classList.remove('shake-x'); void target.offsetWidth; target.classList.add('shake-x'); handleMistakeGate(`"${built}" non è la parola del sigillo. Rileggi l'indizio e ragiona sulle lettere prima di riordinarle.`); }
+        }
+      };
+      pool.appendChild(t);
+    });
+  };
+  reset.onclick=()=>{ if (GAME.modalLocked) return; sel=[]; update(); };
+  GAME.anagramReset=()=>{ sel=[]; update(); };
+  wrapDiv.appendChild(reset);
+  container.append(target,pool,wrapDiv); update();
+}
+function showFeedback(kind,title,text,chips=[]){
+  const box=$('modal-feedback-box'); box.className='feedback '+kind;
+  const icon={good:['#2f9a5a','#i-horns'],bad:['#b8432b','#i-bull'],hint:['#e8a93a','#i-yarn']}[kind];
+  $('modal-feedback-icon').style.background=icon[0];
+  $('modal-feedback-icon').innerHTML=`<svg class="ic"><use href="${icon[1]}"/></svg>`;
+  $('modal-feedback-title').textContent=title; $('modal-feedback-title').style.color=icon[0];
+  $('modal-feedback-text').textContent=text;
+  const cb=$('modal-feedback-chips'); cb.innerHTML='';
+  chips.forEach((c,i)=>{ const s=document.createElement('span'); s.className='fb-chip'; s.style.animationDelay=`${i*0.08}s`; s.textContent=c; cb.appendChild(s); });
+  box.classList.remove('hidden');
+}
+function handleSuccessGate(){
+  const gate=GAME.activeGate; GAME.modalLocked=true; stopSpeedBar(false);
+  document.querySelectorAll('#modal-interactive-body button').forEach(b=>b.disabled=true);
+  updateScrollButton();
+  let gain, chips;
+  if (gate.attempts===0){
+    GAME.combo++; GAME.bestCombo=Math.max(GAME.bestCombo,GAME.combo);
+    const mult=COMBO_MULT[Math.min(GAME.combo,COMBO_MULT.length)-1], base=Math.round(40*mult), spd=speedBonus();
+    gain=base+spd; chips=['Sigillo +40'];
+    if (mult>1) chips.push(`Serie ${GAME.combo} · ×${mult} → +${base}`);
+    if (spd>0) chips.push(`Rapidità +${spd}`);
+    sound.combo(GAME.combo);
+  } else { gain=10; chips=['Sigillo dopo un errore +10']; }
+  chips.push(`= +${gain} oboli`);
+  gate.gain=gain; GAME.oboli+=gain; updateOboli(true); updateCombo();
+  sound.gateOpen(); vibrate(30);
+  for (let i=0;i<3;i++) stepMinotaurToLair();
+  updateDangerHUD();
+  showFeedback('good','IL LABIRINTO CEDE ALLA RAGIONE',`Il metodo:\n${gate.explanation}`,chips);
+  $('modal-footer').classList.remove('hidden');
+  $('modal-btn-proceed').focus({preventScroll:true});
+}
+function handleMistakeGate(feedback){
+  const gate=GAME.activeGate; gate.attempts++; GAME.combo=0; GAME.oboli=Math.max(0,GAME.oboli-20);
+  updateCombo(); updateOboli(true); stopSpeedBar(true);
+  sound.clang(); sound.roar(); triggerQuake(); vibrate([80,40,80]);
+  const panel=$('gate-panel'); panel.classList.remove('shake-x'); void panel.offsetWidth; panel.classList.add('shake-x');
+  for (let i=0;i<3;i++) stepMinotaurToward();
+  updateDangerHUD();
+  let text=feedback;
+  if (gate.attempts>=2 && !gate.usedScroll) text+=`\n\nArianna ti sussurra: ${gate.hint}`;
+  showFeedback('bad','ERRORE · −20 OBOLI · IL MINOTAURO CARICA!',text);
+  if (checkCatch()) return;
+  startModalCooldown(3,()=>{ if (gate.type==='anagram' && GAME.anagramReset) GAME.anagramReset(); });
+}
+function startModalCooldown(sec,onEnd){
+  GAME.modalLocked=true; updateScrollButton();
+  const ov=$('modal-cooldown'); ov.classList.remove('hidden'); let r=sec; $('modal-cooldown-count').textContent=r;
+  clearInterval(GAME.cooldownTimer);
+  GAME.cooldownTimer=setInterval(()=>{ r--; if (r>0){ $('modal-cooldown-count').textContent=r; return; } clearInterval(GAME.cooldownTimer); ov.classList.add('hidden'); GAME.modalLocked=false; updateScrollButton(); if (onEnd) onEnd(); },1000);
+}
+function proceedFromGate(){
+  const gate=GAME.activeGate; if (!gate || gate.solved || GAME.over) return;
+  $('gateModal').classList.add('hidden');
+  gate.solved=true; GAME.solvedCount++; GAME.activeGate=null;
+  renderSeals(); updateDistances();
+  spawnBurst(gate.x,gate.y,'#34d399',40); spawnBurst(gate.x,gate.y,'#ffd766',20);
+  floatText(gate.x,gate.y,`+${gate.gain}`,'#ffd766');
+  if (GAME.combo>=2) setTimeout(()=>floatText(gate.x,gate.y,`SERIE ×${COMBO_MULT[Math.min(GAME.combo,5)-1]}`,'#fb923c'),350);
+  if (exitOpen()){ toast('Tutti i sigilli sono spezzati! Corri alla nave nel porto!','good'); spawnBurst(EXIT.x,EXIT.y,'#38bdf8',50); if (REVEALED.length) REVEALED[EXIT.y][EXIT.x]=1; }
+  else if (GAME.mode==='arena') toast('Il Minotauro si infuria e accelera…','warn');
+  GAME.isPaused=false;
+}
+$('modal-btn-proceed').addEventListener('click',proceedFromGate);
+
+/* =====================================================================
+   11. HUD, EFFETTI, NOTIFICHE
+   ===================================================================== */
+function toast(msg,kind='info'){
+  const st=$('toast-stack'); while (st.children.length>=3) st.firstChild.remove();
+  const el=document.createElement('div'); el.className=`toast ${kind}`; el.textContent=msg; st.appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),320); },3200);
+}
+const bump = el => { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); };
+function updateHearts(anim){
+  const el=$('hud-hearts'); el.innerHTML='';
+  for (let i=0;i<3;i++) el.insertAdjacentHTML('beforeend',`<svg class="ic${i<GAME.hearts?'':' empty'}"><use href="#i-heart"/></svg>`);
+  if (anim) bump(el);
+}
+function updateOboli(anim){ $('hud-oboli').textContent=GAME.oboli; if (anim) bump($('hud-oboli')); }
+function updateCombo(){
+  const chip=$('hud-combo');
+  if (GAME.combo>=1){ chip.classList.remove('hidden'); $('hud-combo-text').textContent=`${GAME.combo} · ×${COMBO_MULT[Math.min(GAME.combo,5)-1]}`; bump(chip); }
+  else chip.classList.add('hidden');
+}
+function updateInventory(){
+  $('inv-shield').classList.toggle('hidden',!GAME.shield);
+  $('inv-scroll').classList.toggle('hidden',GAME.scrolls<=0);
+  $('inv-scroll-n').textContent=GAME.scrolls;
+}
+function updateDangerHUD(){
+  const d=getMinotaurDistance();
+  $('hud-minotaur-status').textContent = d>=99 ? '—' : `${d*2} m`;
+  $('hud-minotaur-bar').style.width = `${Math.max(4,Math.min(100,(26-d)/26*100))}%`;
+  $('danger-vignette').style.opacity = GAME.running && d<=6 ? ((6-d)/6*0.85).toFixed(2) : 0;
+}
+function renderSeals(){
+  const el=$('seals'); el.innerHTML='';
+  GAME.gates.forEach(g=>{
+    const s=document.createElement('div'); s.className='seal'+(g.solved?' done':''); s.title=`${g.id} · ${g.tag}`;
+    if (g.solved) s.style.background=g.color; else s.style.borderColor=g.color;
+    s.innerHTML=`<svg class="ic"><use href="${g.solved?'#i-check':'#i-labrys'}"/></svg>`;
+    if (!g.solved) s.style.color=g.color;
+    el.appendChild(s);
+  });
+}
+function triggerQuake(){
+  const c=$('labyrinth-container'); c.classList.remove('quake'); void c.offsetWidth; c.classList.add('quake');
+  const b=$('minotaur-roar-banner'); b.classList.remove('hidden'); clearTimeout(triggerQuake.t); triggerQuake.t=setTimeout(()=>b.classList.add('hidden'),2200);
+}
+function flashHit(){ const f=$('hit-flash'); f.style.transition='none'; f.style.opacity=1; requestAnimationFrame(()=>{ f.style.transition='opacity .6s ease'; f.style.opacity=0; }); }
+function spawnBurst(x,y,color,n=30){
+  const p=screenPos(x,y), sz=Math.max(2,Math.min(W,H)*0.006);
+  for (let i=0;i<n;i++){ const a=Math.random()*Math.PI*2, s=0.05+Math.random()*0.2; particles.push({x:p.x,y:p.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-0.06,size:sz*(0.7+Math.random()),color,life:700+Math.random()*500,max:1200}); }
+}
+function floatText(x,y,text,color){ const p=screenPos(x,y); floaters.push({x:p.x,y:p.y-10,text,color,life:1400}); }
+const fmtTime = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+$('btn-sound').addEventListener('click',()=>{ sound.enabled=!sound.enabled; $('sound-use').setAttribute('href',sound.enabled?'#i-sound':'#i-mute'); });
+function showLevelBanner(){
+  $('lb-num').textContent=`SCHEMA ${roman(GAME.level)}`; $('lb-name').textContent=GAME.levelName;
+  const b=$('level-banner'); b.classList.remove('show'); void b.offsetWidth; b.classList.add('show');
+}
+function drawAvatar(cv,color){ const c=cv.getContext('2d'); c.clearRect(0,0,cv.width,cv.height); drawHero(c,cv.width/2,cv.height*0.93,cv.height*0.92,color,0,false,1); }
+
+/* =====================================================================
+   12. FLUSSO: SPEDIZIONE → SCHEMI → EPILOGO
+   ===================================================================== */
+function startRun(){
+  sound.init();
+  GAME.teamName=$('input-team-name').value.trim()||'Teseo Ateniese';
+  const typed=$('input-code').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+  GAME.code=typed||randomCode(); GAME.fixedSeed=!!typed;
+  $('hud-team-name').textContent=GAME.teamName; drawAvatar($('hud-avatar'),GAME.heroColor);
+  BAGS={}; loadRecent();
+  Object.assign(GAME,{ oboli:100, banked:0, hearts:3, combo:0, bestCombo:0, shield:false, scrolls:0, totalSeconds:0, seen:new Set(), history:[], levelsDone:0, bestRank:null, over:false });
+  $('welcomeModal').classList.add('hidden'); $('endgameModal').classList.add('hidden');
+  updateHearts(); updateOboli(); updateCombo(); updateInventory();
+  clearInterval(GAME.timerInterval);
+  GAME.timerInterval=setInterval(()=>{ if (GAME.running && !GAME.isPaused){ GAME.levelSeconds++; GAME.totalSeconds++; $('hud-timer').textContent=fmtTime(GAME.levelSeconds); } },1000);
+  startLevel(1);
+}
+function startLevel(n){
+  GAME.level=n; GAME.levelName=LEVEL_NAMES[(n-1)%LEVEL_NAMES.length];
+  const map=buildMap(n);
+  GAME.gates=buildGates(map.pts,n);
+  GAME.pickups=map.pickups;
+  saveRecent();
+  Object.assign(GAME,{ running:true, over:false, isPaused:false, player:{...START}, rp:{...START}, dir:2, rAngle:Math.PI/2, face:1,
+    minotaur:{...LAIR}, rm:{...LAIR}, pathHistory:[{...START}], steps:0, solvedCount:0, activeGate:null,
+    playTime:0, invulnUntil:0, minoAcc:0, exitAnim:0, levelSeconds:0, levelStartOboli:GAME.oboli,
+    frozenUntil:GAME.mode==='arena'?4000:0, freezeKind:'sleep' });
+  // orienta lo sguardo verso il primo corridoio libero
+  const di=[2,1,3,0].find(i=>isFloor(START.x+DIRV[i][0],START.y+DIRV[i][1])); if (di!=null){ GAME.dir=di; GAME.rAngle=(di-1)*Math.PI/2; }
+  GAME.optimalSteps=computeOptimalSteps(GAME.gates);
+  REVEALED=Array.from({length:ROWS},()=>Array(COLS).fill(0)); revealFrom(START.x,START.y);
+  particles.length=0; floaters.length=0;
+  $('level-badge').textContent=`SCHEMA ${roman(n)}`; $('level-name').textContent=GAME.levelName; $('code-badge').textContent=`Codice ${GAME.code}`;
+  $('hud-thread-meters').textContent='0 m'; $('hud-timer').textContent='00:00';
+  renderSeals(); updateDistances(); updateInventory();
+  resizeCanvas(); showLevelBanner();
+  setTimeout(()=>toast(GAME.mode==='arena'?'Il Minotauro si sta svegliando… muoviti!':'Srotola il filo: il Minotauro attende un tuo errore.','info'),900);
+}
+function levelMetrics(){
+  const opt=GAME.optimalSteps, steps=Math.max(GAME.steps,opt);
+  const effPct=Math.round(opt/steps*100), efficiencyBonus=Math.max(0,(effPct-50)*2), heartsBonus=GAME.hearts*25;
+  const label = effPct>=90?'Percorso aureo' : effPct>=75?'Buona rotta' : effPct>=60?'Qualche deviazione' : 'Molti vicoli ciechi';
+  return { effPct, efficiencyBonus, heartsBonus, label };
+}
+const squareColor = c => ({g:'#2f9a5a',y:'#e8a93a',o:'#e0763a',k:'#7d6e5a'}[c]);
+const squareEmoji = c => ({g:'🟩',y:'🟨',o:'🟧',k:'⬛'}[c]);
+function gateSquares(){ return GAME.gates.slice().sort((a,b)=>a.id-b.id).map(g=>!g.solved?'k':g.attempts===0?'g':g.attempts===1?'y':'o'); }
+function rankSVG(color,bull){
+  const sym = bull ? '<path d="M1.8 4.2c.2 3.3 1.9 5.4 4.7 5.9v4.2c0 4.1 2.4 7.2 5.5 7.2s5.5-3.1 5.5-7.2v-4.2c2.8-.5 4.5-2.6 4.7-5.9c-1.7 1.9-3.9 2.6-6.7 2.6H8.5c-2.8 0-5-.7-6.7-2.6z"/>'
+                   : '<path d="M2.5 21h19v-3.2h-2.1c.7-4.2.3-9.2-2.4-13c.5 4.3-.6 8.8-3.7 10.4h-2.6C7.6 13.6 6.5 9.1 7 4.8C4.3 8.6 3.9 13.6 4.6 17.8H2.5z"/>';
+  return `<svg viewBox="0 0 120 120" width="116" height="116"><circle cx="60" cy="60" r="54" fill="${color}" stroke="#1b130d" stroke-width="5"/><circle cx="60" cy="60" r="43" fill="none" stroke="#fff8ea" stroke-width="3" stroke-dasharray="6 5"/><g transform="translate(25 23) scale(2.9)" fill="#fff8ea" stroke="#1b130d" stroke-width=".7">${sym}</g></svg>`;
+}
+function completeLevel(){
+  GAME.running=false; GAME.isPaused=true; stopHold();
+  const m=levelMetrics(), gained=GAME.oboli-GAME.levelStartOboli;
+  GAME.oboli+=m.efficiencyBonus+m.heartsBonus;
+  const levelScore=GAME.oboli-GAME.levelStartOboli, rank=getRank(levelScore), squares=gateSquares();
+  GAME.history.push({ level:GAME.level, name:GAME.levelName, score:levelScore, rank, squares, time:GAME.levelSeconds, thread:GAME.steps*2, eff:m.effPct });
+  GAME.levelsDone++; GAME.banked=GAME.oboli;
+  if (!GAME.bestRank || RANKS.indexOf(rank)<RANKS.indexOf(GAME.bestRank)) GAME.bestRank=rank;
+  updateOboli(true); sound.victory(); launchConfetti();
+  showEnd('level',{ m, gained, levelScore, rank, squares });
+}
+function showEnd(kind,data){
+  const vis=(id,on)=>$(id).classList.toggle('hidden',!on);
+  vis('btn-next-level',kind==='level'); vis('btn-finish-run',kind==='level'); vis('btn-end-lb',kind!=='level'); vis('btn-restart',kind!=='level');
+  const rows=$('endgame-squares'); rows.innerHTML='';
+  const addRow=(label,sq)=>{ const r=document.createElement('div'); r.className='sq-row'; r.innerHTML=`<small>${label}</small>`+sq.map(c=>`<span class="sq" style="background:${squareColor(c)}"></span>`).join(''); rows.appendChild(r); };
+  const bd=$('endgame-breakdown');
+  if (kind==='level'){
+    const { m, gained, levelScore, rank, squares } = data;
+    $('endgame-rank').innerHTML=rankSVG(rank.color);
+    $('endgame-title').textContent=`SCHEMA ${roman(GAME.level)} SUPERATO!`; $('endgame-title').style.color='var(--terra)';
+    $('endgame-desc').textContent=`Rango ${rank.name}. Il porto si apre e la nave è pronta: ${GAME.hearts<3?'nel prossimo schema recuperi una vita, ':''}il labirinto successivo sarà più grande e il Minotauro più rapido.`;
+    addRow(roman(GAME.level),squares);
+    $('endgame-score-label').textContent='Punti schema'; $('endgame-score').textContent=levelScore;
+    $('endgame-time').textContent=fmtTime(GAME.levelSeconds);
+    $('endgame-third-label').textContent='Filo'; $('endgame-thread').textContent=`${GAME.steps*2} m`;
+    bd.innerHTML=`<div class="row"><span>Oboli dai sigilli</span><b>${gained>=0?'+':''}${gained}</b></div>
+      <div class="row"><span>Bonus efficienza (${m.label})</span><b style="color:var(--leaf-d)">+${m.efficiencyBonus}</b></div>
+      <div class="row"><span>Vite superstiti × 25</span><b style="color:var(--danger)">+${m.heartsBonus}</b></div>
+      <div class="row"><span>Serie più lunga</span><b>${GAME.bestCombo}</b></div>
+      <div class="row"><span>Totale spedizione</span><b style="color:var(--ochre-d)">${GAME.oboli}</b></div>
+      <div class="note"><b>Rapporto di efficienza</b> = filo minimo : filo svolto = ${GAME.optimalSteps*2} : ${GAME.steps*2} ≈ <b style="color:var(--leaf-d)">${m.effPct}%</b></div>`;
+  } else {
+    const defeat=kind==='defeat';
+    $('endgame-rank').innerHTML = defeat ? rankSVG('#b8432b',true) : rankSVG((GAME.bestRank||RANKS[4]).color);
+    $('endgame-title').textContent = defeat ? 'IL MINOTAURO TI HA RAGGIUNTO!' : 'SPEDIZIONE CONCLUSA';
+    $('endgame-title').style.color = defeat ? 'var(--danger)' : 'var(--terra)';
+    $('endgame-desc').textContent = defeat
+      ? (GAME.levelsDone ? `${GAME.teamName} cade nello schema ${roman(GAME.level)}. I ${GAME.banked} punti degli schemi completati sono salvati in classifica.` : `${GAME.teamName} ha esaurito le vite con ${GAME.solvedCount} sigilli su 6. Nessuno schema completato: ritenta, ogni partita ha numeri e labirinti nuovi.`)
+      : `Onore a ${GAME.teamName}: ${GAME.levelsDone} ${GAME.levelsDone===1?'schema superato':'schemi superati'}. Miglior rango: ${(GAME.bestRank||RANKS[4]).name}.`;
+    GAME.history.forEach(h=>addRow(roman(h.level),h.squares));
+    if (defeat) addRow(roman(GAME.level),gateSquares());
+    $('endgame-score-label').textContent='Punti salvati'; $('endgame-score').textContent=GAME.levelsDone?GAME.banked:0;
+    $('endgame-time').textContent=fmtTime(GAME.totalSeconds);
+    $('endgame-third-label').textContent='Schemi'; $('endgame-thread').textContent=GAME.levelsDone;
+    bd.innerHTML = GAME.history.length
+      ? GAME.history.map(h=>`<div class="row"><span>Schema ${roman(h.level)} · ${h.name}</span><b>${h.score} pt · ${h.rank.name}</b></div>`).join('') + `<div class="note">Codice spedizione: <b>${GAME.code}</b>. Con lo stesso codice un'altra squadra gioca gli stessi schemi.</div>`
+      : `<div class="row"><span>Sigilli spezzati</span><b>${GAME.solvedCount} / 6</b></div><div class="note">La spedizione non entra in classifica.</div>`;
+  }
+  setTimeout(()=>$('endgameModal').classList.remove('hidden'), kind==='defeat'?700:250);
+}
+function finishRun(){ GAME.over=true; saveRecord(); showEnd('final'); }
+function concludeDefeat(){
+  if (GAME.over) return;
+  GAME.over=true; GAME.running=false; GAME.isPaused=true; stopHold();
+  clearInterval(GAME.cooldownTimer); clearInterval(GAME.speedInterval);
+  $('gateModal').classList.add('hidden'); $('danger-vignette').style.opacity=0;
+  if (GAME.levelsDone>0) saveRecord();
+  showEnd('defeat');
+}
+$('btn-next-level').addEventListener('click',()=>{ $('endgameModal').classList.add('hidden'); GAME.hearts=Math.min(3,GAME.hearts+1); updateHearts(true); startLevel(GAME.level+1); });
+$('btn-finish-run').addEventListener('click',()=>{ $('endgameModal').classList.add('hidden'); finishRun(); });
+$('btn-restart').addEventListener('click',()=>{ $('endgameModal').classList.add('hidden'); clearInterval(GAME.timerInterval); refreshWelcomeBest(); $('welcomeModal').classList.remove('hidden'); });
+
+/* Classifica locale */
+function loadRecords(){ try { return JSON.parse(localStorage.getItem('dedalo_leaderboard')||'[]'); } catch(e){ return []; } }
+function saveRecord(){
+  const recs=loadRecords();
+  recs.push({ team:GAME.teamName, color:GAME.heroColor, mode:GAME.mode, score:GAME.banked, levels:GAME.levelsDone, rank:(GAME.bestRank||RANKS[4]).name, time:fmtTime(GAME.totalSeconds), code:GAME.code, date:new Date().toLocaleDateString('it-IT') });
+  recs.sort((a,b)=>(b.score||0)-(a.score||0));
+  try { localStorage.setItem('dedalo_leaderboard',JSON.stringify(recs.slice(0,25))); } catch(e){}
+}
+function renderLeaderboard(){
+  const tb=$('leaderboard-table-body'); tb.innerHTML='';
+  const recs=loadRecords();
+  if (!recs.length){ tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:#8a7a60">Nessuna spedizione registrata finora.</td></tr>'; return; }
+  recs.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    const cells=[String(i+1), r.team+(r.mode==='arena'?' ⚔':''), String(r.levels??1), r.rank||'', String(r.score??r.oboli??0), r.time||''];
+    cells.forEach((c,j)=>{ const td=document.createElement('td'); td.textContent=c; if (j===3||j===5) td.className='hide-sm'; if (j===4){ td.style.fontWeight='900'; td.style.color='var(--ochre-d)'; } if (j===1 && r.color){ td.style.borderLeft=`6px solid ${r.color}`; } tr.appendChild(td); });
+    tb.appendChild(tr);
+  });
+}
+const openLB=()=>{ renderLeaderboard(); $('leaderboardModal').classList.remove('hidden'); };
+const closeLB=()=>$('leaderboardModal').classList.add('hidden');
+$('btn-show-leaderboard').addEventListener('click',openLB); $('btn-end-lb').addEventListener('click',openLB);
+$('btn-close-lb').addEventListener('click',closeLB); $('btn-close-lb-x').addEventListener('click',closeLB);
+$('btn-clear-leaderboard').addEventListener('click',()=>{ if (confirm('Azzerare tutti i record salvati in questo browser?')){ try { localStorage.removeItem('dedalo_leaderboard'); } catch(e){} renderLeaderboard(); } });
+
+/* Condivisione stile Wordle */
+function shareText(){
+  const lines=[`🏛️ IL FILO DI DEDALO · codice ${GAME.code}`, `${GAME.teamName} · ${GAME.mode==='arena'?'Arena':'Classe'}`];
+  GAME.history.forEach(h=>lines.push(`Schema ${roman(h.level)} ${h.squares.map(squareEmoji).join('')} ${h.rank.name} · filo ${h.eff}%`));
+  if (GAME.over && GAME.hearts<=0) lines.push(`Schema ${roman(GAME.level)} ${gateSquares().map(squareEmoji).join('')} 🐂`);
+  lines.push(`🪙 ${GAME.levelsDone?GAME.banked:0} punti · 🔥 serie max ${GAME.bestCombo}`);
+  return lines.join('\n');
+}
+$('btn-share').addEventListener('click',async()=>{
+  const txt=shareText();
+  try { await navigator.clipboard.writeText(txt); } catch(e){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(err){} ta.remove(); }
+  $('btn-share').textContent='COPIATO!'; setTimeout(()=>$('btn-share').textContent='CONDIVIDI',1800);
+});
+
+/* Coriandoli */
+const fx=$('fx-canvas'), fctx=fx.getContext('2d'); let confetti=[], confettiOn=false;
+function launchConfetti(){
+  fx.width=innerWidth; fx.height=innerHeight;
+  const cols=['#e8a93a','#b8432b','#1f6fb2','#2f9a5a','#fff8ea','#1b130d'];
+  for (let i=0;i<180;i++) confetti.push({x:Math.random()*fx.width,y:-20-Math.random()*fx.height*0.5,vx:(Math.random()-0.5)*3,vy:2+Math.random()*3,r:Math.random()*Math.PI,vr:(Math.random()-0.5)*0.3,w:6+Math.random()*6,h:3+Math.random()*4,c:cols[Math.floor(Math.random()*cols.length)]});
+  if (!confettiOn){ confettiOn=true; requestAnimationFrame(confettiStep); }
+}
+function confettiStep(){
+  fctx.clearRect(0,0,fx.width,fx.height);
+  confetti.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.04; p.r+=p.vr; fctx.save(); fctx.translate(p.x,p.y); fctx.rotate(p.r); fctx.fillStyle=p.c; fctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); fctx.restore(); });
+  confetti=confetti.filter(p=>p.y<fx.height+30);
+  if (confetti.length) requestAnimationFrame(confettiStep); else { confettiOn=false; fctx.clearRect(0,0,fx.width,fx.height); }
+}
+
+/* =====================================================================
+   13. SCHERMATA INIZIALE E AVVIO
+   ===================================================================== */
+const CODE_ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function randomCode(){ let s=''; for (let i=0;i<6;i++) s+=CODE_ALPHABET[Math.floor(Math.random()*CODE_ALPHABET.length)]; return s; }
+function refreshWelcomeBest(){ const r=loadRecords()[0]; $('welcome-best').textContent = r ? `Record da battere: ${r.team} · ${r.score} pt · ${r.levels??1} schemi` : ''; }
+(function setupWelcome(){
+  const picker=$('avatar-picker');
+  HERO_COLORS.forEach((h,i)=>{
+    const b=document.createElement('button'); b.type='button'; b.className='pick avatar'+(i===0?' selected':'');
+    const cv=document.createElement('canvas'); cv.width=108; cv.height=108; drawAvatar(cv,h.c);
+    const lab=document.createElement('span'); lab.textContent=h.name;
+    b.append(cv,lab);
+    b.onclick=()=>{ sound.init(); sound.click(); GAME.heroColor=h.c; picker.querySelectorAll('.avatar').forEach(x=>x.classList.remove('selected')); b.classList.add('selected'); };
+    picker.appendChild(b);
+  });
+  document.querySelectorAll('.mode-card').forEach(card=>card.onclick=()=>{ sound.init(); sound.click(); GAME.mode=card.dataset.mode; document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected')); card.classList.add('selected'); });
+  document.querySelectorAll('.view-card').forEach(card=>card.onclick=()=>{ sound.init(); sound.click(); setView(card.dataset.view,false); document.querySelectorAll('.view-card').forEach(c=>c.classList.toggle('selected',c===card)); });
+  refreshWelcomeBest();
+})();
+$('btn-start-game').addEventListener('click',startRun);
+
+(function init(){
+  buildTextures();
+  let v='iso'; try { v=localStorage.getItem('dedalo_view')||'iso'; } catch(e){}
+  setView(v==='fpv'?'fpv':'iso',false);
+  document.querySelectorAll('.view-card').forEach(c=>c.classList.toggle('selected',c.dataset.view===GAME.view));
+  // anteprima del labirinto dietro la schermata iniziale
+  GAME.code=randomCode(); GAME.fixedSeed=true;
+  const map=buildMap(1);
+  GAME.gates=map.pts.map((p,i)=>({id:i+1,x:p.x,y:p.y,solved:false,color:CATS[i].color}));
+  GAME.pickups=map.pickups; GAME.player={...START}; GAME.rp={...START}; GAME.minotaur={...LAIR}; GAME.rm={...LAIR};
+  REVEALED=Array.from({length:ROWS},()=>Array(COLS).fill(1));
+  updateHearts(); drawAvatar($('hud-avatar'),GAME.heroColor);
+  new ResizeObserver(()=>resizeCanvas()).observe(wrap);
+  window.addEventListener('resize',resizeCanvas);
+  resizeCanvas();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

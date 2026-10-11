@@ -1,9 +1,48 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-09 19:27:03
+   Data: 2026-10-11 22:01:43
 */
 
 const db = [
+    {
+        "title": "Il Filo di Dedalo: Labirinto Matematico 2.5D",
+        "excerpt": "Laboratorio matematico e gioco 2.5D ambientato a Cnosso: affronta il labirinto di Dedalo e il Minotauro risolvendo sigilli su frazioni, percentuali, proporzioni, caccia all'errore e lessico. Modalità cooperativa LIM per la classe e Arena.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "ARCADE",
+            "ARITMETICA",
+            "BIENNIO",
+            "CACCIA ALL'ERRORE",
+            "CIT_3",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CIT_5:IMPARARE A IMPARARE",
+            "DEDALO",
+            "EU:DIGITALE",
+            "EU:IMPARAREIMPARARE",
+            "EU:STEM",
+            "FRAZIONI",
+            "GAMIFICATION",
+            "LAB",
+            "LIM",
+            "LOGICA",
+            "MAT:CALCOLO",
+            "MAT:MODELLIZZAZIONE",
+            "MAT:PROBLEMSOLVING",
+            "MATEMATICA",
+            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI",
+            "MINOTAURO",
+            "PERCENTUALI",
+            "PROPORZIONI",
+            "TRASVERSALE",
+            "VIDEOGIOCO"
+        ],
+        "date": "2026-10-11",
+        "url": "content/apps/il-filo-di-dedalo_2.5D_claude_2.html",
+        "type": "app",
+        "icon": "🏛️",
+        "game_type": "arcade"
+    },
     {
         "title": "Math Invaders: MCM & MCD",
         "excerpt": "Gioco arcade per allenare m.c.m., M.C.D. e scomposizione in fattori primi: sincronie spaziali, teglie da tagliare, casi da detective e Factor Blaster.",
