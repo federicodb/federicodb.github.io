@@ -267,6 +267,66 @@ table.lb tr:first-child td{background:#fff1cf}
 
 <header class="topbar">
   <div class="brand">
+<!-- ORFINI-BACK START -->
+<style>
+.orfini-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(27, 19, 13, 0.88);
+  color: #fff8ea !important;
+  border: 1.5px solid rgba(232, 169, 58, 0.45);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 3px 0 #1b130d;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  pointer-events: auto;
+  line-height: 1.2;
+}
+.orfini-back-btn:hover {
+  background: #b8432b;
+  border-color: #ffd766;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 #1b130d;
+}
+.orfini-back-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #1b130d;
+}
+.orfini-back-btn-header {
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.orfini-back-arrow {
+  font-size: 14px;
+  line-height: 1;
+}
+/* Regole separate: un selettore non riconosciuto invaliderebbe l'intera lista */
+:fullscreen .orfini-back-btn { display: none !important; }
+:-webkit-full-screen .orfini-back-btn { display: none !important; }
+@media (display-mode: fullscreen) { .orfini-back-btn { display: none !important; } }
+@media (max-width: 640px) {
+  .orfini-back-btn .orfini-back-text {
+    display: none;
+  }
+  .orfini-back-btn {
+    padding: 6px 10px;
+  }
+}
+</style>
+<a href="../../index.html" class="orfini-back-btn orfini-back-btn-header" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
+  <span class="orfini-back-arrow">←</span>
+  <span class="orfini-back-text">Orfini Math Lab</span>
+</a>
+<!-- ORFINI-BACK END -->
     <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
       <circle cx="32" cy="32" r="29" fill="#b8432b" stroke="#1b130d" stroke-width="4"/>
       <circle cx="32" cy="32" r="22.5" fill="none" stroke="#e8a93a" stroke-width="2.5" stroke-dasharray="4 3"/>
