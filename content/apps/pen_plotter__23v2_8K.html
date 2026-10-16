@@ -890,17 +890,17 @@
                     </div>
                 </div>
 
-                <div class="glass-card p-3 space-y-3">
+                <div id="threeDGeneralCard" class="glass-card p-3 space-y-3">
                     <h4 class="text-[10px] font-bold uppercase text-zinc-400 mb-1">Parametri Generali</h4>
-                    <div>
+                    <div id="threeDNumCubesRow">
                         <div class="flex justify-between items-center mb-0.5">
-                            <label class="block text-[11px] text-zinc-400">Numero di Solidi / Profondità:</label>
+                            <label id="lblThreeDNumCubes" class="block text-[11px] text-zinc-400">Numero di Solidi / Profondità:</label>
                             <span id="valThreeDNumCubes" class="font-mono text-zinc-100 text-xs font-semibold">30</span>
                         </div>
                         <input type="range" id="paramThreeDNumCubes" min="3" max="80" step="1" value="30" class="w-full"
                             oninput="document.getElementById('valThreeDNumCubes').innerText=this.value; updateSimulation()">
                     </div>
-                    <div>
+                    <div id="threeDCubeSizeRow">
                         <div class="flex justify-between items-center mb-0.5">
                             <label class="block text-[11px] text-zinc-400">Dimensione Base Solido:</label>
                             <span id="valThreeDCubeSize" class="font-mono text-zinc-100 text-xs font-semibold">8.0</span>
@@ -945,17 +945,17 @@
                     <div>
                         <div class="flex justify-between items-center mb-0.5">
                             <label class="block text-[11px] text-slate-400">Fattore di Scala Ramo:</label>
-                            <span id="valThreeDTreeScale" class="font-mono text-indigo-400 text-xs font-semibold">0.75</span>
+                            <span id="valThreeDTreeScale" class="font-mono text-indigo-400 text-xs font-semibold">0.65</span>
                         </div>
-                        <input type="range" id="paramThreeDTreeScale" min="0.50" max="0.85" step="0.01" value="0.75" class="w-full"
+                        <input type="range" id="paramThreeDTreeScale" min="0.50" max="0.85" step="0.01" value="0.65" class="w-full"
                             oninput="document.getElementById('valThreeDTreeScale').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
                     </div>
                     <div>
                         <div class="flex justify-between items-center mb-0.5">
                             <label class="block text-[11px] text-slate-400">Angolo Diramazione:</label>
-                            <span id="valThreeDTreeAngle" class="font-mono text-indigo-400 text-xs font-semibold">35°</span>
+                            <span id="valThreeDTreeAngle" class="font-mono text-indigo-400 text-xs font-semibold">32°</span>
                         </div>
-                        <input type="range" id="paramThreeDTreeAngle" min="15" max="65" step="1" value="35" class="w-full"
+                        <input type="range" id="paramThreeDTreeAngle" min="15" max="65" step="1" value="32" class="w-full"
                             oninput="document.getElementById('valThreeDTreeAngle').innerText=this.value + '°'; updateSimulation()">
                     </div>
                 </div>
@@ -1283,7 +1283,7 @@
                             <input type="range" id="paramFfScale" min="0.001" max="0.030" step="0.001" value="0.030"
                                 class="w-full" oninput="updateSimulation()">
                         </div>
-                        <div>
+                        <div id="ff-spacing-container">
                             <div class="flex justify-between items-center mb-0.5">
                                 <label class="block text-[11px] text-slate-400">Spaziatura Streamlines:</label>
                                 <span id="valFfSpacing"
@@ -1788,24 +1788,24 @@
                             <input type="range" id="paramLiA" min="10" max="80" step="0.5" value="40.0" class="w-full accent-indigo-500" oninput="document.getElementById('valLiA').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
                         </div>
                         <div>
-                            <label class="block text-[9px] text-slate-400 mb-0.5">b: <span id="valLiB" class="font-mono text-indigo-400">1.50</span></label>
-                            <input type="range" id="paramLiB" min="0.1" max="5" step="0.05" value="1.5" class="w-full accent-indigo-500" oninput="document.getElementById('valLiB').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
+                            <label class="block text-[9px] text-slate-400 mb-0.5">f: <span id="valLiB" class="font-mono text-indigo-400">20.00</span></label>
+                            <input type="range" id="paramLiB" min="10" max="30" step="0.5" value="20" class="w-full accent-indigo-500" oninput="document.getElementById('valLiB').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
                         </div>
                         <div>
-                            <label class="block text-[9px] text-slate-400 mb-0.5">c: <span id="valLiC" class="font-mono text-indigo-400">0.83</span></label>
-                            <input type="range" id="paramLiC" min="0.1" max="3" step="0.01" value="0.833" class="w-full accent-indigo-500" oninput="document.getElementById('valLiC').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
+                            <label class="block text-[9px] text-slate-400 mb-0.5">c: <span id="valLiC" class="font-mono text-indigo-400">1.83</span></label>
+                            <input type="range" id="paramLiC" min="0.5" max="3" step="0.01" value="1.833" class="w-full accent-indigo-500" oninput="document.getElementById('valLiC').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
                         </div>
                         <div>
-                            <label class="block text-[9px] text-slate-400 mb-0.5">d: <span id="valLiD" class="font-mono text-indigo-400">0.50</span></label>
-                            <input type="range" id="paramLiD" min="0.1" max="2" step="0.05" value="0.5" class="w-full accent-indigo-500" oninput="document.getElementById('valLiD').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
+                            <label class="block text-[9px] text-slate-400 mb-0.5">d: <span id="valLiD" class="font-mono text-indigo-400">0.16</span></label>
+                            <input type="range" id="paramLiD" min="0.05" max="0.4" step="0.01" value="0.16" class="w-full accent-indigo-500" oninput="document.getElementById('valLiD').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
                         </div>
                         <div>
                             <label class="block text-[9px] text-slate-400 mb-0.5">e: <span id="valLiE" class="font-mono text-indigo-400">0.65</span></label>
                             <input type="range" id="paramLiE" min="0.1" max="2" step="0.05" value="0.65" class="w-full accent-indigo-500" oninput="document.getElementById('valLiE').innerText=parseFloat(this.value).toFixed(2); updateSimulation()">
                         </div>
                         <div>
-                            <label class="block text-[9px] text-slate-400 mb-0.5">dt: <span id="valLiDt" class="font-mono text-indigo-400">0.002</span></label>
-                            <input type="range" id="paramLiDt" min="0.0005" max="0.005" step="0.0001" value="0.002" class="w-full accent-indigo-500" oninput="document.getElementById('valLiDt').innerText=parseFloat(this.value).toFixed(4); updateSimulation()">
+                            <label class="block text-[9px] text-slate-400 mb-0.5">dt: <span id="valLiDt" class="font-mono text-indigo-400">0.001</span></label>
+                            <input type="range" id="paramLiDt" min="0.0002" max="0.002" step="0.0001" value="0.001" class="w-full accent-indigo-500" oninput="document.getElementById('valLiDt').innerText=parseFloat(this.value).toFixed(4); updateSimulation()">
                         </div>
                         <div>
                             <label class="block text-[9px] text-slate-400 mb-0.5">Passi: <span id="valLiSteps" class="font-mono text-indigo-400">5000</span></label>
@@ -2017,7 +2017,7 @@
                         proteggere il browser.</p>
                 </div>
 
-                <div class="glass-card p-3 space-y-2">
+                <div id="fractalFillCard" class="glass-card p-3 space-y-2">
                     <div class="flex items-center justify-between">
                         <label class="flex items-center space-x-2 text-[10px] text-slate-300 cursor-pointer">
                             <input type="checkbox" id="paramFractalFill"
@@ -2027,7 +2027,7 @@
                         </label>
                         <span
                             class="text-[8px] font-bold text-indigo-400 uppercase bg-indigo-950/40 px-1.5 py-0.5 rounded border border-indigo-900/30">Sierpinski
-                            / Carpet</span>
+                            / Carpet / Quadrati</span>
                     </div>
 
                     <div id="fractal-fill-extra-controls"
@@ -2062,8 +2062,8 @@
                 </div>
 
                 <div class="glass-card p-3 space-y-3" id="fractal-deform-controls">
-                    <h4 class="text-[10px] font-bold uppercase text-slate-400">Parametri Koch</h4>
-                    <div>
+                    <h4 id="fractalDeformTitle" class="text-[10px] font-bold uppercase text-slate-400">Parametri Koch</h4>
+                    <div id="fractalKochSidesRow">
                         <label class="block text-[9px] text-slate-400 mb-0.5">Lati Poligono di Base: <span
                                 id="valFractalKochSides" class="font-mono text-indigo-400">3</span></label>
                         <input type="range" id="paramFractalKochSides" min="3" max="10" step="1" value="3"
@@ -2071,12 +2071,12 @@
                             oninput="document.getElementById('valFractalKochSides').innerText=this.value; updateSimulation()">
                     </div>
                     <div>
-                        <label class="block text-[9px] text-slate-400 mb-0.5">Rotazione Bumps: <span id="valFractalRot"
+                        <label id="lblFractalRot" class="block text-[9px] text-slate-400 mb-0.5">Rotazione Bumps: <span id="valFractalRot"
                                 class="font-mono text-indigo-400">0</span>°</label>
                         <input type="range" id="paramFractalRot" min="-60" max="60" step="1" value="0"
                             class="w-full accent-indigo-500" oninput="updateSimulation()">
                     </div>
-                    <div>
+                    <div id="fractalRandRow">
                         <label class="block text-[9px] text-slate-400 mb-0.5">Randomness / Jitter: <span
                                 id="valFractalRand" class="font-mono text-indigo-400">0.00</span></label>
                         <input type="range" id="paramFractalRand" min="0.00" max="0.50" step="0.01" value="0.00"
@@ -2150,8 +2150,8 @@
                     <h4 class="text-[10px] font-bold uppercase text-slate-400">Opzioni Tratteggio</h4>
                     <div>
                         <label class="block text-[9px] text-slate-400 mb-0.5">Spaziatura Linee: <span
-                                id="valHatchSpacing" class="font-mono text-emerald-400">5 px</span></label>
-                        <input type="range" id="paramHatchSpacing" min="3" max="20" value="5" step="1"
+                                id="valHatchSpacing" class="font-mono text-emerald-400">1.2</span> mm</label>
+                        <input type="range" id="paramHatchSpacing" min="0.5" max="5" value="1.2" step="0.1"
                             class="w-full accent-emerald-500" oninput="processImage()">
                     </div>
                     <div>
@@ -2202,6 +2202,12 @@
                                 id="valVectorRes" class="font-mono text-emerald-400">180</span> px</label>
                         <input type="range" id="paramVectorRes" min="80" max="300" value="180" step="10"
                             class="w-full accent-emerald-500" oninput="processImage()">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] text-slate-400 mb-0.5">Livelli di Contorno (isolinee): <span
+                                id="valVectorLevels" class="font-mono text-emerald-400">1</span></label>
+                        <input type="range" id="paramVectorLevels" min="1" max="8" value="1" step="1"
+                            class="w-full accent-emerald-500" oninput="document.getElementById('valVectorLevels').innerText=this.value; processImage()">
                     </div>
                 </div>
 
@@ -2544,7 +2550,7 @@
                             class="w-full accent-indigo-500" oninput="updateSimulation()">
                     </div>
                     <div>
-                        <label class="block text-[9px] text-slate-400 mb-0.5">Distanza Minima: <span id="valSketchDist"
+                        <label class="block text-[9px] text-slate-400 mb-0.5">Distanza Minima tra i Punti: <span id="valSketchDist"
                                 class="font-mono text-indigo-400">10</span> px</label>
                         <input type="range" id="paramSketchDist" min="2" max="40" step="1" value="10"
                             class="w-full accent-indigo-500" oninput="updateSimulation()">
@@ -2646,7 +2652,7 @@
                         <input type="range" id="paramTextSize" min="12" max="100" step="2" value="32"
                             class="w-full accent-indigo-500" oninput="updateSimulation()">
                     </div>
-                    <div>
+                    <div id="textLineHeightRow">
                         <label class="block text-[9px] text-slate-400 mb-0.5">Altezza Riga (Interlinea): <span
                                 id="valTextLineHeight" class="font-mono text-indigo-400">1.4</span></label>
                         <input type="range" id="paramTextLineHeight" min="1.0" max="2.5" step="0.1" value="1.4"
@@ -2810,22 +2816,6 @@
                     </div>
                     <div id="pattern-mixed-controls" class="hidden-mode space-y-3">
                         <div>
-                            <label class="block text-[9px] text-slate-400 mb-0.5">Spessore Tratto Voronoi: <span
-                                    id="valPatternMixedVoronoiWeight" class="font-mono text-indigo-400">0.6</span>
-                                mm</label>
-                            <input type="range" id="paramPatternMixedVoronoiWeight" min="0.1" max="2.0" step="0.1"
-                                value="0.6" class="w-full accent-indigo-500"
-                                oninput="document.getElementById('valPatternMixedVoronoiWeight').innerText=this.value; updateSimulation()">
-                        </div>
-                        <div>
-                            <label class="block text-[9px] text-slate-400 mb-0.5">Spessore Tratto Delaunay: <span
-                                    id="valPatternMixedDelaunayWeight" class="font-mono text-indigo-400">0.3</span>
-                                mm</label>
-                            <input type="range" id="paramPatternMixedDelaunayWeight" min="0.1" max="2.0" step="0.1"
-                                value="0.3" class="w-full accent-indigo-500"
-                                oninput="document.getElementById('valPatternMixedDelaunayWeight').innerText=this.value; updateSimulation()">
-                        </div>
-                        <div>
                             <label class="block text-[9px] text-slate-400 mb-0.5">Soggetto Riempimento</label>
                             <select id="paramPatternMixedFillTarget"
                                 class="w-full glass-input text-xs rounded p-2 bg-slate-900"
@@ -2861,11 +2851,11 @@
                         <label class="block text-[9px] text-slate-400 mb-0.5">Numero Punti: <span
                                 id="valPatternGenPoints" class="font-mono text-indigo-400">30</span></label>
                         <input type="range" id="paramPatternGenPoints" min="5" max="150" step="5" value="30"
-                            class="w-full accent-indigo-500" oninput="updateSimulation()">
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valPatternGenPoints').innerText=this.value; generatePatternPoints(false)">
                     </div>
                     <div>
                         <label class="block text-[9px] text-slate-400 mb-0.5">Distribuzione</label>
-                        <select id="paramPatternGenType" class="w-full glass-input text-xs rounded p-2 bg-slate-900">
+                        <select id="paramPatternGenType" class="w-full glass-input text-xs rounded p-2 bg-slate-900" onchange="generatePatternPoints(false)">
                             <option value="random">Casuale Uniforme</option>
                             <option value="grid">Griglia Regolare</option>
                             <option value="grid-jitter">Griglia con Jitter</option>
@@ -2920,7 +2910,7 @@
                                     class="font-mono text-emerald-400 font-bold bg-slate-950 px-1.5 py-0.5 rounded">1</span></label>
                             <input type="range" id="paramFibMultiCW" min="1" max="8" step="1" value="1"
                                 class="w-full accent-emerald-500"
-                                oninput="document.getElementById('valFibMultiCW').innerText=this.value; updateSimulation()">
+                                oninput="document.getElementById('valFibMultiCW').innerText=this.value; updateFibMultiControls(); updateSimulation()">
                         </div>
                         <div>
                             <label class="block text-[9px] text-slate-400 mb-0.5">Spirali CCW (specchiate): <span
@@ -2928,9 +2918,9 @@
                                     class="font-mono text-sky-400 font-bold bg-slate-950 px-1.5 py-0.5 rounded">0</span></label>
                             <input type="range" id="paramFibMultiCCW" min="0" max="8" step="1" value="0"
                                 class="w-full accent-sky-500"
-                                oninput="document.getElementById('valFibMultiCCW').innerText=this.value; updateSimulation()">
+                                oninput="document.getElementById('valFibMultiCCW').innerText=this.value; updateFibMultiControls(); updateSimulation()">
                         </div>
-                        <div>
+                        <div id="fibPhaseRow">
                             <label class="block text-[9px] text-slate-400 mb-0.5">Sfasamento angolare: <span
                                     id="valFibPhase"
                                     class="font-mono text-violet-400 font-bold bg-slate-950 px-1.5 py-0.5 rounded">0</span>°</label>
@@ -2938,7 +2928,7 @@
                                 class="w-full accent-violet-500"
                                 oninput="document.getElementById('valFibPhase').innerText=this.value; updateSimulation()">
                         </div>
-                        <div>
+                        <div id="fibScaleCCWRow">
                             <label class="block text-[9px] text-slate-400 mb-0.5">Scala CCW rispetto CW: <span
                                     id="valFibScaleCCW"
                                     class="font-mono text-sky-400 font-bold bg-slate-950 px-1.5 py-0.5 rounded">100</span>%</label>
@@ -3079,6 +3069,27 @@
                     </select>
                 </div>
 
+                <!-- Parametri comuni del segnale (usati da più visualizzazioni) -->
+                <div id="audio-common-controls" class="glass-card p-3 space-y-3">
+                    <h4 class="text-[10px] font-bold uppercase text-indigo-400">Parametri Segnale</h4>
+                    <div id="audioResRow">
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[9px] text-slate-400">Risoluzione Punti (Campionamento):</label>
+                            <span id="valAudioRes" class="font-mono text-indigo-400 text-xs font-semibold">1500</span>
+                        </div>
+                        <input type="range" id="paramAudioRes" min="200" max="4000" step="100" value="1500"
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioRes').innerText=this.value; processAudio()">
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-0.5">
+                            <label class="block text-[9px] text-slate-400">Amplificazione Ampiezza (mm):</label>
+                            <span id="valAudioAmp" class="font-mono text-indigo-400 text-xs font-semibold">20</span>
+                        </div>
+                        <input type="range" id="paramAudioAmp" min="1" max="60" value="20" step="1"
+                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioAmp').innerText=this.value; processAudio()">
+                    </div>
+                </div>
+
                 <!-- Controlli specifici per FORMA D'ONDA (Oscillogramma Continuo) -->
                 <div id="audio-waveform-controls" class="glass-card p-3 space-y-3">
                     <h4 class="text-[10px] font-bold uppercase text-indigo-400">Oscillogramma Cartesiano (Traccia Continua)</h4>
@@ -3090,22 +3101,6 @@
                             <option value="direct_pcm">Campioni PCM Diretti Interpolati</option>
                             <option value="symmetric_envelope">Inviluppo Simmetrico (Profilo Raccordato)</option>
                         </select>
-                    </div>
-                    <div>
-                        <div class="flex justify-between items-center mb-0.5">
-                            <label class="block text-[9px] text-slate-400">Risoluzione Punti X (Campionamento):</label>
-                            <span id="valAudioRes" class="font-mono text-indigo-400 text-xs font-semibold">1500</span>
-                        </div>
-                        <input type="range" id="paramAudioRes" min="200" max="4000" step="100" value="1500"
-                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioRes').innerText=this.value; processAudio()">
-                    </div>
-                    <div>
-                        <div class="flex justify-between items-center mb-0.5">
-                            <label class="block text-[9px] text-slate-400">Amplificazione Ampiezza Y (mm):</label>
-                            <span id="valAudioAmp" class="font-mono text-indigo-400 text-xs font-semibold">20</span>
-                        </div>
-                        <input type="range" id="paramAudioAmp" min="1" max="60" value="20" step="1"
-                            class="w-full accent-indigo-500" oninput="document.getElementById('valAudioAmp').innerText=this.value; processAudio()">
                     </div>
                 </div>
 
@@ -3764,6 +3759,8 @@
         let bypassComplexityCheck = false;
         let safetyPointCounter = 0;
         const MAX_SAFETY_POINTS = 100000;
+        // Soglia di avviso sui punti effettivi dopo finalizeStrokes (anteprima SVG e G-code restano fluidi)
+        const COMPLEXITY_WARN_POINTS = 80000;
 
         function addSafetyPoint() {
             safetyPointCounter++;
@@ -3912,6 +3909,145 @@
             }
             dx = p.x - x; dy = p.y - y;
             return dx * dx + dy * dy;
+        }
+
+        /**
+         * Isolinee chiuse di un campo scalare (Marching Squares orientato, interpolazione sub-pixel).
+         * field: Float32Array (w+2)*(h+2), indice y*(w+2)+x; "dentro" = valore < level.
+         * Il bordo esterno del campo deve stare "fuori" (>= level) perché gli anelli si chiudano.
+         * Restituisce anelli chiusi in coordinate griglia (x, y): ogni attraversamento ha un unico
+         * successore, quindi ogni anello torna esattamente al punto di partenza (nessuna corda).
+         */
+        function traceIsoContours(field, w, h, level) {
+            const W = w + 2;
+            const stride = 2 * w + 5;
+            const next = new Map();
+            const pos = new Map();
+            // Corner della cella in senso orario: TL, TR, BR, BL; lo spigolo e va dal corner e al corner e+1
+            const cx = [0, 1, 1, 0], cy = [0, 0, 1, 1];
+            const val = [0, 0, 0, 0], ins = [false, false, false, false], keys = [0, 0, 0, 0];
+            const edgeKey = (x, y, e) => e === 0 ? (2 * y) * stride + (2 * x + 1)
+                : e === 1 ? (2 * y + 1) * stride + (2 * x + 2)
+                : e === 2 ? (2 * y + 2) * stride + (2 * x + 1)
+                : (2 * y + 1) * stride + (2 * x);
+            const edgePoint = (x, y, e) => {
+                const a = e, b = (e + 1) % 4;
+                const va = val[a], vb = val[b];
+                const t = vb === va ? 0.5 : Math.min(1, Math.max(0, (level - va) / (vb - va)));
+                return { x: x + cx[a] + (cx[b] - cx[a]) * t, y: y + cy[a] + (cy[b] - cy[a]) * t };
+            };
+            for (let y = 0; y <= h; y++) {
+                for (let x = 0; x <= w; x++) {
+                    val[0] = field[y * W + x]; val[1] = field[y * W + x + 1];
+                    val[2] = field[(y + 1) * W + x + 1]; val[3] = field[(y + 1) * W + x];
+                    let n = 0;
+                    for (let k = 0; k < 4; k++) { ins[k] = val[k] < level; if (ins[k]) n++; }
+                    if (n === 0 || n === 4) continue;
+                    // Per ogni ingresso fuori→dentro, collega la successiva uscita dentro→fuori in senso orario
+                    for (let e = 0; e < 4; e++) {
+                        if (ins[e] || !ins[(e + 1) % 4]) continue;
+                        for (let k = 1; k < 4; k++) {
+                            const f = (e + k) % 4;
+                            if (ins[f] && !ins[(f + 1) % 4]) {
+                                const kIn = edgeKey(x, y, e), kOut = edgeKey(x, y, f);
+                                next.set(kIn, kOut);
+                                if (!pos.has(kIn)) pos.set(kIn, edgePoint(x, y, e));
+                                if (!pos.has(kOut)) pos.set(kOut, edgePoint(x, y, f));
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            const loops = [];
+            for (const startKey of next.keys()) {
+                if (!next.has(startKey)) continue;
+                const loop = [];
+                let key = startKey;
+                while (next.has(key)) {
+                    loop.push(pos.get(key));
+                    const nk = next.get(key);
+                    next.delete(key);
+                    key = nk;
+                }
+                if (loop.length > 2) {
+                    loop.push({ ...loop[0] });
+                    loops.push(loop);
+                }
+            }
+            return loops;
+        }
+
+        // Variante binaria: grid (h+2)x(w+2) di booleani con bordo a false (true = dentro)
+        function traceBinaryContours(grid, w, h) {
+            const W = w + 2;
+            const field = new Float32Array(W * (h + 2));
+            for (let y = 0; y < h + 2; y++) {
+                const row = grid[y];
+                for (let x = 0; x < W; x++) field[y * W + x] = row[x] ? 0 : 1;
+            }
+            return traceIsoContours(field, w, h, 0.5);
+        }
+
+        /**
+         * Distance transform euclidea esatta (Felzenszwalb-Huttenlocher, lineare).
+         * mask: Uint8Array W*H, 1 = dentro. Restituisce per ogni pixel la distanza dal pixel "fuori" più vicino.
+         */
+        function euclideanDistanceTransform(mask, W, H) {
+            const INF = 1e20;
+            const f = new Float64Array(Math.max(W, H));
+            const d = new Float64Array(Math.max(W, H));
+            const v = new Int32Array(Math.max(W, H));
+            const z = new Float64Array(Math.max(W, H) + 1);
+            const grid = new Float64Array(W * H);
+            for (let k = 0; k < W * H; k++) grid[k] = mask[k] ? INF : 0;
+
+            const edt1d = (n) => {
+                let k = 0;
+                v[0] = 0; z[0] = -INF; z[1] = INF;
+                for (let q = 1; q < n; q++) {
+                    let sv = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+                    while (sv <= z[k]) {
+                        k--;
+                        sv = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+                    }
+                    k++; v[k] = q; z[k] = sv; z[k + 1] = INF;
+                }
+                k = 0;
+                for (let q = 0; q < n; q++) {
+                    while (z[k + 1] < q) k++;
+                    d[q] = (q - v[k]) * (q - v[k]) + f[v[k]];
+                }
+            };
+
+            for (let x = 0; x < W; x++) {
+                for (let y = 0; y < H; y++) f[y] = grid[y * W + x];
+                edt1d(H);
+                for (let y = 0; y < H; y++) grid[y * W + x] = d[y];
+            }
+            for (let y = 0; y < H; y++) {
+                for (let x = 0; x < W; x++) f[x] = grid[y * W + x];
+                edt1d(W);
+                for (let x = 0; x < W; x++) grid[y * W + x] = d[x];
+            }
+            const out = new Float32Array(W * H);
+            for (let k = 0; k < W * H; k++) out[k] = Math.sqrt(grid[k]);
+            return out;
+        }
+
+        // Campo di luminanza (0-255) da ImageData, con bordo bianco: pronto per traceIsoContours
+        function luminanceField(data, w, h, invert = false) {
+            const W = w + 2;
+            const field = new Float32Array(W * (h + 2)).fill(255);
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const i = (y * w + x) * 4;
+                    let v = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                    field[(y + 1) * W + x + 1] = invert ? 255 - v : v;
+                }
+            }
+            return field;
         }
 
         function smoothPath(pts, iterations = 1) {
@@ -4237,13 +4373,28 @@
             const lightningControls = document.getElementById('fractal-lightning-controls');
 
             if (deformControls) {
-                deformControls.className = (type === 'koch') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
+                // La rotazione vale per tutti i tipi (Koch: ruota i bump; altri: ruota la figura);
+                // lati del poligono solo per Koch, jitter solo per i tipi che lo usano
+                deformControls.className = 'glass-card p-3 space-y-3';
+                const isKoch = type === 'koch';
+                const title = document.getElementById('fractalDeformTitle');
+                if (title) title.textContent = isKoch ? 'Parametri Koch' : 'Deformazione';
+                document.getElementById('fractalKochSidesRow')?.classList.toggle('hidden-mode', !isKoch);
+                const lblRot = document.getElementById('lblFractalRot');
+                if (lblRot && lblRot.childNodes[0]) lblRot.childNodes[0].textContent = isKoch ? 'Rotazione Bumps: ' : 'Rotazione Figura: ';
+                document.getElementById('fractalRandRow')?.classList.toggle('hidden-mode',
+                    !['koch', 'sierpinski', 'carpet', 'dragon', 'hilbert'].includes(type));
             }
             if (lightningControls) {
                 lightningControls.className = (type === 'lightning') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             }
+            // La campitura esiste solo per i frattali a celle chiuse
+            document.getElementById('fractalFillCard')?.classList.toggle('hidden-mode',
+                !['sierpinski', 'carpet', 'ricorsione_quadrati'].includes(type));
 
-            const fillEnabled = document.getElementById('paramFractalFill')?.checked ?? false;
+            // La campitura conta solo dove esiste (altrimenti limiterebbe i livelli senza motivo)
+            const fillEnabled = (document.getElementById('paramFractalFill')?.checked ?? false) &&
+                ['sierpinski', 'carpet', 'ricorsione_quadrati'].includes(type);
             let maxL = 7;
             if (type === 'carpet') {
                 maxL = fillEnabled ? 5 : 6;
@@ -4337,7 +4488,7 @@
                 if (procType === 'hatching') {
                     const slider = document.getElementById('paramHatchSpacing');
                     if (slider) {
-                        slider.value = Math.min(20, parseInt(slider.value) + 2);
+                        slider.value = Math.min(5, parseFloat(slider.value) * 1.5).toFixed(1);
                         triggerInputEvent(slider);
                     }
                 } else if (procType === 'spiral') {
@@ -4449,6 +4600,192 @@
             }
         }
 
+        /**
+         * Stadio finale di pulizia del tratto, in mm reali (dopo scala e centratura).
+         * Comune a tutte le modalità, così i generatori non devono preoccuparsene:
+         *  1. elimina punti consecutivi coincidenti (< 0.01 mm)
+         *  2. salda gli anelli quasi chiusi (gap < mezzo tratto) per evitare il "dente" di chiusura
+         *  3. semplifica (Douglas-Peucker, 0.02 mm) e impone segmenti >= 0.12 mm (niente stutter del firmware);
+         *     i tratti più corti di mezzo spessore penna diventano un punto
+         *  4. rimuove i ritracciamenti veri (overdraw >= 5 mm, es. spirografo oltre il periodo), spezzando il path;
+         *     le sovrapposizioni brevi e volute dal disegno restano, per non moltiplicare i sollevamenti della penna
+         */
+        const STROKE_DEDUPE_MM = 0.01;
+        const STROKE_SIMPLIFY_MM = 0.02;
+        const STROKE_MIN_SEG_MM = 0.12;
+        const STROKE_COVER_TOL_MM = 0.03;
+        const STROKE_OVERDRAW_MIN_RUN_MM = 5.0;
+        const STROKE_MERGE_MM = 0.05;
+        const STROKE_OVERDRAW_LAG_MM = 1.0;
+
+        function enforceMinSegment(points, minSeg) {
+            if (points.length <= 2) return points;
+            const out = [points[0]];
+            for (let i = 1; i < points.length - 1; i++) {
+                const last = out[out.length - 1];
+                if (Math.hypot(points[i].x - last.x, points[i].y - last.y) >= minSeg) out.push(points[i]);
+            }
+            const end = points[points.length - 1];
+            if (out.length > 1 && Math.hypot(end.x - out[out.length - 1].x, end.y - out[out.length - 1].y) < minSeg) {
+                out[out.length - 1] = end;
+            } else {
+                out.push(end);
+            }
+            return out;
+        }
+
+        function removeOverdraw(paths, penWidth) {
+            const CELL = 1.0;
+            const tolSq = STROKE_COVER_TOL_MM * STROKE_COVER_TOL_MM;
+            const grid = new Map();
+            const insert = (a, b) => {
+                const x0 = Math.floor(Math.min(a.x, b.x) / CELL), x1 = Math.floor(Math.max(a.x, b.x) / CELL);
+                const y0 = Math.floor(Math.min(a.y, b.y) / CELL), y1 = Math.floor(Math.max(a.y, b.y) / CELL);
+                for (let i = x0; i <= x1; i++) {
+                    for (let j = y0; j <= y1; j++) {
+                        const k = i + ',' + j;
+                        let list = grid.get(k);
+                        if (!list) { list = []; grid.set(k, list); }
+                        list.push([a, b]);
+                    }
+                }
+            };
+            const covered = (p, tolSqOverride) => {
+                const limit = tolSqOverride === undefined ? tolSq : tolSqOverride;
+                const cx = Math.floor(p.x / CELL), cy = Math.floor(p.y / CELL);
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        const list = grid.get((cx + i) + ',' + (cy + j));
+                        if (!list) continue;
+                        for (const s of list) if (getSqSegDist(p, s[0], s[1]) <= limit) return true;
+                    }
+                }
+                return false;
+            };
+
+            const result = [];
+            const dots = [];
+            paths.forEach(el => {
+                const P = el.points;
+                if (P.length < 2) { dots.push(el); return; }
+
+                // Marca ogni segmento come coperto o no; i segmenti propri entrano nella griglia con ritardo
+                const isCov = new Array(P.length - 1);
+                const segLen = new Array(P.length - 1);
+                const pending = [];
+                let len = 0;
+                for (let i = 1; i < P.length; i++) {
+                    const a = P[i - 1], b = P[i];
+                    segLen[i - 1] = Math.hypot(b.x - a.x, b.y - a.y);
+                    len += segLen[i - 1];
+                    while (pending.length && len - pending[0][2] > STROKE_OVERDRAW_LAG_MM) {
+                        const s = pending.shift();
+                        insert(s[0], s[1]);
+                    }
+                    const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+                    isCov[i - 1] = covered(a) && covered(b) && covered(mid);
+                    pending.push([a, b, len]);
+                }
+                pending.forEach(s => insert(s[0], s[1]));
+
+                // Solo le sequenze coperte abbastanza lunghe vengono tolte (evita di frammentare il tratto)
+                const drop = new Array(P.length - 1).fill(false);
+                let i = 0;
+                while (i < isCov.length) {
+                    if (!isCov[i]) { i++; continue; }
+                    let j = i, runLen = 0;
+                    while (j < isCov.length && isCov[j]) { runLen += segLen[j]; j++; }
+                    if (runLen >= STROKE_OVERDRAW_MIN_RUN_MM) for (let k = i; k < j; k++) drop[k] = true;
+                    i = j;
+                }
+                if (!drop.includes(true)) { result.push(el); return; }
+
+                let current = null;
+                for (let s = 0; s < drop.length; s++) {
+                    if (drop[s]) { current = null; continue; }
+                    if (!current) {
+                        current = { ...el, points: [P[s]] };
+                        result.push(current);
+                    }
+                    current.points.push(P[s + 1]);
+                }
+            });
+
+            // Punti isolati: superflui se cadono entro mezzo tratto da inchiostro già presente
+            // (tipici frammenti di clipping, invisibili ma costano un abbassamento penna)
+            const dotTolSq = (penWidth / 2) * (penWidth / 2);
+            dots.forEach(el => {
+                if (covered(el.points[0], dotTolSq)) return;
+                result.push(el);
+                insert(el.points[0], el.points[0]);
+            });
+            return result;
+        }
+
+        // Chiude i percorsi i cui estremi distano meno di mezzo tratto (sulla carta si toccano già:
+        // chiuderli evita il punto in cui la penna si alza e riatterra quasi nello stesso posto)
+        function closeNearlyClosedLoops(elements, penWidth) {
+            elements.forEach(el => {
+                const P = el.points;
+                if (!P || P.length < 4) return;
+                const gap = Math.hypot(P[0].x - P[P.length - 1].x, P[0].y - P[P.length - 1].y);
+                if (gap === 0 || gap >= penWidth / 2) return;
+                let len = 0;
+                for (let i = 1; i < P.length; i++) len += Math.hypot(P[i].x - P[i - 1].x, P[i].y - P[i - 1].y);
+                if (len <= 3 * penWidth) return;
+                // Gap minuscolo: si sposta l'ultimo punto (niente micro-segmento); altrimenti si aggiunge la chiusura
+                if (gap < STROKE_MIN_SEG_MM) P[P.length - 1] = { x: P[0].x, y: P[0].y };
+                else P.push({ x: P[0].x, y: P[0].y });
+            });
+        }
+
+        function finalizeStrokes(elements, penWidth) {
+            const drawable = [];
+            const others = [];
+            elements.forEach(el => {
+                if ((el.type === 'path' || el.type === 'axis' || el.type === 'gcode-text') && el.points && el.points.length > 0) {
+                    drawable.push(el);
+                } else {
+                    others.push(el);
+                }
+            });
+
+            const cleaned = [];
+            drawable.forEach(el => {
+                let pts = [];
+                el.points.forEach(p => {
+                    if (!isFinite(p.x) || !isFinite(p.y)) return;
+                    const last = pts[pts.length - 1];
+                    if (!last || Math.hypot(p.x - last.x, p.y - last.y) >= STROKE_DEDUPE_MM) pts.push({ x: p.x, y: p.y });
+                });
+                if (pts.length === 0) return;
+
+                if (pts.length > 3) {
+                    let len = 0;
+                    for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+                    const first = pts[0], last = pts[pts.length - 1];
+                    const gap = Math.hypot(first.x - last.x, first.y - last.y);
+                    if (gap > 0 && gap < penWidth / 2 && len > 3 * penWidth) pts[pts.length - 1] = { ...first };
+                }
+
+                if (pts.length > 2) {
+                    pts = simplifyDouglasPeucker(pts, STROKE_SIMPLIFY_MM * STROKE_SIMPLIFY_MM);
+                    pts = enforceMinSegment(pts, STROKE_MIN_SEG_MM);
+                }
+
+                // Un tratto più corto di mezzo spessore penna sulla carta è comunque un punto
+                let total = 0;
+                for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+                if (pts.length > 1 && total < penWidth / 2) {
+                    const a = pts[0], b = pts[pts.length - 1];
+                    pts = [{ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }];
+                }
+                cleaned.push({ ...el, points: pts });
+            });
+
+            return [...others, ...removeOverdraw(cleaned, penWidth)];
+        }
+
         function optimizePaths(elements) {
             let drawable = [];
             let nonDrawable = [];
@@ -4519,8 +4856,9 @@
                         let firstPt = nextPath.points[0];
                         let dist = Math.hypot(firstPt.x - lastPt.x, firstPt.y - lastPt.y);
 
-                        if (dist < 0.5) {
-                            currentPath.points = currentPath.points.concat(nextPath.points);
+                        // Unione solo se i percorsi si toccano davvero (mm), senza duplicare il punto di giunzione
+                        if (dist < STROKE_MERGE_MM) {
+                            currentPath.points = currentPath.points.concat(nextPath.points.slice(1));
                         } else {
                             currentPath = nextPath;
                             merged.push(currentPath);
@@ -5431,7 +5769,8 @@
                 }
             }
 
-            if (rotVal !== 0) {
+            // Rotazione dell'intera figura (Koch usa la stessa rotazione per i bump: niente doppio effetto)
+            if (rotVal !== 0 && type !== 'koch') {
                 const rad = rotVal * Math.PI / 180;
                 const cos = Math.cos(rad);
                 const sin = Math.sin(rad);
@@ -5531,6 +5870,8 @@
             const steps = parseInt(document.getElementById('paramSuperformulaSteps')?.value || 1000);
             const iterations = parseInt(document.getElementById('paramSuperformulaIterations')?.value || 1);
             const decay = parseFloat(document.getElementById('paramSuperformulaDecay')?.value || 0.05);
+            // Il decadimento agisce tra un'iterazione e la successiva: con una sola iterazione non serve
+            document.getElementById('paramSuperformulaDecay')?.parentElement.classList.toggle('hidden-mode', iterations <= 1);
 
             currentRawElements = [];
             
@@ -5856,21 +6197,34 @@
         }
 
         // ─── Arneodo ──────────────────────────────────────────────────────────
+        // Integrazione Runge-Kutta 4 per gli attrattori: con Eulero esplicito e i dt degli slider
+        // alcuni sistemi divergevano dopo poche centinaia di punti (disegno troncato, "Passi" inerte)
+        function integrateAttractorRK4(deriv, start, dt, steps, bound = 1e4) {
+            let [x, y, z] = start;
+            const pts = [];
+            for (let i = 0; i < steps; i++) {
+                addSafetyPoint();
+                const k1 = deriv(x, y, z);
+                const k2 = deriv(x + k1[0] * dt / 2, y + k1[1] * dt / 2, z + k1[2] * dt / 2);
+                const k3 = deriv(x + k2[0] * dt / 2, y + k2[1] * dt / 2, z + k2[2] * dt / 2);
+                const k4 = deriv(x + k3[0] * dt, y + k3[1] * dt, z + k3[2] * dt);
+                x += dt / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
+                y += dt / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
+                z += dt / 6 * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
+                if (!isFinite(x) || !isFinite(y) || !isFinite(z) || Math.abs(x) > bound || Math.abs(y) > bound || Math.abs(z) > bound) break;
+                pts.push([x, y, z]);
+            }
+            return pts;
+        }
+
         function calculateArneodo(penWidth) {
             const a = parseFloat(document.getElementById('paramArneodoA')?.value ?? -5.5);
             const b = parseFloat(document.getElementById('paramArneodoB')?.value ?? 3.5);
             const c = parseFloat(document.getElementById('paramArneodoC')?.value ?? -1.0);
             const dt = parseFloat(document.getElementById('paramArneodoDt')?.value ?? 0.01);
             const steps = parseInt(document.getElementById('paramArneodoSteps')?.value ?? 5000);
-            let x = 0.1, y = 0.1, z = 0.1, pts = [];
-            for (let i = 0; i < steps; i++) {
-                addSafetyPoint();
-                const dx = y, dy = z;
-                const dz = -a * z - b * y - x + c * Math.pow(x, 3);
-                x += dx * dt; y += dy * dt; z += dz * dt;
-                if (!isFinite(x) || !isFinite(y) || !isFinite(z) || Math.abs(x) > 1e4) break;
-                pts.push([x, y, z]);
-            }
+            // Forma canonica: x' = y, y' = z, z' = -a·x - b·y - z + c·x³
+            const pts = integrateAttractorRK4((x, y, z) => [y, z, -a * x - b * y - z + c * x * x * x], [0.1, 0.1, 0.1], dt, steps);
             _attractorToPath(pts, 0, 2, penWidth);
         }
 
@@ -5900,16 +6254,7 @@
             const c = parseFloat(document.getElementById('paramChenC')?.value ?? 28.0);
             const dt = parseFloat(document.getElementById('paramChenDt')?.value ?? 0.003);
             const steps = parseInt(document.getElementById('paramChenSteps')?.value ?? 4000);
-            let x = -0.1, y = 0.5, z = -0.6, pts = [];
-            for (let i = 0; i < steps; i++) {
-                addSafetyPoint();
-                const dx = a * (y - x);
-                const dy = (c - a) * x - x * z + c * y;
-                const dz = x * y - b * z;
-                x += dx * dt; y += dy * dt; z += dz * dt;
-                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
-                pts.push([x, y, z]);
-            }
+            const pts = integrateAttractorRK4((x, y, z) => [a * (y - x), (c - a) * x - x * z + c * y, x * y - b * z], [-0.1, 0.5, -0.6], dt, steps);
             _attractorToPath(pts, 0, 2, penWidth);
         }
 
@@ -5922,17 +6267,10 @@
             const r = 9.0;
             const dt = parseFloat(document.getElementById('paramDadrasDt')?.value ?? 0.005);
             const steps = parseInt(document.getElementById('paramDadrasSteps')?.value ?? 5000);
-            let x = 0.1, y = 0.3, z = -0.6, pts = [];
-            for (let i = 0; i < steps; i++) {
-                addSafetyPoint();
-                const dx = y - p * x + e * y * z;
-                const dy = r * y - x * z + z;
-                const dz = c * x * y - o * z;
-                x += dx * dt; y += dy * dt; z += dz * dt;
-                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
-                pts.push([x, y, z]);
-            }
-            _attractorToPath(pts, 0, 1, penWidth);
+            // Forma canonica: x' = y - p·x + e·y·z, y' = o·y - x·z + z, z' = c·x·y - r·z
+            // (prima i coefficienti o e r erano scambiati e il sistema divergeva)
+            const pts = integrateAttractorRK4((x, y, z) => [y - p * x + e * y * z, o * y - x * z + z, c * x * y - r * z], [0.1, 0.3, -0.6], dt, steps);
+            _attractorToPath(pts, 0, 2, penWidth);
         }
 
         // ─── Halvorsen ────────────────────────────────────────────────────────
@@ -6002,24 +6340,16 @@
 
         // ─── Li ───────────────────────────────────────────────────────────────
         function calculateLi(penWidth) {
+            // Attrattore di Dequan Li: x' = a(y-x) + d·x·z, y' = k·x + f·y - x·z, z' = c·z + x·y - e·x²
             const a = parseFloat(document.getElementById('paramLiA')?.value ?? 40.0);
-            const b = parseFloat(document.getElementById('paramLiB')?.value ?? 1.5);
-            const c = parseFloat(document.getElementById('paramLiC')?.value ?? 0.833);
-            const d = parseFloat(document.getElementById('paramLiD')?.value ?? 0.5);
+            const f = parseFloat(document.getElementById('paramLiB')?.value ?? 20.0);
+            const c = parseFloat(document.getElementById('paramLiC')?.value ?? 1.833);
+            const d = parseFloat(document.getElementById('paramLiD')?.value ?? 0.16);
             const e = parseFloat(document.getElementById('paramLiE')?.value ?? 0.65);
-            const k = 20.0, f = 10.0;
-            const dt = parseFloat(document.getElementById('paramLiDt')?.value ?? 0.002);
+            const k = 55.0;
+            const dt = parseFloat(document.getElementById('paramLiDt')?.value ?? 0.001);
             const steps = parseInt(document.getElementById('paramLiSteps')?.value ?? 5000);
-            let x = 0.1, y = 0.2, z = 0.3, pts = [];
-            for (let i = 0; i < steps; i++) {
-                addSafetyPoint();
-                const dx = a * (y - x) + b * x * z;
-                const dy = k * x - x * z + f * y;
-                const dz = c * x * y - e * z;
-                x += dx * dt; y += dy * dt; z += dz * dt;
-                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
-                pts.push([x, y, z]);
-            }
+            const pts = integrateAttractorRK4((x, y, z) => [a * (y - x) + d * x * z, k * x + f * y - x * z, c * z + x * y - e * x * x], [0.349, 0.0, -0.16], dt, steps);
             _attractorToPath(pts, 0, 2, penWidth);
         }
 
@@ -6030,16 +6360,7 @@
             const c = parseFloat(document.getElementById('paramLuC')?.value ?? 20.0);
             const dt = parseFloat(document.getElementById('paramLuDt')?.value ?? 0.01);
             const steps = parseInt(document.getElementById('paramLuSteps')?.value ?? 4000);
-            let x = 0.1, y = 0.2, z = 0.3, pts = [];
-            for (let i = 0; i < steps; i++) {
-                addSafetyPoint();
-                const dx = a * (y - x);
-                const dy = -x * z + c * y;
-                const dz = x * y - b * z;
-                x += dx * dt; y += dy * dt; z += dz * dt;
-                if (!isFinite(x) || !isFinite(y) || !isFinite(z)) break;
-                pts.push([x, y, z]);
-            }
+            const pts = integrateAttractorRK4((x, y, z) => [a * (y - x), -x * z + c * y, x * y - b * z], [0.1, 0.2, 0.3], dt, steps);
             _attractorToPath(pts, 0, 2, penWidth);
         }
 
@@ -6214,9 +6535,48 @@
             const pY1a = getVal('a_y1'), pY1f = getVal('f_y1'), pY1p = getVal('p_y1') * PI / 180, pY1d = getVal('d_y1');
             const pY2a = getVal('a_y2'), pY2f = getVal('f_y2'), pY2p = getVal('p_y2') * PI / 180, pY2d = getVal('d_y2');
 
+            // Inviluppo dell'ampiezza: quando scende sotto mezzo tratto sulla carta la curva smorzata
+            // si avvolge su se stessa in una macchia d'inchiostro. Lì il disegno si ferma, e lo slider
+            // dei passi arriva al massimo fin lì (ogni valore cambia il disegno).
+            const plotSizeH = parseFloat(document.getElementById('paramPlotSize')?.value) || 120;
+            const envX = t => Math.abs(pX1a) * Math.exp(-pX1d * t) + Math.abs(pX2a) * Math.exp(-pX2d * t);
+            const envY = t => Math.abs(pY1a) * Math.exp(-pY1d * t) + Math.abs(pY2a) * Math.exp(-pY2d * t);
+            const env = t => Math.max(envX(t), envY(t));
+            const env0 = Math.max(1e-9, env(0));
+            const mmPerRaw = plotSizeH / (2 * env0);
+            const cutoff = (penWidth / 2) / mmPerRaw;
+            const stepsInput = document.getElementById('paramHarmoSteps');
+            const sliderMax = 2000;
+            let tVisible = sliderMax;
+            if (env(sliderMax) < cutoff) {
+                let lo = 0, hi = sliderMax;
+                for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (env(mid) < cutoff) hi = mid; else lo = mid; }
+                tVisible = hi;
+            }
+            if (stepsInput) {
+                const maxStep = Math.max(100, Math.ceil(tVisible / 50) * 50);
+                stepsInput.max = maxStep;
+                if (parseFloat(stepsInput.value) > maxStep) stepsInput.value = maxStep;
+                const valEl = document.getElementById('valHarmoSteps');
+                if (valEl) {
+                    if (valEl.tagName === 'INPUT') { valEl.max = maxStep; valEl.value = stepsInput.value; }
+                    else valEl.innerText = stepsInput.value;
+                }
+            }
+            const tEnd = Math.min(parseFloat(stepsInput?.value) || t_max, tVisible);
+
+            // Campionamento legato alla velocità massima della curva: corde di ~0.4 mm sulla carta
+            // (prima passo fisso 0.08: nei tratti veloci comparivano lati lunghi fino a 8 mm)
+            const speedX = Math.abs(pX1a * pX1f) + Math.abs(pX2a * pX2f);
+            const speedY = Math.abs(pY1a * pY1f) + Math.abs(pY2a * pY2f);
+            const speedMax = Math.max(1e-9, Math.hypot(speedX, speedY));
+            const chordRaw = 0.4 / mmPerRaw;
+            const nSamples = Math.min(60000, Math.max(2000, Math.ceil(tEnd * speedMax / chordRaw)));
+            const t_step = tEnd / nSamples;
+
             let path = [];
-            const t_step = Math.max(0.08, t_max / 10000);
-            for (let t = 0; t <= t_max; t += t_step) {
+            for (let i = 0; i <= nSamples; i++) {
+                const t = i * t_step;
                 addSafetyPoint();
                 let dx1 = Math.exp(-pX1d * t), dx2 = Math.exp(-pX2d * t);
                 let dy1 = Math.exp(-pY1d * t), dy2 = Math.exp(-pY2d * t);
@@ -6225,15 +6585,10 @@
                 path.push({ x: raw_x, y: raw_y });
             }
 
+            // Catmull-Rom solo se il limite di campioni ha impedito di raggiungere la corda desiderata
             let smoothPath = path;
-            if (path.length >= 2) {
-                let segments = 4;
-                if (path.length < 300) {
-                    segments = 6;
-                } else if (path.length > 1000) {
-                    segments = 2;
-                }
-                smoothPath = catmullRomPoints(path, segments);
+            if (path.length >= 2 && t_step * speedMax > chordRaw * 1.5) {
+                smoothPath = catmullRomPoints(path, Math.min(6, Math.ceil(t_step * speedMax / chordRaw)));
             }
 
             currentRawElements = [{ type: 'path', stroke: '#818cf8', width: penWidth, points: smoothPath }];
@@ -6338,12 +6693,29 @@
                 const R = parseFloat(document.getElementById('paramSpiroR').value) || 100;
                 const r = parseFloat(document.getElementById('paramSpiroSmallR').value) || 52;
                 const d = parseFloat(document.getElementById('paramSpiroD').value) || 75;
-                const revs = parseFloat(document.getElementById('paramSpiroRevs').value) || 50;
+                // La curva si chiude dopo r / MCD(R, r) giri: oltre si ripasserebbe sullo stesso tratto,
+                // quindi lo slider dei giri arriva al massimo al periodo (ogni valore cambia il disegno)
+                const gcdInt = (a, b) => b ? gcdInt(b, a % b) : a;
+                const Ri = Math.max(1, Math.round(R)), ri = Math.max(1, Math.round(r));
+                const period = Math.max(1, ri / gcdInt(Ri, ri));
+                const revsInput = document.getElementById('paramSpiroRevs');
+                if (revsInput) {
+                    revsInput.max = period;
+                    if (parseFloat(revsInput.value) > period) revsInput.value = period;
+                    const valEl = document.getElementById('valSpiroRevs');
+                    if (valEl) {
+                        if (valEl.tagName === 'INPUT') { valEl.max = period; valEl.value = revsInput.value; }
+                        else valEl.innerText = revsInput.value;
+                    }
+                }
+                const revs = Math.min(period, parseFloat(revsInput?.value) || 50);
 
                 let path = [];
                 const totalAng = Math.PI * 2 * revs;
-                const step = Math.max(0.01, totalAng / 10000);
-                for (let theta = 0; theta < totalAng; theta += step) {
+                // 360 campioni per giro (prima 10000 in totale: con molti giri i lati diventavano visibili)
+                const nSamples = Math.min(60000, Math.max(2000, Math.round(revs * 360)));
+                const step = totalAng / nSamples;
+                for (let theta = 0; theta <= totalAng + step * 0.5; theta += step) {
                     addSafetyPoint();
                     let x = (R - r) * Math.cos(theta) + d * Math.cos((R - r) / r * theta);
                     let y = (R - r) * Math.sin(theta) - d * Math.sin((R - r) / r * theta);
@@ -7150,6 +7522,14 @@
             document.getElementById('latex-overlay').style.display = 'none';
             if (!sourceImage) return;
 
+            // Generatore deterministico, riavviato a ogni elaborazione: gli slider cambiano solo
+            // ciò che controllano, il resto del disegno resta fermo
+            let imgSeed = 987654321;
+            const imgRand = () => {
+                imgSeed = (imgSeed * 1664525 + 1013904223) % 4294967296;
+                return imgSeed / 4294967296;
+            };
+
             const processType = document.getElementById('imageProcessType').value;
             currentRawElements = [];
 
@@ -7184,62 +7564,60 @@
                 const data = imgData.data;
 
                 if (processType === 'hatching') {
-                    const penPixelWidth = penWidth * (180 / plotSize);
-                    const spacing = Math.max(2, Math.round(penPixelWidth));
+                    // Spaziatura in mm reali (slider), convertita nei pixel del canvas di lavoro;
+                    // mai sotto lo spessore penna, altrimenti le linee si fondono in una macchia
+                    const pxPerMm = 180 / plotSize;
+                    const spacingMm = Math.max(penWidth, parseFloat(document.getElementById('paramHatchSpacing').value) || 1.2);
+                    const spacing = spacingMm * pxPerMm;
                     const threshold = parseInt(document.getElementById('paramHatchThreshold').value);
                     const invert = document.getElementById('paramHatchInvert').checked;
                     const w = canvas.width;
                     const h = canvas.height;
+                    const lum = (x, y) => {
+                        const idx = (Math.min(h - 1, Math.floor(y)) * w + Math.min(w - 1, Math.floor(x))) * 4;
+                        const v = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                        return invert ? 255 - v : v;
+                    };
 
-                    for (let c = 0; c < w + h; c += spacing) {
-                        let segment = [];
-                        let xmin = Math.max(0, c - h + 1);
-                        let xmax = Math.min(w - 1, c);
-
-                        for (let x = xmin; x <= xmax; x++) {
-                            let y = c - x;
-                            let idx = (y * w + x) * 4;
-                            let val = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-                            if (invert) val = 255 - val;
-
-                            if (val < threshold) {
-                                segment.push(mapPt(x, y, w, h));
-                            } else {
+                    // Tratteggio tonale a 4 strati: ogni strato ha un angolo diverso e si attiva sotto una
+                    // soglia più scura, così i toni crescono gradualmente (prima 2 strati: salto bianco→nero)
+                    const layers = [
+                        { angle: 45, thr: threshold },
+                        { angle: -45, thr: threshold * 0.75 },
+                        { angle: 0, thr: threshold * 0.5 },
+                        { angle: 90, thr: threshold * 0.25 }
+                    ];
+                    const stroke = ['#10b981', '#059669', '#047857', '#065f46'];
+                    const step = 0.5;
+                    layers.forEach((layer, li) => {
+                        const a = layer.angle * Math.PI / 180;
+                        const dx = Math.cos(a), dy = Math.sin(a);
+                        const nx = -dy, ny = dx;
+                        const corners = [[0, 0], [w, 0], [0, h], [w, h]];
+                        const nProj = corners.map(c => c[0] * nx + c[1] * ny);
+                        const dProj = corners.map(c => c[0] * dx + c[1] * dy);
+                        const tMin = Math.min(...dProj), tMax = Math.max(...dProj);
+                        let lineIdx = 0;
+                        for (let off = Math.min(...nProj) + spacing / 2; off < Math.max(...nProj); off += spacing, lineIdx++) {
+                            let segment = [];
+                            const flush = () => {
                                 if (segment.length > 1) {
-                                    currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: segment });
+                                    if (lineIdx % 2) segment.reverse();
+                                    currentRawElements.push({ type: 'path', stroke: stroke[li], width: penWidth, points: segment });
                                 }
                                 segment = [];
-                            }
-                        }
-                        if (segment.length > 1) {
-                            currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: segment });
-                        }
-                    }
-
-                    for (let c = -h; c < w; c += spacing) {
-                        let segment = [];
-                        let xmin = Math.max(0, c);
-                        let xmax = Math.min(w - 1, c + h - 1);
-
-                        for (let x = xmin; x <= xmax; x++) {
-                            let y = x - c;
-                            let idx = (y * w + x) * 4;
-                            let val = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-                            if (invert) val = 255 - val;
-
-                            if (val < (threshold - 40)) {
-                                segment.push(mapPt(x, y, w, h));
-                            } else {
-                                if (segment.length > 1) {
-                                    currentRawElements.push({ type: 'path', stroke: '#047857', width: penWidth, points: segment });
+                            };
+                            for (let t = tMin; t <= tMax; t += step) {
+                                const x = nx * off + dx * t, y = ny * off + dy * t;
+                                if (x < 0 || x >= w || y < 0 || y >= h || lum(x, y) >= layer.thr) {
+                                    flush();
+                                    continue;
                                 }
-                                segment = [];
+                                segment.push(mapPt(x, y, w, h));
                             }
+                            flush();
                         }
-                        if (segment.length > 1) {
-                            currentRawElements.push({ type: 'path', stroke: '#047857', width: penWidth, points: segment });
-                        }
-                    }
+                    });
                 } else if (processType === 'spiral') {
                     const spacing = parseFloat(document.getElementById('paramSpiralSpacing').value);
                     const amplitude = parseFloat(document.getElementById('paramSpiralAmp').value);
@@ -7382,30 +7760,41 @@
                     const cy = h / 2;
                     const maxR = Math.min(w, h) / 2;
 
+                    // Spirale poligonale: i vertici crescono di raggio a ogni giro; i lati vengono
+                    // campionati finemente e ondulati in perpendicolare con ampiezza ∝ scurezza
+                    // (prima si modulava solo il raggio dei vertici e l'immagine non emergeva)
                     let path = [];
                     const numTurns = maxR / spacing;
-                    const totalPoints = Math.floor(numTurns * sides);
-
-                    for (let i = 0; i <= totalPoints; i++) {
+                    const totalVerts = Math.floor(numTurns * sides);
+                    const vertex = i => {
                         const theta = (i / sides) * Math.PI * 2.0;
-                        const rBase = (i / totalPoints) * maxR;
-
-                        const px = cx + rBase * Math.cos(theta);
-                        const py = cy + rBase * Math.sin(theta);
-
-                        if (px < 0 || px >= w || py < 0 || py >= h) continue;
-
-                        const idx = (Math.min(h-1, Math.floor(py)) * w + Math.min(w-1, Math.floor(px))) * 4;
-                        const val = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-                        const darkness = 1.0 - (val / 255.0);
-
-                        // Moduliamo il raggio localmente
-                        const rMod = rBase + (darkness * spacing * 0.45);
-
-                        const mx = cx + rMod * Math.cos(theta);
-                        const my = cy + rMod * Math.sin(theta);
-
-                        path.push(mapPt(mx, my, w, h));
+                        const r = (i / totalVerts) * maxR;
+                        return { x: cx + r * Math.cos(theta), y: cy + r * Math.sin(theta) };
+                    };
+                    const sampleStep = 0.35;
+                    const waveLen = Math.max(0.8, spacing * 0.5);
+                    let arc = 0;
+                    for (let i = 0; i < totalVerts; i++) {
+                        const a = vertex(i), b = vertex(i + 1);
+                        const segLen = Math.hypot(b.x - a.x, b.y - a.y);
+                        if (segLen < 1e-9) continue;
+                        const nx = -(b.y - a.y) / segLen, ny = (b.x - a.x) / segLen;
+                        const steps = Math.max(1, Math.ceil(segLen / sampleStep));
+                        for (let k = (i === 0 ? 0 : 1); k <= steps; k++) {
+                            const t = k / steps;
+                            const px = a.x + (b.x - a.x) * t, py = a.y + (b.y - a.y) * t;
+                            arc = (i === 0 && k === 0) ? 0 : arc + segLen / steps;
+                            if (px < 0 || px >= w || py < 0 || py >= h) {
+                                if (path.length >= 2) currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
+                                path = [];
+                                continue;
+                            }
+                            const idx = (Math.floor(py) * w + Math.floor(px)) * 4;
+                            const val = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                            const darkness = 1.0 - (val / 255.0);
+                            const off = darkness * spacing * 0.45 * Math.sin(arc / waveLen * Math.PI * 2);
+                            path.push(mapPt(px + nx * off, py + ny * off, w, h));
+                        }
                     }
                     if (path.length >= 2) {
                         currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
@@ -7686,61 +8075,34 @@
                 const w = canvas.width;
                 const h = canvas.height;
 
-                let grid = new Array(h + 2).fill(0).map(() => new Array(w + 2).fill(false));
-                for (let y = 0; y < h; y++) {
-                    for (let x = 0; x < w; x++) {
-                        let val = (0.299 * data[(y * w + x) * 4] + 0.587 * data[(y * w + x) * 4 + 1] + 0.114 * data[(y * w + x) * 4 + 2]);
-                        if (val < threshold) grid[y + 1][x + 1] = true;
+                const levels = parseInt(document.getElementById('paramVectorLevels')?.value) || 1;
+
+                // Luminanza con leggero smussamento 3x3 (riduce il rumore dei pixel nelle isolinee)
+                const raw = luminanceField(data, w, h);
+                const W = w + 2;
+                const field = new Float32Array(raw.length).fill(255);
+                for (let y = 1; y <= h; y++) {
+                    for (let x = 1; x <= w; x++) {
+                        let sum = 0, n = 0;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                const yy = y + dy, xx = x + dx;
+                                if (yy < 1 || yy > h || xx < 1 || xx > w) continue;
+                                const wgt = (dx === 0 ? 2 : 1) * (dy === 0 ? 2 : 1);
+                                sum += raw[yy * W + xx] * wgt; n += wgt;
+                            }
+                        }
+                        field[y * W + x] = sum / n;
                     }
                 }
 
-                let visited = new Array(h + 2).fill(0).map(() => new Array(w + 2).fill(false));
-                const dirs = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
-
-                for (let y = 1; y <= h; y++) {
-                    for (let x = 1; x <= w; x++) {
-                        if (grid[y][x] && !visited[y][x]) {
-                            let isEdge = false;
-                            for (let d = 0; d < 8; d++) { if (!grid[y + dirs[d][1]][x + dirs[d][0]]) isEdge = true; }
-
-                            if (isEdge) {
-                                let path = [];
-                                let currX = x, currY = y;
-                                let startX = x, startY = y;
-                                let dir = 0;
-
-                                do {
-                                    path.push(mapPt(currX, currY, w, h));
-                                    visited[currY][currX] = true;
-
-                                    let found = false;
-                                    for (let i = 0; i < 8; i++) {
-                                        let nd = (dir + i) % 8;
-                                        let nx = currX + dirs[nd][0];
-                                        let ny = currY + dirs[nd][1];
-
-                                        if (grid[ny][nx]) {
-                                            let nIsEdge = false;
-                                            for (let k = 0; k < 8; k++) { if (!grid[ny + dirs[k][1]][nx + dirs[k][0]]) nIsEdge = true; }
-
-                                            if (nIsEdge && !visited[ny][nx]) {
-                                                currX = nx; currY = ny;
-                                                dir = (nd + 5) % 8;
-                                                found = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (!found) break;
-                                } while (!(currX === startX && currY === startY) && path.length < 3000);
-
-                                if (path.length > 2) {
-                                    path.push(path[0]);
-                                    currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: path });
-                                }
-                            }
-                        }
-                    }
+                // Isolinee chiuse e interpolate sub-pixel; con più livelli le soglie scendono
+                // uniformemente dalla soglia scelta verso il nero (effetto curve di livello)
+                for (let l = 0; l < levels; l++) {
+                    const level = threshold * (levels - l) / levels;
+                    traceIsoContours(field, w, h, level).forEach(loop => {
+                        currentRawElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: loop.map(pt => mapPt(pt.x - 1, pt.y - 1, w, h)) });
+                    });
                 }
             }
             else if (processType === 'ascii') {
@@ -7847,28 +8209,35 @@
                 const w = canvas.width;
                 const h = canvas.height;
 
+                // Densità = scurezza con gamma 2: i mezzitoni chiari si svuotano e il soggetto emerge
                 const density = new Float32Array(w * h);
-                let totalDensity = 0;
                 for (let i = 0; i < w * h; i++) {
                     const idx = i * 4;
                     const gray = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-                    density[i] = 255 - gray;
-                    totalDensity += density[i];
+                    const dark = 1 - gray / 255;
+                    density[i] = 255 * dark * dark;
                 }
+
+                // Generatore deterministico: muovere uno slider non rimescola tutto il disegno
+                let stippleSeed = 12345;
+                const stippleRand = () => {
+                    stippleSeed = (stippleSeed * 1664525 + 1013904223) % 4294967296;
+                    return stippleSeed / 4294967296;
+                };
 
                 let points = [];
                 let attempts = 0;
-                while (points.length < N && attempts < N * 30) {
+                while (points.length < N && attempts < N * 60) {
                     attempts++;
-                    const rx = Math.floor(Math.random() * w);
-                    const ry = Math.floor(Math.random() * h);
-                    const d = density[ry * w + rx];
-                    if (Math.random() * 255 < d) {
+                    const rx = stippleRand() * w;
+                    const ry = stippleRand() * h;
+                    const d = density[Math.min(h - 1, Math.floor(ry)) * w + Math.min(w - 1, Math.floor(rx))];
+                    if (stippleRand() * 255 < d) {
                         points.push({ x: rx, y: ry });
                     }
                 }
                 while (points.length < N) {
-                    points.push({ x: Math.random() * w, y: Math.random() * h });
+                    points.push({ x: stippleRand() * w, y: stippleRand() * h });
                 }
 
                 for (let iter = 0; iter < lloydIter; iter++) {
@@ -7924,10 +8293,12 @@
                     currentIdx = nextIdx;
                 }
 
+                // 2-opt fino a convergenza: elimina gli incroci del percorso. Il limite è un budget di
+                // confronti (non di tempo), così il risultato è identico su qualunque computer
                 let improved = true;
                 let optPasses = 0;
-                const maxPasses = 2;
-                const maxImprovements = 1000;
+                const maxPasses = Math.max(2, Math.min(50, Math.floor(4e7 / (N * N / 2))));
+                const maxImprovements = Infinity;
                 let improvementsCount = 0;
 
                 function getDist(p1, p2) {
@@ -7998,15 +8369,15 @@
                 let attempts = 0;
                 while (points.length < N && attempts < N * 30) {
                     attempts++;
-                    const rx = Math.floor(Math.random() * w);
-                    const ry = Math.floor(Math.random() * h);
+                    const rx = Math.floor(imgRand() * w);
+                    const ry = Math.floor(imgRand() * h);
                     const d = density[ry * w + rx];
-                    if (Math.random() * 255 < d) {
+                    if (imgRand() * 255 < d) {
                         points.push({ x: rx, y: ry });
                     }
                 }
                 while (points.length < N) {
-                    points.push({ x: Math.random() * w, y: Math.random() * h });
+                    points.push({ x: imgRand() * w, y: imgRand() * h });
                 }
 
                 // Iterazioni Lloyd per distribuire i punti in modo omogeneo e bilanciato
@@ -8263,10 +8634,10 @@
                 let attempts = 0;
                 while (seeds.length < linesCount && attempts < linesCount * 40) {
                     attempts++;
-                    const rx = Math.floor(Math.random() * w);
-                    const ry = Math.floor(Math.random() * h);
+                    const rx = Math.floor(imgRand() * w);
+                    const ry = Math.floor(imgRand() * h);
                     const brightness = luma[ry * w + rx];
-                    if (Math.random() * 255 < (255 - brightness)) {
+                    if (imgRand() * 255 < (255 - brightness)) {
                         seeds.push({ x: rx, y: ry });
                     }
                 }
@@ -8410,6 +8781,8 @@
             if (circCtrl) circCtrl.className = (mode === 'circular') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (ridgeCtrl) ridgeCtrl.className = (mode === 'ridgeline') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (lissCtrl) lissCtrl.className = (mode === 'lissajous') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
+            // L'ampiezza vale per tutte le viste; la risoluzione non per il ridgeline (righe a passo fisso)
+            document.getElementById('audioResRow')?.classList.toggle('hidden-mode', mode === 'ridgeline');
         }
 
         function processAudio() {
@@ -9803,13 +10176,17 @@
                 const noodlesList = [];
 
                 // 1. Generiamo i noodles grezzi
+                // Ampiezza legata alla spaziatura: i noodles vicini si incrociano sempre, e l'ordine
+                // sopra/sotto varia lungo il percorso (intreccio), così il distacco (B) è visibile
+                const spacingN = 90 / Math.max(1, numNoodles - 1);
+                const ampN = Math.max(8.0, spacingN * 0.9);
                 for (let n = 0; n < numNoodles; n++) {
                     const xBase = -45 + 90 * (n / (numNoodles - 1));
                     const pts = [];
                     // Corrono dall'alto (-45) al basso (45)
                     for (let y = -45; y <= 45; y += resolution) {
-                        const xOffset = Math.sin(y * freq + n * 0.5) * 8.0;
-                        pts.push({ x: xBase + xOffset, y: y, noodleId: n, zOrder: n + Math.sin(y * freq) * 2.0 });
+                        const xOffset = Math.sin(y * freq + n * 1.8) * ampN;
+                        pts.push({ x: xBase + xOffset, y: y, noodleId: n, zOrder: Math.sin(y * freq * 0.7 + n * 2.1) });
                     }
                     noodlesList.push(pts);
                 }
@@ -9866,8 +10243,8 @@
                 });
             } else if (style === 'moire_circles') {
                 // --- MOIRÉ A CERCHI CONCENTRICI INTERFERENTI ---
-                const numRings = density * 5;
-                const spacingR = paramA * 0.25;
+                const numRings = density;
+                const spacingR = 48 / numRings;
                 const offsetCenter = paramB * 4.0;
 
                 const center1 = { x: -offsetCenter, y: 0 };
@@ -9891,9 +10268,9 @@
                 });
             } else if (style === 'moire_rotational') {
                 // --- MOIRÉ A GRIGLIE RUOTATE (ROTATIONAL LATTICE) ---
-                const numLines = density * 8;
-                const lineGap = paramA * 0.2;
-                const angleDeg = Math.max(0.2, paramB * 0.4); // Angolo di rotazione (0.2° - 8.0°)
+                const lineGap = 96 / density;
+                const numLines = Math.ceil(density / 2);
+                const angleDeg = Math.max(0.2, paramB); // Angolo di rotazione (0.2° - 8.0°)
                 const rad = angleDeg * Math.PI / 180;
 
                 // Griglia 1: Orizzontale
@@ -9914,9 +10291,9 @@
                 }
             } else if (style === 'superellipse_nest') {
                 // --- SUPERELLISSI NIDIATE (CURVE DI LAMÉ) ---
-                const count = density * 4;
-                const expN = Math.max(0.2, paramA * 0.15); // Esponente n
-                const rotStep = paramB * 1.5;
+                const count = density;
+                const expN = Math.max(0.2, paramA); // Esponente n
+                const rotStep = paramB;
 
                 for (let i = 1; i <= count; i++) {
                     const scale = (i / count) * 45;
@@ -9941,13 +10318,13 @@
                 }
             } else if (style === 'hyperbolic_moire') {
                 // --- MOIRÉ IPERBOLICO POLARE ---
-                const count = density * 3;
-                const mult = paramA * 0.4;
-
+                // Le iperboli x = a·sec(t) riempiono il quadro: a distribuito fino al bordo, apertura = A
+                const count = density;
+                const tMax = Math.min(85, Math.max(20, paramA));
                 for (let i = 1; i <= count; i++) {
-                    const a = i * mult;
+                    const a = i * 48 / (count + 1);
                     const pts1 = [], pts2 = [];
-                    for (let t = -44; t <= 44; t += 1.0) {
+                    for (let t = -tMax; t <= tMax; t += 1.0) {
                         const rad = t * Math.PI / 180;
                         const sec = 1 / Math.cos(rad);
                         const tan = Math.tan(rad);
@@ -9964,20 +10341,18 @@
             } else if (style === 'moire') {
                 // --- ALGORITMO 6: MOIRÉ WAVES (UJI/doersino) ---
                 const numCircles = density;
-                const waveSpacing = paramA;
+                const lobes = Math.max(2, Math.round(paramA));
                 const amp = paramB;
 
                 for (let c = 1; c <= numCircles; c++) {
-                    const baseRadius = c * waveSpacing;
-                    if (baseRadius > 48) break;
-
+                    const baseRadius = c * 48 / numCircles;
                     const pts = [];
                     const steps = 180;
                     for (let s = 0; s <= steps; s++) {
                         const theta = (s / steps) * Math.PI * 2.0;
                         
                         // Deformazione moiré con onde sinusoidali
-                        const deform = Math.sin(theta * 8.0 + baseRadius * 0.5) * amp * (baseRadius / 45.0);
+                        const deform = Math.sin(theta * lobes + baseRadius * 0.5) * amp * (baseRadius / 45.0);
                         const r = baseRadius + deform;
 
                         pts.push({
@@ -10059,8 +10434,10 @@
                 const amp = paramB;
 
                 // Griglia di visibilità orizzonte per la rimozione delle linee coperte
+                // Si disegna dal fronte (in basso) verso il fondo: ogni onda è visibile solo dove
+                // supera l'orizzonte delle onde davanti (Y cartesiano verso l'alto)
                 const resolutionX = 200;
-                const minVisibleY = new Float32Array(resolutionX).fill(55.0); // cartesiano Y+ in basso
+                const horizon = new Float32Array(resolutionX + 1).fill(-Infinity);
 
                 for (let w = 0; w < numWaves; w++) {
                     const yBase = -45 + 90 * (w / (numWaves - 1));
@@ -10073,15 +10450,11 @@
                         // Calcoliamo la perturbazione tramite rumore fBm
                         const noiseVal = fbmNoise2D((x + 50) * scaleNoise * 15.0, (yBase + 50) * scaleNoise * 15.0, 3);
                         // L'altezza dell'onda cresce con il rumore
-                        const y = yBase - noiseVal * amp;
+                        const y = yBase + Math.abs(noiseVal) * amp;
 
-                        // Mappatura sull'indice del buffer di visibilità
-                        const idx = Math.max(0, Math.min(resolutionX - 1, s));
-                        
-                        // Se il punto è sopra il profilo (Y cartesiano inferiore al valore registrato)
-                        if (y < minVisibleY[idx]) {
+                        if (y > horizon[s]) {
                             currentPath.push({ x: x, y: y });
-                            minVisibleY[idx] = y; // Aggiorna il profilo
+                            horizon[s] = y; // Aggiorna il profilo
                         } else {
                             if (currentPath.length >= 2) {
                                 currentRawElements.push({
@@ -10109,7 +10482,21 @@
                 const stepSize = paramA;
                 const threshold = paramB;
 
-                const drawnPoints = []; // Memorizza tutti i punti disegnati per rilevare le collisioni
+                // Griglia spaziale dei punti delle linee GIÀ completate: una linea non collide con se stessa
+                // (prima, con passo < distanza di collisione, ogni linea si fermava al secondo punto)
+                const cellFc = Math.max(0.5, threshold);
+                const drawnGrid = new Map();
+                const fcKey = (x, y) => Math.floor(x / cellFc) + ',' + Math.floor(y / cellFc);
+                const collides = (x, y) => {
+                    const gx = Math.floor(x / cellFc), gy = Math.floor(y / cellFc);
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            const list = drawnGrid.get((gx + i) + ',' + (gy + j));
+                            if (list) for (const pt of list) if (Math.hypot(pt.x - x, pt.y - y) < threshold) return true;
+                        }
+                    }
+                    return false;
+                };
 
                 // Inseriamo i bordi nei punti di collisione per evitare che i flussi escano dal cerchio
                 const boundaryRadius = 45.0;
@@ -10134,25 +10521,21 @@
                         if (Math.hypot(cx, cy) > boundaryRadius) break;
 
                         // Rilevamento collisione con linee già tracciate
-                        let collision = false;
-                        for (let pt of drawnPoints) {
-                            if (Math.abs(pt.x - cx) < threshold && Math.abs(pt.y - cy) < threshold) {
-                                if (Math.hypot(pt.x - cx, pt.y - cy) < threshold) {
-                                    collision = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (collision) break;
+                        if (collides(cx, cy)) break;
 
                         currentPath.push({ x: cx, y: cy });
-                        drawnPoints.push({ x: cx, y: cy });
 
                         // Direzione del flusso guidata da rumore Perlin
                         const angleField = PerlinNoise.noise((cx + 50) * 0.04, (cy + 50) * 0.04, 0.8) * Math.PI * 2.0;
                         cx += Math.cos(angleField) * stepSize;
                         cy += Math.sin(angleField) * stepSize;
                     }
+
+                    currentPath.forEach(pt => {
+                        const k = fcKey(pt.x, pt.y);
+                        if (!drawnGrid.has(k)) drawnGrid.set(k, []);
+                        drawnGrid.get(k).push(pt);
+                    });
 
                     if (currentPath.length >= 3) {
                         currentRawElements.push({
@@ -10632,12 +11015,8 @@
                     }
                 }
                 
-                // Ordina per prossimità / tratto umano se attivo
-                const chkHuman = document.getElementById('chkTextHumanOrder');
-                if (chkHuman && chkHuman.checked && typeof optimizePathsHumanOrder === 'function') {
-                    currentRawElements = optimizePathsHumanOrder(currentRawElements, 4.0);
-                }
-                
+                // L'ordinamento "tratto umano" è applicato in mm da applyGlobalTransformAndRender
+
                 cachedPDFPageElements = JSON.parse(JSON.stringify(currentRawElements));
                 isPDFModeActive = true;
                 const pdfStatus = document.getElementById('pdfModeStatus');
@@ -11440,22 +11819,6 @@ out body;`;
                 return;
             }
 
-            // Protezione Complessità Browser
-            let totalPts = 0;
-            currentRawElements.forEach(el => {
-                if (el.points) totalPts += el.points.length;
-            });
-            if (totalPts > 18000 && !bypassComplexityCheck) {
-                document.getElementById('complexityPointsCount').innerText = totalPts;
-                document.getElementById('complexityModal').classList.remove('hidden-mode');
-                return;
-            }
-
-            // Reset bypass
-            if (totalPts <= 18000) {
-                bypassComplexityCheck = false;
-            }
-
             // Calcolo limiti raw
             let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
             const addPt = (x, y) => { if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; };
@@ -11530,6 +11893,24 @@ out body;`;
                 }
             }).filter(Boolean);
 
+            // Pulizia del tratto in mm reali, prima di ordinamento e unione dei percorsi
+            elements = finalizeStrokes(elements, parseFloat(document.getElementById('paramPenWidth').value) || 0.6);
+
+            // Protezione Complessità Browser: si contano i punti effettivi dopo la pulizia
+            // (le linee raster grezze hanno migliaia di punti collineari che la pulizia elimina)
+            let totalPts = 0;
+            elements.forEach(el => {
+                if (el.points) totalPts += el.points.length;
+            });
+            if (totalPts > COMPLEXITY_WARN_POINTS && !bypassComplexityCheck) {
+                document.getElementById('complexityPointsCount').innerText = totalPts;
+                document.getElementById('complexityModal').classList.remove('hidden-mode');
+                return;
+            }
+            if (totalPts <= COMPLEXITY_WARN_POINTS) {
+                bypassComplexityCheck = false;
+            }
+
             const isHumanOrderActive = (currentMode === 'svg' && document.getElementById('chkSvgHumanOrder')?.checked) ||
                                        (currentMode === 'text' && document.getElementById('chkTextHumanOrder')?.checked);
 
@@ -11541,6 +11922,9 @@ out body;`;
             } else if (document.getElementById('chkOptimizeTravel')?.checked && currentMode !== 'svg') {
                 elements = optimizePaths(elements);
             }
+
+            // L'unione dei percorsi che si toccano può creare anelli quasi chiusi: si chiudono anche qui
+            closeNearlyClosedLoops(elements, parseFloat(document.getElementById('paramPenWidth').value) || 0.6);
 
             globalElements = elements;
             renderSVG(cx_reach, cy_reach, plotSize);
@@ -11667,8 +12051,14 @@ out body;`;
 
             globalElements.forEach(el => {
                 if (el.type === 'path' || el.type === 'axis') {
-                    if (el.points.length < 2) return;
                     if (el.class === 'gcode-text-hidden') return;
+                    if (el.points.length === 1) {
+                        // Punto isolato: il G-code lo traccia come micro-tratto, in anteprima è un pallino
+                        const pt = el.points[0];
+                        svgContent += `<circle cx="${pt.x.toFixed(2)}" cy="${(bedSizeY - pt.y).toFixed(2)}" r="${penWidth / 2}" fill="${defaultStroke}" />`;
+                        return;
+                    }
+                    if (el.points.length < 2) return;
 
                     let color = defaultStroke;
                     let pathOOB = false;
@@ -12331,6 +12721,8 @@ out body;`;
             const plotSize = parseFloat(document.getElementById('paramPlotSize')?.value) || 120;
             const spacingReal = parseFloat(document.getElementById('paramSketchSpacingReal')?.value || 1.5);
             const spacingVirtual = spacingReal * 80 / plotSize;
+            const minPtDist = parseFloat(document.getElementById('paramSketchDist')?.value || 10);
+            const keptSketchPts = [];
 
             const cw = sketchPadCanvas?.width || 200;
             const ch = sketchPadCanvas?.height || 200;
@@ -12344,7 +12736,13 @@ out body;`;
             sketchStrokes.forEach(stroke => {
                 if (stroke.length < 1) return;
                 const simplified = simplifyDouglasPeucker(stroke, simplVal * simplVal);
-                simplified.forEach(p => allPointsMapped.push(mapPt(p)));
+                // Distanza minima tra i punti della triangolazione (px del pad): evita triangoli
+                // sottilissimi che sulla carta diventano macchie d'inchiostro
+                simplified.forEach(p => {
+                    if (useDelaunay && keptSketchPts.some(q => Math.hypot(q.x - p.x, q.y - p.y) < minPtDist)) return;
+                    keptSketchPts.push(p);
+                    allPointsMapped.push(mapPt(p));
+                });
             });
 
             if (allPointsMapped.length === 0) return;
@@ -12585,216 +12983,53 @@ out body;`;
             noodlesSeedVal = Math.floor(Math.random() * 100000);
         }
 
+        // Controlli per stile: [etichetta, min, max, step, default] oppure null = slider nascosto
+        // (ogni slider visibile deve cambiare il disegno; seed solo per gli stili che usano il caso)
+        const TURTLE_CONTROLS = {
+            truchet: { density: ['Densità Celle (Griglia)', 2, 20, 1, 6], a: null, b: ['Probabilità Archi vs Linee', 0, 1, 0.05, 0.5], seed: true },
+            moire_circles: { density: ['Anelli per Centro', 5, 60, 1, 30], a: null, b: ['Distanza tra i Centri', 0, 10, 0.5, 2], seed: false },
+            moire_rotational: { density: ['Numero Linee per Griglia', 10, 120, 2, 48], a: null, b: ['Angolo tra le Griglie (°)', 0.2, 8, 0.1, 2], seed: false },
+            superellipse_nest: { density: ['Numero Curve', 8, 120, 2, 40], a: ['Esponente Superellisse (n)', 0.3, 6, 0.1, 1.8], b: ['Rotazione per Curva (°)', 0, 15, 0.5, 3], seed: false },
+            hyperbolic_moire: { density: ['Numero Iperboli', 4, 60, 1, 18], a: ['Apertura Angolare (°)', 20, 85, 1, 44], b: null, seed: false },
+            torus: { density: ['Righe di Hatching Zebra', 10, 200, 5, 60], a: ['Raggio Toro (R)', 5, 60, 0.5, 35], b: ['Raggio Tubo (r)', 2, 30, 0.5, 15], seed: false },
+            cityscape: { density: ['Risoluzione Griglia Città', 4, 30, 1, 12], a: ['Spessore Palazzi', 2, 20, 0.5, 8], b: ['Altezza Massima Palazzi', 5, 100, 1, 45], seed: true },
+            stringart: { density: ['Numero Pioli (N)', 20, 360, 10, 120], a: ['Moltiplicatore (K)', 2, 20, 0.5, 2], b: ['Offset Rotazione', 0, 1, 0.05, 0], seed: false },
+            noodles: { density: ['Numero Noodles', 5, 50, 1, 15], a: ['Frequenza Onde', 0.05, 0.5, 0.01, 0.15], b: ['Distacco Sopra/Sotto', 0.5, 5, 0.1, 1.5], seed: false },
+            moire: { density: ['Cerchi Concentrici', 10, 120, 2, 50], a: ['Lobi Ondulazione', 2, 24, 1, 8], b: ['Deformazione Moiré', 0, 10, 0.5, 3], seed: false },
+            isogrid: { density: ['Celle Griglia', 3, 20, 1, 8], a: null, b: ['Densità Hatching', 1, 10, 1, 4], seed: true },
+            ridgeline: { density: ['Numero Onde', 10, 100, 5, 40], a: ['Scala Rumore (Rugosità)', 0.01, 0.15, 0.01, 0.05], b: ['Altezza Picchi (Ampiezza)', 1, 20, 0.5, 6], seed: false },
+            flowcollision: { density: ['Numero Particelle / Semi', 20, 400, 10, 150], a: ['Passo Flusso', 0.2, 2, 0.1, 0.6], b: ['Distanza Collisione', 0.5, 8, 0.1, 1.5], seed: false },
+            crystal: { density: ['Righe Tratteggio Facce', 0, 30, 1, 10], a: ['Raggio Crystal', 10, 50, 1, 32], b: ['Rotazione Asse Y', 0, 360, 5, 45], seed: false },
+            phyllotaxis: { density: ['Numero Punti Totali', 50, 1500, 50, 400], a: ['Fattore Scala (Distanza)', 0.5, 5, 0.1, 1.6], b: ['Dimensione Nodi', 0, 6, 0.2, 1.2], seed: false }
+        };
+        let lastTurtleStyleApplied = null;
+
         function toggleTurtleControls() {
             const style = document.getElementById('paramTurtleStyle')?.value || 'truchet';
-            
-            const densityInput = document.getElementById('paramTurtleDensity');
-            const paramAInput = document.getElementById('paramTurtleParamA');
-            const paramBInput = document.getElementById('paramTurtleParamB');
-            
-            const lblDensity = document.getElementById('lblTurtleDensity');
-            const lblParamA = document.getElementById('lblTurtleParamA');
-            const lblParamB = document.getElementById('lblTurtleParamB');
-            
-            if (!densityInput || !paramAInput || !paramBInput) return;
-            
-            // Salviamo la selezione precedente per evitare scatti continui se non necessaria,
-            // ma aggiorniamo le etichette in modo sicuro senza distruggere i badge (che possono essere input numerici)
-            if (style === 'truchet') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Densità Celle (Griglia): ";
-                densityInput.min = "2";
-                densityInput.max = "20";
-                densityInput.step = "1";
-                
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Larghezza Linee/Archi: ";
-                paramAInput.min = "1.0";
-                paramAInput.max = "40.0";
-                paramAInput.step = "0.5";
-                
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Probabilità Archi vs Linee: ";
-                paramBInput.min = "0.0";
-                paramBInput.max = "1.0";
-                paramBInput.step = "0.05";
-            } else if (style === 'torus') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Righe di Hatching Zebra: ";
-                densityInput.min = "10";
-                densityInput.max = "200";
-                densityInput.step = "5";
-                if (parseInt(densityInput.value) < 10 || parseInt(densityInput.value) > 200) densityInput.value = "60";
-                
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Raggio Toro (R): ";
-                paramAInput.min = "5.0";
-                paramAInput.max = "60.0";
-                paramAInput.step = "0.5";
-                if (parseFloat(paramAInput.value) < 5.0 || parseFloat(paramAInput.value) > 60.0) paramAInput.value = "35.0";
-                
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Raggio Tubo (r): ";
-                paramBInput.min = "2.0";
-                paramBInput.max = "30.0";
-                paramBInput.step = "0.5";
-                if (parseFloat(paramBInput.value) < 2.0 || parseFloat(paramBInput.value) > 30.0) paramBInput.value = "15.0";
-            } else if (style === 'cityscape') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Risoluzione Griglia Città: ";
-                densityInput.min = "4";
-                densityInput.max = "30";
-                densityInput.step = "1";
-                if (parseInt(densityInput.value) < 4 || parseInt(densityInput.value) > 30) densityInput.value = "12";
-                
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Spessore Palazzi: ";
-                paramAInput.min = "2.0";
-                paramAInput.max = "20.0";
-                paramAInput.step = "0.5";
-                if (parseFloat(paramAInput.value) < 2.0 || parseFloat(paramAInput.value) > 20.0) paramAInput.value = "8.0";
-                
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Altezza Massima Palazzi: ";
-                paramBInput.min = "5.0";
-                paramBInput.max = "100.0";
-                paramBInput.step = "1.0";
-                if (parseFloat(paramBInput.value) < 5.0 || parseFloat(paramBInput.value) > 100.0) paramBInput.value = "45.0";
-            } else if (style === 'stringart') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Numero Pioli (N): ";
-                densityInput.min = "20";
-                densityInput.max = "360";
-                densityInput.step = "10";
-                if (parseInt(densityInput.value) < 20 || parseInt(densityInput.value) > 360) densityInput.value = "120";
+            const cfg = TURTLE_CONTROLS[style] || TURTLE_CONTROLS.truchet;
+            // Cambiando stile i parametri cambiano significato: si riparte dai default dello stile
+            const styleChanged = lastTurtleStyleApplied !== null && lastTurtleStyleApplied !== style;
+            lastTurtleStyleApplied = style;
 
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Moltiplicatore (K): ";
-                paramAInput.min = "2.0";
-                paramAInput.max = "20.0";
-                paramAInput.step = "0.5";
-                if (parseFloat(paramAInput.value) < 2.0 || parseFloat(paramAInput.value) > 20.0) paramAInput.value = "2.0";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Offset Rotazione: ";
-                paramBInput.min = "0.0";
-                paramBInput.max = "1.0";
-                paramBInput.step = "0.05";
-                if (parseFloat(paramBInput.value) < 0.0 || parseFloat(paramBInput.value) > 1.0) paramBInput.value = "0.00";
-            } else if (style === 'noodles') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Numero Noodles: ";
-                densityInput.min = "5";
-                densityInput.max = "50";
-                densityInput.step = "1";
-                if (parseInt(densityInput.value) < 5 || parseInt(densityInput.value) > 50) densityInput.value = "15";
-
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Frequenza Onde: ";
-                paramAInput.min = "0.05";
-                paramAInput.max = "0.50";
-                paramAInput.step = "0.01";
-                if (parseFloat(paramAInput.value) < 0.05 || parseFloat(paramAInput.value) > 0.50) paramAInput.value = "0.15";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Ampiezza Over-Under: ";
-                paramBInput.min = "1.0";
-                paramBInput.max = "10.0";
-                paramBInput.step = "0.5";
-                if (parseFloat(paramBInput.value) < 1.0 || parseFloat(paramBInput.value) > 10.0) paramBInput.value = "3.0";
-            } else if (style === 'moire') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Cerchi Concentrici: ";
-                densityInput.min = "10";
-                densityInput.max = "120";
-                densityInput.step = "2";
-                if (parseInt(densityInput.value) < 10 || parseInt(densityInput.value) > 120) densityInput.value = "50";
-
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Spaziatura Onde: ";
-                paramAInput.min = "0.5";
-                paramAInput.max = "6.0";
-                paramAInput.step = "0.1";
-                if (parseFloat(paramAInput.value) < 0.5 || parseFloat(paramAInput.value) > 6.0) paramAInput.value = "1.2";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Deformazione Moiré: ";
-                paramBInput.min = "0.0";
-                paramBInput.max = "10.0";
-                paramBInput.step = "0.5";
-                if (parseFloat(paramBInput.value) < 0.0 || parseFloat(paramBInput.value) > 10.0) paramBInput.value = "3.0";
-            } else if (style === 'isogrid') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Celle Griglia: ";
-                densityInput.min = "3";
-                densityInput.max = "20";
-                densityInput.step = "1";
-                if (parseInt(densityInput.value) < 3 || parseInt(densityInput.value) > 20) densityInput.value = "8";
-
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Spessore Tratto Ombre: ";
-                paramAInput.min = "0.1";
-                paramAInput.max = "1.0";
-                paramAInput.step = "0.1";
-                if (parseFloat(paramAInput.value) < 0.1 || parseFloat(paramAInput.value) > 1.0) paramAInput.value = "0.4";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Densità Hatching: ";
-                paramBInput.min = "1";
-                paramBInput.max = "10";
-                paramBInput.step = "1";
-                if (parseInt(paramBInput.value) < 1 || parseInt(paramBInput.value) > 10) paramBInput.value = "4";
-            } else if (style === 'ridgeline') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Numero Onde: ";
-                densityInput.min = "10";
-                densityInput.max = "100";
-                densityInput.step = "5";
-                if (parseInt(densityInput.value) < 10 || parseInt(densityInput.value) > 100) densityInput.value = "40";
-
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Scala Rumore (Rugosità): ";
-                paramAInput.min = "0.01";
-                paramAInput.max = "0.15";
-                paramAInput.step = "0.01";
-                if (parseFloat(paramAInput.value) < 0.01 || parseFloat(paramAInput.value) > 0.15) paramAInput.value = "0.05";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Altezza Picchi (Ampiezza): ";
-                paramBInput.min = "1.0";
-                paramBInput.max = "20.0";
-                paramBInput.step = "0.5";
-                if (parseFloat(paramBInput.value) < 1.0 || parseFloat(paramBInput.value) > 20.0) paramBInput.value = "6.0";
-            } else if (style === 'flowcollision') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Numero Particelle / Semi: ";
-                densityInput.min = "20";
-                densityInput.max = "400";
-                densityInput.step = "10";
-                if (parseInt(densityInput.value) < 20 || parseInt(densityInput.value) > 400) densityInput.value = "150";
-
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Passo Flusso: ";
-                paramAInput.min = "0.2";
-                paramAInput.max = "2.0";
-                paramAInput.step = "0.1";
-                if (parseFloat(paramAInput.value) < 0.2 || parseFloat(paramAInput.value) > 2.0) paramAInput.value = "0.6";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Distanza Collisione: ";
-                paramBInput.min = "0.5";
-                paramBInput.max = "8.0";
-                paramBInput.step = "0.1";
-                if (parseFloat(paramBInput.value) < 0.5 || parseFloat(paramBInput.value) > 8.0) paramBInput.value = "1.5";
-            } else if (style === 'crystal') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Righe Tratteggio Facce: ";
-                densityInput.min = "0";
-                densityInput.max = "30";
-                densityInput.step = "1";
-                if (parseInt(densityInput.value) < 0 || parseInt(densityInput.value) > 30) densityInput.value = "10";
-
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Raggio Crystal: ";
-                paramAInput.min = "10.0";
-                paramAInput.max = "50.0";
-                paramAInput.step = "1.0";
-                if (parseFloat(paramAInput.value) < 10.0 || parseFloat(paramAInput.value) > 50.0) paramAInput.value = "32.0";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Rotazione Asse Y: ";
-                paramBInput.min = "0.0";
-                paramBInput.max = "360.0";
-                paramBInput.step = "5.0";
-                if (parseFloat(paramBInput.value) < 0.0 || parseFloat(paramBInput.value) > 360.0) paramBInput.value = "45.0";
-            } else if (style === 'phyllotaxis') {
-                if (lblDensity && lblDensity.childNodes[0]) lblDensity.childNodes[0].textContent = "Numero Punti Totali: ";
-                densityInput.min = "50";
-                densityInput.max = "1500";
-                densityInput.step = "50";
-                if (parseInt(densityInput.value) < 50 || parseInt(densityInput.value) > 1500) densityInput.value = "400";
-
-                if (lblParamA && lblParamA.childNodes[0]) lblParamA.childNodes[0].textContent = "Fattore Scala (Distanza): ";
-                paramAInput.min = "0.5";
-                paramAInput.max = "5.0";
-                paramAInput.step = "0.1";
-                if (parseFloat(paramAInput.value) < 0.5 || parseFloat(paramAInput.value) > 5.0) paramAInput.value = "1.6";
-
-                if (lblParamB && lblParamB.childNodes[0]) lblParamB.childNodes[0].textContent = "Dimensione Nodi: ";
-                paramBInput.min = "0.0";
-                paramBInput.max = "6.0";
-                paramBInput.step = "0.2";
-                if (parseFloat(paramBInput.value) < 0.0 || parseFloat(paramBInput.value) > 6.0) paramBInput.value = "1.2";
+            [['Density', cfg.density], ['ParamA', cfg.a], ['ParamB', cfg.b]].forEach(([suffix, spec]) => {
+                const input = document.getElementById('paramTurtle' + suffix);
+                const lbl = document.getElementById('lblTurtle' + suffix);
+                if (!input || !lbl) return;
+                const box = lbl.parentElement;
+                if (!spec) { box.classList.add('hidden-mode'); return; }
+                box.classList.remove('hidden-mode');
+                const [label, min, max, step, def] = spec;
+                if (lbl.childNodes[0]) lbl.childNodes[0].textContent = label + ': ';
+                input.min = min; input.max = max; input.step = step;
+                const v = parseFloat(input.value);
+                if (styleChanged || isNaN(v) || v < min || v > max) input.value = def;
+            });
+            // Il seed serve solo agli stili casuali; il pulsante Rand resta sempre (randomizza i parametri)
+            const seedInput = document.getElementById('paramTurtleSeed');
+            if (seedInput) {
+                seedInput.classList.toggle('hidden-mode', !cfg.seed);
+                const seedHeader = document.getElementById('valTurtleSeed')?.parentElement;
+                if (seedHeader) seedHeader.classList.toggle('hidden-mode', !cfg.seed);
             }
 
             // Forza l'aggiornamento visivo dei valori degli input numerici se presenti
@@ -12818,75 +13053,49 @@ out body;`;
 
         function randomizeTurtleSeed() {
             const style = document.getElementById('paramTurtleStyle')?.value || 'truchet';
-            
-            const densityInput = document.getElementById('paramTurtleDensity');
-            const paramAInput = document.getElementById('paramTurtleParamA');
-            const paramBInput = document.getElementById('paramTurtleParamB');
+            const cfg = TURTLE_CONTROLS[style] || TURTLE_CONTROLS.truchet;
+
+            // Valori casuali nella fascia centrale (15%-85%) dell'intervallo di ogni slider dello stile
+            [['paramTurtleDensity', cfg.density], ['paramTurtleParamA', cfg.a], ['paramTurtleParamB', cfg.b]].forEach(([id, spec]) => {
+                const input = document.getElementById(id);
+                if (!input || !spec) return;
+                const [, min, max, step] = spec;
+                const raw = min + (max - min) * (0.15 + 0.7 * Math.random());
+                const snapped = Math.round((raw - min) / step) * step + min;
+                input.value = +snapped.toFixed(4);
+            });
+
             const seedInput = document.getElementById('paramTurtleSeed');
-            
-            if (!densityInput || !paramAInput || !paramBInput || !seedInput) return;
-
-            // Generiamo un seed casuale per il PRNG
-            const newSeed = Math.floor(Math.random() * 500) + 1;
-            seedInput.value = newSeed;
-            const valSeed = document.getElementById('valTurtleSeed');
-            if (valSeed) {
-                if (valSeed.tagName === 'INPUT') valSeed.value = newSeed;
-                else valSeed.innerText = newSeed;
-            }
-
-            // Randomizzazione mirata ad assicurare la massima armonia estetica del tracciato
-            if (style === 'truchet') {
-                densityInput.value = Math.floor(Math.random() * (12 - 4 + 1)) + 4; // 4..12
-                paramAInput.value = (Math.random() * (24.0 - 6.0) + 6.0).toFixed(1); // 6..24
-                paramBInput.value = (Math.random() * (0.80 - 0.20) + 0.20).toFixed(2); // 0.2..0.8
-            } else if (style === 'torus') {
-                densityInput.value = Math.floor(Math.random() * (120 - 40 + 1)) + 40; // 40..120
-                const R = Math.random() * (45.0 - 25.0) + 25.0; // 25..45
-                paramAInput.value = R.toFixed(1);
-                paramBInput.value = (Math.random() * (R * 0.6 - 10.0) + 10.0).toFixed(1); // 10..0.6R
-            } else if (style === 'cityscape') {
-                densityInput.value = Math.floor(Math.random() * (18 - 8 + 1)) + 8; // 8..18
-                paramAInput.value = (Math.random() * (12.0 - 4.0) + 4.0).toFixed(1); // 4..12
-                paramBInput.value = (Math.random() * (65.0 - 25.0) + 25.0).toFixed(1); // 25..65
-            } else if (style === 'stringart') {
-                densityInput.value = (Math.floor(Math.random() * (24 - 6 + 1)) + 6) * 10; // 60..240
-                paramAInput.value = (Math.random() * (10.0 - 2.0) + 2.0).toFixed(1); // 2..10
-                paramBInput.value = (Math.random() * 0.50).toFixed(2); // 0..0.5
-            } else if (style === 'noodles') {
-                densityInput.value = Math.floor(Math.random() * (28 - 10 + 1)) + 10; // 10..28
-                paramAInput.value = (Math.random() * (0.30 - 0.10) + 0.10).toFixed(2); // 0.1..0.3
-                paramBInput.value = (Math.random() * (5.5 - 2.0) + 2.0).toFixed(1); // 2..5.5
-            } else if (style === 'moire') {
-                densityInput.value = Math.floor(Math.random() * (80 - 30 + 1)) + 30; // 30..80
-                paramAInput.value = (Math.random() * (2.5 - 0.8) + 0.8).toFixed(1); // 0.8..2.5
-                paramBInput.value = (Math.random() * (5.0 - 1.5) + 1.5).toFixed(1); // 1.5..5
-            } else if (style === 'isogrid') {
-                densityInput.value = Math.floor(Math.random() * (14 - 6 + 1)) + 6; // 6..14
-                paramAInput.value = (Math.random() * (0.8 - 0.3) + 0.3).toFixed(1); // 0.3..0.8
-                paramBInput.value = Math.floor(Math.random() * (7 - 2 + 1)) + 2; // 2..7
-            } else if (style === 'ridgeline') {
-                densityInput.value = Math.floor(Math.random() * (65 - 25 + 1)) + 25; // 25..65
-                paramAInput.value = (Math.random() * (0.08 - 0.02) + 0.02).toFixed(3); // 0.02..0.08
-                paramBInput.value = (Math.random() * (12.0 - 3.5) + 3.5).toFixed(1); // 3.5..12
-            } else if (style === 'flowcollision') {
-                densityInput.value = Math.floor(Math.random() * (280 - 100 + 1)) + 100; // 100..280
-                paramAInput.value = (Math.random() * (1.2 - 0.4) + 0.4).toFixed(1); // 0.4..1.2
-                paramBInput.value = (Math.random() * (3.5 - 1.0) + 1.0).toFixed(1); // 1..3.5
-            } else if (style === 'crystal') {
-                densityInput.value = Math.floor(Math.random() * (18 - 6 + 1)) + 6; // 6..18
-                paramAInput.value = (Math.random() * (40.0 - 20.0) + 20.0).toFixed(1); // 20..40
-                paramBInput.value = Math.floor(Math.random() * 360); // 0..360
-            } else if (style === 'phyllotaxis') {
-                densityInput.value = Math.floor(Math.random() * (800 - 250 + 1)) + 250; // 250..800
-                paramAInput.value = (Math.random() * (2.8 - 1.0) + 1.0).toFixed(1); // 1..2.8
-                paramBInput.value = (Math.random() * (2.2 - 0.6) + 0.6).toFixed(1); // 0.6..2.2
+            if (seedInput && cfg.seed) {
+                const newSeed = Math.floor(Math.random() * 500) + 1;
+                seedInput.value = newSeed;
+                const valSeed = document.getElementById('valTurtleSeed');
+                if (valSeed) {
+                    if (valSeed.tagName === 'INPUT') valSeed.value = newSeed;
+                    else valSeed.innerText = newSeed;
+                }
             }
 
             // Aggiorniamo le scritte e i range degli slider in modo coerente
             toggleTurtleControls();
             updateSimulation();
         }
+
+        const THREED_COUNT_CONTROLS = {
+            single: null,
+            vertex_fractal: ['Numero di Solidi', 2, 80, 30],
+            fractal_nest: ['Solidi Annidati', 2, 40, 12],
+            spiral: ['Numero di Solidi', 3, 80, 30],
+            matrix_grid: ['Numero di Solidi', 8, 64, 27],
+            platonic_ring: ['Numero di Solidi', 3, 80, 30],
+            tree: ['Numero Massimo di Solidi', 3, 80, 30],
+            menger: ['Livello Spugna (2 = 400 solidi, calcolo lento)', 1, 2, 1],
+            vortex: ['Numero di Solidi', 3, 80, 30],
+            platonic_metatron: ['Solidi (centro + 12 attorno)', 1, 13, 13],
+            random: ['Numero di Solidi', 3, 80, 30],
+            fattammano: ['Numero Massimo di Solidi', 3, 80, 30]
+        };
+        let lastThreeDPatternApplied = null;
 
         function toggleThreeDControls() {
             const pattern = document.getElementById('paramThreeDPattern')?.value || 'single';
@@ -12901,6 +13110,34 @@ out body;`;
             if (treeCtrls) treeCtrls.className = (pattern === 'tree') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (randomCtrls) randomCtrls.className = (pattern === 'random') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             if (fattaCtrls) fattaCtrls.className = (pattern === 'fattammano') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
+
+            // Slider "numero" con significato e intervallo propri di ogni schema (null = non usato)
+            const spec = THREED_COUNT_CONTROLS[pattern];
+            const numInput = document.getElementById('paramThreeDNumCubes');
+            const numRow = document.getElementById('threeDNumCubesRow');
+            const styleChanged = lastThreeDPatternApplied !== null && lastThreeDPatternApplied !== pattern;
+            lastThreeDPatternApplied = pattern;
+            if (numInput && numRow) {
+                numRow.classList.toggle('hidden-mode', !spec);
+                if (spec) {
+                    const [label, min, max, def] = spec;
+                    const lbl = document.getElementById('lblThreeDNumCubes');
+                    if (lbl) lbl.textContent = label + ':';
+                    numInput.min = min; numInput.max = max; numInput.step = 1;
+                    const v = parseInt(numInput.value);
+                    if (styleChanged || isNaN(v) || v < min || v > max) numInput.value = def;
+                    const valEl = document.getElementById('valThreeDNumCubes');
+                    if (valEl) {
+                        if (valEl.tagName === 'INPUT') { valEl.min = min; valEl.max = max; valEl.value = numInput.value; }
+                        else valEl.innerText = numInput.value;
+                    }
+                }
+            }
+            // La dimensione base conta solo dove si confronta con distanze fisse; altrove è una scala globale
+            // che l'adattamento al foglio annulla
+            document.getElementById('threeDCubeSizeRow')?.classList.toggle('hidden-mode', !['spiral', 'random', 'tree'].includes(pattern));
+            // Nessun parametro generale utile (es. solido singolo): la card sparisce del tutto
+            document.getElementById('threeDGeneralCard')?.classList.toggle('hidden-mode', !spec && !['spiral', 'random', 'tree'].includes(pattern));
         }
 
         function toggleSpiroControls() {
@@ -12922,6 +13159,9 @@ out body;`;
                 const labelParts = document.getElementById('labelFfParts');
                 const labelLen = document.getElementById('labelFfLen');
                 const ampContainer = document.getElementById('ff-amp-container');
+
+                // La spaziatura orizzontale serve solo al serpentino coherent_noise
+                document.getElementById('ff-spacing-container')?.classList.toggle('hidden-mode', type === 'topographic_lines');
 
                 if (type === 'topographic_lines') {
                     if (labelParts) labelParts.innerText = "Numero Linee:";
@@ -12969,6 +13209,15 @@ out body;`;
             document.getElementById('fib-spiral-controls').className = (mod === 'spiral') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             document.getElementById('fib-nature-controls').className = (mod === 'nature') ? 'glass-card p-3 space-y-3' : 'hidden-mode';
             updateFibSpiralLabels();
+            updateFibMultiControls();
+        }
+
+        // Sfasamento: serve con più spirali CW o con spirali CCW; scala CCW solo se ci sono spirali CCW
+        function updateFibMultiControls() {
+            const nCW = parseInt(document.getElementById('paramFibMultiCW')?.value || 1);
+            const nCCW = parseInt(document.getElementById('paramFibMultiCCW')?.value || 0);
+            document.getElementById('fibPhaseRow')?.classList.toggle('hidden-mode', !(nCW > 1 || nCCW > 0));
+            document.getElementById('fibScaleCCWRow')?.classList.toggle('hidden-mode', nCCW === 0);
         }
 
         function resetFibGoldenAngle() {
@@ -13023,8 +13272,8 @@ out body;`;
             const distDiv = document.getElementById('paramSketchDist')?.parentElement;
             const fillBgLabel = document.getElementById('paramSketchFillBg')?.parentElement;
             
-            // Mostriamo lo slider della distanza minima se Delaunay è attivo o se è attiva la campitura spiralizzata
-            if (useDelaunay || (useFill && fillStyle === 'spiral')) {
+            // La distanza minima tra i punti serve solo alla triangolazione Delaunay
+            if (useDelaunay) {
                 if (distDiv) distDiv.classList.remove('hidden-mode');
             } else {
                 if (distDiv) distDiv.classList.add('hidden-mode');
@@ -13934,6 +14183,8 @@ out body;`;
             currentRawElements = [];
 
             const textInput = document.getElementById('paramTextInput').value;
+            // L'interlinea conta solo con almeno due righe
+            document.getElementById('textLineHeightRow')?.classList.toggle('hidden-mode', !textInput.includes('\n'));
             if (!textInput) {
                 applyGlobalTransformAndRender();
                 return;
@@ -14016,51 +14267,14 @@ out body;`;
                     }
                 }
 
-                let visited = new Array(h + 2).fill(0).map(() => new Array(w + 2).fill(false));
-                const dirs = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
-
-                for (let y = 1; y <= h; y++) {
-                    for (let x = 1; x <= w; x++) {
-                        if (grid[y][x] && !visited[y][x]) {
-                            let isEdge = false;
-                            for (let d = 0; d < 8; d++) { if (!grid[y + dirs[d][1]][x + dirs[d][0]]) isEdge = true; }
-
-                            if (isEdge) {
-                                let contour = [];
-                                let cx = x, cy = y;
-                                let foundNext = true;
-
-                                while (foundNext) {
-                                    contour.push({ x: (cx / w) * 100 - 50, y: (1 - cy / h) * 100 - 50 });
-                                    visited[cy][cx] = true;
-
-                                    foundNext = false;
-                                    for (let d = 0; d < 8; d++) {
-                                        let nx = cx + dirs[d][0];
-                                        let ny = cy + dirs[d][1];
-                                        if (nx >= 1 && nx <= w && ny >= 1 && ny <= h && grid[ny][nx] && !visited[ny][nx]) {
-                                            let edge = false;
-                                            for (let dd = 0; dd < 8; dd++) { if (!grid[ny + dirs[dd][1]][nx + dirs[dd][0]]) edge = true; }
-                                            if (edge) {
-                                                cx = nx;
-                                                cy = ny;
-                                                foundNext = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                                if (contour.length > 2) {
-                                    contour.push({ ...contour[0] });
-                                    let smoothed = smoothPath(contour, 2);
-                                    let simplified = simplifyDouglasPeucker(smoothed, 0.02 * 0.02);
-                                    simplified.forEach(() => addSafetyPoint());
-                                    standardElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: simplified });
-                                }
-                            }
-                        }
-                    }
-                }
+                // Contorni chiusi via Marching Squares sulla luminanza antialiasata: il bordo cade
+                // nella posizione sub-pixel reale del glifo (niente gradini, niente corde di chiusura)
+                const toMM = pt => ({ x: (pt.x / w) * 100 - 50, y: (1 - pt.y / h) * 100 - 50 });
+                traceIsoContours(luminanceField(data, w, h), w, h, threshold).forEach(loop => {
+                    let simplified = simplifyDouglasPeucker(loop.map(toMM), 0.02 * 0.02);
+                    simplified.forEach(() => addSafetyPoint());
+                    standardElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: simplified });
+                });
 
                 // --- ESTRAZIONE CAMPITURA SELEZIONATA (HATCHING o CONCENTRIC) ---
                 if (processType === 'hatching') {
@@ -14095,96 +14309,23 @@ out body;`;
                 else if (processType === 'concentric') {
                     const spacing = Math.max(3, spacingVal);
 
-                    // BFS Multisorgente per la Distance Transform dal bianco
-                    let q = [];
-                    let dist = new Array(h + 2).fill(0).map(() => new Array(w + 2).fill(Infinity));
-                    for (let y = 0; y <= h + 1; y++) {
-                        for (let x = 0; x <= w + 1; x++) {
-                            if (!grid[y][x]) {
-                                dist[y][x] = 0;
-                                q.push({ x: x, y: y });
-                            }
-                        }
-                    }
+                    // Distanza euclidea esatta dal bianco e isolinee interpolate: anelli che seguono
+                    // fedelmente la forma della lettera (la vecchia BFS a 4 vicini dava anelli a rombo)
+                    const W = w + 2, H = h + 2;
+                    const mask = new Uint8Array(W * H);
+                    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) mask[y * W + x] = grid[y][x] ? 1 : 0;
+                    const dist = euclideanDistanceTransform(mask, W, H);
+                    let maxD = 0;
+                    const field = new Float32Array(W * H);
+                    for (let k = 0; k < W * H; k++) { field[k] = -dist[k]; if (dist[k] > maxD) maxD = dist[k]; }
 
-                    let head = 0;
-                    const dirsConcentric = [[0, -1], [1, 0], [0, 1], [-1, 0]];
-                    while (head < q.length) {
-                        let curr = q[head++];
-                        let d = dist[curr.y][curr.x];
-                        for (let i = 0; i < 4; i++) {
-                            let nx = curr.x + dirsConcentric[i][0];
-                            let ny = curr.y + dirsConcentric[i][1];
-                            if (nx >= 0 && nx <= w + 1 && ny >= 0 && ny <= h + 1) {
-                                if (dist[ny][nx] === Infinity) {
-                                    dist[ny][nx] = d + 1;
-                                    q.push({ x: nx, y: ny });
-                                }
-                            }
-                        }
-                    }
-
-                    // Estraiamo le isolinee
-                    const contourDirs = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
-
-                    for (let targetD = spacing / 2; ; targetD += spacing) {
-                        let hasPixels = false;
-                        let isoGrid = new Array(h + 2).fill(0).map(() => new Array(w + 2).fill(false));
-                        for (let y = 1; y <= h; y++) {
-                            for (let x = 1; x <= w; x++) {
-                                if (dist[y][x] >= targetD && dist[y][x] !== Infinity) {
-                                    isoGrid[y][x] = true;
-                                    hasPixels = true;
-                                }
-                            }
-                        }
-
-                        if (!hasPixels) break;
-
-                        let visitedConcentric = new Array(h + 2).fill(0).map(() => new Array(w + 2).fill(false));
-
-                        for (let y = 1; y <= h; y++) {
-                            for (let x = 1; x <= w; x++) {
-                                if (isoGrid[y][x] && !visitedConcentric[y][x]) {
-                                    let isEdge = false;
-                                    for (let d = 0; d < 8; d++) { if (!isoGrid[y + contourDirs[d][1]][x + contourDirs[d][0]]) isEdge = true; }
-
-                                    if (isEdge) {
-                                        let contour = [];
-                                        let cx = x, cy = y;
-                                        let foundNext = true;
-
-                                        while (foundNext) {
-                                            contour.push({ x: (cx / w) * 100 - 50, y: (1 - cy / h) * 100 - 50 });
-                                            visitedConcentric[cy][cx] = true;
-
-                                            foundNext = false;
-                                            for (let d = 0; d < 8; d++) {
-                                                let nx = cx + contourDirs[d][0];
-                                                let ny = cy + contourDirs[d][1];
-                                                if (nx >= 1 && nx <= w && ny >= 1 && ny <= h && isoGrid[ny][nx] && !visitedConcentric[ny][nx]) {
-                                                    let edge = false;
-                                                    for (let dd = 0; dd < 8; dd++) { if (!isoGrid[ny + contourDirs[dd][1]][nx + contourDirs[dd][0]]) edge = true; }
-                                                    if (edge) {
-                                                        cx = nx;
-                                                        cy = ny;
-                                                        foundNext = true;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (contour.length > 2) {
-                                            contour.push({ ...contour[0] });
-                                            let smoothed = smoothPath(contour, 2);
-                                            let simplified = simplifyDouglasPeucker(smoothed, 0.02 * 0.02);
-                                            simplified.forEach(() => addSafetyPoint());
-                                            standardElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: simplified });
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    const toMM = pt => ({ x: (pt.x / w) * 100 - 50, y: (1 - pt.y / h) * 100 - 50 });
+                    for (let targetD = spacing / 2; targetD < maxD; targetD += spacing) {
+                        traceIsoContours(field, w, h, -targetD).forEach(loop => {
+                            let simplified = simplifyDouglasPeucker(loop.map(toMM), 0.02 * 0.02);
+                            simplified.forEach(() => addSafetyPoint());
+                            standardElements.push({ type: 'path', stroke: '#10b981', width: penWidth, points: simplified });
+                        });
                     }
                 }
             }
@@ -14273,28 +14414,18 @@ out body;`;
                     });
 
                     if (tempDiv.parentNode) document.body.removeChild(tempDiv);
-                    applyTextHumanOrderIfNeeded();
                     applyGlobalTransformAndRender();
                 }).catch(err => {
                     console.error("Errore typesetting MathJax:", err);
                     if (reqId === textRequestId) {
                         currentRawElements.push(...standardElements);
-                        applyTextHumanOrderIfNeeded();
                         applyGlobalTransformAndRender();
                     }
                     if (tempDiv.parentNode) document.body.removeChild(tempDiv);
                 });
             } else {
                 currentRawElements.push(...standardElements);
-                applyTextHumanOrderIfNeeded();
                 applyGlobalTransformAndRender();
-            }
-        }
-
-        function applyTextHumanOrderIfNeeded() {
-            const chkHuman = document.getElementById('chkTextHumanOrder');
-            if (chkHuman && chkHuman.checked && currentRawElements.length > 1) {
-                currentRawElements = optimizePathsHumanOrder(currentRawElements, 4.0);
             }
         }
 
@@ -14382,7 +14513,7 @@ out body;`;
                 if (imageProcessType) imageProcessType.value = 'hatching';
 
                 const paramHatchSpacing = document.getElementById('paramHatchSpacing');
-                if (paramHatchSpacing) paramHatchSpacing.value = '6';
+                if (paramHatchSpacing) paramHatchSpacing.value = '1.2';
                 const paramHatchThreshold = document.getElementById('paramHatchThreshold');
                 if (paramHatchThreshold) paramHatchThreshold.value = '180';
                 const paramHatchInvert = document.getElementById('paramHatchInvert');
@@ -14764,7 +14895,7 @@ out body;`;
                 safeSetText('valNoodlesSpacing', 'paramNoodlesSpacing');
                 safeSetText('valNoodlesLength', 'paramNoodlesLength');
             } else if (currentMode === 'image') {
-                safeSetText('valHatchSpacing', 'paramHatchSpacing', " px");
+                safeSetText('valHatchSpacing', 'paramHatchSpacing');
                 safeSetText('valHatchThreshold', 'paramHatchThreshold');
                 safeSetText('valSpiralSpacing', 'paramSpiralSpacing', " px");
                 safeSetText('valSpiralAmp', 'paramSpiralAmp');
@@ -14861,6 +14992,9 @@ out body;`;
                 else if (currentMode === 'tessellation') calculateTessellation();
                 else if (currentMode === 'threed') calculateThreeD();
                 else if (currentMode === 'noodles') calculateNoodles();
+                // Audio e mappe mancavano: i controlli condivisi (spessore penna, dimensione) non li aggiornavano
+                else if (currentMode === 'audio') { if (audioBuffer) processAudio(); }
+                else if (currentMode === 'map') { if (geoJsonData) processMap(); }
             } catch (e) {
                 // Blindaggio: svuota il canvas ed evita disegni residui/orfani di altre modalità
                 currentRawElements = [];
@@ -17089,7 +17223,7 @@ ${document.getElementById('pathGroup').innerHTML}
         }
 
         async function compileWithOpenSCAD() {
-            const scadBaseCode = generateOpenSCADCode();
+            const scadBaseCode = generateOpenSCADCode(true);
             // Inserisce il comando di proiezione 2D CSG in testa al codice OpenSCAD
             const fullScadCode = `projection(cut = false)\n` + scadBaseCode;
 
@@ -17194,175 +17328,39 @@ ${document.getElementById('pathGroup').innerHTML}
             URL.revokeObjectURL(a.href);
         }
 
-        function generateOpenSCADCode() {
+        // Esporta i solidi effettivamente presenti nella scena come poliedri: qualunque schema
+        // (anche misto) coincide con l'anteprima. viewSpace = true usa le coordinate della camera,
+        // così projection() di OpenSCAD restituisce la sagoma vista dalla stessa inquadratura.
+        function generateOpenSCADCode(viewSpace = false) {
             const solidType = document.getElementById('paramThreeDSolidType')?.value || 'cube';
             const pattern = document.getElementById('paramThreeDPattern')?.value || 'single';
-            const numCubes = parseInt(document.getElementById('paramThreeDNumCubes')?.value) || 30;
-            const baseSize = parseFloat(document.getElementById('paramThreeDCubeSize')?.value) || 8.0;
-            
-            const userScaleMult = parseFloat(document.getElementById('paramThreeDFractalScale')?.value || 1.0);
-            const userOffset = parseFloat(document.getElementById('paramThreeDFractalOffset')?.value || 0.0);
-            const userRotDeg = parseFloat(document.getElementById('paramThreeDFractalRotation')?.value || 0.0);
 
             let code = `// ========================================================\n`;
             code += `// Laboratorio Matematico Orfini Foligno - Pen Plotter 3D\n`;
-            code += `// Modello Generato Parametricamente per OpenSCAD\n`;
-            code += `// Solido Base: ${solidType.toUpperCase()} | Pattern: ${pattern.toUpperCase()}\n`;
+            code += `// Modello generato dalla scena per OpenSCAD\n`;
+            code += `// Solido Base: ${solidType.toUpperCase()} | Pattern: ${pattern.toUpperCase()} | Solidi: ${threeDCubes.length}\n`;
             code += `// ========================================================\n\n`;
 
-            code += `$fn = 32;\n\n`;
+            if (!threeDScene || threeDCubes.length === 0) return code + `// Nessun solido nella scena\n`;
+            threeDScene.updateMatrixWorld(true);
+            const viewM = (viewSpace && threeDCamera) ? threeDCamera.matrixWorldInverse : null;
+            const f3 = v => `[${v.x.toFixed(3)},${v.y.toFixed(3)},${v.z.toFixed(3)}]`;
 
-            code += `// --- DEFINIZIONE SOLIDI PLATONICI RIGOROSI ---\n`;
-            code += `module platonic_tetrahedron(s) {\n`;
-            code += `    v = [ [1,1,1], [1,-1,-1], [-1,1,-1], [-1,-1,1] ] * (s * 0.57735);\n`;
-            code += `    f = [ [0,1,2], [0,2,3], [0,3,1], [1,3,2] ];\n`;
-            code += `    polyhedron(points=v, faces=f);\n`;
-            code += `}\n\n`;
-
-            code += `module platonic_cube(s) {\n`;
-            code += `    cube([s, s, s], center=true);\n`;
-            code += `}\n\n`;
-
-            code += `module platonic_octahedron(s) {\n`;
-            code += `    r = s * 0.7071;\n`;
-            code += `    v = [ [r,0,0], [-r,0,0], [0,r,0], [0,-r,0], [0,0,r], [0,0,-r] ];\n`;
-            code += `    f = [ [0,2,4], [2,1,4], [1,3,4], [3,0,4], [2,0,5], [1,2,5], [3,1,5], [0,3,5] ];\n`;
-            code += `    polyhedron(points=v, faces=f);\n`;
-            code += `}\n\n`;
-
-            code += `module platonic_dodecahedron(s) {\n`;
-            code += `    phi = (1 + sqrt(5)) / 2;\n`;
-            code += `    sf = s * 0.5 / phi;\n`;
-            code += `    v = [\n`;
-            code += `        [-1,-1,-1],[ 1,-1,-1],[ 1, 1,-1],[-1, 1,-1],\n`;
-            code += `        [-1,-1, 1],[ 1,-1, 1],[ 1, 1, 1],[-1, 1, 1],\n`;
-            code += `        [0, -1/phi, -phi],[0, 1/phi, -phi],[0, -1/phi, phi],[0, 1/phi, phi],\n`;
-            code += `        [-1/phi, -phi, 0],[1/phi, -phi, 0],[-1/phi, phi, 0],[1/phi, phi, 0],\n`;
-            code += `        [-phi, 0, -1/phi],[phi, 0, -1/phi],[-phi, 0, 1/phi],[phi, 0, 1/phi]\n`;
-            code += `    ] * sf;\n`;
-            code += `    f = [\n`;
-            code += `        [0,8,9,3,16], [0,12,13,1,8], [0,16,18,4,12],\n`;
-            code += `        [1,13,5,10,8], [1,9,2,17,13], [2,9,8,0,3],\n`;
-            code += `        [2,15,6,11,9], [3,9,11,7,14], [4,18,19,5,10],\n`;
-            code += `        [5,19,17,1,13], [6,15,14,7,11], [6,11,10,5,19]\n`;
-            code += `    ];\n`;
-            code += `    polyhedron(points=v, faces=f);\n`;
-            code += `}\n\n`;
-
-            code += `module platonic_icosahedron(s) {\n`;
-            code += `    phi = (1 + sqrt(5)) / 2;\n`;
-            code += `    r = s * 0.618;\n`;
-            code += `    v = [\n`;
-            code += `        [0, -1, -phi],[0, 1, -phi],[0, -1, phi],[0, 1, phi],\n`;
-            code += `        [-1, -phi, 0],[1, -phi, 0],[-1, phi, 0],[1, phi, 0],\n`;
-            code += `        [-phi, 0, -1],[phi, 0, -1],[-phi, 0, 1],[phi, 0, 1]\n`;
-            code += `    ] * (r / sqrt(1 + phi*phi));\n`;
-            code += `    f = [\n`;
-            code += `        [0,1,8], [0,8,4], [0,4,5], [0,5,9], [0,9,1],\n`;
-            code += `        [2,3,7], [2,7,11], [2,11,5], [2,5,4], [2,4,10],\n`;
-            code += `        [6,1,9], [6,9,11], [6,11,7], [6,7,3], [6,3,1],\n`;
-            code += `        [10,8,1], [10,1,6], [10,6,3], [10,3,2], [10,2,4]\n`;
-            code += `    ];\n`;
-            code += `    polyhedron(points=v, faces=f);\n`;
-            code += `}\n\n`;
-
-            code += `module draw_solid(type, size) {\n`;
-            code += `    if (type == "tetrahedron") platonic_tetrahedron(size);\n`;
-            code += `    else if (type == "octahedron") platonic_octahedron(size);\n`;
-            code += `    else if (type == "dodecahedron") platonic_dodecahedron(size);\n`;
-            code += `    else if (type == "icosahedron") platonic_icosahedron(size);\n`;
-            code += `    else platonic_cube(size);\n`;
-            code += `}\n\n`;
-
-            code += `// --- FUNZIONE LISTA VERTICI ESTERNI PER POLIEDRO PLATONICO ---\n`;
-            code += `function vertex_list(type) = \n`;
-            code += `    type == "tetrahedron" ? [ [1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1] ] * 0.57735 :\n`;
-            code += `    type == "octahedron" ? [ [1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1] ] * 0.7071 :\n`;
-            code += `    type == "icosahedron" ? [ [0,-1,-1.618],[0,1,-1.618],[0,-1,1.618],[0,1,1.618],[-1,-1.618,0],[1,-1.618,0],[-1,1.618,0],[1,1.618,0],[-1.618,0,-1],[1.618,0,-1],[-1.618,0,1],[1.618,0,1] ] * 0.5257 :\n`;
-            code += `    type == "dodecahedron" ? [ [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1],[0,-0.618,-1.618],[0,0.618,-1.618],[0,-0.618,1.618],[0,0.618,1.618],[-0.618,-1.618,0],[0.618,-1.618,0],[-0.618,1.618,0],[0.618,1.618,0],[-1.618,0,-0.618],[1.618,0,-0.618],[-1.618,0,0.618],[1.618,0,0.618] ] * 0.3568 :\n`;
-            code += `    [ [1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1] ] * 0.5;\n\n`;
-
-            if (pattern === 'menger') {
-                const targetLevel = Math.min(3, Math.max(1, Math.floor((numCubes / 80) * 2) + 1));
-                code += `// --- SPUGNA DI MENGER SOTTRATTIVA CSG RIGOROSA (Livello ${targetLevel}) ---\n`;
-                code += `module menger_sponge(s, level) {\n`;
-                code += `    if (level == 0) {\n`;
-                code += `        draw_solid("${solidType}", s);\n`;
-                code += `    } else {\n`;
-                code += `        new_s = s / 3;\n`;
-                code += `        for (x = [-1:1], y = [-1:1], z = [-1:1]) {\n`;
-                code += `            // Regola sottrattiva OpenSCAD: elimina i tunnel centrali della croce 3D\n`;
-                code += `            is_tunnel = ((x == 0 ? 1 : 0) + (y == 0 ? 1 : 0) + (z == 0 ? 1 : 0)) >= 2;\n`;
-                code += `            if (!is_tunnel) {\n`;
-                code += `                translate([x * new_s, y * new_s, z * new_s])\n`;
-                code += `                    menger_sponge(new_s, level - 1);\n`;
-                code += `            }\n`;
-                code += `        }\n`;
-                code += `    }\n`;
-                code += `}\n\n`;
-                code += `rotate([17, 23, 6])\n`;
-                code += `    menger_sponge(${ (baseSize * 2.2).toFixed(1) }, ${targetLevel});\n`;
-            } else if (pattern === 'vertex_fractal') {
-                const maxLevel = Math.min(4, Math.max(1, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1));
-                code += `// --- FRATTALE RICORSIVO DAI VERTICI ESTERNI (Scala=${userScaleMult.toFixed(2)}, Offset=${userOffset.toFixed(2)}, Rot=${userRotDeg}°) ---\n`;
-                code += `module vertex_fractal(s, level, max_level) {\n`;
-                code += `    draw_solid("${solidType}", s);\n`;
-                code += `    if (level < max_level) {\n`;
-                code += `        child_s = s * 0.61803 * ${userScaleMult.toFixed(2)}; // Progressione Aurea 1/phi\n`;
-                code += `        vlist = vertex_list("${solidType}");\n`;
-                code += `        rotate([0, 0, ${userRotDeg} * level])\n`;
-                code += `        for (i = [0 : len(vlist)-1]) {\n`;
-                code += `            dir = vlist[i];\n`;
-                code += `            pos = dir * (s * (1 + ${userOffset.toFixed(2)}));\n`;
-                code += `            translate(pos)\n`;
-                code += `                vertex_fractal(child_s, level + 1, max_level);\n`;
-                code += `        }\n`;
-                code += `    }\n`;
-                code += `}\n\n`;
-                code += `rotate([17, 23, 6])\n`;
-                code += `    vertex_fractal(${ (baseSize * 1.5).toFixed(1) }, 1, ${maxLevel});\n`;
-            } else if (pattern === 'fattammano') {
-                const scaleFactor = parseFloat(document.getElementById('paramThreeDFattaScale')?.value) || 0.55;
-                const branchProb = parseFloat(document.getElementById('paramThreeDFattaProb')?.value) || 0.80;
-                let maxDepth = 2;
-                if (numCubes >= 35) maxDepth = 3;
-                if (numCubes >= 60) maxDepth = 4;
-                code += `// --- DISEGNO CINETICO A MANO (FATTAMMANO) ---\n`;
-                code += `module fatta_branch(s, depth, max_depth) {\n`;
-                code += `    draw_solid("${solidType}", s);\n`;
-                code += `    if (depth < max_depth) {\n`;
-                code += `        child_s = s * ${scaleFactor.toFixed(2)};\n`;
-                code += `        dirs = [ [1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1] ];\n`;
-                code += `        for (d = [0 : 5]) {\n`;
-                code += `            pos = dirs[d] * (s * 0.5 + child_s * 0.5);\n`;
-                code += `            translate(pos)\n`;
-                code += `                fatta_branch(child_s, depth + 1, max_depth);\n`;
-                code += `        }\n`;
-                code += `    }\n`;
-                code += `}\n\n`;
-                code += `rotate([17, 23, 6])\n`;
-                code += `    fatta_branch(${ (baseSize * 1.8).toFixed(1) }, 1, ${maxDepth});\n`;
-            } else if (pattern === 'tree') {
-                code += `// --- ALBERO FRATTALE RICORSIVO 3D ---\n`;
-                code += `module tree_branch(s, depth) {\n`;
-                code += `    draw_solid("${solidType}", s);\n`;
-                code += `    if (depth > 0) {\n`;
-                code += `        child_s = s * 0.65;\n`;
-                code += `        for (a = [0 : 120 : 359]) {\n`;
-                code += `            rotate([35, a, 0])\n`;
-                code += `                translate([0, s * 0.8, 0])\n`;
-                code += `                    tree_branch(child_s, depth - 1);\n`;
-                code += `        }\n`;
-                code += `    }\n`;
-                code += `}\n\n`;
-                code += `rotate([17, 23, 6])\n`;
-                code += `    tree_branch(${ (baseSize * 1.6).toFixed(1) }, 3);\n`;
-            } else {
-                code += `// --- GEOMETRIA PARAMETRICA PER ${pattern.toUpperCase()} ---\n`;
-                code += `rotate([17, 23, 6])\n`;
-                code += `    draw_solid("${solidType}", ${ (baseSize * 1.8).toFixed(1) });\n`;
-            }
-
+            code += `union() {\n`;
+            threeDCubes.forEach((mesh, idx) => {
+                const geo = extractGeometryData(mesh);
+                const pts = geo.vertices.map(v => {
+                    const w = v.clone().applyMatrix4(mesh.matrixWorld);
+                    return viewM ? w.applyMatrix4(viewM) : w;
+                });
+                // Three.js usa facce antiorarie viste dall'esterno, OpenSCAD orarie: si inverte l'ordine
+                const faces = geo.faces
+                    .filter(f => new Set(f.indices).size === 3)
+                    .map(f => `[${f.indices[2]},${f.indices[1]},${f.indices[0]}]`);
+                code += `    // solido ${idx + 1}\n`;
+                code += `    polyhedron(points=[${pts.map(f3).join(',')}], faces=[${faces.join(',')}]);\n`;
+            });
+            code += `}\n`;
             return code;
         }
 
@@ -17466,56 +17464,46 @@ ${document.getElementById('pathGroup').innerHTML}
                 threeDCubes.push(mesh);
             }
             else if (pattern === 'vertex_fractal') {
-                const maxLevel = Math.min(4, Math.max(1, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1));
                 const userScaleMult = parseFloat(document.getElementById('paramThreeDFractalScale')?.value || 1.0);
                 const userOffset = parseFloat(document.getElementById('paramThreeDFractalOffset')?.value || 0.0);
                 const userRotDeg = parseFloat(document.getElementById('paramThreeDFractalRotation')?.value || 0.0);
-                const userRotRad = userRotDeg * Math.PI / 180;
-                let currentIdx = 0;
+                const localRot = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), userRotDeg * Math.PI / 180);
 
-                function buildFixedVertexFractal(centerPos, size, currentType, level, parentQuat) {
-                    if (level > maxLevel || currentIdx >= numCubes) return;
-
-                    const mesh = createPlatonicMesh(currentType, currentIdx++, material);
-                    mesh.position.copy(centerPos);
+                // Costruzione per livelli (in ampiezza): con un budget di solidi limitato i figli si
+                // distribuiscono su tutti i vertici; prima la ricorsione in profondità esauriva il budget
+                // sul primo vertice e il frattale risultava sbilanciato
+                const addSolid = (pos, size, quat) => {
+                    const mesh = createPlatonicMesh(solidType, threeDCubes.length, material);
+                    mesh.position.copy(pos);
                     mesh.scale.setScalar(size);
-                    if (parentQuat) {
-                        mesh.quaternion.copy(parentQuat);
-                    } else {
-                        mesh.rotation.set(0.3, 0.4, 0.1);
-                    }
+                    if (quat) mesh.quaternion.copy(quat); else mesh.rotation.set(0.3, 0.4, 0.1);
                     mesh.updateMatrixWorld(true);
-
                     threeDScene.add(mesh);
                     threeDCubes.push(mesh);
-
-                    if (level >= maxLevel) return;
-
-                    const geoData = extractGeometryData(mesh);
-                    const childSize = size * 0.61803 * userScaleMult;
-
-                    const localRot = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), userRotRad);
-                    const childQuat = mesh.quaternion.clone().multiply(localRot);
-
-                    geoData.vertices.forEach(localV => {
-                        if (currentIdx >= numCubes) return;
-                        
-                        const parentOffset = localV.clone().applyQuaternion(mesh.quaternion).multiplyScalar(size);
-                        const childOffset = localV.clone().applyQuaternion(childQuat).multiplyScalar(childSize);
-                        const userShift = parentOffset.clone().multiplyScalar(userOffset);
-                        const worldV = centerPos.clone().add(parentOffset).add(childOffset).add(userShift);
-
-                        buildFixedVertexFractal(
-                            worldV,
-                            childSize,
-                            currentType,
-                            level + 1,
-                            childQuat
-                        );
+                    return { mesh, pos, size };
+                };
+                let level = [addSolid(new THREE.Vector3(0, 0, 0), baseSize * 1.5, null)];
+                for (let depth = 1; depth <= 4 && threeDCubes.length < numCubes && level.length; depth++) {
+                    const candidates = [];
+                    level.forEach((node, parentIdx) => {
+                        const childSize = node.size * 0.61803 * userScaleMult;
+                        const childQuat = node.mesh.quaternion.clone().multiply(localRot);
+                        extractGeometryData(node.mesh).vertices.forEach((localV, vIdx) => {
+                            const parentOffset = localV.clone().applyQuaternion(node.mesh.quaternion).multiplyScalar(node.size);
+                            const childOffset = localV.clone().applyQuaternion(childQuat).multiplyScalar(childSize);
+                            const pos = node.pos.clone().add(parentOffset).add(childOffset).add(parentOffset.clone().multiplyScalar(userOffset));
+                            candidates.push({ vIdx, parentIdx, pos, size: childSize, quat: childQuat });
+                        });
                     });
+                    // Ordine vertice-per-vertice tra i genitori: un livello parziale resta bilanciato
+                    candidates.sort((a, b) => (a.vIdx - b.vIdx) || (a.parentIdx - b.parentIdx));
+                    const next = [];
+                    for (const c of candidates) {
+                        if (threeDCubes.length >= numCubes) break;
+                        next.push(addSolid(c.pos, c.size, c.quat));
+                    }
+                    level = next;
                 }
-
-                buildFixedVertexFractal(new THREE.Vector3(0, 0, 0), baseSize * 1.5, solidType, 0, null);
             }
             else if (pattern === 'fractal_nest') {
                 for (let i = 0; i < numCubes; i++) {
@@ -17551,7 +17539,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 }
             }
             else if (pattern === 'matrix_grid') {
-                const dim = Math.max(2, Math.cbrt(numCubes) | 0);
+                const dim = Math.max(2, Math.ceil(Math.cbrt(numCubes) - 1e-9));
                 const step = baseSize * 1.6;
                 const offset = (dim - 1) * step / 2;
                 let count = 0;
@@ -17609,8 +17597,8 @@ ${document.getElementById('pathGroup').innerHTML}
             }
             else if (pattern === 'tree') {
                 const maxDepth = Math.min(4, Math.floor(Math.log(numCubes + 1) / Math.log(3)) + 1);
-                const angle = 0.55;
-                const scaleFactor = 0.65;
+                const angle = (parseFloat(document.getElementById('paramThreeDTreeAngle')?.value) || 32) * Math.PI / 180;
+                const scaleFactor = parseFloat(document.getElementById('paramThreeDTreeScale')?.value) || 0.65;
                 function buildBranch(position, direction, size, depth, rotX, rotY, rotZ) {
                     if (depth > maxDepth || threeDCubes.length >= numCubes) return;
                     const mesh = createPlatonicMesh(solidType, threeDCubes.length, material);
@@ -17635,7 +17623,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 buildBranch(new THREE.Vector3(0, -20, 0), new THREE.Vector3(0, 1, 0), baseSize, 1, 0.3, 0.4, 0.1);
             }
             else if (pattern === 'menger') {
-                const targetLevel = Math.min(3, Math.max(1, Math.floor((numCubes / 80) * 2) + 1));
+                const targetLevel = Math.min(2, Math.max(1, numCubes));
                 let count = 0;
                 function buildMengerSubtractive(centerPos, size, level) {
                     if (level === targetLevel) {
@@ -18012,6 +18000,28 @@ ${document.getElementById('pathGroup').innerHTML}
 
             const allProjectedCubes = [];
 
+            // Uno spigolo che trafigge una faccia di un altro solido cambia visibilità nel punto di
+            // attraversamento 3D, dove in 2D non c'è alcun bordo da incrociare: va spezzato lì,
+            // altrimenti il test sul punto medio classifica male metà del tratto (linee attraverso i solidi)
+            const piercingT = (w1, w2, p1, p2, face) => {
+                const X = getSegmentPlaneIntersection3D(w1, w2, face.worldPts[0], face.normal);
+                if (!X || !isPointInFace3D(X, face.worldPts, face.normal)) return null;
+                const pr = X.clone().project(threeDCamera);
+                const dx = p2.x - p1.x, dy = p2.y - p1.y;
+                const L2 = dx * dx + dy * dy;
+                if (L2 < 1e-12) return null;
+                const t = ((pr.x * scaleX - p1.x) * dx + (pr.y * scaleY - p1.y) * dy) / L2;
+                return (t > 0.00001 && t < 0.99999) ? t : null;
+            };
+
+            // La profondità NDC si interpola esattamente nello schermo, ma in prospettiva è compressa
+            // (a ~100 unità dalla camera 1 unità ≈ 2e-5 NDC): le soglie fisse in NDC lasciavano visibili
+            // spigoli coperti da solidi vicini. I confronti avvengono quindi in profondità reale.
+            const camNear = threeDCamera.near, camFar = threeDCamera.far;
+            const ndcToDepth = threeDCamera.isOrthographicCamera
+                ? z => ((camFar - camNear) * z + (camFar + camNear)) / 2
+                : z => (2 * camFar * camNear) / ((camFar + camNear) - z * (camFar - camNear));
+
             // Proietta vertici, spigoli e facce per ciascun solido platonico
             threeDCubes.forEach((cube, cubeIdx) => {
                 const geoData = extractGeometryData(cube);
@@ -18020,6 +18030,15 @@ ${document.getElementById('pathGroup').innerHTML}
                 const faces = geoData.faces;
 
                 const worldVertices = localVertices.map(v => v.clone().applyMatrix4(cube.matrixWorld));
+                const realEdgeSet = new Set(edges.map(e => e[0] + '_' + e[1]));
+                const isRealEdge = (a, b) => realEdgeSet.has(Math.min(a, b) + '_' + Math.max(a, b));
+
+                // Sfera di ingombro (per scartare coppie di solidi che non possono compenetrarsi)
+                const sphereCenter = new THREE.Vector3();
+                worldVertices.forEach(v => sphereCenter.add(v));
+                sphereCenter.divideScalar(Math.max(1, worldVertices.length));
+                let sphereRadius = 0;
+                worldVertices.forEach(v => { sphereRadius = Math.max(sphereRadius, v.distanceTo(sphereCenter)); });
                 
                 const projectedPts = worldVertices.map(v => {
                     const vProj = v.clone().project(threeDCamera);
@@ -18051,9 +18070,18 @@ ${document.getElementById('pathGroup').innerHTML}
                     const faceYValues = facePts.map(p => p.y);
                     const faceZValues = facePts.map(p => p.z);
 
+                    // Lati della faccia che sono spigoli veri del solido: solo lì può cambiare la visibilità
+                    // (le diagonali interne della triangolazione non sono bordi di occlusione)
+                    const realSides = [];
+                    for (let k = 0; k < face.indices.length; k++) {
+                        const a = face.indices[k], b = face.indices[(k + 1) % face.indices.length];
+                        if (isRealEdge(a, b)) realSides.push(k);
+                    }
+
                     const faceObj = {
                         faceIndex: fIdx,
                         indices: face.indices,
+                        realSides: realSides,
                         pts: facePts,
                         worldPts: faceWorldPts,
                         normal: normal,
@@ -18063,7 +18091,8 @@ ${document.getElementById('pathGroup').innerHTML}
                         yMax: Math.max(...faceYValues),
                         zMin: Math.min(...faceZValues),
                         zMax: Math.max(...faceZValues),
-                        zAvg: faceZValues.reduce((a, b) => a + b, 0) / faceZValues.length
+                        zAvg: faceZValues.reduce((a, b) => a + b, 0) / faceZValues.length,
+                        depthMin: ndcToDepth(Math.min(...faceZValues))
                     };
 
                     allFaces.push(faceObj);
@@ -18075,7 +18104,10 @@ ${document.getElementById('pathGroup').innerHTML}
                     const viewDir = new THREE.Vector3().subVectors(threeDCamera.position, center).normalize();
                     const dot = normal.dot(viewDir);
                     
-                    if (dot > -0.05) {
+                    // Solo facce davvero rivolte alla camera: con la vecchia soglia (-0.05) le facce quasi di
+                    // taglio ma posteriori rendevano "visibili" spigoli nascosti dal solido stesso.
+                    // Gli spigoli di silhouette hanno sempre una faccia con dot > 0, quindi restano.
+                    if (dot > 1e-9) {
                         frontFaces.push(faceObj);
                     }
                 });
@@ -18090,8 +18122,18 @@ ${document.getElementById('pathGroup').innerHTML}
                     }
                 });
 
+                let cxMin = Infinity, cxMax = -Infinity, cyMin = Infinity, cyMax = -Infinity;
+                projectedPts.forEach(pp => {
+                    if (pp.x < cxMin) cxMin = pp.x; if (pp.x > cxMax) cxMax = pp.x;
+                    if (pp.y < cyMin) cyMin = pp.y; if (pp.y > cyMax) cyMax = pp.y;
+                });
+
                 allProjectedCubes.push({
                     cubeIndex: cubeIdx,
+                    xMin: cxMin, xMax: cxMax, yMin: cyMin, yMax: cyMax,
+                    sphereCenter: sphereCenter,
+                    sphereRadius: sphereRadius,
+                    worldVerts: worldVertices,
                     pts: projectedPts,
                     allFaces: allFaces,
                     frontFaces: frontFaces,
@@ -18109,6 +18151,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 cube.visibleEdges.forEach(edge => {
                     const p1 = pts[edge[0]];
                     const p2 = pts[edge[1]];
+                    const w1 = cube.worldVerts[edge[0]], w2 = cube.worldVerts[edge[1]];
 
                     const len = Math.hypot(p2.x - p1.x, p2.y - p1.y);
                     if (len < 0.01) return; // spigolo degenerato
@@ -18116,8 +18159,11 @@ ${document.getElementById('pathGroup').innerHTML}
                     // Raccogliamo tutti i punti di intersezione dello spigolo con i bordi di tutte le facce degli altri cubi
                     const intersectionT = [0, 1]; // Inizializziamo con gli estremi t=0 e t=1
 
+                    const eMinX = Math.min(p1.x, p2.x), eMaxX = Math.max(p1.x, p2.x);
+                    const eMinY = Math.min(p1.y, p2.y), eMaxY = Math.max(p1.y, p2.y);
                     allProjectedCubes.forEach(otherCube => {
                         if (otherCube.cubeIndex === cube.cubeIndex) return;
+                        if (eMaxX < otherCube.xMin || eMinX > otherCube.xMax || eMaxY < otherCube.yMin || eMinY > otherCube.yMax) return;
 
                         otherCube.frontFaces.forEach(face => {
                             const minX = Math.min(p1.x, p2.x);
@@ -18130,7 +18176,7 @@ ${document.getElementById('pathGroup').innerHTML}
                                 return;
                             }
 
-                            for (let idx = 0; idx < face.pts.length; idx++) {
+                            for (const idx of face.realSides) {
                                 const f1 = face.pts[idx];
                                 const f2 = face.pts[(idx + 1) % face.pts.length];
 
@@ -18141,6 +18187,8 @@ ${document.getElementById('pathGroup').innerHTML}
                                     }
                                 }
                             }
+                            const tPierce = piercingT(w1, w2, p1, p2, face);
+                            if (tPierce !== null) intersectionT.push(tPierce);
                         });
                     });
 
@@ -18163,15 +18211,18 @@ ${document.getElementById('pathGroup').innerHTML}
                         const cx = p1.x + tMid * (p2.x - p1.x);
                         const cy = p1.y + tMid * (p2.y - p1.y);
                         const cz = p1.z + tMid * (p2.z - p1.z);
+                        const cDepth = ndcToDepth(cz);
+                        const depthEps = 2e-4 * cDepth;
                         const samplePt = { x: cx, y: cy };
 
                         let isSampleOccluded = false;
 
                         for (let otherCube of allProjectedCubes) {
                             if (otherCube.cubeIndex === cube.cubeIndex) continue;
+                            if (cx < otherCube.xMin || cx > otherCube.xMax || cy < otherCube.yMin || cy > otherCube.yMax) continue;
 
                             for (let face of otherCube.frontFaces) {
-                                if (face.zMin > cz + 0.001) continue; 
+                                if (face.depthMin > cDepth + depthEps) continue; 
                                 
                                 if (cx < face.xMin - 0.01 || cx > face.xMax + 0.01 ||
                                     cy < face.yMin - 0.01 || cy > face.yMax + 0.01) {
@@ -18180,7 +18231,7 @@ ${document.getElementById('pathGroup').innerHTML}
 
                                 if (isPointInPolygon2D(samplePt, face.pts)) {
                                     const zFace = getFaceDepthAt2DPoint(cx, cy, face);
-                                    if (cz > zFace + 0.0005) {
+                                    if (cDepth > ndcToDepth(zFace) + depthEps) {
                                         isSampleOccluded = true;
                                         break;
                                     }
@@ -18207,6 +18258,7 @@ ${document.getElementById('pathGroup').innerHTML}
                 for (let j = i + 1; j < threeDCubes.length; j++) {
                     const cubeA = allProjectedCubes[i];
                     const cubeB = allProjectedCubes[j];
+                    if (cubeA.sphereCenter.distanceTo(cubeB.sphereCenter) > cubeA.sphereRadius + cubeB.sphereRadius) continue;
 
                     cubeA.allFaces.forEach(faceA => {
                         cubeB.allFaces.forEach(faceB => {
@@ -18218,6 +18270,8 @@ ${document.getElementById('pathGroup').innerHTML}
                                 intersectionEdges.push({
                                     p1: { x: vProj1.x * scaleX, y: vProj1.y * scaleY, z: vProj1.z },
                                     p2: { x: vProj2.x * scaleX, y: vProj2.y * scaleY, z: vProj2.z },
+                                    w1: inter.p1,
+                                    w2: inter.p2,
                                     cubeIndexA: i,
                                     cubeIndexB: j,
                                     faceIndexA: faceA.faceIndex,
@@ -18233,13 +18287,17 @@ ${document.getElementById('pathGroup').innerHTML}
             intersectionEdges.forEach(edge => {
                 const p1 = edge.p1;
                 const p2 = edge.p2;
+                const w1 = edge.w1, w2 = edge.w2;
 
                 const len = Math.hypot(p2.x - p1.x, p2.y - p1.y);
                 if (len < 0.01) return;
 
                 const intersectionT = [0, 1];
 
+                const iMinX = Math.min(p1.x, p2.x), iMaxX = Math.max(p1.x, p2.x);
+                const iMinY = Math.min(p1.y, p2.y), iMaxY = Math.max(p1.y, p2.y);
                 allProjectedCubes.forEach(otherCube => {
+                    if (iMaxX < otherCube.xMin || iMinX > otherCube.xMax || iMaxY < otherCube.yMin || iMinY > otherCube.yMax) return;
                     otherCube.frontFaces.forEach(face => {
                         if (otherCube.cubeIndex === edge.cubeIndexA && face.faceIndex === edge.faceIndexA) return;
                         if (otherCube.cubeIndex === edge.cubeIndexB && face.faceIndex === edge.faceIndexB) return;
@@ -18254,7 +18312,7 @@ ${document.getElementById('pathGroup').innerHTML}
                             return;
                         }
 
-                        for (let idx = 0; idx < face.pts.length; idx++) {
+                        for (const idx of face.realSides) {
                             const f1 = face.pts[idx];
                             const f2 = face.pts[(idx + 1) % face.pts.length];
 
@@ -18265,6 +18323,8 @@ ${document.getElementById('pathGroup').innerHTML}
                                 }
                             }
                         }
+                        const tPierce = piercingT(w1, w2, p1, p2, face);
+                        if (tPierce !== null) intersectionT.push(tPierce);
                     });
                 });
 
@@ -18285,16 +18345,19 @@ ${document.getElementById('pathGroup').innerHTML}
                     const cx = p1.x + tMid * (p2.x - p1.x);
                     const cy = p1.y + tMid * (p2.y - p1.y);
                     const cz = p1.z + tMid * (p2.z - p1.z);
+                    const cDepth = ndcToDepth(cz);
+                    const depthEps = 2e-4 * cDepth;
                     const samplePt = { x: cx, y: cy };
 
                     let isSampleOccluded = false;
 
                     for (let otherCube of allProjectedCubes) {
+                        if (cx < otherCube.xMin || cx > otherCube.xMax || cy < otherCube.yMin || cy > otherCube.yMax) continue;
                         for (let face of otherCube.frontFaces) {
                             if (otherCube.cubeIndex === edge.cubeIndexA && face.faceIndex === edge.faceIndexA) continue;
                             if (otherCube.cubeIndex === edge.cubeIndexB && face.faceIndex === edge.faceIndexB) continue;
 
-                            if (face.zMin > cz + 0.001) continue;
+                            if (face.depthMin > cDepth + depthEps) continue;
                             if (cx < face.xMin - 0.01 || cx > face.xMax + 0.01 ||
                                 cy < face.yMin - 0.01 || cy > face.yMax + 0.01) {
                                 continue;
@@ -18302,7 +18365,7 @@ ${document.getElementById('pathGroup').innerHTML}
 
                             if (isPointInPolygon2D(samplePt, face.pts)) {
                                 const zFace = getFaceDepthAt2DPoint(cx, cy, face);
-                                if (cz > zFace + 0.0005) {
+                                if (cDepth > ndcToDepth(zFace) + depthEps) {
                                     isSampleOccluded = true;
                                     break;
                                 }
