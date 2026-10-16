@@ -231,8 +231,8 @@
             }
         }
 
-        /* Stili per schermi landscape bassi (smartphone orizzontale) */
-        @media (orientation: landscape) and (max-height: 500px) {
+        /* Stili per schermi landscape bassi (smartphone orizzontale e tablet 10" con le barre del browser) */
+        @media (orientation: landscape) and (max-height: 620px) {
             body {
                 overflow: hidden !important;
             }
@@ -285,6 +285,121 @@
             .touch-key {
                 min-height: 44px !important;
                 font-size: 1rem !important;
+            }
+        }
+
+        /* ===== Tablet, LIM e schermi bassi =====
+           Sui tablet la barra delle schede e quella degli indirizzi di Chrome rubano 90-110 px:
+           a parità di larghezza lo schermo utile è "basso". Regola base: il pulsante SPARA
+           non deve mai uscire dallo schermo. */
+        @media (min-width: 768px) {
+            #controlPanel {
+                min-height: 0;
+                max-height: 100%;
+                overflow-y: auto;
+            }
+            /* Se il pannello deve scorrere, SPARA resta agganciato al bordo inferiore visibile */
+            #btnFire {
+                position: sticky;
+                bottom: 0;
+                z-index: 5;
+            }
+        }
+
+        /* Orizzontale con altezza ridotta (tablet, LIM 1366x768): pannello compatto,
+           la consegna completa resta nel "?" e il suggerimento sul piano */
+        @media (min-width: 768px) and (orientation: landscape) and (max-height: 820px) {
+            body {
+                padding: 0.5rem !important;
+            }
+            #headerBar {
+                margin-bottom: 0.5rem !important;
+            }
+            #mainAppContainer {
+                gap: 0.75rem !important;
+            }
+            #controlPanel {
+                padding: 0.75rem !important;
+                gap: 0.5rem !important;
+            }
+            #panelInstruction, #equationHeader, #hintRow, #controlPanel footer {
+                display: none !important;
+            }
+            #panelLevelInstructionBox {
+                padding: 0.4rem 0.6rem !important;
+            }
+            #panelLevelInstructionBox > div {
+                margin-bottom: 0 !important;
+            }
+            #btnCanvasHint {
+                display: flex !important;
+            }
+            .touch-key {
+                min-height: 42px !important;
+            }
+            #btnFire {
+                padding-top: 0.6rem !important;
+                padding-bottom: 0.6rem !important;
+                font-size: 1.25rem !important;
+            }
+            #feedbackContainer {
+                height: 1.25rem !important;
+            }
+        }
+
+        /* Tablet verticale: piano sopra e pannello sotto (affiancati il piano diventava una
+           striscia stretta e alta, poco adatta a leggere pendenze) */
+        @media (min-width: 768px) and (max-width: 1199px) and (orientation: portrait) {
+            #mainAppContainer {
+                flex-direction: column !important;
+            }
+            #canvasWrapper {
+                flex: 1 1 auto !important;
+                min-height: 260px !important;
+            }
+            /* Pannello su due colonne: livello, equazione e SPARA a sinistra, tastierino a destra */
+            #controlPanel {
+                width: 100% !important;
+                flex: none !important;
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                column-gap: 1rem;
+                row-gap: 0.5rem;
+                align-content: start;
+            }
+            #controlPanel > * {
+                grid-column: 1;
+            }
+            #controlPanel > #touchKeypadContainer {
+                grid-column: 2;
+                grid-row: 1 / span 6;
+            }
+            #btnFire {
+                position: static !important;
+            }
+            #panelInstruction, #equationHeader, #controlPanel footer {
+                display: none !important;
+            }
+            #btnCanvasHint {
+                display: flex !important;
+            }
+            #hintRow {
+                display: none !important;
+            }
+        }
+
+        /* Tablet in orizzontale compatto: c'è spazio per il pulsante SPARA grande (sugli smartphone no) */
+        @media (min-width: 768px) and (orientation: landscape) and (max-height: 620px) {
+            #btnFire {
+                display: flex !important;
+            }
+        }
+
+        /* Smartphone verticale basso: si spara col tasto 🎯 del tastierino (sempre in vista) e il
+           nome del livello resta nel badge "Liv" e nel "?": il piano cartesiano conserva spazio */
+        @media (max-width: 767px) and (orientation: portrait) and (max-height: 620px) {
+            #btnFire, #panelLevelInstructionBox {
+                display: none !important;
             }
         }
 
@@ -375,6 +490,8 @@
             
             <!-- Badges sovrapposti per smartphone Landscape -->
             <div id="landscapeBadges" class="hidden absolute top-2 left-2 z-10 flex gap-2">
+                <!-- In orizzontale compatto l'header è nascosto: home e schermo intero restano raggiungibili qui -->
+                <a href="../../index.html" class="bg-black/70 min-w-[40px] min-h-[36px] px-2 flex items-center justify-center rounded text-sm font-bold text-slate-200 hover:text-sky-300" title="Torna alla Home" aria-label="Torna alla Home"><i class="fa-solid fa-arrow-left"></i></a>
                 <div class="bg-black/70 px-2 py-1 rounded text-xs font-bold text-emerald-400 border border-slate-800">
                     Liv: <span id="landscapeLevelDisplay">1</span>/5
                 </div>
@@ -384,6 +501,7 @@
                 <div class="bg-black/70 px-2 py-1 rounded text-xs font-bold text-sky-400 border border-slate-800">
                     Bolle: <span id="landscapeRemainingDisplay">0</span>
                 </div>
+                <button type="button" id="btnLandscapeFullscreen" class="bg-black/70 min-w-[40px] min-h-[36px] px-2 flex items-center justify-center rounded text-sm font-bold text-slate-200 hover:text-sky-300 cursor-pointer" title="Schermo intero (nasconde le barre del browser)" aria-label="Schermo intero"><i class="fa-solid fa-expand"></i></button>
             </div>
 
             <!-- Pulsante Guida Veloce (?) sul canvas -->
@@ -2090,7 +2208,8 @@
             UI.dropdownMenu.classList.add('hidden');
         });
 
-        // Schermo Intero
+        // Schermo Intero (anche dal pulsante sul piano in orizzontale compatto, dove l'header è nascosto)
+        document.getElementById('btnLandscapeFullscreen')?.addEventListener('click', () => UI.btnFullscreen.click());
         UI.btnFullscreen.addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 if (document.documentElement.requestFullscreen) {

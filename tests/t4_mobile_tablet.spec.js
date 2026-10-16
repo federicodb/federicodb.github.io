@@ -13,6 +13,13 @@ const viewports = [
   // Tablet
   { name: 'Tablet 768x1024 Portrait', width: 768, height: 1024, isMobile: true, hasTouch: true },
   { name: 'Tablet 1024x768 Landscape', width: 1024, height: 768, isMobile: true, hasTouch: true },
+  // Aree visibili reali: schermo meno barra delle schede e barra degli indirizzi del browser
+  { name: 'Tablet 10" 962x601 orizz. con barre Chrome', width: 962, height: 505, isMobile: true, hasTouch: true },
+  { name: 'Tablet 10" 853x533 orizz. con barre Chrome', width: 853, height: 437, isMobile: true, hasTouch: true },
+  { name: 'Tablet 1280x800 orizz. con barre Chrome', width: 1280, height: 704, isMobile: true, hasTouch: true },
+  { name: 'iPad 768x1024 vert. con barre', width: 768, height: 928, isMobile: true, hasTouch: true },
+  { name: 'Mobile 360x640 con barre', width: 360, height: 560, isMobile: true, hasTouch: true },
+  { name: 'LIM 1366x768 con barre', width: 1366, height: 660, isMobile: false, hasTouch: true },
 ];
 
 for (const vp of viewports) {
@@ -100,6 +107,17 @@ for (const vp of viewports) {
 
       // Tap sul pulsante SPARA (in orizzontale su smartphone è nascosto: si usa il tasto 🎯 del tastierino)
       const fireBtn = (await page.locator('#btnFire').isVisible()) ? '#btnFire' : '#btnTouchFire';
+
+      // Il pulsante usato per sparare deve stare interamente dentro lo schermo e non essere coperto
+      // (sui tablet con le barre del browser finiva sotto il bordo inferiore)
+      const fireOnScreen = await page.evaluate((sel) => {
+        const el = document.querySelector(sel);
+        const r = el.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > window.innerHeight + 0.5 || r.right > window.innerWidth + 0.5) return false;
+        const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        return !!top && (top === el || el.contains(top));
+      }, fireBtn);
+      expect(fireOnScreen).toBe(true);
       await page.locator(fireBtn).tap();
       await page.waitForTimeout(600);
 

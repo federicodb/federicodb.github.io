@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0722">
+    <title>Arcade Challenge: Scomposizioni & Parabola</title>
+    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+
+    <meta name="description" content="Arcade Challenge: gioco arcade a sfida, inclusivo, per allenare la scomposizione con prodotti notevoli, trinomio speciale e associazione equazione-grafico della parabola. Contestualizzato sugli indirizzi PTOF dell'IPIA Orfini di Foligno.">
+    <meta name="keywords" content="Matematica, Algebra, Geometria Analitica, Prodotti Notevoli, Trinomio Speciale, Scomposizione Polinomi, Parabola, Funzioni Quadratiche, Mat:Calcolo, Mat:Geometria, Mat:ProblemSolving, Mat:Modellizzazione, EU:STEM, EU:Digitale, EU:ImparareImparare, CIT_4:COMPETENZA DIGITALE, CIT_5:IMPARARE A IMPARARE, Arcade Challenge, Gamification, Videogioco, Arcade, Lab, IPIA Orfini Foligno, 1 EL, 2 EL, 1 GP, 2 GP, 1 MA, 2 MA, Odontotecnico, Moda, Socio-Sanitario, Biennio">
+    <meta name="date" content="2026-10-16">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=JetBrains+Mono:wght@700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Librerie Open Source: Three.js (MIT) e Chart.js (MIT) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg1: #22125a; --bg2: #0a0722; --card2: #2a2070; --line: rgba(255, 255, 255, .14);
+            --muted: #bdb6ee; --y: #ffd23f; --g: #3ddc84; --r: #ff4d6d; --b: #4cc9f0; --p: #9b5de5; --o: #ff8c42; --k: #f15bb5;
+            --disp: 'Lilita One', 'Fredoka', system-ui, sans-serif;
+            --body-font: 'Fredoka', system-ui, sans-serif;
+        }
+        body.a11y-font {
+            --disp: 'Atkinson Hyperlegible', system-ui, sans-serif;
+            --body-font: 'Atkinson Hyperlegible', system-ui, sans-serif;
+            letter-spacing: 0.03em;
+        }
+        * { box-sizing: border-box; }
+        html body {
+            margin: 0; font-family: var(--body-font); color: #fff; background: var(--bg2);
+            min-height: 100vh; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
+        }
+        html body::before {
+            content: ''; position: fixed; inset: 0; z-index: -2;
+            background: radial-gradient(1000px 520px at 15% -10%, #5530c4 0%, transparent 60%),
+                radial-gradient(800px 480px at 105% 15%, #8a1f8f 0%, transparent 55%),
+                radial-gradient(700px 500px at 50% 120%, #0f5a8a 0%, transparent 60%),
+                linear-gradient(180deg, var(--bg1), var(--bg2));
+        }
+        .starsbg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+        .starsbg::before {
+            content: ''; position: absolute; top: -240px; left: -340px; right: 0; bottom: 0; opacity: .55;
+            background-image: radial-gradient(1.5px 1.5px at 20px 30px, #fff, transparent), radial-gradient(1px 1px at 80px 120px, #fff, transparent),
+                radial-gradient(1.5px 1.5px at 160px 60px, #cfc8ff, transparent), radial-gradient(1px 1px at 230px 190px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 90px, #ffe9a8, transparent);
+            background-size: 340px 240px; animation: drift 90s linear infinite;
+        }
+        @keyframes drift { to { transform: translate(340px, 240px); } }
+        button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
+        :focus-visible { outline: 3px solid var(--y); outline-offset: 3px; }
+
+        .btn3d {
+            --c: var(--p); --d: #6532a8; --t: #fff;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 20px; border-radius: 18px;
+            background: linear-gradient(180deg, color-mix(in srgb, var(--c) 80%, #fff), var(--c)); color: var(--t);
+            font-family: var(--disp); font-size: 17px; letter-spacing: .5px; text-shadow: 0 2px 0 rgba(0, 0, 0, .15);
+            box-shadow: 0 6px 0 var(--d), 0 10px 18px rgba(0, 0, 0, .35); transition: transform .08s, box-shadow .08s, filter .15s;
+        }
+        .btn3d:hover { filter: brightness(1.07); }
+        .btn3d:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--d), 0 4px 8px rgba(0, 0, 0, .3); }
+        .btn3d:disabled { filter: grayscale(1) brightness(.6); cursor: not-allowed; transform: none; }
+        .wide { width: 100%; }
+        .ghost { --c: #3a2f8f; --d: #150f45; }
+
+        .app { max-width: 1140px; margin: 0 auto; padding: 60px 14px 40px; }
+        .topbar {
+            display: flex; align-items: center; gap: 10px; background: rgba(20, 14, 60, .75); backdrop-filter: blur(10px);
+            border: 2px solid var(--line); border-radius: 22px; padding: 8px 12px; margin-bottom: 14px; flex-wrap: wrap;
+        }
+        body.ingame .topbar { display: none; }
+        .avatar {
+            width: 48px; height: 48px; flex: none; border-radius: 50%; font-size: 26px; display: grid; place-items: center;
+            background: linear-gradient(160deg, #7b5cff, #4b2bd0); box-shadow: 0 4px 0 #2d1690, inset 0 2px 0 rgba(255, 255, 255, .3); transition: transform .15s;
+        }
+        .avatar:active { transform: scale(.9); }
+        .who { flex: 1; min-width: 130px; display: flex; flex-direction: column; gap: 4px; }
+        .who input {
+            background: transparent; border: 0; border-bottom: 2px dashed rgba(255, 255, 255, .2); color: #fff;
+            font: 700 15px var(--body-font); text-transform: uppercase; width: 100%; max-width: 170px; padding: 2px 0; outline: none;
+        }
+        .who input:focus { border-color: var(--y); }
+        .xp { display: flex; align-items: center; gap: 8px; }
+        .lv { font-family: var(--disp); font-size: 12px; background: var(--y); color: #3a2a00; padding: 2px 8px; border-radius: 99px; flex: none; }
+        .xpbar { flex: 1; max-width: 180px; height: 10px; border-radius: 99px; background: rgba(0, 0, 0, .4); overflow: hidden; }
+        .xpbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--y), var(--o)); border-radius: 99px; transition: width .8s cubic-bezier(.2, .9, .3, 1); }
+        .chips { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .chip {
+            display: inline-flex; align-items: center; gap: 4px; background: rgba(0, 0, 0, .35); border: 1px solid var(--line);
+            border-radius: 99px; padding: 6px 10px; font-weight: 700; font-size: 14px; white-space: nowrap;
+        }
+        .chip.on { border-color: var(--y); background: rgba(255, 210, 63, .2); color: var(--y); }
+
+        .ptof-bar {
+            background: rgba(20, 14, 60, .68); border: 2px solid var(--line); border-radius: 22px; padding: 12px 14px; margin-bottom: 18px;
+            backdrop-filter: blur(10px);
+        }
+        .ptof-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+        }
+        .ptof-title {
+            font-family: var(--disp); font-size: 16px; color: var(--y); display: flex; align-items: center; gap: 6px;
+        }
+        .ptof-sub { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+        .tracks {
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin;
+        }
+        .track-pill {
+            flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 14px;
+            background: rgba(255, 255, 255, .07); border: 2px solid transparent; font-weight: 700; font-size: 13.5px;
+            transition: all .15s; box-shadow: 0 3px 0 rgba(0, 0, 0, .3);
+        }
+        .track-pill:hover { background: rgba(255, 255, 255, .13); transform: translateY(-1px); }
+        .track-pill.on {
+            border-color: var(--tc, var(--y)); background: color-mix(in srgb, var(--tc, var(--y)) 24%, #1a1245);
+            color: #fff; box-shadow: 0 3px 0 color-mix(in srgb, var(--tc, var(--y)) 50%, #000);
+        }
+        .track-pill span { font-size: 18px; }
+        .track-pill small { display: block; font-size: 10.5px; color: var(--muted); font-weight: 600; }
+        .ptof-banner {
+            margin-top: 8px; padding: 7px 12px; border-radius: 12px; background: rgba(255, 255, 255, .05);
+            font-size: 13px; color: #e2dcff; display: flex; align-items: center; gap: 8px;
+        }
+        .ptof-banner b { color: var(--y); }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: screenIn .35s cubic-bezier(.2, 1.1, .4, 1); }
+        @keyframes screenIn { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+
+        .logo { font-family: var(--disp); text-align: center; line-height: .9; font-size: clamp(38px, 8vw, 76px); margin: 4px 0 4px; animation: floaty 4s ease-in-out infinite; }
+        .logo span { display: block; }
+        .logo span:first-child { color: #fff; font-size: .62em; margin-bottom: .12em; text-shadow: 0 4px 0 #5b2bd6, 0 0 40px rgba(155, 93, 229, .7); }
+        .logo span:last-child {
+            background: linear-gradient(180deg, #fff27a, var(--y) 45%, var(--o)); -webkit-background-clip: text; background-clip: text; color: transparent;
+            filter: drop-shadow(0 6px 0 #a3361f) drop-shadow(0 0 24px rgba(255, 140, 66, .5));
+        }
+        @keyframes floaty { 50% { transform: translateY(-5px); } }
+        .tagline { text-align: center; color: var(--muted); font-weight: 500; margin: 8px 0 18px; font-size: 15px; }
+        .modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 860px; margin: 0 auto; }
+        @media (min-width: 900px) { .modes { grid-template-columns: repeat(4, 1fr); max-width: none; } }
+        .mode-card {
+            position: relative; overflow: hidden; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 16px;
+            border-radius: 26px; min-height: 215px; background: linear-gradient(165deg, color-mix(in srgb, var(--c) 85%, #fff), var(--c) 45%, var(--d));
+            box-shadow: 0 8px 0 color-mix(in srgb, var(--d) 65%, #000), 0 16px 28px rgba(0, 0, 0, .4); transition: transform .12s, box-shadow .12s;
+        }
+        .mode-card:hover { transform: translateY(-4px) rotate(-.6deg); }
+        .mode-card:active { transform: translateY(6px); box-shadow: 0 2px 0 color-mix(in srgb, var(--d) 65%, #000), 0 6px 12px rgba(0, 0, 0, .3); }
+        .mode-card::after {
+            content: ''; position: absolute; top: -60%; left: -60%; width: 45%; height: 220%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .35), transparent); transform: rotate(20deg);
+            animation: shine 5s ease-in-out infinite; animation-delay: var(--sd, 0s); pointer-events: none;
+        }
+        @keyframes shine { 0%, 70% { left: -60%; } 100% { left: 140%; } }
+        .mc-ico { font-size: 40px; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 20px; background: rgba(255, 255, 255, .22); box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .12); }
+        .mc-tag { position: absolute; top: 14px; right: 14px; font-size: 11px; font-weight: 700; background: rgba(0, 0, 0, .28); padding: 3px 8px; border-radius: 99px; }
+        .mc-name { font-family: var(--disp); font-size: 21px; text-shadow: 0 2px 0 rgba(0, 0, 0, .2); margin-top: 4px; }
+        .mc-desc { font-size: 13px; line-height: 1.28; opacity: .95; flex: 1; }
+        .mc-stars { font-family: var(--disp); font-size: 15px; color: #fff6c2; background: rgba(0, 0, 0, .25); align-self: flex-start; padding: 3px 10px; border-radius: 99px; }
+        .home-actions { display: flex; justify-content: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+
+        .screen-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+        .screen-head h2 { font-family: var(--disp); font-size: 28px; margin: 0; font-weight: 400; flex: 1; }
+        .back { width: 44px; height: 44px; flex: none; border-radius: 14px; background: var(--card2); font-size: 28px; line-height: 1; box-shadow: 0 4px 0 #120c38; display: grid; place-items: center; }
+        .back:active { transform: translateY(3px); box-shadow: 0 1px 0 #120c38; }
+        .tipcard { display: flex; gap: 12px; align-items: flex-start; background: rgba(255, 255, 255, .07); border: 2px solid var(--line); border-radius: 20px; padding: 12px 14px; max-width: 680px; margin: 0 auto 16px; }
+        .tipcard span { font-size: 24px; }
+        .tipcard p { margin: 0; line-height: 1.45; color: #e8e4ff; font-size: 14.5px; }
+        .path { position: relative; display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 36px 0 30px; }
+        .path::before { content: ''; position: absolute; top: 70px; bottom: 90px; left: 50%; border-left: 6px dotted rgba(255, 255, 255, .16); transform: translateX(-50%); }
+        .node-wrap { position: relative; display: flex; flex-direction: column; align-items: center; transform: translateX(calc(var(--x, 0) * 1px)); }
+        .node-wrap:nth-child(1) { --x: -60; } .node-wrap:nth-child(2) { --x: 60; } .node-wrap:nth-child(3) { --x: -30; }
+        .node {
+            width: 96px; height: 96px; border-radius: 50%; font-family: var(--disp); font-size: 40px;
+            background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 65%, #fff), var(--c) 55%, var(--d));
+            box-shadow: 0 8px 0 color-mix(in srgb, var(--d) 65%, #000), 0 14px 24px rgba(0, 0, 0, .45), inset 0 -6px 0 rgba(0, 0, 0, .15);
+            text-shadow: 0 3px 0 rgba(0, 0, 0, .2); transition: transform .1s;
+        }
+        .node:active { transform: translateY(6px); }
+        .node:disabled { background: #3b3566; box-shadow: 0 8px 0 #221d45; font-size: 30px; cursor: not-allowed; }
+        .node-wrap.rec .node { animation: pulse 1.6s ease-in-out infinite; }
+        @keyframes pulse { 50% { transform: scale(1.07); } }
+        .node-bubble {
+            position: absolute; top: -34px; background: #fff; color: #2a1a70; font-family: var(--disp); font-size: 14px; padding: 4px 12px;
+            border-radius: 12px; box-shadow: 0 4px 0 rgba(0, 0, 0, .25); animation: bob 1.2s ease-in-out infinite; z-index: 2; white-space: nowrap;
+        }
+        .node-bubble::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: #fff; border-bottom: 0; }
+        @keyframes bob { 50% { transform: translateY(-4px); } }
+        .node-label { font-family: var(--disp); font-size: 19px; margin-top: 12px; }
+        .node-sub { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+        .node-stars { font-size: 22px; color: var(--y); letter-spacing: 2px; text-shadow: 0 2px 0 rgba(0, 0, 0, .3); }
+        .node-stars span { color: rgba(255, 255, 255, .18); text-shadow: none; }
+        .node-best { font-size: 12px; color: var(--muted); }
+
+        .hud { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .quit { width: 40px; height: 40px; border-radius: 12px; background: var(--card2); font-size: 18px; box-shadow: 0 4px 0 #120c38; flex: none; }
+        .quit:active { transform: translateY(3px); box-shadow: 0 1px 0 #120c38; }
+        .prog { flex: 1; display: flex; gap: 5px; }
+        .prog i { flex: 1; height: 13px; border-radius: 99px; background: rgba(255, 255, 255, .12); transition: background .3s; }
+        .prog i.ok { background: var(--g); } .prog i.near { background: var(--y); } .prog i.bad { background: var(--r); }
+        .prog i.cur { background: #fff; animation: blinko 1s ease-in-out infinite; }
+        .prog i.rip { box-shadow: inset 0 0 0 2px var(--p); }
+        @keyframes blinko { 50% { opacity: .45; } }
+        .hearts { display: flex; gap: 2px; font-size: 24px; flex: none; line-height: 1; }
+        .heart { color: var(--r); text-shadow: 0 2px 0 #8a1028; display: inline-block; }
+        .heart.off { color: #3a335f; text-shadow: none; }
+        .heart.break { animation: hbreak .7s; }
+        @keyframes hbreak { 0% { transform: scale(1.7); color: var(--r); } 40% { transform: scale(.5) rotate(-25deg); } 100% { transform: scale(1); } }
+        .score-pill {
+            position: relative; flex: none; display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 70px;
+            background: rgba(0, 0, 0, .4); border: 2px solid var(--line); border-radius: 99px;
+            padding: 2px 12px 2px 10px; font-family: var(--disp); font-size: 18px; font-variant-numeric: tabular-nums;
+        }
+        .score-pill::before { content: '★'; color: var(--y); }
+        .combo { position: absolute; top: -10px; right: -8px; font-size: 11px; background: var(--o); color: #fff; border-radius: 99px; padding: 1px 6px; display: none; box-shadow: 0 2px 0 #a3361f; }
+        .combo.on { display: inline-block; animation: bump .45s; }
+        @keyframes bump { 30% { transform: scale(1.35); } }
+
+        .game-grid { display: grid; gap: 14px; }
+        @media (min-width: 900px) { .game-grid { grid-template-columns: 1.48fr 1fr; align-items: start; } }
+        .stage {
+            position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 24px; overflow: hidden; border: 3px solid rgba(255, 255, 255, .14);
+            background: #090626; box-shadow: 0 14px 30px rgba(0, 0, 0, .5);
+        }
+        @media (min-width: 900px) { .stage { aspect-ratio: 16 / 11; } }
+        .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        #glCanvas { z-index: 0; pointer-events: none; }
+        #cv { z-index: 1; pointer-events: none; }
+        .chart-box {
+            position: absolute; inset: 34px 10px 12px 10px; z-index: 2; display: none;
+            background: rgba(10, 7, 36, .78); border-radius: 16px; padding: 8px; border: 1px solid rgba(255, 255, 255, .14);
+        }
+        .chart-box.on { display: block; }
+        .chart-box canvas { position: relative !important; width: 100% !important; height: 100% !important; }
+        .stage-badge {
+            position: absolute; top: 7px; left: 10px; z-index: 3; display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(5, 3, 25, .78); border: 1px solid rgba(255, 255, 255, .18); padding: 4px 10px; border-radius: 99px;
+            font-size: 12px; font-weight: 700; color: #e2dcff; pointer-events: none;
+        }
+        .fx { position: absolute; inset: 0; pointer-events: none; z-index: 4; overflow: hidden; }
+        .float {
+            position: absolute; transform: translate(-50%, -50%); font-family: var(--disp); font-size: 28px; white-space: nowrap;
+            animation: floatUp 1.2s cubic-bezier(.2, 1, .4, 1) forwards; text-shadow: 0 3px 0 rgba(0, 0, 0, .45);
+        }
+        .float.pts { color: var(--y); }
+        .float.coin { font-size: 20px; color: var(--y); }
+        .float.bad { color: #ff9aae; font-size: 21px; }
+        .float.combo {
+            font-size: clamp(30px, 5vw, 48px); background: linear-gradient(180deg, #fff, var(--y), var(--o)); -webkit-background-clip: text; background-clip: text;
+            color: transparent; text-shadow: none; filter: drop-shadow(0 4px 0 #8a2a00); animation: comboIn 1.3s cubic-bezier(.2, 1.4, .4, 1) forwards;
+        }
+        @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, -20%) scale(.6); } 20% { opacity: 1; transform: translate(-50%, -60%) scale(1.15); } 100% { opacity: 0; transform: translate(-50%, -190%) scale(1); } }
+        @keyframes comboIn { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(-12deg); } 25% { opacity: 1; transform: translate(-50%, -50%) scale(1.15) rotate(-4deg); } 70% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-4deg); } 100% { opacity: 0; transform: translate(-50%, -85%) scale(.9) rotate(-4deg); } }
+        .speed { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: rgba(0, 0, 0, .45); z-index: 5; pointer-events: none; }
+        .speed i { display: block; height: 100%; width: 100%; border-radius: 0 99px 99px 0; background: var(--g); }
+
+        .panel { background: rgba(20, 14, 60, .82); backdrop-filter: blur(10px); border: 2px solid var(--line); border-radius: 24px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .panel.locked .controls { opacity: .5; pointer-events: none; }
+        .prompt { font-size: 16px; line-height: 1.45; color: #efeaff; position: relative; }
+        .prompt b { color: #fff; }
+        .ctx-story {
+            background: rgba(255, 255, 255, .07); border-left: 4px solid var(--tc, var(--y)); border-radius: 10px;
+            padding: 8px 11px; margin-bottom: 8px; font-size: 14px; color: #e2dcff;
+        }
+        .ctx-story b { color: var(--y); }
+        .poly-box {
+            margin: 8px 0; padding: 10px 14px; border-radius: 16px; background: #0b0827; border: 2px solid rgba(76, 201, 240, .4);
+            text-align: center; font-family: 'JetBrains Mono', monospace; font-size: clamp(19px, 3.5vw, 25px); color: #fff;
+            box-shadow: inset 0 0 18px rgba(76, 201, 240, .12); letter-spacing: .5px;
+        }
+        .poly-box small { display: block; font-family: var(--body-font); font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+        .goal { margin-top: 6px; font-weight: 700; color: var(--y); font-size: 15px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .tts-btn {
+            background: rgba(255, 255, 255, .12); border: 1px solid var(--line); border-radius: 10px; padding: 4px 9px;
+            font-size: 13px; font-weight: 700; color: #fff; flex: none;
+        }
+        .tts-btn:hover { background: rgba(255, 255, 255, .2); }
+
+        .answer-row { display: flex; gap: 10px; align-items: stretch; justify-content: flex-end; }
+        .display {
+            flex: 1; min-height: 52px; border-radius: 16px; background: #0b0827; border: 3px solid var(--line); display: flex; align-items: center;
+            justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 21px; color: rgba(255, 255, 255, .5); padding: 4px 10px; text-align: center;
+        }
+        .display.hide { display: none; }
+        .display.filled { color: #fff; border-color: var(--b); box-shadow: 0 0 0 4px rgba(76, 201, 240, .15); }
+        .display.nudge { animation: nudge .35s; }
+        @keyframes nudge { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+        .hint { --c: var(--y); --d: #b8901a; --t: #3a2a00; padding: 4px 14px; min-height: 52px; font-size: 14px; border-radius: 16px; flex-direction: column; gap: 0; line-height: 1.15; }
+        .hint small { font-family: var(--body-font); font-weight: 700; font-size: 12px; opacity: .85; text-shadow: none; }
+
+        .opt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+        .opt-grid.single { grid-template-columns: 1fr; }
+        .opt-btn {
+            min-height: 54px; padding: 10px 12px; border-radius: 16px; background: linear-gradient(180deg, #3d3296, #271d68);
+            border: 2px solid rgba(255, 255, 255, .14); font-family: 'JetBrains Mono', monospace; font-size: 16px; color: #fff;
+            box-shadow: 0 5px 0 #150f45; transition: transform .06s, box-shadow .06s, border-color .15s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; text-align: center;
+        }
+        .opt-btn small { font-family: var(--body-font); font-size: 11.5px; color: var(--muted); font-weight: 600; }
+        .opt-btn:hover { border-color: var(--b); filter: brightness(1.08); }
+        .opt-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #150f45; }
+        .opt-btn.glow { border-color: var(--y); box-shadow: 0 5px 0 #150f45, 0 0 18px var(--y); }
+        .opt-btn.miss { animation: nudge .35s; border-color: var(--r); background: #5a1830; }
+
+        .int-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .int-btn {
+            height: 48px; border-radius: 14px; background: linear-gradient(180deg, #3d3296, #2c2275);
+            font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; box-shadow: 0 4px 0 #150f45;
+            border: 2px solid transparent; transition: transform .06s, box-shadow .06s;
+        }
+        .int-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #150f45; }
+        .int-btn.sel { background: linear-gradient(180deg, #6df5aa, var(--g)); color: #063a1f; box-shadow: 0 4px 0 #1a8a4e; }
+        .int-btn.glow { border-color: var(--y); box-shadow: 0 4px 0 #150f45, 0 0 14px var(--y); }
+        .int-actions { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; margin-top: 8px; }
+
+        .primes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .primes.grid4 { grid-template-columns: repeat(4, 1fr); }
+        .prime {
+            min-height: 52px; padding: 6px 4px; border-radius: 16px; font-family: 'JetBrains Mono', monospace; font-size: 15.5px; font-weight: 700; color: #10082e;
+            background: radial-gradient(circle at 35% 25%, color-mix(in srgb, var(--c) 50%, #fff), var(--c) 65%);
+            box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 50%, #000), 0 8px 14px rgba(0, 0, 0, .35); transition: transform .06s, box-shadow .06s;
+        }
+        .prime:active { transform: translateY(4px); box-shadow: 0 1px 0 color-mix(in srgb, var(--c) 50%, #000); }
+        .prime.glow { animation: glow .9s ease-in-out infinite; }
+        @keyframes glow { 50% { box-shadow: 0 5px 0 color-mix(in srgb, var(--c) 50%, #000), 0 0 0 4px #fff, 0 0 24px var(--c); } }
+        .prime.miss { animation: nudge .35s; }
+        .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 15px; }
+        .chain .arr { font-family: var(--body-font); font-size: 12px; font-weight: 700; color: var(--muted); }
+        .chain .cn { background: rgba(255, 255, 255, .12); padding: 3px 9px; border-radius: 10px; }
+        .chain .cn:last-child { background: var(--k); color: #fff; }
+        .factline { margin-top: 6px; font-weight: 700; color: var(--y); font-size: 15.5px; font-family: 'JetBrains Mono', monospace; }
+
+        .chips-s { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+        .chip-s { font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 99px; }
+        .chip-s.rip { background: rgba(155, 93, 229, .3); border: 1px solid var(--p); }
+        .chip-s.guid { background: rgba(76, 201, 240, .2); border: 1px solid var(--b); }
+        .chip-s.free { background: rgba(61, 220, 132, .18); border: 1px solid var(--g); }
+        .chip-s.ctx { background: rgba(255, 210, 63, .18); border: 1px solid var(--y); color: var(--y); }
+        .scaf { margin-top: 8px; background: rgba(76, 201, 240, .1); border: 2px solid rgba(76, 201, 240, .35); border-radius: 14px; padding: 8px 11px; font-size: 14px; line-height: 1.4; animation: screenIn .3s; }
+        .scaf.guide { background: rgba(255, 210, 63, .08); border-color: rgba(255, 210, 63, .45); }
+        .gtab { width: 100%; border-collapse: separate; border-spacing: 4px; margin-top: 6px; font-size: 13.5px; }
+        .gtab th { color: var(--y); font-weight: 700; padding: 4px; background: rgba(0, 0, 0, .3); border-radius: 8px; }
+        .gtab td { padding: 4px 6px; background: rgba(255, 255, 255, .06); border-radius: 8px; text-align: center; font-family: 'JetBrains Mono', monospace; }
+        .gtab tr.good td { background: rgba(61, 220, 132, .25); border: 1px solid var(--g); color: #fff; font-weight: 700; }
+        .rule { margin-top: 8px; background: rgba(255, 77, 109, .16); border: 1px solid rgba(255, 77, 109, .5); border-radius: 12px; padding: 6px 10px; font-size: 13.5px; }
+        .arch { display: block; margin-top: 8px; padding: 6px 10px; border-radius: 10px; background: rgba(255, 255, 255, .09); font-size: 14px; }
+
+        .sheet {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; transform: translateY(110%); transition: transform .38s cubic-bezier(.2, 1.25, .4, 1);
+            background: #1d1650; border-top: 4px solid var(--line); box-shadow: 0 -10px 30px rgba(0, 0, 0, .5); display: flex; flex-direction: column;
+        }
+        .sheet.show { transform: none; }
+        .sheet-in { flex: 1 1 auto; min-height: 0; width: 100%; max-width: 760px; margin: 0 auto; padding: 16px 18px calc(18px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
+        .sheet-head { display: flex; align-items: center; gap: 12px; }
+        .sheet-ico { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; font-weight: 700; background: #fff; flex: none; }
+        .sheet-title { font-family: var(--disp); font-size: 26px; }
+        .sheet-pts { font-weight: 700; opacity: .9; }
+        .sheet-text { line-height: 1.45; font-size: 15.5px; overflow-y: auto; }
+        .fxl { display: block; margin-top: 6px; font-weight: 600; opacity: .9; font-size: 14.5px; font-family: 'JetBrains Mono', monospace; color: var(--y); }
+        .sheet.ok { background: #0f3a2a; border-color: var(--g); }
+        .sheet.ok .sheet-ico { color: #1a8a4e; } .sheet.ok .sheet-title { color: var(--g); }
+        .sheet.ok #shBtn { --c: var(--g); --d: #1a8a4e; --t: #063a1f; }
+        .sheet.near { background: #3d310a; border-color: var(--y); }
+        .sheet.near .sheet-title { color: var(--y); } .sheet.near .sheet-ico { color: #b8901a; }
+        .sheet.near #shBtn { --c: var(--y); --d: #b8901a; --t: #3a2a00; }
+        .sheet.bad { background: #40101f; border-color: var(--r); }
+        .sheet.bad .sheet-title { color: #ff8da2; } .sheet.bad .sheet-ico { color: var(--r); }
+        .sheet.bad #shBtn { --c: var(--r); --d: #9a1f38; }
+
+        .endcard { max-width: 560px; margin: 6px auto; background: rgba(20, 14, 60, .82); border: 2px solid var(--line); border-radius: 28px; padding: 24px 20px; text-align: center; backdrop-filter: blur(10px); }
+        .end-title { font-family: var(--disp); font-size: 34px; }
+        .end-sub { color: var(--muted); font-weight: 600; }
+        .stars { display: flex; justify-content: center; align-items: flex-end; gap: 6px; margin: 14px 0 6px; }
+        .star { font-size: 64px; line-height: 1; color: #3a335f; text-shadow: 0 4px 0 #1c1740; }
+        .star:nth-child(2) { font-size: 84px; margin-bottom: 10px; }
+        .star.on { color: var(--y); text-shadow: 0 5px 0 #b8901a, 0 0 24px rgba(255, 210, 63, .6); animation: starPop .55s cubic-bezier(.2, 1.6, .4, 1) both; animation-delay: var(--d); }
+        @keyframes starPop { from { transform: scale(0) rotate(-90deg); opacity: 0; } }
+        .bigscore { font-family: var(--disp); font-size: 56px; line-height: 1; }
+        .bigscore small { display: block; font-family: var(--body-font); font-size: 14px; font-weight: 600; color: var(--muted); margin-top: 4px; }
+        .bigscore em { font-style: normal; background: var(--r); color: #fff; padding: 1px 8px; border-radius: 99px; margin-left: 6px; font-weight: 700; display: inline-block; animation: pulse 1s infinite; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+        .stat { background: rgba(255, 255, 255, .07); border-radius: 16px; padding: 10px 4px; }
+        .stat b { display: block; font-family: var(--disp); font-size: 24px; font-weight: 400; }
+        .stat span { font-size: 12px; color: var(--muted); font-weight: 600; }
+        .rewards { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .rw { font-family: var(--disp); font-size: 20px; padding: 6px 14px; border-radius: 99px; background: rgba(155, 93, 229, .3); border: 2px solid var(--p); }
+        .rw.coin { background: rgba(255, 210, 63, .15); border-color: var(--y); color: var(--y); }
+        .unlock { margin-top: 12px; font-weight: 700; background: rgba(61, 220, 132, .15); border: 2px solid var(--g); color: #bff5d6; border-radius: 14px; padding: 8px; }
+        .vcode { margin-top: 16px; font-size: 14px; color: var(--muted); }
+        .vcode b { font-family: 'JetBrains Mono', monospace; color: #fff; background: rgba(0, 0, 0, .35); padding: 3px 10px; border-radius: 8px; letter-spacing: 2px; font-size: 16px; }
+        .vcode small { display: block; margin-top: 4px; }
+        .end-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+        .diary { margin-top: 14px; text-align: left; background: rgba(255, 210, 63, .07); border: 2px solid rgba(255, 210, 63, .35); border-radius: 16px; padding: 10px 14px; }
+        .diary.ok { text-align: center; border-color: rgba(61, 220, 132, .5); background: rgba(61, 220, 132, .1); font-weight: 600; }
+        .diary-h { font-family: var(--disp); font-size: 18px; margin-bottom: 2px; }
+        .drow { padding: 6px 0; border-top: 1px solid var(--line); }
+        .drow:first-of-type { border-top: 0; }
+        .drow span { color: var(--y); font-weight: 700; }
+        .drow small { display: block; color: var(--muted); font-size: 13px; }
+        .dnote { margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+
+        .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin: 0 auto 12px; max-width: 680px; }
+        .tab { white-space: nowrap; padding: 8px 14px; border-radius: 99px; background: var(--card2); font-weight: 700; font-size: 14px; }
+        .tab.on { background: var(--y); color: #3a2a00; }
+        .lb { display: flex; flex-direction: column; gap: 8px; max-width: 680px; margin: 0 auto; }
+        .lb-row { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, .07); border: 2px solid transparent; border-radius: 18px; padding: 10px 14px; }
+        .lb-row.me { border-color: var(--y); }
+        .rk { width: 32px; text-align: center; font-family: var(--disp); font-size: 20px; }
+        .lb-av { font-size: 28px; }
+        .lb-n { flex: 1; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+        .lb-n small { display: block; font-weight: 500; color: var(--muted); font-size: 12px; }
+        .lb-s { font-family: var(--disp); font-size: 24px; color: var(--y); }
+        .empty { text-align: center; color: var(--muted); padding: 30px; }
+        .teacher { max-width: 680px; margin: 22px auto 0; background: rgba(255, 255, 255, .05); border: 2px solid var(--line); border-radius: 18px; padding: 12px 16px; }
+        .teacher summary { cursor: pointer; font-weight: 700; }
+        .teacher p { color: var(--muted); font-size: 14px; margin: 10px 0 0; }
+        .tform { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+        .tform input { background: #0b0827; border: 2px solid var(--line); border-radius: 12px; color: #fff; padding: 10px; font: 600 15px var(--body-font); width: 100%; color-scheme: dark; }
+        .tform .btn3d { grid-column: 1 / -1; }
+        .tres { grid-column: 1 / -1; font-weight: 700; min-height: 1.4em; }
+
+        .modal { position: fixed; inset: 0; z-index: 80; background: rgba(5, 3, 20, .75); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal.show { display: flex; }
+        .modal-card { background: #22195a; border: 2px solid var(--line); border-radius: 26px; padding: 22px; width: 100%; max-width: 400px; text-align: center; animation: screenIn .3s; }
+        .modal-card h3 { font-family: var(--disp); font-size: 26px; margin: 0 0 6px; font-weight: 400; }
+        .modal-card p { color: var(--muted); margin: 0 0 18px; }
+        .modal-actions { display: flex; flex-direction: column; gap: 12px; }
+        .toast {
+            position: fixed; top: 72px; left: 50%; transform: translate(-50%, -200%); z-index: 90; background: #fff; color: #2a1a70; font-weight: 700;
+            padding: 10px 18px; border-radius: 99px; box-shadow: 0 6px 0 rgba(0, 0, 0, .3); transition: transform .3s cubic-bezier(.2, 1.3, .4, 1); max-width: 90vw; text-align: center; visibility: hidden;
+        }
+        .toast.show { transform: translate(-50%, 0); visibility: visible; }
+        .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 120; overflow: hidden; }
+        .confetti i { position: absolute; top: -20px; width: 9px; height: 14px; border-radius: 2px; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+        .msg { display: none; flex: none; font-size: 13.5px; font-weight: 600; line-height: 1.3; border-radius: 12px; padding: 6px 10px; }
+        .msg.show { display: block; animation: screenIn .25s; }
+        .msg.warn { background: rgba(255, 210, 63, .14); border: 1px solid rgba(255, 210, 63, .5); color: #fff3c4; }
+
+        @media (max-width: 600px) {
+            .modes { gap: 12px; }
+            .mc-tag { position: static; align-self: flex-start; order: 2; }
+            .mc-name { order: 3; font-size: 18px; } .mc-desc { order: 4; font-size: 12px; } .mc-stars { order: 5; }
+            .mode-card { min-height: 190px; padding: 14px; }
+            .opt-grid { grid-template-columns: 1fr; }
+            .opt-btn { min-height: 48px; font-size: 15.5px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+
+<body>
+<!-- ORFINI-BACK START -->
+<style>
+.orfini-back-btn {
+  display: inline-flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.8); color: #e2e8f0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 9999px; padding: 6px 14px; font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px; font-weight: 500; text-decoration: none !important; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease; cursor: pointer; pointer-events: auto; line-height: 1.2; position: fixed; top: 14px; left: 14px; z-index: 10000;
+}
+.orfini-back-btn:hover { background: rgba(30, 41, 59, 0.95); border-color: rgba(255, 255, 255, 0.35); color: #fff !important; transform: translateY(-1px); }
+@media (max-width: 640px) { .orfini-back-btn .orfini-back-text { display: none; } .orfini-back-btn { padding: 6px 10px; } }
+</style>
+<a href="../../index.html" class="orfini-back-btn" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
+  <span>←</span><span class="orfini-back-text">Orfini Math Lab</span>
+</a>
+<!-- ORFINI-BACK END -->
+
+    <div class="starsbg"></div>
+
+    <div class="app">
+        <!-- BARRA PROFILO E INCLUSIVITÀ -->
+        <header class="topbar">
+            <button class="avatar" id="avatarBtn" aria-label="Cambia avatar" title="Tocca per cambiare avatar">🚀</button>
+            <div class="who">
+                <input id="nameInput" maxlength="12" aria-label="Nome giocatore" autocomplete="off" spellcheck="false">
+                <div class="xp"><span class="lv" id="lvBadge">LV 1</span><div class="xpbar"><i id="xpFill"></i></div></div>
+            </div>
+            <div class="chips">
+                <span class="chip" title="Giorni di gioco di fila">🔥 <span id="streakVal">0</span></span>
+                <span class="chip" title="Monete per sbloccare aiuti">🪙 <span id="coinVal">0</span></span>
+                <button class="chip" id="a11yBtn" title="Font Alta Leggibilità (Inclusivo)">👁️ Aa</button>
+                <button class="chip" id="muteBtn" aria-label="Audio on/off" title="Effetti sonori">🔊</button>
+            </div>
+        </header>
+
+        <!-- BARRA PERSONALIZZAZIONE INDIRIZZI PTOF IPIA ORFINI FOLIGNO -->
+        <section class="ptof-bar" id="ptofBar" aria-label="Seleziona indirizzo di studio PTOF IPIA Orfini">
+            <div class="ptof-head">
+                <div class="ptof-title">🏫 Indirizzi PTOF — IPIA "E. Orfini" Foligno & Versione Generalista</div>
+                <div class="ptof-sub">Scegli il tuo percorso per contestualizzare gli esercizi</div>
+            </div>
+            <div class="tracks" id="trackList"></div>
+            <div class="ptof-banner" id="trackBanner"></div>
+        </section>
+
+        <!-- HOME -->
+        <section class="screen active" id="s-home">
+            <div class="logo"><span>SCOMPOSIZIONI & PARABOLA</span><span>ARCADE CHALLENGE</span></div>
+            <p class="tagline">Prodotti Notevoli · Trinomio Speciale · Grafico della Parabola · Factor Blaster</p>
+            <div class="modes" id="modeGrid"></div>
+            <div class="home-actions">
+                <button class="btn3d" style="--c:#ffd23f;--d:#b8901a;--t:#3a2a00" id="lbBtn">🏆 Classifica & Verifica Docente</button>
+            </div>
+        </section>
+
+        <!-- LIVELLI -->
+        <section class="screen" id="s-mode">
+            <div class="screen-head">
+                <button class="back" data-go="home" aria-label="Indietro">‹</button>
+                <h2 id="modeTitle"></h2>
+            </div>
+            <div class="tipcard" id="modeTip"></div>
+            <div class="path" id="levelPath"></div>
+        </section>
+
+        <!-- GIOCO -->
+        <section class="screen" id="s-game">
+            <div class="hud">
+                <button class="quit" id="quitBtn" aria-label="Esci dalla partita">✕</button>
+                <div class="prog" id="prog" aria-label="Avanzamento"></div>
+                <div class="score-pill" aria-label="Punteggio"><span id="scoreVal">0</span><span class="combo" id="comboVal"></span></div>
+                <div class="hearts" id="hearts" aria-label="Vite"></div>
+            </div>
+            <div class="game-grid">
+                <div class="stage-wrap">
+                    <div class="stage" id="stage">
+                        <canvas id="glCanvas"></canvas>
+                        <canvas id="cv"></canvas>
+                        <div class="chart-box" id="chartBox"><canvas id="chartCanvas"></canvas></div>
+                        <div class="stage-badge" id="stageBadge">🧊 Laboratorio 3D</div>
+                        <div class="fx" id="fx"></div>
+                        <div class="speed" title="Bonus velocità"><i id="speedFill"></i></div>
+                    </div>
+                </div>
+                <div class="panel" id="panel">
+                    <div class="prompt" id="prompt"></div>
+                    <div class="msg" id="msg" role="status" aria-live="polite"></div>
+                    <div class="answer-row">
+                        <div class="display" id="display" aria-live="polite">Seleziona la risposta</div>
+                        <button class="btn3d hint" id="hintBtn" title="Aiuto passo-passo (costa monete)"><span>💡 Aiuto</span><small>10 🪙</small></button>
+                    </div>
+                    <div class="controls" id="controls"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINE PARTITA -->
+        <section class="screen" id="s-end"><div class="endcard" id="endCard"></div></section>
+
+        <!-- CLASSIFICA -->
+        <section class="screen" id="s-lb">
+            <div class="screen-head"><button class="back" data-go="home" aria-label="Indietro">‹</button><h2>🏆 Classifica</h2></div>
+            <div class="tabs" id="lbTabs"></div>
+            <div class="lb" id="lbList"></div>
+            <details class="teacher">
+                <summary>🔎 Verifica codice autenticità (Area Docente)</summary>
+                <p>A fine partita ogni studente ottiene un codice crittografico di 6 caratteri. Inserisci nome, punteggio, data e codice per verificare la partita e l'indirizzo svolto.</p>
+                <div class="tform">
+                    <input id="vName" placeholder="Nome studente" maxlength="12">
+                    <input id="vScore" type="number" placeholder="Punteggio" inputmode="numeric">
+                    <input id="vDate" type="date">
+                    <input id="vCode" placeholder="Codice (6 car.)" maxlength="6">
+                    <button class="btn3d" id="vBtn" style="--c:#4cc9f0;--d:#1a7fa3">Verifica Codice</button>
+                    <div class="tres" id="vRes"></div>
+                </div>
+            </details>
+        </section>
+    </div>
+
+    <!-- FEEDBACK SHEET -->
+    <div class="sheet" id="sheet" aria-live="polite">
+        <div class="sheet-in">
+            <div class="sheet-head"><span class="sheet-ico" id="shIco"></span><div><div class="sheet-title" id="shTitle"></div><div class="sheet-pts" id="shPts"></div></div></div>
+            <div class="sheet-text" id="shText"></div>
+            <button class="btn3d wide" id="shBtn">CONTINUA</button>
+        </div>
+    </div>
+    <div class="modal" id="modal"><div class="modal-card"><h3 id="mTitle"></h3><p id="mText"></p><div class="modal-actions" id="mActions"></div></div></div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+    'use strict';
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const shuffle = a => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+    const RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    const SUP = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '-': '⁻' };
+    const sup = n => String(n).split('').map(c => SUP[c] || c).join('');
+    const sgnNum = n => n > 0 ? '+' + n : n < 0 ? '−' + Math.abs(n) : '0';
+
+    function gcd(a, b) { return b === 0 ? Math.abs(a) : gcd(b, a % b); }
+
+    function fmtPoly(coeffs, v = 'x') {
+        const entries = Array.isArray(coeffs) ? coeffs : Object.entries(coeffs).map(([d, c]) => [Number(d), c]);
+        const sorted = entries.filter(([, c]) => c !== 0).sort((a, b) => b[0] - a[0]);
+        if (!sorted.length) return '0';
+        return sorted.map(([d, c], idx) => {
+            const absC = Math.abs(c);
+            const sign = idx === 0 ? (c < 0 ? '−' : '') : (c < 0 ? ' − ' : ' + ');
+            const numPart = (d === 0 || absC !== 1) ? String(absC) : '';
+            const varPart = d === 0 ? '' : d === 1 ? v : v + sup(d);
+            return sign + numPart + varPart;
+        }).join('');
+    }
+
+    function fmtBinom(a, b, v = 'x') {
+        return fmtPoly([[1, a], [0, b]], v);
+    }
+
+    function fmtTrinom(a, b, c, v = 'x') {
+        return fmtPoly([[2, a], [1, b], [0, c]], v);
+    }
+
+    function mulPoly(p1, p2) {
+        const res = {};
+        for (const [d1, c1] of Object.entries(p1)) {
+            for (const [d2, c2] of Object.entries(p2)) {
+                const d = Number(d1) + Number(d2);
+                res[d] = (res[d] || 0) + c1 * c2;
+            }
+        }
+        return res;
+    }
+
+    function fmtFactPair(p, q, k = 1, xPow = 0, a = 1, v = 'x') {
+        let pref = k === 1 ? '' : k === -1 ? '−' : String(k);
+        if (xPow === 1) pref += v;
+        else if (xPow > 1) pref += v + sup(xPow);
+
+        if (p === q) return `${pref}(${fmtBinom(a, p, v)})²`;
+        const [p1, p2] = [p, q].sort((x, y) => x - y);
+        return `${pref}(${fmtBinom(a, p1, v)})(${fmtBinom(a, p2, v)})`;
+    }
+
+    function uniqueOpts(rawList, targetCount = 4) {
+        const seen = new Set();
+        const out = [];
+        for (const item of rawList) {
+            const norm = String(item.label).replace(/\s+/g, '');
+            if (!seen.has(norm)) {
+                seen.add(norm);
+                out.push(item);
+            }
+            if (out.length >= targetCount) break;
+        }
+        return shuffle(out);
+    }
+
+    function today(off = 0) { const d = new Date(); d.setDate(d.getDate() + off); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    function cyrb(str) {
+        let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+        for (let i = 0; i < str.length; i++) { const ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+        return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+    }
+    const vcode = (n, m, l, s, d) => cyrb(`OML_ALG|${String(n).toUpperCase().trim()}|${m}|${l}|${s}|${d}`).toString(36).toUpperCase().slice(-6).padStart(6, '0');
+
+    const TRACKS = {
+        gen: {
+            id: 'gen', code: 'GEN', name: 'Generalista', sub: 'Neutro / Classico', icon: '🌐', c: '#4cc9f0',
+            banner: 'Versione <b>Generalista</b> senza contestualizzazione: algebra pura, scomposizione polinomiale e geometria analitica.',
+            ctx: {
+                prod: () => `Scomponi in fattori irriducibili il polinomio riconoscendo i <b>prodotti notevoli</b> (ed eventuale raccoglimento):`,
+                trin: () => `Scomponi il <b>trinomio speciale</b> nella forma <b>(x + p)(x + q)</b> individuando la coppia corretta di numeri interi:`,
+                para: (sub) => sub === 'eq' ? `Analizza il grafico cartesiano della parabola (concavità, vertice e intersezioni con gli assi) e individua la sua <b>equazione</b>:` : `Scomponi l'equazione quadratica per determinare gli <b>zeri (intersezioni con l'asse x)</b> e il <b>vertice V</b> della parabola:`,
+                fac: () => `Spezza l'asteroide polinomiale colpendo uno alla volta tutti i suoi <b>fattori irriducibili</b> fino a ridurlo a <b>1</b>!`
+            }
+        },
+        ma: {
+            id: 'ma', code: 'MA', name: 'Meccanico', sub: 'Manutenzione & Mezzi Trasporto / CNC', icon: '⚙️', c: '#ff8c42',
+            banner: 'Indirizzo <b>Meccanico (IPIA Orfini)</b>: piastre fresate a controllo numerico (CNC), profilati metallici e curve di coppia motore.',
+            ctx: {
+                prod: () => `⚙️ <b>Officina CNC Orfini:</b> la sezione utile (in cm²) di una flangia metallica lavorata al tornio è espressa dal polinomio seguente. Scomponilo per ricavare i fattori delle quote:`,
+                trin: () => `🔧 <b>Reparto Rettifica:</b> l'area di una piastra rettangolare in acciaio al variare della quota x è espressa dal trinomio. Trova i due termini <b>p</b> e <b>q</b> dei lati <b>(x + p)(x + q)</b>:`,
+                para: (sub) => sub === 'eq' ? `🏎️ <b>Banco Prova Motori:</b> il grafico mostra la curva parabolica rilevata dai sensori. Associa la curva all'equazione quadratica corretta:` : `🔩 <b>Analisi Cinematica:</b> scomponi la legge quadratica per determinare gli zeri sull'asse x e le coordinate del vertice V:`,
+                fac: () => `⚙️ <b>Smontaggio Calibro CNC:</b> scomponi completamente il polinomio di taratura della macchina utensile colpendo tutti i suoi fattori primi!`
+            }
+        },
+        el: {
+            id: 'el', code: 'EL', name: 'Elettrico-Elettronico', sub: 'Impianti, Automazione & Energia', icon: '⚡', c: '#ffd23f',
+            banner: 'Indirizzo <b>Elettrico-Elettronico (IPIA Orfini)</b>: potenza dissipata per effetto Joule, moduli fotovoltaici e segnali su oscilloscopio.',
+            ctx: {
+                prod: () => `⚡ <b>Lab Elettrotecnica Orfini:</b> la potenza elettrica o la superficie di un modulo fotovoltaico al variare di x è descritta dal polinomio. Scomponilo in fattori:`,
+                trin: () => `🔌 <b>Quadri & Automazione:</b> il bilancio energetico di un ramo del circuito è modellizzato dal trinomio speciale. Individua i due parametri interi <b>p</b> e <b>q</b> di <b>(x + p)(x + q)</b>:`,
+                para: (sub) => sub === 'eq' ? `📟 <b>Oscilloscopio Lab:</b> la traccia mostra l'andamento parabolico della potenza erogata. Quale equazione corrisponde esattamente al grafico?` : `🔋 <b>Controllo Carico:</b> scomponi la funzione quadratica per trovare i valori di x in cui il segnale si annulla (zeri) e il picco V:`,
+                fac: () => `⚡ <b>Filtro di Rete PLC:</b> disattiva il sovraccarico scomponendo il polinomio caratteristico del circuito in tutti i suoi fattori!`
+            }
+        },
+        gp: {
+            id: 'gp', code: 'GP', name: 'Graphic Design', sub: 'Comunicazione Visiva & Pubblicitaria', icon: '🎨', c: '#f15bb5',
+            banner: 'Indirizzo <b>Graphic Design (IPIA Orfini)</b>: gabbie d’impaginazione, proporzioni auree, layout tipografici e tracciati vettoriali.',
+            ctx: {
+                prod: () => `🎨 <b>Studio Graphic Design Orfini:</b> l'area (in px²) di un manifesto pubblicitario con margini simmetrici è espressa dal polinomio. Scomponilo per ottenere le dimensioni del layout:`,
+                trin: () => `📐 <b>Impaginazione & Web Design:</b> una griglia modulare responsive ha area espressa dal trinomio. Trova i due valori interi <b>p</b> e <b>q</b> dei lati <b>(x + p)(x + q)</b>:`,
+                para: (sub) => sub === 'eq' ? `✒️ <b>Curve Vettoriali:</b> un arco geometrico nel logo aziendale segue questa parabola sulla tavola da disegno. Qual è la sua equazione?` : `🖼️ <b>Ancoraggio Tracciato:</b> scomponi l'equazione della curva per trovare i punti di ancoraggio sull'asse x e il vertice V:`,
+                fac: () => `🎨 <b>Rendering Vettoriale:</b> scomponi il livello polinomiale nei suoi fattori base prima che saturi la memoria grafica!`
+            }
+        },
+        moda: {
+            id: 'moda', code: 'MODA', name: 'Fashion Factory', sub: 'Industria e Artigianato Made in Italy', icon: '👗', c: '#9b5de5',
+            banner: 'Indirizzo <b>Fashion Factory (IPIA Orfini)</b>: cartamodelli sartoriali CAD, piazzamento taglio tessuti e profili parabolici.',
+            ctx: {
+                prod: () => `👗 <b>Atelier Fashion Factory Orfini:</b> la superficie di tessuto (in cm²) necessaria per un pannello sartoriale sagomato è data dal polinomio. Scomponilo per ricavare le misure di taglio:`,
+                trin: () => `✂️ <b>Piazzamento Cartamodello:</b> un telo rettangolare di seta ha area espressa dal trinomio speciale. Determina i valori interi <b>p</b> e <b>q</b> delle dimensioni <b>(x + p)(x + q)</b>:`,
+                para: (sub) => sub === 'eq' ? `🧵 <b>Profilo Scollatura:</b> il grafico rappresenta la curva parabolica di un taglio sartoriale sul cartamodello. Associa la curva alla sua equazione:` : `📏 <b>Punti di Cucitura:</b> scomponi la funzione quadratica per trovare i punti di incontro con l'asse x e il punto di vertice V:`,
+                fac: () => `👗 <b>Taglio Laser Tessile:</b> scomponi la formula del piazzamento tessuto colpendo tutti i suoi fattori elementari!`
+            }
+        },
+        od: {
+            id: 'od', code: 'OD', name: 'Odontotecnico', sub: 'Arti Ausiliarie Professioni Sanitarie', icon: '🦷', c: '#3ddc84',
+            banner: 'Indirizzo <b>Odontotecnico (IPIA Orfini)</b>: blocchetti CAD/CAM in zirconia, arcate dentarie paraboliche e resistenza protesica.',
+            ctx: {
+                prod: () => `🦷 <b>Lab CAD/CAM Odontotecnico Orfini:</b> la sezione (in mm²) di un blocchetto in zirconia dopo la fresatura è espressa dal polinomio. Scomponilo nei suoi fattori:`,
+                trin: () => `🔬 <b>Modellazione Protesica:</b> una piastra base in resina ha area espressa dal trinomio. Trova i due parametri interi <b>p</b> e <b>q</b> dei lati <b>(x + p)(x + q)</b>:`,
+                para: (sub) => sub === 'eq' ? `🦷 <b>Curva dell'Arcata Dentaria:</b> il profilo dell'arcata superiore è modellizzato dalla parabola nel grafico. Quale equazione la descrive esattamente?` : `📐 <b>Allineamento Occlusale:</b> scomponi l'equazione dell'arcata per individuare le intersezioni con l'asse x e il vertice centrale V:`,
+                fac: () => `🦷 <b>Sinterizzazione Zirconia:</b> scomponi il polinomio di densità ceramica colpendo uno alla volta i suoi fattori irriducibili!`
+            }
+        },
+        sss: {
+            id: 'sss', code: 'SSS', name: 'Socio-Sanitario', sub: 'Servizi per la Sanità e l’Assistenza Sociale', icon: '🩺', c: '#ff4d6d',
+            banner: 'Indirizzo <b>Servizi Socio-Sanitari (IPIA Orfini)</b>: progettazione spazi inclusivi, curve di biodisponibilità e indici di benessere.',
+            ctx: {
+                prod: () => `🩺 <b>Progettazione Spazi Inclusivi Orfini:</b> l'area (in m²) di un laboratorio riabilitativo modulare è espressa dal polinomio. Scomponilo con i prodotti notevoli:`,
+                trin: () => `🏥 <b>Organizzazione Reparto:</b> una sala polifunzionale rettangolare ha superficie data dal trinomio. Trova i due valori interi <b>p</b> e <b>q</b> dei lati <b>(x + p)(x + q)</b>:`,
+                para: (sub) => sub === 'eq' ? `📈 <b>Curva di Risposta:</b> il grafico mostra l'andamento parabolico della concentrazione di un principio attivo. Qual è la sua equazione matematica?` : `⏱️ <b>Finestra Terapeutica:</b> scomponi l'equazione per determinare gli istanti di annullamento sull'asse x e il picco V:`,
+                fac: () => `🩺 <b>Analisi Parametri Biometrici:</b> scomponi la formula dell'indice statistico colpendo tutti i suoi fattori primi!`
+            }
+        }
+    };
+    const TRACK_KEYS = ['gen', 'ma', 'el', 'gp', 'moda', 'od', 'sss'];
+
+    const store = {
+        get(k, d) { try { const v = localStorage.getItem('mi_alg2_' + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+        set(k, v) { try { localStorage.setItem('mi_alg2_' + k, JSON.stringify(v)); } catch (e) { } }
+    };
+    const AVATARS = ['🚀', '👾', '🛸', '🤖', '⚙️', '⚡', '🎨', '👗', '🦷', '🩺', '🦊', '🐼'];
+    const P = Object.assign({
+        name: 'CADETTO', avatar: '🚀', xp: 0, coins: 60, streak: { count: 0, last: '' },
+        stars: {}, best: {}, weak: {}, muted: false, a11y: false, track: 'gen'
+    }, store.get('profile', {}));
+    const saveP = () => store.set('profile', P);
+    const HIST = store.get('hist', []);
+    const lvTh = n => 50 * n * (n - 1);
+    function lvOf(xp) { let n = 1; while (xp >= lvTh(n + 1)) n++; return n; }
+
+    function pickUniqueQuestion(genFn, modeKey) {
+        for (const strictness of [2, 1, 0]) {
+            for (let attempt = 0; attempt < 120; attempt++) {
+                const q = genFn();
+                if (!q || !q.sig) continue;
+                const fullSig = `${modeKey}:${q.sig}`;
+                if (strictness === 2 && (R.seen.has(fullSig) || HIST.includes(fullSig))) continue;
+                if (strictness === 1 && R.seen.has(fullSig)) continue;
+                R.seen.add(fullSig);
+                HIST.push(fullSig);
+                while (HIST.length > 90) HIST.shift();
+                store.set('hist', HIST);
+                return q;
+            }
+        }
+        return genFn();
+    }
+
+    const MODES = {
+        prod: {
+            name: 'Area Lab', icon: '📐', c: '#4cc9f0', d: '#1a7fa3', tag: 'Prodotti Notevoli',
+            desc: 'Differenza di quadrati, quadrato di binomio e raccoglimenti',
+            tip: '<b>Differenza di quadrati:</b> A² − B² = (A − B)(A + B).<br><b>Quadrato di binomio:</b> A² ± 2AB + B² = (A ± B)².<br>Controlla sempre se c’è prima un <b>fattore comune</b> da raccogliere!',
+            levels: [
+                { label: 'Cadetto', sub: 'coeff. a = 1', lim: 25, deck: ['diff1', 'quadP', 'diff1', 'quadM', 'diff1', 'quadP', 'quadM', 'diff1'] },
+                { label: 'Tecnico', sub: 'coeff. a > 1 e b² fino a 100', lim: 30, deck: ['diff1', 'quadM', 'diffA', 'quadA', 'diffA', 'quadA', 'diffA', 'quadA'] },
+                { label: 'Ingegnere', sub: 'raccoglimento k o x + gradi alti', lim: 36, deck: ['diffA', 'quadA', 'raccDiff', 'raccQuad', 'raccXDiff', 'raccXQuad', 'biquadDiff', 'raccDiff'] }
+            ]
+        },
+        trin: {
+            name: 'Trinomio Lab', icon: '🧩', c: '#ff8c42', d: '#b85a1c', tag: 'Trinomio Speciale',
+            desc: 'Trova i due numeri interi p e q tali che x² + sx + P = (x + p)(x + q)',
+            tip: 'Nel trinomio <b>x² + sx + P</b> il coefficiente di x è la <b>somma s = p + q</b> e il termine noto è il <b>prodotto P = p · q</b>. Allora il trinomio si scompone in <b>(x + p)(x + q)</b>.',
+            levels: [
+                { label: 'Apprendista', sub: 'p e q positivi (s > 0, P > 0)', lim: 28, deck: ['posPos', 'posPos', 'posPos', 'posPos', 'posPos', 'posPos', 'posPos', 'posPos'] },
+                { label: 'Specialista', sub: 'somma negativa e segni misti', lim: 32, deck: ['posPos', 'negNeg', 'negNeg', 'discP', 'negNeg', 'discN', 'negNeg', 'discP'] },
+                { label: 'Maestro', sub: 'prodotti fino a ±72', lim: 38, deck: ['negNeg', 'discP', 'discN', 'discBigP', 'discBigN', 'negBig', 'discBigP', 'discBigN'] }
+            ]
+        },
+        para: {
+            name: 'Parabola Radar', icon: '📡', c: '#9b5de5', d: '#6532a8', tag: 'Equazione ↔ Grafico',
+            desc: 'Leggi il grafico e associa equazione, zeri e vertice',
+            tip: 'Dalla forma fattorizzata <b>y = a(x − x₁)(x − x₂)</b>:<ul><li><b>Concavità:</b> a > 0 verso l’alto (∪), a < 0 verso il basso (∩).</li><li><b>Zeri sull’asse x:</b> x = x₁ e x = x₂.</li><li><b>Asse y (x = 0):</b> leggi il termine noto c.</li></ul>',
+            levels: [
+                { label: 'Esploratore', sub: 'leggi gli zeri dal grafico (a = ±1)', lim: 30, deck: ['eqUp', 'eqUp', 'rootsUp', 'eqDown', 'rootsUp', 'eqUp', 'eqDown', 'rootsUp'] },
+                { label: 'Analista', sub: 'tangenza Δ = 0 e concavità', lim: 35, deck: ['eqUp', 'eqDown', 'tangent', 'rootsDown', 'eqDown', 'tangent', 'rootsDown', 'tangent'] },
+                { label: 'Comandante', sub: 'coeff. |a| = 2 e vertice V', lim: 40, deck: ['eqDown', 'tangent', 'rootsDown', 'stretchEq', 'vertex', 'stretchEq', 'vertex', 'rootsStretch'] }
+            ]
+        },
+        fac: {
+            name: 'Factor Blaster', icon: '💥', c: '#f15bb5', d: '#a62a78', tag: 'Scomposizione Totale',
+            desc: 'Spara i fattori irriducibili contro l’asteroide 3D in caduta (scalabile fino a 4° grado)',
+            tip: 'Osserva il polinomio sull’asteroide: se c’è un <b>fattore comune</b> (2, 3, x, 2x…) colpiscilo per primo, poi scomponi i prodotti notevoli o il trinomio speciale!',
+            levels: [
+                { label: 'Base', sub: '2 fattori lineari (6 cannoni)', time: 24, deck: ['diff1', 'quad1', 'trin1', 'diff1', 'trin1', 'quad1', 'trinNeg', 'diff1'] },
+                { label: 'Medio', sub: '3 fattori con k o x (8 cannoni)', time: 30, deck: ['trinNeg', 'raccDiff', 'raccXDiff', 'raccTrin', 'raccXTrin', 'raccQuad', 'raccXDiff', 'raccTrin'] },
+                { label: 'Esperto', sub: 'fino a 4 fattori e x⁴ − b⁴ (8 cannoni)', time: 38, deck: ['raccXDiff', 'raccXTrin', 'raccKXDiff', 'biquad4', 'raccKXTrin', 'diffA2', 'biquad4', 'raccKXDiff'] }
+            ]
+        }
+    };
+    const MODE_KEYS = ['prod', 'trin', 'para', 'fac'];
+    const LV_MULT = [1, 1.5, 2];
+    const WAVE = 8;
+
+    const DIFF = {
+        prod: { diff1: 0, quadP: 0.4, quadM: 0.7, diffA: 1.4, quadA: 1.8, raccDiff: 2.2, raccQuad: 2.5, raccXDiff: 2.8, raccXQuad: 3.0, biquadDiff: 3.3 },
+        trin: { posPos: 0, negNeg: 1.0, discP: 1.7, discN: 1.9, negBig: 2.5, discBigP: 2.8, discBigN: 3.0 },
+        para: { eqUp: 0, rootsUp: 0.6, eqDown: 1.2, rootsDown: 1.6, tangent: 2.0, vertex: 2.5, stretchEq: 2.9, rootsStretch: 3.2 },
+        fac: { diff1: 0, quad1: 0.4, trin1: 0.8, trinNeg: 1.3, raccDiff: 1.8, raccQuad: 2.0, raccTrin: 2.2, raccXDiff: 2.5, raccXTrin: 2.8, diffA2: 3.0, raccKXDiff: 3.3, raccKXTrin: 3.5, biquad4: 3.8 }
+    };
+
+    const ARCH = {
+        prod: {
+            diff1: ['Differenza di quadrati', 'x² − b² = (x − b)(x + b): prodotto della somma per la differenza.'],
+            quadP: ['Quadrato di binomio (+)', 'x² + 2bx + b² = (x + b)²: verifica sempre il doppio prodotto +2bx!'],
+            quadM: ['Quadrato di binomio (−)', 'x² − 2bx + b² = (x − b)².'],
+            diffA: ['Differenza di quadrati con coeff.', 'a²x² − b² = (ax − b)(ax + b).'],
+            quadA: ['Quadrato di binomio con coeff.', 'a²x² ± 2abx + b² = (ax ± b)².'],
+            raccDiff: ['Raccoglimento k + Diff. quadrati', 'Prima raccogli k, poi scomponi x² − b².'],
+            raccQuad: ['Raccoglimento k + Quadrato', 'Prima raccogli k, poi riconosci il quadrato di binomio.'],
+            raccXDiff: ['Raccoglimento x + Diff. quadrati', 'Raccogli x e poi scomponi x² − b².'],
+            raccXQuad: ['Raccoglimento x + Quadrato', 'Raccogli x e poi scomponi il trinomio quadrato perfetto.'],
+            biquadDiff: ['Differenza di quarte potenze', 'x⁴ − b⁴ = (x² + b²)(x − b)(x + b).']
+        },
+        trin: {
+            posPos: ['Somma + e Prodotto +', 'Se P > 0 e s > 0, entrambi i numeri p e q sono positivi.'],
+            negNeg: ['Somma − e Prodotto +', 'Se P > 0 e s < 0, entrambi i numeri p e q sono negativi.'],
+            discP: ['Prodotto negativo (s > 0)', 'Se P < 0 i due numeri hanno segno discorde.'],
+            discN: ['Prodotto negativo (s < 0)', 'Se P < 0 i due numeri hanno segno discorde.'],
+            negBig: ['Trinomio con prodotto elevato', 'Scomponi P in fattori per trovare la coppia.'],
+            discBigP: ['Segni discordi su numeri grandi', 'Cerca due divisori di |P| la cui differenza sia s.'],
+            discBigN: ['Segni discordi con somma negativa', 'Cerca due divisori di |P| la cui differenza sia |s|.']
+        },
+        para: {
+            eqUp: ['Parabola con a > 0', 'Concavità verso l’alto (∪).'],
+            eqDown: ['Parabola con a < 0', 'Concavità verso il basso (∩).'],
+            rootsUp: ['Zeri da scomposizione', 'Dalla forma (x + p)(x + q) = 0 si ricavano gli zeri x₁ = −p e x₂ = −q.'],
+            rootsDown: ['Zeri e concavità negativa', 'Raccogli il segno meno.'],
+            tangent: ['Parabola tangente (Δ = 0)', 'Un quadrato perfetto tocca l’asse x in un solo punto V(x₀; 0).'],
+            vertex: ['Coordinate del Vertice V', 'L’ascissa del vertice x_V = −b/(2a) si trova a metà tra gli zeri.'],
+            stretchEq: ['Apertura con |a| > 1', 'Controlla l’ordinata per x = 0.'],
+            rootsStretch: ['Zeri con raccoglimento di a', 'Raccogli a davanti a x² prima di cercare gli zeri.']
+        },
+        fac: {
+            diff1: ['Differenza di quadrati', 'Si spezza in (x − b)(x + b).'],
+            quad1: ['Quadrato di binomio', 'Si spezza in due fattori uguali (x ± b).'],
+            trin1: ['Trinomio speciale', 'Si spezza in (x + p)(x + q).'],
+            trinNeg: ['Trinomio speciale (P < 0)', 'Fattori con segno discorde.'],
+            raccDiff: ['Fattore numerico + Diff. quadrati', 'Colpisci k e i due binomi coniugati.'],
+            raccTrin: ['Fattore numerico + Trinomio', 'Dividi per k e poi scomponi.'],
+            raccQuad: ['Fattore numerico + Quadrato', 'Raccogli k e colpisci il quadrato.'],
+            raccXDiff: ['Raccoglimento di x + Diff. quadrati', 'Colpisci x e poi scomponi x² − b².'],
+            raccXTrin: ['Raccoglimento di x + Trinomio', 'Colpisci x e poi scomponi il trinomio.'],
+            diffA2: ['Differenza di quadrati con coeff.', '(ax − b)(ax + b).'],
+            raccKXDiff: ['Raccoglimento kx + Diff. quadrati', 'Colpisci k, x e i fattori coniugati.'],
+            raccKXTrin: ['Raccoglimento kx + Trinomio', 'Riduci k e x, poi scomponi.'],
+            biquad4: ['Differenza di quarte potenze', 'x⁴ − b⁴ = (x² + b²)(x − b)(x + b).']
+        }
+    };
+
+    const DIARY = {
+        noDoppioProd: ['Confusione tra (A ± B)² e A² − B²', 'Nel quadrato di binomio c’è il doppio prodotto ±2AB (3 termini). Con 2 termini A² − B² si usa (A − B)(A + B).'],
+        segnoBinomio: ['Segno sbagliato nel quadrato di binomio', 'Il segno del doppio prodotto decide il segno nel binomio.'],
+        sommaQuadrati: ['Somma di quadrati irriducibile', 'La somma x² + b² non si scompone nei numeri reali!'],
+        scambioSP: ['Scambiati Somma e Prodotto nel trinomio', 'Il coefficiente di x è la SOMMA (p + q), il termine noto è il PRODOTTO (p · q).'],
+        segnoTrin: ['Segni errati nella coppia (p, q)', 'Se P è negativo i due numeri hanno segni opposti.'],
+        segnoZeri: ['Segno invertito sugli zeri', 'Il fattore (x − 3) si annulla per x = +3 (segno opposto!).'],
+        concavita: ['Concavità o apertura errata', 'Se a > 0 la parabola volge in alto (∪); se a < 0 in basso (∩).'],
+        raccDimenticato: ['Fattore comune dimenticato', 'Prima dei prodotti notevoli, raccogli sempre il M.C.D. comune.'],
+        fattoreErrato: ['Fattore che non divide il polinomio', 'Osserva grado, coefficiente e termine noto prima di sparare.'],
+        tempo: ['Tempo scaduto su Factor Blaster', 'Raccogli subito 2, 3 o x per abbassare i coefficienti!']
+    };
+
+    const SFX = (() => {
+        let ac = null;
+        const A = () => { if (P.muted) return null; try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); } catch (e) { return null; } return ac; };
+        function tone(f, d, type = 'square', vol = .05, when = 0, slide = 0) {
+            const a = A(); if (!a) return;
+            const t = a.currentTime + when, o = a.createOscillator(), g = a.createGain();
+            o.type = type; o.frequency.setValueAtTime(f, t);
+            if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(40, f * slide), t + d);
+            g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+            o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + d + .03);
+        }
+        function noise(d, vol = .1) {
+            const a = A(); if (!a) return;
+            const len = Math.max(1, Math.floor(a.sampleRate * d)), b = a.createBuffer(1, len, a.sampleRate), ch = b.getChannelData(0);
+            for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2);
+            const s = a.createBufferSource(); s.buffer = b; const g = a.createGain(); g.gain.value = vol;
+            s.connect(g); g.connect(a.destination); s.start();
+        }
+        return {
+            tap: () => tone(720, .04, 'square', .03),
+            ok: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .14, 'square', .05, i * .07)),
+            near: () => { tone(523, .14, 'triangle', .08); tone(622, .2, 'triangle', .08, .12); },
+            bad: () => { tone(220, .32, 'sawtooth', .05, 0, .45); tone(110, .3, 'square', .03, .05); },
+            miss: () => tone(170, .14, 'square', .045, 0, .6),
+            shoot: () => tone(1100, .18, 'square', .035, 0, .25),
+            boom: () => { noise(.45, .16); tone(90, .38, 'sine', .12, 0, .5); },
+            coin: () => { tone(988, .07, 'square', .045); tone(1319, .16, 'square', .045, .07); },
+            star: i => tone(784 + i * 196, .22, 'triangle', .09),
+            combo: n => [0, 1, 2].forEach(i => tone(660 * Math.pow(1.26, i) * (1 + Math.min(n, 8) * .05), .1, 'square', .045, i * .06)),
+            fanfare: () => [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, .18, 'square', .05, i * .11))
+        };
+    })();
+    function speakPrompt() {
+        if (!('speechSynthesis' in window)) return toast('Sintesi vocale non supportata');
+        window.speechSynthesis.cancel();
+        const raw = $('#prompt').innerText.replace(/🔊 Ascolta/g, '').replace(/²/g, ' alla seconda ').replace(/³/g, ' alla terza ').replace(/⁴/g, ' alla quarta ').replace(/−/g, ' meno ').replace(/\+/g, ' più ');
+        const u = new SpeechSynthesisUtterance(raw);
+        u.lang = 'it-IT'; u.rate = 0.96;
+        window.speechSynthesis.speak(u);
+    }
+
+    const cv = $('#cv'), ctx = cv.getContext('2d');
+    const glCanvas = $('#glCanvas');
+    let CW = 800, CH = 550;
+
+    const THREE_ENV = (() => {
+        if (!window.THREE) return null;
+        try {
+            const renderer = new THREE.WebGLRenderer({ canvas: glCanvas, alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+            camera.position.set(0, 0, 7.8);
+            const root = new THREE.Group();
+            scene.add(root);
+
+            const wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
+
+            function createBoxMesh(w, h, d, x, y, z, col, gridU = 1, gridV = 1) {
+                const g = new THREE.BoxGeometry(w, h, d);
+                const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.3, metalness: 0.2 });
+                const m = new THREE.Mesh(g, mat);
+                m.position.set(x, y, z);
+                const edges = new THREE.EdgesGeometry(g);
+                m.add(new THREE.LineSegments(edges, wireMat));
+
+                if (gridU > 1 || gridV > 1) {
+                    const gridMat = new THREE.LineBasicMaterial({ color: 0x10082e, transparent: true, opacity: 0.7 });
+                    const pts = [];
+                    for (let i = 1; i < gridU; i++) {
+                        const px = -w / 2 + (i * w / gridU);
+                        pts.push(new THREE.Vector3(px, -h / 2, d / 2 + 0.01), new THREE.Vector3(px, h / 2, d / 2 + 0.01));
+                    }
+                    for (let j = 1; j < gridV; j++) {
+                        const py = -h / 2 + (j * h / gridV);
+                        pts.push(new THREE.Vector3(-w / 2, py, d / 2 + 0.01), new THREE.Vector3(w / 2, py, d / 2 + 0.01));
+                    }
+                    if (pts.length) {
+                        const gridGeo = new THREE.BufferGeometry().setFromPoints(pts);
+                        m.add(new THREE.LineSegments(gridGeo, gridMat));
+                    }
+                }
+                return m;
+            }
+
+            const blocksGrp = new THREE.Group();
+            root.add(blocksGrp);
+
+            const coneGrp = new THREE.Group();
+            const coneGeo = new THREE.ConeGeometry(1.5, 3.0, 32, 1, true);
+            const coneMat = new THREE.MeshStandardMaterial({ color: 0x9b5de5, side: THREE.DoubleSide, transparent: true, opacity: 0.45 });
+            const cone1 = new THREE.Mesh(coneGeo, coneMat);
+            cone1.position.y = -0.8;
+            coneGrp.add(cone1);
+            const planeGeo = new THREE.PlaneGeometry(2.8, 2.8);
+            const planeMat = new THREE.MeshStandardMaterial({ color: 0x3ddc84, side: THREE.DoubleSide, transparent: true, opacity: 0.35 });
+            const plane = new THREE.Mesh(planeGeo, planeMat);
+            plane.rotation.x = 0.65;
+            plane.position.set(0, -0.6, 0.3);
+            coneGrp.add(plane);
+            coneGrp.position.set(-3.2, 0.2, -1.5);
+            root.add(coneGrp);
+
+            const astGrp = new THREE.Group();
+            const astGeo = new THREE.DodecahedronGeometry(1.35, 1);
+            const astMat = new THREE.MeshStandardMaterial({ color: 0xb98cff, flatShading: true, roughness: 0.55, metalness: 0.25 });
+            const astMesh = new THREE.Mesh(astGeo, astMat);
+            const astWire = new THREE.LineSegments(new THREE.EdgesGeometry(astGeo), new THREE.LineBasicMaterial({ color: 0xffd23f, transparent: true, opacity: 0.5 }));
+            astMesh.add(astWire);
+            astGrp.add(astMesh);
+            root.add(astGrp);
+
+            return {
+                renderer, scene, camera, root, blocksGrp, coneGrp, astGrp, astMesh, createBoxMesh,
+                resize(w, h) {
+                    renderer.setSize(w, h, false);
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                },
+                render(now, mode, q) {
+                    blocksGrp.visible = (mode === 'prod' || mode === 'trin');
+                    coneGrp.visible = (mode === 'para');
+                    astGrp.visible = (mode === 'fac' && q && !q.dead && !q.crash);
+
+                    if (blocksGrp.visible) {
+                        blocksGrp.rotation.y = Math.sin(now / 1800) * 0.45;
+                        blocksGrp.rotation.x = 0.2 + Math.cos(now / 2200) * 0.15;
+                        blocksGrp.position.y = 0.2;
+                    }
+                    if (coneGrp.visible) {
+                        coneGrp.rotation.y = now / 2000;
+                    }
+                    if (astGrp.visible && q) {
+                        const f = speedFrac(now);
+                        const rem = q.factorsLeft ? q.factorsLeft.length : 1;
+                        const tot = q.totalFactors || 1;
+                        const sc = 0.42 + 0.58 * (rem / tot);
+                        astGrp.scale.setScalar(sc);
+                        astGrp.position.x = Math.sin(now / 1200) * 0.6;
+                        astGrp.position.y = 1.6 - (1 - f) * 2.8;
+                        astMesh.rotation.x = now / 900;
+                        astMesh.rotation.y = now / 700;
+                    }
+                    renderer.render(scene, camera);
+                }
+            };
+        } catch (e) { return null; }
+    })();
+
+    let paraChart = null;
+    function renderParabolaChart(q) {
+        const box = $('#chartBox');
+        if (!R || R.mode !== 'para' || !window.Chart) { box.classList.remove('on'); return; }
+        box.classList.add('on');
+        const c = $('#chartCanvas');
+        if (paraChart) { paraChart.destroy(); paraChart = null; }
+
+        const { a, b, c: cc, r1, r2, xv, yv } = q;
+        const xmin = Math.min(r1, r2, xv, -2) - 2;
+        const xmax = Math.max(r1, r2, xv, 2) + 2;
+        const pts = [];
+        for (let x = Math.floor(xmin * 4) / 4; x <= Math.ceil(xmax * 4) / 4; x += 0.25) {
+            pts.push({ x: +x.toFixed(2), y: +(a * x * x + b * x + cc).toFixed(2) });
+        }
+        const rootsPts = r1 === r2 ? [{ x: r1, y: 0 }] : [{ x: r1, y: 0 }, { x: r2, y: 0 }];
+        const vertexPt = [{ x: xv, y: yv }];
+        const yIntPt = [{ x: 0, y: cc }];
+
+        const showMarkers = (q.sub === 'eq') || !!q.doneAnim;
+
+        const datasets = [
+            {
+                label: 'Parabola y(x)',
+                data: pts,
+                showLine: true,
+                borderColor: a > 0 ? '#4cc9f0' : '#ff8c42',
+                backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                borderWidth: 3.5,
+                pointRadius: 0,
+                tension: 0.35
+            }
+        ];
+        if (showMarkers) {
+            datasets.push(
+                {
+                    label: 'Zeri sull’asse x',
+                    data: rootsPts,
+                    backgroundColor: '#3ddc84',
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    pointRadius: 6.5,
+                    pointHoverRadius: 9
+                },
+                {
+                    label: 'Vertice V',
+                    data: vertexPt,
+                    backgroundColor: '#ffd23f',
+                    borderColor: '#10082e',
+                    borderWidth: 2,
+                    pointRadius: 6.5,
+                    pointStyle: 'rectRot'
+                },
+                {
+                    label: 'Intersezione asse y',
+                    data: yIntPt,
+                    backgroundColor: '#f15bb5',
+                    borderColor: '#ffffff',
+                    borderWidth: 1.5,
+                    pointRadius: 5
+                }
+            );
+        }
+
+        paraChart = new Chart(c, {
+            type: 'scatter',
+            data: { datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: RM ? 0 : 350 },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: { color: '#efeaff', font: { family: 'Fredoka', size: 11 }, boxWidth: 12 }
+                    },
+                    tooltip: {
+                        enabled: q.sub === 'eq' || !!q.doneAnim,
+                        callbacks: {
+                            label: ctx => `(${ctx.parsed.x}; ${ctx.parsed.y})`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        grid: {
+                            color: ctx => ctx.tick && ctx.tick.value === 0 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.12)',
+                            lineWidth: ctx => ctx.tick && ctx.tick.value === 0 ? 2.2 : 1
+                        },
+                        ticks: { color: '#d6ccff', stepSize: 1 }
+                    },
+                    y: {
+                        type: 'linear',
+                        grid: {
+                            color: ctx => ctx.tick && ctx.tick.value === 0 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.12)',
+                            lineWidth: ctx => ctx.tick && ctx.tick.value === 0 ? 2.2 : 1
+                        },
+                        ticks: { color: '#d6ccff' }
+                    }
+                }
+            }
+        });
+    }
+
+    function resize() {
+        const r = $('#stage').getBoundingClientRect(); if (!r.width) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        CW = r.width; CH = r.height;
+        cv.width = Math.round(CW * dpr); cv.height = Math.round(CH * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        if (THREE_ENV) THREE_ENV.resize(CW, CH);
+    }
+    if (window.ResizeObserver) new ResizeObserver(resize).observe($('#stage')); else window.addEventListener('resize', resize);
+
+    let parts = [], shakeUntil = 0, shakeAmp = 0;
+    function burst(x, y, color, n = 26, spd = 5) {
+        if (RM) n = Math.ceil(n / 3);
+        for (let i = 0; i < n; i++) {
+            const a = Math.random() * 6.283, v = (.4 + Math.random()) * spd;
+            parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, color: Array.isArray(color) ? pick(color) : color, s: 2 + Math.random() * 4 });
+        }
+    }
+    function drawParts() {
+        for (const p of parts) {
+            p.x += p.vx; p.y += p.vy; p.vy += .12; p.vx *= .98; p.life -= .022;
+            if (p.life > 0) { ctx.globalAlpha = p.life; ctx.fillStyle = p.color; ctx.fillRect(p.x - p.s / 2, p.y - p.s / 2, p.s, p.s); }
+        }
+        parts = parts.filter(p => p.life > 0); ctx.globalAlpha = 1;
+    }
+    function shake(amp = 8, ms = 350) { if (RM) return; shakeAmp = amp; shakeUntil = performance.now() + ms; }
+    function floatText(t, xp, yp, cls = '') {
+        const el = document.createElement('div'); el.className = 'float ' + cls; el.textContent = t;
+        el.style.left = xp + '%'; el.style.top = yp + '%'; $('#fx').appendChild(el); setTimeout(() => el.remove(), 1400);
+    }
+    function confetti() {
+        if (RM) return;
+        const box = document.createElement('div'); box.className = 'confetti';
+        for (let i = 0; i < 70; i++) {
+            const s = document.createElement('i'); s.style.left = Math.random() * 100 + '%';
+            s.style.background = pick(['#ffd23f', '#3ddc84', '#4cc9f0', '#f15bb5', '#ff8c42', '#9b5de5']);
+            s.style.animationDelay = Math.random() * .6 + 's'; s.style.animationDuration = (1.8 + Math.random() * 1.4) + 's'; box.appendChild(s);
+        }
+        document.body.appendChild(box); setTimeout(() => box.remove(), 4200);
+    }
+    function txt(s, x, y, size, color, align = 'center', stroke = null, font = 'Lilita One') {
+        ctx.font = `${size}px "${font}", Fredoka, sans-serif`; ctx.textAlign = align; ctx.textBaseline = 'middle';
+        // Su schermi stretti il testo si riduce per restare dentro il canvas (prima veniva tagliato)
+        const maxW = (typeof CW === 'number' ? CW : ctx.canvas.width) - 16, w = ctx.measureText(s).width;
+        if (w > maxW && maxW > 0) { size = Math.max(9, size * maxW / w); ctx.font = `${size}px "${font}", Fredoka, sans-serif`; }
+        if (stroke) { ctx.lineWidth = Math.max(3, size / 5); ctx.strokeStyle = stroke; ctx.lineJoin = 'round'; ctx.strokeText(s, x, y); }
+        ctx.fillStyle = color; ctx.fillText(s, x, y);
+    }
+    function rrect(x, y, w, h, r) { r = Math.min(r, w / 2, h / 2); ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+
+    let R = null, curMode = 'prod', loopId = 0;
+    const IMPL = {};
+    const panelEl = $('#panel'), hintBtn = $('#hintBtn');
+
+    function speedFrac(now) {
+        if (!R || !R.q) return 0;
+        const lim = (R.L.lim || R.L.time || 30) * 1000;
+        const t = R.phase === 'input' ? now - R.qStart : (R.answerAt || now) - R.qStart;
+        return clamp(1 - t / lim, 0, 1);
+    }
+
+    function updateSpeed(now) {
+        const f = speedFrac(now), el = $('#speedFill');
+        el.style.width = (f * 100) + '%';
+        el.style.background = f > .5 ? 'var(--g)' : f > .2 ? 'var(--y)' : 'var(--r)';
+    }
+
+    function startLoop() {
+        const id = ++loopId;
+        const f = now => {
+            if (id !== loopId || !R) return;
+            if (THREE_ENV) THREE_ENV.render(now, R.mode, R.q);
+            ctx.save();
+            ctx.clearRect(0, 0, CW, CH);
+            if (now < shakeUntil) {
+                const k = (shakeUntil - now) / 350;
+                ctx.translate((Math.random() - .5) * shakeAmp * k * 2, (Math.random() - .5) * shakeAmp * k * 2);
+            }
+            if (R.q && IMPL[R.mode] && IMPL[R.mode].draw) IMPL[R.mode].draw(R.q, now);
+            drawParts();
+            ctx.restore();
+            if (R) {
+                updateSpeed(now);
+                panelEl.classList.toggle('locked', R.phase !== 'input');
+                updateHint();
+            }
+            requestAnimationFrame(f);
+        };
+        requestAnimationFrame(f);
+    }
+    const stopLoop = () => { loopId++; };
+
+    function ladder(q) {
+        if (R.mode === 'prod') {
+            return [
+                { id: 'type', label: 'Metodo', html: `🧭 <b>Metodo:</b> controlla prima se tutti i termini hanno un <b>fattore comune</b>. Poi con <b>2 termini</b> usa <b>A² − B² = (A − B)(A + B)</b>; con <b>3 termini</b> verifica il quadrato di binomio <b>(A ± B)²</b>.` },
+                { id: 'bases', label: 'Individua le basi', html: `🔍 <b>Analisi basi:</b> ${q.preStr ? `Raccogliendo prima <b>${q.preStr}</b>, ` : ''}osserva i quadrati alle estremità: <b>A = ${q.baseA}</b> e <b>B = ${q.baseB}</b>.` },
+                { id: 'glow', label: 'Evidenzia risposta' }
+            ];
+        }
+        if (R.mode === 'trin') {
+            return [
+                { id: 'signs', label: 'Regola dei segni', html: `🧭 <b>Somma e Prodotto:</b> in <b>x² + sx + P</b>, cerca due numeri con <b>somma s = ${sgnNum(q.s)}</b> e <b>prodotto P = ${sgnNum(q.P)}</b>.` },
+                { id: 'tbl', label: 'Tabella divisori di P' },
+                { id: 'glow', label: 'Suggerisci un numero' }
+            ];
+        }
+        if (R.mode === 'para') {
+            return [
+                { id: 'conc', label: 'Concavità e quota c', html: `🧭 <b>Concavità e asse y:</b> concavità verso <b>${q.a > 0 ? 'l’alto (∪)' : 'il basso (∩)'}</b> e interseca l’asse y in <b>(0; ${q.c})</b>.` },
+                { id: 'zeros', label: 'Legame Zeri ↔ Fattori', html: `📍 <b>Regola degli zeri:</b> zeri in <b>x₁</b> e <b>x₂</b> con equazione <b>y = a(x − x₁)(x − x₂)</b>.` },
+                { id: 'glow', label: 'Evidenzia risposta' }
+            ];
+        }
+        return [
+            { id: 'rule', label: 'Strategia', html: `🧭 <b>Strategia:</b> ${q.hintText}` },
+            { id: 'glow', label: 'Indica un fattore' },
+            { id: 'glow2', label: 'Indica un altro fattore' }
+        ];
+    }
+    const nextRung = q => q && q.open ? (ladder(q).find(r => !q.open.has(r.id)) || null) : null;
+    const hintCost = q => R.free > 0 ? 0 : 10 + 5 * q.open.size;
+
+    function openRung(q, id) {
+        q.open.add(id); R.hintsQ++; R.hintsTot++;
+        if (id === 'glow' || id === 'glow2') IMPL[R.mode].glow(q);
+        IMPL[R.mode].prompt(q);
+    }
+
+    function trinomTableHTML(q) {
+        const pairs = [];
+        const absP = Math.abs(q.P);
+        for (let d = 1; d * d <= absP; d++) {
+            if (absP % d === 0) {
+                const d2 = absP / d;
+                if (q.P > 0) {
+                    const sgn = q.s > 0 ? 1 : -1;
+                    pairs.push([sgn * d, sgn * d2]);
+                } else {
+                    pairs.push([d, -d2], [-d, d2]);
+                }
+            }
+        }
+        return `<div class="scaf guide"><b>📋 Coppie di divisori con prodotto P = ${sgnNum(q.P)}:</b>
+            <table class="gtab"><tr><th>Coppia (p; q)</th><th>Prodotto p · q</th><th>Somma p + q</th></tr>
+            ${pairs.slice(0, 6).map(([p, qq]) => {
+                const sm = p + qq;
+                return `<tr><td>(${sgnNum(p)}; ${sgnNum(qq)})</td><td>${sgnNum(p * qq)}</td><td>${sgnNum(sm)}</td></tr>`;
+            }).join('')}</table></div>`;
+    }
+
+    function scafHTML(q) {
+        return ladder(q).filter(r => q.open.has(r.id) && r.html).map(r => `<div class="scaf">${r.html}</div>`).join('')
+            + (q.open.has('tbl') && R.mode === 'trin' ? trinomTableHTML(q) : '');
+    }
+
+    function topChips(q) {
+        const tr = TRACKS[P.track] || TRACKS.gen;
+        const c = [`<span class="chip-s ctx" style="--tc:${tr.c}">${tr.icon} ${tr.name}</span>`];
+        if (R.rip.has(q.idx - 1)) c.push('<span class="chip-s rip">🔁 Ripasso mirato</span>');
+        if (q.guided) c.push('<span class="chip-s guid">🧭 Guida attiva</span>');
+        else if (R.free > 0) c.push('<span class="chip-s free">🎁 1° aiuto gratis</span>');
+        return `<div class="chips-s">${c.join('')}<button class="tts-btn" id="ttsBtn" title="Leggi ad alta voce">🔊 Ascolta</button></div>`;
+    }
+
+    function updateHint() {
+        if (!R || !R.q || !R.q.open) return;
+        const rung = R.phase === 'input' ? nextRung(R.q) : null;
+        if (hintBtn.disabled === !!rung) hintBtn.disabled = !rung;
+        const cost = rung ? hintCost(R.q) : 0;
+        const lab = rung ? `<span>💡 ${rung.label}</span><small>${cost ? cost + ' 🪙' : '🎁 gratis'}</small>` : '<span>💡 Aiuti</span><small>completi</small>';
+        if (hintBtn.dataset.l !== lab) { hintBtn.dataset.l = lab; hintBtn.innerHTML = lab; }
+    }
+
+    function showDisplay(show) {
+        const d = $('#display');
+        d.classList.toggle('hide', !show);
+    }
+
+    IMPL.prod = {
+        gen(L, arch) {
+            return pickUniqueQuestion(() => {
+                let a = 1, b = rnd(2, 10), k = 1, xPow = 0, sign = 1;
+                if (arch === 'diffA' || arch === 'quadA') {
+                    a = pick([2, 3, 4, 5]);
+                    b = pick([1, 2, 3, 4, 5, 6, 7].filter(v => gcd(a, v) === 1));
+                } else if (arch === 'raccDiff' || arch === 'raccQuad') {
+                    k = pick([2, 3, 5, 6]);
+                    b = rnd(2, 7);
+                } else if (arch === 'raccXDiff' || arch === 'raccXQuad') {
+                    xPow = 1;
+                    k = pick([1, 2, 3]);
+                    b = rnd(2, 7);
+                } else if (arch === 'biquadDiff') {
+                    const b0 = pick([2, 3, 4]);
+                    const b2 = b0 * b0, b4 = b2 * b2;
+                    const poly = fmtPoly([[4, 1], [0, -b4]]);
+                    const ans = `(x² + ${b2})(x − ${b0})(x + ${b0})`;
+                    const raw = [
+                        { label: ans, ok: true },
+                        { label: `(x² − ${b2})²`, ok: false, tag: 'noDoppioProd', msg: `Sviluppando (x² − ${b2})² ci sarebbe il doppio prodotto!` },
+                        { label: `(x − ${b0})²(x + ${b0})²`, ok: false, tag: 'sommaQuadrati', near: true, msg: `La somma di quadrati (x² + ${b2}) è irriducibile!` },
+                        { label: `(x² + ${b2})(x − ${b2})(x + ${b2})`, ok: false, tag: 'noDoppioProd', msg: `La base quadrata di ${b2} è ${b0}, non ${b2}.` }
+                    ];
+                    return {
+                        sig: `biquad:${b0}`, arch, a: 1, b: b0, k: 1, xPow: 0, isDiff: true, sign: 1,
+                        preStr: '', baseA: 'x²', baseB: String(b2), poly, ans, opts: uniqueOpts(raw, 4)
+                    };
+                }
+
+                const isDiff = arch.toLowerCase().includes('diff');
+                sign = arch === 'quadM' || ((arch === 'quadA' || arch === 'raccQuad' || arch === 'raccXQuad') && Math.random() < 0.5) ? -1 : 1;
+
+                const deg2 = 2 + xPow, deg1 = 1 + xPow, deg0 = xPow;
+                const c2 = k * a * a;
+                const c1 = isDiff ? 0 : k * 2 * a * b * sign;
+                const c0 = isDiff ? -k * b * b : k * b * b;
+                const poly = fmtPoly([[deg2, c2], [deg1, c1], [deg0, c0]]);
+
+                const preStr = (k > 1 ? String(k) : '') + (xPow === 1 ? 'x' : '');
+                const baseA = a === 1 ? 'x' : `${a}x`;
+                const baseB = String(b);
+                const binM = fmtBinom(a, -b);
+                const binP = fmtBinom(a, b);
+                const ans = fmtFactPair(isDiff ? -b : sign * b, isDiff ? b : sign * b, k, xPow, a);
+
+                const raw = [{ label: ans, ok: true }];
+                if (isDiff) {
+                    raw.push({ label: `${preStr}(${binM})²`, ok: false, tag: 'noDoppioProd', msg: `La differenza di quadrati si scompone in (A − B)(A + B), non in un quadrato di binomio.` });
+                    if (preStr) {
+                        raw.push({ label: `(${binM})(${binP})`, ok: false, tag: 'raccDimenticato', near: true, msg: `Hai dimenticato il fattore comune ${preStr} raccolto all'inizio!` });
+                    }
+                    raw.push({ label: `Irriducibile`, ok: false, tag: 'sommaQuadrati', msg: `Qui c’è il segno meno, quindi è una differenza di quadrati scomponibile.` });
+                } else {
+                    const oppAns = fmtFactPair(-sign * b, -sign * b, k, xPow, a);
+                    raw.push({ label: oppAns, ok: false, tag: 'segnoBinomio', near: true, msg: `Controlla il segno del doppio prodotto per decidere il segno nel binomio.` });
+                    raw.push({ label: fmtFactPair(-b, b, k, xPow, a), ok: false, tag: 'noDoppioProd', msg: `Qui c'è un trinomio col doppio prodotto, non una differenza di quadrati.` });
+                }
+
+                return {
+                    sig: `${arch}:${k}:${xPow}:${a}:${b}:${sign}`,
+                    arch, a, b, k, xPow, isDiff, sign, preStr, baseA, baseB, poly, ans,
+                    opts: uniqueOpts(raw, 4)
+                };
+            }, 'prod');
+        },
+        setup(q) {
+            $('#chartBox').classList.remove('on');
+            $('#stageBadge').textContent = '🧊 Modello Geometrico 3D (Three.js)';
+            this.prompt(q);
+            showDisplay(false);
+            $('#controls').innerHTML = `<div class="opt-grid">${q.opts.map((o, i) => `<button class="opt-btn" data-oi="${i}"><span>${o.label}</span></button>`).join('')}</div>`;
+        },
+        prompt(q) {
+            const tr = TRACKS[P.track] || TRACKS.gen;
+            $('#prompt').innerHTML = `${topChips(q)}<div class="ctx-story" style="--tc:${tr.c}">${tr.ctx.prod()}</div>
+                <div class="poly-box"><small>Polinomio da scomporre</small>${q.poly}</div>
+                ${scafHTML(q)}<div class="goal"><span>🎯 Seleziona la scomposizione corretta</span></div>`;
+        },
+        glow(q) {
+            const idx = q.opts.findIndex(o => o.ok);
+            const btn = $(`.opt-btn[data-oi="${idx}"]`);
+            if (btn) btn.classList.add('glow');
+        },
+        choose(idx) {
+            if (!R || R.phase !== 'input') return;
+            const q = R.q, o = q.opts[idx];
+            if (!o) return;
+            R.phase = 'anim'; R.answerAt = performance.now();
+            q.doneAnim = true;
+            SFX.shoot();
+            burst(CW / 2, CH / 2, ['#4cc9f0', '#ffd23f', '#3ddc84'], 45, 6);
+            setTimeout(() => {
+                if (o.ok) {
+                    resolve('ok', { text: `Scomposizione esatta! <b>${q.poly} = ${q.ans}</b>.<span class="fxl">Base A = ${q.baseA} · Base B = ${q.baseB}</span>` });
+                } else {
+                    resolve(o.near ? 'near' : 'bad', { tag: o.tag, text: `${o.msg}<span class="fxl">Soluzione: ${q.poly} = ${q.ans}</span>` });
+                }
+            }, 420);
+        },
+        draw(q) {
+            const yBot = CH - 24;
+            ctx.fillStyle = 'rgba(5, 3, 25, 0.78)';
+            rrect(14, yBot - 22, CW - 28, 36, 12); ctx.fill();
+            txt(`Polinomio:  ${q.poly}`, CW / 2, yBot - 4, 16, '#ffd23f', 'center', null, 'JetBrains Mono');
+        }
+    };
+
+    IMPL.trin = {
+        gen(L, arch) {
+            return pickUniqueQuestion(() => {
+                let p = 2, q = 3;
+                const smallPool = [1, 2, 3, 4, 5, 6];
+                const bigPool = [2, 3, 4, 5, 6, 7, 8, 9];
+                const useBig = arch.includes('Big');
+                const pool = useBig ? bigPool : smallPool;
+
+                for (let i = 0; i < 80; i++) {
+                    const a = pick(pool), b = pick(pool);
+                    if (a === b) continue;
+                    if (arch === 'posPos') { p = a; q = b; break; }
+                    if (arch === 'negNeg' || arch === 'negBig') { p = -a; q = -b; break; }
+                    if (arch === 'discP' || arch === 'discBigP') { p = Math.max(a, b); q = -Math.min(a, b); break; }
+                    if (arch === 'discN' || arch === 'discBigN') { p = -Math.max(a, b); q = Math.min(a, b); break; }
+                }
+                const [p1, p2] = [p, q].sort((x, y) => x - y);
+                const s = p1 + p2, P = p1 * p2;
+                const poly = fmtTrinom(1, s, P);
+                const ans = fmtFactPair(p1, p2);
+
+                const candSet = new Set([p1, p2, -p1, -p2]);
+                for (let d = 1; d <= Math.abs(P); d++) {
+                    if (Math.abs(P) % d === 0 && d <= 12) { candSet.add(d); candSet.add(-d); }
+                }
+                if (Math.abs(s) >= 1 && Math.abs(s) <= 12) candSet.add(s);
+                const extras = [-8, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 8];
+                while (candSet.size < 8) { const c = pick(extras); if (c !== 0) candSet.add(c); }
+                const cands = [...candSet].slice(0, 8).sort((a, b) => a - b);
+                return { sig: `${p1},${p2}`, arch, p: p1, q: p2, s, P, poly, ans, cands, sel: [] };
+            }, 'trin');
+        },
+        setup(q) {
+            $('#chartBox').classList.remove('on');
+            $('#stageBadge').textContent = '🧩 Trinomio in Scala Reale 3D (Griglia p·q)';
+            
+            if (THREE_ENV) {
+                while (THREE_ENV.blocksGrp.children.length > 0) {
+                    const obj = THREE_ENV.blocksGrp.children[0];
+                    THREE_ENV.blocksGrp.remove(obj);
+                }
+                const p1 = Math.abs(q.p), p2 = Math.abs(q.q);
+                const scale = 0.35;
+                const szX = 2.4, szY = 2.4;
+                const px = q.p * scale, qx = q.q * scale;
+                
+                // 1. Blocco x^2 (azzurro) - area centrale x*x in scala reale
+                THREE_ENV.blocksGrp.add(THREE_ENV.createBoxMesh(szX, szY, 0.4, 0, 0, 0, 0x4cc9f0, 1, 1));
+                
+                // 2. Rettangolo px (giallo) - lato superiore di larghezza p1 (diviso in quadretti unitari)
+                const wPx = Math.abs(px);
+                const meshPx = THREE_ENV.createBoxMesh(wPx, szY, 0.4, szX/2 + wPx/2, 0, 0, 0xffd23f, Math.max(1, p1), 1);
+                THREE_ENV.blocksGrp.add(meshPx);
+
+                // 3. Rettangolo qx (arancione) - lato laterale di altezza p2 (diviso in quadretti unitari)
+                const hQx = Math.abs(qx);
+                const meshQx = THREE_ENV.createBoxMesh(szX, hQx, 0.4, 0, -szY/2 - hQx/2, 0, 0xff8c42, 1, Math.max(1, p2));
+                THREE_ENV.blocksGrp.add(meshQx);
+
+                // 4. Griglia p*q (rosa/magenta) - suddivisa esattamente in p1 x p2 celle unitarie in scala reale
+                const meshPq = THREE_ENV.createBoxMesh(wPx, hQx, 0.4, szX/2 + wPx/2, -szY/2 - hQx/2, 0, 0xf15bb5, Math.max(1, p1), Math.max(1, p2));
+                THREE_ENV.blocksGrp.add(meshPq);
+            }
+
+            q.sel = [];
+            this.prompt(q);
+            showDisplay(true);
+            this.renderControls(q);
+            this.updateDisp(q);
+        },
+        prompt(q) {
+            const tr = TRACKS[P.track] || TRACKS.gen;
+            $('#prompt').innerHTML = `${topChips(q)}<div class="ctx-story" style="--tc:${tr.c}">${tr.ctx.trin()}</div>
+                <div class="poly-box"><small>Trinomio di secondo grado</small>${q.poly}</div>
+                ${scafHTML(q)}<div class="goal"><span>🎯 Seleziona la coppia (p, q) dei due numeri interi e conferma</span></div>`;
+        },
+        updateDisp(q) {
+            const [v1, v2] = q.sel;
+            const d = $('#display');
+            if (v1 == null) {
+                d.textContent = '(x + p)(x + q)';
+                d.classList.remove('filled');
+            } else if (v2 == null) {
+                d.textContent = `(${fmtBinom(1, v1)})(x + q)`;
+                d.classList.add('filled');
+            } else {
+                d.textContent = fmtFactPair(v1, v2);
+                d.classList.add('filled');
+            }
+        },
+        renderControls(q) {
+            $('#controls').innerHTML = `
+                <div class="int-grid">
+                    ${q.cands.map(n => {
+                        const isSel = q.sel.includes(n);
+                        return `<button class="int-btn ${isSel ? 'sel' : ''}" data-num="${n}">${sgnNum(n)}</button>`;
+                    }).join('')}
+                </div>
+                <div class="int-actions">
+                    <button class="btn3d ghost" data-trin="clear">⌫ Azzera</button>
+                    <button class="btn3d" style="--c:#3ddc84;--d:#1a8a4e;--t:#063a1f" data-trin="ok" ${q.sel.length < 2 ? 'disabled' : ''}>✓ Conferma</button>
+                </div>`;
+        },
+        glow(q) {
+            const target = !q.sel.includes(q.p) ? q.p : q.q;
+            const b = $(`.int-btn[data-num="${target}"]`);
+            if (b) b.classList.add('glow');
+        },
+        pickNum(n) {
+            if (!R || R.phase !== 'input') return;
+            const q = R.q;
+            SFX.tap();
+            const idx = q.sel.indexOf(n);
+            if (idx >= 0) q.sel.splice(idx, 1);
+            else if (q.sel.length < 2) q.sel.push(n);
+            else q.sel = [q.sel[1], n];
+            this.updateDisp(q);
+            this.renderControls(q);
+        },
+        clear() {
+            if (!R || R.phase !== 'input') return;
+            R.q.sel = []; SFX.tap();
+            this.updateDisp(R.q);
+            this.renderControls(R.q);
+        },
+        submit() {
+            if (!R || R.phase !== 'input' || R.q.sel.length < 2) return;
+            const q = R.q, [u1, u2] = q.sel;
+            R.phase = 'anim'; R.answerAt = performance.now();
+            q.doneAnim = true;
+            const uSum = u1 + u2, uProd = u1 * u2;
+            SFX.shoot();
+            if (uSum === q.s && uProd === q.P) {
+                burst(CW / 2, CH / 2, ['#3ddc84', '#ffd23f', '#4cc9f0'], 50, 6);
+                resolve('ok', {
+                    text: `Corretto! I numeri <b>${sgnNum(u1)}</b> e <b>${sgnNum(u2)}</b> hanno somma <b>${sgnNum(uSum)}</b> e prodotto <b>${sgnNum(uProd)}</b>.<span class="fxl">${q.poly} = ${q.ans}</span>`
+                });
+            } else if (uProd === q.P && uSum === -q.s) {
+                resolve('near', {
+                    tag: 'segnoTrin',
+                    text: `Quasi! Con <b>${sgnNum(u1)}</b> e <b>${sgnNum(u2)}</b> il prodotto è esatto (${sgnNum(uProd)}), ma la somma è <b>${sgnNum(uSum)}</b> (richiesta ${sgnNum(q.s)}).<span class="fxl">Soluzione: ${q.poly} = ${q.ans}</span>`
+                });
+            } else {
+                resolve('bad', {
+                    tag: 'segnoTrin',
+                    text: `Con <b>${sgnNum(u1)}</b> e <b>${sgnNum(u2)}</b> ottieni somma <b>${sgnNum(uSum)}</b> e prodotto <b>${sgnNum(uProd)}</b>.<span class="fxl">Soluzione: ${q.poly} = ${q.ans}</span>`
+                });
+            }
+        },
+        draw(q) {
+            const [u1, u2] = q.sel;
+            const yBot = CH - 26;
+            ctx.fillStyle = 'rgba(5, 3, 25, 0.82)';
+            rrect(14, yBot - 24, CW - 28, 40, 12); ctx.fill();
+            if (u1 != null && u2 != null) {
+                txt(`Selezione:  ${fmtFactPair(u1, u2)}`, CW / 2, yBot - 4, 16, '#ffd23f', 'center', null, 'JetBrains Mono');
+            } else {
+                txt(`Trinomio:  ${q.poly}  =  (x + p)(x + q)`, CW / 2, yBot - 4, 16, '#4cc9f0', 'center', null, 'JetBrains Mono');
+            }
+        }
+    };
+
+    IMPL.para = {
+        gen(L, arch) {
+            return pickUniqueQuestion(() => {
+                let r1 = -2, r2 = 4, a = 1;
+                const pool = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6];
+                if (arch === 'tangent') {
+                    r1 = pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]);
+                    r2 = r1;
+                    a = Math.random() < 0.45 ? -1 : 1;
+                } else {
+                    for (let i = 0; i < 60; i++) {
+                        const x1 = pick(pool), x2 = pick(pool);
+                        if (x1 !== x2 && x1 + x2 !== 0 && (x1 + x2) % 2 === 0) {
+                            r1 = Math.min(x1, x2);
+                            r2 = Math.max(x1, x2);
+                            break;
+                        }
+                    }
+                    if (arch === 'eqDown' || arch === 'rootsDown') a = -1;
+                    else if (arch === 'stretchEq' || arch === 'rootsStretch') a = pick([2, -2]);
+                    else if (arch === 'vertex') a = pick([1, -1]);
+                    else a = 1;
+                }
+
+                const s = -(r1 + r2), P = r1 * r2;
+                const b = a * s, c = a * P;
+                const xv = (r1 + r2) / 2, yv = a * xv * xv + b * xv + c;
+                const eq = `y = ${fmtTrinom(a, b, c)}`;
+                const factEq = `y = ${fmtFactPair(-r1, -r2, a)}`;
+                const sub = (arch === 'rootsUp' || arch === 'rootsDown' || arch === 'rootsStretch' || arch === 'vertex') ? 'roots' : 'eq';
+
+                const fmtRootsV = (z1, z2, vx, vy) => {
+                    const [lo, hi] = [z1, z2].sort((x, y) => x - y);
+                    const rPart = lo === hi ? `x₁ = x₂ = ${lo}` : `x₁ = ${lo},  x₂ = ${hi}`;
+                    return `${rPart}   ·   V(${vx}; ${vy})`;
+                };
+
+                const raw = [];
+                if (sub === 'eq') {
+                    raw.push({ label: eq, ok: true });
+                    raw.push({ label: `y = ${fmtTrinom(a, -b, c)}`, ok: false, tag: 'segnoZeri', near: true, msg: `Controlla i segni degli zeri x₁ = ${r1} e x₂ = ${r2}.` });
+                    raw.push({ label: `y = ${fmtTrinom(-a, -b, -c)}`, ok: false, tag: 'concavita', msg: `Il verso della concavità non corrisponde al grafico.` });
+                    raw.push({ label: `y = ${fmtTrinom(a, b, -c || (a * 4))}`, ok: false, tag: 'segnoZeri', msg: `L'intersezione con l'asse y per x = 0 deve essere c = ${c}.` });
+                } else {
+                    const ansLbl = fmtRootsV(r1, r2, xv, yv);
+                    raw.push({ label: ansLbl, ok: true });
+                    raw.push({ label: fmtRootsV(-r1, -r2, -xv, yv), ok: false, tag: 'segnoZeri', near: true, msg: `Ricorda di invertire il segno all'interno dei fattori della parabola.` });
+                    raw.push({ label: fmtRootsV(r1, r2, xv, yv === 0 ? -4 * a : -yv), ok: false, tag: 'concavita', msg: `Sostituendo x_V nell'equazione si ottiene y_V = ${yv}.` });
+                }
+
+                return {
+                    sig: `${sub}:${a}:${r1}:${r2}`,
+                    arch, sub, a, b, c, r1, r2, xv, yv, eq, factEq,
+                    opts: uniqueOpts(raw, 4)
+                };
+            }, 'para');
+        },
+        setup(q) {
+            $('#stageBadge').textContent = '📊 Piano Cartesiano';
+            renderParabolaChart(q);
+            this.prompt(q);
+            showDisplay(false);
+            $('#controls').innerHTML = `<div class="opt-grid single">${q.opts.map((o, i) => `<button class="opt-btn" data-oi="${i}"><span>${o.label}</span></button>`).join('')}</div>`;
+        },
+        prompt(q) {
+            const tr = TRACKS[P.track] || TRACKS.gen;
+            const headBox = q.sub === 'eq'
+                ? `<div class="poly-box"><small>Osserva il grafico nel piano cartesiano</small>Individua concavità, intersezioni con gli assi e vertice V</div>`
+                : `<div class="poly-box"><small>Equazione della Parabola</small>${q.eq}</div>`;
+            $('#prompt').innerHTML = `${topChips(q)}<div class="ctx-story" style="--tc:${tr.c}">${tr.ctx.para(q.sub)}</div>
+                ${headBox}${scafHTML(q)}<div class="goal"><span>🎯 ${q.sub === 'eq' ? 'Quale equazione corrisponde al grafico?' : 'Scomponi e individua Zeri e Vertice V:'}</span></div>`;
+        },
+        glow(q) {
+            const idx = q.opts.findIndex(o => o.ok);
+            const btn = $(`.opt-btn[data-oi="${idx}"]`);
+            if (btn) btn.classList.add('glow');
+        },
+        choose(idx) {
+            if (!R || R.phase !== 'input') return;
+            const q = R.q, o = q.opts[idx];
+            if (!o) return;
+            R.phase = 'anim'; R.answerAt = performance.now();
+            q.doneAnim = true;
+            if (q.sub === 'roots') renderParabolaChart(q);
+            SFX.shoot();
+            burst(CW / 2, CH / 2, ['#9b5de5', '#3ddc84', '#ffd23f'], 45, 6);
+            setTimeout(() => {
+                if (o.ok) {
+                    resolve('ok', {
+                        text: `Corretto! <b>${q.eq}</b> si scompone in <b>${q.factEq}</b>.<span class="fxl">Zeri: (${q.r1}; 0)${q.r1 === q.r2 ? '' : ` e (${q.r2}; 0)`} · Vertice V(${q.xv}; ${q.yv})</span>`
+                    });
+                } else {
+                    resolve(o.near ? 'near' : 'bad', {
+                        tag: o.tag,
+                        text: `${o.msg}<span class="fxl">Soluzione: ${q.eq} = ${q.factEq} · V(${q.xv}; ${q.yv})</span>`
+                    });
+                }
+            }, 420);
+        },
+        draw() { }
+    };
+
+    const FACT_COLORS = ['#4cc9f0', '#3ddc84', '#ffd23f', '#f15bb5', '#ff8c42', '#b98cff', '#00f5d4', '#ff9ebb'];
+
+    function factorToPolyMap(lbl) {
+        if (lbl === '2') return { 0: 2 };
+        if (lbl === '3') return { 0: 3 };
+        if (lbl === '5') return { 0: 5 };
+        if (lbl === 'x') return { 1: 1 };
+        const mQuad = lbl.match(/^x²\s*\+\s*(\d+)$/);
+        if (mQuad) return { 2: 1, 0: Number(mQuad[1]) };
+        const mLin = lbl.match(/^(\d*)x\s*([+−])\s*(\d+)$/);
+        if (mLin) {
+            const a = mLin[1] ? Number(mLin[1]) : 1;
+            const sgn = mLin[2] === '−' ? -1 : 1;
+            const b = sgn * Number(mLin[3]);
+            return { 1: a, 0: b };
+        }
+        return { 0: 1 };
+    }
+
+    function multiplyFactorList(list) {
+        if (!list.length) return '1';
+        let cur = { 0: 1 };
+        for (const f of list) cur = mulPoly(cur, factorToPolyMap(f));
+        return fmtPoly(cur);
+    }
+
+    function fmtFactorChain(list) {
+        const monoms = list.filter(f => f === '2' || f === '3' || f === '5' || f === 'x');
+        const polys = list.filter(f => !monoms.includes(f));
+        let k = 1, xCnt = 0;
+        for (const m of monoms) {
+            if (m === 'x') xCnt++;
+            else k *= Number(m);
+        }
+        let out = (k > 1 ? String(k) : '') + (xCnt === 1 ? 'x' : xCnt > 1 ? 'x' + sup(xCnt) : '');
+        const counts = {};
+        for (const p of polys) counts[p] = (counts[p] || 0) + 1;
+        for (const [p, c] of Object.entries(counts)) {
+            out += `(${p})` + (c > 1 ? sup(c) : '');
+        }
+        return out || '1';
+    }
+
+    IMPL.fac = {
+        gen(L, arch) {
+            return pickUniqueQuestion(() => {
+                let factorsLeft = [];
+                let hintText = '';
+
+                if (arch === 'diff1') {
+                    const b = rnd(2, 8);
+                    factorsLeft = [fmtBinom(1, -b), fmtBinom(1, b)];
+                    hintText = `Differenza di quadrati x² − ${b * b} = (x − ${b})(x + ${b}).`;
+                } else if (arch === 'quad1') {
+                    const b = pick([-7, -6, -5, -4, -3, -2, 2, 3, 4, 5, 6, 7]);
+                    const f = fmtBinom(1, b);
+                    factorsLeft = [f, f];
+                    hintText = `Quadrato di binomio: colpisci due volte (${f}).`;
+                } else if (arch === 'trin1') {
+                    let p = rnd(1, 6), q = rnd(2, 7); if (p === q) q++;
+                    const [p1, p2] = [p, q].sort((a, b) => a - b);
+                    factorsLeft = [fmtBinom(1, p1), fmtBinom(1, p2)];
+                    hintText = `Trinomio speciale.`;
+                } else if (arch === 'trinNeg') {
+                    let p = rnd(2, 7), q = -rnd(1, 6); if (p === -q) p++;
+                    const [p1, p2] = [p, q].sort((a, b) => a - b);
+                    factorsLeft = [fmtBinom(1, p1), fmtBinom(1, p2)];
+                    hintText = `Trinomio speciale con termine noto negativo.`;
+                } else if (arch === 'raccDiff') {
+                    const k = String(pick([2, 3, 5])), b = rnd(2, 6);
+                    factorsLeft = [k, fmtBinom(1, -b), fmtBinom(1, b)];
+                    hintText = `Raccogli ${k} e poi scomponi la differenza di quadrati.`;
+                } else if (arch === 'raccQuad') {
+                    const k = String(pick([2, 3])), b = pick([-5, -4, -3, -2, 2, 3, 4, 5]);
+                    const f = fmtBinom(1, b);
+                    factorsLeft = [k, f, f];
+                    hintText = `Raccogli ${k} e poi il quadrato di binomio.`;
+                } else if (arch === 'raccTrin') {
+                    const k = String(pick([2, 3]));
+                    let p = rnd(1, 5), q = pick([-5, -4, -3, -2, 2, 3, 4, 5]); if (p === q || p === -q) p++;
+                    const [p1, p2] = [p, q].sort((a, b) => a - b);
+                    factorsLeft = [k, fmtBinom(1, p1), fmtBinom(1, p2)];
+                    hintText = `Raccogli ${k} e poi il trinomio speciale.`;
+                } else if (arch === 'raccXDiff') {
+                    const b = rnd(2, 7);
+                    factorsLeft = ['x', fmtBinom(1, -b), fmtBinom(1, b)];
+                    hintText = `Raccogli x e poi la differenza di quadrati.`;
+                } else if (arch === 'raccXTrin') {
+                    let p = rnd(1, 5), q = pick([-6, -5, -4, -3, -2, 2, 3, 4, 5]); if (p === q || p === -q) p++;
+                    const [p1, p2] = [p, q].sort((a, b) => a - b);
+                    factorsLeft = ['x', fmtBinom(1, p1), fmtBinom(1, p2)];
+                    hintText = `Raccogli x e poi il trinomio speciale.`;
+                } else if (arch === 'diffA2') {
+                    const a = pick([2, 3]), b = pick([1, 2, 3, 4, 5].filter(v => gcd(a, v) === 1));
+                    factorsLeft = [fmtBinom(a, -b), fmtBinom(a, b)];
+                    hintText = `Differenza di quadrati con coefficiente.`;
+                } else if (arch === 'raccKXDiff') {
+                    const k = String(pick([2, 3])), b = rnd(2, 5);
+                    factorsLeft = [k, 'x', fmtBinom(1, -b), fmtBinom(1, b)];
+                    hintText = `Raccogli ${k}x e poi scomponi.`;
+                } else if (arch === 'raccKXTrin') {
+                    const k = String(pick([2, 3]));
+                    let p = rnd(1, 4), q = rnd(2, 5); if (p === q) q++;
+                    factorsLeft = [k, 'x', fmtBinom(1, p), fmtBinom(1, q)];
+                    hintText = `Raccogli ${k}x e poi il trinomio.`;
+                } else if (arch === 'biquad4') {
+                    const b = pick([2, 3]);
+                    factorsLeft = [`x² + ${b * b}`, fmtBinom(1, -b), fmtBinom(1, b)];
+                    hintText = `Differenza di quarte potenze con fattore irriducibile.`;
+                }
+
+                const origPoly = multiplyFactorList(factorsLeft);
+                const ansStr = fmtFactorChain(factorsLeft);
+                const totalFactors = factorsLeft.length;
+                const nBtns = R.lvl === 0 ? 6 : 8;
+
+                const btnSet = new Set(factorsLeft);
+                for (const f of factorsLeft) {
+                    const m = f.match(/^(\d*)x\s*([+−])\s*(\d+)$/);
+                    if (m) {
+                        const a = m[1] ? Number(m[1]) : 1;
+                        const oppSgn = m[2] === '−' ? 1 : -1;
+                        btnSet.add(fmtBinom(a, oppSgn * Number(m[3])));
+                    }
+                }
+                if (R.lvl >= 1) { btnSet.add('2'); btnSet.add('3'); btnSet.add('x'); }
+                if (arch === 'biquad4') { btnSet.add('x² + 4'); btnSet.add('x² + 9'); }
+                const fallbackBins = ['x + 1', 'x − 1', 'x + 2', 'x − 2', 'x + 3', 'x − 3', 'x + 4', 'x − 4'];
+                while (btnSet.size < nBtns) btnSet.add(pick(fallbackBins));
+                const btns = shuffle([...btnSet].slice(0, nBtns));
+
+                return {
+                    sig: `${arch}:${origPoly}`,
+                    arch, factorsLeft, totalFactors, got: [], chain: [origPoly],
+                    origPoly, ansStr, btns, nBtns, hintText, miss: 0, lasers: [], rule: ''
+                };
+            }, 'fac');
+        },
+        curPolyStr(q) {
+            return multiplyFactorList(q.factorsLeft);
+        },
+        setup(q) {
+            $('#chartBox').classList.remove('on');
+            $('#stageBadge').textContent = '💥 Factor Blaster 3D (Three.js)';
+            this.prompt(q);
+            showDisplay(false);
+            const gridCls = q.nBtns > 6 ? 'primes grid4' : 'primes';
+            const fmtBtn = b => (b.length === 1) ? b : `(${b})`;
+            $('#controls').innerHTML = `<div class="${gridCls}">${q.btns.map((b, i) => `<button class="prime" data-fb="${esc(b)}" style="--c:${FACT_COLORS[i % FACT_COLORS.length]}">${fmtBtn(b)}</button>`).join('')}</div>`;
+        },
+        prompt(q) {
+            const tr = TRACKS[P.track] || TRACKS.gen;
+            const curP = this.curPolyStr(q);
+            const chainHTML = q.chain.map((c, i) => {
+                const divLbl = i ? (q.got[i - 1].length === 1 ? q.got[i - 1] : `(${q.got[i - 1]})`) : '';
+                return (i ? `<span class="arr">÷ ${divLbl}</span>` : '') + `<span class="cn">${c}</span>`;
+            }).join('');
+            const fl = !q.factorsLeft.length
+                ? `${q.origPoly} = ${q.ansStr}`
+                : `${q.origPoly} = ${q.got.length ? fmtFactorChain(q.got) + ' · ' : ''}[ ${curP} ]`;
+            $('#prompt').innerHTML = `${topChips(q)}<div class="ctx-story" style="--tc:${tr.c}">${tr.ctx.fac()}</div>
+                <div class="chain">${chainHTML}</div>
+                <div class="factline">${fl}</div>
+                ${q.rule ? `<div class="rule">✖ ${q.rule}</div>` : ''}${scafHTML(q)}`;
+        },
+        glow(q) {
+            const target = q.factorsLeft[0];
+            $$('.prime.glow').forEach(b => b.classList.remove('glow'));
+            const btn = $$('.prime').find(b => b.dataset.fb === target);
+            if (btn) btn.classList.add('glow');
+        },
+        fire(val) {
+            if (!R || R.phase !== 'input') return;
+            const q = R.q, now = performance.now();
+            const idx = q.factorsLeft.indexOf(val);
+            const btn = $$('.prime').find(b => b.dataset.fb === val);
+            const dispVal = val.length === 1 ? val : `(${val})`;
+            if (idx >= 0) {
+                q.factorsLeft.splice(idx, 1);
+                q.got.push(val);
+                q.chain.push(this.curPolyStr(q));
+                q.rule = '';
+                q.lasers.push({ t0: now, ok: true });
+                SFX.shoot();
+                $$('.prime.glow').forEach(b => b.classList.remove('glow'));
+                burst(CW / 2, CH * 0.42, ['#3ddc84', '#ffd23f', '#4cc9f0'], 24, 5);
+                floatText(`÷ ${dispVal}`, 50, 35, 'pts');
+                this.prompt(q);
+                if (!q.factorsLeft.length) {
+                    R.phase = 'anim'; R.answerAt = now; q.dead = true;
+                    burst(CW / 2, CH * 0.38, ['#ffd23f', '#ff8c42', '#f15bb5', '#fff'], 70, 7);
+                    shake(12); SFX.boom();
+                    setTimeout(() => {
+                        if (R && R.q === q) {
+                            resolve('ok', {
+                                title: q.miss ? 'Asteroide Scomposto!' : 'Scomposizione Perfetta!',
+                                k: Math.max(.4, 1 - .2 * q.miss),
+                                text: `Hai scomposto completamente il polinomio:<span class="fxl">${q.origPoly} = ${q.ansStr}</span>`
+                            });
+                        }
+                    }, 750);
+                }
+            } else {
+                q.miss++;
+                q.lasers.push({ t0: now, ok: false });
+                SFX.miss(); shake(6);
+                R.qStart -= 2000;
+                floatText(`${dispVal} non divide! −2s`, 50, 35, 'bad');
+                q.rule = `Il fattore ${dispVal} non divide il polinomio rimasto.`;
+                R.diag.fattoreErrato = (R.diag.fattoreErrato || 0) + 1;
+                this.prompt(q);
+                if (btn) { btn.classList.remove('miss'); void btn.offsetWidth; btn.classList.add('miss'); }
+            }
+        },
+        draw(q, now) {
+            const gy = CH - 30;
+            const f = speedFrac(now);
+            if (R.phase === 'input' && f <= 0) {
+                R.phase = 'anim'; R.answerAt = now; q.crash = true;
+                burst(CW / 2, gy - 10, ['#ff4d6d', '#ff8c42', '#ffd23f'], 70, 7); shake(14); SFX.boom();
+                setTimeout(() => {
+                    if (R && R.q === q) {
+                        resolve('bad', {
+                            title: 'Impatto sulla Base!', tag: 'tempo',
+                            text: `Tempo scaduto! Scomposizione:<span class="fxl">${q.origPoly} = ${q.ansStr}</span>`
+                        });
+                    }
+                }, 800);
+            }
+            ctx.fillStyle = '#2b1f6e';
+            ctx.beginPath(); ctx.ellipse(CW / 2, gy + CW * .85, CW * 1.05, CW * .85, 0, 0, 6.283); ctx.fill();
+            const astY = CH * .22 + (gy - 60 - CH * .22) * (1 - f);
+            const astX = CW / 2 + Math.sin(now / 1200) * 35;
+
+            q.lasers = q.lasers.filter(l => now - l.t0 < 260);
+            for (const l of q.lasers) {
+                ctx.globalAlpha = 1 - (now - l.t0) / 260;
+                ctx.strokeStyle = l.ok ? '#3ddc84' : '#ff4d6d';
+                ctx.lineWidth = 5;
+                ctx.beginPath(); ctx.moveTo(CW / 2, gy - 14);
+                ctx.lineTo(astX, astY);
+                ctx.stroke(); ctx.globalAlpha = 1;
+            }
+            if (!q.dead && !q.crash) {
+                const curP = this.curPolyStr(q);
+                ctx.fillStyle = 'rgba(10, 7, 36, 0.85)';
+                const tw = Math.max(120, curP.length * 12.5 + 24);
+                rrect(astX - tw / 2, astY - 21, tw, 42, 12); ctx.fill();
+                ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 2; ctx.stroke();
+                txt(curP, astX, astY + 1, 19, '#fff', 'center', null, 'JetBrains Mono');
+            }
+            txt(`${Math.ceil(f * R.L.time)} s`, CW - 16, 22, 18, f > .3 ? '#ffd23f' : '#ff8da2', 'right', 'rgba(0,0,0,.7)');
+        }
+    };
+
+    function buildDeck(mode, L) {
+        R.rip = new Set();
+        const dm = DIFF[mode] || {};
+        const order = L.deck
+            .map(a => ({ a, w: (dm[a] || 0) + Math.random() * 1.15 }))
+            .sort((x, y) => x.w - y.w)
+            .map(x => x.a);
+        const weak = [...new Set(L.deck)]
+            .map(a => [a, P.weak[mode + ':' + a] || 0])
+            .filter(x => x[1] >= 2)
+            .sort((a, b) => b[1] - a[1])[0];
+        if (weak) {
+            const idx = [3, 4, 5, 2, 6].find(i => order[i] !== weak[0]);
+            if (idx != null) { order[idx] = weak[0]; R.rip.add(idx); }
+        }
+        return order;
+    }
+
+    function startRun(mode, lvl) {
+        R = {
+            mode, lvl, L: MODES[mode].levels[lvl], qi: 0, hearts: 3, score: 0, combo: 0, maxCombo: 0,
+            res: [], q: null, phase: 'idle', hintsQ: 0, hintsTot: 0, seen: new Set(), diag: {}, errStreak: 0, okStreak: 0, free: 0, rip: new Set()
+        };
+        R.deck = buildDeck(mode, R.L);
+        show('game'); resize(); renderHearts(); updateScore(); nextQuestion(); startLoop();
+    }
+
+    function nextQuestion() {
+        if (R.qi >= WAVE || R.hearts <= 0) return endRun();
+        const im = IMPL[R.mode];
+        const q = R.q = im.gen(R.L, R.deck[R.qi]);
+        q.idx = R.qi + 1; q.open = new Set();
+        R.hintsQ = 0; R.phase = 'input'; R.qStart = performance.now(); R.answerAt = 0; parts = [];
+        $('#msg').className = 'msg'; $('#prompt').scrollTop = 0;
+        showDisplay(R.mode !== 'fac');
+        R.free = R.errStreak >= 1 ? 1 : 0;
+        q.guided = R.errStreak >= 2;
+        im.setup(q);
+        if (q.guided) {
+            const firstRung = ladder(q)[0];
+            if (firstRung) openRung(q, firstRung.id);
+            floatText('🧭 Guida attivata!', 50, 45, 'pts');
+        }
+        renderProg();
+    }
+
+    function resolve(kind, info) {
+        if (!R || R.phase === 'sheet') return;
+        R.phase = 'sheet'; if (!R.answerAt) R.answerAt = performance.now();
+        const q = R.q, lm = LV_MULT[R.lvl], hk = Math.max(.4, 1 - .2 * R.hintsQ);
+        let pts = 0;
+        if (kind === 'ok') {
+            R.combo++; R.maxCombo = Math.max(R.maxCombo, R.combo);
+            const cm = 1 + Math.min(R.combo - 1, 4) * .25;
+            pts = Math.round((100 * lm + 50 * speedFrac(performance.now())) * cm * hk * (info.k == null ? 1 : info.k));
+            SFX.ok();
+            if (R.combo >= 2) {
+                const W = { 2: 'Bene!', 3: 'Combo x3!', 4: 'Super!', 5: 'Inarrestabile!' };
+                floatText(W[R.combo] || `Combo x${R.combo}!`, 50, 24, 'combo'); SFX.combo(R.combo);
+            }
+        } else if (kind === 'near') {
+            R.combo = 0; pts = Math.round(35 * lm * hk); SFX.near();
+        } else {
+            R.combo = 0; R.hearts--; SFX.bad(); shake(10); renderHearts(true);
+        }
+        if (info.tag) R.diag[info.tag] = (R.diag[info.tag] || 0) + 1;
+        R.errStreak = kind === 'bad' ? R.errStreak + 1 : 0;
+        R.okStreak = kind === 'ok' ? R.okStreak + 1 : 0;
+        if (q.arch) {
+            const k = R.mode + ':' + q.arch;
+            P.weak[k] = Math.max(0, (P.weak[k] || 0) + (kind === 'ok' ? -1 : kind === 'near' ? 1 : 2));
+            saveP();
+        }
+        const A = ARCH[R.mode] && ARCH[R.mode][q.arch];
+        if (A) info.text += `<span class="arch">🧩 Regola: <b>${A[0]}</b> — ${A[1]}</span>`;
+        R.score += pts; R.res.push(kind); R.qi++;
+        updateScore(); renderProg();
+        if (pts) floatText('+' + pts, 50, 42, 'pts');
+        showSheet(kind, pts, info);
+    }
+
+    function showSheet(kind, pts, info) {
+        $('#sheet').className = 'sheet show ' + kind;
+        $('#shIco').textContent = kind === 'ok' ? '✔' : kind === 'near' ? '≈' : '✖';
+        $('#shTitle').textContent = info.title || (kind === 'ok' ? pick(['Perfetto!', 'Grande!', 'Esatto!', 'Ottimo lavoro!']) : kind === 'near' ? 'Quasi! Attenzione ai segni' : 'Analizziamo l’errore…');
+        $('#shPts').textContent = pts ? `+${pts} punti` : (kind === 'bad' ? '−1 ❤' : '');
+        $('#shText').innerHTML = info.text;
+        $('#shBtn').textContent = (R.qi >= WAVE || R.hearts <= 0) ? 'VEDI RISULTATI' : 'CONTINUA';
+        setTimeout(() => { try { $('#shBtn').focus({ preventScroll: true }); } catch (e) { } }, 60);
+    }
+    $('#shBtn').addEventListener('click', () => { if (!R || R.phase !== 'sheet') return; SFX.tap(); $('#sheet').className = 'sheet'; nextQuestion(); });
+
+    function renderHearts(lost) { $('#hearts').innerHTML = [0, 1, 2].map(i => `<span class="heart ${i < R.hearts ? '' : 'off'} ${lost && i === R.hearts ? 'break' : ''}">❤</span>`).join(''); }
+    function renderProg() { $('#prog').innerHTML = Array.from({ length: WAVE }, (_, i) => `<i class="${R.res[i] || (i === R.qi ? 'cur' : '')}${R.rip.has(i) && !R.res[i] ? ' rip' : ''}"></i>`).join(''); }
+    function updateScore() {
+        $('#scoreVal').textContent = R.score;
+        const cb = $('#comboVal');
+        if (R.combo >= 2) { cb.textContent = '🔥x' + (1 + Math.min(R.combo - 1, 4) * .25).toFixed(2).replace(/\.?0+$/, ''); cb.classList.add('on'); }
+        else cb.classList.remove('on');
+    }
+
+    function endRun() {
+        const r = R; R = null; stopLoop();
+        const m = r.mode, lv = r.lvl, L = r.L, key = m + '-' + lv;
+        const corr = r.res.filter(x => x === 'ok').length, near = r.res.filter(x => x === 'near').length, wrong = r.res.filter(x => x === 'bad').length;
+        const acc = (corr + near * .5) / WAVE, over = r.hearts <= 0;
+        const stars = over ? 0 : acc >= .92 ? 3 : acc >= .72 ? 2 : acc >= .5 ? 1 : 0;
+        const prevStars = P.stars[key] || 0; P.stars[key] = Math.max(prevStars, stars);
+        const xpG = Math.round(r.score / 10) + stars * 20, coinG = Math.round(r.score / 25) + stars * 5;
+        const lvBefore = lvOf(P.xp); P.xp += xpG; P.coins += coinG; const lvUp = lvOf(P.xp) > lvBefore;
+        const t = today(); if (P.streak.last !== t) { P.streak.count = P.streak.last === today(-1) ? P.streak.count + 1 : 1; P.streak.last = t; }
+        const isBest = r.score > 0 && r.score > (P.best[key] || 0); if (isBest) P.best[key] = r.score;
+        saveP();
+        const tr = TRACKS[P.track] || TRACKS.gen;
+        const lb = store.get('lb', []); lb.push({ n: P.name, a: P.avatar, m, l: lv, s: r.score, d: t, tr: tr.code }); lb.sort((a, b) => b.s - a.s); store.set('lb', lb.slice(0, 60));
+        const unlock = prevStars === 0 && stars >= 1 && lv < 2, next = lv < 2 && (P.stars[key] || 0) >= 1;
+        const dk = Object.entries(r.diag).filter(([t]) => DIARY[t]).sort((a, b) => b[1] - a[1]).slice(0, 3);
+        const diary = dk.length
+            ? `<div class="diary"><div class="diary-h">📓 Diario Didattico: cosa ripassare</div>${dk.map(([t, n]) => `<div class="drow"><b>${DIARY[t][0]}</b>${n > 1 ? ` <span>×${n}</span>` : ''}<small>${DIARY[t][1]}</small></div>`).join('')}<div class="dnote">Aiuti usati: ${r.hintsTot}.</div></div>`
+            : `<div class="diary ok">📓 Nessun errore concettuale rilevato · Ottima padronanza!</div>`;
+        $('#endCard').innerHTML = `
+            <div class="end-title">${over ? '💥 Missione Interrotta' : stars === 3 ? '🏆 Missione Perfetta!' : stars ? 'Missione Completata!' : 'Riprova la Missione'}</div>
+            <div class="end-sub">${MODES[m].icon} ${MODES[m].name} · ${L.label} · ${tr.icon} ${tr.name}</div>
+            <div class="stars">${[0, 1, 2].map(i => `<span class="star ${i < stars ? 'on' : ''}" style="--d:${.3 + i * .25}s">★</span>`).join('')}</div>
+            <div class="bigscore"><span id="endScore">${r.score}</span><small>punti${isBest ? '<em>RECORD!</em>' : ''}</small></div>
+            <div class="stats">
+                <div class="stat"><b style="color:var(--g)">${corr}</b><span>esatte</span></div>
+                <div class="stat"><b style="color:var(--y)">${near}</b><span>quasi</span></div>
+                <div class="stat"><b style="color:var(--r)">${wrong}</b><span>errori</span></div>
+                <div class="stat"><b style="color:var(--o)">${r.maxCombo}</b><span>combo max</span></div>
+            </div>
+            ${diary}
+            <div class="rewards"><span class="rw">+${xpG} XP</span><span class="rw coin">+${coinG} 🪙</span></div>
+            ${unlock ? '<div class="unlock">🔓 Livello successivo sbloccato!</div>' : ''}
+            ${lvUp ? `<div class="unlock">⬆️ Sei salito al livello ${lvOf(P.xp)}!</div>` : ''}
+            <div class="vcode">Codice verifica docente <b>${vcode(P.name, m, lv, r.score, t)}</b><small>${esc(P.name)} · Indirizzo ${tr.code} · ${t}</small></div>
+            <div class="end-actions">
+                <button class="btn3d" data-act="retry" style="--c:#3ddc84;--d:#1a8a4e;--t:#063a1f">↻ Riprova</button>
+                ${next ? '<button class="btn3d" data-act="next">Livello successivo ▶</button>' : ''}
+                <button class="btn3d ghost" data-act="levels">Mappa Livelli</button>
+            </div>`;
+        $('#endCard').dataset.m = m; $('#endCard').dataset.l = lv;
+        show('end');
+        for (let i = 0; i < stars; i++) setTimeout(() => SFX.star(i), 350 + i * 250);
+        if (stars >= 2) { setTimeout(confetti, 300); setTimeout(SFX.fanfare, 1100); }
+    }
+
+    function renderTracks() {
+        $('#trackList').innerHTML = TRACK_KEYS.map(k => {
+            const t = TRACKS[k];
+            return `<button class="track-pill ${P.track === k ? 'on' : ''}" data-track="${k}" style="--tc:${t.c}">
+                <span>${t.icon}</span><div><div>${t.name}</div><small>${t.sub}</small></div>
+            </button>`;
+        }).join('');
+        const cur = TRACKS[P.track] || TRACKS.gen;
+        $('#trackBanner').innerHTML = `<span>${cur.icon}</span><div>${cur.banner}</div>`;
+    }
+
+    function show(name) {
+        $$('.screen').forEach(s => s.classList.toggle('active', s.id === 's-' + name));
+        document.body.classList.toggle('ingame', name === 'game');
+        $('#ptofBar').style.display = (name === 'home' || name === 'mode') ? '' : 'none';
+        if (name !== 'game') { stopLoop(); $('#sheet').className = 'sheet'; }
+        if (name === 'home') renderHome();
+        renderTop(); window.scrollTo(0, 0);
+    }
+
+    function renderTop() {
+        document.body.classList.toggle('a11y-font', !!P.a11y);
+        $('#a11yBtn').classList.toggle('on', !!P.a11y);
+        $('#avatarBtn').textContent = P.avatar;
+        if (document.activeElement !== $('#nameInput')) $('#nameInput').value = P.name;
+        const lv = lvOf(P.xp); $('#lvBadge').textContent = 'LV ' + lv;
+        $('#xpFill').style.width = ((P.xp - lvTh(lv)) / (lvTh(lv + 1) - lvTh(lv)) * 100) + '%';
+        $('#coinVal').textContent = P.coins;
+        $('#streakVal').textContent = (P.streak.last === today() || P.streak.last === today(-1)) ? P.streak.count : 0;
+        $('#muteBtn').textContent = P.muted ? '🔇' : '🔊';
+    }
+
+    const starsOf = m => [0, 1, 2].reduce((s, i) => s + (P.stars[m + '-' + i] || 0), 0);
+    function renderHome() {
+        $('#modeGrid').innerHTML = MODE_KEYS.map((k, i) => {
+            const M = MODES[k];
+            return `<button class="mode-card" data-mode="${k}" style="--c:${M.c};--d:${M.d};--sd:${i * .6}s">
+                <span class="mc-ico">${M.icon}</span><span class="mc-tag">${M.tag}</span>
+                <span class="mc-name">${M.name}</span><span class="mc-desc">${M.desc}</span>
+                <span class="mc-stars">★ ${starsOf(k)}/9</span>
+            </button>`;
+        }).join('');
+    }
+
+    function openMode(k) {
+        curMode = k; const M = MODES[k];
+        $('#modeTitle').textContent = `${M.icon} ${M.name} — ${M.tag}`;
+        $('#modeTip').innerHTML = `<span>💡</span><p>${M.tip}</p>`;
+        renderPath(); show('mode');
+    }
+
+    function renderPath() {
+        const k = curMode, M = MODES[k];
+        const unl = M.levels.map((_, i) => i === 0 || (P.stars[k + '-' + (i - 1)] || 0) >= 1);
+        let rec = M.levels.findIndex((_, i) => unl[i] && (P.stars[k + '-' + i] || 0) < 3);
+        if (rec < 0) rec = 2;
+        $('#levelPath').innerHTML = M.levels.map((L, i) => {
+            const st = P.stars[k + '-' + i] || 0, best = P.best[k + '-' + i] || 0;
+            return `<div class="node-wrap ${i === rec ? 'rec' : ''}">${i === rec ? `<span class="node-bubble">${st ? 'MIGLIORA!' : 'GIOCA!'}</span>` : ''}
+                <button class="node" data-lvl="${i}" ${unl[i] ? '' : 'disabled'} style="--c:${M.c};--d:${M.d}">${unl[i] ? i + 1 : '🔒'}</button>
+                <div class="node-label">${L.label}</div><div class="node-sub">${L.sub}${unl[i] ? '' : ' · sblocca con 1 ★'}</div>
+                <div class="node-stars">${'★'.repeat(st)}<span>${'★'.repeat(3 - st)}</span></div>
+                <div class="node-best">${best ? 'Record: ' + best : ''}</div></div>`;
+        }).join('');
+    }
+
+    let lbTab = 'all';
+    function renderLB() {
+        $('#lbTabs').innerHTML = ['all', ...MODE_KEYS].map(k => `<button class="tab ${k === lbTab ? 'on' : ''}" data-tab="${k}">${k === 'all' ? 'Tutti' : MODES[k].icon + ' ' + MODES[k].name}</button>`).join('');
+        const lb = store.get('lb', []).filter(e => lbTab === 'all' || e.m === lbTab).slice(0, 12);
+        $('#lbList').innerHTML = lb.length ? lb.map((e, i) => {
+            const M = MODES[e.m];
+            return `<div class="lb-row ${e.n === P.name ? 'me' : ''}"><span class="rk">${['🥇', '🥈', '🥉'][i] || i + 1}</span><span class="lb-av">${esc(e.a || '🚀')}</span><span class="lb-n">${esc(e.n)} <small>[${esc(e.tr || 'GEN')}] ${M ? M.icon + ' ' + esc(M.levels[e.l] ? M.levels[e.l].label : '') : ''} · ${esc(e.d)}</small></span><span class="lb-s">${+e.s || 0}</span></div>`;
+        }).join('') : '<div class="empty">Nessuna partita registrata: inizia una missione! 🚀</div>';
+    }
+
+    let modalOpen = false;
+    function openModal(title, text, actions) {
+        $('#mTitle').textContent = title; $('#mText').textContent = text;
+        $('#mActions').innerHTML = actions.map((a, i) => `<button class="btn3d" data-i="${i}" style="--c:${a.c};--d:${a.d};--t:${a.t || '#fff'}">${a.label}</button>`).join('');
+        $$('#mActions button').forEach(b => b.onclick = () => actions[+b.dataset.i].f());
+        $('#modal').classList.add('show'); modalOpen = true;
+    }
+    function closeModal() { $('#modal').classList.remove('show'); modalOpen = false; }
+    let toastT;
+    function toast(m) {
+        if (document.body.classList.contains('ingame')) {
+            const el = $('#msg'); el.textContent = m; el.className = 'msg show warn';
+            setTimeout(() => { el.className = 'msg'; }, 3200);
+            return;
+        }
+        const t = $('#toast'); t.textContent = m; t.classList.add('show');
+        clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    $('#avatarBtn').addEventListener('click', () => { P.avatar = AVATARS[(AVATARS.indexOf(P.avatar) + 1) % AVATARS.length]; saveP(); renderTop(); SFX.tap(); });
+    $('#nameInput').addEventListener('change', e => { P.name = e.target.value.toUpperCase().replace(/[^A-Z0-9ÀÈÉÌÒÙ _.-]/g, '').trim().slice(0, 12) || 'CADETTO'; saveP(); renderTop(); });
+    $('#a11yBtn').addEventListener('click', () => { P.a11y = !P.a11y; saveP(); renderTop(); SFX.tap(); toast(P.a11y ? 'Font Alta Leggibilità attivato' : 'Font standard attivato'); });
+    $('#muteBtn').addEventListener('click', () => { P.muted = !P.muted; saveP(); renderTop(); SFX.tap(); });
+
+    $('#trackList').addEventListener('click', e => {
+        const b = e.target.closest('[data-track]');
+        if (!b) return;
+        P.track = b.dataset.track; saveP(); SFX.tap(); renderTracks();
+        toast(`Indirizzo selezionato: ${TRACKS[P.track].name}`);
+    });
+
+    $('#modeGrid').addEventListener('click', e => { const b = e.target.closest('[data-mode]'); if (b) { SFX.tap(); openMode(b.dataset.mode); } });
+    $('#levelPath').addEventListener('click', e => { const b = e.target.closest('[data-lvl]'); if (b && !b.disabled) { SFX.tap(); startRun(curMode, +b.dataset.lvl); } });
+    $$('[data-go]').forEach(b => b.addEventListener('click', () => { SFX.tap(); show(b.dataset.go); }));
+    $('#lbBtn').addEventListener('click', () => { SFX.tap(); renderLB(); show('lb'); });
+    $('#lbTabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) { lbTab = b.dataset.tab; renderLB(); } });
+
+    $('#endCard').addEventListener('click', e => {
+        const b = e.target.closest('[data-act]'); if (!b) return; SFX.tap();
+        const m = $('#endCard').dataset.m, l = +$('#endCard').dataset.l;
+        if (b.dataset.act === 'retry') startRun(m, l); else if (b.dataset.act === 'next') startRun(m, l + 1); else openMode(m);
+    });
+
+    $('#prompt').addEventListener('click', e => {
+        if (e.target.closest('#ttsBtn')) speakPrompt();
+    });
+
+    $('#controls').addEventListener('click', e => {
+        const b = e.target.closest('button'); if (!b || !R) return;
+        if (b.dataset.oi != null) IMPL[R.mode].choose(+b.dataset.oi);
+        else if (b.dataset.num != null) IMPL.trin.pickNum(+b.dataset.num);
+        else if (b.dataset.trin === 'clear') IMPL.trin.clear();
+        else if (b.dataset.trin === 'ok') IMPL.trin.submit();
+        else if (b.dataset.fb != null) IMPL.fac.fire(b.dataset.fb);
+    });
+
+    hintBtn.addEventListener('click', () => {
+        if (!R || !R.q || R.phase !== 'input') return;
+        const rung = nextRung(R.q); if (!rung) return;
+        const cost = hintCost(R.q);
+        if (P.coins < cost) { toast(`Servono ${cost} 🪙 — guadagnale completando le missioni!`); SFX.miss(); return; }
+        if (cost) { P.coins -= cost; saveP(); floatText(`−${cost} 🪙`, 82, 14, 'coin'); }
+        else { R.free--; floatText('🎁 Aiuto gratis', 78, 14, 'coin'); }
+        SFX.coin(); openRung(R.q, rung.id);
+    });
+
+    $('#quitBtn').addEventListener('click', () => openModal('Abbandoni la missione?', 'I progressi di questa partita andranno persi.', [
+        { label: 'Continua la missione', c: '#3ddc84', d: '#1a8a4e', t: '#063a1f', f: closeModal },
+        { label: 'Esci ai livelli', c: '#ff4d6d', d: '#9a1f38', f: () => { closeModal(); R = null; openMode(curMode); } }
+    ]));
+
+    $('#vDate').value = today();
+    $('#vBtn').addEventListener('click', () => {
+        const n = $('#vName').value, s = parseInt($('#vScore').value, 10), d = $('#vDate').value, c = $('#vCode').value.trim().toUpperCase();
+        const out = $('#vRes');
+        if (!n || isNaN(s) || !d || c.length !== 6) { out.textContent = 'Compila tutti i campi.'; out.style.color = 'var(--y)'; return; }
+        for (const m of MODE_KEYS) for (let l = 0; l < 3; l++) {
+            if (vcode(n, m, l, s, d) === c) {
+                out.textContent = `✅ Codice autentico: ${MODES[m].name} · Livello ${MODES[m].levels[l].label}`;
+                out.style.color = 'var(--g)'; return;
+            }
+        }
+        out.textContent = '❌ Codice non corrispondente ai dati inseriti.'; out.style.color = 'var(--r)';
+    });
+
+    renderTop(); renderTracks(); renderHome();
+    </script>
+<script src="../assets/js/orfini-shared.js"></script>
+</body>
+
+</html>
