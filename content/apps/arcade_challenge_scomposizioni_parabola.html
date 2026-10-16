@@ -944,6 +944,15 @@
             const root = new THREE.Group();
             scene.add(root);
 
+            // Luci: i materiali sono MeshStandardMaterial, senza luci ogni blocco appare nero
+            scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1.1);
+            keyLight.position.set(3, 5, 8);
+            scene.add(keyLight);
+            const rimLight = new THREE.DirectionalLight(0x9b8cff, 0.45);
+            rimLight.position.set(-6, -2, 4);
+            scene.add(rimLight);
+
             const wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
 
             function createBoxMesh(w, h, d, x, y, z, col, gridU = 1, gridV = 1) {
@@ -976,6 +985,245 @@
             const blocksGrp = new THREE.Group();
             root.add(blocksGrp);
 
+            // Svuota il gruppo dei blocchi liberando la memoria GPU e ripristinando scala/posizione
+            function clearBlocks() {
+                while (blocksGrp.children.length > 0) {
+                    const o = blocksGrp.children[0];
+                    blocksGrp.remove(o);
+                    o.traverse(n => {
+                        if (n.geometry) n.geometry.dispose();
+                        if (n.material) (Array.isArray(n.material) ? n.material : [n.material]).forEach(m => { if (m.map) m.map.dispose(); m.dispose(); });
+                    });
+                }
+                blocksGrp.scale.setScalar(1);
+                blocksGrp.position.set(0, 0, 0);
+            }
+
+            // Etichetta testuale sempre leggibile (sprite rivolto alla camera)
+            function makeLabel(text, color = '#ffffff', border = 'rgba(255,210,63,0.55)') {
+                const c = document.createElement('canvas');
+                const g = c.getContext('2d');
+                const fs = 64;
+                g.font = `700 ${fs}px "JetBrains Mono", monospace`;
+                const w = Math.ceil(g.measureText(text).width) + 48;
+                c.width = w; c.height = fs + 34;
+                g.font = `700 ${fs}px "JetBrains Mono", monospace`;
+                g.fillStyle = 'rgba(10, 7, 34, 0.85)';
+                g.beginPath(); if (g.roundRect) g.roundRect(3, 3, w - 6, c.height - 6, 22); else g.rect(3, 3, w - 6, c.height - 6); g.fill();
+                g.strokeStyle = border; g.lineWidth = 4; g.stroke();
+                g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle';
+                g.fillText(text, w / 2, c.height / 2 + 2);
+                const tex = new THREE.CanvasTexture(c);
+                tex.minFilter = THREE.LinearFilter;
+                const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+                s.renderOrder = 20;
+                s.userData.aspect = w / c.height;
+                return s;
+            }
+            const sizeLabel = (s, h) => s.scale.set(h * s.userData.aspect, h, 1);
+
+            /* ===== Modello ad aree per i prodotti notevoli (algebra tiles) =====
+               Durante la domanda si vedono i PEZZI del polinomio (i termini); dopo la risposta i pezzi
+               si ricompongono in un rettangolo i cui LATI sono i fattori. Colori come AlgebraLab 3D:
+               ciano x², viola x, smeraldo unità, rosso aree tolte. Fattore comune k = strati, x = profondità. */
+            const AREA_COL = { sq: 0x22c7e8, strip: 0x8b5cf6, unit: 0x10b981, neg: 0xe11d48, hi: 0xffd23f };
+            let area = null;
+
+            function buildArea(q) {
+                clearBlocks();
+                const grp = new THREE.Group();
+                blocksGrp.add(grp);
+                const bq = q.arch === 'biquadDiff';
+                const a = bq ? 1 : q.a;
+                const B = bq ? q.b * q.b : q.b;                       // lato "unità" (b, o b² nella biquadratica)
+                // Lunghezza visiva di x: abbastanza grande da distinguere x dalle unità e garantire aX > B
+                const X = bq ? Math.max(4.2, B * 1.7 + 1)
+                    : q.isDiff ? Math.max(3.2, (B * 1.7 + 1) / a)          // A − B ≥ 0.7·B: rettangolo leggibile
+                    : q.sign < 0 ? Math.max(3.2, (B * 2 + 2) / a)          // quadrato interno (A − B) più grande delle strisce
+                    : Math.max(3.2, (B + 2.2) / a);
+                const A = a * X;
+                const unitLbl = bq ? 'x²' : 'x';
+                const termA = bq ? 'x⁴' : `${a * a === 1 ? '' : a * a}x²`;
+                const layers = Math.max(1, q.k || 1);
+                const th = q.xPow ? Math.max(0.9, X * 0.45) : 0.45;  // spessore: profondità x se c'è x in comune
+                const gap = 0.18;
+                const pieces = [], labels = [];
+
+                const mkPiece = (w, h, col, gu, gv, opts = {}) => {
+                    const g = new THREE.Group();
+                    for (let L = 0; L < layers; L++) {
+                        const m = createBoxMesh(w, h, th, 0, 0, -L * (th + gap), col, gu, gv);
+                        if (opts.neg) { m.material.transparent = true; m.material.opacity = 0.42; m.material.depthWrite = false; }
+                        if (opts.fade) { m.material.transparent = true; }
+                        g.add(m);
+                    }
+                    g.userData = { w, h, ...opts };
+                    grp.add(g);
+                    pieces.push(g);
+                    return g;
+                };
+                // Rettangoli in coordinate "foglio": x verso destra, y verso il basso dal vertice in alto a sinistra
+                const place = (g, key, x, y, rot = 0, z = 0) => { g.userData[key] = { x, y, rot, z }; };
+                const termLabel = (g, text, col, h = 0.62) => {
+                    const s = makeLabel(text, col);
+                    g.add(s); s.position.set(0, 0, th / 2 + 0.05); labels.push({ s, h, base: true });
+                    return s;
+                };
+                const sideLabel = (text, x, y, col = '#ffd23f') => {
+                    const s = makeLabel(text, col); grp.add(s);
+                    // y < 0 = sopra il lato superiore; x < 0 = a sinistra del lato sinistro
+                    s.userData.at = { x, y, where: y < 0 ? 'top' : 'left' }; labels.push({ s, h: 0.62, side: true }); return s;
+                };
+
+                const signStr = s => (s < 0 ? '−' : '+');
+                const binP = `${a === 1 ? '' : a}${unitLbl} + ${B}`;
+                const binM = `${a === 1 ? '' : a}${unitLbl} − ${B}`;
+                let doneW = 0, doneH = 0;
+
+                if (q.isDiff) {
+                    // A² − B²: quadrato con l'angolo B² tolto; poi la striscia in basso ruota e si affianca
+                    const alpha = mkPiece(A, A - B, AREA_COL.sq, a, 1);
+                    const beta = mkPiece(A - B, B, AREA_COL.sq, 1, 1);
+                    const corner = mkPiece(B, B, AREA_COL.neg, Math.min(B, 12), Math.min(B, 12), { neg: true, fadeOut: true });
+                    place(alpha, 'from', 0, 0); place(alpha, 'to', 0, 0);
+                    place(beta, 'from', 0, A - B); place(beta, 'to', A, 0, Math.PI / 2);
+                    place(corner, 'from', A - B, A - B, 0, 0.05); place(corner, 'to', A - B, A - B, 0, 0.05);
+                    termLabel(alpha, termA, '#e8fbff');
+                    termLabel(corner, `−${B * B}`, '#ffd0d8');
+                    doneW = A + B; doneH = A - B;
+                    sideLabel(binP, (A + B) / 2, -0.7);
+                    sideLabel(binM, -0.9, (A - B) / 2);
+                } else {
+                    const s = q.sign;
+                    const sq = mkPiece(A, A, AREA_COL.sq, a, a);
+                    const r1 = mkPiece(B, A, s > 0 ? AREA_COL.strip : AREA_COL.neg, Math.min(B, 12), a, { neg: s < 0 });
+                    const r2 = mkPiece(A, B, s > 0 ? AREA_COL.strip : AREA_COL.neg, a, Math.min(B, 12), { neg: s < 0 });
+                    const u = mkPiece(B, B, AREA_COL.unit, Math.min(B, 12), Math.min(B, 12));
+                    const g = Math.max(0.8, X * 0.35);
+                    // Pezzi separati (i termini del polinomio) in fila
+                    place(sq, 'from', 0, 0);
+                    place(r1, 'from', A + g, 0);
+                    place(r2, 'from', 0, A + g);
+                    place(u, 'from', A + g, A + g);
+                    if (s > 0) {
+                        place(sq, 'to', 0, 0); place(r1, 'to', A, 0); place(r2, 'to', 0, A); place(u, 'to', A, A);
+                        doneW = doneH = A + B;
+                        sideLabel(binP, (A + B) / 2, -0.7);
+                        sideLabel(binP, -0.9, (A + B) / 2);
+                    } else {
+                        // (A − B)²: dal quadrato A² si tolgono due strisce AB (sovrapposte nell'angolo) e si riaggiunge B²
+                        place(sq, 'to', 0, 0); place(r1, 'to', A - B, 0, 0, 0.06); place(r2, 'to', 0, A - B, 0, 0.06); place(u, 'to', A - B, A - B, 0, 0.12);
+                        const inner = mkPiece(A - B, A - B, AREA_COL.hi, 1, 1, { fadeIn: true, fade: true });
+                        place(inner, 'from', 0, 0, 0, 0.2); place(inner, 'to', 0, 0, 0, 0.2);
+                        [sq, r1, r2, u].forEach(pc => { pc.userData.labelUntil = 0.55; });
+                        termLabel(inner, `(${binM})²`, '#fff4c2', 0.5);
+                        doneW = doneH = A - B;
+                        sideLabel(binM, (A - B) / 2, -0.7);
+                        sideLabel(binM, -0.9, (A - B) / 2);
+                    }
+                    const ab = a * B;
+                    termLabel(sq, termA, '#e8fbff');
+                    termLabel(r1, `${signStr(s)}${ab === 1 ? '' : ab}${unitLbl}`, s > 0 ? '#efe6ff' : '#ffd0d8');
+                    termLabel(r2, `${signStr(s)}${ab === 1 ? '' : ab}${unitLbl}`, s > 0 ? '#efe6ff' : '#ffd0d8');
+                    termLabel(u, `+${B * B}`, '#d9fff0');
+                }
+
+                // Fattore comune: etichetta della profondità (strati k o spessore x), in alto a destra
+                if (q.preStr) {
+                    const s = makeLabel(`× ${q.preStr}`, '#ffd23f');
+                    grp.add(s); s.userData.at = { where: 'corner' }; labels.push({ s, h: 0.62 });
+                }
+
+                // Ingombro dei pezzi per ciascuna disposizione (unità del modello, y verso il basso)
+                const bbox = key => {
+                    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+                    pieces.forEach(pc => {
+                        const r = pc.userData[key] || pc.userData.from;
+                        if ((key === 'from' && pc.userData.fadeIn) || (key === 'to' && pc.userData.fadeOut)) return;
+                        const rotated = Math.abs(Math.sin(r.rot || 0)) > 0.5;
+                        const w = rotated ? pc.userData.h : pc.userData.w, h = rotated ? pc.userData.w : pc.userData.h;
+                        x0 = Math.min(x0, r.x); y0 = Math.min(y0, r.y); x1 = Math.max(x1, r.x + w); y1 = Math.max(y1, r.y + h);
+                    });
+                    return { x0, y0, x1, y1, W: x1 - x0, H: y1 - y0 };
+                };
+                const boxFrom = bbox('from'), boxTo = bbox('to');
+                area = { q, pieces, labels, grp, boxFrom, boxTo, th, layers };
+                // Le etichette si posizionano sul fronte del primo strato (più vicine al modello, meno prospettiva)
+                labels.forEach(L => { L.z = th / 2 + 0.3; });
+                applyArea(0);
+            }
+
+            // t = 0 pezzi separati / polinomio; t = 1 rettangolo ricomposto con i fattori sui lati
+            // Inquadratura per una disposizione: margini in unità di mondo riservati alle etichette
+            const pad = 0.18;
+            const worldW = L => L.h * L.s.userData.aspect;
+            function frameFor(box, withSides) {
+                const lefts = area.labels.filter(L => L.s.userData.at && L.s.userData.at.where === 'left');
+                const tops = area.labels.filter(L => L.s.userData.at && L.s.userData.at.where === 'top');
+                const corner = area.labels.find(L => L.s.userData.at && L.s.userData.at.where === 'corner');
+                const leftM = withSides && lefts.length ? Math.max(...lefts.map(worldW)) + pad : 0;
+                const topM = (withSides && tops.length) || corner ? 0.62 + pad : 0;
+                const rightM = corner ? worldW(corner) + pad : 0;
+                const viewH = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+                const viewW = viewH * camera.aspect;
+                const fit = Math.min((0.62 * viewH - topM) / box.H, (0.8 * viewW - leftM - rightM) / box.W);
+                return {
+                    fit,
+                    px: -(box.x0 + box.W / 2) + ((leftM - rightM) / 2) / fit,
+                    py: (box.y0 + box.H / 2) - (topM / 2) / fit
+                };
+            }
+
+            function applyArea(t) {
+                if (!area) return;
+                const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+                const fa = frameFor(area.boxFrom, false), fb = frameFor(area.boxTo, true);
+                const fit = fa.fit + (fb.fit - fa.fit) * e;
+                blocksGrp.scale.setScalar(fit);
+                area.grp.position.set(fa.px + (fb.px - fa.px) * e, fa.py + (fb.py - fa.py) * e, 0);
+                const box = e < 0.5 ? area.boxFrom : area.boxTo;
+                area.labels.forEach(L => {
+                    sizeLabel(L.s, L.h / fit);
+                    const at = L.s.userData.at;
+                    if (!at) return;
+                    const half = (worldW(L) / 2 + pad) / fit, halfH = (L.h / 2 + pad) / fit;
+                    if (at.where === 'top') L.s.position.set(at.x, halfH, L.z);
+                    else if (at.where === 'left') L.s.position.set(-half, -at.y, L.z);
+                    else if (at.where === 'corner') L.s.position.set(box.x1 + half, -box.y0 + halfH, L.z);
+                });
+                area.pieces.forEach(pc => {
+                    const f = pc.userData.from, to = pc.userData.to || f;
+                    const lerp = (u, v) => u + (v - u) * e;
+                    const rot = lerp(f.rot || 0, to.rot || 0);
+                    // il centro di arrivo tiene conto della rotazione di 90° (striscia della differenza di quadrati)
+                    const fx = f.x + pc.userData.w / 2, fy = f.y + pc.userData.h / 2;
+                    const toRot = Math.abs(Math.sin(to.rot || 0)) > 0.5;
+                    const tx = to.x + (toRot ? pc.userData.h : pc.userData.w) / 2, ty = to.y + (toRot ? pc.userData.w : pc.userData.h) / 2;
+                    pc.position.set(lerp(fx, tx), -lerp(fy, ty), lerp(f.z || 0, to.z || 0));
+                    pc.rotation.z = rot;
+                    let op = 1;
+                    if (pc.userData.fadeOut) op = 1 - Math.min(1, e * 1.6);
+                    if (pc.userData.fadeIn) op = Math.max(0, (e - 0.55) / 0.45) * 0.55;
+                    pc.visible = op > 0.01;
+                    pc.children.forEach(m => {
+                        if (m.material && (pc.userData.fadeOut || pc.userData.fadeIn)) {
+                            m.material.opacity = pc.userData.neg ? 0.42 * op : op;
+                        }
+                    });
+                    // le etichette dei termini seguono il loro pezzo; nel caso (ax − b)² a fine animazione
+                    // resta solo quella del quadrato interno, per non sovrapporle
+                    const showLbl = pc.visible && (pc.userData.labelUntil == null || e < pc.userData.labelUntil);
+                    pc.children.forEach(ch2 => { if (ch2.isSprite) ch2.visible = showLbl; });
+                });
+                area.labels.forEach(L => { if (L.side) L.s.visible = e > 0.85; });
+            }
+
+            function updateArea(q, now) {
+                if (!area || area.q !== q) return;
+                const t = (q.doneAnim && R && R.answerAt) ? Math.min(1, (now - R.answerAt) / 1300) : 0;
+                applyArea(t);
+            }
+
             const coneGrp = new THREE.Group();
             const coneGeo = new THREE.ConeGeometry(1.5, 3.0, 32, 1, true);
             const coneMat = new THREE.MeshStandardMaterial({ color: 0x9b5de5, side: THREE.DoubleSide, transparent: true, opacity: 0.45 });
@@ -1001,7 +1249,7 @@
             root.add(astGrp);
 
             return {
-                renderer, scene, camera, root, blocksGrp, coneGrp, astGrp, astMesh, createBoxMesh,
+                renderer, scene, camera, root, blocksGrp, coneGrp, astGrp, astMesh, createBoxMesh, clearBlocks, buildArea,
                 resize(w, h) {
                     renderer.setSize(w, h, false);
                     camera.aspect = w / h;
@@ -1013,9 +1261,11 @@
                     astGrp.visible = (mode === 'fac' && q && !q.dead && !q.crash);
 
                     if (blocksGrp.visible) {
-                        blocksGrp.rotation.y = Math.sin(now / 1800) * 0.45;
-                        blocksGrp.rotation.x = 0.2 + Math.cos(now / 2200) * 0.15;
-                        blocksGrp.position.y = 0.2;
+                        const isArea = mode === 'prod';
+                        blocksGrp.rotation.y = Math.sin(now / 1800) * (isArea ? 0.32 : 0.45);
+                        blocksGrp.rotation.x = (isArea ? 0.28 : 0.2) + Math.cos(now / 2200) * (isArea ? 0.08 : 0.15);
+                        blocksGrp.position.y = isArea ? 0.05 : 0.2;
+                        if (isArea && q) updateArea(q, now);
                     }
                     if (coneGrp.visible) {
                         coneGrp.rotation.y = now / 2000;
@@ -1391,7 +1641,8 @@
         },
         setup(q) {
             $('#chartBox').classList.remove('on');
-            $('#stageBadge').textContent = '🧊 Modello Geometrico 3D (Three.js)';
+            $('#stageBadge').textContent = '🧩 Modello ad aree: ricomponi il rettangolo';
+            if (THREE_ENV) THREE_ENV.buildArea(q);
             this.prompt(q);
             showDisplay(false);
             $('#controls').innerHTML = `<div class="opt-grid">${q.opts.map((o, i) => `<button class="opt-btn" data-oi="${i}"><span>${o.label}</span></button>`).join('')}</div>`;
@@ -1469,10 +1720,7 @@
             $('#stageBadge').textContent = '🧩 Trinomio in Scala Reale 3D (Griglia p·q)';
             
             if (THREE_ENV) {
-                while (THREE_ENV.blocksGrp.children.length > 0) {
-                    const obj = THREE_ENV.blocksGrp.children[0];
-                    THREE_ENV.blocksGrp.remove(obj);
-                }
+                THREE_ENV.clearBlocks();
                 const p1 = Math.abs(q.p), p2 = Math.abs(q.q);
                 const scale = 0.35;
                 const szX = 2.4, szY = 2.4;
