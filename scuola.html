@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>La Scuola: IPIA "E. Orfini" Foligno | Orfini Math Lab</title>
+
+    <!-- Performance Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- SEO & Metadata -->
+    <meta name="description"
+        content="L'Istituto Professionale &quot;E. Orfini&quot; di Foligno: indirizzi di studio (Meccanico, Elettrico-Elettronico, Fashion Factory, Graphic Design, Odontotecnico, Servizi Socio-Sanitari, Serale), storia dal 1957 e tratti distintivi dal PTOF 2025-2028.">
+    <meta name="keywords"
+        content="IPIA Orfini, Istituto Professionale Orfini, Foligno, indirizzi di studio, PTOF 2025-2028, Meccanico, Elettrico Elettronico, Fashion Factory, Graphic Design, Odontotecnico, Servizi Socio Sanitari, Corso Serale, Erasmus+, PCTO">
+    <meta name="date" content="2026-10-16">
+    <link rel="canonical" href="https://federicodb.github.io/scuola.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://federicodb.github.io/scuola.html">
+    <meta property="og:title" content="La Scuola: IPIA &quot;E. Orfini&quot; Foligno | Orfini Math Lab">
+    <meta property="og:description" content="Indirizzi di studio, storia e tratti distintivi dell'Istituto Professionale &quot;E. Orfini&quot; di Foligno, dal PTOF 2025-2028.">
+    <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.webp">
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Syne:wght@700;800&family=Space+Mono&display=swap"
+        rel="stylesheet">
+
+    <!-- Project Styles -->
+    <link rel="stylesheet" href="index.css">
+    <!-- Anti-FOUC Theme Init -->
+    <script>
+        if (localStorage.getItem('orfini_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+    <link rel="stylesheet" href="content/assets/style/theme-light.css">
+    <script src="content/assets/js/theme-toggle.js" defer></script>
+
+    <!-- Dati strutturati per i motori di ricerca -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HighSchool",
+        "name": "Istituto Professionale \"E. Orfini\"",
+        "alternateName": "IPIA Orfini Foligno",
+        "url": "https://www.iisorfini.edu.it/",
+        "foundingDate": "1957",
+        "telephone": "+39 0742 352930",
+        "email": "pgri24000t@istruzione.it",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Viale Marconi 12",
+            "postalCode": "06034",
+            "addressLocality": "Foligno",
+            "addressRegion": "PG",
+            "addressCountry": "IT"
+        }
+    }
+    </script>
+
+    <style>
+        /* Solo verticale: il padding laterale resta quello di .container */
+        .school-page {
+            padding-top: 3rem;
+            padding-bottom: 5rem;
+        }
+
+        .school-hero {
+            padding: 2.5rem 0 3rem;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 3.5rem;
+        }
+
+        .school-hero .eyebrow {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .school-hero h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.4rem, 7vw, 5rem);
+            line-height: 0.95;
+            letter-spacing: -0.02em;
+            margin: 0 0 1.25rem;
+            color: var(--text-main);
+        }
+
+        .school-hero h1 span {
+            color: var(--primary);
+        }
+
+        .school-motto {
+            font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+            color: var(--text-muted);
+            max-width: 46rem;
+            margin: 0 0 2rem;
+            font-style: italic;
+        }
+
+        .fact-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .fact {
+            border: 1px solid var(--glass-border);
+            border-radius: 999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            background: var(--bg-card);
+        }
+
+        .fact b {
+            font-family: var(--font-code);
+            color: var(--primary);
+            margin-right: 0.35rem;
+        }
+
+        .school-section {
+            margin-bottom: 4rem;
+        }
+
+        .school-section h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 4vw, 2.4rem);
+            margin: 0 0 0.5rem;
+            color: var(--text-main);
+        }
+
+        .section-lead {
+            color: var(--text-muted);
+            max-width: 48rem;
+            margin: 0 0 1.75rem;
+            line-height: 1.6;
+        }
+
+        .ptof-quote {
+            border-left: 4px solid var(--primary);
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-card);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-size: 1.1rem;
+            line-height: 1.65;
+            color: var(--text-main);
+            max-width: 56rem;
+            margin: 0;
+        }
+
+        .ptof-quote cite {
+            display: block;
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            font-style: normal;
+            color: var(--text-muted);
+        }
+
+        /* Indirizzi */
+        .track-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .track-card {
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: var(--card-bg);
+            color: var(--card-fg);
+            border: 1px solid transparent;
+        }
+
+        .track-card .track-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .track-card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.45rem;
+            margin: 0;
+        }
+
+        .track-official {
+            font-size: 0.8rem;
+            font-family: var(--font-code);
+            opacity: 0.8;
+            margin: -0.35rem 0 0;
+        }
+
+        .track-claim {
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .track-card ul {
+            margin: 0;
+            padding-left: 1.1rem;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .track-card .track-link {
+            margin-top: auto;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .t-blue { --card-bg: var(--card-blue); --card-fg: var(--card-on-blue); }
+        .t-yellow { --card-bg: var(--card-yellow); --card-fg: var(--card-on-yellow); }
+        .t-purple { --card-bg: var(--card-purple); --card-fg: var(--card-on-purple); }
+        .t-red { --card-bg: var(--card-red); --card-fg: var(--card-on-red); }
+        .t-teal { --card-bg: var(--card-teal); --card-fg: var(--card-on-teal); }
+        .t-green { --card-bg: var(--card-green); --card-fg: var(--card-on-green); }
+        .t-plain { --card-bg: var(--bg-card); --card-fg: var(--text-main); border-color: var(--glass-border); }
+
+        /* Tratti distintivi */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature {
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            background: var(--bg-card);
+        }
+
+        .feature h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.05rem;
+            color: var(--text-main);
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .feature p {
+            margin: 0;
+            color: var(--text-muted);
+            line-height: 1.55;
+            font-size: 0.95rem;
+        }
+
+        /* Priorità e legame con il laboratorio */
+        .lab-link-box {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1.5rem;
+            align-items: stretch;
+        }
+
+        .class-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .class-chip {
+            font-family: var(--font-code);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 999px;
+            padding: 0.4rem 0.9rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition-fast, 0.2s);
+        }
+
+        .class-chip:hover,
+        .class-chip:focus-visible {
+            background: var(--primary);
+            color: var(--text-on-accent);
+        }
+
+        /* Storia */
+        .timeline {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border-left: 2px solid var(--glass-border);
+        }
+
+        .timeline li {
+            position: relative;
+            padding: 0 0 1.4rem 1.6rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        .timeline li::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 0.35rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+
+        .timeline b {
+            display: block;
+            font-family: var(--font-code);
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        /* Contatti e fonti */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        .contact-grid a {
+            color: var(--primary);
+        }
+
+        .sources {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .sources a {
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 760px) {
+            .lab-link-box {
+                grid-template-columns: 1fr;
+            }
+
+            .school-page {
+                padding-top: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav id="main-nav">
+        <div class="container nav-container">
+            <div class="nav-row-1">
+                <a href="index.html" class="brand">
+                    <span class="brand-title">ORFINI</span>
+                    <span class="brand-sub">LA SCUOLA</span>
+                </a>
+
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Journal</a>
+                    <a href="verifiche.html" class="nav-link">Archivio</a>
+                    <a href="galaxy.html" class="nav-link">Mappa</a>
+                    <a href="competenze.html" class="nav-link">Competenze</a>
+                    <a href="scuola.html" class="nav-link active" aria-current="page">La Scuola</a>
+                    <a href="index.html#about" class="nav-link">Chi Sono</a>
+                    <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+                        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container school-page">
+
+        <!-- HERO -->
+        <header class="school-hero">
+            <span class="eyebrow">Istituto Professionale Statale · Foligno · dal 1957</span>
+            <h1>IPIA <span>"E. Orfini"</span></h1>
+            <p class="school-motto">"Un diploma in tasca, una professione nelle tue mani."</p>
+            <div class="fact-strip" aria-label="La scuola in breve">
+                <span class="fact"><b>1957</b>tra i primi istituti professionali d'Italia</span>
+                <span class="fact"><b>6</b>indirizzi diurni + corso serale</span>
+                <span class="fact"><b>Erasmus+</b>istituto accreditato</span>
+                <span class="fact"><b>PTOF</b>2025-2028</span>
+            </div>
+        </header>
+
+        <!-- IDENTITÀ -->
+        <section class="school-section" aria-labelledby="sec-identita">
+            <h2 id="sec-identita">Una duplice anima</h2>
+            <p class="section-lead">Come la scuola descrive se stessa nel Piano Triennale dell'Offerta Formativa.</p>
+            <blockquote class="ptof-quote">
+                «L'Istituto "E. Orfini" possiede una duplice anima: profondamente umana e sensibile l'una, vivace,
+                intraprendente, creativa, progettuale l'altra. Da un lato è accoglienza e inclusione, dall'altro è
+                formazione professionale e aziendale. I due aspetti non si contrappongono, bensì si completano e si
+                esaltano a vicenda.»
+                <cite>PTOF 2025-2028, Le scelte strategiche</cite>
+            </blockquote>
+        </section>
+
+        <!-- INDIRIZZI -->
+        <section class="school-section" aria-labelledby="sec-indirizzi">
+            <h2 id="sec-indirizzi">Gli indirizzi di studio</h2>
+            <p class="section-lead">Percorsi quinquennali che uniscono una base di sapere teorico a competenze tecniche e
+                professionali «immediatamente spendibili sul mercato del lavoro», con buone basi anche per proseguire
+                all'università o negli ITS. Per ogni indirizzo: nome usato dalla scuola e denominazione ufficiale.</p>
+
+            <div class="track-grid">
+                <article class="track-card t-blue">
+                    <span class="track-icon" aria-hidden="true">⚙️</span>
+                    <h3>Meccanico</h3>
+                    <p class="track-official">Industria e artigianato per il Made in Italy · declinazione Meccanica</p>
+                    <ul>
+                        <li>Progettazione, lavorazione e assemblaggio di prodotti industriali e artigianali</li>
+                        <li>Macchine a comando manuale e a controllo numerico; CAD, CAM, CNC e modellazione solida</li>
+                        <li>Prototipazione e gestione dei cicli produttivi</li>
+                    </ul>
+                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/meccanico" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                </article>
+
+                <article class="track-card t-yellow">
+                    <span class="track-icon" aria-hidden="true">⚡</span>
+                    <h3>Elettrico-Elettronico</h3>
+                    <p class="track-official">Manutenzione e assistenza tecnica · Apparati, impianti e servizi tecnici industriali e civili</p>
+                    <p class="track-claim">«La marcia in più della tecnologia laboratoriale»</p>
+                    <ul>
+                        <li>Installazione, manutenzione, riparazione e collaudo di impianti e apparati</li>
+                        <li>Strumenti di misura e apparecchiature per il controllo e la diagnosi</li>
+                    </ul>
+                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/elettrico---elettronico-1" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                </article>
+
+                <article class="track-card t-purple">
+                    <span class="track-icon" aria-hidden="true">👗</span>
+                    <h3>Fashion Factory</h3>
+                    <p class="track-official">Industria e artigianato per il Made in Italy · curricolo Fashion Factory</p>
+                    <p class="track-claim">«Coniuga arte e bellezza in un curricolo completo nel solco del Made in Italy»</p>
+                    <ul>
+                        <li>Progettazione e design delle collezioni moda, modellistica e confezione del prototipo</li>
+                        <li>Riconoscimento e scelta dei materiali; storia dell'arte e del costume</li>
+                        <li>Laboratori con gli strumenti usati in azienda e software per disegno e modellistica</li>
+                    </ul>
+                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/fashion-factory" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                </article>
+
+                <article class="track-card t-red">
+                    <span class="track-icon" aria-hidden="true">🎨</span>
+                    <h3>Graphic Design</h3>
+                    <p class="track-official">Servizi commerciali · Design della comunicazione visiva e pubblicitaria</p>
+                    <p class="track-claim">«Compendia creatività e tecnologia per una formazione professionale di alto livello»</p>
+                    <ul>
+                        <li>Comunicazione aziendale, promozione tradizionale e digitale, collaborazione con il marketing</li>
+                        <li>Sbocchi: grafico pubblicitario, web designer, art director, illustratore, copywriter, media planner</li>
+                    </ul>
+                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/graphicdesign" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                </article>
+
+                <article class="track-card t-teal">
+                    <span class="track-icon" aria-hidden="true">🦷</span>
+                    <h3>Odontotecnico</h3>
+                    <p class="track-official">Arti ausiliarie delle professioni sanitarie · Odontotecnico</p>
+                    <p class="track-claim">«Ha il privilegio dell'unicità, in un settore avido di professionalità fresche ed efficaci»</p>
+                    <ul>
+                        <li>Realizza dispositivi medici su misura secondo le specifiche dell'odontoiatra</li>
+                        <li>Anatomia dell'apparato stomatognatico, materiali e leghe, software di modellazione</li>
+                        <li>Lavoro autonomo previa abilitazione, studi e ambulatori; prosecuzione in ITS e università</li>
+                    </ul>
+                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/odontotecnico" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                </article>
+
+                <article class="track-card t-green">
+                    <span class="track-icon" aria-hidden="true">🩺</span>
+                    <h3>Servizi Socio-Sanitari</h3>
+                    <p class="track-official">Servizi per la sanità e l'assistenza sociale</p>
+                    <p class="track-claim">«Una porta aperta sulle professioni sanitarie e la cura della persona»</p>
+                    <ul>
+                        <li>Rilevazione dei bisogni socio-sanitari del territorio e cura dei bisogni di base di bambini, persone con disabilità, anziani</li>
+                        <li>Animazione sociale e comunicazione tra persone di culture diverse</li>
+                        <li>Sbocchi: operatore socio-sanitario, assistente domiciliare, animatore nelle residenze per anziani</li>
+                    </ul>
+                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/servizi-socio-sanitari" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                </article>
+
+                <article class="track-card t-plain">
+                    <span class="track-icon" aria-hidden="true">🌙</span>
+                    <h3>Corso Serale</h3>
+                    <p class="track-official">Istruzione degli adulti</p>
+                    <ul>
+                        <li>Due indirizzi serali previsti dal PTOF: Produzioni tessili-sartoriali e Servizi socio-sanitari</li>
+                        <li>Iscrizioni aperte per l'anno scolastico 2026/27</li>
+                    </ul>
+                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/corso-serale-as-202122" target="_blank" rel="noopener">Informazioni e iscrizioni ↗</a>
+                </article>
+            </div>
+        </section>
+
+        <!-- TRATTI DISTINTIVI -->
+        <section class="school-section" aria-labelledby="sec-tratti">
+            <h2 id="sec-tratti">Cosa caratterizza l'Orfini</h2>
+            <p class="section-lead">I punti di forza e le scelte che il PTOF 2025-2028 mette al centro.</p>
+            <div class="feature-grid">
+                <div class="feature">
+                    <h3><span aria-hidden="true">🔧</span> Laboratori aggiornati</h3>
+                    <p>Laboratori forniti di tecnologie moderne grazie ai fondi ottenuti con progetti presentati a bandi MIUR e UE; il potenziamento delle metodologie laboratoriali è un obiettivo formativo esplicito.</p>
+                </div>
+                <div class="feature">
+                    <h3><span aria-hidden="true">🌍</span> Erasmus+ e internazionalizzazione</h3>
+                    <p>Istituto accreditato Erasmus+, con mobilità di studenti e docenti. È promotore di un consorzio nazionale per l'internazionalizzazione dei servizi sanitari e di assistenza sociale in ambiente di apprendimento basato sul lavoro.</p>
+                </div>
+                <div class="feature">
+                    <h3><span aria-hidden="true">🏭</span> Scuola e lavoro</h3>
+                    <p>Pioniera dell'alternanza scuola-lavoro. Il territorio offre industrie meccaniche, tessili e del terziario, piccole imprese con cui la collaborazione per gli stage dura da anni; il PTOF punta su «aziende-madrine» per ogni indirizzo.</p>
+                </div>
+                <div class="feature">
+                    <h3><span aria-hidden="true">🤝</span> Accoglienza e inclusione</h3>
+                    <p>Un ambiente interculturale, attento alla persona, che dedica particolare cura agli studenti con disabilità e con disturbi specifici di apprendimento, con percorsi individualizzati e il Piano Formativo Individuale.</p>
+                </div>
+                <div class="feature">
+                    <h3><span aria-hidden="true">🎓</span> Qualifica e diploma</h3>
+                    <p>Il curricolo integra conoscenze e competenze professionali «collegate a filo diretto con il mondo del lavoro», con un profilo di competenze specifico per la qualifica regionale e prove esperte progettate con le aziende.</p>
+                </div>
+                <div class="feature">
+                    <h3><span aria-hidden="true">🗣️</span> Lingue</h3>
+                    <p>Potenziamento delle competenze linguistiche in italiano, inglese e altre lingue UE, anche con la metodologia CLIL; percorsi per le certificazioni Trinity e PET.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRIORITÀ E LABORATORIO -->
+        <section class="school-section" aria-labelledby="sec-matematica">
+            <h2 id="sec-matematica">La matematica tra le priorità</h2>
+            <div class="lab-link-box">
+                <blockquote class="ptof-quote">
+                    Priorità: «migliorare le competenze degli studenti in matematica».<br>
+                    Traguardo: «elevare il punteggio di matematica in tutte le classi allineandolo a quello della media
+                    nazionale», diminuendo il numero di alunni al livello più basso.
+                    <cite>PTOF 2025-2028, Priorità e traguardi (Prove standardizzate nazionali)</cite>
+                </blockquote>
+                <div class="feature">
+                    <h3><span aria-hidden="true">🧪</span> Orfini Math Lab</h3>
+                    <p>Questo laboratorio digitale lavora su quella priorità: giochi e simulazioni contestualizzati sugli
+                        indirizzi della scuola, mappati sulle competenze della Riforma 2017. Trova le attività per la tua classe:</p>
+                    <div class="class-chips">
+                        <a class="class-chip" href="index.html?tag=1%20EL">1 EL</a>
+                        <a class="class-chip" href="index.html?tag=2%20EL">2 EL</a>
+                        <a class="class-chip" href="index.html?tag=4%20EL">4 EL</a>
+                        <a class="class-chip" href="index.html?tag=5%20EL">5 EL</a>
+                        <a class="class-chip" href="index.html?tag=1%20GP">1 GP</a>
+                        <a class="class-chip" href="index.html?tag=2%20GP">2 GP</a>
+                        <a class="class-chip" href="index.html?tag=1%20MA">1 MA</a>
+                        <a class="class-chip" href="index.html?tag=2%20MA">2 MA</a>
+                        <a class="class-chip" href="index.html?tag=3%20MEC">3 MEC</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORIA -->
+        <section class="school-section" aria-labelledby="sec-storia">
+            <h2 id="sec-storia">Una lunga storia</h2>
+            <p class="section-lead">Dalla Scuola di Arti e Mestieri all'istituto di oggi.</p>
+            <ol class="timeline">
+                <li><b>1884</b>A Foligno nasce la Scuola di Arti e Mestieri, presso il convento di San Nicolò.</li>
+                <li><b>1957</b>Dalla trasformazione della Scuola Tecnica Industriale prende avvio l'istituto professionale: 83 iscritti e il solo diploma di qualifica. È tra i primi istituti di questo tipo in Italia.</li>
+                <li><b>1959</b>Il D.P.R. 1405/59 istituisce l'Istituto Professionale di Stato per l'Industria e l'Artigianato.</li>
+                <li><b>1965/66</b>Foligno coordina ben undici scuole in tutta la regione.</li>
+                <li><b>1969</b>Arrivano i corsi post-qualifica per la maturità professionale.</li>
+                <li><b>1998</b>L'aggregazione con l'Istituto per i Servizi Commerciali dà origine all'istituto intitolato a "E. Orfini".</li>
+                <li><b>2009</b>Il 19 dicembre si celebrano i primi cinquant'anni dell'istruzione professionale a Foligno.</li>
+            </ol>
+        </section>
+
+        <!-- CONTATTI E FONTI -->
+        <section class="school-section" aria-labelledby="sec-contatti">
+            <h2 id="sec-contatti">Contatti</h2>
+            <div class="contact-grid">
+                <div class="feature">
+                    <h3><span aria-hidden="true">📍</span> Sede</h3>
+                    <p>Viale Marconi 12, 06034 Foligno (PG)<br>Facilmente raggiungibile con i mezzi pubblici</p>
+                </div>
+                <div class="feature">
+                    <h3><span aria-hidden="true">☎️</span> Recapiti</h3>
+                    <p>Tel. <a href="tel:+390742352930">0742 352930</a><br>
+                        <a href="mailto:pgri24000t@istruzione.it">pgri24000t@istruzione.it</a></p>
+                </div>
+                <div class="feature">
+                    <h3><span aria-hidden="true">🌐</span> Sito ufficiale</h3>
+                    <p><a href="https://www.iisorfini.edu.it/" target="_blank" rel="noopener">www.iisorfini.edu.it</a><br>
+                        Codice meccanografico PGRI24000T</p>
+                </div>
+            </div>
+        </section>
+
+        <p class="sources">
+            Fonti, consultate il 16 ottobre 2026:
+            <a href="https://www.iisorfini.edu.it/pagine/ptof-20252028" target="_blank" rel="noopener">PTOF 2025-2028</a> ·
+            <a href="https://www.iisorfini.edu.it/pagine/percorsi-di-studio" target="_blank" rel="noopener">Percorsi di studio</a> ·
+            <a href="https://www.iisorfini.edu.it/pagine/la-storia-dellorfini" target="_blank" rel="noopener">La storia dell'Orfini</a> ·
+            <a href="https://unica.istruzione.gov.it/cercalatuascuola/istituti/PGRI24000T/ist-professionale-e-orfini/" target="_blank" rel="noopener">Scuola in Chiaro</a>.
+            Per iscrizioni, orari e informazioni aggiornate fa fede il sito ufficiale della scuola.
+        </p>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio matematico digitale<br>Istituto Professionale "E. Orfini" · Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener" class="social-circle" aria-label="Instagram @meltingmath">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Laboratorio Matematico Orfini Foligno. Progetto Open Source.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="cookie-consent.js"></script>
+</body>
+
+</html>

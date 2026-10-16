@@ -25,6 +25,13 @@ SITEMAP_FILE = "sitemap.xml"
 OUTPUT_VAR_NAME = "db"
 BASE_URL = "https://federicodb.github.io/"
 RIFORMA_JSON_PATH = "riforma2017.json"
+# Pagine statiche della root da includere nella sitemap: (file, changefreq, priority)
+STATIC_PAGES = [
+    ("scuola.html", "monthly", "0.9"),
+    ("competenze.html", "monthly", "0.7"),
+    ("verifiche.html", "weekly", "0.7"),
+    ("galaxy.html", "monthly", "0.5"),
+]
 
 
 # Caricamento Riforma 2017
@@ -968,6 +975,18 @@ def generate_sitemap(items):
     xml += '    <changefreq>daily</changefreq>\n'
     xml += '    <priority>1.0</priority>\n'
     xml += '  </url>\n'
+
+    # Pagine fisse della root (non sono voci del catalogo): data = ultima modifica del file
+    for page, freq, prio in STATIC_PAGES:
+        if not os.path.exists(page):
+            continue
+        lastmod = datetime.fromtimestamp(os.path.getmtime(page)).strftime("%Y-%m-%d")
+        xml += '  <url>\n'
+        xml += f'    <loc>{BASE_URL}{page}</loc>\n'
+        xml += f'    <lastmod>{lastmod}</lastmod>\n'
+        xml += f'    <changefreq>{freq}</changefreq>\n'
+        xml += f'    <priority>{prio}</priority>\n'
+        xml += '  </url>\n'
     
     for item in items:
         raw_url = item.get('url', '')
