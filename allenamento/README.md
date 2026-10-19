@@ -77,6 +77,7 @@ Dopo `npm install`, `npm test` genera migliaia di lezioni e controlla che:
 - ogni risposta giusta, scritta in tutti i modi in cui la scriverebbe uno studente, venga accettata;
 - le risposte sbagliate non passino mai;
 - scelte multiple e vero/falso siano coerenti, e nei testi non compaiano `NaN` o `undefined`.
+- ogni formula di domande, spiegazioni, aiuti e messaggi si compili con KaTeX, e fuori dalle formule non restino comandi LaTeX (`\cdot`, `{,}`…): nel testo normale i numeri si scrivono con `it()`, dentro `$…$` con `tx()`.
 
 Ultima esecuzione grande: 343.200 esercizi, 1.194.075 risposte-studente, 63.600 verifiche simboliche, zero problemi.
 

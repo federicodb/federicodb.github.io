@@ -138,7 +138,7 @@ function interesseComposto(rng) {
     prompt: `Metti ${euro(C)} su un conto che rende il ${r}% all'anno e lasci anche gli interessi sul conto. Quanto avrai dopo ${n} anni?`,
     answer: M,
     traps: [{ value: C * (1 + (r * n) / 100), msg: 'Il secondo anno l\'interesse si calcola anche sugli interessi del primo anno (interesse composto).' }],
-    hint: `Ogni anno si moltiplica per ${tx(1 + r / 100)}.`,
+    hint: `Ogni anno si moltiplica per ${it(1 + r / 100)}.`,
     explain: `$$${C}\\cdot ${tx(1 + r / 100)} = ${tx(C * (1 + r / 100))} \\qquad ${tx(C * (1 + r / 100))}\\cdot ${tx(1 + r / 100)} = ${tx(M)}\\ €$$ Gli interessi producono altri interessi: è una crescita esponenziale.`,
     cas: { eval: `${C}*(1+${r}/100)^${n}` },
     twin: () => interesseComposto(rng),

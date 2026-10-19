@@ -1,7 +1,7 @@
 // MATEMATICA AL LAVORO — Fashion Factory (Industria e artigianato per il Made in Italy)
 // Scale del cartamodello, consumo di tessuto, gonna a ruota, ricarichi e IVA, saldi,
 // sviluppo delle taglie, pareggio di una collezione, resa del piazzamento.
-import { tx, euro } from '../../js/engine/helpers.js';
+import { it, tx, euro } from '../../js/engine/helpers.js';
 import { plane, table, circleFig, polygon } from '../../js/gfx/svg.js';
 
 // ---------- livello 1: misure e cartamodelli ----------
@@ -50,7 +50,7 @@ function gonnaRuota(rng) {
     answer: r,
     alts: [W / (2 * Math.PI)],
     traps: [{ value: W / 3.14, msg: 'Questo è il diametro: il raggio è la metà.' }, { value: W / 2, msg: 'Hai diviso solo per 2: manca π.' }],
-    hint: `$2\\cdot 3{,}14 = 6{,}28$: dividi ${tx(W)} per 6,28.`,
+    hint: `$2\\cdot 3{,}14 = 6{,}28$: dividi ${it(W)} per 6,28.`,
     explain: `$$r = \\dfrac{${tx(W)}}{2\\cdot 3{,}14} = \\dfrac{${tx(W)}}{6{,}28} = ${r}\\ \\text{cm}$$ Con questo raggio si taglia il cerchio interno della gonna.`,
     cas: { eval: `${W}/(2*3.14)` },
     twin: () => gonnaRuota(rng),
@@ -83,7 +83,7 @@ function scorporoIVA(rng) {
     answer: netto,
     traps: [{ value: lordo * 0.78, msg: 'Togliere il 22% del prezzo finale non funziona: l\'IVA era calcolata sul prezzo senza IVA, che è più basso.' }],
     hint: `Il prezzo con IVA è il 122% di quello senza: dividi per 1,22.`,
-    explain: `$$${tx(lordo)} : 1{,}22 = ${netto}\\ €$$ Verifica: il 22% di ${netto} è ${tx(netto * 0.22)}, e $${netto} + ${tx(netto * 0.22)} = ${tx(lordo)}$.`,
+    explain: `$$${tx(lordo)} : 1{,}22 = ${netto}\\ €$$ Verifica: il 22% di ${netto} è ${it(netto * 0.22)}, e $${netto} + ${tx(netto * 0.22)} = ${tx(lordo)}$.`,
     cas: { eval: `${lordo}/1.22` },
     twin: () => scorporoIVA(rng),
   };
@@ -153,7 +153,7 @@ function resaPiazzamento(rng) {
     answer: resa,
     traps: [{ value: 100 - resa, msg: 'Questa è la percentuale di scarto: la resa è la parte usata.' }].filter((t) => Math.abs(t.value - resa) > 0.01),
     hint: `Area della pezza: $${L}\\cdot 1{,}5 = ${tx(L * H)}$ m².`,
-    explain: `$$\\dfrac{${tx(usata)}}{${tx(L * H)}}\\cdot 100 = ${tx(resa)}\\%$$ Il resto (${tx(100 - resa)}%) è scarto: un buon piazzamento lo riduce al minimo.`,
+    explain: `$$\\dfrac{${tx(usata)}}{${tx(L * H)}}\\cdot 100 = ${tx(resa)}\\%$$ Il resto (${it(100 - resa)}%) è scarto: un buon piazzamento lo riduce al minimo.`,
     cas: { eval: `${usata}/(${L}*1.5)*100` },
     twin: () => resaPiazzamento(rng),
   };

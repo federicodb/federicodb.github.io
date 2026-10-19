@@ -100,6 +100,7 @@ export function hashSeed(str) {
 export function freshState(today) {
   return {
     version: 2,
+    profileId: newProfileId(),
     created: today,
     profile: { nickname: '', year: null, focus: null, indirizzo: undefined, teacherName: '', classLabel: '' },
     onboarded: false,
@@ -163,6 +164,49 @@ function migrateV1(o, today) {
   s.settings = { ...s.settings, ...(o.settings || {}) };
   if (o.league) s.league = { ...s.league, ...o.league, tier: Math.min(o.league.tier || 0, LEAGUES.length - 1) };
   return s;
+}
+
+// ---------------------------------------------------------------------------
+// Più utenti sullo stesso dispositivo (es. LIM, tablet di classe)
+// L'utente attivo resta in STORAGE_KEY (lo legge anche la home del sito); gli altri sono "parcheggiati"
+// in PROFILES_KEY. Nessun'altra chiave del sito (giochi, classifiche) viene toccata.
+// ---------------------------------------------------------------------------
+export const PROFILES_KEY = 'orfini_quest_profili';
+
+const newProfileId = () => 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
+
+export function loadProfiles(storage) {
+  try {
+    const list = JSON.parse(storage.getItem(PROFILES_KEY) || '[]');
+    return Array.isArray(list) ? list.filter((p) => p && p.version === 2 && p.profileId) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveProfiles(storage, list) {
+  try {
+    if (list.length) storage.setItem(PROFILES_KEY, JSON.stringify(list));
+    else storage.removeItem(PROFILES_KEY);
+  } catch {
+    /* memoria piena o non disponibile */
+  }
+}
+
+/** Parcheggia l'utente attivo (se ha completato il primo avvio) e attiva `targetId`, o un utente nuovo se manca.
+ *  Restituisce lo stato del nuovo utente attivo, già salvato. */
+export function switchProfile(storage, current, targetId, today) {
+  const list = loadProfiles(storage).filter((p) => p.profileId !== current.profileId);
+  if (current.onboarded) list.push(current);
+  const target = list.find((p) => p.profileId === targetId);
+  const next = target ? load({ getItem: (k) => (k === STORAGE_KEY ? JSON.stringify(target) : null) }, today) : freshState(today);
+  saveProfiles(storage, list.filter((p) => p.profileId !== next.profileId));
+  save(storage, next);
+  return next;
+}
+
+export function deleteProfile(storage, id) {
+  saveProfiles(storage, loadProfiles(storage).filter((p) => p.profileId !== id));
 }
 
 export function save(storage, state) {

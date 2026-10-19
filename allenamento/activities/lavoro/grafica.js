@@ -1,7 +1,7 @@
 // MATEMATICA AL LAVORO — Graphic Design (Servizi commerciali, comunicazione visiva)
 // Formati e rapporti d'aspetto, risoluzione di stampa, griglie di impaginazione,
 // ridimensionamenti, preventivi con IVA, risultati delle campagne, crescita dei follower.
-import { tx, euro } from '../../js/engine/helpers.js';
+import { it, tx, euro } from '../../js/engine/helpers.js';
 import { polygon, table, plane } from '../../js/gfx/svg.js';
 
 // ---------- livello 1: formati ----------
@@ -49,7 +49,7 @@ function ridimensiona(rng) {
     type: 'numbers', ordered: true,
     prompt: `Un'immagine di ${w} × ${h} pixel viene ridimensionata al ${p}%. Quali sono le nuove misure? Scrivi (larghezza; altezza).`,
     answers: [nw, nh],
-    hint: `Il ${p}% vuol dire moltiplicare per ${tx(p / 100)}.`,
+    hint: `Il ${p}% vuol dire moltiplicare per ${it(p / 100)}.`,
     explain: `$$${w}\\cdot ${tx(p / 100)} = ${nw} \\qquad ${h}\\cdot ${tx(p / 100)} = ${nh}$$ Larghezza e altezza cambiano dello stesso fattore: le proporzioni restano uguali.`,
     placeholder: '(larghezza; altezza)',
     twin: () => ridimensiona(rng),
@@ -156,7 +156,7 @@ function follower(rng) {
     prompt: `Un profilo ha ${F0.toLocaleString('it-IT')} follower e cresce del ${p}% ogni mese. Quanti follower avrà dopo ${n} mesi?`,
     answer: F,
     traps: [{ value: F0 + (F0 * p * n) / 100, msg: `Ogni mese il ${p}% si calcola sui follower di quel mese, che sono sempre di più: la crescita è esponenziale, non lineare.` }],
-    hint: `Ogni mese si moltiplica per ${tx(1 + p / 100)}.`,
+    hint: `Ogni mese si moltiplica per ${it(1 + p / 100)}.`,
     explain: `$$${F0}\\cdot ${tx(1 + p / 100)}^{${n}} = ${F}$$ Mese per mese: ${Array.from({ length: n + 1 }, (_, i) => Math.round(F0 * (1 + p / 100) ** i)).join(' → ')}.`,
     cas: { eval: `${F0}*(1+${p}/100)^${n}` },
     twin: () => follower(rng),

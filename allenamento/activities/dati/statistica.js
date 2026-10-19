@@ -1,5 +1,5 @@
 import { scene } from '../contesti.js';
-import { tx } from '../../js/engine/helpers.js';
+import { it, tx } from '../../js/engine/helpers.js';
 import { table, bars } from '../../js/gfx/svg.js';
 
 const avg = (a) => a.reduce((s, x) => s + x, 0) / a.length;
@@ -36,7 +36,7 @@ function medianStep(rng) {
     answer: median(vals),
     traps: [{ value: vals[Math.floor(n / 2)], msg: 'Prima di prendere il valore centrale i dati vanno messi in ordine.' }, { value: avg(vals), msg: 'Questa è la media.' }],
     hint: n % 2 ? 'Ordina i dati e prendi quello centrale.' : 'Ordina i dati: con un numero pari di dati la mediana è la media dei due centrali.',
-    explain: `In ordine: ${vals.slice().sort((a, b) => a - b).join(', ')}. ${n % 2 ? `Il valore centrale (il ${(n + 1) / 2}°) è ${median(vals)}.` : `I due centrali sono ${vals.slice().sort((a, b) => a - b)[n / 2 - 1]} e ${vals.slice().sort((a, b) => a - b)[n / 2]}: la mediana è ${tx(median(vals))}.`}`,
+    explain: `In ordine: ${vals.slice().sort((a, b) => a - b).join(', ')}. ${n % 2 ? `Il valore centrale (il ${(n + 1) / 2}°) è ${median(vals)}.` : `I due centrali sono ${vals.slice().sort((a, b) => a - b)[n / 2 - 1]} e ${vals.slice().sort((a, b) => a - b)[n / 2]}: la mediana è ${it(median(vals))}.`}`,
     twin: () => medianStep(rng),
   };
 }

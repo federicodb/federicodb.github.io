@@ -104,7 +104,7 @@ function velocitaTaglio(rng) {
     answer: Vc,
     alts: [(Math.PI * D * n) / 1000],
     traps: [{ value: 3.14 * D * n, msg: 'Dividi per 1000 per passare da millimetri a metri.' }],
-    hint: `$${D}\\cdot ${n} = ${D * n}$; diviso 1000 fa ${tx((D * n) / 1000)}; ora moltiplica per 3,14.`,
+    hint: `$${D}\\cdot ${n} = ${D * n}$; diviso 1000 fa ${it((D * n) / 1000)}; ora moltiplica per 3,14.`,
     explain: `$$V_c = \\dfrac{3{,}14\\cdot ${D}\\cdot ${n}}{1000} = 3{,}14\\cdot ${tx((D * n) / 1000)} = ${tx(Vc, 2)}\\ \\text{m/min}$$`,
     cas: { eval: `3.14*${D}*${n}/1000` },
     twin: () => velocitaTaglio(rng),
@@ -212,7 +212,7 @@ function conicita(rng) {
     answer: c,
     traps: [{ value: ((D - d) * 100) / (2 * L), msg: 'Questa è la metà: la conicità usa la differenza dei diametri, non dei raggi.' }].filter((t) => t.value !== c),
     hint: `$D - d = ${D - d}$ mm su ${L} mm di lunghezza.`,
-    explain: `$$C = \\dfrac{${D} - ${d}}{${L}}\\cdot 100 = \\dfrac{${D - d}}{${L}}\\cdot 100 = ${tx(c)}\\%$$ Vuol dire che il diametro cala di ${tx(c / 100)} mm per ogni millimetro di lunghezza.`,
+    explain: `$$C = \\dfrac{${D} - ${d}}{${L}}\\cdot 100 = \\dfrac{${D - d}}{${L}}\\cdot 100 = ${tx(c)}\\%$$ Vuol dire che il diametro cala di ${it(c / 100)} mm per ogni millimetro di lunghezza.`,
     cas: { eval: `(${D}-${d})/${L}*100` },
     twin: () => conicita(rng),
   };

@@ -29,9 +29,9 @@ export function viewProfile(app, section) {
     <div class="grid-2">
       <div class="stack">
         <div class="hello">${avatarSVG(s.inventory.equipped, { size: 76 })}
-          <div><h1 style="margin:0">${esc(s.profile.nickname)}</h1><span class="muted">Livello ${lv.level}${s.profile.year ? ` · ${YEARS[s.profile.year - 1].name}` : ''}</span><br><a href="#/premi/wardrobe" class="muted" style="font-size:.9rem">Cambia avatar</a></div>
+          <div><h1 style="margin:0">${esc(s.profile.nickname)}</h1><span class="muted">Livello ${lv.level}${s.profile.year ? ` · ${YEARS[s.profile.year - 1].name}` : ''}</span><br><span class="profile-links"><a href="#/premi/wardrobe">Cambia avatar</a><button type="button" data-switch>Cambia utente</button></span></div>
         </div>
-        <div class="tally" style="margin:0">
+        <div class="tally three" style="margin:0">
           <div><b class="num">${s.xp}</b><span>XP totali</span></div>
           <div><b class="num" style="color:var(--flame)">${s.streak.current}</b><span>giorni di serie (record ${s.streak.best})</span></div>
           <div><b class="num">${acc}%</b><span>giuste al primo colpo</span></div>
@@ -80,12 +80,13 @@ export function viewProfile(app, section) {
           <div class="field"><label for="nn">Nickname (lo vedi solo tu)</label><input id="nn" value="${esc(s.profile.nickname)}" maxlength="20"></div>
         </section>
         <section class="panel">
-          <h2>Salvataggi</h2>
-          <p class="muted">I progressi sono salvati su questo dispositivo. Per spostarli: esporta il file e importalo sull'altro.</p>
+          <h2>Utenti e salvataggi</h2>
+          <p class="muted">I progressi sono salvati su questo dispositivo, separati da quelli dei giochi del sito. Su un dispositivo condiviso (LIM, tablet di classe) ognuno usa il suo utente. Per spostare i progressi: esporta il file e importalo sull'altro dispositivo.</p>
           <div class="row">
+            <button class="btn-ghost" data-switch>Cambia utente</button>
             <button class="btn-ghost" data-export>Esporta</button>
             <label class="btn-ghost" style="cursor:pointer">Importa<input type="file" accept="application/json,.json" data-import hidden></label>
-            <button class="btn-ghost" data-reset>Azzera</button>
+            <button class="btn-ghost" data-reset>Azzera questo utente</button>
           </div>
         </section>
         <section class="panel">
@@ -149,12 +150,63 @@ export function viewProfile(app, section) {
       toast('Questo file non contiene progressi di Orfini Math Quest.');
     }
   });
+  app.main.querySelectorAll('[data-switch]').forEach((b) => b.addEventListener('click', () => openSwitcher(app)));
   $('[data-reset]').addEventListener('click', async () => {
-    if (!(await ask('Cancellare XP, serie, stelle, Δ e avatar su questo dispositivo? Non si può annullare.', 'Cancella tutto'))) return;
+    if (!(await ask(`Cancellare XP, serie, stelle, Δ e avatar di ${esc(s.profile.nickname || 'questo utente')}? Gli altri utenti e i dati dei giochi del sito restano. Non si può annullare.`, 'Cancella'))) return;
     app.state = G.freshState(d);
     G.rollover(app.state, d);
     app.save();
     if (location.hash === '#/benvenuto') window.dispatchEvent(new HashChangeEvent('hashchange'));
     else location.hash = '#/benvenuto';
   });
+}
+
+/** Scelta dell'utente: quelli salvati su questo dispositivo, oppure uno nuovo */
+function openSwitcher(app) {
+  const s = app.state;
+  const d = app.today();
+  const others = G.loadProfiles(app.store).filter((p) => p.profileId !== s.profileId);
+  const row = (p) => `<div class="user-row">
+      ${avatarSVG(p.inventory.equipped, { size: 48 })}
+      <span><b>${esc(p.profile.nickname || 'Senza nome')}</b><small>Livello ${G.levelInfo(p.xp).level} · ${p.xp} XP</small></span>
+      <button class="btn" data-use="${esc(p.profileId)}">Usa</button>
+      <button class="icon-btn" data-del="${esc(p.profileId)}" aria-label="Elimina ${esc(p.profile.nickname || 'utente')}" title="Elimina">${icons.trash}</button>
+    </div>`;
+  const wrap = document.createElement('div');
+  wrap.className = 'sheet-backdrop';
+  wrap.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sw-t">
+    <div class="grab"></div>
+    <div class="spread"><h2 id="sw-t" style="margin:0">Cambia utente</h2><button class="icon-btn" data-x aria-label="Chiudi">${icons.close}</button></div>
+    <p class="muted">${s.onboarded ? `I progressi di <b>${esc(s.profile.nickname)}</b> restano salvati qui: puoi tornarci quando vuoi.` : 'Scegli un utente salvato su questo dispositivo.'}</p>
+    <div class="user-list">${others.length ? others.map(row).join('') : '<p class="muted">Nessun altro utente su questo dispositivo.</p>'}</div>
+    <button class="btn wide" data-new style="margin-top:16px">Nuovo utente</button>
+  </div>`;
+  const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
+  const onKey = (e) => { if (e.key === 'Escape') close(); };
+  const activate = (id) => {
+    app.state = G.switchProfile(app.store, s, id, d);
+    app.applySettings();
+    close();
+    const target = app.state.onboarded ? '#/' : '#/benvenuto';
+    if (location.hash === target) window.dispatchEvent(new HashChangeEvent('hashchange'));
+    else location.hash = target;
+    if (app.state.onboarded) toast(`Ciao, ${esc(app.state.profile.nickname)}!`);
+  };
+  wrap.addEventListener('click', async (e) => {
+    if (e.target === wrap || e.target.closest('[data-x]')) return close();
+    if (e.target.closest('[data-new]')) return activate(null);
+    const use = e.target.closest('[data-use]');
+    if (use) return activate(use.dataset.use);
+    const del = e.target.closest('[data-del]');
+    if (del) {
+      const p = others.find((x) => x.profileId === del.dataset.del);
+      if (!(await ask(`Eliminare l'utente ${esc(p?.profile.nickname || '')} e tutti i suoi progressi? Non si può annullare.`, 'Elimina'))) return;
+      G.deleteProfile(app.store, del.dataset.del);
+      close();
+      openSwitcher(app);
+    }
+  });
+  document.addEventListener('keydown', onKey);
+  document.body.appendChild(wrap);
+  wrap.querySelector('[data-x]').focus();
 }

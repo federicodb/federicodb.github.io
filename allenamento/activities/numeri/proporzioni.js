@@ -48,7 +48,7 @@ function direct(rng) {
       prompt: `Uno scooter consuma ${l1} litri ogni ${km1} km. Quanti litri servono per ${km2} km?`,
       answer: ans,
       traps: [{ value: (km1 * km2) / l1 / 100, msg: 'Controlla la proporzione: più chilometri, più litri.' }],
-      hint: `${km2} km sono ${tx(km2 / km1)} volte ${km1} km.`,
+      hint: `${km2} km sono ${it(km2 / km1)} volte ${km1} km.`,
       explain: `$$${l1} : ${km1} = x : ${km2} \\Rightarrow x = \\dfrac{${l1}\\cdot ${km2}}{${km1}} = ${tx(ans)}$$`,
       twin: () => direct(rng),
     };

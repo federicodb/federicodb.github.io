@@ -70,6 +70,74 @@ test.describe('Orfini Math Quest (/allenamento/)', () => {
     expect(s.xp).toBeGreaterThan(0);
   });
 
+  test('scelta multipla: dopo un errore la risposta giusta resta selezionabile', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('orfini_quest_v2', JSON.stringify({ version: 2, onboarded: true, profile: { nickname: 'x', year: 1, indirizzo: null } })));
+    // si avanza nella lezione fino a una domanda con almeno 3 opzioni (frazioni, livello 1: confronti)
+    let found = false;
+    for (let attempt = 0; attempt < 20 && !found; attempt++) {
+      await page.goto('/allenamento/?test#/lezione/frazioni/1');
+      for (let n = 0; n < 12; n++) {
+        await page.locator('.actionbar .btn.big').waitFor();
+        if ((await page.locator('.option').count()) >= 3) { found = true; break; }
+        const primary = page.locator('.actionbar .btn.big');
+        const input = page.locator('[data-input] input');
+        if (await input.count()) {
+          await input.fill(await page.evaluate(() => String(window.__step.answer).replace('.', ',')));
+          await primary.click();
+        } else if (await page.locator('.option').count()) {
+          await page.locator('.option[data-correct="1"]').click();
+          await primary.click();
+        }
+        await primary.click();
+      }
+    }
+    expect(found).toBe(true);
+    const opts = page.locator('.option');
+    const right = page.locator('.option[data-correct="1"]');
+    const wrong = page.locator('.option:not([data-correct])').first();
+    await wrong.click();
+    await page.locator('.actionbar .btn.big', { hasText: 'Verifica' }).click();
+    await expect(page.locator('.actionbar')).toContainText('Non ancora');
+    // lo studente tocca subito la risposta giusta e poi "Riprova"
+    await right.click();
+    await page.locator('.actionbar .btn.big', { hasText: 'Riprova' }).click();
+    await expect(wrong).toBeDisabled();
+    await expect(right).toBeEnabled();
+    await expect(right).toHaveAttribute('aria-pressed', 'true');
+    await page.locator('.actionbar .btn.big', { hasText: 'Verifica' }).click();
+    await expect(page.locator('.actionbar.good')).toBeVisible();
+    expect(await opts.count()).toBeGreaterThanOrEqual(3);
+  });
+
+  test('cambia utente: la sessione del prof sparisce dalla home e i giochi restano', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.evaluate(() => localStorage.setItem('arcade_classifica', '[{"nome":"3EL","punti":990}]'));
+    await page.goto('/allenamento/');
+    await completeOnboarding(page);
+    await page.goto('/allenamento/#/profilo');
+    await page.locator('.profile-links [data-switch]').click();
+    await expect(page.locator('.sheet')).toContainText('Nessun altro utente');
+    await page.locator('.sheet [data-new]').click();
+    await expect(page.locator('.onb h1')).toHaveText('Orfini Math Quest');
+
+    // sul sito non compare più la sessione del prof
+    await page.goto('/index.html');
+    await expect(page.locator('#training-cta')).toHaveText('Inizia ad allenarti');
+
+    // si torna al profilo del prof
+    await page.goto('/allenamento/#/benvenuto');
+    await completeOnboarding(page, { indirizzo: 'socio' });
+    await page.goto('/allenamento/#/profilo');
+    await page.locator('.profile-links [data-switch]').click();
+    await expect(page.locator('.user-row')).toHaveCount(1);
+    await expect(page.locator('.user-row')).toContainText('Ipotenusa98');
+    await page.locator('.user-row [data-use]').click();
+    await expect(page.locator('#tabbar .tab').first()).toBeVisible();
+    const s = await questState(page);
+    expect(s.profile.nickname).toBe('Ipotenusa98');
+    expect(await page.evaluate(() => localStorage.getItem('arcade_classifica'))).toBe('[{"nome":"3EL","punti":990}]');
+  });
+
   test('?indirizzo= preimposta l\'indirizzo anche al primo avvio', async ({ page }) => {
     await page.goto('/allenamento/?indirizzo=elettrico');
     await expect(page).toHaveURL(/\/allenamento\/$/);

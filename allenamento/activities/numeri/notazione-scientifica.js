@@ -13,6 +13,8 @@ function sciForm(tree) {
 }
 
 const fmtBig = (n) => n.toLocaleString('it-IT', { maximumFractionDigits: 12 });
+// in LaTeX: prima la virgola decimale ({,}), poi i separatori delle migliaia (spazio sottile \,)
+const texBig = (n) => fmtBig(n).replace(',', '{,}').replace(/\./g, '\\,');
 
 function toSci(rng) {
   const big = rng.chance(0.6);
@@ -22,17 +24,18 @@ function toSci(rng) {
   if (Number.isInteger(m)) return toSci(rng);
   const sc = scene(rng, big ? 'grande' : 'piccolo');
   const n = rng.int(sc.e[0], sc.e[1]);
-  const value = m * 10 ** n;
+  // m·10^n in virgola mobile può dare 802999,9999999999: si riporta alle cifre significative di m
+  const value = Number((m * 10 ** n).toPrecision(digits));
   const ctx = sc.t;
   return {
     type: 'expr',
     vars: [],
-    prompt: `${ctx} $${fmtBig(value).replace(/\./g, '\\,').replace(',', '{,}')}$. Scrivilo in notazione scientifica.`,
+    prompt: `${ctx} $${texBig(value)}$. Scrivilo in notazione scientifica.`,
     answer: `${m}*10^(${n})`,
     form: sciForm,
     traps: [{ expr: `${m}*10^(${-n})`, msg: big ? 'L\'esponente deve essere positivo: il numero è grande.' : 'L\'esponente deve essere negativo: il numero è minore di 1.' }],
     hint: big ? 'Conta di quanti posti sposti la virgola verso sinistra.' : 'Conta di quanti posti sposti la virgola verso destra: l\'esponente sarà negativo.',
-    explain: `$$${fmtBig(value).replace(/\./g, '\\,').replace(',', '{,}')} = ${tx(m, 3)}\\cdot 10^{${n}}$$ La virgola si sposta di ${Math.abs(n)} posti.`,
+    explain: `$$${texBig(value)} = ${tx(m, 3)}\\cdot 10^{${n}}$$ La virgola si sposta di ${Math.abs(n)} posti.`,
     placeholder: 'ad es. 3,2·10^5',
     twin: () => toSci(rng),
   };

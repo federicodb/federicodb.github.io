@@ -163,7 +163,7 @@ function whatPercent(rng) {
     unit: '%',
     prompt: `In una verifica da ${total} punti hai ottenuto ${part} punti. Che percentuale hai raggiunto?`,
     answer: p,
-    traps: [{ value: p / 100, msg: `${tx(p / 100)} è il rapporto: per averlo in percentuale moltiplica per 100.` }],
+    traps: [{ value: p / 100, msg: `${it(p / 100)} è il rapporto: per averlo in percentuale moltiplica per 100.` }],
     hint: `Fai $\\dfrac{${part}}{${total}}$ e moltiplica per 100.`,
     explain: `$$\\dfrac{${part}}{${total}} = ${tx(p / 100)} = ${p}\\%$$`,
     twin: () => whatPercent(rng),
@@ -185,7 +185,7 @@ function originalPrice(rng) {
       { value: F + s, msg: 'Hai aggiunto un numero di euro, ma lo sconto era una percentuale.' },
     ],
     hint: `${euro(F)} è il $${100 - s}\\%$ del prezzo iniziale. Dividi per $${tx((100 - s) / 100)}$.`,
-    explain: `Se $x$ è il prezzo iniziale: $${tx((100 - s) / 100)}\\,x = ${tx(F)}$, quindi $x = ${tx(F)} : ${tx((100 - s) / 100)} = ${P}$ €. Verifica: il ${s}% di ${P} è ${tx((P * s) / 100)}, e $${P} - ${tx((P * s) / 100)} = ${tx(F)}$.`,
+    explain: `Se $x$ è il prezzo iniziale: $${tx((100 - s) / 100)}\\,x = ${tx(F)}$, quindi $x = ${tx(F)} : ${tx((100 - s) / 100)} = ${P}$ €. Verifica: il ${s}% di ${P} è ${it((P * s) / 100)}, e $${P} - ${tx((P * s) / 100)} = ${tx(F)}$.`,
     twin: () => originalPrice(rng),
   };
 }

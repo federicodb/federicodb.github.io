@@ -166,7 +166,7 @@ function valoreEfficace(rng) {
     fig: plane({ xmin: 0, xmax: 6.3, ymin: -1.3, ymax: 1.3, width: 300, height: 170, labels: false, fns: [{ f: (x) => Math.sin(x) }], hlines: [{ y: 1 / Math.SQRT2, label: 'efficace' }, { y: 1, label: 'massimo' }], xName: 't', yName: 'V' }),
     prompt: toMax
       ? `Una tensione alternata ha valore efficace ${k} V. Qual è il valore massimo (di picco)? Usa $V_{max} = V_{eff}\\cdot\\sqrt{2}$ con $\\sqrt{2} \\approx 1{,}41$.`
-      : `Una tensione alternata ha valore massimo ${tx(v)} V. Qual è il valore efficace? Usa $V_{eff} = \\dfrac{V_{max}}{\\sqrt{2}}$ con $\\sqrt{2} \\approx 1{,}41$.`,
+      : `Una tensione alternata ha valore massimo ${it(v)} V. Qual è il valore efficace? Usa $V_{eff} = \\dfrac{V_{max}}{\\sqrt{2}}$ con $\\sqrt{2} \\approx 1{,}41$.`,
     answer: ans,
     alts: [toMax ? k * Math.SQRT2 : v / Math.SQRT2],
     traps: [{ value: toMax ? k / 1.41 : v * 1.41, msg: toMax ? 'Il valore massimo è più grande di quello efficace: si moltiplica per √2.' : 'Il valore efficace è più piccolo del massimo: si divide per √2.' }],

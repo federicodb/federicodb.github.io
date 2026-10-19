@@ -115,4 +115,32 @@ const dec = decode(code); assert.equal(dec.data.n, 'Mario Rossi'); assert.equal(
 const tampered = code.replace(/\.([A-Za-z0-9_-])/, (m, ch) => '.' + (ch === 'A' ? 'B' : 'A'));
 assert.ok(decode(tampered).error);
 assert.equal(decodeMany(`ciao ${code}\n${code}`).length, 2);
+// più utenti sullo stesso dispositivo: le chiavi dei giochi del sito non si toccano
+{
+  const mem = { arcade_classifica: '[{"nome":"3EL","punti":990}]', orfini_theme: 'dark' };
+  const st = { getItem: (k) => mem[k] ?? null, setItem: (k, v) => { mem[k] = String(v); }, removeItem: (k) => { delete mem[k]; } };
+  const prof = G.freshState(d0);
+  prof.onboarded = true; prof.profile.nickname = 'Prof'; prof.xp = 900;
+  G.save(st, prof);
+  // nuovo utente: il prof viene parcheggiato, l'attivo è vuoto
+  let cur = G.switchProfile(st, prof, null, d0);
+  assert.equal(cur.onboarded, false);
+  assert.notEqual(cur.profileId, prof.profileId);
+  assert.equal(JSON.parse(mem[G.STORAGE_KEY]).profileId, cur.profileId);
+  assert.deepEqual(G.loadProfiles(st).map((p) => p.profile.nickname), ['Prof']);
+  // il nuovo utente completa il primo avvio, poi si torna al prof
+  cur.onboarded = true; cur.profile.nickname = 'Classe'; cur.xp = 40;
+  cur = G.switchProfile(st, cur, prof.profileId, d0);
+  assert.equal(cur.profile.nickname, 'Prof');
+  assert.equal(cur.xp, 900);
+  assert.deepEqual(G.loadProfiles(st).map((p) => p.profile.nickname), ['Classe']);
+  // un utente mai avviato non viene parcheggiato
+  const blank = G.switchProfile(st, cur, null, d0);
+  G.switchProfile(st, blank, prof.profileId, d0);
+  assert.deepEqual(G.loadProfiles(st).map((p) => p.profile.nickname).sort(), ['Classe']);
+  G.deleteProfile(st, G.loadProfiles(st)[0].profileId);
+  assert.equal(mem[G.PROFILES_KEY], undefined);
+  assert.equal(mem.arcade_classifica, '[{"nome":"3EL","punti":990}]');
+  assert.equal(mem.orfini_theme, 'dark');
+}
 console.log('game OK');

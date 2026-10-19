@@ -22,31 +22,28 @@ export function viewChallenges(app) {
     <p class="muted">Ogni giorno qualcosa di nuovo. I numeri cambiano sempre, l'enigma del giorno è uguale per tutta la classe.</p>
     <div class="challenge-grid">
       <section class="challenge paper" style="--hue:45">
-        <span class="icon">${icons.bolt}</span>
-        <h2>Sfida lampo</h2>
-        <p class="muted">60 secondi, calcolo a mente. Ogni risposta giusta allunga la combo e la difficoltà sale.</p>
-        <p>Il tuo record: <b class="num">${s.speed.best}</b></p>
-        <a class="btn big" href="#/lampo">Gioca</a>
+        <div class="challenge-head"><span class="icon">${icons.bolt}</span><h2>Sfida lampo</h2></div>
+        <p class="desc">60 secondi, calcolo a mente. Ogni risposta giusta allunga la combo e la difficoltà sale.</p>
+        <div class="meta"><div><span>Record</span><b class="num">${s.speed.best}</b></div><div><span>Partite</span><b class="num">${s.speed.runs}</b></div></div>
+        <div class="card-actions"><a class="btn big" href="#/lampo">Gioca</a></div>
       </section>
       <section class="challenge paper" style="--hue:280">
-        <span class="icon">${icons.puzzle}</span>
-        <h2>Enigma del giorno</h2>
-        <p class="muted">${esc(pz.title)}. Tre tentativi, un aiuto.${s.puzzle.streak > 1 ? ` Serie di enigmi: ${s.puzzle.streak}.` : ''}</p>
-        <p>${solved ? '<b style="color:var(--good)">Risolto oggi</b>' : s.puzzle.day === d ? `Tentativi usati: ${s.puzzle.attempts} di 3` : 'Nuovo enigma disponibile'}</p>
-        <a class="btn big" href="#/enigma">${solved ? 'Rivedi' : 'Risolvi'}</a>
+        <div class="challenge-head"><span class="icon">${icons.puzzle}</span><h2>Enigma del giorno</h2></div>
+        <p class="desc">${esc(pz.title)}. Tre tentativi, un aiuto.</p>
+        <div class="meta"><div><span>Oggi</span><b${solved ? ' style="color:var(--good)"' : ''}>${solved ? 'Risolto' : s.puzzle.day === d ? `${s.puzzle.attempts} tentativi su 3` : 'Da risolvere'}</b></div><div><span>Serie</span><b class="num">${s.puzzle.streak}</b></div></div>
+        <div class="card-actions"><a class="btn big" href="#/enigma">${solved ? 'Rivedi' : 'Risolvi'}</a></div>
       </section>
       <section class="challenge paper" style="--hue:160">
-        <span class="icon">${icons.repeat}</span>
-        <h2>Ripasso</h2>
-        <p class="muted">${due.length ? `Oggi tocca a: ${due.slice(0, 3).map((id) => esc(byId[id].title)).join(', ')}.` : Object.keys(s.activities).length ? 'Niente in scadenza: fai un allenamento libero sulle attività meno solide.' : 'Dopo le prime lezioni qui arrivano i ripassi, a intervalli sempre più lunghi.'}</p>
-        <a class="btn big" href="#/ripasso" ${Object.keys(s.activities).length ? '' : 'aria-disabled="true" style="pointer-events:none;opacity:.5"'}>${due.length ? 'Ripassa' : 'Allenati'}</a>
+        <div class="challenge-head"><span class="icon">${icons.repeat}</span><h2>Ripasso</h2></div>
+        <p class="desc">${due.length ? `Oggi tocca a: ${due.slice(0, 3).map((id) => esc(byId[id].title)).join(', ')}.` : Object.keys(s.activities).length ? 'Niente in scadenza: fai un allenamento libero sulle attività meno solide.' : 'Dopo le prime lezioni qui arrivano i ripassi, a intervalli sempre più lunghi.'}</p>
+        <div class="meta"><div><span>In scadenza</span><b class="num">${due.length}</b></div><div><span>Attività avviate</span><b class="num">${Object.keys(s.activities).length}</b></div></div>
+        <div class="card-actions"><a class="btn big" href="#/ripasso" ${Object.keys(s.activities).length ? '' : 'aria-disabled="true"'}>${due.length ? 'Ripassa' : 'Allenati'}</a></div>
       </section>
       <section class="challenge paper" style="--hue:48">
-        <span class="icon">${icons.clipboard}</span>
-        <h2>Simulazione INVALSI</h2>
-        <p class="muted">Quesiti originali nello stile della prova, a tempo, senza correzione fino alla fine. Resoconto per ambito.</p>
-        <p>Migliori: seconda <b class="num">${s.invalsi.best10 ?? '–'}${s.invalsi.best10 != null ? '%' : ''}</b>, quinta <b class="num">${s.invalsi.best13 ?? '–'}${s.invalsi.best13 != null ? '%' : ''}</b></p>
-        <div class="row"><a class="btn" href="#/simulazione/10">Seconda</a><a class="btn-ghost" href="#/simulazione/13">Quinta</a></div>
+        <div class="challenge-head"><span class="icon">${icons.clipboard}</span><h2>Simulazione INVALSI</h2></div>
+        <p class="desc">Quesiti originali nello stile della prova, a tempo, senza correzione fino alla fine. Resoconto per ambito.</p>
+        <div class="meta"><div><span>Seconda</span><b class="num">${s.invalsi.best10 != null ? `${s.invalsi.best10}%` : '–'}</b></div><div><span>Quinta</span><b class="num">${s.invalsi.best13 != null ? `${s.invalsi.best13}%` : '–'}</b></div></div>
+        <div class="card-actions"><a class="btn big" href="#/simulazione/10">Seconda</a><a class="btn-ghost big" href="#/simulazione/13">Quinta</a></div>
       </section>
     </div>`;
 }

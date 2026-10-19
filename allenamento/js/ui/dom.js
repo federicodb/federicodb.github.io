@@ -32,6 +32,7 @@ export const icons = {
   star: S('<path fill="currentColor" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/>'),
   check: S(`<path ${st} stroke-width="3" d="m5 12.5 4.5 4.5L19 7.5"/>`),
   close: S(`<path ${st} stroke-width="2.4" d="M6 6l12 12M18 6 6 18"/>`),
+  trash: S(`<path ${st} d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/>`),
   back: S(`<path ${st} stroke-width="2.4" d="M15 5l-7 7 7 7"/>`),
   sun: S(`<circle cx="12" cy="12" r="4.5" ${st}/><path ${st} d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/>`),
   map: S(`<path ${st} d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z M9 4v13.5 M15 6.5V20"/>`),

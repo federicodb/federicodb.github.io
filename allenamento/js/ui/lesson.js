@@ -338,6 +338,7 @@ export function runLesson(root, ctx, opts) {
       box.innerHTML = `<div class="options${figs ? ' figs' : ''}" role="group"></div>`;
       const wrap = box.firstChild;
       let sel = null;
+      let wrong = null; // l'opzione sbagliata appena verificata: la si esclude al "Riprova", anche se nel frattempo se n'è toccata un'altra
       const btns = opts.map((o, k) => {
         const b = document.createElement('button');
         b.type = 'button';
@@ -363,9 +364,15 @@ export function runLesson(root, ctx, opts) {
       return {
         ready: () => sel !== null,
         check: () => (opts[sel].correct ? { ok: true } : { ok: false, message: opts[sel].why }),
-        markWrong: () => btns[sel]?.classList.add('wrong'),
+        markWrong: () => { wrong = sel; btns[sel]?.classList.add('wrong'); },
         reveal: () => btns[opts.findIndex((o) => o.correct)].classList.add('right'),
-        retry: () => { btns[sel].disabled = true; btns[sel].setAttribute('aria-pressed', 'false'); sel = null; setReady(false); },
+        retry: () => {
+          if (wrong !== null) { btns[wrong].disabled = true; btns[wrong].setAttribute('aria-pressed', 'false'); }
+          // se dopo l'errore è già stata scelta un'altra opzione, resta selezionata
+          if (sel === wrong) sel = null;
+          wrong = null;
+          setReady(sel !== null);
+        },
         lock: (ok) => { btns.forEach((b) => (b.disabled = true)); if (ok) btns[sel].classList.add('right'); },
         focus: () => {},
         cleanup: () => document.removeEventListener('keydown', keyPick),
