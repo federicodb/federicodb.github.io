@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-16 19:34:28
+   Data: 2026-10-19 18:44:36
 */
 
 const db_verifiche = [
@@ -46,6 +46,44 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/1EL___verifica_15_maggio_2026.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/1EL/1EL___verifica_15_maggio_2026.pdf",
@@ -80,6 +118,41 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2GP___verifica_13_maggio_2026.webp",
+        "allenamento": [
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_A4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_13_maggio_2026.pdf",
@@ -114,6 +187,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2GP___verifica_31_marzo_2026_fila_A.webp",
+        "allenamento": [
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_31_marzo_2026_fila_A.pdf",
@@ -153,6 +263,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/4EL___verifica_27_marzo_2026_fila_A.webp",
+        "allenamento": [
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_A.pdf",
@@ -187,6 +334,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/4EL___verifica_27_marzo_2026_mappa_en.webp",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/4EL/4EL___verifica_27_marzo_2026_mappa_en.pdf",
@@ -222,6 +406,42 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/3MEC___verifica_26_marzo_2026_fila_A.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/3MEC/3MEC___verifica_26_marzo_2026_fila_A.pdf",
@@ -265,6 +485,44 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2EL___verifica_16_mar_2026_mappa.webp",
+        "allenamento": [
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_16_mar_2026_mappa.pdf",
@@ -298,6 +556,42 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2EL___verifica_16_mar_2026_Fila_A.webp",
+        "allenamento": [
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_16_mar_2026_Fila_A.pdf",
@@ -374,6 +668,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/verifica 2gp 24 feb 2026_fila A.webp",
+        "allenamento": [
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2GP/verifica 2gp 24 feb 2026_fila A.pdf",
@@ -413,6 +744,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2EL___verifica_2_feb_2026_fila_A.webp",
+        "allenamento": [
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_2_feb_2026_fila_A.pdf",
@@ -457,6 +825,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/3MEC___verifica_29_gennaio_2026_fila_A.webp",
+        "allenamento": [
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/3MEC/3MEC___verifica_29_gennaio_2026_fila_A.pdf",
@@ -497,6 +902,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2GP___verifica_2_dic_2025_filaB.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_2_dic_2025_filaA.pdf",
@@ -535,6 +977,42 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/4EL___verifica_21_nov_2025_filaA.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/4EL/4EL___verifica_21_nov_2025_filaA.pdf",
@@ -606,6 +1084,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2EL___verifica_10_nov_2025_filaA.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2EL/2EL___verifica_10_nov_2025_filaA.pdf",
@@ -639,6 +1154,40 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/3MEC___verifica_3_ottobre_2025.webp",
+        "allenamento": [
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/3MEC/3MEC___verifica_3_ottobre_2025.pdf",
@@ -665,6 +1214,40 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/2GP___verifica_1_ottobre_2025.webp",
+        "allenamento": [
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/2GP/2GP___verifica_1_ottobre_2025.pdf",

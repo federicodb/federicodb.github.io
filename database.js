@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-16 19:34:28
+   Data: 2026-10-19 18:44:36
 */
 
 const db = [
@@ -50,7 +50,42 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/arcade_challenge_scomposizioni_parabola.webp"
+        "thumbnail": "content/assets/thumbnails/arcade_challenge_scomposizioni_parabola.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "parabola",
+                "titolo": "La parabola",
+                "url": "allenamento/#/lezione/parabola/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Arcade Challenge: MCM & MCD",
@@ -86,6 +121,81 @@ const db = [
         "icon": "🔢",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp"
+    },
+    {
+        "title": "Prodotti Notevoli: dimostrazioni geometriche 2D e 3D",
+        "excerpt": "Laboratorio interattivo di geometria dinamica: i prodotti notevoli dimostrati con aree e volumi. Differenza di quadrati, quadrato e cubo del binomio in 2D e 3D, con la dimostrazione passo passo del cubo della differenza.",
+        "tags": [
+            "1 EL",
+            "1 GP",
+            "1 MA",
+            "2 EL",
+            "2 GP",
+            "2 MA",
+            "ALGEBRA",
+            "AREE",
+            "BIENNIO",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CUBO DEL BINOMIO",
+            "DIFFERENZA DI QUADRATI",
+            "DIMOSTRAZIONE GEOMETRICA",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "GEOMETRIA",
+            "LAB",
+            "MAT:CALCOLO",
+            "MAT:GEOMETRIA",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "PRODOTTI NOTEVOLI",
+            "QUADRATO DEL BINOMIO",
+            "SCOMPOSIZIONE",
+            "SIMULAZIONE",
+            "VISUALIZZAZIONE 3D",
+            "VOLUMI"
+        ],
+        "date": "2026-10-16",
+        "url": "content/apps/dimostrazione_geometrica_prodotti_notevoli.html",
+        "type": "app",
+        "icon": "🧱",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/dimostrazione_geometrica_prodotti_notevoli.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Il Filo di Dedalo: Labirinto Matematico 2.5D",
@@ -124,7 +234,41 @@ const db = [
         "url": "content/apps/il-filo-di-dedalo_2.5D_claude_2.html",
         "type": "app",
         "icon": "🏛️",
-        "game_type": "arcade"
+        "game_type": "arcade",
+        "allenamento": [
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "problemi-scelta",
+                "titolo": "Problemi di scelta",
+                "url": "allenamento/#/lezione/problemi-scelta/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            }
+        ]
     },
     {
         "title": "Math Bubble: La Retta Esplicita | Orfini Math Lab",
@@ -167,7 +311,41 @@ const db = [
         "type": "app",
         "icon": "⚡",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp"
+        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ]
     },
     {
         "title": "Le fasi della Luna",
@@ -203,7 +381,45 @@ const db = [
         "type": "app",
         "icon": "🌕",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.webp"
+        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.webp",
+        "allenamento": [
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "similitudine",
+                "titolo": "Similitudine e Talete",
+                "url": "allenamento/#/lezione/similitudine/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "FuncLab AI: Esploratore di Funzioni",
@@ -228,7 +444,41 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/functions_lab_008.webp"
+        "thumbnail": "content/assets/thumbnails/functions_lab_008.webp",
+        "allenamento": [
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "Studio Plotter CNC",
@@ -264,7 +514,41 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp"
+        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp",
+        "allenamento": [
+            {
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
+                "mat": [
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_C4"
+                ]
+            }
+        ]
     },
     {
         "title": "Teoria dei giochi e valutazione consapevole",
@@ -288,7 +572,33 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.webp"
+        "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.webp",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "combinatoria",
+                "titolo": "Calcolo combinatorio",
+                "url": "allenamento/#/lezione/combinatoria/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            }
+        ]
     },
     {
         "title": "PixelGrid",
@@ -315,7 +625,44 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/eq_2_gr_teoria_giochi_01.webp"
+        "thumbnail": "content/assets/thumbnails/eq_2_gr_teoria_giochi_01.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Challenge: Scomposizione di Polinomi (PRO)",
@@ -336,7 +683,41 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/polinomi_challenge_v2_pro.webp"
+        "thumbnail": "content/assets/thumbnails/polinomi_challenge_v2_pro.webp",
+        "allenamento": [
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Experience Fibonacci",
@@ -359,7 +740,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/fibonacci_anim.webp"
+        "thumbnail": "content/assets/thumbnails/fibonacci_anim.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Esploratore di Scale Logaritmiche",
@@ -402,7 +817,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.webp"
+        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Random Walk 3D | Hypercaos & Chromatic Memory",
@@ -427,7 +876,41 @@ const db = [
         "type": "app",
         "icon": "🌀",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/random_walk.webp"
+        "thumbnail": "content/assets/thumbnails/random_walk.webp",
+        "allenamento": [
+            {
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola",
@@ -451,7 +934,44 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp"
+        "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp",
+        "allenamento": [
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ]
     },
     {
         "date": "2026-05-13",
@@ -469,7 +989,41 @@ const db = [
         "excerpt": "Esercitazione interattiva su GeoGebra per lo studio della retta passante per due punti. Esplorazione dinamica dei parametri.",
         "type": "link",
         "icon": "🌐",
-        "game_type": "sim"
+        "game_type": "sim",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "similitudine",
+                "titolo": "Similitudine e Talete",
+                "url": "allenamento/#/lezione/similitudine/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Palestra: Memory delle Scomposizioni",
@@ -494,7 +1048,41 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/cards_polinomi_memory004.webp"
+        "thumbnail": "content/assets/thumbnails/cards_polinomi_memory004.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "C.E. Match",
@@ -519,7 +1107,41 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.webp"
+        "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "$\\pi$ is irrational: visualizzare l'incommensurabilità",
@@ -541,7 +1163,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/pi_is_irrational.webp"
+        "thumbnail": "content/assets/thumbnails/pi_is_irrational.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "$\\sqrt{2}$ is irrational: la diagonale incommensurabile",
@@ -564,7 +1220,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/sqrt2_is_irrational.webp"
+        "thumbnail": "content/assets/thumbnails/sqrt2_is_irrational.webp",
+        "allenamento": [
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Lissajous Curves 3D",
@@ -587,7 +1277,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/lissajous_curves_01.webp"
+        "thumbnail": "content/assets/thumbnails/lissajous_curves_01.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Allegato A - Profilo Educativo, Culturale e Professionale (PECUP)",
@@ -612,7 +1336,41 @@ const db = [
         "url": "rif_norm_2017/Allegato-A_dlgs61_2017.pdf",
         "type": "normativa",
         "icon": "📈",
-        "game_type": "document"
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "Allegato 1 - Competenze Area Generale (PECUP)",
@@ -650,7 +1408,45 @@ const db = [
         "url": "rif_norm_2017/ALLEGATO-1_-Competenze-pecup-professionali-area-generale-Def-1.pdf",
         "type": "normativa",
         "icon": "🧱",
-        "game_type": "document"
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "D.Lgs. 61/2017 - Revisione Percorsi Istruzione Professionale",
@@ -677,7 +1473,41 @@ const db = [
         "url": "rif_norm_2017/decreto-legislativo-13-04-2017-n-61.pdf",
         "type": "normativa",
         "icon": "📈",
-        "game_type": "document"
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_K4"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_K4"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "Linee Guida Nazionali - Parte I e II",
@@ -704,7 +1534,41 @@ const db = [
         "url": "rif_norm_2017/Linee-guida_PARTE-PRIMA-e-SECONDA.pdf",
         "type": "normativa",
         "icon": "📈",
-        "game_type": "document"
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_K4"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_K4"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "D.Lgs. 61/2017 - Testo Integrale",
@@ -730,7 +1594,41 @@ const db = [
         "url": "rif_norm_2017/dlgs-61-2017.pdf",
         "type": "normativa",
         "icon": "📈",
-        "game_type": "document"
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_K4"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_K4"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "Il Triangolo di Sierpinski (Video)",
@@ -753,7 +1651,45 @@ const db = [
         "type": "video",
         "icon": "🎬",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sierpinski01.webp"
+        "thumbnail": "content/assets/thumbnails/sierpinski01.webp",
+        "allenamento": [
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "similitudine",
+                "titolo": "Similitudine e Talete",
+                "url": "allenamento/#/lezione/similitudine/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_C4",
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Video: Sistemi vs Disequazioni frazionarie (\"Due sfighe non fanno una gioia\")",
@@ -776,7 +1712,43 @@ const db = [
         "type": "video",
         "icon": "🎬",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.webp"
+        "thumbnail": "content/assets/thumbnails/diseq_duesfighe.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ]
     },
     {
         "title": "$\\phi$ is irrational: il rapporto aureo",
@@ -799,7 +1771,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp"
+        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Il metodo di esaustione",
@@ -821,7 +1827,41 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/esaustione_01.webp"
+        "thumbnail": "content/assets/thumbnails/esaustione_01.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Esploratore Grafico: Operazioni con i Polinomi",
@@ -848,7 +1888,45 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.webp"
+        "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.webp",
+        "allenamento": [
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie",
@@ -875,7 +1953,44 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp"
+        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp",
+        "allenamento": [
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ]
     },
     {
         "title": "Errori Comuni - Potenze, Espressioni",
@@ -920,7 +2035,41 @@ const db = [
         "type": "infographic",
         "icon": "🖼️",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.webp"
+        "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.webp",
+        "allenamento": [
+            {
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "potenze",
+                "titolo": "Proprietà delle potenze",
+                "url": "allenamento/#/lezione/potenze/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "notazione-scientifica",
+                "titolo": "Notazione scientifica",
+                "url": "allenamento/#/lezione/notazione-scientifica/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "date": "2025-12-12",
@@ -964,7 +2113,43 @@ const db = [
         "type": "infographic",
         "icon": "🖼️",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.webp"
+        "thumbnail": "content/assets/thumbnails/guida_al_mondo_delle_funzioni_matematiche.webp",
+        "allenamento": [
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "Formula del Delta: $\\Delta = b^2 - 4ac$ (Tattoo)",
@@ -987,7 +2172,43 @@ const db = [
         "type": "image",
         "icon": "🖼️",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/tattoo_delta.webp"
+        "thumbnail": "content/assets/thumbnails/tattoo_delta.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ]
     },
     {
         "title": "PIP",
@@ -1009,7 +2230,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/retta_fallout_002.webp"
+        "thumbnail": "content/assets/thumbnails/retta_fallout_002.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Percent Lab",
@@ -1050,7 +2305,41 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.webp"
+        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.webp",
+        "allenamento": [
+            {
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "Mappe & Distorsioni: Mercatore",
@@ -1076,7 +2365,41 @@ const db = [
         "type": "app",
         "icon": "🌍",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.webp"
+        "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
@@ -1103,7 +2426,41 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.webp"
+        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Sketch to Pattern: Arte Generativa",
@@ -1127,7 +2484,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp"
+        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
@@ -1154,7 +2545,41 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.webp"
+        "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.webp",
+        "allenamento": [
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "notazione-scientifica",
+                "titolo": "Notazione scientifica",
+                "url": "allenamento/#/lezione/notazione-scientifica/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Logic Lab: Insiemi & Venn",
@@ -1178,7 +2603,41 @@ const db = [
         "type": "app",
         "icon": "🔴",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/insiemi004.webp"
+        "thumbnail": "content/assets/thumbnails/insiemi004.webp",
+        "allenamento": [
+            {
+                "id": "problemi-scelta",
+                "titolo": "Problemi di scelta",
+                "url": "allenamento/#/lezione/problemi-scelta/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            }
+        ]
     },
     {
         "title": "Esploratore Numerico: Pitagora & Tartaglia",
@@ -1206,7 +2665,41 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.webp"
+        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.webp",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_A4"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_A4"
+                ]
+            }
+        ]
     },
     {
         "title": "Albero di Pitagora: Frattali 3D",
@@ -1236,7 +2729,44 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.webp"
+        "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.webp",
+        "allenamento": [
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_A4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_A4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_A4",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
     },
     {
         "title": "Simulazione CA: Fasori & Onde",
@@ -1282,7 +2812,43 @@ const db = [
         "type": "app",
         "icon": "🧱",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.webp"
+        "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ]
     },
     {
         "title": "Laboratorio di operazioni tra Frazioni",
@@ -1329,7 +2895,43 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/math_underground003_4el.webp"
+        "thumbnail": "content/assets/thumbnails/math_underground003_4el.webp",
+        "allenamento": [
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_A2"
+                ]
+            },
+            {
+                "id": "esponenziali",
+                "titolo": "Esponenziali",
+                "url": "allenamento/#/lezione/esponenziali/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
     },
     {
         "title": "Chaos Lab: Sistemi Dinamici",
@@ -1357,7 +2959,41 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp"
+        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp",
+        "allenamento": [
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            }
+        ]
     },
     {
         "title": "Caccia all'Errore: Memory su Operazioni in Z",

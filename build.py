@@ -27,11 +27,64 @@ BASE_URL = "https://federicodb.github.io/"
 RIFORMA_JSON_PATH = "riforma2017.json"
 # Pagine statiche della root da includere nella sitemap: (file, changefreq, priority)
 STATIC_PAGES = [
+    ("allenamento/index.html", "weekly", "0.9"),
     ("scuola.html", "monthly", "0.9"),
     ("competenze.html", "monthly", "0.7"),
     ("verifiche.html", "weekly", "0.7"),
     ("galaxy.html", "monthly", "0.5"),
 ]
+
+# Catalogo di Orfini Math Quest (generato da allenamento/tools/genera-catalogo.mjs)
+ALLENAMENTO_CATALOGO_PATH = "allenamento/catalogo.json"
+# Aree trasversali escluse dai collegamenti automatici: "lavoro" dipende dall'indirizzo,
+# "invalsi" copre tutti i codici MAT_C e comparirebbe ovunque
+ALLENAMENTO_AREE_ESCLUSE = {"lavoro", "invalsi"}
+ALLENAMENTO_MAX = 4
+
+
+def load_allenamento_catalogo():
+    if not os.path.exists(ALLENAMENTO_CATALOGO_PATH):
+        return []
+    try:
+        with open(ALLENAMENTO_CATALOGO_PATH, 'r', encoding='utf-8') as f:
+            return [a for a in json.load(f) if a.get("area") not in ALLENAMENTO_AREE_ESCLUSE]
+    except Exception as e:
+        print(f"⚠️ Errore caricamento {ALLENAMENTO_CATALOGO_PATH}: {e}")
+        return []
+
+
+ALLENAMENTO_PAROLE_VUOTE = {"matematica", "teorema", "proprieta", "calcolo", "primo", "secondo", "grado", "delle", "della", "triangolo", "rettangolo"}
+
+
+def _radici(testo):
+    """ Radici di 6 lettere delle parole lunghe (es. "scomposizioni" e "SCOMPOSIZIONE" -> "scompo") """
+    testo = testo.lower().replace("à", "a").replace("è", "e").replace("ù", "u")
+    return {w[:6] for w in re.findall(r"[a-z]{5,}", testo) if w not in ALLENAMENTO_PAROLE_VUOTE}
+
+
+def link_allenamento(meta, catalogo):
+    """ Attività della Quest con codici MAT in comune con il contenuto, ordinate per: argomento in comune
+        (titolo dell'attività nei tag/titolo del contenuto), numero di codici condivisi, anni delle classi
+        del contenuto (tag "1 EL", "2 MA"...). """
+    tags = meta.get("tags", [])
+    codici = {t.split(":")[0] for t in tags if re.match(r"^MAT_[KAC]\d", t)}
+    if not codici:
+        return []
+    anni = {int(t[0]) for t in tags if re.match(r"^[1-5] [A-Z]+$", t)}
+    argomenti = _radici(" ".join(t.split(":")[-1] for t in tags) + " " + meta.get("title", ""))
+    scelte = []
+    for a in catalogo:
+        comuni = sorted(codici & set(a.get("mat", [])))
+        if comuni:
+            argomento = len(_radici(a["titolo"] + " " + a["id"].replace("-", " ")) & argomenti)
+            scelte.append((argomento, len(comuni), len(anni & set(a.get("anni", []))), a, comuni))
+    scelte.sort(key=lambda x: (-x[0], -x[1], -x[2]))
+    return [{
+        "id": a["id"],
+        "titolo": a["titolo"],
+        "url": f"allenamento/#/lezione/{a['id']}/1",
+        "mat": comuni,
+    } for _, _, _, a, comuni in scelte[:ALLENAMENTO_MAX]]
 
 
 # Caricamento Riforma 2017
@@ -566,6 +619,7 @@ def map_topics_to_riforma(topics):
 
 def main():
     items = []
+    allenamento_catalogo = load_allenamento_catalogo()
     print(f"🔄 Scansione '{CONTENT_DIR}' e altre cartelle in corso...")
 
     # Cartelle da scansionare
@@ -872,6 +926,12 @@ def main():
                     if not meta.get("excerpt") and not meta.get("description"):
                         print(f"  ⚠️  WARNING: Descrizione mancante per '{filename}'")
                     # -----------------------------------
+
+                    allenamento = link_allenamento(meta, allenamento_catalogo)
+                    if allenamento:
+                        meta["allenamento"] = allenamento
+                    else:
+                        meta.pop("allenamento", None)
 
                     items.append(meta)
                     print(f"  ✅ Indicizzato [{content_type}]: {meta['title']}")

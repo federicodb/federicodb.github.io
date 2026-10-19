@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Prodotti Notevoli: dimostrazioni geometriche 2D e 3D</title>
+  <meta name="description" content="Laboratorio interattivo di geometria dinamica: i prodotti notevoli dimostrati con aree e volumi. Differenza di quadrati, quadrato e cubo del binomio in 2D e 3D, con la dimostrazione passo passo del cubo della differenza.">
+  <meta name="keywords" content="Matematica, Algebra, Geometria, Prodotti Notevoli, Differenza di Quadrati, Quadrato del Binomio, Cubo del Binomio, Scomposizione, Dimostrazione Geometrica, Aree, Volumi, Visualizzazione 3D, Mat:Calcolo, Mat:Geometria, Mat:Modellizzazione, EU:STEM, EU:Digitale, CIT_4:COMPETENZA DIGITALE, Lab, Simulazione, 1 EL, 2 EL, 1 GP, 2 GP, 1 MA, 2 MA, Biennio">
+  <meta name="date" content="2026-10-16">
+  <meta name="theme-color" content="#000000">
+  <link rel="canonical" href="https://federicodb.github.io/content/apps/dimostrazione_geometrica_prodotti_notevoli.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://federicodb.github.io/content/apps/dimostrazione_geometrica_prodotti_notevoli.html">
+  <meta property="og:title" content="Prodotti Notevoli: dimostrazioni geometriche 2D e 3D">
+  <meta property="og:description" content="I prodotti notevoli dimostrati con aree e volumi, in 2D e 3D.">
+  <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.webp">
+  <!-- Tema chiaro/scuro condiviso con la home (chiave orfini_theme): applicato prima del rendering -->
+  <script>
+    if (localStorage.getItem('orfini_theme') === 'light') {
+      document.documentElement.classList.add('theme-light');
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  </script>
+  <script src="../assets/js/theme-toggle.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js e OrbitControls per le dimostrazioni 3D volumetriche -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Tema del sito: nero AMOLED (default) e chiaro, come la home ===== */
+    :root {
+      --bg: #000000;
+      --surface: #0b0b0e;
+      --surface-2: #121216;
+      --surface-3: #1c1c22;
+      --border: rgba(255, 255, 255, 0.11);
+      --text: #ececf1;
+      --text-2: #c9c9d2;
+      --muted: #9a9aa6;
+      --dim: #6f6f7a;
+      --primary: hsl(190, 100%, 45%);
+      --primary-soft: hsla(190, 100%, 45%, 0.14);
+    }
+    html.theme-light {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-2: #f0f2f5;
+      --surface-3: #e3e6eb;
+      --border: rgba(15, 23, 42, 0.13);
+      --text: #12141a;
+      --text-2: #2c313b;
+      --muted: #4f5664;
+      --dim: #6b7280;
+      --primary: hsl(190, 90%, 30%);
+      --primary-soft: hsla(190, 90%, 30%, 0.12);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      user-select: none;
+      background: var(--bg) !important;
+      color: var(--text) !important;
+      transition: background-color .25s ease, color .25s ease;
+    }
+    .math-font {
+      font-family: 'Space Mono', monospace;
+    }
+    .title-font {
+      font-family: 'Syne', 'Inter', sans-serif;
+    }
+    input[type=range] {
+      accent-color: var(--primary);
+    }
+    .tab-btn.active {
+      background: var(--primary-soft) !important;
+      border-color: var(--primary) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 0 14px var(--primary-soft);
+    }
+
+    /* Le classi Tailwind "slate" usate nella pagina seguono le variabili del tema */
+    .bg-slate-950, .bg-slate-950\/90, .bg-slate-950\/80, .bg-slate-950\/70 { background-color: var(--bg) !important; }
+    .bg-slate-950\/50 { background-color: var(--surface-2) !important; }
+    .bg-slate-900\/95, .bg-slate-900\/90, .bg-slate-900\/70, .bg-slate-900\/60 { background-color: var(--surface) !important; }
+    .bg-slate-800, .hover\:bg-slate-800\/80:hover { background-color: var(--surface-3) !important; }
+    .hover\:bg-slate-700:hover { background-color: var(--border) !important; }
+    #math-details { background-color: var(--surface-2) !important; }
+    [class*="border-slate-"] { border-color: var(--border) !important; }
+    .text-slate-100, .text-slate-200, .text-white { color: var(--text) !important; }
+    .text-slate-300 { color: var(--text-2) !important; }
+    .text-slate-400 { color: var(--muted) !important; }
+    .text-slate-500 { color: var(--dim) !important; }
+    .hover\:text-white:hover { color: var(--text) !important; }
+    /* Pulsanti pieni: testo sempre bianco su colore */
+    .bg-blue-600, .bg-amber-600 { color: #fff !important; }
+    .bg-blue-600 { background-color: var(--primary) !important; }
+    /* Tema chiaro: colori d'accento più scuri per il contrasto e badge tenui */
+    html.theme-light .text-blue-400 { color: #1d4ed8 !important; }
+    html.theme-light .text-sky-400 { color: #0369a1 !important; }
+    html.theme-light .text-emerald-400 { color: #047857 !important; }
+    html.theme-light .text-rose-400 { color: #be123c !important; }
+    html.theme-light .text-amber-300, html.theme-light .text-amber-400 { color: #b45309 !important; }
+    html.theme-light .text-purple-400 { color: #7e22ce !important; }
+    html.theme-light .bg-blue-950\/60, html.theme-light .bg-blue-500\/15, html.theme-light .bg-blue-500\/10 { background-color: rgba(29, 78, 216, 0.08) !important; }
+    html.theme-light .bg-amber-950\/40, html.theme-light .bg-amber-500\/20 { background-color: rgba(180, 83, 9, 0.09) !important; }
+    html.theme-light .bg-rose-950\/40 { background-color: rgba(190, 18, 60, 0.08) !important; }
+    html.theme-light .bg-emerald-500\/10 { background-color: rgba(4, 120, 87, 0.08) !important; }
+    html.theme-light .shadow-xl, html.theme-light .shadow-2xl, html.theme-light .shadow-lg { box-shadow: 0 6px 22px rgba(15, 23, 42, 0.08) !important; }
+
+    /* Comandi della vista 3D: bersagli tattili adeguati su tablet e smartphone */
+    #three-controls-toolbar button { min-height: 36px; min-width: 36px; }
+    #three-controls-toolbar { flex-wrap: wrap; justify-content: flex-end; }
+
+    /* Pulsante tema (come nella home) */
+    .orfini-theme-toggle {
+      width: 36px; height: 36px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; transition: all .2s ease;
+    }
+    .orfini-theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+    .orfini-theme-toggle svg { width: 18px; height: 18px; }
+    .orfini-theme-toggle .theme-icon-moon { display: none; }
+    html.theme-light .orfini-theme-toggle .theme-icon-sun { display: none; }
+    html.theme-light .orfini-theme-toggle .theme-icon-moon { display: block; }
+
+    /* ORFINI-BACK (stesso pulsante delle altre app) */
+    .orfini-back-btn {
+      display: inline-flex; align-items: center; gap: 6px; border-radius: 9999px; padding: 6px 14px;
+      background: var(--surface-2); color: var(--text) !important; border: 1px solid var(--border);
+      font-size: 13px; font-weight: 700; text-decoration: none !important; transition: all .2s ease; line-height: 1.2;
+    }
+    .orfini-back-btn:hover { border-color: var(--primary); color: var(--primary) !important; }
+    :fullscreen .orfini-back-btn { display: none !important; }
+    @media (max-width: 640px) { .orfini-back-btn .orfini-back-text { display: none; } .orfini-back-btn { padding: 6px 10px; } }
+    /* Smooth custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface-3);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-blue-600 selection:text-white">
+
+  <header class="border-b border-slate-800/80 bg-slate-900/95 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-3 shadow-lg">
+    <div class="max-w-[1700px] mx-auto flex flex-col gap-3">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- ORFINI-BACK START -->
+          <a href="../../index.html" class="orfini-back-btn" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
+            <span aria-hidden="true">←</span>
+            <span class="orfini-back-text">Orfini Math Lab</span>
+          </a>
+          <!-- ORFINI-BACK END -->
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-400 text-xs font-semibold shadow-inner">
+            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            Prodotti Notevoli
+          </div>
+          <h1 id="main-title" class="title-font text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
+            <span>Differenza di due Quadrati</span>
+            <span id="formula-badge" class="math-font text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-0.5 rounded-lg font-semibold text-xs sm:text-sm">
+              A² – B² = (A + B)(A – B)
+            </span>
+          </h1>
+        </div>
+
+        <div class="flex items-center gap-2 self-start sm:self-auto">
+          <div class="flex items-center gap-2 text-xs text-slate-400 bg-slate-950/80 py-1.5 px-3 rounded-xl border border-slate-800">
+            <span class="text-slate-500">Stato geometrico:</span>
+            <span id="badge-phase" class="font-medium text-blue-400">Quadrato con incavo A²–B²</span>
+          </div>
+          <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-0.5">
+        <button data-tab="diff_sq" class="tab-btn active px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+          <span>A² – B²</span>
+          <span class="text-[10px] text-slate-400 font-mono">2D</span>
+        </button>
+        <button data-tab="sq_sum" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+          <span>(A + B)²</span>
+          <span class="text-[10px] text-slate-400 font-mono">2D</span>
+        </button>
+        <button data-tab="sq_diff" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+          <span>(A – B)²</span>
+          <span class="text-[10px] text-slate-400 font-mono">2D</span>
+        </button>
+        <button data-tab="cube_sum" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+          <span>(A + B)³</span>
+          <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">3D</span>
+        </button>
+        <button data-tab="cube_diff" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+          <span>(A – B)³</span>
+          <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">3D</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-[1700px] w-full mx-auto p-3 sm:p-5 lg:p-6 flex-1 flex flex-col lg:flex-row gap-5 items-stretch">
+    
+    <!-- Viewport Container (Occupa la maggioranza dello schermo) -->
+    <section class="flex-1 min-w-0 bg-slate-900/60 border border-slate-800/90 rounded-2xl flex flex-col relative shadow-2xl overflow-hidden min-h-[520px] lg:min-h-[640px]">
+      
+      <!-- Top Viewport Bar with Mode Indicator & 3D Tools -->
+      <div class="px-4 py-2.5 border-b border-slate-800/80 bg-slate-950/70 flex items-center justify-between z-20">
+        <div class="flex items-center gap-2">
+          <span id="canvas-mode-icon" class="text-blue-400">📐</span>
+          <span id="canvas-mode-label" class="text-xs font-semibold text-slate-300">Vista Piano 2D: Geometria Equiestesa</span>
+        </div>
+        
+        <!-- Controlli Three.js Orbit / Pan / Zoom / Reset View (mostrati nelle tab 3D) -->
+        <div id="three-controls-toolbar" class="hidden items-center gap-1.5">
+          <span class="text-[11px] text-slate-400 mr-2 hidden 2xl:inline">Navigazione 3D: Rotazione (SX), Pan (DX), Zoom (Rotella)</span>
+          <button id="btn-3d-reset" title="Ripristina Angolo Camera" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span>Reset Vista</span>
+          </button>
+          <button id="btn-3d-front" title="Vista Frontale" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            Front
+          </button>
+          <button id="btn-3d-iso" title="Vista Assonometrica" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+            Iso
+          </button>
+          <span id="diff-tools" class="hidden items-center gap-1.5 ml-1 pl-2 border-l border-slate-700">
+            <button id="btn-step-prev" title="Passo precedente" aria-label="Passo precedente" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">◀</button>
+            <button id="btn-step-next" title="Passo successivo" aria-label="Passo successivo" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">▶</button>
+            <button id="btn-diff-view" title="Cambia vista: bilancio dei termini oppure blocchi disgiunti" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">Bilancio ±</button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Area Rendering: Canvas 2D + Viewport Three.js -->
+      <div id="viewport-stage" class="flex-1 w-full h-full relative overflow-hidden bg-slate-950 flex items-center justify-center">
+        <!-- Canvas 2D Nativo per massima nitidezza delle quote e dei testi matematici -->
+        <canvas id="canvas2d" class="w-full h-full absolute inset-0 block"></canvas>
+        
+        <!-- Three.js Container per le dimostrazioni volumetriche 3D -->
+        <div id="three-container" class="w-full h-full absolute inset-0 hidden"></div>
+
+        <!-- Suggerimento didattico in sovraimpressione in basso -->
+        <div id="canvas-overlay-hint" class="absolute bottom-4 left-4 right-4 pointer-events-none text-center">
+          <div class="inline-block max-w-2xl text-xs sm:text-sm text-slate-200 bg-slate-900/90 py-2.5 px-4 rounded-xl border border-slate-700/70 backdrop-blur shadow-2xl">
+            Trascina lo slider per staccare il tassello mobile, ruotarlo di 90° e formare il rettangolo equiesteso.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="w-full lg:w-[410px] xl:w-[440px] flex flex-col gap-4 shrink-0">
+      
+      <!-- Card Controlli Animazione e Parametri -->
+      <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-4">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
+          <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+            <span>Controlli di Trasformazione</span>
+          </h2>
+          <span class="text-[11px] text-blue-400 font-mono bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">interattivo</span>
+        </div>
+
+        <!-- Slider di Avanzamento Dinamico -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center text-xs font-medium">
+            <span class="text-slate-300">Progresso Trasformazione</span>
+            <span id="label-progress" class="text-blue-400 math-font font-bold text-sm">0%</span>
+          </div>
+          <input id="slider-progress" type="range" min="0" max="1" step="0.001" value="0" class="w-full h-2.5 bg-slate-800 rounded-lg cursor-pointer">
+          <div class="flex justify-between text-[10px] text-slate-500 font-medium">
+            <span id="lbl-start" class="truncate max-w-[170px]">Stato Iniziale</span>
+            <span id="lbl-end" class="truncate max-w-[170px] text-right">Forma Scomposta</span>
+          </div>
+        </div>
+
+        <!-- Pulsanti Play / Pausa / Reset -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <button id="btn-play" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white rounded-xl text-xs font-semibold shadow-lg shadow-blue-900/30 transition">
+            <svg id="icon-play" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span id="text-play">Riproduci</span>
+          </button>
+          <button id="btn-reset" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            <span>Ripristina</span>
+          </button>
+        </div>
+
+        <!-- Dimensioni Parametriche A e B -->
+        <div class="border-t border-slate-800/80 pt-3.5 space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1.5 font-medium">
+              <span class="text-amber-300 font-semibold flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-amber-400"></span>
+                Dimensione A:
+              </span>
+              <span id="val-a" class="math-font text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-2 py-0.5 rounded">180 px</span>
+            </div>
+            <input id="slider-a" type="range" min="120" max="220" step="5" value="180" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer accent-amber-400">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1.5 font-medium">
+              <span class="text-rose-400 font-semibold flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-sm bg-rose-400"></span>
+                Dimensione B:
+              </span>
+              <span id="val-b" class="math-font text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2 py-0.5 rounded">60 px</span>
+            </div>
+            <input id="slider-b" type="range" min="30" max="95" step="5" value="60" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer accent-rose-400">
+            <p class="text-[10px] text-slate-500 mt-1 italic">Condizione geometrica: B &lt; A per garantire la validità delle scomposizioni.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Verifica Matematica & Dettagli Aree/Volumi -->
+      <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-3.5">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
+          <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <span>Verifica Analitica</span>
+          </h3>
+          <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">conservazione</span>
+        </div>
+
+        <div id="math-details" class="bg-slate-950/90 p-4 rounded-xl border border-slate-800/90 text-xs space-y-2.5">
+          <!-- Popolato dinamicamente -->
+        </div>
+
+        <div class="bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/60">
+          <h4 class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Dimostrazione Geometrica</h4>
+          <p id="math-explanation" class="text-xs text-slate-300 leading-relaxed font-normal">
+            <!-- Testo didattico contestualizzato -->
+          </p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="border-t border-slate-800/60 bg-slate-950 px-6 py-2.5 text-center text-xs text-slate-500">
+    &copy; 2026 Orfini Math Lab &bull; Laboratorio Matematico Orfini Foligno &bull; Progetto Open Source
+  </footer>
+
+  <script>
+    // Stato applicazione
+    let currentTab = 'diff_sq';
+    let sizeA = 180;
+    let sizeB = 60;
+    let progress = 0;
+    let isPlaying = false;
+    let playSpeed = 0.0055;
+    let animFrameId = null;
+
+    // Configurazioni schede didattiche
+    const TAB_CONFIGS = {
+      diff_sq: {
+        title: 'Differenza di due Quadrati',
+        formula: 'A² – B² = (A + B)(A – B)',
+        modeLabel: 'Vista 2D: Ricomposizione Equiestesa del Rettangolo',
+        modeIcon: '📐',
+        hint: 'Trascina lo slider: il rettangolo viola (A–B)×B viene rimosso, ruotato di 90° e traslato a destra per formare un unico rettangolo di lati (A+B) e (A–B).',
+        explanation: 'Partendo dal quadrato A² a cui sottraiamo il quadratino B², rimangono due porzioni rettangolari entrambe con altezza (A–B). Spostando la porzione inferiore a fianco di quella superiore, l\'area totale resta invariata ed equivale al prodotto tra la nuova base (A+B) e l\'altezza comune (A–B).',
+        startLabel: 'Quadrato con incavo A²–B²',
+        endLabel: 'Rettangolo (A+B)(A–B)',
+        is3D: false
+      },
+      sq_sum: {
+        title: 'Quadrato del Binomio (Somma)',
+        formula: '(A + B)² = A² + 2AB + B²',
+        modeLabel: 'Vista 2D: Scomposizione in 4 Tasselli Poligonali',
+        modeIcon: '🔲',
+        hint: 'Trascina lo slider per far esplodere il quadrato di lato (A+B) nei suoi 4 tasselli componenti: A², i due rettangoli A×B e il quadratino B².',
+        explanation: 'Un quadrato avente lato pari a (A + B) ha area (A + B)². Suddividendo ciascun lato nei segmenti A e B, l\'area complessiva si decompone geometricamente nella somma del quadrato blu A², due rettangoli arancioni A×B e il quadratino rosa B².',
+        startLabel: 'Quadrato Unico (A+B)²',
+        endLabel: '4 Tasselli: A² + 2AB + B²',
+        is3D: false
+      },
+      sq_diff: {
+        title: 'Quadrato del Binomio (Differenza)',
+        formula: '(A – B)² = A² – 2AB + B²',
+        modeLabel: 'Vista 2D: Inclusione ed Esclusione Geometrica',
+        modeIcon: '✂️',
+        hint: 'Dal quadrato genitore A² sottraiamo i due rettangoli rossi A×B. Poiché l\'angolo B² verrebbe sottratto due volte, lo reintegriamo (+B²)!',
+        explanation: 'Per isolare il quadrato verde (A–B)², partiamo dall\'intero quadrato A² e togliamo due strisce di area A×B. L\'angolo in basso a destra B² viene però rimosso due volte: aggiungendo nuovamente B² otteniamo esattamente (A–B)² = A² – 2AB + B².',
+        startLabel: 'Quadrato genitore A²',
+        endLabel: 'Area Netta (A–B)²',
+        is3D: false
+      },
+      cube_sum: {
+        title: 'Cubo del Binomio (Somma)',
+        formula: '(A + B)³ = A³ + 3A²B + 3AB² + B³',
+        modeLabel: 'Vista 3D: Decomposizione Volumetrica in 8 Prismi',
+        modeIcon: '🧊',
+        hint: 'Ruota la vista con il mouse (tasto SX). Trascina lo slider per far esplodere gli 8 prismi nello spazio tridimensionale.',
+        explanation: 'Un cubo di spigolo (A + B) possiede un volume totale pari a (A+B)³. La partizione dello spazio lungo i tre assi cartesiani genera 8 solidi: 1 grande cubo A³, 3 prismi a base quadrata A²B, 3 prismi allungati AB² e il piccolo cubo d\'angolo B³.',
+        startLabel: 'Cubo Compatto (A+B)³',
+        endLabel: '8 Solidi Tridimensionali',
+        is3D: true
+      },
+      cube_diff: {
+        title: 'Cubo del Binomio (Differenza)',
+        formula: '(A – B)³ = A³ – 3A²B + 3AB² – B³',
+        modeLabel: 'Vista 3D: Dimostrazione Passo Passo (togli e restituisci)',
+        modeIcon: '🧊',
+        hint: 'Avanza con lo slider o con ◀ ▶: ogni passo applica un termine della formula. Ogni zona del cubo mostra quante volte è ancora contata.',
+        explanation: 'Partiamo dal cubo intero A³ e applichiamo un termine alla volta, contando quante volte ogni zona resta inclusa.',
+        startLabel: 'Cubo intero A³',
+        endLabel: 'Resta solo (A–B)³',
+        is3D: true
+      }
+    };
+
+    // ===== Tema: colori per canvas 2D e scena 3D (disegnati via codice, non seguono il CSS) =====
+    const isLightTheme = () => document.documentElement.classList.contains('theme-light');
+    function PAL() {
+      return isLightTheme()
+        ? { bg: 0xf4f5f7, grid: 'rgba(15, 23, 42, 0.07)', guide: 'rgba(15, 23, 42, 0.25)', badge: '#ffffff', baseFill: '#e3e6eb', baseStroke: '#94a3b8', grid3dA: 0xcbd5e1, grid3dB: 0xe2e8f0 }
+        : { bg: 0x000000, grid: 'rgba(148, 163, 184, 0.09)', guide: 'rgba(148, 163, 184, 0.25)', badge: '#000000', baseFill: '#101014', baseStroke: '#3f3f46', grid3dA: 0x27272a, grid3dB: 0x141417 };
+    }
+    // Colori delle quote: nel tema chiaro le tinte pastello diventano scure e leggibili
+    const LIGHT_DIM = { '#60a5fa': '#1d4ed8', '#38bdf8': '#0369a1', '#93c5fd': '#1e40af', '#94a3b8': '#475569', '#34d399': '#047857', '#f43f5e': '#be123c', '#c084fc': '#7e22ce' };
+    function themeColor(c) {
+      if (!isLightTheme()) return c;
+      if (LIGHT_DIM[c]) return LIGHT_DIM[c];
+      return c.replace('rgba(244, 63, 94,', 'rgba(190, 18, 60,').replace('rgba(192, 132, 252,', 'rgba(126, 34, 206,');
+    }
+
+    // Easing per movimento naturale
+    function easeInOutCubic(x) {
+      return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    }
+
+    const canvas2d = document.getElementById('canvas2d');
+    const ctx2d = canvas2d.getContext('2d');
+    const viewportStage = document.getElementById('viewport-stage');
+
+    function resize2DCanvas() {
+      if (!viewportStage) return;
+      const dpr = window.devicePixelRatio || 1;
+      const w = viewportStage.clientWidth;
+      const h = viewportStage.clientHeight;
+      canvas2d.width = Math.floor(w * dpr);
+      canvas2d.height = Math.floor(h * dpr);
+      canvas2d.style.width = `${w}px`;
+      canvas2d.style.height = `${h}px`;
+      ctx2d.scale(dpr, dpr);
+    }
+
+    window.addEventListener('resize', () => {
+      resize2DCanvas();
+      if (renderer && camera) {
+        const w = viewportStage.clientWidth;
+        const h = viewportStage.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      }
+    });
+
+    // Funzione helper per disegnare quote lineari leggibili e nitide con frecce
+    function drawCrispDimension(ctx, x1, y1, x2, y2, labelText, color, isHoriz, offset = 0) {
+      color = themeColor(color);
+      ctx.save();
+      let ox1 = x1, oy1 = y1, ox2 = x2, oy2 = y2;
+      if (isHoriz) {
+        oy1 += offset;
+        oy2 += offset;
+        // Linee di estensione guida
+        if (Math.abs(offset) > 4) {
+          ctx.beginPath();
+          ctx.strokeStyle = PAL().guide;
+          ctx.lineWidth = 1;
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(ox1, oy1 + (offset > 0 ? 3 : -3));
+          ctx.moveTo(x2, y2);
+          ctx.lineTo(ox2, oy2 + (offset > 0 ? 3 : -3));
+          ctx.stroke();
+        }
+      } else {
+        ox1 += offset;
+        ox2 += offset;
+        if (Math.abs(offset) > 4) {
+          ctx.beginPath();
+          ctx.strokeStyle = PAL().guide;
+          ctx.lineWidth = 1;
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(ox1 + (offset > 0 ? 3 : -3), oy1);
+          ctx.moveTo(x2, y2);
+          ctx.lineTo(ox2 + (offset > 0 ? 3 : -3), oy2);
+          ctx.stroke();
+        }
+      }
+
+      // Linea di misura principale
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.6;
+      ctx.moveTo(ox1, oy1);
+      ctx.lineTo(ox2, oy2);
+      ctx.stroke();
+
+      // Frecce o trattini terminali
+      const arrowSize = 5;
+      if (isHoriz) {
+        // Freccia SX
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.moveTo(ox1, oy1);
+        ctx.lineTo(ox1 + arrowSize, oy1 - 3);
+        ctx.lineTo(ox1 + arrowSize, oy1 + 3);
+        ctx.fill();
+        // Freccia DX
+        ctx.beginPath();
+        ctx.moveTo(ox2, oy2);
+        ctx.lineTo(ox2 - arrowSize, oy2 - 3);
+        ctx.lineTo(ox2 - arrowSize, oy2 + 3);
+        ctx.fill();
+      } else {
+        // Freccia TOP
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.moveTo(ox1, Math.min(oy1, oy2));
+        ctx.lineTo(ox1 - 3, Math.min(oy1, oy2) + arrowSize);
+        ctx.lineTo(ox1 + 3, Math.min(oy1, oy2) + arrowSize);
+        ctx.fill();
+        // Freccia BOTTOM
+        ctx.beginPath();
+        ctx.moveTo(ox1, Math.max(oy1, oy2));
+        ctx.lineTo(ox1 - 3, Math.max(oy1, oy2) - arrowSize);
+        ctx.lineTo(ox1 + 3, Math.max(oy1, oy2) - arrowSize);
+        ctx.fill();
+      }
+
+      // Badge di sfondo del testo per massima leggibilità
+      const mx = (ox1 + ox2) / 2;
+      const my = (oy1 + oy2) / 2;
+      ctx.font = '600 12px "Fira Code", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const textMetrics = ctx.measureText(labelText);
+      const textW = textMetrics.width + 12;
+      const textH = 18;
+
+      ctx.fillStyle = PAL().badge;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(mx - textW / 2, my - textH / 2, textW, textH, 4);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.fillText(labelText, mx, my);
+      ctx.restore();
+    }
+
+    function render2DProof(t) {
+      const w = viewportStage.clientWidth;
+      const h = viewportStage.clientHeight;
+      ctx2d.clearRect(0, 0, w, h);
+
+      // Griglia tecnica di sfondo
+      ctx2d.save();
+      ctx2d.strokeStyle = PAL().grid;
+      ctx2d.lineWidth = 1;
+      const gridSize = 32;
+      for (let x = 0; x < w; x += gridSize) {
+        ctx2d.beginPath();
+        ctx2d.moveTo(x, 0);
+        ctx2d.lineTo(x, h);
+        ctx2d.stroke();
+      }
+      for (let y = 0; y < h; y += gridSize) {
+        ctx2d.beginPath();
+        ctx2d.moveTo(0, y);
+        ctx2d.lineTo(w, y);
+        ctx2d.stroke();
+      }
+      ctx2d.restore();
+
+      const A_raw = sizeA;
+      const B_raw = Math.min(sizeB, sizeA - 20);
+
+      // Calcolo fattore di scala automatico per non uscire mai dai bordi
+      const maxSpan = Math.max(A_raw + B_raw + 80, 300);
+      const scale = Math.min((w - 120) / maxSpan, (h - 140) / maxSpan, 1.25);
+      const A = A_raw * scale;
+      const B = B_raw * scale;
+      const hRect = A - B;
+
+      if (currentTab === 'diff_sq') {
+        // --- DIMOSTRAZIONE A^2 - B^2 = (A + B)(A - B) ---
+        // Punto di ancoraggio centrato
+        const startTotalWidth = A;
+        const endTotalWidth = A + B;
+        const currentTotalWidth = (1 - t) * startTotalWidth + t * endTotalWidth;
+        const originX = (w - currentTotalWidth) / 2;
+        const originY = (h - A) / 2 + 10;
+
+        const p1X = originX;
+        const p1Y = originY;
+        const p2InitX = originX;
+        const p2InitY = originY + hRect;
+        const p2TargetX = originX + A;
+        const p2TargetY = originY;
+
+        // 1. Incavo sottratto B x B (rosso tratteggiato in dissolvenza)
+        if (t < 0.95) {
+          ctx2d.save();
+          const alphaHole = Math.max(0, 1 - t * 1.3);
+          ctx2d.fillStyle = `rgba(239, 68, 68, ${alphaHole * 0.12})`;
+          ctx2d.strokeStyle = `rgba(248, 113, 113, ${alphaHole * 0.7})`;
+          ctx2d.setLineDash([4, 4]);
+          ctx2d.lineWidth = 1.5;
+          ctx2d.fillRect(p1X + hRect, p1Y + hRect, B, B);
+          ctx2d.strokeRect(p1X + hRect, p1Y + hRect, B, B);
+
+          if (t < 0.4) {
+            ctx2d.setLineDash([]);
+            ctx2d.fillStyle = `rgba(248, 113, 113, ${alphaHole})`;
+            ctx2d.font = '600 13px "Fira Code", monospace';
+            ctx2d.textAlign = 'center';
+            ctx2d.textBaseline = 'middle';
+            ctx2d.fillText('– B²', p1X + hRect + B / 2, p1Y + hRect + B / 2);
+          }
+          ctx2d.restore();
+        }
+
+        // 2. Pezzo 1 Fisso: Rettangolo A x (A - B) (Blu intenso)
+        ctx2d.save();
+        ctx2d.fillStyle = '#2563eb';
+        ctx2d.strokeStyle = '#60a5fa';
+        ctx2d.lineWidth = 2;
+        ctx2d.beginPath();
+        ctx2d.roundRect(p1X, p1Y, A, hRect, 5);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 13px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('Pezzo 1: A × (A – B)', p1X + A / 2, p1Y + hRect / 2);
+        ctx2d.restore();
+
+        // 3. Pezzo 2 Mobile: (A - B) x B ruota di -90° e trasla a destra (Viola brillante)
+        ctx2d.save();
+        const startCenterX = p2InitX + hRect / 2;
+        const startCenterY = p2InitY + B / 2;
+        const finalCenterX = p2TargetX + B / 2;
+        const finalCenterY = p2TargetY + hRect / 2;
+
+        const curCenterX = (1 - t) * startCenterX + t * finalCenterX;
+        const arcY = Math.sin(t * Math.PI) * -35; // Sollevamento parabolico anti-collisione
+        const curCenterY = (1 - t) * startCenterY + t * finalCenterY + arcY;
+        const curAngle = -t * (Math.PI / 2);
+
+        ctx2d.translate(curCenterX, curCenterY);
+        ctx2d.rotate(curAngle);
+
+        ctx2d.fillStyle = '#7c3aed';
+        ctx2d.strokeStyle = '#c084fc';
+        ctx2d.lineWidth = 2;
+        ctx2d.beginPath();
+        ctx2d.roundRect(-hRect / 2, -B / 2, hRect, B, 5);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 12px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText(t > 0.6 ? 'B × (A – B)' : '(A – B) × B', 0, 0);
+        ctx2d.restore();
+
+        // 4. Quote dinamiche coerenti
+        // Quota orizzontale in alto: da A a (A + B)
+        const currentTopW = (1 - t) * A + t * (A + B);
+        const topLabel = t < 0.15 ? 'Lato = A' : (t > 0.85 ? 'Base = A + B' : `A + B (t=${Math.round(t*100)}%)`);
+        drawCrispDimension(ctx2d, p1X, p1Y, p1X + currentTopW, p1Y, topLabel, '#60a5fa', true, -28);
+
+        // Quota verticale a sinistra: da A a (A - B)
+        const currentLeftH = (1 - t) * A + t * hRect;
+        const leftLabel = t < 0.15 ? 'Lato = A' : (t > 0.85 ? 'Altezza = A – B' : 'A → (A – B)');
+        drawCrispDimension(ctx2d, p1X, p1Y + currentLeftH, p1X, p1Y, leftLabel, '#38bdf8', false, -30);
+
+        // Quota del blocchetto incavo B
+        if (t < 0.4) {
+          const fadeB = Math.max(0, 1 - t / 0.4);
+          drawCrispDimension(ctx2d, p1X + hRect, p1Y + A, p1X + A, p1Y + A, 'B', `rgba(244, 63, 94, ${fadeB})`, true, 20);
+          drawCrispDimension(ctx2d, p1X + A, p1Y + hRect, p1X + A, p1Y + A, 'B', `rgba(244, 63, 94, ${fadeB})`, false, 20);
+        }
+
+        // Quota di B affiancato al completamento
+        if (t > 0.7) {
+          const fadeB2 = (t - 0.7) / 0.3;
+          drawCrispDimension(ctx2d, p1X + A, p1Y, p1X + A + B, p1Y, 'B (affiancato)', `rgba(192, 132, 252, ${fadeB2})`, true, -50);
+        }
+
+      } else if (currentTab === 'sq_sum') {
+        // --- DIMOSTRAZIONE (A + B)^2 = A^2 + 2AB + B^2 ---
+        const totalSide = A + B;
+        const gap = t * 28;
+        const startX = (w - (totalSide + gap)) / 2;
+        const startY = (h - (totalSide + gap)) / 2 + 10;
+
+        // 1. Tassello A^2 (Top-Left)
+        ctx2d.save();
+        ctx2d.fillStyle = '#2563eb';
+        ctx2d.strokeStyle = '#60a5fa';
+        ctx2d.lineWidth = 2;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX, startY, A, A, 6);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 16px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('A²', startX + A / 2, startY + A / 2);
+        ctx2d.restore();
+
+        // 2. Tassello AB Orizzontale (Bottom-Left)
+        ctx2d.save();
+        ctx2d.fillStyle = '#d97706';
+        ctx2d.strokeStyle = '#fbbf24';
+        ctx2d.lineWidth = 2;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX, startY + A + gap, A, B, 6);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 14px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('A × B', startX + A / 2, startY + A + gap + B / 2);
+        ctx2d.restore();
+
+        // 3. Tassello AB Verticale (Top-Right)
+        ctx2d.save();
+        ctx2d.fillStyle = '#d97706';
+        ctx2d.strokeStyle = '#fbbf24';
+        ctx2d.lineWidth = 2;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX + A + gap, startY, B, A, 6);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 14px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('B × A', startX + A + gap + B / 2, startY + A / 2);
+        ctx2d.restore();
+
+        // 4. Tassello B^2 (Bottom-Right)
+        ctx2d.save();
+        ctx2d.fillStyle = '#e11d48';
+        ctx2d.strokeStyle = '#fb7185';
+        ctx2d.lineWidth = 2;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX + A + gap, startY + A + gap, B, B, 6);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 14px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('B²', startX + A + gap + B / 2, startY + A + gap + B / 2);
+        ctx2d.restore();
+
+        // Quote generali
+        drawCrispDimension(ctx2d, startX, startY, startX + totalSide + gap, startY, 'Lato = A + B', '#60a5fa', true, -30);
+        drawCrispDimension(ctx2d, startX, startY + totalSide + gap, startX, startY, 'Lato = A + B', '#60a5fa', false, -32);
+
+        // Quote dei singoli tasselli se in esplosione
+        if (t > 0.15) {
+          drawCrispDimension(ctx2d, startX, startY, startX + A, startY, 'A', '#93c5fd', true, -14);
+          drawCrispDimension(ctx2d, startX + A + gap, startY, startX + totalSide + gap, startY, 'B', '#f43f5e', true, -14);
+        }
+
+      } else if (currentTab === 'sq_diff') {
+        // --- DIMOSTRAZIONE (A - B)^2 = A^2 - 2AB + B^2 ---
+        const startX = (w - A) / 2;
+        const startY = (h - A) / 2 + 10;
+        const slideShift = t * 32;
+
+        // Base A^2 originaria
+        ctx2d.save();
+        ctx2d.fillStyle = PAL().baseFill;
+        ctx2d.strokeStyle = PAL().baseStroke;
+        ctx2d.lineWidth = 1.5;
+        ctx2d.fillRect(startX, startY, A, A);
+        ctx2d.strokeRect(startX, startY, A, A);
+        ctx2d.restore();
+
+        // 1. Quadrato (A - B)^2 (Verde smeraldo, obiettivo)
+        ctx2d.save();
+        ctx2d.fillStyle = '#059669';
+        ctx2d.strokeStyle = '#34d399';
+        ctx2d.lineWidth = 2.5;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX, startY, hRect, hRect, 6);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 16px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('(A – B)²', startX + hRect / 2, startY + hRect / 2);
+        ctx2d.restore();
+
+        // 2. Rettangolo AB Orizzontale sottratto (si stacca verso il basso)
+        ctx2d.save();
+        ctx2d.fillStyle = `rgba(239, 68, 68, ${0.85 - t * 0.2})`;
+        ctx2d.strokeStyle = '#f87171';
+        ctx2d.lineWidth = 1.5;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX, startY + hRect + slideShift, A, B, 5);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 12px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('– (A × B)', startX + A / 2, startY + hRect + slideShift + B / 2);
+        ctx2d.restore();
+
+        // 3. Rettangolo AB Verticale sottratto (si stacca verso destra)
+        ctx2d.save();
+        ctx2d.fillStyle = `rgba(239, 68, 68, ${0.85 - t * 0.2})`;
+        ctx2d.strokeStyle = '#f87171';
+        ctx2d.lineWidth = 1.5;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX + hRect + slideShift, startY, B, A, 5);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 12px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('– (B × A)', startX + hRect + slideShift + B / 2, startY + A / 2);
+        ctx2d.restore();
+
+        // 4. Quadratino B^2 (Ambra: compensazione del doppio conteggio)
+        ctx2d.save();
+        const b2Shift = slideShift * 1.5;
+        ctx2d.fillStyle = '#d97706';
+        ctx2d.strokeStyle = '#fbbf24';
+        ctx2d.lineWidth = 2;
+        ctx2d.beginPath();
+        ctx2d.roundRect(startX + hRect + b2Shift, startY + hRect + b2Shift, B, B, 4);
+        ctx2d.fill();
+        ctx2d.stroke();
+
+        ctx2d.fillStyle = '#ffffff';
+        ctx2d.font = '700 12px "Inter", sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+        ctx2d.fillText('+ B²', startX + hRect + b2Shift + B / 2, startY + hRect + b2Shift + B / 2);
+        ctx2d.restore();
+
+        // Quote
+        drawCrispDimension(ctx2d, startX, startY, startX + A, startY, 'Quadrato A', '#94a3b8', true, -26);
+        drawCrispDimension(ctx2d, startX, startY + A, startX, startY, 'Quadrato A', '#94a3b8', false, -28);
+        drawCrispDimension(ctx2d, startX, startY + hRect, startX + hRect, startY + hRect, 'A – B', '#34d399', true, 18);
+      }
+    }
+
+    let scene, camera, renderer, controls, gridHelper;
+
+    // Cambio tema a scena già creata: sfondo, griglia e spigoli (scuri sul chiaro, chiari sullo scuro)
+    function applyTheme3D() {
+      if (!scene) return;
+      const pal = PAL();
+      scene.background = new THREE.Color(pal.bg);
+      if (gridHelper) {
+        scene.remove(gridHelper);
+        gridHelper.geometry.dispose();
+        gridHelper = new THREE.GridHelper(600, 24, pal.grid3dA, pal.grid3dB);
+        gridHelper.position.y = -130;
+        scene.add(gridHelper);
+      }
+      scene.traverse(o => {
+        if (o.isLineSegments && o.material && o.material.color) {
+          if (!o.userData.baseColor) o.userData.baseColor = o.material.color.clone();
+          o.material.color.copy(o.userData.baseColor);
+          if (isLightTheme()) o.material.color.multiplyScalar(0.45);
+        }
+      });
+    }
+    new MutationObserver(applyTheme3D).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    let cubeSumGroup, cubeDiffGroup;
+    let threeInitialized = false;
+
+    function initThreeJS() {
+      const container = document.getElementById('three-container');
+      const w = viewportStage.clientWidth || 800;
+      const h = viewportStage.clientHeight || 600;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(PAL().bg);
+
+      camera = new THREE.PerspectiveCamera(40, w / h, 1, 3000);
+      camera.position.set(380, 290, 460);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      // OrbitControls: rotazione (SX), pan (DX), zoom (rotella/pinch)
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.minDistance = 150;
+      controls.maxDistance = 1400;
+      controls.target.set(0, 0, 0);
+
+      // Luci di scena bilanciate
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      scene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.85);
+      dirLight1.position.set(200, 400, 300);
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0x38bdf8, 0.4);
+      dirLight2.position.set(-200, -100, -200);
+      scene.add(dirLight2);
+
+      // Griglia 3D elegante alla base
+      gridHelper = new THREE.GridHelper(600, 24, PAL().grid3dA, PAL().grid3dB);
+      gridHelper.position.y = -130;
+      scene.add(gridHelper);
+
+      // Creazione gruppi di solidi
+      cubeSumGroup = new THREE.Group();
+      cubeDiffGroup = new THREE.Group();
+      scene.add(cubeSumGroup);
+      scene.add(cubeDiffGroup);
+
+      buildCubeSumMeshes();
+      buildCubeDiffMeshes();
+
+      threeInitialized = true;
+    }
+
+    // Costruzione 8 blocchi per (A + B)^3
+    let sumBlocks = [];
+    function buildCubeSumMeshes() {
+      // Svuota gruppo
+      while (cubeSumGroup.children.length > 0) {
+        cubeSumGroup.remove(cubeSumGroup.children[0]);
+      }
+      sumBlocks = [];
+
+      // Definizioni geometriche degli 8 prismi con colori differenziati
+      const defs = [
+        // 1 cubo A^3
+        { type: 'A3', sx: 1, sy: 1, sz: 1, baseCol: 0x2563eb, edgeCol: 0x93c5fd, dir: [-1, 1, -1] },
+        // 3 prismi A^2 B
+        { type: 'A2B', sx: 0, sy: 1, sz: 1, baseCol: 0x0284c7, edgeCol: 0x7dd3fc, dir: [1, 1, -1] },
+        { type: 'A2B', sx: 1, sy: 0, sz: 1, baseCol: 0x0284c7, edgeCol: 0x7dd3fc, dir: [-1, -1, -1] },
+        { type: 'A2B', sx: 1, sy: 1, sz: 0, baseCol: 0x0284c7, edgeCol: 0x7dd3fc, dir: [-1, 1, 1] },
+        // 3 prismi A B^2
+        { type: 'AB2', sx: 1, sy: 0, sz: 0, baseCol: 0xd97706, edgeCol: 0xfcd34d, dir: [-1, -1, 1] },
+        { type: 'AB2', sx: 0, sy: 1, sz: 0, baseCol: 0xd97706, edgeCol: 0xfcd34d, dir: [1, 1, 1] },
+        { type: 'AB2', sx: 0, sy: 0, sz: 1, baseCol: 0xd97706, edgeCol: 0xfcd34d, dir: [1, -1, -1] },
+        // 1 cubo B^3
+        { type: 'B3', sx: 0, sy: 0, sz: 0, baseCol: 0xe11d48, edgeCol: 0xfda4af, dir: [1, -1, 1] }
+      ];
+
+      defs.forEach((d) => {
+        const mat = new THREE.MeshPhongMaterial({
+          color: d.baseCol,
+          shininess: 45,
+          transparent: true,
+          opacity: 0.92
+        });
+        const geom = new THREE.BoxGeometry(1, 1, 1);
+        const mesh = new THREE.Mesh(geom, mat);
+
+        const edges = new THREE.EdgesGeometry(geom);
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: d.edgeCol, linewidth: 1.5 }));
+        mesh.add(line);
+
+        cubeSumGroup.add(mesh);
+        sumBlocks.push({ mesh, def: d, geom, edges });
+      });
+    }
+
+    // ===== Cubo della differenza: A³ diviso nelle 8 zone reali =====
+    // Coordinate locali [0, a]: N = cubo (A−B)³ nell'angolo, P = lastre, E = barre di spigolo, C = cubetto d'angolo.
+    // Ogni termine della formula agisce su alcune zone: il contatore di ciascuna zona dice quante volte è ancora inclusa.
+    const DIFF_ZONES = [
+      { id: 'N',   lo: [0, 0, 0], hi: ['d', 'd', 'd'] },
+      { id: 'PX',  lo: ['d', 0, 0], hi: ['a', 'd', 'd'] },
+      { id: 'PY',  lo: [0, 'd', 0], hi: ['d', 'a', 'd'] },
+      { id: 'PZ',  lo: [0, 0, 'd'], hi: ['d', 'd', 'a'] },
+      { id: 'EXY', lo: ['d', 'd', 0], hi: ['a', 'a', 'd'] },
+      { id: 'EXZ', lo: ['d', 0, 'd'], hi: ['a', 'd', 'a'] },
+      { id: 'EYZ', lo: [0, 'd', 'd'], hi: ['d', 'a', 'a'] },
+      { id: 'C',   lo: ['d', 'd', 'd'], hi: ['a', 'a', 'a'] }
+    ];
+    // Contatori dopo ogni passo: A³, −3A²B, +3AB², −B³
+    const DIFF_COUNTS = [
+      { N: 1, PX: 1, PY: 1, PZ: 1, EXY: 1, EXZ: 1, EYZ: 1, C: 1 },
+      { N: 1, PX: 0, PY: 0, PZ: 0, EXY: -1, EXZ: -1, EYZ: -1, C: -2 },
+      { N: 1, PX: 0, PY: 0, PZ: 0, EXY: 0, EXZ: 0, EYZ: 0, C: 1 },
+      { N: 1, PX: 0, PY: 0, PZ: 0, EXY: 0, EXZ: 0, EYZ: 0, C: 0 }
+    ];
+    // Confini dei passi sullo slider: 0 intro, 1 togli strati, 2 restituisci spigoli, 3 togli angolo, 4 risultato
+    const DIFF_STAGES = [0, 0.06, 0.34, 0.62, 0.86, 1];
+    let diffView = 'bilancio';
+
+    // Etichette sprite leggibili su entrambi i temi (pillola scura, testo chiaro)
+    function makeTextSprite(text, color = '#ffffff') {
+      const c = document.createElement('canvas');
+      const g = c.getContext('2d');
+      const fs = 56;
+      g.font = `700 ${fs}px "Space Mono", monospace`;
+      const w = Math.ceil(g.measureText(text).width) + 44;
+      c.width = w; c.height = fs + 30;
+      g.font = `700 ${fs}px "Space Mono", monospace`;
+      g.fillStyle = 'rgba(0, 0, 0, 0.82)';
+      g.beginPath(); if (g.roundRect) g.roundRect(2, 2, w - 4, c.height - 4, 20); else g.rect(2, 2, w - 4, c.height - 4); g.fill();
+      g.strokeStyle = color; g.lineWidth = 4; g.stroke();
+      g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(text, w / 2, c.height / 2 + 2);
+      const tex = new THREE.CanvasTexture(c);
+      tex.minFilter = THREE.LinearFilter;
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+      sp.renderOrder = 30;
+      sp.userData.aspect = w / c.height;
+      return sp;
+    }
+    function setSprite(sp, x, y, z, h = 15) { sp.position.set(x, y, z); sp.scale.set(h * sp.userData.aspect, h, 1); }
+
+    function boxMesh(color, opacity) {
+      const geom = new THREE.BoxGeometry(1, 1, 1);
+      const mesh = new THREE.Mesh(geom, new THREE.MeshPhongMaterial({ color, shininess: 50, transparent: true, opacity, depthWrite: opacity > 0.9 }));
+      const line = new THREE.LineSegments(new THREE.EdgesGeometry(geom), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55 }));
+      mesh.add(line);
+      return mesh;
+    }
+
+    let diffBlocks = null;
+    function buildCubeDiffMeshes() {
+      while (cubeDiffGroup.children.length > 0) cubeDiffGroup.remove(cubeDiffGroup.children[0]);
+      const zones = DIFF_ZONES.map(z => {
+        const mesh = boxMesh(0x2563eb, 0.95);
+        cubeDiffGroup.add(mesh);
+        return { ...z, mesh, tag: null, tagOn: false };
+      });
+      // Gusci delle operazioni: 3 lastre (−A²B), 3 prismi di spigolo (+AB²), il cubetto d'angolo (−B³)
+      const ops = {
+        slabs: ['x', 'y', 'z'].map(ax => ({ ax, mesh: boxMesh(0xef4444, 0.35), label: makeTextSprite('−A²B', '#fca5a5') })),
+        edges: ['xy', 'xz', 'yz'].map(ax => ({ ax, mesh: boxMesh(0xf59e0b, 0.4), label: makeTextSprite('+AB²', '#fcd34d') })),
+        corner: { mesh: boxMesh(0xef4444, 0.45), label: makeTextSprite('−B³', '#fca5a5') }
+      };
+      [...ops.slabs, ...ops.edges, ops.corner].forEach(o => { cubeDiffGroup.add(o.mesh); cubeDiffGroup.add(o.label); });
+      // Etichette di quota e contatori delle zone
+      const dims = { a: makeTextSprite('A', '#fcd34d'), d: makeTextSprite('A − B', '#6ee7b7'), b: makeTextSprite('B', '#fda4af') };
+      Object.values(dims).forEach(sp => cubeDiffGroup.add(sp));
+      zones.forEach(z => { z.tag = makeTextSprite('', '#fca5a5'); cubeDiffGroup.add(z.tag); });
+      diffBlocks = { zones, ops, dims, tagText: {} };
+      applyTheme3D();
+    }
+
+    // Aggiorna il testo di un'etichetta solo se cambia (ricrea la texture)
+    function setTagText(z, text, color) {
+      z.tagOn = text !== '';
+      if (diffBlocks.tagText[z.id] === text + color) return;
+      diffBlocks.tagText[z.id] = text + color;
+      cubeDiffGroup.remove(z.tag);
+      z.tag.material.map.dispose(); z.tag.material.dispose();
+      z.tag = makeTextSprite(text, color);
+      cubeDiffGroup.add(z.tag);
+    }
+
+    // Passo corrente e avanzamento locale (0..1) dato lo slider
+    function diffStage(p) {
+      for (let k = DIFF_STAGES.length - 2; k >= 0; k--) {
+        if (p >= DIFF_STAGES[k]) return { k, f: Math.min(1, (p - DIFF_STAGES[k]) / (DIFF_STAGES[k + 1] - DIFF_STAGES[k])) };
+      }
+      return { k: 0, f: 0 };
+    }
+
+    function updateCubeDiff(a, b, p) {
+      if (!diffBlocks) return;
+      const d = a - b, o = -a / 2;   // il cubo A³ è centrato nell'origine
+      const val = v => (v === 'a' ? a : v === 'd' ? d : v);
+      const { k, f } = diffStage(p);
+      const ease = x => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
+      // Contatori: cambiano a metà del passo che li modifica (passi 1, 2, 3 → indici 1, 2, 3)
+      const opIndex = Math.min(3, k >= 4 ? 3 : (k >= 1 ? (f >= 0.55 ? k : k - 1) : 0));
+      const counts = DIFF_COUNTS[Math.max(0, opIndex)];
+      const final = k >= 4 || p >= 0.999;
+
+      if (diffView === 'blocchi') {
+        // Vista a blocchi disgiunti: le 8 zone si separano, poi le 7 esterne svaniscono
+        const tExp = Math.min(1, p / 0.5), tFade = Math.max(0, (p - 0.5) / 0.5);
+        const gap = ease(tExp) * a * 0.35;
+        diffBlocks.zones.forEach(z => {
+          const lo = z.lo.map(val), hi = z.hi.map(val);
+          const dir = z.lo.map(v => (v === 'd' ? 1 : -0.15));
+          z.mesh.scale.set(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]);
+          z.mesh.position.set(o + (lo[0] + hi[0]) / 2 + dir[0] * gap, o + (lo[1] + hi[1]) / 2 + dir[1] * gap, o + (lo[2] + hi[2]) / 2 + dir[2] * gap);
+          z.mesh.visible = true;
+          const isN = z.id === 'N';
+          z.mesh.material.color.set(isN ? (tFade > 0.5 ? 0x059669 : 0x2563eb) : (z.id === 'C' ? 0xe11d48 : z.id[0] === 'E' ? 0xd97706 : 0x0284c7));
+          z.mesh.material.opacity = isN ? 0.95 : 0.92 * (1 - tFade) + 0.06 * tFade;
+          z.mesh.material.depthWrite = z.mesh.material.opacity > 0.9;
+          z.tag.visible = false;
+        });
+        [...diffBlocks.ops.slabs, ...diffBlocks.ops.edges, diffBlocks.ops.corner].forEach(op => { op.mesh.visible = false; op.label.visible = false; });
+      } else {
+        // Vista "bilancio": zone colorate secondo il contatore, gusci delle operazioni in movimento
+        diffBlocks.zones.forEach(z => {
+          const lo = z.lo.map(val), hi = z.hi.map(val);
+          z.mesh.scale.set(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]);
+          z.mesh.position.set(o + (lo[0] + hi[0]) / 2, o + (lo[1] + hi[1]) / 2, o + (lo[2] + hi[2]) / 2);
+          const c = counts[z.id];
+          const m = z.mesh.material;
+          if (z.id === 'N') { m.color.set(final ? 0x059669 : 0x2563eb); m.opacity = 0.96; }
+          else if (c === 1) { m.color.set(z.id === 'C' && opIndex === 2 ? 0xf59e0b : 0x2563eb); m.opacity = 0.9; }
+          else if (c === 0) { m.color.set(0x64748b); m.opacity = final ? 0.05 : 0.1; }
+          else { m.color.set(c === -1 ? 0xef4444 : 0x991b1b); m.opacity = 0.55; }
+          m.depthWrite = m.opacity > 0.9;
+          z.mesh.visible = true;
+          // Etichette dei contatori: solo dove la zona è "in debito" o contata di troppo
+          const cx = z.mesh.position.x, cy = z.mesh.position.y, cz = z.mesh.position.z;
+          if (c < 0) { setTagText(z, `tolta ${-c + 1}×`, '#fca5a5'); }
+          else if (z.id === 'C' && c === 1 && opIndex === 2) { setTagText(z, 'contata 1×', '#fcd34d'); }
+          else { setTagText(z, '', '#ffffff'); }
+          z.tag.visible = z.tagOn && !final;
+          setSprite(z.tag, cx + (hi[0] - lo[0]) * 0.1, cy + (hi[1] - lo[1]) * 0.1, cz + (hi[2] - lo[2]) / 2 + 6, 13);
+        });
+
+        // Gusci in movimento: escono (sottrazione) o rientrano (restituzione) durante il proprio passo
+        const out = a * 0.55;
+        const show = (op, active, enter) => {
+          const vis = active > 0 && active < 1.6;
+          op.mesh.visible = vis; op.label.visible = vis && active < 1.15;
+          const fade = active <= 1 ? 1 : Math.max(0, 1 - (active - 1) / 0.6);
+          op.mesh.material.opacity = 0.42 * fade;
+          return enter ? 1 - ease(Math.min(1, active)) : ease(Math.min(1, active));
+        };
+        const stageT = n => (k === n ? f : (k > n ? 1 + (k === n + 1 ? f : 1) : 0));
+        diffBlocks.ops.slabs.forEach(op => {
+          const s = show(op, stageT(1), false) * out;
+          const ax = op.ax;
+          op.mesh.scale.set(ax === 'x' ? b : a, ax === 'y' ? b : a, ax === 'z' ? b : a);
+          const cx = ax === 'x' ? o + d + b / 2 + s : 0, cy = ax === 'y' ? o + d + b / 2 + s : 0, cz = ax === 'z' ? o + d + b / 2 + s : 0;
+          op.mesh.position.set(cx, cy, cz);
+          setSprite(op.label, cx, cy + (ax === 'y' ? b : a) / 2 + 10, cz, 14);
+        });
+        diffBlocks.ops.edges.forEach(op => {
+          const s = show(op, stageT(2), true) * out;
+          const ax = op.ax;
+          const has = c => ax.includes(c);
+          op.mesh.scale.set(has('x') ? b : a, has('y') ? b : a, has('z') ? b : a);
+          const pos = c => (has(c) ? o + d + b / 2 + s * 0.8 : 0);
+          op.mesh.position.set(pos('x'), pos('y'), pos('z'));
+          setSprite(op.label, pos('x'), pos('y') + (has('y') ? b : a) / 2 + 10, pos('z'), 14);
+        });
+        {
+          const op = diffBlocks.ops.corner;
+          const s = show(op, stageT(3), false) * out;
+          op.mesh.scale.set(b, b, b);
+          const c = o + d + b / 2 + s * 0.7;
+          op.mesh.position.set(c, c, c);
+          setSprite(op.label, c, c + b / 2 + 10, c, 14);
+        }
+      }
+
+      // Quote: A sullo spigolo verticale, A − B e B sullo spigolo frontale in basso
+      const ds = diffBlocks.dims;
+      ds.a.visible = ds.d.visible = ds.b.visible = true;
+      setSprite(ds.a, o - 14, 0, o + a + 4, 15);
+      setSprite(ds.d, o + d / 2, o - 14, o + a + 4, 15);
+      setSprite(ds.b, o + d + b / 2, o - 14, o + a + 4, 15);
+    }
+
+    // Etichette di quota anche nel cubo della somma
+    let sumDims = null;
+    // Aggiornamento scala e posizioni 3D dinamiche in base a A, B e t (progresso slider)
+    function update3DObjects(t) {
+      if (!threeInitialized) return;
+
+      const scale = 0.85;
+      const a = sizeA * scale;
+      const b = sizeB * scale;
+      const diff = a - b;
+      const explodeDist = t * 75;
+
+      if (currentTab === 'cube_sum') {
+        cubeSumGroup.visible = true;
+        cubeDiffGroup.visible = false;
+
+        if (!sumDims) {
+          sumDims = { a: makeTextSprite('A', '#fcd34d'), b: makeTextSprite('B', '#fda4af'), s: makeTextSprite('A + B', '#7dd3fc') };
+          Object.values(sumDims).forEach(sp => cubeSumGroup.add(sp));
+        }
+        // Quote sullo spigolo frontale in basso: A e B (si allontanano con l'esplosione), A + B in verticale
+        setSprite(sumDims.a, -b / 2 - explodeDist, -a / 2 - b / 2 - 16 - explodeDist, a / 2 + b / 2 + explodeDist, 15);
+        setSprite(sumDims.b, a / 2 + explodeDist, -a / 2 - b / 2 - 16 - explodeDist, a / 2 + b / 2 + explodeDist, 15);
+        setSprite(sumDims.s, -a / 2 - b / 2 - 22 - explodeDist, 0, a / 2 + b / 2 + explodeDist, 15);
+
+        sumBlocks.forEach(({ mesh, def }) => {
+          const w = def.sx ? a : b;
+          const h = def.sy ? a : b;
+          const d = def.sz ? a : b;
+          mesh.scale.set(w, h, d);
+
+          // Posizione iniziale incastrata nel cubo (A+B)^3
+          const basePosX = (def.sx ? -b / 2 : a / 2);
+          const basePosY = (def.sy ? b / 2 : -a / 2);
+          const basePosZ = (def.sz ? -b / 2 : a / 2);
+
+          mesh.position.set(
+            basePosX + def.dir[0] * explodeDist,
+            basePosY + def.dir[1] * explodeDist,
+            basePosZ + def.dir[2] * explodeDist
+          );
+        });
+
+      } else if (currentTab === 'cube_diff') {
+        cubeSumGroup.visible = false;
+        cubeDiffGroup.visible = true;
+        // Il cubo della differenza usa l'avanzamento reale dello slider per scandire i passi
+        updateCubeDiff(a, b, progress);
+      }
+    }
+
+    function updateMathPanel() {
+      const mathBox = document.getElementById('math-details');
+      const badge = document.getElementById('badge-phase');
+      const A = sizeA;
+      const B = Math.min(sizeB, sizeA - 20);
+      const diff = A - B;
+
+      let html = '';
+      if (currentTab === 'diff_sq') {
+        const areaR1 = A * diff;
+        const areaR2 = B * diff;
+        const totalComp = (A + B) * diff;
+        const theor = A * A - B * B;
+        html = `
+          <div class="flex justify-between items-center"><span class="text-slate-400">Pezzo Blu A×(A–B):</span><span class="math-font font-semibold text-blue-400">${areaR1.toLocaleString()} px²</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">Pezzo Viola B×(A–B):</span><span class="math-font font-semibold text-purple-400">${areaR2.toLocaleString()} px²</span></div>
+          <div class="border-t border-slate-800/80 pt-2 flex justify-between items-center font-bold text-slate-100">
+            <span>Area Rettangolo (A+B)(A–B):</span>
+            <span class="math-font text-emerald-400 text-sm">${totalComp.toLocaleString()} px²</span>
+          </div>
+          <div class="flex justify-between items-center text-[11px] text-slate-400">
+            <span>Equivalenza con A² – B²:</span>
+            <span class="math-font text-slate-300">${theor.toLocaleString()} px² <span class="text-emerald-400 font-bold">✓ Coerente</span></span>
+          </div>
+        `;
+        badge.innerText = progress < 0.15 ? "Quadrato con incavo A²–B²" : (progress > 0.85 ? "Rettangolo ricomposto (A+B)(A–B)" : "Rotazione e Traslazione del tassello");
+        badge.className = progress > 0.85 ? "font-medium text-emerald-400" : "font-medium text-blue-400";
+
+      } else if (currentTab === 'sq_sum') {
+        const a2 = A * A;
+        const ab2 = 2 * A * B;
+        const b2 = B * B;
+        const tot = Math.pow(A + B, 2);
+        html = `
+          <div class="flex justify-between items-center"><span class="text-slate-400">1 Tassello A²:</span><span class="math-font font-semibold text-blue-400">${a2.toLocaleString()} px²</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">2 Rettangoli A×B:</span><span class="math-font font-semibold text-amber-400">${ab2.toLocaleString()} px²</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">1 Tassello B²:</span><span class="math-font font-semibold text-rose-400">${b2.toLocaleString()} px²</span></div>
+          <div class="border-t border-slate-800/80 pt-2 flex justify-between items-center font-bold text-slate-100">
+            <span>Area Totale (A+B)²:</span>
+            <span class="math-font text-emerald-400 text-sm">${tot.toLocaleString()} px²</span>
+          </div>
+        `;
+        badge.innerText = progress < 0.1 ? "Quadrato Intero (A+B)²" : (progress > 0.85 ? "4 Tasselli Esplosi A² + 2AB + B²" : "Esplosione dei componenti");
+        badge.className = "font-medium text-amber-400";
+
+      } else if (currentTab === 'sq_diff') {
+        const a2 = A * A;
+        const ab2 = 2 * A * B;
+        const b2 = B * B;
+        const net = diff * diff;
+        html = `
+          <div class="flex justify-between items-center"><span class="text-slate-400">Quadrato genitore A²:</span><span class="math-font font-semibold text-slate-300">${a2.toLocaleString()} px²</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">Sottrazione – 2×(A×B):</span><span class="math-font font-semibold text-rose-400">– ${ab2.toLocaleString()} px²</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">Compensazione + B²:</span><span class="math-font font-semibold text-amber-400">+ ${b2.toLocaleString()} px²</span></div>
+          <div class="border-t border-slate-800/80 pt-2 flex justify-between items-center font-bold text-slate-100">
+            <span>Quadrato Netto (A–B)²:</span>
+            <span class="math-font text-emerald-400 text-sm">${net.toLocaleString()} px²</span>
+          </div>
+        `;
+        badge.innerText = progress < 0.1 ? "Quadrato iniziale A²" : (progress > 0.85 ? "Area isolata (A–B)²" : "Sottrazione e reintegro d'angolo");
+        badge.className = "font-medium text-emerald-400";
+
+      } else if (currentTab === 'cube_sum') {
+        const a3 = Math.pow(A, 3);
+        const a2b = 3 * A * A * B;
+        const ab2 = 3 * A * B * B;
+        const b3 = Math.pow(B, 3);
+        const totVol = Math.pow(A + B, 3);
+        html = `
+          <div class="flex justify-between items-center"><span class="text-slate-400">1 Cubo A³:</span><span class="math-font font-semibold text-blue-400">${(a3/1000).toFixed(1)}k px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">3 Prismi A²B:</span><span class="math-font font-semibold text-sky-400">${(a2b/1000).toFixed(1)}k px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">3 Prismi AB²:</span><span class="math-font font-semibold text-amber-400">${(ab2/1000).toFixed(1)}k px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">1 Cubo B³:</span><span class="math-font font-semibold text-rose-400">${(b3/1000).toFixed(1)}k px³</span></div>
+          <div class="border-t border-slate-800/80 pt-2 flex justify-between items-center font-bold text-slate-100">
+            <span>Volume (A+B)³:</span>
+            <span class="math-font text-emerald-400 text-sm">${(totVol/1000).toFixed(1)}k px³</span>
+          </div>
+        `;
+        badge.innerText = progress < 0.1 ? "Cubo Compatto (A+B)³" : (progress > 0.85 ? "8 Prismi Tridimensionali" : "Esplosione volumetrica");
+        badge.className = "font-medium text-sky-400";
+
+      } else if (currentTab === 'cube_diff') {
+        const fmt = v => `${v < 0 ? '−' : ''}${(Math.abs(v) / 1000).toFixed(1)}k`;
+        const A3 = Math.pow(A, 3), T1 = 3 * A * A * B, T2 = 3 * A * B * B, B3 = Math.pow(B, 3);
+        const netVol = Math.pow(diff, 3);
+        if (diffView === 'blocchi') {
+          const p1 = 3 * diff * diff * B, p2 = 3 * diff * B * B;
+          html = `
+          <div class="flex justify-between items-center"><span class="text-slate-400">Cubo intero A³:</span><span class="math-font font-semibold text-blue-400">${fmt(A3)} px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">– 3 lastre (A–B)²B:</span><span class="math-font font-semibold text-sky-400">– ${fmt(p1)} px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">– 3 barre (A–B)B²:</span><span class="math-font font-semibold text-amber-400">– ${fmt(p2)} px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">– cubetto B³:</span><span class="math-font font-semibold text-rose-400">– ${fmt(B3)} px³</span></div>
+          <div class="border-t border-slate-800/80 pt-2 flex justify-between items-center font-bold text-slate-100">
+            <span>Resta (A–B)³:</span><span class="math-font text-emerald-400 text-sm">${fmt(A3 - p1 - p2 - B3)} px³</span>
+          </div>
+          <div class="text-[11px] text-slate-400">Sviluppando: 3(A–B)²B + 3(A–B)B² + B³ = 3A²B – 3AB² + B³, quindi si ritrova A³ – 3A²B + 3AB² – B³.</div>`;
+          badge.innerText = progress < 0.5 ? "A³ diviso in 8 blocchi" : "Restano (A–B)³";
+          document.getElementById('math-explanation').innerText = 'Il cubo di spigolo A = (A – B) + B si divide in 8 blocchi che non si sovrappongono: il cubo (A – B)³, 3 lastre, 3 barre e il cubetto B³. Togliendo i 7 blocchi esterni resta (A – B)³.';
+        } else {
+          const { k, f } = diffStage(progress);
+          const applied = Math.min(3, k >= 4 ? 3 : (k >= 1 ? (f >= 0.55 ? k : k - 1) : 0));
+          const terms = [
+            { lbl: 'Cubo intero A³', v: A3, cls: 'text-blue-400' },
+            { lbl: '– 3 strati A²B', v: -T1, cls: 'text-rose-400' },
+            { lbl: '+ 3 prismi AB²', v: T2, cls: 'text-amber-400' },
+            { lbl: '– cubetto B³', v: -B3, cls: 'text-rose-400' }
+          ];
+          let run = 0;
+          const rows = terms.map((t, idx) => {
+            const on = idx <= applied;
+            if (on) run += t.v;
+            const active = idx === applied && k >= 1 && k <= 3;
+            return `<div class="flex justify-between items-center ${on ? '' : 'opacity-35'}" ${active ? 'style="outline:1px solid var(--primary);outline-offset:3px;border-radius:6px"' : ''}>
+              <span class="text-slate-400">${t.lbl}:</span><span class="math-font font-semibold ${t.cls}">${t.v < 0 ? '– ' : ''}${fmt(Math.abs(t.v))} px³</span></div>`;
+          }).join('');
+          const done = applied === 3;
+          html = `${rows}
+          <div class="border-t border-slate-800/80 pt-2 flex justify-between items-center font-bold text-slate-100">
+            <span>Totale parziale:</span><span class="math-font text-sm ${done ? 'text-emerald-400' : 'text-slate-200'}">${fmt(run)} px³</span>
+          </div>
+          <div class="flex justify-between items-center text-[11px] text-slate-400">
+            <span>(A – B)³ = ${diff}³:</span>
+            <span class="math-font text-slate-300">${fmt(netVol)} px³ ${done ? '<span class="text-emerald-400 font-bold">✓ Uguale</span>' : ''}</span>
+          </div>`;
+          const STEP_TEXT = [
+            'Partiamo dal cubo intero A³: ogni zona è contata una volta.',
+            'Togliamo tre strati A × A × B (–3A²B). Gli spigoli comuni a due strati vengono tolti due volte, il cubetto d\'angolo tre volte: sono "in debito".',
+            'Restituiamo tre prismi A × B × B (+3AB²): gli spigoli tornano a zero. Il cubetto d\'angolo sta in tutti e tre i prismi, quindi ora è contato una volta di troppo.',
+            'Togliamo il cubetto d\'angolo B³ (–B³): ogni zona fuori dal cubo verde vale zero.',
+            'Resta solo il cubo di spigolo A – B: (A – B)³ = A³ – 3A²B + 3AB² – B³.'
+          ];
+          const stepIdx = progress >= 0.999 ? 4 : (k >= 4 ? 4 : applied);
+          badge.innerText = ['Cubo intero A³', 'Passo 1: – 3A²B', 'Passo 2: + 3AB²', 'Passo 3: – B³', 'Risultato (A–B)³'][stepIdx];
+          document.getElementById('math-explanation').innerText = STEP_TEXT[stepIdx];
+        }
+        badge.className = "font-medium text-emerald-400";
+      }
+
+      mathBox.innerHTML = html;
+    }
+
+    function updateProgressUI() {
+      const pct = Math.round(progress * 100);
+      document.getElementById('label-progress').innerText = `${pct}%`;
+      document.getElementById('slider-progress').value = progress;
+    }
+
+    function updatePlayButtonUI() {
+      const btn = document.getElementById('btn-play');
+      const text = document.getElementById('text-play');
+      const icon = document.getElementById('icon-play');
+      if (isPlaying) {
+        text.innerText = 'Pausa';
+        icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+        btn.classList.replace('bg-blue-600', 'bg-amber-600');
+        btn.classList.replace('hover:bg-blue-500', 'hover:bg-amber-500');
+      } else {
+        text.innerText = 'Riproduci';
+        icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+        btn.classList.replace('bg-amber-600', 'bg-blue-600');
+        btn.classList.replace('hover:bg-amber-500', 'hover:bg-blue-500');
+      }
+    }
+
+    function mainAnimationLoop() {
+      if (isPlaying) {
+        progress += playSpeed;
+        if (progress >= 1) {
+          progress = 1;
+          isPlaying = false;
+          updatePlayButtonUI();
+        }
+        updateProgressUI();
+      }
+
+      const t = easeInOutCubic(progress);
+
+      if (TAB_CONFIGS[currentTab].is3D) {
+        if (controls) controls.update();
+        update3DObjects(t);
+        if (renderer && scene && camera) {
+          renderer.render(scene, camera);
+        }
+      } else {
+        render2DProof(t);
+      }
+
+      updateMathPanel();
+      animFrameId = requestAnimationFrame(mainAnimationLoop);
+    }
+
+    function switchTab(tabKey) {
+      currentTab = tabKey;
+      progress = 0;
+      isPlaying = false;
+      updatePlayButtonUI();
+      updateProgressUI();
+
+      const conf = TAB_CONFIGS[tabKey];
+      document.getElementById('main-title').innerHTML = `
+        <span>${conf.title}</span>
+        <span id="formula-badge" class="math-font text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-0.5 rounded-lg font-semibold text-xs sm:text-sm">
+          ${conf.formula}
+        </span>
+      `;
+      document.getElementById('canvas-mode-icon').innerText = conf.modeIcon;
+      document.getElementById('canvas-mode-label').innerText = conf.modeLabel;
+      document.getElementById('canvas-overlay-hint').innerHTML = `
+        <div class="inline-block max-w-2xl text-xs sm:text-sm text-slate-200 bg-slate-900/90 py-2.5 px-4 rounded-xl border border-slate-700/70 backdrop-blur shadow-2xl">
+          ${conf.hint}
+        </div>
+      `;
+      document.getElementById('math-explanation').innerText = conf.explanation;
+      document.getElementById('lbl-start').innerText = conf.startLabel;
+      document.getElementById('lbl-end').innerText = conf.endLabel;
+
+      const toolbar3D = document.getElementById('three-controls-toolbar');
+      const threeCont = document.getElementById('three-container');
+      const c2d = document.getElementById('canvas2d');
+
+      const diffTools = document.getElementById('diff-tools');
+      diffTools.classList.toggle('hidden', tabKey !== 'cube_diff');
+      diffTools.classList.toggle('flex', tabKey === 'cube_diff');
+
+      if (conf.is3D) {
+        c2d.classList.add('hidden');
+        threeCont.classList.remove('hidden');
+        toolbar3D.classList.remove('hidden');
+        toolbar3D.classList.add('flex');
+        if (!threeInitialized) {
+          initThreeJS();
+        }
+      } else {
+        threeCont.classList.add('hidden');
+        c2d.classList.remove('hidden');
+        toolbar3D.classList.add('hidden');
+        toolbar3D.classList.remove('flex');
+        resize2DCanvas();
+      }
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabKey) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      resize2DCanvas();
+
+      // Tab Switch
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.getAttribute('data-tab'));
+        });
+      });
+
+      // Slider Progresso
+      const sliderProg = document.getElementById('slider-progress');
+      sliderProg.addEventListener('input', (e) => {
+        progress = parseFloat(e.target.value);
+        isPlaying = false;
+        updatePlayButtonUI();
+        updateProgressUI();
+      });
+
+      // Slider Parametri A e B
+      const sliderA = document.getElementById('slider-a');
+      const sliderB = document.getElementById('slider-b');
+
+      sliderA.addEventListener('input', (e) => {
+        sizeA = parseInt(e.target.value);
+        if (sizeB >= sizeA - 20) {
+          sizeB = sizeA - 20;
+          sliderB.value = sizeB;
+          document.getElementById('val-b').innerText = `${sizeB} px`;
+        }
+        document.getElementById('val-a').innerText = `${sizeA} px`;
+      });
+
+      sliderB.addEventListener('input', (e) => {
+        sizeB = Math.min(parseInt(e.target.value), sizeA - 20);
+        sliderB.value = sizeB;
+        document.getElementById('val-b').innerText = `${sizeB} px`;
+      });
+
+      // Play / Pause
+      const btnPlay = document.getElementById('btn-play');
+      btnPlay.addEventListener('click', () => {
+        if (progress >= 1) progress = 0;
+        isPlaying = !isPlaying;
+        updatePlayButtonUI();
+      });
+
+      // Reset
+      const btnReset = document.getElementById('btn-reset');
+      btnReset.addEventListener('click', () => {
+        isPlaying = false;
+        progress = 0;
+        sliderProg.value = 0;
+        updatePlayButtonUI();
+        updateProgressUI();
+      });
+
+      // Cubo della differenza: passo precedente/successivo e cambio vista
+      const stepTo = dir => {
+        const marks = [0, 0.34, 0.62, 0.86, 1];
+        isPlaying = false;
+        if (dir > 0) progress = marks.find(m => m > progress + 0.001) ?? 1;
+        else progress = [...marks].reverse().find(m => m < progress - 0.001) ?? 0;
+        updatePlayButtonUI(); updateProgressUI();
+      };
+      document.getElementById('btn-step-prev').addEventListener('click', () => stepTo(-1));
+      document.getElementById('btn-step-next').addEventListener('click', () => stepTo(1));
+      document.getElementById('btn-diff-view').addEventListener('click', (e) => {
+        diffView = diffView === 'bilancio' ? 'blocchi' : 'bilancio';
+        e.currentTarget.innerText = diffView === 'bilancio' ? 'Bilancio ±' : 'Blocchi';
+        progress = 0; isPlaying = false; updatePlayButtonUI(); updateProgressUI();
+      });
+
+      // Comandi Camera 3D Three.js
+      document.getElementById('btn-3d-reset').addEventListener('click', () => {
+        if (camera && controls) {
+          camera.position.set(380, 290, 460);
+          controls.target.set(0, 0, 0);
+          controls.update();
+        }
+      });
+
+      document.getElementById('btn-3d-front').addEventListener('click', () => {
+        if (camera && controls) {
+          camera.position.set(0, 0, 600);
+          controls.target.set(0, 0, 0);
+          controls.update();
+        }
+      });
+
+      document.getElementById('btn-3d-iso').addEventListener('click', () => {
+        if (camera && controls) {
+          camera.position.set(450, 450, 450);
+          controls.target.set(0, 0, 0);
+          controls.update();
+        }
+      });
+
+      // Avvio scheda predefinita e main loop
+      switchTab('diff_sq');
+      mainAnimationLoop();
+    });
+  </script>
+</body>
+</html>

@@ -204,6 +204,7 @@ main {
 
 .nav-links {
     display: flex;
+    align-items: center;
     gap: 32px;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -261,6 +262,22 @@ main {
 .nav-link:hover,
 .nav-link.active {
     color: white;
+}
+
+/* Voce "Allenati" (Orfini Math Quest): sezione principale, in evidenza */
+.nav-link.nav-link-cta,
+html.theme-light .nav-link.nav-link-cta {
+    color: var(--text-on-accent) !important;
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.nav-link.nav-link-cta:hover,
+.nav-link.nav-link-cta:focus-visible {
+    box-shadow: 0 0 0 4px var(--primary-glow);
 }
 
 /* M3 Search Bar & Filter Burger */
@@ -865,6 +882,72 @@ white-space: nowrap;
     color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(-1px);
+}
+
+/* Riquadro "Il tuo allenamento" (Orfini Math Quest) */
+.training-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin: 8px 0 32px;
+    padding: 24px 28px;
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-md);
+}
+
+.training-text {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.training-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--text-main);
+}
+
+.training-sub {
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.training-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 14px;
+}
+
+.training-stats dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+}
+
+.training-stats dd {
+    font-family: var(--font-code);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.training-cta {
+    flex: none;
+}
+
+@media (max-width: 600px) {
+    .training-card {
+        padding: 20px;
+    }
+
+    .training-cta {
+        width: 100%;
+    }
 }
 
 .filter-banner {

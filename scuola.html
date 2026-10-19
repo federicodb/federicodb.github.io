@@ -219,6 +219,32 @@
             text-underline-offset: 3px;
         }
 
+        /* link alle schede ufficiali e alla matematica dell'indirizzo (Orfini Math Quest) */
+        .track-card .track-links {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .track-card .track-links .track-link {
+            margin-top: 0;
+        }
+
+        .track-card .track-link-math {
+            text-decoration: none;
+            padding: 6px 14px;
+            border: 2px solid currentColor;
+            border-radius: 999px;
+        }
+
+        .track-card .track-link-math:hover,
+        .track-card .track-link-math:focus-visible {
+            background: var(--card-fg);
+            color: var(--card-bg);
+        }
+
         .t-blue { --card-bg: var(--card-blue); --card-fg: var(--card-on-blue); }
         .t-yellow { --card-bg: var(--card-yellow); --card-fg: var(--card-on-yellow); }
         .t-purple { --card-bg: var(--card-purple); --card-fg: var(--card-on-purple); }
@@ -367,6 +393,7 @@
 
                 <div class="nav-links">
                     <a href="index.html" class="nav-link">Journal</a>
+                    <a href="allenamento/" class="nav-link nav-link-cta">Allenati</a>
                     <a href="verifiche.html" class="nav-link">Archivio</a>
                     <a href="galaxy.html" class="nav-link">Mappa</a>
                     <a href="competenze.html" class="nav-link">Competenze</a>
@@ -438,7 +465,10 @@
                         <li>Macchine a comando manuale e a controllo numerico; CAD, CAM, CNC e modellazione solida</li>
                         <li>Prototipazione e gestione dei cicli produttivi</li>
                     </ul>
-                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/meccanico" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    <div class="track-links">
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=meccanico">Matematica per Meccanico</a>
+                        <a class="track-link" href="https://www.iisorfini.edu.it/pagine/meccanico" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    </div>
                 </article>
 
                 <article class="track-card t-yellow">
@@ -450,7 +480,10 @@
                         <li>Installazione, manutenzione, riparazione e collaudo di impianti e apparati</li>
                         <li>Strumenti di misura e apparecchiature per il controllo e la diagnosi</li>
                     </ul>
-                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/elettrico---elettronico-1" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    <div class="track-links">
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=elettrico">Matematica per Elettrico-Elettronico</a>
+                        <a class="track-link" href="https://www.iisorfini.edu.it/pagine/elettrico---elettronico-1" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    </div>
                 </article>
 
                 <article class="track-card t-purple">
@@ -463,7 +496,10 @@
                         <li>Riconoscimento e scelta dei materiali; storia dell'arte e del costume</li>
                         <li>Laboratori con gli strumenti usati in azienda e software per disegno e modellistica</li>
                     </ul>
-                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/fashion-factory" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    <div class="track-links">
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=moda">Matematica per Fashion Factory</a>
+                        <a class="track-link" href="https://www.iisorfini.edu.it/pagine/fashion-factory" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    </div>
                 </article>
 
                 <article class="track-card t-red">
@@ -475,7 +511,10 @@
                         <li>Comunicazione aziendale, promozione tradizionale e digitale, collaborazione con il marketing</li>
                         <li>Sbocchi: grafico pubblicitario, web designer, art director, illustratore, copywriter, media planner</li>
                     </ul>
-                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/graphicdesign" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    <div class="track-links">
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=grafica">Matematica per Graphic Design</a>
+                        <a class="track-link" href="https://www.iisorfini.edu.it/pagine/graphicdesign" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    </div>
                 </article>
 
                 <article class="track-card t-teal">
@@ -488,7 +527,10 @@
                         <li>Anatomia dell'apparato stomatognatico, materiali e leghe, software di modellazione</li>
                         <li>Lavoro autonomo previa abilitazione, studi e ambulatori; prosecuzione in ITS e università</li>
                     </ul>
-                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/odontotecnico" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    <div class="track-links">
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=odonto">Matematica per Odontotecnico</a>
+                        <a class="track-link" href="https://www.iisorfini.edu.it/pagine/odontotecnico" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    </div>
                 </article>
 
                 <article class="track-card t-green">
@@ -501,7 +543,10 @@
                         <li>Animazione sociale e comunicazione tra persone di culture diverse</li>
                         <li>Sbocchi: operatore socio-sanitario, assistente domiciliare, animatore nelle residenze per anziani</li>
                     </ul>
-                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/servizi-socio-sanitari" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    <div class="track-links">
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=socio">Matematica per Servizi Socio-Sanitari</a>
+                        <a class="track-link" href="https://www.iisorfini.edu.it/pagine/servizi-socio-sanitari" target="_blank" rel="noopener">Scheda dell'indirizzo ↗</a>
+                    </div>
                 </article>
 
                 <article class="track-card t-plain">
@@ -512,7 +557,11 @@
                         <li>Due indirizzi serali previsti dal PTOF: Produzioni tessili-sartoriali e Servizi socio-sanitari</li>
                         <li>Iscrizioni aperte per l'anno scolastico 2026/27</li>
                     </ul>
-                    <a class="track-link" href="https://www.iisorfini.edu.it/pagine/corso-serale-as-202122" target="_blank" rel="noopener">Informazioni e iscrizioni ↗</a>
+                    <div class="track-links">
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=moda">Matematica per Fashion Factory</a>
+                        <a class="track-link track-link-math" href="allenamento/?indirizzo=socio">Matematica per Servizi Socio-Sanitari</a>
+                        <a class="track-link" href="https://www.iisorfini.edu.it/pagine/corso-serale-as-202122" target="_blank" rel="noopener">Informazioni e iscrizioni ↗</a>
+                    </div>
                 </article>
             </div>
         </section>

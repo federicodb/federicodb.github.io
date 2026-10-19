@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Orfini Math Quest</title>
+  <meta name="description" content="Orfini Math Quest: la matematica dalla prima alla quinta dell'istituto professionale, a piccoli passi, con esercizi sempre nuovi a parità di difficoltà, quesiti stile INVALSI, serie, missioni, leghe e premi. IPIA «E. Orfini», Foligno.">
+  <meta name="keywords" content="MATEMATICA, GAMIFICATION, INVALSI, BIENNIO, TRIENNIO, QUINTO ANNO, EQUAZIONI, DISEQUAZIONI, FUNZIONI, GEOMETRIA, STATISTICA, PROBABILITÀ, MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE, MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE, MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA, MAT_K4:STATISTICA DESCRITTIVA E PROBABILITÀ, EU:STEM, IPIA ORFINI FOLIGNO">
+  <meta name="theme-color" content="#050507">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="vendor/jsxgraph.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    try {
+      if (localStorage.getItem('orfini_theme') === 'light') {
+        document.documentElement.classList.add('theme-light');
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <a class="skip" href="#main">Vai al contenuto</a>
+  <header class="topbar" id="topbar"></header>
+  <div class="layout">
+    <nav class="tabbar" id="tabbar" aria-label="Sezioni"></nav>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <noscript><p class="noscript">Per giocare serve JavaScript attivo.</p></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

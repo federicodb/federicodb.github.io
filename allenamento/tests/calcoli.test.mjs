@@ -1,0 +1,31 @@
+// Risposte scritte come calcolo impostato, unità di misura, calcolatrice, punti notevoli dei grafici
+import assert from 'node:assert/strict';
+import { checkNumber, checkNumbers } from '../js/engine/check.js';
+import { calcEval } from '../js/ui/calculator.js';
+import { plane } from '../js/gfx/svg.js';
+
+const ok = (input, spec) => assert.ok(checkNumber(input, spec).ok, `${input} dovrebbe valere ${spec.answer}`);
+const no = (input, spec) => assert.ok(!checkNumber(input, spec).ok, `${input} non dovrebbe valere ${spec.answer}`);
+ok('230/46', { answer: 5 });
+ok('230 : 46', { answer: 5 });
+ok('20% di 150', { answer: 30 });
+ok('il 15 % di 80', { answer: 12 });
+ok('3/4 di 80', { answer: 60 });
+ok('120 x 3', { answer: 360 });
+ok('[2+3]*4', { answer: 20 });
+ok('3*4 = 12', { answer: 12 });
+ok('1000*157/(3,14*50)', { answer: 1000 });
+ok('4,8 A', { answer: 4.8, unit: 'A' });
+ok('1500 giri/min', { answer: 1500, unit: 'giri/min' });
+ok('20 µm', { answer: 20, unit: 'µm' });
+ok('7200 follower', { answer: 7200, unit: 'follower' });
+ok('49π', { answer: 49 * Math.PI, decimals: 1 });
+no('2x', { answer: 2 });
+no('230/45', { answer: 5 });
+assert.ok(checkNumbers('470*0,95; 470*1,05', { answers: [446.5, 493.5], ordered: true, decimals: 1 }).ok);
+assert.ok(Math.abs(calcEval('sin(30)') - 0.5) < 1e-12);
+assert.ok(Math.abs(calcEval('√(16)+2^3') - 12) < 1e-12);
+const svg = plane({ fns: [{ f: (x) => x * x - 2 * x - 3 }] });
+for (const lab of ['(0; −3)', '(−1; 0)', '(3; 0)', '(1; −4)']) assert.ok(svg.includes(lab), 'punto notevole ' + lab);
+assert.ok(!plane({ fns: [{ f: (x) => x * x - 2 }] }).includes('1,41'), 'radici non "pulite" senza etichetta');
+console.log('calcoli OK');

@@ -189,6 +189,45 @@
             width: fit-content;
         }
 
+        /* Attività di Orfini Math Quest collegate al codice */
+        .skill-training {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .skill-training-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-training ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .skill-training a {
+            display: inline-block;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.3rem 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 999px;
+            transition: var(--transition);
+        }
+
+        .skill-training a:hover,
+        .skill-training a:focus-visible {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
         .skill-card.highlight-target {
             border-color: var(--accent-color, var(--primary));
             box-shadow: 0 0 30px var(--accent-bg, hsla(190, 100%, 45%, 0.2));
@@ -270,6 +309,7 @@
 
                 <div class="nav-links">
                     <a href="index.html" class="nav-link">Journal</a>
+                    <a href="allenamento/" class="nav-link nav-link-cta">Allenati</a>
                     <a href="verifiche.html" class="nav-link">Archivio</a>
                     <a href="galaxy.html" class="nav-link">Mappa</a>
                     <a href="index.html#about" class="nav-link">Chi Sono</a>
@@ -400,11 +440,19 @@
     <script>
         let schemaData = null;
         let activeCategory = 'area_generale_matematica';
+        // Attività di Orfini Math Quest (allenamento/catalogo.json), raggruppate per codice MAT
+        let allenamentoPerCodice = {};
 
         async function init() {
             try {
-                const response = await fetch('./riforma2017.json');
+                const [response, catalogo] = await Promise.all([
+                    fetch('./riforma2017.json'),
+                    fetch('./allenamento/catalogo.json').then(r => r.json()).catch(() => [])
+                ]);
                 schemaData = await response.json();
+                for (const a of catalogo) {
+                    for (const code of a.mat || []) (allenamentoPerCodice[code] ||= []).push(a);
+                }
                 renderContent();
 
                 document.getElementById('cat-menu').addEventListener('click', (e) => {
@@ -468,12 +516,28 @@
             }
         }
 
+        const escHtml = (t) => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        function createTrainingList(id) {
+            const acts = allenamentoPerCodice[id];
+            if (!acts || !acts.length) return '';
+            return `
+                <div class="skill-training">
+                    <div class="skill-training-title">Allenati</div>
+                    <ul>
+                        ${acts.map(a => `<li><a href="allenamento/#/lezione/${encodeURIComponent(a.id)}/1">${escHtml(a.titolo)}</a></li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
         function createSkillCard(item, type) {
             return `
                 <div class="skill-card animate-in" id="${item.id}">
                     <span class="skill-id">${item.id}</span>
                     <div class="skill-label">${item.label}</div>
                     ${item.description ? `<div class="skill-desc">${item.description}</div>` : ''}
+                    ${createTrainingList(item.id)}
                 </div>
             `;
         }

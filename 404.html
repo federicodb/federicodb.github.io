@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Funzione Non Definita | Orfini Lab</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="/index.css">
     <style>
         body {
             display: flex;
@@ -35,6 +35,11 @@
             margin-bottom: 40px;
             font-size: 1.1rem;
         }
+        .error-nav {
+            justify-content: center;
+            margin-bottom: 32px;
+            gap: 12px 20px;
+        }
         .math-joke {
             font-family: var(--font-code);
             background: hsla(0, 0%, 100%, 0.05);
@@ -55,7 +60,16 @@
             lim (x &rarr; orfini_lab) f(x) = &infin; ma qui c'è un buco!
         </div>
 
-        <a href="index.html" class="main-cta-btn" style="display: inline-flex; margin: 0 auto;">
+        <nav class="nav-links error-nav" aria-label="Sezioni del sito">
+            <a href="/index.html" class="nav-link">Journal</a>
+            <a href="/allenamento/" class="nav-link nav-link-cta">Allenati</a>
+            <a href="/verifiche.html" class="nav-link">Archivio</a>
+            <a href="/galaxy.html" class="nav-link">Mappa</a>
+            <a href="/competenze.html" class="nav-link">Competenze</a>
+            <a href="/scuola.html" class="nav-link">La Scuola</a>
+        </nav>
+
+        <a href="/index.html" class="main-cta-btn" style="display: inline-flex; margin: 0 auto;">
             Torna alla Home
         </a>
     </div>
