@@ -58,7 +58,14 @@ export function toggleCalculator(target) {
   openCalculator(target);
 }
 export function closeCalculator() {
-  panel?.remove();
+  // il pannello esce con un'animazione breve; intanto il resto dell'interfaccia torna al suo posto
+  const old = panel;
+  if (old) {
+    old.classList.add('closing');
+    const drop = () => old.remove();
+    old.addEventListener('animationend', drop, { once: true });
+    setTimeout(drop, 300); // senza animazioni (movimento ridotto) l'evento non arriva
+  }
   panel = null;
   document.body.classList.remove('calc-open');
   document.querySelectorAll('[data-calc-btn]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
@@ -88,7 +95,8 @@ function openCalculator(target) {
   const resEl = panel.querySelector('[data-res]');
   const histEl = panel.querySelector('[data-hist]');
   const useBtn = panel.querySelector('[data-use]');
-  if (matchMedia('(pointer: fine)').matches) { exprEl.removeAttribute('inputmode'); exprEl.focus(); }
+  if (matchMedia('(pointer: fine)').matches) { exprEl.removeAttribute('inputmode'); exprEl.focus({ preventScroll: true }); }
+  keepQuestionVisible(panel);
 
   const preview = () => {
     try {
@@ -148,4 +156,19 @@ function openCalculator(target) {
     if (matchMedia('(pointer: fine)').matches) inp.focus();
   });
   useBtn.disabled = true;
+}
+
+/** Foglio dal basso (telefono, tablet verticale): se copre la risposta, la pagina scorre quanto basta,
+ *  ma senza far uscire dall'alto l'inizio della domanda. */
+function keepQuestionVisible(sheet) {
+  if (matchMedia('(min-width: 900px)').matches) return;
+  const card = document.querySelector('.lesson .card');
+  const answer = card?.querySelector('.answer-row, .options, .tf') || card;
+  if (!card || !answer) return;
+  const top = document.getElementById('topbar')?.getBoundingClientRect().bottom ?? 0;
+  const sheetTop = window.innerHeight - sheet.offsetHeight;
+  const overlap = answer.getBoundingClientRect().bottom + 12 - sheetTop;
+  const room = card.getBoundingClientRect().top - top - 8;
+  const dy = Math.min(overlap, room);
+  if (dy > 0) window.scrollBy({ top: dy, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }

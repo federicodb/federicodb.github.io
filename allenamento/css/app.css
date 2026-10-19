@@ -742,14 +742,21 @@ body.in-lesson .toasts { bottom: auto; top: 70px; }
 .pick-glyph { grid-row: span 2; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--surface-3); font-size: 1.2rem; }
 
 /* ===================== Calcolatrice ===================== */
+/* telefono e tablet verticale: foglio dal basso (Material bottom sheet); sul tablet largo al massimo 560 px */
 .calc {
-  position: fixed; z-index: 60; left: 0; right: 0; bottom: 0;
+  --calc-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: fixed; z-index: 60; left: 50%; bottom: 0; width: min(100%, 560px);
   max-height: 72dvh; overflow: auto;
-  background: var(--surface); border-top: 1px solid var(--line); border-radius: var(--r-lg) var(--r-lg) 0 0;
+  background: var(--surface); border: 1px solid var(--line); border-bottom: 0; border-radius: var(--r-lg) var(--r-lg) 0 0;
   padding: 12px max(14px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
-  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35); animation: up 0.2s ease;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.35);
+  transform: translateX(-50%);
+  animation: calc-sheet-in 0.26s var(--calc-ease);
   display: grid; gap: 10px;
 }
+.calc.closing { animation: calc-sheet-out 0.18s ease-in forwards; pointer-events: none; }
+@keyframes calc-sheet-in { from { transform: translate(-50%, 100%); } }
+@keyframes calc-sheet-out { to { transform: translate(-50%, 100%); } }
 .calc-head { display: flex; align-items: center; gap: 10px; }
 .calc-head b { font-size: 1.05rem; }
 .calc-mode { font-size: 0.875rem; margin-right: auto; }
@@ -770,12 +777,34 @@ body.in-lesson .toasts { bottom: auto; top: 70px; }
 .calc-use { min-height: 48px; box-shadow: none; }
 [data-calc-btn][aria-pressed='true'] { border-color: var(--accent); color: var(--accent); }
 body.calc-open main#main { padding-bottom: 75dvh; }
-@media (min-width: 1100px) {
-  .calc { left: auto; right: 20px; bottom: auto; top: 76px; width: 330px; max-height: calc(100dvh - 96px); border: 1px solid var(--line); border-radius: var(--r-lg); animation: fade 0.15s ease; }
+/* da 900 px: pannello laterale. Domanda e barra in basso seguono la stessa regola (larghezze in % dello
+   stesso riferimento), così si spostano insieme, e solo di quanto serve a lasciare spazio al pannello:
+   sugli schermi larghi restano ferme. */
+@media (min-width: 900px) {
+  .calc {
+    --calc-w: 330px;
+    left: auto; right: 20px; bottom: auto; top: 76px; width: var(--calc-w); max-height: calc(100dvh - 96px);
+    border-bottom: 1px solid var(--line); border-radius: var(--r-lg); transform: none;
+    animation: calc-side-in 0.24s var(--calc-ease);
+  }
+  .calc.closing { animation: calc-side-out 0.16s ease-in forwards; }
   body.calc-open main#main { padding-bottom: 210px; }
-  body.calc-open .lesson { margin-left: max(0px, calc((100vw - 48rem - 370px) / 2)); }
-  body.calc-open .actionbar .inner { margin-left: max(0px, calc((100vw - 48rem - 370px) / 2)); }
+  body.in-lesson main#main { max-width: none; padding-inline: 0; }
+  body.in-lesson .actionbar { padding-inline: 0; }
+  body.in-lesson .lesson, body.in-lesson .actionbar .inner {
+    --cw: min(48rem, 100% - 32px);
+    width: var(--cw); max-width: none; margin-right: 0;
+    margin-left: calc((100% - var(--cw)) / 2);
+    transition: margin-left 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  /* 374 px = pannello (330) + margine destro (20) + respiro (24) */
+  body.calc-open .lesson, body.calc-open .actionbar .inner {
+    --cw: min(48rem, 100% - 32px - 374px);
+    margin-left: max(16px, min((100% - var(--cw)) / 2, 100% - var(--cw) - 374px));
+  }
 }
+@keyframes calc-side-in { from { opacity: 0; transform: translateX(24px); } }
+@keyframes calc-side-out { to { opacity: 0; transform: translateX(24px); } }
 
 /* ===================== Armadio ===================== */
 .wardrobe { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 7.5rem), 1fr)); gap: 8px; margin-top: 8px; }

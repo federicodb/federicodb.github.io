@@ -109,6 +109,37 @@ test.describe('Orfini Math Quest (/allenamento/)', () => {
     expect(await opts.count()).toBeGreaterThanOrEqual(3);
   });
 
+  test('calcolatrice: domanda e barra si spostano insieme e tornano al loro posto', async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 800 });
+    await page.addInitScript(() => localStorage.setItem('orfini_quest_v2', JSON.stringify({ version: 2, onboarded: true, profile: { nickname: 'x', year: 1, indirizzo: null } })));
+    await page.goto('/allenamento/#/lezione/percentuali/1');
+    const box = () => page.evaluate(() => {
+      const r = (q) => document.querySelector(q)?.getBoundingClientRect();
+      const c = r('.lesson .card'), b = r('.actionbar .inner'), k = r('.calc:not(.closing)');
+      return { cx: Math.round(c.x), cw: Math.round(c.width), bx: Math.round(b.x), bw: Math.round(b.width), calcX: k ? Math.round(k.x) : null };
+    });
+    await expect(page.locator('.actionbar')).toBeVisible();
+    const closed = await box();
+    expect(closed.bx).toBe(closed.cx);
+    await page.locator('[data-calc-btn]').click();
+    await page.waitForTimeout(500); // fine della transizione
+    const open = await box();
+    expect(open.bx).toBe(open.cx);
+    expect(open.bw).toBe(open.cw);
+    expect(open.cx + open.cw).toBeLessThanOrEqual(open.calcX - 16);
+    await page.locator('[data-calc-btn]').click();
+    await page.waitForTimeout(500);
+    expect(await box()).toEqual(closed);
+    await expect(page.locator('.calc')).toHaveCount(0);
+
+    // su schermi larghi c'è già spazio: niente si muove
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    const wide = await box();
+    await page.locator('[data-calc-btn]').click();
+    await page.waitForTimeout(500);
+    expect({ ...(await box()), calcX: null }).toEqual(wide);
+  });
+
   test('cambia utente: la sessione del prof sparisce dalla home e i giochi restano', async ({ page }) => {
     await page.goto('/index.html');
     await page.evaluate(() => localStorage.setItem('arcade_classifica', '[{"nome":"3EL","punti":990}]'));
