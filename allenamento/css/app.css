@@ -213,9 +213,10 @@ body.in-lesson .layout { display: block; }
 .btn, .btn-ghost {
   --ledge-color: color-mix(in srgb, var(--accent) 55%, #000);
   display: inline-flex; align-items: center; justify-content: center; gap: var(--s2);
-  min-height: var(--btn-h); padding: var(--s2) var(--s5); border-radius: 999px; cursor: pointer;
-  font-size: 1rem; font-weight: 700; line-height: 1.2; letter-spacing: 0.01em;
-  text-decoration: none; text-align: center; text-wrap: balance;
+  min-height: var(--btn-h); height: auto; padding: var(--s2) var(--s4); border-radius: 999px; cursor: pointer;
+  font-size: 1rem; font-weight: 700; line-height: 1.3; letter-spacing: 0.01em;
+  text-decoration: none; text-align: center; text-wrap: pretty;
+  max-width: 100%; box-sizing: border-box; overflow-wrap: break-word; word-break: normal;
   margin-bottom: var(--ledge); /* il gradino occupa spazio: pulsanti vicini restano allineati */
   box-shadow: 0 var(--ledge) 0 var(--ledge-color);
   transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease, filter 0.15s;
@@ -359,11 +360,13 @@ html.theme-light .node.done .sq { background: hsl(var(--hue), 80%, 34%); }
 .options.figs { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .option {
   text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: var(--r-md);
-  padding: 12px 16px; cursor: pointer; min-height: 60px; display: flex; gap: 12px; align-items: center; font-size: 1.0625rem; line-height: 1.4;
+  padding: 12px 16px; cursor: pointer; min-height: 60px; height: auto; display: flex; gap: 12px; align-items: center; font-size: 1.0625rem; line-height: 1.4;
+  max-width: 100%; box-sizing: border-box;
   box-shadow: 0 3px 0 var(--line); transition: transform 0.08s, box-shadow 0.08s, border-color 0.12s;
 }
 .option:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--line); }
 .option .key { font-family: var(--font-num); color: var(--muted); font-size: 0.875rem; border: 1px solid var(--line); border-radius: 7px; min-width: 26px; height: 26px; display: grid; place-items: center; flex: none; }
+.option .lbl { min-width: 0; flex: 1; overflow-wrap: break-word; word-break: normal; text-wrap: pretty; }
 .option[aria-pressed='true'] { border-color: hsl(var(--hue), 90%, 58%); background: var(--accent-soft); box-shadow: 0 3px 0 hsla(var(--hue), 90%, 45%, 0.6); }
 .option.right { border-color: var(--good); background: var(--good-bg); box-shadow: 0 3px 0 var(--good); }
 .option.wrong { border-color: var(--bad); background: var(--bad-bg); box-shadow: 0 3px 0 var(--bad); }
@@ -431,8 +434,12 @@ html.theme-light .node.done .sq { background: hsl(var(--hue), 80%, 34%); }
 .feedback details { margin-top: 6px; }
 .feedback summary { cursor: pointer; color: var(--muted); min-height: 32px; }
 .feedback .g { max-width: 300px; height: auto; }
-.actions { display: flex; gap: 8px; margin-left: auto; }
-.actions .btn { min-width: 160px; }
+.actions { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.actions .btn { min-width: 140px; }
+@media (max-width: 640px) {
+  .actions { width: 100%; }
+  .actions .btn { min-width: 0; flex: 1; padding-inline: 12px; }
+}
 .xp-chip { font-family: var(--font-num); font-weight: 700; color: var(--good); padding: 2px 8px; border-radius: 999px; background: var(--good-bg); font-size: 0.9375rem; }
 body.in-lesson main#main { padding-bottom: 210px; }
 
@@ -630,7 +637,7 @@ html.theme-light .challenge .icon { color: hsl(var(--hue), 85%, 32%); }
 .heat i.l3 { background: var(--flame); }
 .heat i.fz { background: var(--ice); }
 .segmented { display: flex; flex-wrap: wrap; gap: 8px; }
-.segmented button { min-height: 48px; padding: 8px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; font-size: 1rem; font-weight: 600; line-height: 1.2; }
+.segmented button { min-height: 48px; height: auto; padding: 8px 16px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); cursor: pointer; font-size: 0.95rem; font-weight: 600; line-height: 1.3; max-width: 100%; box-sizing: border-box; text-wrap: pretty; overflow-wrap: break-word; }
 .segmented button[aria-pressed='true'] { border-color: var(--accent); background: var(--accent-soft); }
 .field { display: grid; gap: 6px; margin-bottom: 12px; }
 .field label { font-weight: 600; }

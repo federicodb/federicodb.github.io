@@ -25,11 +25,11 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ------------------------------------------------------------ intestazione */
-.cm-hero { padding: 56px 0 32px; max-width: var(--cm-measure); }
-.cm-hero h1 { font-family: var(--font-heading); font-size: clamp(2.5rem, 2rem + 3vw, 4.25rem); line-height: 1; letter-spacing: -0.02em; margin-bottom: 20px; color: var(--text-main); }
-.cm-lead { font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem); line-height: 1.6; color: var(--text-muted); }
+.cm-hero { padding: 40px 0 24px; max-width: var(--cm-measure); }
+.cm-hero h1 { font-family: var(--font-heading); font-size: clamp(2.25rem, 1.8rem + 2.5vw, 4rem); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 16px; color: var(--text-main); text-wrap: balance; }
+.cm-lead { font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem); line-height: 1.6; color: var(--text-muted); text-wrap: pretty; }
 .cm-lead strong { color: var(--text-main); font-weight: 600; }
-.cm-progress { margin-top: 16px; font-size: 0.9375rem; color: var(--text-muted); }
+.cm-progress { margin-top: 14px; font-size: 0.9375rem; color: var(--text-muted); text-wrap: pretty; }
 .cm-progress strong { color: var(--primary); font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------------------ schede di primo livello */
@@ -53,14 +53,22 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 .cm-panel:focus-visible { outline: 2px solid var(--primary); outline-offset: 8px; }
 
 /* ------------------------------------------------------------ testo e titoli */
-.cm-h2 { font-family: var(--font-heading); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--text-main); margin: 56px 0 16px; }
+.cm-h2 { font-family: var(--font-heading); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--text-main); margin: 56px 0 16px; text-wrap: balance; }
 .cm-panel > .cm-h2:first-child { margin-top: 0; }
 .cm-measure, .cm-prose p, .cm-prose li { max-width: var(--cm-measure); }
-.cm p { line-height: 1.65; color: var(--text-main); }
-.cm-prose p { margin-bottom: 16px; color: var(--text-muted); }
+.cm p { line-height: 1.65; color: var(--text-main); text-wrap: pretty; }
+.cm-prose p { margin-bottom: 16px; color: var(--text-muted); text-wrap: pretty; }
 .cm-muted { color: var(--text-muted) !important; }
 .cm code { font-family: var(--font-code); font-size: 0.9em; background: var(--cm-soft); padding: 2px 6px; border-radius: 6px; word-break: break-all; }
 .cm a:not(.main-cta-btn) { color: var(--primary); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* Formule KaTeX inline: mai spezzate a metà con operatori orfani */
+.cm .katex:not(.katex-display .katex),
+.cm-steps .katex {
+    white-space: nowrap !important;
+    display: inline-block;
+    vertical-align: baseline;
+}
 
 /* pulsante testuale con icona */
 .cm-link-btn {
@@ -124,11 +132,37 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 
 /* algoritmo */
 .cm-steps { list-style: none; padding: 0; counter-reset: step; display: grid; gap: 16px; max-width: var(--cm-measure); }
-.cm-steps li { counter-increment: step; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; font-size: 1.0625rem; line-height: 1.6; }
-.cm-steps li::before { content: counter(step); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 700 0.9375rem var(--font-ui); color: var(--text-on-accent); background: var(--primary); }
+.cm-steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 14px;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    align-items: baseline;
+    text-wrap: pretty;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+.cm-steps li::before {
+    content: counter(step);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font: 700 0.875rem var(--font-ui);
+    color: var(--text-on-accent);
+    background: var(--primary);
+    margin-top: 2px;
+}
+.cm-steps .katex {
+    white-space: nowrap !important;
+    font-size: 1.08em;
+}
 .cm-note { margin-top: 32px; padding: 20px 24px; border-radius: var(--radius-md); background: var(--cm-soft); max-width: var(--cm-measure); }
-.cm-note h3 { font: 700 1rem var(--font-ui); color: var(--text-main); margin-bottom: 6px; }
-.cm-note p { color: var(--text-muted); margin: 0; }
+.cm-note h3 { font: 700 1rem var(--font-ui); color: var(--text-main); margin-bottom: 6px; text-wrap: balance; }
+.cm-note p { color: var(--text-muted); margin: 0; text-wrap: pretty; }
 
 /* esempi */
 .cm-examples { display: grid; gap: 0; margin-bottom: 16px; }
@@ -176,6 +210,7 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 
 /* piede della scheda */
 .cm-tech-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--cm-line); }
+.cm-quest { max-width: 100%; box-sizing: border-box; text-align: center; }
 
 /* ------------------------------------------------------------ storia */
 .cm-timeline { list-style: none; padding: 0; margin: 24px 0 8px; display: grid; gap: 0; max-width: calc(11rem + 24px + 58ch); }
@@ -207,11 +242,15 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
     .cm-timeline li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
     .cm-identity dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
     .cm-identity dd { margin-bottom: 8px; }
+    .cm-steps li { grid-template-columns: 28px minmax(0, 1fr); gap: 10px; font-size: 1rem; }
+    .cm-steps li::before { width: 26px; height: 26px; font-size: 0.8125rem; }
+    .cm-tech-foot { flex-direction: column; align-items: stretch; gap: 12px; }
+    .cm-tech-foot .cm-quest { width: 100%; }
 }
 @media (max-width: 420px) {
     .cm-phases > li { grid-template-columns: 36px minmax(0, 1fr); }
     .cm-phases > li::before { font-size: 1.5rem; }
-    .cm-subtabs [role=tab] { padding: 8px 14px; }
+    .cm-subtabs [role=tab] { padding: 8px 12px; font-size: 0.875rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

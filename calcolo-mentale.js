@@ -337,10 +337,13 @@ function wireTabsOverflow() {
   update();
 }
 
-// altezza reale del menu del sito (fisso in alto): serve per non nascondere sotto di esso la tecnica
+// altezza reale del menu del sito quando è fisso: serve per non nascondere sotto di esso la tecnica
 function trackNavHeight() {
   const nav = document.getElementById('main-nav');
-  const set = () => document.documentElement.style.setProperty('--cm-nav-h', `${nav ? nav.offsetHeight : 0}px`);
+  const set = () => {
+    const isSticky = nav && window.getComputedStyle(nav).position === 'sticky';
+    document.documentElement.style.setProperty('--cm-nav-h', `${isSticky ? nav.offsetHeight : 0}px`);
+  };
   set();
   window.addEventListener('resize', set);
 }
