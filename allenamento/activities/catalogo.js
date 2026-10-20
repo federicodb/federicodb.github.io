@@ -46,6 +46,8 @@ import grafica from './lavoro/grafica.js';
 import odonto from './lavoro/odonto.js';
 import socio from './lavoro/socio.js';
 import { INDIRIZZI_BY_ID } from './contesti.js';
+import { CALCOLO } from './calcolo/attivita.js';
+import { TRUCCHI } from './calcolo/trucchi.js';
 
 export const areas = [
   // matematica al lavoro: si vede solo l'attività dell'indirizzo scelto (o quella della vita reale)
@@ -59,6 +61,8 @@ export const areas = [
   { id: 'dati', title: 'Dati e previsioni', summary: 'Statistica, probabilità, combinatoria.', hue: 335, mat: 'MAT_K4', activities: [statistica, probabilita, combinatoria] },
   { id: 'funzioni', title: 'Funzioni e modelli', summary: 'Parabola, esponenziali, logaritmi, goniometria, scelte.', hue: 210, mat: 'MAT_K2', activities: [parabola, esponenziali, logaritmi, goniometria, studio, scelta] },
   { id: 'invalsi', title: 'Allenamento INVALSI', summary: 'Quesiti nello stile delle prove di seconda e quinta.', hue: 48, mat: 'MAT_C1–C4', activities: [invalsi10, invalsi13] },
+  // trucchi di calcolo mentale, con la dimostrazione (stessa fonte della pagina calcolo-mentale.html)
+  { id: 'calcolo', title: 'Calcolo veloce', summary: 'Trucchi per calcolare a mente, e perché funzionano.', hue: 172, mat: 'MAT_K1', activities: CALCOLO },
 ];
 
 export const YEARS = [
@@ -82,6 +86,38 @@ export const MAT_LABELS = {
   MAT_C2: 'Pensiero razionale in contesti reali',
   MAT_C3: 'Dati e strumenti statistici e probabilistici',
   MAT_C4: 'Modelli geometrici per interpretare la realtà',
+};
+
+// PREREQUISITI: cosa conviene saper fare prima di un'attività (solo legami didattici diretti).
+// Si vedono nella scheda dell'attività; dopo due lezioni di fila sotto l'80% si suggerisce di ripassarli.
+export const PREREQ = {
+  percentuali: ['frazioni'],
+  proporzioni: ['frazioni'],
+  'notazione-scientifica': ['potenze'],
+  radicali: ['potenze'],
+  'prodotti-notevoli': ['monomi'],
+  scomposizioni: ['prodotti-notevoli'],
+  'equazioni-1': ['monomi'],
+  'disequazioni-1': ['equazioni-1'],
+  'equazioni-2': ['scomposizioni', 'equazioni-1'],
+  'disequazioni-2': ['equazioni-2', 'disequazioni-1'],
+  'retta-pendenza': ['funzioni-lineari'],
+  'rette-parallele': ['retta-pendenza'],
+  'sistemi-lineari': ['equazioni-1', 'funzioni-lineari'],
+  pitagora: ['potenze', 'radicali'],
+  similitudine: ['proporzioni'],
+  solidi: ['aree-perimetri'],
+  trigonometria: ['pitagora', 'similitudine'],
+  probabilita: ['frazioni', 'percentuali'],
+  combinatoria: ['probabilita'],
+  parabola: ['equazioni-2', 'funzioni-lineari'],
+  esponenziali: ['potenze'],
+  logaritmi: ['esponenziali'],
+  goniometria: ['trigonometria'],
+  'studio-funzione': ['parabola', 'esponenziali'],
+  'problemi-scelta': ['funzioni-lineari', 'sistemi-lineari'],
+  // calcolo veloce: i prerequisiti stanno nelle schede delle tecniche
+  ...Object.fromEntries(TRUCCHI.filter((t) => t.prereq.length).map((t) => [`calcolo-${t.id}`, t.prereq])),
 };
 
 export const allActivities = areas.flatMap((a) => a.activities.map((act) => ({ ...act, areaInfo: a, hue: a.hue })));

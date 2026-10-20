@@ -19,6 +19,20 @@ export function indirizzoAttivo() {
   return current;
 }
 /** Un contesto a caso per la chiave richiesta, preso dall'indirizzo attivo */
+// Classe dello studente attivo (1–5). I generatori scelgono fasce di numeri e strategie adatte alla classe,
+// sempre risolvibili a mente: la difficoltà cresce nel ragionamento e negli schemi da riconoscere
+// (15% = 10% + 5%, 37,5% = 3/8…), non nella pesantezza dei conti. Nessuna classe scelta vale come la prima.
+let currentYear = null;
+export function setClasse(y) { currentYear = Number.isInteger(y) && y >= 1 && y <= 5 ? y : null; }
+export function classe() { return currentYear || 1; }
+/** perClasse({ 1: a, 3: b, 4: c }): la fascia della classe attiva, cioè la più alta che non supera la classe */
+export function perClasse(bands) {
+  const keys = Object.keys(bands).map(Number).sort((a, b) => a - b);
+  let best = bands[keys[0]];
+  for (const k of keys) if (k <= classe()) best = bands[k];
+  return best;
+}
+
 export function scene(rng, key) {
   const own = current ? INDIRIZZI_BY_ID[current].pools[key] : null;
   return rng.pick(own && own.length ? own : VITA.pools[key]);

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Calcolo veloce: tecniche di calcolo mentale e perché funzionano | Orfini Math Lab</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <meta name="description"
+        content="Quattordici tecniche di calcolo mentale (dividi e sposta, quadrati che finiscono per 5, numeri vicini a 100, prova del 9…) con l'algoritmo, esempi, la dimostrazione algebrica verificata con nerdamer ed esercizi senza cronometro. Con la storia della matematica indiana e le critiche alla cosiddetta matematica vedica.">
+    <meta name="keywords"
+        content="calcolo mentale, calcolo veloce, matematica vedica, dimostrazione algebrica, prodotti notevoli, prova del 9, triangolo di Tartaglia, Pingala, Orfini Math Lab, IPIA Orfini Foligno">
+    <link rel="canonical" href="https://federicodb.github.io/calcolo-mentale.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://federicodb.github.io/calcolo-mentale.html">
+    <meta property="og:title" content="Calcolo veloce: tecniche di calcolo mentale e perché funzionano">
+    <meta property="og:description" content="Ogni trucco con la sua dimostrazione: algoritmo, esempi, perché funziona, esercizi senza cronometro.">
+    <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.webp">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="cookie-consent.css">
+    <script>
+        if (localStorage.getItem('orfini_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+    <link rel="stylesheet" href="content/assets/style/theme-light.css">
+    <link rel="stylesheet" href="calcolo-mentale.css">
+    <script src="content/assets/js/theme-toggle.js" defer></script>
+    <script type="module" src="calcolo-mentale.js"></script>
+</head>
+
+<body>
+
+    <nav id="main-nav">
+        <div class="container nav-container">
+            <div class="nav-row-1">
+                <a href="index.html" class="brand">
+                    <span class="brand-title">ORFINI</span>
+                    <span class="brand-sub">CALCOLO VELOCE</span>
+                </a>
+
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">Journal</a>
+                    <a href="allenamento/" class="nav-link nav-link-cta">Allenati</a>
+                    <a href="calcolo-mentale.html" class="nav-link active" aria-current="page">Calcolo veloce</a>
+                    <a href="verifiche.html" class="nav-link">Archivio</a>
+                    <a href="galaxy.html" class="nav-link">Mappa</a>
+                    <a href="competenze.html" class="nav-link">Competenze</a>
+                    <a href="scuola.html" class="nav-link">La Scuola</a>
+                    <a href="index.html#about" class="nav-link">Chi Sono</a>
+                    <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+                        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container cm" id="contenuto">
+        <header class="cm-hero">
+            <h1>Calcolo veloce</h1>
+            <p class="cm-lead">Quattordici tecniche per calcolare a mente. Ognuna con i passi, gli esempi e la <strong>dimostrazione</strong>: un trucco che si sa dimostrare non si dimentica, si ricostruisce. Niente cronometro: la velocità arriva quando si vede la struttura.</p>
+            <p class="cm-progress" id="cm-progress" hidden></p>
+        </header>
+
+        <div class="cm-tabs" role="tablist" aria-label="Sezioni della pagina">
+            <button role="tab" id="tab-metodo" aria-controls="panel-metodo" aria-selected="true" data-tab="metodo">Il metodo</button>
+            <button role="tab" id="tab-tecniche" aria-controls="panel-tecniche" aria-selected="false" tabindex="-1" data-tab="tecniche">Le tecniche</button>
+            <button role="tab" id="tab-storia" aria-controls="panel-storia" aria-selected="false" tabindex="-1" data-tab="storia">Storia e critiche</button>
+            <button role="tab" id="tab-docente" aria-controls="panel-docente" aria-selected="false" tabindex="-1" data-tab="docente">Per il docente</button>
+        </div>
+
+        <!-- IL METODO ---------------------------------------------------------------------------------- -->
+        <section class="cm-panel" role="tabpanel" id="panel-metodo" aria-labelledby="tab-metodo" tabindex="0">
+            <h2 class="cm-h2">Dal trucco alla dimostrazione</h2>
+            <p class="cm-measure">Ogni tecnica si impara in quattro tempi. Li vediamo su un esempio: il quadrato dei numeri che finiscono per 5.</p>
+            <ol class="cm-phases">
+                <li>
+                    <h3>Osserva</h3>
+                    <p>$35^2 = 1225$, $\ 65^2 = 4225$, $\ 85^2 = 7225$. Finiscono tutti per $25$. È un caso?</p>
+                </li>
+                <li>
+                    <h3>Esplora</h3>
+                    <p>Si guardano più casi e si cerca la regola nella parte che cambia:</p>
+                    <div class="cm-table-wrap">
+                        <table class="cm-table">
+                            <thead><tr><th scope="col">Numero</th><th scope="col">Quadrato</th><th scope="col">Davanti a 25</th><th scope="col">Si legge come</th></tr></thead>
+                            <tbody>
+                                <tr><td>$15$</td><td>$225$</td><td>$2$</td><td>$1\cdot 2$</td></tr>
+                                <tr><td>$25$</td><td>$625$</td><td>$6$</td><td>$2\cdot 3$</td></tr>
+                                <tr><td>$35$</td><td>$1225$</td><td>$12$</td><td>$3\cdot 4$</td></tr>
+                                <tr><td>$45$</td><td>$2025$</td><td>$20$</td><td>$4\cdot 5$</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+                <li>
+                    <h3>Ipotizza</h3>
+                    <p>Davanti a $25$ c'è sempre il numero delle decine per il suo successivo. In simboli, con $a$ decine:</p>
+                    <p class="cm-display">$$(10a + 5)^2 = 100\,a\,(a + 1) + 25$$</p>
+                </li>
+                <li>
+                    <h3>Dimostra</h3>
+                    <p>Il quadrato del binomio trasforma l'ipotesi in certezza, per ogni $a$:</p>
+                    <p class="cm-display">$$\begin{aligned}(10a + 5)^2 &= 100a^2 + 100a + 25\\ &= 100\,a\,(a + 1) + 25\end{aligned}$$</p>
+                    <p>Moltiplicare per $100$ sposta $a(a+1)$ di due posti: le ultime due cifre restano $25$. Ogni identità di questa pagina è controllata anche con il calcolo simbolico (nerdamer).</p>
+                </li>
+            </ol>
+            <div class="cm-principles">
+                <h2 class="cm-h2">Tre scelte di metodo</h2>
+                <dl>
+                    <dt>A mente, ma per capire</dt>
+                    <dd>Il valore di un trucco non sta nella velocità, ma nella struttura che fa vedere: posizione delle cifre, proprietà distributiva, prodotti notevoli.</dd>
+                    <dt>Senza cronometro</dt>
+                    <dd>Nessun esercizio è a tempo. Chi ha bisogno di più tempo non perde nulla: la rapidità è un effetto, non un obiettivo.</dd>
+                    <dt>Sempre con la dimostrazione</dt>
+                    <dd>Ogni tecnica dice anche quando non funziona. Un trucco applicato senza capirlo è un gioco di prestigio; dimostrato, è matematica.</dd>
+                </dl>
+            </div>
+            <p class="cm-next"><button type="button" class="cm-link-btn" data-goto="tecniche">Vai alle tecniche <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></p>
+        </section>
+
+        <!-- LE TECNICHE ------------------------------------------------------------------------------- -->
+        <section class="cm-panel" role="tabpanel" id="panel-tecniche" aria-labelledby="tab-tecniche" tabindex="0" hidden>
+            <div class="cm-techniques">
+                <nav class="cm-index" id="cm-index" aria-label="Elenco delle tecniche">
+                    <button type="button" class="cm-index-toggle" id="cm-index-toggle" aria-expanded="false" aria-controls="cm-index-list">
+                        <span class="cm-index-current" id="cm-index-current">Scegli una tecnica</span>
+                        <span class="cm-index-action">Tutte le tecniche <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+                    </button>
+                    <div class="cm-index-list" id="cm-index-list"></div>
+                </nav>
+                <article class="cm-technique" id="cm-technique" aria-live="polite"></article>
+            </div>
+            <noscript><p>Per vedere le tecniche, gli esempi e gli esercizi serve JavaScript attivo.</p></noscript>
+        </section>
+
+        <!-- STORIA E CRITICHE ------------------------------------------------------------------------- -->
+        <section class="cm-panel cm-prose" role="tabpanel" id="panel-storia" aria-labelledby="tab-storia" tabindex="0" hidden>
+            <h2 class="cm-h2">Matematica indiana: quello che è documentato</h2>
+            <p>La matematica dell'India antica e medievale è una delle grandi tradizioni scientifiche. Le sue conquiste sono documentate nei testi e studiate dagli storici; le date sono spesso approssimative.</p>
+            <ol class="cm-timeline">
+                <li><span class="cm-when">III–II sec. a.C. (circa)</span><div><strong>Piṅgala, <cite>Chandaḥśāstra</cite>.</strong> Contare le combinazioni di sillabe brevi e lunghe dei versi porta a metodi che oggi riconosciamo come conteggio binario e combinatorio. Non è però l'aritmetica binaria dei computer, che ha un'altra storia.</div></li>
+                <li><span class="cm-when">VI–VIII sec.</span><div><strong>Virahāṅka.</strong> Contando i metri poetici compare la successione $1, 2, 3, 5, 8, 13, \dots$, secoli prima di Fibonacci.</div></li>
+                <li><span class="cm-when">628</span><div><strong>Brahmagupta, <cite>Brāhmasphuṭasiddhānta</cite>.</strong> Regole di calcolo con lo zero e con i numeri negativi.</div></li>
+                <li><span class="cm-when">X sec.</span><div><strong>Halāyudha, commento a Piṅgala.</strong> Descrive esplicitamente il <em>meru-prastāra</em>, il triangolo dei coefficienti che in Italia chiamiamo di Tartaglia e altrove di Pascal.</div></li>
+                <li><span class="cm-when">XII sec.</span><div><strong>Bhāskara II, <cite>Līlāvatī</cite>.</strong> Aritmetica e algebra in versi, con problemi rimasti celebri.</div></li>
+                <li><span class="cm-when">XIV–XVI sec.</span><div><strong>Scuola del Kerala (Mādhava e successori).</strong> Serie infinite per $\pi$ e per seno e coseno, prima del calcolo infinitesimale europeo.</div></li>
+                <li><span class="cm-when">1202</span><div><strong>Leonardo Pisano (Fibonacci), <cite>Liber Abaci</cite>.</strong> Porta in Europa le cifre indo-arabe e lo zero, imparati nel mondo arabo.</div></li>
+                <li><span class="cm-when">1299</span><div><strong>Firenze, Arte del Cambio.</strong> Lo statuto vieta le cifre arabe nei registri contabili (non nel calcolo), probabilmente per timore di falsificazioni: uno $0$ si trasforma facilmente in $6$ o $9$.</div></li>
+            </ol>
+
+            <h2 class="cm-h2">La «matematica vedica»: origine e critiche</h2>
+            <p>I nomi sanscriti usati in questa pagina, come <em>Ekādhikena Pūrveṇa</em> o <em>Nikhilam</em>, non vengono dai Veda. Vengono da un libro del Novecento, e la sua origine è stata discussa a lungo dagli studiosi.</p>
+            <ol class="cm-timeline">
+                <li><span class="cm-when">1965</span><div><strong>Il libro.</strong> Esce postumo <cite>Vedic Mathematics</cite> di Bhāratī Kṛṣṇa Tīrtha (1884–1960), a cura di V. S. Agrawala. Presenta sedici brevi formule (<em>sūtra</em>) che l'autore attribuisce a un'appendice dell'<cite>Atharvaveda</cite>.</div></li>
+                <li><span class="cm-when">1965</span><div><strong>Nessuna fonte.</strong> Quei sūtra non compaiono in nessuna edizione nota dell'<cite>Atharvaveda</cite>. Lo riconosce già la premessa del curatore, che li considera opera dell'autore stesso.</div></li>
+                <li><span class="cm-when">1989, 1991</span><div><strong>K. S. Shukla</strong> (1918–2007), storico della matematica indiana, pubblica due critiche già nei titoli: il titolo del libro è «illusorio», anzi «ingannevole». Secondo un suo resoconto, riportato anche da altri studiosi, mostrò all'autore un'edizione dell'<cite>Atharvaveda</cite> priva di quei sūtra e si sentì rispondere che si trovavano solo nella versione da lui conosciuta.</div></li>
+                <li><span class="cm-when">1993</span><div><strong>S. G. Dani</strong> (Tata Institute of Fundamental Research) pubblica <cite>«Vedic Mathematics»: Myth and Reality</cite>. Il libro è una raccolta di scorciatoie per l'aritmetica e l'algebra elementari, utili ma non vediche; i sūtra sono formule così vaghe da potersi leggere in modi molto diversi.</div></li>
+                <li><span class="cm-when">anni '90 e 2000</span><div><strong>A scuola.</strong> Alcuni Stati indiani inseriscono la «matematica vedica» nei programmi. Matematici, storici e insegnanti criticano la presentazione di scorciatoie come «scienza antica», l'insegnamento centrato sulla recitazione dei sūtra invece che sulla comprensione, e l'uso identitario della storia. Chi la difende sottolinea che le tecniche motivano gli studenti e rendono più rapido il calcolo.</div></li>
+            </ol>
+
+            <h2 class="cm-h2">Il calcolo rapido nasce ovunque</h2>
+            <p>Sistemi simili sono nati in molti luoghi, per le stesse ragioni algebriche. Jakow Trachtenberg (1888–1953) ne mise a punto uno durante la prigionia in un campo di concentramento nazista; pubblicato in inglese nel 1960, ha le stesse virtù e gli stessi limiti didattici. Le tecniche funzionano perché derivano da identità valide sempre: la proprietà distributiva, i prodotti notevoli, la scrittura posizionale, i resti nella divisione.</p>
+
+            <h2 class="cm-h2">La scelta di questa pagina</h2>
+            <p>I nomi sanscriti restano come etichette storiche del libro del 1965, non come prova di un'origine antica. Ogni tecnica è presentata con la sua dimostrazione e con i suoi limiti. La storia autentica della matematica indiana è ricca abbastanza da non aver bisogno di miti.</p>
+
+            <h2 class="cm-h2">Fonti</h2>
+            <ul class="cm-sources">
+                <li>Bhāratī Kṛṣṇa Tīrtha, <cite>Vedic Mathematics</cite>, a cura di V. S. Agrawala, Motilal Banarsidass, Delhi 1965.</li>
+                <li>K. S. Shukla, «Vedic Mathematics — the illusive title of Swamiji's book», <cite>Mathematical Education</cite>, 5 (3), 1989.</li>
+                <li>K. S. Shukla, «Vedic Mathematics — the deceptive title of Swamiji's book», in H. C. Khare (a cura di), <cite>Issues in Vedic Mathematics</cite>, Motilal Banarsidass, 1991.</li>
+                <li>S. G. Dani, «'Vedic Mathematics': Myth and Reality», <cite>Economic and Political Weekly</cite>, 28 (31), 1993, pp. 1577–1580; uscito anche su <cite>Frontline</cite>, ottobre–novembre 1993. Versione aggiornata in W. B. V. Kandasamy, F. Smarandache, <cite>Vedic Mathematics: 'Vedic' or 'Mathematics'</cite>, 2006: <a href="https://arxiv.org/abs/math/0611347" target="_blank" rel="noopener">arXiv:math/0611347</a>.</li>
+                <li>N. Biggs, <cite>The mathematics of currency and exchange</cite>, Gresham College, 2008 (sul divieto fiorentino del 1299): <a href="https://www.gresham.ac.uk/sites/default/files/25apr08_-_mathematics_of_currency_and_exchange_-_norman_biggs_0.pdf" target="_blank" rel="noopener">testo della lezione</a>.</li>
+                <li>K. Plofker, <cite>Mathematics in India</cite>, Princeton University Press, 2009 (sintesi storica di riferimento).</li>
+                <li>J. Trachtenberg, <cite>The Trachtenberg Speed System of Basic Mathematics</cite>, trad. di A. Cutler e R. McShane, Doubleday, 1960.</li>
+                <li>Panoramica con ulteriori riferimenti: <a href="https://en.wikipedia.org/wiki/Vedic_Mathematics" target="_blank" rel="noopener">«Vedic Mathematics», Wikipedia (inglese)</a>.</li>
+            </ul>
+        </section>
+
+        <!-- PER IL DOCENTE ---------------------------------------------------------------------------- -->
+        <section class="cm-panel" role="tabpanel" id="panel-docente" aria-labelledby="tab-docente" tabindex="0" hidden>
+            <h2 class="cm-h2">In classe</h2>
+            <div class="cm-measure">
+                <p>Ogni tecnica ha un indirizzo diretto, utile per un QR code o per Classroom: per esempio <code>calcolo-mentale.html#quadrato-del-5/perche</code> apre la dimostrazione. Le viste sono <code>algoritmo</code>, <code>esempi</code>, <code>perche</code> e <code>prova</code>.</p>
+                <p>Nella Quest (Allenati → Calcolo veloce) ogni tecnica è un'attività in tre livelli: <strong>Scopri</strong> (idea, passi, esercizi guidati), <strong>Applica</strong> (esercizi a mente e caccia all'errore), <strong>Dimostra</strong> (rimettere in ordine la dimostrazione e riconoscere il principio). Contano stelle, prova d'ingresso, prerequisiti e bonus «a mente» come nelle altre attività; la calcolatrice non compare. Nessun esercizio è a tempo.</p>
+                <p>La stampa di questa pagina produce la scheda della tecnica aperta, con tutte le sue sezioni.</p>
+            </div>
+            <h2 class="cm-h2">Le tecniche per anno</h2>
+            <div class="cm-table-wrap">
+                <table class="cm-table cm-teacher" id="cm-teacher-table">
+                    <thead><tr><th scope="col">Tecnica</th><th scope="col">Anno</th><th scope="col">Principio</th><th scope="col">Riforma 2017</th><th scope="col">Serve sapere</th><th scope="col">Link</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio matematico digitale<br>Istituto Professionale "E. Orfini" · Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener" class="social-circle" aria-label="Instagram @meltingmath">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Laboratorio Matematico Orfini Foligno. Progetto Open Source.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="cookie-consent.js"></script>
+</body>
+
+</html>

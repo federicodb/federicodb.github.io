@@ -106,6 +106,24 @@ Sui piani cartesiani compaiono i **punti notevoli** con le coordinate: intersezi
 
 Sono le meccaniche delle app che i ragazzi usano di più, scelte per far tornare ogni giorno e premiare lo sforzo. Restano fuori quelle che fanno leva sulla compulsione: niente premi a sorpresa, niente acquisti, niente vite che si perdono sbagliando, niente notifiche.
 
+## Classe, calcolo mentale e scaffolding
+
+- **Sempre a mente.** In ogni classe i numeri sono scelti perché il conto si faccia a mente; la difficoltà cresce nel **ragionamento** e negli **schemi da riconoscere**, non nella pesantezza dei conti. `npm test` lo verifica per percentuali, proporzioni, statistica e probabilità: al massimo due decimali o frazioni con denominatori piccoli, a ogni classe.
+- **Numeri per classe** (`classe()` e `perClasse()` in `activities/contesti.js`). Nei generatori: `rng.pick(perClasse({ 1: [10, 20, 25], 3: [15, 35], 4: [12.5, 37.5] }))` dà la fascia della classe dello studente. Esempi:
+  - *percentuali*: 1ª–2ª percentuali tonde; 3ª combinazioni (15% = 10% + 5%); 4ª–5ª frazioni nascoste (12,5% = 1/8) e percentuali oltre il 100%; ogni percentuale ha il suo **trucco** come aiuto e nella spiegazione;
+  - *proporzioni*: in 1ª rapporti interi (doppio, triplo), dalla 2ª anche "una volta e mezza";
+  - *statistica*: dalla 3ª la media con il **valore di riferimento** (dati attorno a 50: si sommano gli scarti);
+  - *probabilità sulla retta*: dalla 4ª senza il segno di ½, stima più fine.
+- **Calcolatrice disincentivata con dolcezza**: c'è sempre, ma una risposta scritta data senza aprirla vale **×1,2** (etichetta "a mente"); il pannello lo ricorda; il radar di fine lezione ha l'asse "A mente". Nessuna penalità.
+- **Salta al livello**: ogni livello bloccato ha una **prova d'ingresso** (4 domande, ne bastano 3): chi sa già l'argomento non riparte da capo. Agli studenti di una classe più avanti dell'attività la scheda lo suggerisce.
+- **Prerequisiti** (`PREREQ` in `activities/catalogo.js`): nella scheda "Serve sapere", con le stelle già prese; dopo due lezioni di fila sotto l'80% la fine lezione propone di ripassarli. `npm test` controlla che esistano e che non ci siano cicli.
+
+## Calcolo veloce (trucchi di calcolo mentale, con la dimostrazione)
+
+`activities/calcolo/trucchi.js` è l'**unica fonte** delle 14 tecniche: la usano l'area "Calcolo veloce" della Quest (`activities/calcolo/attivita.js`, un'attività per tecnica: Scopri, Applica, Dimostra) e la pagina del sito `calcolo-mentale.html`. Ogni tecnica ha idea, passi, generatore di esercizi da fare a mente, caccia all'errore, dimostrazione passo per passo, identità e limiti di validità. Niente cronometro; nelle lezioni di quest'area la calcolatrice non compare.
+
+`tests/trucchi.test.mjs` (in `npm test`) controlla che ogni identità sia vera per nerdamer (`expand(lhs − rhs) = 0`, `simplify` per le frazioni algebriche) e numericamente con math.js, che ogni esercizio generato abbia la risposta uguale al calcolo indipendente, che ogni formula si compili con KaTeX. I nomi sanscriti vengono dal libro di B. K. Tirtha (1965), non dai Veda: la pagina del sito ne racconta storia e critiche, con le fonti.
+
 ## Domande interattive
 
 Oltre a scelta multipla, vero/falso, risposta scritta e "ordina i passaggi", ci sono domande in cui si risponde **manipolando** (`js/ui/interact.js`, esempi commentati in `activities/_modello.js`, livello 3):

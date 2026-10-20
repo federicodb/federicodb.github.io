@@ -6,7 +6,7 @@ import { runLesson } from '../ui/lesson.js';
 import { icons, stars, esc, renderMath } from '../ui/dom.js';
 import { sfx, confetti, countUp } from '../ui/fx.js';
 import { skillScores, skillChart, discoveryCard, saveCard } from '../ui/summary.js';
-import { levelOpen } from './home.js';
+import { levelOpen, prereqBlock } from './home.js';
 
 export function startLesson(app, actId, level) {
   const act = byId[actId];
@@ -16,12 +16,61 @@ export function startLesson(app, actId, level) {
   app.state.lastActivity = act.id;
   app.save();
   app.stopLesson = runLesson(app.main, app, {
-    calc: app.state.settings.calc !== false,
+    calc: app.state.settings.calc !== false && act.area !== 'calcolo', // i trucchi sono calcolo mentale
     hue: act.hue,
     steps,
     onExit: () => { location.hash = '#/'; },
     onFinish: (res) => finish(app, { res, kind: 'lesson', act, level }),
   });
+}
+
+/** Prova d'ingresso: 4 domande del livello scelto, senza correzione passo per passo.
+ *  Con almeno 3 giuste il livello si sblocca (la padronanza dei livelli precedenti è dimostrata). */
+export function startTestOut(app, actId, level) {
+  const act = byId[actId];
+  if (!act || level < 2 || !act.levels[level - 1]) { location.hash = '#/'; return; }
+  if (levelOpen(app, act, level)) { location.hash = `#/lezione/${actId}/${level}`; return; }
+  const rng = createRng();
+  let pool = [];
+  for (let k = 0; k < 3 && pool.length < 4; k++) pool = pool.concat(act.generate(rng, level).filter((st) => st.type !== 'learn' && st.type !== 'widget'));
+  const steps = rng.shuffle(pool).slice(0, 4).map((st) => ({ ...st, _act: act.id, _kicker: `Prova d'ingresso: livello ${level}` }));
+  app.stopLesson = runLesson(app.main, app, {
+    calc: app.state.settings.calc !== false && act.area !== 'calcolo', // i trucchi sono calcolo mentale
+    hue: act.hue,
+    exam: true,
+    steps,
+    onExit: () => { location.hash = '#/'; },
+    onFinish: (res) => endTestOut(app, act, level, res),
+  });
+}
+
+function endTestOut(app, act, level, res) {
+  const s = app.state;
+  const ok = res.firstTry;
+  const pass = ok >= 3;
+  if (pass) {
+    const a = G.activityState(s, act.id);
+    a.stars = Math.max(a.stars, level - 1);
+    a.level = Math.max(a.level, level);
+    app.addXp(ok * 6);
+    confetti();
+  }
+  app.save();
+  sfx.done();
+  const back = Math.max(1, Math.min(level - 1, (s.activities[act.id]?.stars || 0) + 1));
+  app.main.innerHTML = `
+    <div class="summary" style="--hue:${act.hue}">
+      <p class="muted">${esc(act.title)}, prova d'ingresso al livello ${level}</p>
+      <h1 class="verdict">${pass ? 'Prova superata!' : 'Non ancora'}</h1>
+      <p class="score num">${ok}/4</p>
+      <p class="muted">${pass ? `Il livello ${level} è sbloccato, e i livelli precedenti contano come superati.` : `Ne servivano 3 su 4. Conviene partire dal livello ${back}: è più veloce di quanto sembri.`}</p>
+      <div class="panel review-list" style="text-align:left"><h3>Le risposte</h3><ol>${res.answers.map((x) => `<li><b style="color:${x.ok ? 'var(--good)' : 'var(--bad)'}">${x.ok ? 'Giusta' : 'Sbagliata'}</b><div>${x.prompt}</div>${x.ok ? '' : `<details><summary>Soluzione</summary>${x.explain || ''}</details>`}</li>`).join('')}</ol></div>
+      <div class="btn-row">
+        ${pass ? `<a class="btn big" href="#/lezione/${act.id}/${level}">Gioca il livello ${level}</a>` : `<a class="btn big" href="#/lezione/${act.id}/${back}">Parti dal livello ${back}</a><a class="btn-ghost" href="#/prova/${act.id}/${level}">Riprova la prova</a>`}
+        <a class="btn-ghost" href="#/">Torna al percorso</a>
+      </div>
+    </div>`;
+  renderMath(app.main);
 }
 
 export function startReview(app) {
@@ -123,6 +172,7 @@ function finish(app, { res, kind, act, level, ids }) {
         const bets = res.bets.right + res.bets.wrong;
         return sk.length ? `<section class="panel skills"><h3>Le abilità di questa lezione</h3>${skillChart(sk)}${bets ? `<p class="muted">Quando hai detto «sono sicuro» avevi ragione ${res.bets.right} ${res.bets.right === 1 ? 'volta' : 'volte'} su ${bets}.</p>` : ''}</section>` : '';
       })()}
+      ${kind === 'lesson' && (s.activities[act.id]?.lowRuns || 0) >= 2 ? `<section class="panel remedial">${prereqBlock(app, act.id, 'Prima di riprovare, ripassa le basi')}<p class="muted">Due lezioni di fila sotto l'80%: spesso il nodo sta in un argomento precedente. Una lezione di ripasso e poi si torna qui.</p></section>` : ''}
       ${today.lessons >= 3 ? `<p class="pause-note">Ottimo lavoro: ${today.lessons} lezioni oggi. Una pausa adesso aiuta a ricordare quello che hai imparato.</p>` : ''}
       ${res.misses.length ? `<div class="panel review-list"><h3>Da rivedere</h3><ol>${res.misses.map((m) => `<li><div>${m.prompt}</div><details><summary>Soluzione</summary>${m.explain || ''}</details></li>`).join('')}</ol></div>` : ''}
       <div class="btn-row">

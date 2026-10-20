@@ -11,11 +11,11 @@ const nerdamer = require('nerdamer/all.js');
 const math = require('mathjs');
 import { setCAS } from '../js/engine/cas.js';
 setCAS({ math, nerdamer });
-import { allActivities } from '../activities/catalogo.js';
+import { allActivities, PREREQ, byId } from '../activities/catalogo.js';
 import modello from '../activities/_modello.js';
 import { invalsi10, invalsi13 } from '../activities/invalsi/invalsi.js';
 import { createRng } from '../js/engine/rng.js';
-import { setIndirizzo, INDIRIZZI } from '../activities/contesti.js';
+import { setIndirizzo, setClasse, INDIRIZZI } from '../activities/contesti.js';
 const PROFILI = [null, ...INDIRIZZI.map((i) => i.id)];
 import { checkNumber, checkExpr, checkNumbers } from '../js/engine/check.js';
 
@@ -188,6 +188,20 @@ function verifyInteractive(step, where) {
   }
 }
 
+// F. calcolo mentale: nelle attività con numeri per classe i risultati restano "da fare a mente"
+//    (al massimo due decimali, nessun numero enorme), a ogni classe
+const MENTALE = new Set(['percentuali', 'proporzioni', 'statistica', 'probabilita']);
+function verifyMental(step, where) {
+  if (step.type !== 'number' || typeof step.answer !== 'number') return;
+  const a = step.answer;
+  // al massimo due decimali, oppure (probabilità) una frazione con denominatore piccolo, come 3/7
+  //    (per gli eventi ripetuti anche 1/216 = 1/6 · 1/6 · 1/6: denominatori prodotto di dadi e monete)
+  const dens = Array.from({ length: 36 }, (_, d) => d + 1).concat([64, 72, 108, 128, 144, 216, 288, 432, 1296]);
+  const fraction = dens.some((d) => Math.abs(a * d - Math.round(a * d)) < 1e-9);
+  if (Math.abs(a * 100 - Math.round(a * 100)) > 1e-6 && !fraction) fail(where, `risultato non da calcolo mentale: ${a}`);
+  if (Math.abs(a) > 20000) fail(where, `risultato troppo grande per il calcolo mentale: ${a}`);
+}
+
 // monomi simili: verifica con nerdamer che il rapporto con il monomio dato sia un numero (simili) o no
 function verifySimilar(step, where) {
   const base = step.prompt.match(/\$([^$]+)\$/)[1];
@@ -199,15 +213,25 @@ function verifySimilar(step, where) {
   }
 }
 
+// G. prerequisiti: attività esistenti e nessun ciclo (A richiede B che richiede A)
+for (const [id, list] of Object.entries(PREREQ)) {
+  if (!byId[id]) fail('prerequisiti', `attività inesistente: ${id}`);
+  for (const p of list) if (!byId[p]) fail('prerequisiti', `${id} richiede un'attività inesistente: ${p}`);
+}
+const reaches = (from, to, seen = new Set()) => (PREREQ[from] || []).some((p) => p === to || (!seen.has(p) && (seen.add(p), reaches(p, to, seen))));
+for (const id of Object.keys(PREREQ)) if (reaches(id, id)) fail('prerequisiti', `ciclo che passa da ${id}`);
+
 const acts = [...allActivities, modello];
 for (const act of acts) {
   for (let level = 1; level <= act.levels.length; level++) {
     for (let run = 0; run < RUNS; run++) {
       setIndirizzo(PROFILI[run % PROFILI.length]);
+      setClasse((run % 5) + 1); // 7 profili e 5 classi: con abbastanza giri si provano tutte le combinazioni
       let lesson;
       try { lesson = act.generate(createRng(run * 7919 + level * 13), level); } catch (e) { fail(`${act.id} L${level}`, 'generazione: ' + e.message); continue; }
       lesson.forEach((s, i) => {
         verify(s, `${act.id} L${level} step${i}`);
+        if (MENTALE.has(act.id)) verifyMental(s, `${act.id} L${level} step${i} (classe ${(run % 5) + 1})`);
         if (s.type === 'bins' && act.id === 'monomi') verifySimilar(s, `${act.id} L${level} step${i}`);
         if (s.twin) { try { verify(s.twin(), `${act.id} L${level} step${i} gemello`); } catch (e) { fail(`${act.id} L${level} step${i}`, 'gemello: ' + e.message); } }
       });

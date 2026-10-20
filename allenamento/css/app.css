@@ -674,6 +674,9 @@ html.theme-light .swatch { background: hsl(var(--sw-h), 85%, 36%); }
 .onb .dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--surface-3); }
 .onb .dots i.on { background: var(--accent); width: 22px; border-radius: 6px; }
 .pick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 10px; }
+/* argomenti: nomi lunghi ("Equazioni e disequazioni"), colonne più larghe delle classi 1ª–5ª */
+.pick-grid[data-area] { grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr)); }
+.pick { min-width: 0; text-wrap: balance; }
 .pick { min-height: 64px; border-radius: var(--r-md); border: 2px solid var(--line); background: var(--surface); cursor: pointer; font-weight: 700; display: grid; place-items: center; gap: 2px; padding: 8px; color: var(--text); }
 .pick small { font-weight: 450; color: var(--muted); font-size: 0.9375rem; line-height: 1.3; }
 .pick[aria-pressed='true'] { border-color: var(--accent); background: var(--accent-soft); }
@@ -1038,3 +1041,20 @@ html.theme-light .unit-area > .section-title h2, html.theme-light .unit-area > .
 .skill-bars { display: grid; gap: var(--s3); }
 .skill-bars > div { display: grid; grid-template-columns: 7.5rem 1fr 3rem; gap: var(--s3); align-items: center; }
 .pause-note { margin: var(--s4) auto 0; max-width: 34rem; padding: var(--s3) var(--s4); border-radius: var(--r-md); background: color-mix(in srgb, var(--ice) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ice) 40%, var(--line)); }
+.calc-nudge { margin: 0; font-size: 0.875rem; color: var(--muted); line-height: 1.4; }
+.calc-nudge b { color: var(--gold); font-family: var(--font-game); }
+
+/* prerequisiti ("Serve sapere") e ripasso suggerito */
+.prereq { margin-top: var(--s3); display: grid; gap: var(--s2); }
+.prereq > b { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.prereq-list { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.prereq-chip { display: inline-flex; align-items: center; gap: var(--s2); min-height: 48px; padding: var(--s1) var(--s3) var(--s1) var(--s1); border-radius: var(--r-md); border: 1.5px solid var(--line); background: var(--surface-2); color: var(--text); text-decoration: none; font-weight: 600; }
+.prereq-chip .unit-glyph { width: 38px; height: 38px; font-size: 0.875rem; border-radius: var(--r-sm); }
+@media (hover: hover) { .prereq-chip:hover { border-color: hsl(var(--hue), 80%, 55%); } }
+.summary .remedial { text-align: left; margin-top: var(--s4); border-color: color-mix(in srgb, var(--flame) 45%, var(--line)); }
+.summary .remedial .prereq { margin-top: 0; }
+.level-row.locked { opacity: 1; }
+.level-row.locked .n { border-style: dashed; color: var(--muted); }
+.level-row.locked b { color: var(--muted); }
+.skip-btn { min-height: 40px; padding: 0 var(--s4); margin-bottom: 0; font-size: 0.9375rem; color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, var(--line)); }
+.mental-tag { font: 800 0.8125rem var(--font-game); color: var(--gold); padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--gold) 16%, transparent); letter-spacing: 0.02em; }

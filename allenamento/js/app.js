@@ -3,7 +3,7 @@ import * as G from './game/game.js';
 import { avatarSVG, milestoneItems, itemInfo, unlockText } from './game/avatar.js';
 import { icons, toast, modal, esc } from './ui/dom.js';
 import { sfx, haptic, confetti, setFxSettings } from './ui/fx.js';
-import { setIndirizzo } from '../activities/contesti.js';
+import { setIndirizzo, setClasse } from '../activities/contesti.js';
 import { applyAccent } from './ui/accent.js';
 
 const store = (() => {
@@ -135,7 +135,7 @@ export const app = {
       { id: 'premi', label: 'Premi', icon: icons.gift, dot: seasonClaim },
       { id: 'profilo', label: 'Profilo', icon: icons.user },
     ];
-    const active = ['area', 'lezione', 'ripasso'].includes(route) ? '' : ['lampo', 'enigma', 'simulazione'].includes(route) ? 'sfide' : route === 'docente' ? 'profilo' : route;
+    const active = ['area', 'lezione', 'ripasso', 'prova'].includes(route) ? '' : ['lampo', 'enigma', 'simulazione'].includes(route) ? 'sfide' : route === 'docente' ? 'profilo' : route;
     document.getElementById('tabbar').innerHTML = tabs
       .map((t) => `<a class="tab" href="#/${t.id}" ${t.id === active ? 'aria-current="page"' : ''}>${t.icon}<span>${t.label}</span>${t.dot ? '<span class="dot" aria-label="novità"></span>' : ''}</a>`)
       .join('');
@@ -146,6 +146,7 @@ export const app = {
     document.documentElement.classList.toggle('lim', !!s.lim);
     document.documentElement.classList.toggle('big-text', !!s.bigText);
     setIndirizzo(this.state.profile.indirizzo || null);
+    setClasse(this.state.profile.year);
     applyAccent(s.accent);
     setFxSettings(s);
   },

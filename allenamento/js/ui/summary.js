@@ -18,6 +18,7 @@ export function skillScores(res) {
     const items = res.log.filter((l) => a.types.includes(l.type));
     if (items.length) out.push({ label: a.label, value: items.filter((l) => l.first).length / items.length, n: items.length });
   }
+  if (res.mentalOf) out.push({ label: 'A mente', value: (res.mental || 0) / res.mentalOf, n: res.mentalOf });
   if (res.twinsOffered) out.push({ label: 'Ripresa', value: Math.min(1, res.twins / res.twinsOffered), n: res.twinsOffered });
   const bets = res.bets.right + res.bets.wrong;
   if (bets) out.push({ label: 'Fiducia', value: res.bets.right / bets, n: bets });

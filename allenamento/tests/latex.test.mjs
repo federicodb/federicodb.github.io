@@ -5,7 +5,7 @@
 import katex from 'katex';
 import { allActivities } from '../activities/catalogo.js';
 import { createRng } from '../js/engine/rng.js';
-import { setIndirizzo, INDIRIZZI } from '../activities/contesti.js';
+import { setIndirizzo, setClasse, INDIRIZZI } from '../activities/contesti.js';
 
 // "€" dentro \text{} non ha metriche nei font di KaTeX: il browser usa un font di riserva, non è un errore
 const warn = console.warn;
@@ -61,6 +61,7 @@ for (const ind of PROFILI) {
   for (const act of allActivities) {
     for (let level = 1; level <= act.levels.length; level++) {
       for (let r = 0; r < RUNS; r++) {
+        setClasse((r % 5) + 1);
         const rng = createRng(1000 * r + level * 7 + act.id.length);
         const steps = act.generate(rng, level);
         for (const [k, st] of steps.entries()) {

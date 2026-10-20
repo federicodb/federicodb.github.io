@@ -515,6 +515,8 @@ export function recordLesson(state, today, { id, level, maxLevel, score, review 
     a.level++;
     events.push({ type: 'level-unlocked', id, level: a.level });
   }
+  // lezioni di fila sotto l'80%: dopo due si suggerisce di ripassare i prerequisiti
+  if (!review) a.lowRuns = passed ? 0 : (a.lowRuns || 0) + 1;
   if (passed) a.box = Math.min(REVIEW_INTERVALS.length - 1, a.box + (review || a.due ? 1 : 0));
   else a.box = Math.max(0, a.box - 1);
   a.due = addDays(today, REVIEW_INTERVALS[a.box]);

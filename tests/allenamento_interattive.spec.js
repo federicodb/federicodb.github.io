@@ -156,7 +156,12 @@ test.describe('Punteggio, scommessa e fine lezione', () => {
         await page.locator('.actionbar .btn.big').click();
         if (!betDone && (await page.locator('.actionbar.good').count())) {
           const chip = await page.locator('.actionbar .xp-chip').innerText();
-          if (await page.locator('.actionbar h3', { hasText: 'Fiducia ben riposta' }).count()) { expect(chip).toMatch(/10 × 2 = \+20 XP/); betDone = true; }
+          if (await page.locator('.actionbar h3', { hasText: 'Fiducia ben riposta' }).count()) {
+            // scommessa ×2, e ×1,2 in più se la risposta scritta è data a mente
+            const mental = await page.locator('.actionbar .mental-tag').count();
+            expect(chip).toMatch(mental ? /10 × 2,4 = \+24 XP/ : /10 × 2 = \+20 XP/);
+            betDone = true;
+          }
         }
       }
       const next = page.locator('.actionbar .btn.big');

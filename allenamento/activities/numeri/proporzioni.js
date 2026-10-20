@@ -1,4 +1,4 @@
-import { scene } from '../contesti.js';
+import { scene, perClasse } from '../contesti.js';
 import { it, tx, euro } from '../../js/engine/helpers.js';
 import { plane, table } from '../../js/gfx/svg.js';
 
@@ -26,8 +26,10 @@ function missingTerm(rng) {
 function direct(rng) {
   const kind = rng.pick(['ricetta', 'carburante', 'stampa']);
   if (kind === 'ricetta') {
+    // prima: persone in numero multiplo (doppio, triplo); dalla seconda qualunque numero, passando da una persona
     const p1 = rng.pick([2, 4, 5]), q1 = rng.pick([150, 200, 250, 300]);
-    const p2 = rng.until(() => rng.int(3, 12), (p) => p !== p1 && (q1 * p) % p1 === 0);
+    const multiplo = perClasse({ 1: true, 2: false });
+    const p2 = rng.until(() => rng.int(3, 12), (p) => p !== p1 && (q1 * p) % p1 === 0 && (!multiplo || p % p1 === 0));
     const ans = (q1 * p2) / p1;
     return {
       type: 'number', unit: 'g',
@@ -40,8 +42,11 @@ function direct(rng) {
     };
   }
   if (kind === 'carburante') {
-    const km1 = rng.pick([100, 150, 200]), l1 = rng.pick([5, 6, 8, 10]);
-    const km2 = rng.pick([250, 300, 350, 450, 500]);
+    // sempre a mente: prima il tragitto è un multiplo intero (doppio, triplo…), dalla seconda anche
+    // "una volta e mezza", "due volte e mezza" (e il risultato ha al massimo i mezzi litri)
+    const km1 = rng.pick([100, 150, 200]), l1 = rng.pick([4, 5, 6, 8, 10]);
+    const ratios = perClasse({ 1: [2, 3, 4], 2: [1.5, 2, 2.5, 3, 3.5] });
+    const km2 = km1 * rng.until(() => rng.pick(ratios), (k) => Number.isInteger(l1 * k * 2));
     const ans = (l1 * km2) / km1;
     return {
       type: 'number', unit: 'litri', decimals: 1,

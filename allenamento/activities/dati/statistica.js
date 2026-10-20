@@ -1,4 +1,4 @@
-import { scene } from '../contesti.js';
+import { scene, perClasse } from '../contesti.js';
 import { it, tx } from '../../js/engine/helpers.js';
 import { table, bars } from '../../js/gfx/svg.js';
 
@@ -9,8 +9,18 @@ const median = (a) => {
   return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
 };
 
+/** Dalla terza: dati attorno a un valore di riferimento (es. 47, 52, 49 attorno a 50), la media si trova
+ *  a mente sommando gli scarti. Restituisce { vals, base, scarti } con media che ha al massimo i mezzi. */
+function datiConRiferimento(rng, n) {
+  const base = rng.pick([20, 30, 40, 50, 60, 80, 100]);
+  const scarti = rng.until(() => Array.from({ length: n }, () => rng.int(-6, 6)), (d) => Number.isInteger((avg(d) * 2)) && new Set(d).size >= 3 && d.some((x) => x !== 0));
+  return { vals: scarti.map((d) => base + d), base, scarti };
+}
+const segno = (d) => (d >= 0 ? `+${d}` : `${d}`.replace('-', '−'));
+
 /** Stima: la media è il punto di equilibrio dei dati sulla retta */
 function placeMean(rng) {
+  if (perClasse({ 1: false, 3: true })) return placeMeanRif(rng);
   const vals = rng.until(() => Array.from({ length: 5 }, () => rng.int(3, 10)), (v) => Number.isInteger(avg(v) * 2) && new Set(v).size >= 3);
   const m = avg(vals);
   return {
@@ -28,7 +38,27 @@ function placeMean(rng) {
   };
 }
 
+/** Terza e oltre: punto di equilibrio di misure attorno a un valore di riferimento */
+function placeMeanRif(rng) {
+  const { vals, base, scarti } = datiConRiferimento(rng, 5);
+  const m = avg(vals);
+  return {
+    type: 'place',
+    prompt: `Cinque misure di un pezzo, in mm: ${vals.join(', ')}. Posiziona la media sulla retta.`,
+    min: base - 8, max: base + 8, snap: 0.05, tol: 0.3,
+    ticks: Array.from({ length: 9 }, (_, k) => ({ v: base - 8 + k * 2, label: String(base - 8 + k * 2) })).concat(Array.from({ length: 8 }, (_, k) => ({ v: base - 7 + k * 2, major: false }))),
+    dots: vals,
+    instruction: 'Trucco: guarda quanto ogni misura si scosta da ' + base + '. Tocca o trascina.',
+    answer: m, answerLabel: `media ${tx(m, 1).replace('{,}', ',')}`,
+    label: 'Posizione della media',
+    hint: `Scarti da ${base}: ${scarti.map(segno).join(', ')}. La media degli scarti, aggiunta a ${base}, è la media.`,
+    explain: `Scarti da ${base}: $${scarti.map(segno).join('\\ ')}$, somma $${segno(scarti.reduce((s, x) => s + x, 0))}$, diviso 5 fa $${segno(avg(scarti)).replace('.', '{,}')}$. Media: $${base} ${segno(avg(scarti)).replace('.', '{,}').replace('+', '+ ').replace('−', '- ')} = ${tx(m, 1)}$ mm.`,
+    twin: () => placeMeanRif(rng),
+  };
+}
+
 function meanStep(rng) {
+  if (perClasse({ 1: false, 3: true })) return meanStepRif(rng);
   const n = rng.int(5, 8);
   const vals = rng.until(() => Array.from({ length: n }, () => rng.int(3, 10)), (v) => Number.isInteger((avg(v) * 10)) || Number.isInteger(avg(v) * 4));
   const m = avg(vals);
@@ -41,6 +71,25 @@ function meanStep(rng) {
     hint: `Somma i ${n} voti e dividi per ${n}.`,
     explain: `$$\\bar x = \\dfrac{${vals.join(' + ')}}{${n}} = \\dfrac{${vals.reduce((s, x) => s + x, 0)}}{${n}} = ${tx(m)}$$`,
     twin: () => meanStep(rng),
+  };
+}
+
+/** Terza e oltre: media a mente con gli scarti da un valore di riferimento */
+function meanStepRif(rng) {
+  const n = rng.int(5, 6);
+  const { vals, base, scarti } = datiConRiferimento(rng, n);
+  const ctx = rng.pick([['Temperatura (°C)', '°C'], ['Peso del pezzo (g)', 'g'], ['Tempo (s)', 's']]);
+  const m = avg(vals);
+  const tot = scarti.reduce((s, x) => s + x, 0);
+  return {
+    type: 'number', decimals: 2, unit: ctx[1],
+    fig: table(['Misura', ...vals.map((_, i) => String(i + 1))], [[ctx[0], ...vals.map(String)]]),
+    prompt: 'Qual è la media delle misure? Prova a mente, partendo da un valore di riferimento.',
+    answer: m,
+    traps: [{ value: median(vals), msg: 'Questa è la mediana: la media tiene conto di tutti i valori.' }, { value: base, msg: `${base} è solo il valore di riferimento: aggiungi la media degli scarti.` }],
+    hint: `Scarti da ${base}: ${scarti.map(segno).join(', ')}. Sommali e dividi per ${n}.`,
+    explain: `Scarti da ${base}: $${scarti.map(segno).join('\\ ')}$. Somma $${segno(tot)}$, diviso ${n} fa $${tx(tot / n, 2)}$. Media: $${base} + (${tx(tot / n, 2)}) = ${tx(m, 2)}$ ${ctx[1]}. Non serve sommare numeri grandi: bastano gli scarti.`,
+    twin: () => meanStepRif(rng),
   };
 }
 

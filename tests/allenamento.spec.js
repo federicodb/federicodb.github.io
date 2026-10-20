@@ -214,6 +214,22 @@ test.describe('Orfini Math Quest (/allenamento/)', () => {
     expect(await page.evaluate(() => localStorage.getItem('arcade_classifica'))).toBe('[{"nome":"3EL","punti":990}]');
   });
 
+  for (const width of [360, 1366]) {
+    test(`primo avvio a ${width} px: nessun testo esce dal suo pulsante`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/allenamento/');
+      const overflowing = () => page.evaluate(() => [...document.querySelectorAll('.onb button, .onb .pick')]
+        .filter((el) => el.scrollWidth > el.clientWidth + 1).map((el) => el.innerText.replace(/\s+/g, ' ').trim()));
+      for (let step = 0; step < 5; step++) {
+        expect(await overflowing(), `passo ${step + 1}`).toEqual([]);
+        if (step === 1) await page.locator('#nick').fill('x');
+        if (step === 2) await page.locator('[data-year] [data-v="1"]').click();
+        if (step === 3) await page.locator('[data-ind] [data-v="meccanico"]').click();
+        if (step < 4) await page.locator('.onb [data-next]').click();
+      }
+    });
+  }
+
   test('?indirizzo= preimposta l\'indirizzo anche al primo avvio', async ({ page }) => {
     await page.goto('/allenamento/?indirizzo=elettrico');
     await expect(page).toHaveURL(/\/allenamento\/$/);

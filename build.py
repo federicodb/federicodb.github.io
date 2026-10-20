@@ -28,6 +28,7 @@ RIFORMA_JSON_PATH = "riforma2017.json"
 # Pagine statiche della root da includere nella sitemap: (file, changefreq, priority)
 STATIC_PAGES = [
     ("allenamento/index.html", "weekly", "0.9"),
+    ("calcolo-mentale.html", "monthly", "0.8"),
     ("scuola.html", "monthly", "0.9"),
     ("competenze.html", "monthly", "0.7"),
     ("verifiche.html", "weekly", "0.7"),

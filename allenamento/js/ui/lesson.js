@@ -87,7 +87,9 @@ export function runLesson(root, ctx, opts) {
   bar.style.setProperty('--hue', opts.hue);
   document.body.appendChild(bar);
 
-  root.querySelector('[data-calc-btn]')?.addEventListener('click', () => toggleCalculator(() => card.querySelector('input.answer:not(:disabled)')));
+  // calcolatrice usata nella domanda in corso: senza, la risposta scritta vale ×1,2 ("a mente")
+  let calcUsed = false;
+  root.querySelector('[data-calc-btn]')?.addEventListener('click', () => { calcUsed = true; toggleCalculator(() => card.querySelector('input.answer:not(:disabled)')); });
   const cleanup = () => {
     closeCalculator();
     cleanupStep();
@@ -196,6 +198,7 @@ export function runLesson(root, ctx, opts) {
     let attempts = 0;
     let hintShown = false;
     let betOn = false; // "Sono sicuro": si può scommettere solo al primo tentativo
+    calcUsed = !!document.querySelector('.calc:not(.closing)'); // se è già aperta, la domanda parte "con calcolatrice"
 
     const showHint = () => {
       if (hintShown || !step.hint) return;
@@ -241,6 +244,10 @@ export function runLesson(root, ctx, opts) {
         else chips = XP.secondTry;
         if (bet) { mult *= 2; res.bets.right++; }
         if (r.precise) mult *= 1.5;
+        // a mente: domanda con risposta scritta, calcolatrice disponibile ma non aperta
+        const mental = !!opts.calc && ['number', 'numbers', 'expr'].includes(step.type) && !calcUsed;
+        if (mental) { mult *= 1.2; res.mental = (res.mental || 0) + 1; }
+        if (opts.calc && ['number', 'numbers', 'expr'].includes(step.type)) res.mentalOf = (res.mentalOf || 0) + 1;
         res.bestCombo = Math.max(res.bestCombo, combo);
         const got = ctx.addXp(chips * mult, { combo });
         res.xp += got;
@@ -256,11 +263,11 @@ export function runLesson(root, ctx, opts) {
         haptic([10, 30, 10]);
         flyText(checkBtn || bar, `+${got} XP`);
         if (comboEl && combo >= 2) { comboEl.classList.remove('hot'); void comboEl.offsetWidth; comboEl.classList.add('hot'); }
-        const praise = bet ? 'Fiducia ben riposta!' : r.precise ? 'Stima perfetta!' : COMBO_PRAISE[combo] || PRAISE[Math.floor(Math.random() * PRAISE.length)];
+        const praise = bet ? 'Fiducia ben riposta!' : r.precise ? 'Stima perfetta!' : COMBO_PRAISE[combo] || (mental && Math.random() < 0.35 ? 'Tutto a mente!' : PRAISE[Math.floor(Math.random() * PRAISE.length)]);
         const score = mult !== 1 ? `${chips} × ${String(Math.round(mult * 100) / 100).replace('.', ',')} = +${got} XP` : `+${got} XP`;
         const { feedback } = setBar(
           'good',
-          `<h3>${ctx.mood ? ctx.mood(combo >= 3 ? 'great' : 'good') : icons.check.replace('<svg', '<svg width="26" height="26"')} ${praise} <span class="xp-chip">${score}</span></h3>${r.message ? `<p>${r.message}</p>` : ''}
+          `<h3>${ctx.mood ? ctx.mood(combo >= 3 ? 'great' : 'good') : icons.check.replace('<svg', '<svg width="26" height="26"')} ${praise} <span class="xp-chip">${score}</span>${mental ? '<span class="mental-tag" title="Risposta senza calcolatrice: ×1,2">a mente</span>' : ''}</h3>${r.message ? `<p>${r.message}</p>` : ''}
            ${step.explain ? `<details><summary>Rivedi il ragionamento</summary><div>${step.explain}</div><div data-after></div></details>` : ''}`,
           [{ label: 'Continua', primary: true, kind: 'good', run: next }],
         );

@@ -1,0 +1,239 @@
+/* Calcolo veloce (calcolo-mentale.html). Mondo visivo del sito (index.css): Syne per i titoli, Inter per i testi,
+   nero AMOLED con tema chiaro per la LIM. Pagina di consultazione: struttura chiara, misura di lettura comoda,
+   formule grandi e leggibili. Tutti i colori vengono dai token del sito, così il tema chiaro funziona da solo. */
+
+.cm {
+    --cm-measure: 58ch; /* circa 75 caratteri per riga */
+    --cm-gap: 24px;
+    --cm-line: var(--glass-border);
+    --cm-soft: color-mix(in srgb, var(--text-main) 5%, transparent);
+    --cm-ok: hsl(155, 70%, 48%);
+    --cm-no: hsl(330, 80%, 68%);
+    padding-bottom: 96px;
+    /* nel body a colonna flessibile del sito la main con margini automatici prenderebbe la larghezza del contenuto */
+    width: 100%;
+    min-width: 0;
+}
+html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%); --cm-soft: rgba(15, 23, 42, 0.04); }
+
+/* superfici del browser con i colori del sito */
+.cm ::selection { background: color-mix(in srgb, var(--primary) 35%, transparent); color: var(--text-main); }
+.cm input { caret-color: var(--primary); }
+.cm :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 6px; }
+.cm .katex { font-size: 1.12em; }
+.cm table { font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ------------------------------------------------------------ intestazione */
+.cm-hero { padding: 56px 0 32px; max-width: var(--cm-measure); }
+.cm-hero h1 { font-family: var(--font-heading); font-size: clamp(2.5rem, 2rem + 3vw, 4.25rem); line-height: 1; letter-spacing: -0.02em; margin-bottom: 20px; color: var(--text-main); }
+.cm-lead { font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem); line-height: 1.6; color: var(--text-muted); }
+.cm-lead strong { color: var(--text-main); font-weight: 600; }
+.cm-progress { margin-top: 16px; font-size: 0.9375rem; color: var(--text-muted); }
+.cm-progress strong { color: var(--primary); font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------ schede di primo livello */
+.cm-tabs {
+    display: flex; gap: 32px; border-bottom: 1px solid var(--cm-line); margin-bottom: 40px;
+    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.cm-tabs::-webkit-scrollbar { display: none; }
+.cm-tabs.cm-more { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); }
+.cm-technique, .cm-tabs { scroll-margin-top: calc(var(--cm-nav-h, 88px) + 16px); }
+.cm-tabs [role=tab] {
+    position: relative; flex: none; padding: 16px 0 14px; background: none; border: 0; cursor: pointer;
+    font: 600 1rem var(--font-ui); color: var(--text-muted); white-space: nowrap; min-height: 48px;
+    transition: color 0.2s ease;
+}
+.cm-tabs [role=tab]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--primary); transform: scaleX(0); transform-origin: left; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.cm-tabs [role=tab][aria-selected=true] { color: var(--text-main); }
+.cm-tabs [role=tab][aria-selected=true]::after { transform: scaleX(1); }
+@media (hover: hover) { .cm-tabs [role=tab]:hover { color: var(--text-main); } }
+.cm-panel:focus { outline: none; }
+.cm-panel:focus-visible { outline: 2px solid var(--primary); outline-offset: 8px; }
+
+/* ------------------------------------------------------------ testo e titoli */
+.cm-h2 { font-family: var(--font-heading); font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1.15; letter-spacing: -0.01em; color: var(--text-main); margin: 56px 0 16px; }
+.cm-panel > .cm-h2:first-child { margin-top: 0; }
+.cm-measure, .cm-prose p, .cm-prose li { max-width: var(--cm-measure); }
+.cm p { line-height: 1.65; color: var(--text-main); }
+.cm-prose p { margin-bottom: 16px; color: var(--text-muted); }
+.cm-muted { color: var(--text-muted) !important; }
+.cm code { font-family: var(--font-code); font-size: 0.9em; background: var(--cm-soft); padding: 2px 6px; border-radius: 6px; word-break: break-all; }
+.cm a:not(.main-cta-btn) { color: var(--primary); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* pulsante testuale con icona */
+.cm-link-btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 4px; background: none; border: 0; cursor: pointer;
+    font: 600 0.9375rem var(--font-ui); color: var(--primary);
+}
+.cm-link-btn svg, .cm-quest svg, .cm-ok svg, .cm-done svg, .cm-index-action svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+@media (hover: hover) { .cm-link-btn:hover { text-decoration: underline; text-underline-offset: 4px; } }
+.cm-next { margin-top: 32px; }
+
+/* ------------------------------------------------------------ il metodo */
+.cm-phases { list-style: none; padding: 0; margin: 32px 0 0; counter-reset: phase; display: grid; gap: 0; }
+.cm-phases > li { counter-increment: phase; display: grid; grid-template-columns: 56px minmax(0, 1fr); column-gap: 16px; padding: 28px 0; border-top: 1px solid var(--cm-line); }
+.cm-phases > li::before { content: counter(phase); grid-row: span 3; font: 800 2rem/1 var(--font-heading); color: var(--primary); }
+.cm-phases h3 { font: 700 1.25rem var(--font-ui); color: var(--text-main); margin-bottom: 8px; }
+.cm-phases p { max-width: var(--cm-measure); }
+.cm-display { margin: 8px 0; }
+.cm-principles { margin-top: 24px; }
+.cm-principles dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 32px; margin-top: 24px; }
+.cm-principles dt { font: 700 1.0625rem var(--font-ui); color: var(--text-main); margin-bottom: 6px; }
+.cm-principles dd { margin: 0; color: var(--text-muted); line-height: 1.6; }
+
+/* tabelle */
+.cm-table-wrap { overflow-x: auto; margin: 16px 0; }
+.cm-table { border-collapse: collapse; min-width: 100%; font-size: 0.9375rem; }
+.cm-table th, .cm-table td { text-align: left; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--cm-line); vertical-align: top; }
+.cm-table thead th { font-weight: 600; color: var(--text-muted); font-size: 0.875rem; }
+.cm-table tbody th { font-weight: 600; color: var(--text-main); }
+.cm-teacher td { color: var(--text-muted); }
+.cm-teacher .cm-links { white-space: nowrap; }
+
+/* ------------------------------------------------------------ le tecniche: elenco + scheda */
+.cm-techniques { display: grid; grid-template-columns: 272px minmax(0, 1fr); gap: 56px; align-items: start; }
+.cm-index { position: sticky; top: calc(var(--cm-nav-h, 88px) + 24px); max-height: calc(100dvh - var(--cm-nav-h, 88px) - 48px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--cm-line) transparent; padding-right: 8px; }
+.cm-index-toggle { display: none; }
+.cm-index-group + .cm-index-group { margin-top: 24px; }
+.cm-index-group h3 { font: 600 0.8125rem var(--font-ui); color: var(--text-muted); margin-bottom: 8px; }
+.cm-index-group ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+.cm-index-group a {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 8px 12px; border-radius: var(--radius-sm);
+    color: var(--text-muted) !important; text-decoration: none; font-size: 0.9375rem; line-height: 1.3; transition: background-color 0.2s, color 0.2s;
+}
+@media (hover: hover) { .cm-index-group a:hover { background: var(--cm-soft); color: var(--text-main) !important; } }
+.cm-index-group a[aria-current] { background: color-mix(in srgb, var(--primary) 16%, transparent); color: var(--text-main) !important; font-weight: 600; }
+.cm-done { color: var(--cm-ok); display: inline-flex; }
+
+.cm-technique { min-width: 0; }
+.cm-tech-head h2 { font-family: var(--font-heading); font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.015em; color: var(--text-main); }
+.cm-tech-name { margin-top: 8px; color: var(--text-muted) !important; font-style: italic; }
+.cm-tech-idea { margin-top: 16px; font-size: 1.1875rem; max-width: var(--cm-measure); }
+
+.cm-subtabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 32px; }
+.cm-subtabs [role=tab] {
+    min-height: 44px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--cm-line); background: transparent; cursor: pointer;
+    font: 600 0.9375rem var(--font-ui); color: var(--text-muted); transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+@media (hover: hover) { .cm-subtabs [role=tab]:hover { color: var(--text-main); border-color: var(--text-muted); } }
+.cm-subtabs [role=tab][aria-selected=true] { background: var(--primary); border-color: var(--primary); color: var(--text-on-accent); }
+.cm-view:focus { outline: none; }
+.cm-view:focus-visible { outline: 2px solid var(--primary); outline-offset: 8px; }
+
+/* algoritmo */
+.cm-steps { list-style: none; padding: 0; counter-reset: step; display: grid; gap: 16px; max-width: var(--cm-measure); }
+.cm-steps li { counter-increment: step; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; font-size: 1.0625rem; line-height: 1.6; }
+.cm-steps li::before { content: counter(step); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font: 700 0.9375rem var(--font-ui); color: var(--text-on-accent); background: var(--primary); }
+.cm-note { margin-top: 32px; padding: 20px 24px; border-radius: var(--radius-md); background: var(--cm-soft); max-width: var(--cm-measure); }
+.cm-note h3 { font: 700 1rem var(--font-ui); color: var(--text-main); margin-bottom: 6px; }
+.cm-note p { color: var(--text-muted); margin: 0; }
+
+/* esempi */
+.cm-examples { display: grid; gap: 0; margin-bottom: 16px; }
+.cm-example { padding: 20px 0; border-top: 1px solid var(--cm-line); }
+.cm-example:last-child { border-bottom: 1px solid var(--cm-line); }
+.cm-example-q { font-size: 1.25rem; margin-bottom: 4px; }
+.cm-math { overflow-x: auto; overflow-y: hidden; }
+.cm-math .katex-display { margin: 8px 0; text-align: left; }
+.cm-math .katex-display > .katex { text-align: left; }
+
+/* perché funziona */
+.cm-proof { list-style: none; padding: 0; margin: 24px 0; display: grid; gap: 0; }
+.cm-proof li { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; align-items: center; padding: 12px 0; border-top: 1px solid var(--cm-line); }
+.cm-proof li:last-child { border-bottom: 1px solid var(--cm-line); }
+.cm-proof-math { overflow-x: auto; overflow-y: hidden; }
+.cm-proof-math .katex-display { margin: 0; text-align: left; }
+.cm-proof-math .katex-display > .katex { text-align: left; }
+.cm-proof-why { color: var(--text-muted); font-size: 0.9375rem; line-height: 1.5; }
+.cm-verify { margin-top: 32px; padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--cm-line); max-width: 52rem; }
+.cm-verify h3 { font: 700 1rem var(--font-ui); color: var(--text-main); margin-bottom: 4px; }
+.cm-verify-intro { color: var(--text-muted) !important; font-size: 0.9375rem; margin-bottom: 16px; }
+.cm-identity + .cm-identity { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--cm-line); }
+.cm-identity dl { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 8px 16px; margin: 8px 0 0; }
+.cm-identity dt { color: var(--text-muted); font-size: 0.875rem; padding-top: 3px; }
+.cm-identity dd { margin: 0; overflow-x: auto; overflow-y: hidden; }
+.cm-ok { color: var(--cm-ok) !important; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.cm-no { color: var(--cm-no) !important; font-weight: 600; }
+
+/* prova tu */
+.cm-try { max-width: 44rem; }
+.cm-try-q { font-size: 1.125rem; margin-bottom: 16px; }
+.cm-try-q .katex-display { text-align: left; margin: 8px 0; }
+.cm-try-q .katex-display > .katex { text-align: left; font-size: 1.6em; }
+.cm-try-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.cm-try-input {
+    flex: 1 1 12rem; min-width: 0; height: var(--m3-pill-height); padding: 0 20px; border-radius: 24px; border: 2px solid var(--cm-line);
+    background: var(--bg-surface); color: var(--text-main); font: 700 1.25rem var(--font-code); font-variant-numeric: tabular-nums;
+}
+.cm-try-input::placeholder { color: var(--text-muted); font: 400 1rem var(--font-ui); }
+.cm-try-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
+.cm-try-input[aria-invalid=true] { border-color: var(--cm-no); }
+.cm-try-input[aria-invalid=false] { border-color: var(--cm-ok); }
+.cm-try-unit { color: var(--text-muted); font-weight: 600; }
+.cm-try-feedback { min-height: 32px; margin: 16px 0 8px; }
+
+/* piede della scheda */
+.cm-tech-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--cm-line); }
+
+/* ------------------------------------------------------------ storia */
+.cm-timeline { list-style: none; padding: 0; margin: 24px 0 8px; display: grid; gap: 0; max-width: calc(11rem + 24px + 58ch); }
+.cm-timeline li { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 24px; padding: 18px 0; border-top: 1px solid var(--cm-line); max-width: none; }
+.cm-when { font: 700 0.9375rem var(--font-ui); color: var(--primary); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.cm-timeline div { color: var(--text-muted); line-height: 1.6; }
+.cm-timeline strong { color: var(--text-main); }
+.cm-sources { padding-left: 20px; display: grid; gap: 10px; color: var(--text-muted); font-size: 0.9375rem; line-height: 1.55; }
+
+/* ------------------------------------------------------------ telefono e tablet */
+@media (max-width: 899px) {
+    .cm-hero { padding: 32px 0 24px; }
+    .cm-tabs { gap: 24px; margin-bottom: 28px; }
+    .cm-techniques { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .cm-index { position: static; max-height: none; overflow: visible; padding: 0; }
+    .cm-index-toggle {
+        display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 10px 16px;
+        border-radius: var(--radius-md); border: 1px solid var(--cm-line); background: var(--bg-surface); cursor: pointer; text-align: left;
+    }
+    .cm-index-current { font: 700 1rem var(--font-ui); color: var(--text-main); }
+    .cm-index-action { display: inline-flex; align-items: center; gap: 6px; font: 600 0.875rem var(--font-ui); color: var(--primary); white-space: nowrap; }
+    .cm-index-action svg { transition: transform 0.25s ease; }
+    .cm-index.open .cm-index-action svg { transform: rotate(180deg); }
+    .cm-index-list { display: none; margin-top: 12px; }
+    .cm-index.open .cm-index-list { display: block; }
+    .cm-index-group ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .cm-index-group a { min-height: 56px; border: 1px solid var(--cm-line); }
+    .cm-proof li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .cm-timeline li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .cm-identity dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    .cm-identity dd { margin-bottom: 8px; }
+}
+@media (max-width: 420px) {
+    .cm-phases > li { grid-template-columns: 36px minmax(0, 1fr); }
+    .cm-phases > li::before { font-size: 1.5rem; }
+    .cm-subtabs [role=tab] { padding: 8px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cm-tabs [role=tab]::after, .cm-index-action svg { transition: none; }
+}
+
+/* ------------------------------------------------------------ stampa: la scheda della tecnica aperta, completa */
+@media print {
+    #main-nav, .site-footer, .cm-tabs, .cm-index, .cm-subtabs, .cm-tech-foot, .cm-hero, #cookie-consent-banner, .cm-try, [data-more] { display: none !important; }
+    body.cm-printing #panel-metodo, body.cm-printing #panel-storia, body.cm-printing #panel-docente { display: none !important; }
+    body.cm-printing #panel-tecniche, body.cm-printing .cm-view { display: block !important; }
+    body.cm-printing #view-prova { display: none !important; }
+    .cm-techniques { display: block; }
+    .cm, .cm p, .cm h2, .cm h3, .cm-proof-why, .cm-note p, .cm-muted { color: #000 !important; }
+    .cm-steps li::before { background: #000; color: #fff; }
+    .cm-view { break-inside: avoid-page; margin-bottom: 16px; }
+    .cm-verify, .cm-note { border: 1px solid #999; background: none; }
+}
+
+/* ritmo tra paragrafi (il reset del sito azzera i margini) */
+.cm p + p { margin-top: 0.75em; }
+.cm dd, .cm-timeline div, .cm-proof-why { text-wrap: pretty; }
+/* gli elementi delle griglie non devono allargarsi oltre lo schermo per colpa di una formula lunga (che scorre da sola) */
+.cm-examples > *, .cm-proof > li > *, .cm-phases > li > *, .cm-identity dd, .cm-try-q, .cm-try-feedback { min-width: 0; }
+.cm-try-q, .cm-try-feedback, .cm-example { overflow-x: auto; overflow-y: hidden; }

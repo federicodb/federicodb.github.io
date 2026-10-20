@@ -4,7 +4,7 @@ import { app } from './app.js';
 import { loadCAS } from './engine/cas.js';
 import { viewOnboarding } from './screens/onboarding.js';
 import { viewHome } from './screens/home.js';
-import { startLesson, startReview } from './screens/play.js';
+import { startLesson, startReview, startTestOut } from './screens/play.js';
 import { viewChallenges, startLampo, viewEnigma, startSimulation } from './screens/challenges.js';
 import { viewLeague } from './screens/league.js';
 import { viewRewards } from './screens/rewards.js';
@@ -48,6 +48,7 @@ function route() {
   switch (view) {
     case 'lezione': startLesson(app, a, +b || 1); break;
     case 'ripasso': startReview(app); break;
+    case 'prova': startTestOut(app, a, +b || 2); break;
     case 'sfide': viewChallenges(app); break;
     case 'lampo': startLampo(app); break;
     case 'enigma': viewEnigma(app); break;

@@ -66,7 +66,7 @@ export function viewOnboarding(app, step = 0) {
       <button class="btn big wide" data-next ${s.profile.year || s.profile.focus ? '' : 'disabled'}>Avanti</button>
       <button class="btn-ghost" data-back>Indietro</button>${dots}
     </div>`;
-    app.main.querySelector('[data-year]').addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (!b) return; s.profile.year = +b.dataset.v; s.profile.focus = null; app.save(); go(2); });
+    app.main.querySelector('[data-year]').addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (!b) return; s.profile.year = +b.dataset.v; s.profile.focus = null; app.save(); app.applySettings(); go(2); });
     app.main.querySelector('[data-area]').addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (!b) return; s.profile.focus = b.dataset.v; app.save(); go(2); });
     app.main.querySelector('[data-next]').addEventListener('click', () => go(3));
     app.main.querySelector('[data-back]').addEventListener('click', () => go(1));

@@ -81,6 +81,7 @@ function openCalculator(target) {
   panel.setAttribute('aria-label', 'Calcolatrice');
   panel.innerHTML = `
     <div class="calc-head"><b>Calcolatrice</b><span class="muted calc-mode">angoli in gradi</span><button type="button" class="icon-btn" data-close aria-label="Chiudi la calcolatrice">${icons.close}</button></div>
+    <p class="calc-nudge">Prova prima a mente: spesso c'è un trucco, e la risposta vale <b>×1,2</b>.</p>
     <div class="calc-screen" aria-live="polite">
       <div class="calc-hist" data-hist></div>
       <input class="calc-expr" data-expr inputmode="none" autocomplete="off" spellcheck="false" aria-label="Calcolo" placeholder="0">

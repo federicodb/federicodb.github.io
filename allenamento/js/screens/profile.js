@@ -118,7 +118,7 @@ export function viewProfile(app, section) {
     box.querySelector('[data-share]')?.addEventListener('click', () => navigator.share({ title: 'Codice Orfini Math Quest', text: code }).catch(() => {}));
     sfx.coin();
   });
-  $('[data-year]').addEventListener('click', (e) => { const b = e.target.closest('[data-y]'); if (!b) return; s.profile.year = +b.dataset.y; s.profile.focus = null; app.save(); viewProfile(app); });
+  $('[data-year]').addEventListener('click', (e) => { const b = e.target.closest('[data-y]'); if (!b) return; s.profile.year = +b.dataset.y; s.profile.focus = null; app.save(); app.applySettings(); viewProfile(app); });
   $('[data-goal]').addEventListener('click', (e) => { const b = e.target.closest('[data-xp]'); if (!b) return; s.dailyGoal = +b.dataset.xp; app.save(); app.chrome(); viewProfile(app); });
   app.main.querySelectorAll('[data-toggle]').forEach((b) =>
     b.addEventListener('click', () => {

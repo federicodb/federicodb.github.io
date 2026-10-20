@@ -1,7 +1,7 @@
 // Home "Percorso": saluto e livello, continua, obiettivo e serie, missioni e forziere, mappa delle aree.
 import * as G from '../game/game.js';
 import { gradientVars } from '../ui/accent.js';
-import { areasFor, allActivities, byId, YEARS, MAT_LABELS, visibleFor } from '../../activities/catalogo.js';
+import { areasFor, allActivities, byId, YEARS, MAT_LABELS, visibleFor, PREREQ } from '../../activities/catalogo.js';
 import { INDIRIZZI_BY_ID } from '../../activities/contesti.js';
 import { icons, stars, esc, html, modal } from '../ui/dom.js';
 import { sfx, confetti, flyText } from '../ui/fx.js';
@@ -224,6 +224,16 @@ function areaBlock(app, area) {
   </section>`;
 }
 
+/** Prerequisiti di un'attività, con le stelle già ottenute e il link al livello da ripassare */
+export function prereqBlock(app, id, title) {
+  const list = (PREREQ[id] || []).map((p) => byId[p]).filter(Boolean);
+  if (!list.length) return '';
+  return `<div class="prereq"><b>${esc(title)}</b><div class="prereq-list">${list.map((p) => {
+    const st = app.state.activities[p.id]?.stars || 0;
+    return `<a class="prereq-chip" style="--hue:${p.hue}" href="#/lezione/${p.id}/${Math.max(1, st)}"><span class="unit-glyph" aria-hidden="true">${esc(p.glyph)}</span><span>${esc(p.title)}</span>${stars(st, p.levels.length)}</a>`;
+  }).join('')}</div></div>`;
+}
+
 /** Scheda dell'attività: competenze, anni, livelli */
 export function openActivity(app, act) {
   if (!act) return;
@@ -241,6 +251,8 @@ export function openActivity(app, act) {
       ${act.mat.map((m) => `<span class="badge-tag" title="${esc(MAT_LABELS[m] || '')}">${m}</span>`).join('')}
     </div>
     <p class="muted" style="font-size:.9375rem">${act.mat.map((m) => MAT_LABELS[m]).filter(Boolean).map(esc).join('; ')}.</p>
+    ${prereqBlock(app, act.id, 'Serve sapere')}
+    ${(app.state.profile.year || 0) > Math.min(...act.years) && !(st?.stars) ? `<p class="for-you">Sei in ${app.state.profile.year}ª: se questo argomento lo sai già, puoi <b>saltare a un livello più alto</b> con una prova d'ingresso.</p>` : ''}
     ${(() => {
       const ind = INDIRIZZI_BY_ID[app.state.profile.indirizzo];
       if (!ind) return '';
@@ -251,10 +263,11 @@ export function openActivity(app, act) {
       ${act.levels.map((lv, k) => {
         const open = levelOpen(app, act, k + 1);
         const done = (st?.stars || 0) > k;
-        return `<a class="level-row ${open ? '' : 'locked'}" ${open ? `href="#/lezione/${act.id}/${k + 1}"` : 'aria-disabled="true"'}>
-          <span class="n">${done ? icons.check.replace('<svg', '<svg width="22" height="22"') : k + 1}</span>
-          <span><b>${esc(lv.name)}</b><br><small class="muted">${esc(lv.desc)}</small></span>
-          ${open ? `<span class="btn" style="min-height:40px;padding:0 16px">${done ? 'Rigioca' : 'Gioca'}</span>` : icons.lock.replace('<svg', '<svg width="22" height="22"')}
+        // livello bloccato: si può saltare qui con una prova d'ingresso (4 domande, ne servono 3)
+        return `<a class="level-row ${open ? '' : 'locked'}" href="#/${open ? 'lezione' : 'prova'}/${act.id}/${k + 1}">
+          <span class="n">${done ? icons.check.replace('<svg', '<svg width="22" height="22"') : open ? k + 1 : icons.lock.replace('<svg', '<svg width="20" height="20"')}</span>
+          <span><b>${esc(lv.name)}</b><br><small class="muted">${open ? esc(lv.desc) : 'Prova d\'ingresso: 4 domande, ne bastano 3'}</small></span>
+          ${open ? `<span class="btn" style="min-height:40px;padding:0 16px">${done ? 'Rigioca' : 'Gioca'}</span>` : '<span class="btn-ghost skip-btn">Salta qui</span>'}
         </a>`;
       }).join('')}
     </div>

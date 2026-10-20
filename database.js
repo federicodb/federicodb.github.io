@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-19 18:44:36
+   Data: 2026-10-20 12:18:57
 */
 
 const db = [
@@ -78,9 +78,9 @@ const db = [
                 ]
             },
             {
-                "id": "monomi",
-                "titolo": "Monomi e polinomi",
-                "url": "allenamento/#/lezione/monomi/1",
+                "id": "calcolo-quadrato-del-5",
+                "titolo": "Quadrati che finiscono per 5",
+                "url": "allenamento/#/lezione/calcolo-quadrato-del-5/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -172,25 +172,25 @@ const db = [
                 ]
             },
             {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
+                "id": "calcolo-quadrato-del-5",
+                "titolo": "Quadrati che finiscono per 5",
+                "url": "allenamento/#/lezione/calcolo-quadrato-del-5/1",
                 "mat": [
                     "MAT_K1"
                 ]
             },
             {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
+                "id": "calcolo-somma-per-differenza",
+                "titolo": "Simmetrici attorno a un numero tondo",
+                "url": "allenamento/#/lezione/calcolo-somma-per-differenza/1",
                 "mat": [
-                    "MAT_K3"
+                    "MAT_K1"
                 ]
             },
             {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -253,17 +253,17 @@ const db = [
                 ]
             },
             {
-                "id": "problemi-scelta",
-                "titolo": "Problemi di scelta",
-                "url": "allenamento/#/lezione/problemi-scelta/1",
+                "id": "calcolo-percentuali-scambiate",
+                "titolo": "Percentuali che si scambiano",
+                "url": "allenamento/#/lezione/calcolo-percentuali-scambiate/1",
                 "mat": [
                     "MAT_C2"
                 ]
             },
             {
-                "id": "sistemi-lineari",
-                "titolo": "Sistemi lineari",
-                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "id": "calcolo-ricarico-e-margine",
+                "titolo": "Guadagni e perdite in percentuale",
+                "url": "allenamento/#/lezione/calcolo-ricarico-e-margine/1",
                 "mat": [
                     "MAT_C2"
                 ]
@@ -597,6 +597,14 @@ const db = [
                 "mat": [
                     "MAT_C3"
                 ]
+            },
+            {
+                "id": "calcolo-triangolo-dei-coefficienti",
+                "titolo": "Il triangolo dei coefficienti",
+                "url": "allenamento/#/lezione/calcolo-triangolo-dei-coefficienti/1",
+                "mat": [
+                    "MAT_C3"
+                ]
             }
         ]
     },
@@ -702,17 +710,17 @@ const db = [
                 ]
             },
             {
-                "id": "frazioni",
-                "titolo": "Frazioni",
-                "url": "allenamento/#/lezione/frazioni/1",
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
                 "mat": [
                     "MAT_K1"
                 ]
             },
             {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -964,9 +972,9 @@ const db = [
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
                 "mat": [
                     "MAT_A3"
                 ]
@@ -1075,9 +1083,9 @@ const db = [
                 ]
             },
             {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -1134,9 +1142,9 @@ const db = [
                 ]
             },
             {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -1965,6 +1973,15 @@ const db = [
                 ]
             },
             {
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_C2"
+                ]
+            },
+            {
                 "id": "equazioni-1",
                 "titolo": "Equazioni di primo grado",
                 "url": "allenamento/#/lezione/equazioni-1/1",
@@ -1980,14 +1997,6 @@ const db = [
                 "mat": [
                     "MAT_A3",
                     "MAT_C2"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
                 ]
             }
         ]
@@ -2038,6 +2047,14 @@ const db = [
         "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.webp",
         "allenamento": [
             {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "frazioni",
                 "titolo": "Frazioni",
                 "url": "allenamento/#/lezione/frazioni/1",
@@ -2057,14 +2074,6 @@ const db = [
                 "id": "potenze",
                 "titolo": "Proprietà delle potenze",
                 "url": "allenamento/#/lezione/potenze/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "notazione-scientifica",
-                "titolo": "Notazione scientifica",
-                "url": "allenamento/#/lezione/notazione-scientifica/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -2332,9 +2341,9 @@ const db = [
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "calcolo-cosa-resta-costante",
+                "titolo": "Cosa resta costante",
+                "url": "allenamento/#/lezione/calcolo-cosa-resta-costante/1",
                 "mat": [
                     "MAT_K2"
                 ]
@@ -2437,6 +2446,14 @@ const db = [
                 ]
             },
             {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "monomi",
                 "titolo": "Monomi e polinomi",
                 "url": "allenamento/#/lezione/monomi/1",
@@ -2448,14 +2465,6 @@ const db = [
                 "id": "scomposizioni",
                 "titolo": "Scomposizioni",
                 "url": "allenamento/#/lezione/scomposizioni/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -2564,17 +2573,17 @@ const db = [
                 ]
             },
             {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
                 "mat": [
                     "MAT_K1"
                 ]
             },
             {
-                "id": "notazione-scientifica",
-                "titolo": "Notazione scientifica",
-                "url": "allenamento/#/lezione/notazione-scientifica/1",
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -2614,6 +2623,14 @@ const db = [
                 ]
             },
             {
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
                 "id": "percentuali",
                 "titolo": "Percentuali",
                 "url": "allenamento/#/lezione/percentuali/1",
@@ -2625,14 +2642,6 @@ const db = [
                 "id": "proporzioni",
                 "titolo": "Proporzioni",
                 "url": "allenamento/#/lezione/proporzioni/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "sistemi-lineari",
-                "titolo": "Sistemi lineari",
-                "url": "allenamento/#/lezione/sistemi-lineari/1",
                 "mat": [
                     "MAT_C2"
                 ]
@@ -2833,17 +2842,17 @@ const db = [
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
                 "mat": [
                     "MAT_A3"
                 ]
             },
             {
-                "id": "disequazioni-2",
-                "titolo": "Disequazioni di secondo grado",
-                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
                 "mat": [
                     "MAT_A3"
                 ]

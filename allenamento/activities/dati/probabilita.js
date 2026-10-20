@@ -1,4 +1,4 @@
-import { scene } from '../contesti.js';
+import { scene, perClasse } from '../contesti.js';
 import { frac, tx } from '../../js/engine/helpers.js';
 import { tree, table } from '../../js/gfx/svg.js';
 
@@ -11,7 +11,8 @@ function placeProb(rng) {
     type: 'place',
     prompt: `Un'urna contiene ${r} palline rosse e ${b} blu. Dove sta, su questa retta, la probabilità di estrarre una rossa?`,
     min: 0, max: 1, snap: 0.01, tol: 0.06,
-    ticks: [{ v: 0, label: '0' }, { v: 0.5, label: '½' }, { v: 1, label: '1' }, { v: 0.25, major: false }, { v: 0.75, major: false }],
+    // dalla quarta niente segno di metà: la stima è più fine
+    ticks: perClasse({ 2: [{ v: 0, label: '0' }, { v: 0.5, label: '½' }, { v: 1, label: '1' }, { v: 0.25, major: false }, { v: 0.75, major: false }], 4: [{ v: 0, label: '0' }, { v: 1, label: '1' }] }),
     instruction: '0 = impossibile, 1 = certo. Tocca o trascina sulla retta.',
     answer: p, answerLabel: `${r}/${r + b}`,
     label: 'Probabilità di estrarre una rossa',
