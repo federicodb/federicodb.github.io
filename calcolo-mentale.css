@@ -39,7 +39,7 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 }
 .cm-tabs::-webkit-scrollbar { display: none; }
 .cm-tabs.cm-more { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); }
-.cm-technique, .cm-tabs { scroll-margin-top: calc(var(--cm-nav-h, 88px) + 16px); }
+.cm-technique, .cm-tabs { scroll-margin-top: calc(var(--cm-nav-h, 120px) + 32px); }
 .cm-tabs [role=tab] {
     position: relative; flex: none; padding: 16px 0 14px; background: none; border: 0; cursor: pointer;
     font: 600 1rem var(--font-ui); color: var(--text-muted); white-space: nowrap; min-height: 48px;
@@ -81,8 +81,25 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 
 /* ------------------------------------------------------------ il metodo */
 .cm-phases { list-style: none; padding: 0; margin: 32px 0 0; counter-reset: phase; display: grid; gap: 0; }
-.cm-phases > li { counter-increment: phase; display: grid; grid-template-columns: 56px minmax(0, 1fr); column-gap: 16px; padding: 28px 0; border-top: 1px solid var(--cm-line); }
-.cm-phases > li::before { content: counter(phase); grid-row: span 3; font: 800 2rem/1 var(--font-heading); color: var(--primary); }
+.cm-phases > li {
+    counter-increment: phase;
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 28px 0;
+    border-top: 1px solid var(--cm-line);
+}
+.cm-phases > li::before {
+    content: counter(phase);
+    font: 800 2.25rem/1 var(--font-heading);
+    color: var(--primary);
+    flex: none;
+    width: 44px;
+}
+.cm-phase-content {
+    flex: 1;
+    min-width: 0;
+}
 .cm-phases h3 { font: 700 1.25rem var(--font-ui); color: var(--text-main); margin-bottom: 8px; }
 .cm-phases p { max-width: var(--cm-measure); }
 .cm-display { margin: 8px 0; }
@@ -115,7 +132,7 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 .cm-index-group a[aria-current] { background: color-mix(in srgb, var(--primary) 16%, transparent); color: var(--text-main) !important; font-weight: 600; }
 .cm-done { color: var(--cm-ok); display: inline-flex; }
 
-.cm-technique { min-width: 0; }
+.cm-technique { min-width: 0; scroll-margin-top: calc(var(--cm-nav-h, 120px) + 32px); }
 .cm-tech-head h2 { font-family: var(--font-heading); font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem); line-height: 1.1; letter-spacing: -0.015em; color: var(--text-main); }
 .cm-tech-name { margin-top: 8px; color: var(--text-muted) !important; font-style: italic; }
 .cm-tech-idea { margin-top: 16px; font-size: 1.1875rem; max-width: var(--cm-measure); }
@@ -131,34 +148,33 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 .cm-view:focus-visible { outline: 2px solid var(--primary); outline-offset: 8px; }
 
 /* algoritmo */
-.cm-steps { list-style: none; padding: 0; counter-reset: step; display: grid; gap: 16px; max-width: var(--cm-measure); }
+.cm-steps { list-style: none; padding: 0; counter-reset: step; display: grid; gap: 20px; max-width: var(--cm-measure); }
 .cm-steps li {
     counter-increment: step;
-    display: grid;
-    grid-template-columns: 32px minmax(0, 1fr);
-    gap: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
     font-size: 1.0625rem;
     line-height: 1.6;
-    align-items: baseline;
-    text-wrap: pretty;
-    word-break: normal;
-    overflow-wrap: break-word;
 }
 .cm-steps li::before {
     content: counter(step);
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: grid;
     place-items: center;
     font: 700 0.875rem var(--font-ui);
     color: var(--text-on-accent);
     background: var(--primary);
+    flex: none;
     margin-top: 2px;
 }
-.cm-steps .katex {
-    white-space: nowrap !important;
-    font-size: 1.08em;
+.cm-step-content {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.65;
+    text-wrap: pretty;
 }
 .cm-note { margin-top: 32px; padding: 20px 24px; border-radius: var(--radius-md); background: var(--cm-soft); max-width: var(--cm-measure); }
 .cm-note h3 { font: 700 1rem var(--font-ui); color: var(--text-main); margin-bottom: 6px; text-wrap: balance; }

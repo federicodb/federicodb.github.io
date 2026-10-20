@@ -144,7 +144,7 @@ function showView(id) {
 function fillView(t, id) {
   const el = $(`#view-${id}`);
   if (id === 'algoritmo') {
-    el.innerHTML = `<ol class="cm-steps">${t.passi.map((p) => `<li>${p}</li>`).join('')}</ol>
+    el.innerHTML = `<ol class="cm-steps">${t.passi.map((p) => `<li><div class="cm-step-content">${p}</div></li>`).join('')}</ol>
       ${t.prereq.length ? `<p class="cm-note">Serve sapere: ${t.prereq.map((p) => `<a href="allenamento/#/lezione/${p}/1">${esc(PREREQ_NAMES[p] || p)}</a>`).join(', ')}.</p>` : ''}`;
   }
   if (id === 'esempi') {
@@ -337,12 +337,12 @@ function wireTabsOverflow() {
   update();
 }
 
-// altezza reale del menu del sito quando è fisso: serve per non nascondere sotto di esso la tecnica
+// altezza reale del menu del sito: serve per non nascondere sotto di esso la tecnica durante lo scroll
 function trackNavHeight() {
   const nav = document.getElementById('main-nav');
   const set = () => {
-    const isSticky = nav && window.getComputedStyle(nav).position === 'sticky';
-    document.documentElement.style.setProperty('--cm-nav-h', `${isSticky ? nav.offsetHeight : 0}px`);
+    const h = nav ? nav.offsetHeight : 0;
+    document.documentElement.style.setProperty('--cm-nav-h', `${h}px`);
   };
   set();
   window.addEventListener('resize', set);

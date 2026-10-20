@@ -211,13 +211,7 @@ main {
 }
 
 @media (max-width: 900px) {
-    .nav-links {
-        gap: 16px;
-    }
-}
-
-@media (max-width: 768px) {
-    /* Su mobile il menu non deve occupare metà schermo né rimanere fisso: scorre via lasciando respirare la pagina */
+    /* Su mobile e tablet il menu non deve occupare metà schermo né rimanere bloccato: scorre via naturalmente insieme alla pagina */
     #main-nav {
         position: static;
         top: auto;
