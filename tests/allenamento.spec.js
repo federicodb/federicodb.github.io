@@ -40,6 +40,8 @@ async function playLesson(page) {
           return typeof a === 'number' ? String(a).replace('.', ',') : String(a ?? '1');
         });
         await input.fill(answer);
+      } else if (await page.evaluate(() => typeof window.__solve === 'function')) {
+        await page.evaluate(() => window.__solve()); // domande interattive (retta, smista, ordina, cursore)
       } else {
         await page.locator('[data-input] button:not([disabled])').first().click();
       }
@@ -138,6 +140,49 @@ test.describe('Orfini Math Quest (/allenamento/)', () => {
     await page.locator('[data-calc-btn]').click();
     await page.waitForTimeout(500);
     expect({ ...(await box()), calcX: null }).toEqual(wide);
+  });
+
+  test('colore degli accenti: si sceglie, resta dopo il ricaricamento, testo leggibile nei due temi', async ({ page }) => {
+    await page.addInitScript(() => { if (!localStorage.getItem('orfini_quest_v2')) localStorage.setItem('orfini_quest_v2', JSON.stringify({ version: 2, onboarded: true, profile: { nickname: 'x', year: 1, indirizzo: null } })); });
+    await page.goto('/allenamento/#/profilo');
+    await page.locator('[data-acc="270"]').click();
+    await expect(page.locator('[data-acc="270"]')).toHaveAttribute('aria-pressed', 'true');
+    const contrastOf = () => page.evaluate(() => {
+      const b = document.querySelector('.accent-preview .btn');
+      const rgb = (c) => c.match(/[\d.]+/g).slice(0, 3).map((v) => +v / 255);
+      const lum = (c) => { const [r, g, bl] = rgb(c).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * r + 0.7152 * g + 0.0722 * bl; };
+      const cs = getComputedStyle(b);
+      const [x, y] = [lum(cs.backgroundColor), lum(cs.color)];
+      return { h: getComputedStyle(document.documentElement).getPropertyValue('--acc-h').trim(), ratio: (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05) };
+    });
+    let c = await contrastOf();
+    expect(c.h).toBe('270');
+    expect(c.ratio).toBeGreaterThanOrEqual(4.5);
+    await page.reload();
+    c = await contrastOf();
+    expect(c.h).toBe('270');
+    // tema chiaro (LIM): stesso colore, più scuro, testo bianco
+    await page.locator('[data-toggle="theme"]').click();
+    c = await contrastOf();
+    expect(c.ratio).toBeGreaterThanOrEqual(4.5);
+    await page.locator('[data-toggle="theme"]').click();
+  });
+
+  test('offline: dalla seconda visita la Quest si apre e la lezione parte senza rete', async ({ page, context }) => {
+    await page.addInitScript(() => { if (!localStorage.getItem('orfini_quest_v2')) localStorage.setItem('orfini_quest_v2', JSON.stringify({ version: 2, onboarded: true, profile: { nickname: 'x', year: 1, indirizzo: null } })); });
+    await page.goto('/allenamento/');
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.reload(); // ora il service worker controlla la pagina e salva moduli e librerie
+    await expect(page.locator('#tabbar .tab').first()).toBeVisible();
+    await page.goto('/allenamento/#/lezione/frazioni/1');
+    await expect(page.locator('.lesson .card .katex').first()).toBeVisible();
+    await context.setOffline(true);
+    await page.goto('/allenamento/#/');
+    await page.reload();
+    await expect(page.locator('#tabbar .tab').first()).toBeVisible();
+    await page.goto('/allenamento/#/lezione/frazioni/1');
+    await expect(page.locator('.lesson .card .katex').first()).toBeVisible();
+    await context.setOffline(false);
   });
 
   test('cambia utente: la sessione del prof sparisce dalla home e i giochi restano', async ({ page }) => {

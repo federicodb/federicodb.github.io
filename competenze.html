@@ -254,7 +254,8 @@
         /* Responsive fixes for portrait mobile */
         @media (max-width: 900px) {
             .competenze-container {
-                grid-template-columns: 1fr;
+                /* minmax(0, 1fr): il menu a scorrimento orizzontale non allarga più la pagina */
+                grid-template-columns: minmax(0, 1fr);
                 gap: 2rem;
                 padding: 2rem 0;
             }
@@ -262,6 +263,11 @@
             .sidebar {
                 position: static;
                 width: 100%;
+                min-width: 0;
+            }
+
+            .content-area {
+                min-width: 0;
             }
 
             .category-menu {

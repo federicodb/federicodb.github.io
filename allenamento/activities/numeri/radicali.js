@@ -94,6 +94,24 @@ function rationalize(rng) {
   };
 }
 
+/** Stima: posiziona la radice sulla retta tra due interi */
+function placeRoot(rng) {
+  const n = rng.until(() => rng.int(5, 99), (x) => !Number.isInteger(Math.sqrt(x)));
+  const lo = Math.floor(Math.sqrt(n));
+  const r = Math.sqrt(n);
+  return {
+    type: 'place',
+    prompt: `Posiziona $\\sqrt{${n}}$ sulla retta, a occhio.`,
+    min: lo - 1, max: lo + 2, snap: 0.01, tol: 0.15,
+    ticks: [lo - 1, lo, lo + 1, lo + 2].map((v) => ({ v, label: String(v) })).concat([lo - 0.5, lo + 0.5, lo + 1.5].map((v) => ({ v, major: false }))),
+    answer: r, answerLabel: `√${n} ≈ ${String(Math.round(r * 100) / 100).replace('.', ',')}`,
+    label: `Posizione di radice di ${n}`,
+    hint: `$${lo}^2 = ${lo * lo}$ e $${lo + 1}^2 = ${(lo + 1) ** 2}$: a quale dei due è più vicino ${n}?`,
+    explain: `$${lo}^2 = ${lo * lo} < ${n} < ${(lo + 1) ** 2} = ${lo + 1}^2$, quindi $\\sqrt{${n}}$ sta tra ${lo} e ${lo + 1}, ${n - lo * lo < (lo + 1) ** 2 - n ? `più vicino a ${lo}` : `più vicino a ${lo + 1}`}: $\\sqrt{${n}} \\approx ${String(Math.round(r * 100) / 100).replace('.', '{,}')}$.`,
+    twin: () => placeRoot(rng),
+  };
+}
+
 function estimate(rng) {
   const n = rng.until(() => rng.int(5, 140), (x) => !Number.isInteger(Math.sqrt(x)));
   const lo = Math.floor(Math.sqrt(n));
@@ -127,7 +145,7 @@ export default {
   ],
   generate(rng, level) {
     const learn = { type: 'learn', title: 'Quadrati nascosti', body: '$$\\sqrt{72} = \\sqrt{36\\cdot 2} = 6\\sqrt{2}$$ Si cerca il più grande quadrato perfetto che divide il radicando. Scrivi le radici con il simbolo √ del tastierino o con sqrt(…).' };
-    if (level === 1) return [learn, estimate(rng), simplify(rng), estimate(rng), simplify(rng), simplify(rng)];
+    if (level === 1) return [learn, estimate(rng), simplify(rng), placeRoot(rng), simplify(rng), simplify(rng)];
     if (level === 2) return [learn, sumSimilar(rng), productRoots(rng), simplify(rng), sumSimilar(rng), productRoots(rng)];
     return [{ type: 'learn', title: 'Moltiplicare per 1', body: '$$\\dfrac{3}{\\sqrt{2}} = \\dfrac{3}{\\sqrt{2}}\\cdot\\dfrac{\\sqrt{2}}{\\sqrt{2}} = \\dfrac{3\\sqrt{2}}{2}$$ Moltiplicare per $\\frac{\\sqrt 2}{\\sqrt 2}$ non cambia il valore ma toglie la radice dal denominatore.' }, rationalize(rng), productRoots(rng), rationalize(rng), sumSimilar(rng), rationalize(rng)];
   },

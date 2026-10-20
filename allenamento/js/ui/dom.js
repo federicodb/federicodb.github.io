@@ -9,9 +9,29 @@ export function renderMath(el) {
     ],
     throwOnError: false,
   });
+  fitMath(el);
+}
+
+/** Formule in display più larghe del loro spazio: si rimpiccioliscono fino al 72%; oltre, scorrono
+ *  da sole (mai la pagina intera). Si ricalcola quando cambia la larghezza dello schermo. */
+const MIN_FIT = 0.72;
+export function fitMath(root = document) {
+  for (const d of root.querySelectorAll('.katex-display')) {
+    d.style.fontSize = '';
+    d.classList.remove('math-scroll');
+    const over = d.scrollWidth - d.clientWidth;
+    if (over <= 1 || !d.clientWidth) continue;
+    const k = Math.max(MIN_FIT, (d.clientWidth - 2) / d.scrollWidth);
+    d.style.fontSize = `${(k * 100).toFixed(1)}%`;
+    if (d.scrollWidth - d.clientWidth > 1) d.classList.add('math-scroll');
+  }
+}
+let fitTimer = 0;
+if (typeof window !== 'undefined') {
+  window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(() => fitMath(document), 150); });
 }
 export function tex(el, latex, display = false) {
-  if (window.katex) window.katex.render(latex, el, { throwOnError: false, displayMode: display });
+  if (window.katex) { window.katex.render(latex, el, { throwOnError: false, displayMode: display }); if (display) fitMath(el); }
   else el.textContent = latex;
 }
 export function html(el, str) {
@@ -25,7 +45,7 @@ const st = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="r
 
 export const icons = {
   // marchio: il Δ del discriminante in un quadrato
-  brand: `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="11" fill="var(--c1)"/><path d="M20 9 L31 30 L9 30 Z" fill="none" stroke="var(--on-accent, #050507)" stroke-width="3.4" stroke-linejoin="round"/><path d="M14 23h12" stroke="var(--on-accent, #050507)" stroke-width="2.2" stroke-linecap="round" opacity=".55"/></svg>`,
+  brand: `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="11" fill="var(--accent)"/><path d="M20 9 L31 30 L9 30 Z" fill="none" stroke="var(--on-accent, #050507)" stroke-width="3.4" stroke-linejoin="round"/><path d="M14 23h12" stroke="var(--on-accent, #050507)" stroke-width="2.2" stroke-linecap="round" opacity=".55"/></svg>`,
   flame: S('<path fill="currentColor" d="M12.6 2.2c.4 3-1 4.6-2.4 6.2C8.8 10 7.4 11.6 7.4 14.3a4.6 4.6 0 0 0 9.2.2c0-1.6-.6-2.8-1.4-3.8.2 1.5-.3 2.6-1.2 3.1.3-2.7-.8-5-1.4-6.3 2.8.9 5.8 3.6 5.8 7.1A6.4 6.4 0 0 1 12 21a6.4 6.4 0 0 1-6.4-6.6c0-3.5 1.9-5.6 3.5-7.4 1.3-1.5 2.6-2.9 3.5-4.8Z"/>'),
   ice: S(`<path ${st} d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/>`),
   coin: S('<circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 6.5 17 16H7Z" fill="none" stroke="#2a1d00" stroke-width="2" stroke-linejoin="round"/>'),
@@ -63,15 +83,27 @@ export function stars(n, max = 3) {
   return s + '</span>';
 }
 
+// avvisi in coda: al massimo due sullo schermo, gli altri arrivano man mano (un tocco li chiude)
+const toastQueue = [];
+const TOAST_MAX = 2;
 export function toast(msg, kind = '', icon = '') {
+  toastQueue.push({ msg, kind, icon });
+  pumpToasts();
+}
+function pumpToasts() {
   const box = document.getElementById('toasts');
   if (!box) return;
-  const t = document.createElement('div');
-  t.className = 'toast ' + kind;
-  t.innerHTML = (icon || '') + '<div></div>';
-  html(t.lastChild, msg);
-  box.appendChild(t);
-  setTimeout(() => t.remove(), 4300);
+  while (box.children.length < TOAST_MAX && toastQueue.length) {
+    const { msg, kind, icon } = toastQueue.shift();
+    const t = document.createElement('div');
+    t.className = 'toast ' + kind;
+    t.innerHTML = (icon || '') + '<div></div>';
+    html(t.lastChild, msg);
+    const close = () => { if (!t.isConnected) return; t.remove(); pumpToasts(); };
+    t.addEventListener('click', close);
+    box.appendChild(t);
+    setTimeout(close, 3600);
+  }
 }
 
 /** Dialogo nella pagina (i dialoghi del browser non funzionano ovunque) */

@@ -97,6 +97,64 @@ function esempioGrafico(rng) {
   };
 }
 
+// ---------- domande interattive (js/ui/interact.js): si risponde manipolando ----------
+// Usale per 1–2 passi per livello, al posto di una domanda ripetuta: la lezione resta della stessa lunghezza.
+
+function esempioRetta(rng) {
+  const q = rng.pick([4, 5, 8]);
+  const p = rng.int(1, q - 1);
+  return {
+    type: 'place',                       // posiziona un punto sulla retta dei numeri (tocco, trascinamento, frecce)
+    prompt: `Dove si trova $${frac(p, q)}$?`,
+    min: 0, max: 1,                      // estremi della retta
+    ticks: [{ v: 0, label: '0' }, { v: 1, label: '1' }],  // segni; { v, major: false } per i segni piccoli senza etichetta
+    answer: p / q, tol: 0.06,            // giusto se entro la tolleranza; entro tol/3 vale "stima perfetta" (×1,5)
+    answerLabel: `${p}/${q}`,            // etichetta della soluzione mostrata dopo
+    snap: 0.01,                          // passo del punto
+    // dots: [3, 5, 5],                  // eventuali dati disegnati sopra la retta
+    hint: 'Dividi il segmento in parti uguali.',
+    explain: `$${frac(p, q)}$: ${q} parti, se ne contano ${p}.`,
+    twin: () => esempioRetta(rng),
+  };
+}
+
+function esempioSmista(rng) {
+  const nums = rng.shuffle([2, 4, 6, 8, 3, 5, 7, 9]).slice(0, 6);
+  return {
+    type: 'bins',                        // trascina le schede nei contenitori (oppure tocca scheda e poi contenitore)
+    prompt: 'Smista i numeri.',
+    bins: [{ id: 'pari', label: 'Pari' }, { id: 'dispari', label: 'Dispari' }],
+    items: nums.map((n) => ({ label: `$${n}$`, bin: n % 2 ? 'dispari' : 'pari' })),  // almeno 4, in almeno 2 contenitori
+    explain: 'Un numero è pari se è divisibile per 2.',
+    twin: () => esempioSmista(rng),
+  };
+}
+
+function esempioOrdina(rng) {
+  const vals = rng.shuffle([0.5, 0.25, 0.75, 1.5, 2]).slice(0, 4);
+  return {
+    type: 'sort',                        // riordina trascinando (oppure con ▲▼)
+    prompt: 'Ordina dal più piccolo al più grande.',
+    items: vals.map((v) => ({ label: `$${tx(v)}$`, value: v })),  // valori tutti diversi
+    // dir: 'desc', first: 'Il più grande', last: 'Il più piccolo',
+    explain: 'Si confrontano prima le parti intere, poi i decimali.',
+    twin: () => esempioOrdina(rng),
+  };
+}
+
+function esempioCursore(rng) {
+  const target = rng.pick([20, 30, 40, 60, 70]);
+  return {
+    type: 'slider',                      // cursore con obiettivo; la figura si ridisegna mentre si muove
+    prompt: `Sposta il cursore su ${target}.`,
+    min: 0, max: 100, step: 1, start: 50, answer: target, tol: 0,   // start mai già sulla soluzione
+    label: 'Valore', decimals: 0,
+    scene: (v) => `<svg viewBox="0 0 200 20" class="g"><rect width="${v * 2}" height="20" class="pb-paid"/></svg>`,  // SVG in funzione del valore
+    explain: `Il valore richiesto è ${target}.`,
+    twin: () => esempioCursore(rng),
+  };
+}
+
 export default {
   id: 'modello',                       // unico, senza spazi: è la chiave dei progressi salvati
   area: 'numeri',                      // numeri | polinomi | equazioni | rette | sistemi | geometria | dati | funzioni | invalsi
@@ -109,6 +167,7 @@ export default {
   levels: [
     { name: 'Primo livello', desc: 'Cosa si fa qui' },
     { name: 'Secondo livello', desc: 'Cosa si fa qui' },
+    { name: 'Terzo livello', desc: 'Esempi di domande interattive' },
   ],
   generate(rng, level) {
     const intro = {
@@ -119,7 +178,8 @@ export default {
       // board: { bbox: [-6, 6, 6, -6], build: (brd, JXG, colori) => { … } }, // lavagna JSXGraph interattiva
     };
     if (level === 1) return [intro, esempioNumerico(rng), esempioVeroFalso(rng), esempioGrafico(rng)];
-    return [intro, esempioEspressione(rng), esempioSoluzioni(rng), esempioNumerico(rng)];
+    if (level === 2) return [intro, esempioEspressione(rng), esempioSoluzioni(rng), esempioNumerico(rng)];
+    return [intro, esempioRetta(rng), esempioSmista(rng), esempioOrdina(rng), esempioCursore(rng)];
   },
 };
 

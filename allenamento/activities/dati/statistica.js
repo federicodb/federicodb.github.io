@@ -9,6 +9,25 @@ const median = (a) => {
   return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2;
 };
 
+/** Stima: la media è il punto di equilibrio dei dati sulla retta */
+function placeMean(rng) {
+  const vals = rng.until(() => Array.from({ length: 5 }, () => rng.int(3, 10)), (v) => Number.isInteger(avg(v) * 2) && new Set(v).size >= 3);
+  const m = avg(vals);
+  return {
+    type: 'place',
+    prompt: `I punti sono i voti di uno studente: ${vals.join(', ')}. Posiziona la media sulla retta.`,
+    min: 2, max: 11, snap: 0.05, tol: 0.3,
+    ticks: Array.from({ length: 10 }, (_, k) => ({ v: k + 2, label: String(k + 2) })),
+    dots: vals,
+    instruction: 'La media è il punto in cui la retta starebbe in equilibrio. Tocca o trascina.',
+    answer: m, answerLabel: `media ${tx(m, 1).replace('{,}', ',')}`,
+    label: 'Posizione della media',
+    hint: `Somma i 5 voti e dividi per 5. Oppure cerca il punto di equilibrio: quanto i voti stanno sopra, tanto altri stanno sotto.`,
+    explain: `$$\\bar x = \\dfrac{${vals.join(' + ')}}{5} = \\dfrac{${vals.reduce((s, x) => s + x, 0)}}{5} = ${tx(m, 1)}$$ È il punto di equilibrio: la somma delle distanze dei voti che stanno sopra è uguale a quella dei voti che stanno sotto.`,
+    twin: () => placeMean(rng),
+  };
+}
+
 function meanStep(rng) {
   const n = rng.int(5, 8);
   const vals = rng.until(() => Array.from({ length: n }, () => rng.int(3, 10)), (v) => Number.isInteger((avg(v) * 10)) || Number.isInteger(avg(v) * 4));
@@ -148,7 +167,7 @@ export default {
   ],
   generate(rng, level) {
     const learn = { type: 'learn', title: 'Tre modi di dire "il valore tipico"', body: 'La <b>media</b> distribuisce il totale in parti uguali. La <b>mediana</b> è il valore centrale dei dati ordinati: non si lascia influenzare da un valore estremo. La <b>moda</b> è il valore più frequente.' };
-    if (level === 1) return [learn, meanStep(rng), medianStep(rng), modeChart(rng), meanStep(rng), medianStep(rng)];
+    if (level === 1) return [learn, meanStep(rng), medianStep(rng), modeChart(rng), placeMean(rng), medianStep(rng)];
     if (level === 2) return [learn, modeChart(rng), percentPie(rng), lineTrend(rng), percentPie(rng), lineTrend(rng)];
     return [learn, weighted(rng), needed(rng), weighted(rng), needed(rng), meanStep(rng)];
   },

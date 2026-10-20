@@ -63,6 +63,11 @@ function route() {
   app.main.focus({ preventScroll: true });
 }
 
+// funzionamento offline (dalla seconda visita): il service worker ha come ambito solo /allenamento/
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+
 window.addEventListener('hashchange', route);
 route();
 app.handle(startEvents);

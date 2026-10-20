@@ -100,8 +100,28 @@ Sui piani cartesiani compaiono i **punti notevoli** con le coordinate: intersezi
 - **Avatar** geometrico personalizzabile (forma, colore, occhi, bocca, accessori, adesivi, sfondi), con pezzi ispirati alle emoji più usate (occhi a cuore, lacrime di gioia, linguaccia, cappello da festa, testa in fiamme, 100, fulmine, diamante…) ridisegnati in SVG. Si ottengono nel negozio, nella stagione, nel forziere d'oro e come **regali dei traguardi** (livello 3, 5, 12; serie di 3, 7, 30 giorni; 10 lezioni perfette; 20 punti nella sfida lampo; lega Diamante). L'armadio mostra anche i pezzi ancora da sbloccare e come ottenerli.
 - **Sfida lampo** (60 secondi, difficoltà crescente, record personale), **enigma del giorno** (uguale per tutti, si condivide il risultato), **ripasso a intervalli crescenti**, **simulazione INVALSI** con resoconto per ambito.
 - **Traguardi** a tre gradi (bronzo, argento, oro).
+- **Punteggio alla Balatro**: ogni risposta giusta vale *fiches × moltiplicatore* (es. `10 × 1,5 = +15 XP`). Il moltiplicatore cresce con la combo, raddoppia con **«Sono sicuro ×2»** (scommessa sul primo tentativo: se è sbagliata si perde solo il raddoppio, e si invita a rileggere il ragionamento) e vale ×1,5 per una **stima perfetta** sulla retta.
+- **Fine lezione**: radar delle abilità mostrate (calcolo, ragionamento, stima, classificare, ripresa dopo l'errore, fiducia ben calibrata: solo gli assi con dati), **carta della scoperta** da salvare come immagine (finisce anche nell'album del dispositivo), e dopo 3 lezioni nella giornata l'invito a fare una pausa.
+- **Leghe e record sono personali**: soglie di XP e storico delle proprie settimane sul dispositivo, nessun confronto con altri studenti.
 
 Sono le meccaniche delle app che i ragazzi usano di più, scelte per far tornare ogni giorno e premiare lo sforzo. Restano fuori quelle che fanno leva sulla compulsione: niente premi a sorpresa, niente acquisti, niente vite che si perdono sbagliando, niente notifiche.
+
+## Domande interattive
+
+Oltre a scelta multipla, vero/falso, risposta scritta e "ordina i passaggi", ci sono domande in cui si risponde **manipolando** (`js/ui/interact.js`, esempi commentati in `activities/_modello.js`, livello 3):
+
+| Tipo | Lo studente… | Usato in |
+|---|---|---|
+| `place` | posiziona un punto sulla retta dei numeri (stima, con tolleranza) | frazioni, radicali, probabilità, statistica (la media come punto di equilibrio) |
+| `bins` | smista schede nei contenitori | monomi simili, eventi certi/possibili/impossibili, proporzionalità diretta/inversa |
+| `sort` | riordina schede trascinandole | frazioni, notazione scientifica |
+| `slider` | muove un cursore finché la figura soddisfa la richiesta | percentuali (prezzo scontato sulla barra) |
+
+Tutto in SVG con Pointer Events: dito, mouse e penna della LIM funzionano allo stesso modo; c'è sempre un'alternativa senza trascinamento (tocca e tocca, frecce ▲▼, tastiera). `npm test` controlla che ogni domanda generata sia risolvibile e non parta già dalla soluzione; per i monomi verifica con nerdamer che "simile" voglia dire davvero rapporto costante.
+
+## Funziona offline
+
+`sw.js` (service worker, ambito `/allenamento/`): dalla seconda visita la Quest si apre anche senza rete. I file della Quest si chiedono prima alla rete (così dopo un aggiornamento non si mescolano versioni), le librerie su CDN con versione fissa si prendono dalla cache. Quando si cambia `sw.js` va aumentato il numero in `CACHE`.
 
 ## Studenti e docente
 
@@ -132,6 +152,7 @@ Sono le meccaniche delle app che i ragazzi usano di più, scelte per far tornare
 2. Importala in `activities/catalogo.js`, nell'area giusta.
 3. `npm test`.
 4. `node tools/genera-catalogo.mjs`, poi il build del sito per aggiornare i collegamenti.
+5. Dalla root del sito: `npx playwright test tests/allenamento_layout.spec.js` (ogni schermata a 360 px) e `tests/allenamento_interattive.spec.js` se l'attività ha domande interattive.
 
 ## Struttura
 

@@ -132,6 +132,30 @@ function polySum(rng) {
   };
 }
 
+/** Smista: monomi simili a quello dato oppure no */
+function binsSimilar(rng) {
+  const [u, v] = rng.shuffle(['a', 'b', 'x', 'y']).slice(0, 2);
+  const e1 = rng.int(1, 3), e2 = rng.int(1, 2);
+  const parts = [[u, e1], [v, e2]];
+  const c0 = rng.pick([2, 3, 4, 5, -2, -3]);
+  const coeff = () => rng.pick([2, 3, 5, 7, -1, -4, -6, 8]);
+  const similar = [0, 1, 2].map(() => ({ label: `$${mono(coeff(), rng.chance(0.5) ? parts : [parts[1], parts[0]])}$`, bin: 'si' }));
+  const wrongs = [
+    [[u, e1 + 1], [v, e2]], [[u, e1], [v, e2 + 1]], [[u, e2], [v, e1]], [[u, e1]], [[u, e1], [v, e2], [rng.pick(['z', 'c']), 1]],
+  ].filter((p) => mono(1, p) !== mono(1, parts) && !(p.length === 2 && p[0][1] === e1 && p[1][1] === e2));
+  const different = rng.shuffle(wrongs).slice(0, 3).map((p) => ({ label: `$${mono(coeff(), p)}$`, bin: 'no' }));
+  const items = similar.concat(different).filter((x, i, arr) => arr.findIndex((y) => y.label === x.label) === i);
+  return {
+    type: 'bins',
+    prompt: `Smista i monomi: quali sono simili a $${mono(c0, parts)}$?`,
+    bins: [{ id: 'si', label: 'Simili', plain: 'Simili' }, { id: 'no', label: 'Non simili', plain: 'Non simili' }],
+    items,
+    hint: 'Due monomi sono simili se hanno la stessa parte letterale: stesse lettere con gli stessi esponenti. Il coefficiente non conta.',
+    explain: `La parte letterale di $${mono(c0, parts)}$ è $${mono(1, parts)}$. Sono simili solo i monomi con esattamente $${mono(1, parts)}$, in qualunque ordine e con qualunque coefficiente.`,
+    twin: () => binsSimilar(rng),
+  };
+}
+
 export default {
   id: 'monomi',
   area: 'polinomi',
@@ -148,7 +172,7 @@ export default {
   ],
   generate(rng, level) {
     const learn = { type: 'learn', title: 'Le lettere sono numeri in incognito', body: 'Nel monomio $-5a^2b$ il coefficiente è $-5$ e la parte letterale è $a^2b$. Si sommano solo monomi con la stessa parte letterale, come si sommano solo oggetti dello stesso tipo: $3$ mele $+ 2$ mele $= 5$ mele.' };
-    if (level === 1) return [learn, degree(rng), similarSum(rng), degree(rng), similarSum(rng), similarSum(rng)];
+    if (level === 1) return [learn, degree(rng), similarSum(rng), binsSimilar(rng), degree(rng), similarSum(rng)];
     if (level === 2) return [learn, productMono(rng), powerMono(rng), productMono(rng), powerMono(rng), productMono(rng)];
     return [learn, polySum(rng), evaluate(rng), polySum(rng), evaluate(rng), polySum(rng)];
   },

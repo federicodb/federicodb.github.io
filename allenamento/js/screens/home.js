@@ -1,5 +1,6 @@
 // Home "Percorso": saluto e livello, continua, obiettivo e serie, missioni e forziere, mappa delle aree.
 import * as G from '../game/game.js';
+import { gradientVars } from '../ui/accent.js';
 import { areasFor, allActivities, byId, YEARS, MAT_LABELS, visibleFor } from '../../activities/catalogo.js';
 import { INDIRIZZI_BY_ID } from '../../activities/contesti.js';
 import { icons, stars, esc, html, modal } from '../ui/dom.js';
@@ -51,7 +52,7 @@ export function viewHome(app, filter) {
   })();
 
   const continueCard = nx
-    ? `<section class="continue" style="--hue:${nx.act.hue}">
+    ? `<section class="continue" style="--hue:${nx.act.hue};${gradientVars(nx.act.hue)}">
         <span class="muted">${s.stats.lessons ? 'Riprendi da qui' : 'Inizia da qui'}</span>
         <h2>${esc(nx.act.title)}</h2>
         <p style="margin:0">Livello ${nx.level}: ${esc(nx.act.levels[nx.level - 1].name)}</p>
@@ -155,12 +156,45 @@ export function viewHome(app, filter) {
     }),
   );
   app.main.querySelectorAll('[data-open]').forEach((el) => el.addEventListener('click', (e) => { e.preventDefault(); openActivity(app, byId[el.dataset.open]); }));
+  drawTrails(app.main);
+}
+
+/** Sentiero che unisce le gemme di ogni attività: tratto pieno fin dove si è arrivati, puntinato oltre.
+ *  Si ridisegna quando cambia la larghezza (rotazione del tablet, finestra ridimensionata). */
+let trailObserver = null;
+function drawTrails(root) {
+  const paths = [...root.querySelectorAll('.path')];
+  const draw = () => {
+    for (const path of paths) {
+      path.querySelector('.path-line')?.remove();
+      const box = path.getBoundingClientRect();
+      const pts = [...path.querySelectorAll('.node .sq')].map((sq) => {
+        const r = sq.getBoundingClientRect();
+        return { x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2, done: sq.closest('.node').classList.contains('done') };
+      });
+      if (pts.length < 2 || !box.width) continue;
+      let svg = `<svg class="path-line" aria-hidden="true" width="${box.width}" height="${box.height}">`;
+      for (let i = 1; i < pts.length; i++) {
+        const [a, b] = [pts[i - 1], pts[i]];
+        const my = (a.y + b.y) / 2;
+        svg += `<path class="${a.done ? 'done' : 'todo'}" d="M${a.x} ${a.y} C${a.x} ${my} ${b.x} ${my} ${b.x} ${b.y}"/>`;
+      }
+      path.insertAdjacentHTML('afterbegin', svg + '</svg>');
+    }
+  };
+  draw();
+  trailObserver?.disconnect();
+  if (window.ResizeObserver && paths.length) {
+    let w = root.clientWidth;
+    trailObserver = new ResizeObserver(() => { if (root.clientWidth !== w) { w = root.clientWidth; draw(); } });
+    trailObserver.observe(root);
+  }
 }
 
 function areaBlock(app, area) {
   const s = app.state;
   const d = app.today();
-  return `<section class="unit-area" style="--hue:${area.hue}">
+  return `<section class="unit-area" style="--hue:${area.hue};${gradientVars(area.hue)}">
     <div class="section-title" style="margin-top:4px"><h2>${esc(area.title)}</h2><span class="muted" style="font-size:.85rem">${esc(area.summary)}</span></div>
     ${area.activities.map((act) => {
       const st = s.activities[act.id];

@@ -1,6 +1,36 @@
 import { scene } from '../contesti.js';
 import { it, tx, euro } from '../../js/engine/helpers.js';
 
+// ---------- cursore: il prezzo dopo lo sconto, con la barra del prezzo pieno ----------
+function priceBar(P, v, s, solution) {
+  const W = 420, x0 = 10, w = 400, paid = (v / P) * w;
+  let ticks = '';
+  for (let k = 1; k < 10; k++) ticks += `<line x1="${x0 + (k * w) / 10}" y1="34" x2="${x0 + (k * w) / 10}" y2="${k === 5 ? 86 : 78}" class="pb-tick"/>`;
+  return `<svg viewBox="0 0 ${W} 120" class="g" role="img" aria-label="Barra del prezzo">
+    <rect x="${x0}" y="40" width="${w}" height="40" rx="8" class="pb-full"/>
+    <rect x="${x0}" y="40" width="${Math.max(0, paid)}" height="40" rx="8" class="pb-paid${solution ? ' ok' : ''}"/>
+    ${ticks}
+    <text x="${x0}" y="26" class="g-lbl-sm">0 €</text><text x="${x0 + w}" y="26" class="g-lbl-sm" text-anchor="end">${euro(P)}</text>
+    <text x="${x0 + w / 2}" y="108" class="g-lbl-sm" text-anchor="middle">metà</text>
+  </svg>`;
+}
+function sliderDiscount(rng) {
+  const s = rng.pick([10, 20, 25, 30, 40, 50]);
+  const P = rng.until(() => rng.int(4, 20) * 10, (p) => Number.isInteger((p * s) / 100));
+  const ans = (P * (100 - s)) / 100;
+  return {
+    type: 'slider',
+    prompt: `Un giubbotto costa ${euro(P)} ed è scontato del ${s}%. Sposta il cursore sul prezzo che paghi.`,
+    min: 0, max: P, step: 1, start: P, answer: ans, tol: 0,
+    label: 'Prezzo da pagare', decimals: 0, unit: '€',
+    scene: (v, o) => priceBar(P, v, s, o.solution),
+    why: (v) => (v === (P * s) / 100 ? 'Questo è lo sconto: il prezzo da pagare è quello che resta.' : v > ans ? 'Paghi ancora troppo.' : 'Troppo poco: lo sconto è solo il ' + s + '%.'),
+    hint: `Lo sconto è il ${s}% di ${euro(P)}: ogni tacca della barra è il 10%.`,
+    explain: `Sconto: $\\dfrac{${s}}{100}\\cdot ${P} = ${(P * s) / 100}$ €. Prezzo da pagare: $${P} - ${(P * s) / 100} = ${ans}$ €, cioè il $${100 - s}\\%$ del prezzo.`,
+    twin: () => sliderDiscount(rng),
+  };
+}
+
 // ---------- widget: griglia 10×10 per vedere "su cento" ----------
 function gridWidget(start) {
   return (el, api) => {
@@ -230,7 +260,7 @@ export default {
         discount(rng),
         increase(rng),
         upDown(rng),
-        discount(rng),
+        sliderDiscount(rng),
         increase(rng),
       ];
     }

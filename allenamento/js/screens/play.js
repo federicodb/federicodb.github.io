@@ -5,6 +5,7 @@ import { createRng } from '../engine/rng.js';
 import { runLesson } from '../ui/lesson.js';
 import { icons, stars, esc, renderMath } from '../ui/dom.js';
 import { sfx, confetti, countUp } from '../ui/fx.js';
+import { skillScores, skillChart, discoveryCard, saveCard } from '../ui/summary.js';
 import { levelOpen } from './home.js';
 
 export function startLesson(app, actId, level) {
@@ -78,6 +79,16 @@ function finish(app, { res, kind, act, level, ids }) {
   s.stats.firstTry += res.firstTry;
   s.stats.twins += res.twins;
   s.stats.bestCombo = Math.max(s.stats.bestCombo, res.bestCombo);
+  s.stats.betsRight += res.bets.right;
+  s.stats.betsWrong += res.bets.wrong;
+  // lezioni completate oggi: dopo la terza si suggerisce una pausa (si ricorda meglio a mente fresca)
+  const today = (s.days[d] ||= { xp: 0, done: false });
+  today.lessons = (today.lessons || 0) + 1;
+  const discovery = res.learned[0] || (act ? act.summary : '');
+  if (kind === 'lesson') {
+    s.album.unshift({ id: act.id, level, day: d, pct: Math.round(score * 100), discovery });
+    s.album.length = Math.min(s.album.length, 200);
+  }
   events.push(...G.track(s, d, 'firstTry', res.firstTry));
   if (res.twins) events.push(...G.track(s, d, 'twins', res.twins));
   app.addXp(bonusXp);
@@ -107,10 +118,17 @@ function finish(app, { res, kind, act, level, ids }) {
         <div><b class="num">${res.twins}</b><span>gemelli risolti</span></div>
         ${star ? `<div><b>${stars(star.stars, act ? act.levels.length : 3)}</b><span>nuova stella</span></div>` : ''}
       </div>
+      ${(() => {
+        const sk = skillScores(res);
+        const bets = res.bets.right + res.bets.wrong;
+        return sk.length ? `<section class="panel skills"><h3>Le abilità di questa lezione</h3>${skillChart(sk)}${bets ? `<p class="muted">Quando hai detto «sono sicuro» avevi ragione ${res.bets.right} ${res.bets.right === 1 ? 'volta' : 'volte'} su ${bets}.</p>` : ''}</section>` : '';
+      })()}
+      ${today.lessons >= 3 ? `<p class="pause-note">Ottimo lavoro: ${today.lessons} lezioni oggi. Una pausa adesso aiuta a ricordare quello che hai imparato.</p>` : ''}
       ${res.misses.length ? `<div class="panel review-list"><h3>Da rivedere</h3><ol>${res.misses.map((m) => `<li><div>${m.prompt}</div><details><summary>Soluzione</summary>${m.explain || ''}</details></li>`).join('')}</ol></div>` : ''}
       <div class="btn-row">
         ${nextLevel ? `<a class="btn big" href="#/lezione/${act.id}/${nextLevel}">Livello ${nextLevel}</a>` : ''}
         ${act ? `<a class="${nextLevel ? 'btn-ghost' : 'btn big'}" href="#/lezione/${act.id}/${level}" data-again>Rigioca con numeri nuovi</a>` : ''}
+        ${kind === 'lesson' ? '<button type="button" class="btn-ghost" data-card>Salva la carta</button>' : ''}
         <a class="btn-ghost" href="#/">Torna al percorso</a>
       </div>
     </div>`;
@@ -120,6 +138,15 @@ function finish(app, { res, kind, act, level, ids }) {
   if (streakUp) setTimeout(() => { countUp(app.main.querySelector('[data-streak]'), streakBefore, s.streak.current, 500); sfx.coin(); }, 700);
   if (score >= 0.8) { confetti(); sfx.done(); } else sfx.done();
   app.main.querySelector('[data-again]')?.addEventListener('click', (e) => { e.preventDefault(); startLesson(app, act.id, level); });
+  app.main.querySelector('[data-card]')?.addEventListener('click', async (e) => {
+    const svg = discoveryCard({
+      hue, title: act.title, level, discovery, pct, combo: res.bestCombo, xp: s.xp - xpBefore + res.xp,
+      nickname: s.profile.nickname || '', avatar: app.avatar(96), date: new Date().toLocaleDateString('it-IT'),
+    });
+    e.target.disabled = true;
+    try { await saveCard(svg, `carta-${act.id}-${level}.png`); sfx.coin(); } catch { /* immagine non disponibile */ }
+    e.target.disabled = false;
+  });
   app.handle(events);
   app.flushModals();
 }

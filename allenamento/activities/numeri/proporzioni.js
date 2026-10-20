@@ -96,6 +96,22 @@ function inverse(rng) {
   };
 }
 
+/** Smista situazioni reali: proporzionalità diretta o inversa */
+function binsDirectInverse(rng) {
+  const direct = ['Litri di benzina e prezzo pagato', 'Metri di stoffa e costo della stoffa', 'Numero di pizze e farina che serve', 'Ore di lavoro e paga, a paga oraria fissa', 'Lato di un quadrato e il suo perimetro'];
+  const inverse = ['Operai al lavoro e giorni per finire lo stesso muro', 'Velocità e tempo per fare lo stesso tragitto', 'Amici che dividono un regalo e quota a testa', 'Rubinetti uguali aperti e tempo per riempire la vasca', 'Larghezza e lunghezza di rettangoli con la stessa area'];
+  const items = [...rng.shuffle(direct).slice(0, 3).map((t) => ({ label: t, bin: 'diretta' })), ...rng.shuffle(inverse).slice(0, 3).map((t) => ({ label: t, bin: 'inversa' }))];
+  return {
+    type: 'bins',
+    prompt: 'Smista le coppie di grandezze: che tipo di proporzionalità c\'è?',
+    bins: [{ id: 'diretta', label: 'Diretta' }, { id: 'inversa', label: 'Inversa' }],
+    items,
+    hint: 'Immagina di raddoppiare la prima grandezza: la seconda raddoppia (diretta) o si dimezza (inversa)?',
+    explain: 'Diretta: se una raddoppia, raddoppia anche l\'altra, e resta costante il rapporto. Inversa: se una raddoppia, l\'altra si dimezza, e resta costante il prodotto (stesso muro, stesso tragitto, stesso regalo, stessa vasca, stessa area).',
+    twin: () => binsDirectInverse(rng),
+  };
+}
+
 function directOrInverse(rng) {
   const k = rng.int(2, 6);
   const isDirect = rng.chance(0.5);
@@ -155,7 +171,7 @@ export default {
   generate(rng, level) {
     if (level === 1) return [{ type: 'learn', title: 'Due rapporti uguali', body: '$$3 : 4 = 6 : 8$$ si legge "3 sta a 4 come 6 sta a 8". In ogni proporzione il prodotto dei medi è uguale al prodotto degli estremi: $4\\cdot 6 = 3\\cdot 8 = 24$.' }, missingTerm(rng), scaleMap(rng), missingTerm(rng), scaleMap(rng), missingTerm(rng)];
     if (level === 2) return [{ type: 'learn', title: 'Proporzionalità diretta', body: 'Se una grandezza raddoppia e l\'altra raddoppia, se triplica e l\'altra triplica, il loro rapporto è costante. Il trucco: calcola quanto vale "per uno".' }, direct(rng), unitPrice(rng), direct(rng), direct(rng), unitPrice(rng)];
-    return [{ type: 'learn', title: 'Quando una sale e l\'altra scende', body: 'Più persone lavorano, meno tempo serve: è una proporzionalità inversa. Qui resta costante il prodotto, non il rapporto.' }, directOrInverse(rng), inverse(rng), directOrInverse(rng), inverse(rng), direct(rng)];
+    return [{ type: 'learn', title: 'Quando una sale e l\'altra scende', body: 'Più persone lavorano, meno tempo serve: è una proporzionalità inversa. Qui resta costante il prodotto, non il rapporto.' }, directOrInverse(rng), inverse(rng), binsDirectInverse(rng), inverse(rng), direct(rng)];
   },
 };
 

@@ -195,7 +195,7 @@ main {
 
 .brand-sub {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.6875rem;
     color: var(--primary);
     letter-spacing: 0.4em;
     text-transform: uppercase;
@@ -774,7 +774,7 @@ white-space: nowrap;
 
 .type-badge {
     font-family: var(--font-code);
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
@@ -866,9 +866,10 @@ white-space: nowrap;
 
 .topic-chip {
     font-family: var(--font-code);
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.75rem;
+    /* sopra le copertine delle card: fondo scuro semitrasparente, contrasto AA */
+    color: hsl(0, 0%, 80%);
+    background: hsla(240, 6%, 6%, 0.78);
     padding: 4px 8px;
     border-radius: 4px;
     cursor: pointer;
@@ -894,8 +895,7 @@ white-space: nowrap;
     margin: 8px 0 32px;
     padding: 24px 28px;
     background: var(--bg-surface);
-    border: 1px solid var(--glass-border);
-    border-left: 4px solid var(--primary);
+    border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--glass-border));
     border-radius: var(--radius-md);
 }
 
@@ -1225,3 +1225,11 @@ white-space: nowrap;
     color: white;
     font-weight: 500;
 }
+/* Leggibilità (revisione con Impeccable): niente parole isolate a fine riga, titoli bilanciati,
+   righe di testo di lunghezza comoda, segnaposto della ricerca con contrasto AA */
+p, li, blockquote, figcaption { text-wrap: pretty; }
+h1, h2, h3, h4 { text-wrap: balance; }
+.section-lead, .ptof-quote, .hero-manifesto { max-width: 58ch; }
+.search-input::placeholder { color: hsl(0, 0%, 60%); opacity: 1; }
+html.theme-light .search-input::placeholder { color: #5b6474; }
+.card .main-cta-btn { text-shadow: none; }

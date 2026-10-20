@@ -95,6 +95,26 @@ function compareSci(rng) {
   };
 }
 
+/** Ordina numeri in notazione scientifica: prima conta l'esponente, poi il numero davanti */
+function sortSci(rng) {
+  const items = [];
+  const base = rng.int(-4, 5);
+  while (items.length < 4) {
+    const a = rng.int(11, 98) / 10;
+    const n = base + rng.pick([-1, 0, 0, 1, 2]);
+    if (items.some((x) => Math.abs(Math.log10(x.value) - Math.log10(a * 10 ** n)) < 0.02)) continue;
+    items.push({ label: `$${tx(a, 1)}\\cdot 10^{${n}}$`, value: a * 10 ** n });
+  }
+  return {
+    type: 'sort',
+    prompt: 'Trascina i numeri in ordine, dal più piccolo al più grande.',
+    items,
+    hint: 'Guarda prima gli esponenti: vince il più grande. A parità di esponente, conta il numero davanti.',
+    explain: 'In notazione scientifica il numero davanti sta sempre tra 1 e 10: per questo l\'esponente decide l\'ordine di grandezza, e il numero davanti serve solo quando gli esponenti sono uguali.',
+    twin: () => sortSci(rng),
+  };
+}
+
 export default {
   id: 'notazione-scientifica',
   area: 'numeri',
@@ -110,9 +130,9 @@ export default {
     { name: 'Calcolare', desc: 'Prodotti in notazione scientifica' },
   ],
   generate(rng, level) {
-    const learn = { type: 'learn', title: 'Contare le cifre una volta sola', body: '$$340\\,000\\,000 = 3{,}4\\cdot 10^{8} \\qquad 0{,}00052 = 5{,}2\\cdot 10^{-4}$$ Il primo numero sta tra 1 e 10, l\'esponente dice di quanti posti si sposta la virgola.' };
+    const learn = { type: 'learn', title: 'Contare le cifre una volta sola', body: '$$340\\,000\\,000 = 3{,}4\\cdot 10^{8}$$ $$0{,}00052 = 5{,}2\\cdot 10^{-4}$$ Il primo numero sta tra 1 e 10, l\'esponente dice di quanti posti si sposta la virgola.' };
     if (level === 1) return [learn, toSci(rng), toSci(rng), compareSci(rng), toSci(rng), toSci(rng)];
-    if (level === 2) return [learn, compareSci(rng), order(rng), toSci(rng), compareSci(rng), order(rng)];
+    if (level === 2) return [learn, compareSci(rng), order(rng), toSci(rng), compareSci(rng), sortSci(rng)];
     return [learn, product(rng), product(rng), compareSci(rng), product(rng), toSci(rng)];
   },
 };

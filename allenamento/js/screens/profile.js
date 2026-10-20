@@ -7,6 +7,7 @@ import { icons, esc, ask, toast, copyText } from '../ui/dom.js';
 import { sfx } from '../ui/fx.js';
 import { setTheme } from '../app.js';
 import { INDIRIZZI, INDIRIZZI_BY_ID } from '../../activities/contesti.js';
+import { ACCENTS, DEFAULT_HUE, accentSetting, applyAccent } from '../ui/accent.js';
 
 export function viewProfile(app, section) {
   const s = app.state;
@@ -69,6 +70,11 @@ export function viewProfile(app, section) {
           <div class="field" id="indirizzo"><label>Indirizzo di studio</label><div class="segmented" data-ind>${INDIRIZZI.map((i) => `<button type="button" data-i="${i.id}" aria-pressed="${s.profile.indirizzo === i.id}">${esc(i.name)}</button>`).join('')}<button type="button" data-i="" aria-pressed="${s.profile.indirizzo === null}">Nessuno: vita di tutti i giorni</button></div>
             <small class="muted">${INDIRIZZI_BY_ID[s.profile.indirizzo] ? esc(INDIRIZZI_BY_ID[s.profile.indirizzo].official) + '. I problemi parlano del tuo laboratorio.' : 'I problemi usano situazioni di tutti i giorni.'}</small></div>
           <div class="field"><label>Obiettivo giornaliero</label><div class="segmented" data-goal>${G.DAILY_GOALS.map((g) => `<button type="button" data-xp="${g.xp}" aria-pressed="${s.dailyGoal === g.xp}">${g.name} ${g.xp}</button>`).join('')}</div></div>
+          <div class="field" id="colore"><label id="acc-l">Colore dell'app</label>
+            <div class="swatches" role="group" aria-labelledby="acc-l">${ACCENTS.map((a) => `<button type="button" class="swatch" style="--sw-h:${a.h}" data-acc="${a.h}" aria-label="${a.name}" title="${a.name}" aria-pressed="${(s.settings.accent?.h ?? DEFAULT_HUE) === a.h}"></button>`).join('')}</div>
+            <input type="range" class="hue-slider" min="0" max="359" step="1" value="${s.settings.accent?.h ?? DEFAULT_HUE}" data-hue aria-label="Tinta personalizzata">
+            <div class="accent-preview"><span class="btn" aria-hidden="true">Anteprima</span><small class="muted">Il testo sui pulsanti resta sempre leggibile, anche sulla LIM.</small></div>
+          </div>
           <div class="field"><label>Schermo e suoni</label><div class="segmented">
             <button type="button" data-toggle="theme" aria-pressed="${light}">Tema chiaro</button>
             <button type="button" data-toggle="bigText" aria-pressed="${!!s.settings.bigText}">Testo grande</button>
@@ -150,6 +156,18 @@ export function viewProfile(app, section) {
       toast('Questo file non contiene progressi di Orfini Math Quest.');
     }
   });
+  // colore degli accenti: anteprima dal vivo mentre si trascina, salvataggio al rilascio
+  const hue = $('[data-hue]');
+  const setAccent = (h, persist) => {
+    s.settings.accent = accentSetting(h);
+    applyAccent(s.settings.accent);
+    hue.value = s.settings.accent.h;
+    app.main.querySelectorAll('[data-acc]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.acc === s.settings.accent.h)));
+    if (persist) app.save();
+  };
+  $('.swatches').addEventListener('click', (e) => { const b = e.target.closest('[data-acc]'); if (b) setAccent(+b.dataset.acc, true); });
+  hue.addEventListener('input', () => setAccent(+hue.value, false));
+  hue.addEventListener('change', () => setAccent(+hue.value, true));
   app.main.querySelectorAll('[data-switch]').forEach((b) => b.addEventListener('click', () => openSwitcher(app)));
   $('[data-reset]').addEventListener('click', async () => {
     if (!(await ask(`Cancellare XP, serie, stelle, Δ e avatar di ${esc(s.profile.nickname || 'questo utente')}? Gli altri utenti e i dati dei giochi del sito restano. Non si può annullare.`, 'Cancella'))) return;

@@ -153,6 +153,50 @@ function verify(step, where) {
     for (const s of step.statements) if (typeof s.value !== 'boolean') fail(where, 'affermazione senza valore');
   }
   if (step.type === 'order' && new Set(step.items).size !== step.items.length) fail(where, 'passaggi doppi');
+  verifyInteractive(step, where);
+}
+
+// E. domande interattive (js/ui/interact.js): risolvibili, senza soluzione "gratis" all'inizio, coerenti
+function verifyInteractive(step, where) {
+  const t = step.type;
+  if (t === 'slider') {
+    const st = step.step ?? 1;
+    if (!(step.min <= step.answer && step.answer <= step.max)) fail(where, 'cursore: soluzione fuori scala');
+    if (Math.abs(Math.round((step.answer - step.min) / st) * st + step.min - step.answer) > 1e-9 && !(step.tol >= st / 2)) fail(where, 'cursore: soluzione non raggiungibile con il passo');
+    if (Math.abs((step.start ?? step.min) - step.answer) <= (step.tol ?? 0)) fail(where, 'cursore: parte già sulla soluzione');
+    if (step.scene) for (const v of [step.min, step.answer, step.max]) { const svg = step.scene(v, {}); if (/NaN|undefined/.test(svg)) fail(where, 'cursore: figura con NaN'); }
+  }
+  if (t === 'place') {
+    if (!(step.min <= step.answer && step.answer <= step.max)) fail(where, 'retta: soluzione fuori scala');
+    if (!(step.tol > 0 && step.tol <= (step.max - step.min) / 6)) fail(where, `retta: tolleranza ${step.tol} non adatta`);
+    // con pochi riferimenti (stima a occhio) la soluzione non deve coincidere con uno di essi
+    const labeled = (step.ticks || []).filter((tk) => tk.label != null);
+    if (labeled.length <= 4 && labeled.some((tk) => Math.abs(tk.v - step.answer) < 1e-9)) fail(where, 'retta: la soluzione è già uno dei pochi segni di riferimento');
+  }
+  if (t === 'bins') {
+    const ids = new Set(step.bins.map((b) => b.id));
+    if (step.items.length < 4) fail(where, 'smista: meno di 4 schede');
+    if (step.items.some((it) => !ids.has(it.bin))) fail(where, 'smista: scheda senza contenitore');
+    if (new Set(step.items.map((it) => it.bin)).size < 2) fail(where, 'smista: tutte nello stesso contenitore');
+    if (new Set(step.items.map((it) => it.label)).size !== step.items.length) fail(where, 'smista: schede doppie');
+  }
+  if (t === 'sort') {
+    const v = step.items.map((it) => it.value).sort((a, b) => a - b);
+    if (step.items.length < 3) fail(where, 'ordina: meno di 3 schede');
+    if (v.some((x, k) => k && Math.abs(x - v[k - 1]) < 1e-9 * Math.max(1, Math.abs(x)))) fail(where, 'ordina: valori uguali');
+    if (new Set(step.items.map((it) => it.label)).size !== step.items.length) fail(where, 'ordina: schede doppie');
+  }
+}
+
+// monomi simili: verifica con nerdamer che il rapporto con il monomio dato sia un numero (simili) o no
+function verifySimilar(step, where) {
+  const base = step.prompt.match(/\$([^$]+)\$/)[1];
+  const plain = (l) => l.replace(/\$/g, '').replace(/\^\{(\d+)\}/g, '^$1').replace(/(\d)([a-z])/g, '$1*$2').replace(/([a-z0-9])(?=[a-z])/g, '$1*').replace(/\)(?=[a-z])/g, ')*');
+  for (const it of step.items) {
+    const ratio = nerdamer(`(${plain(it.label)})/(${plain(base)})`).toString();
+    const isNum = !/[a-z]/i.test(ratio);
+    if (isNum !== (it.bin === 'si')) fail(where, `monomi simili: ${it.label} messo in "${it.bin}" ma il rapporto è ${ratio}`);
+  }
 }
 
 const acts = [...allActivities, modello];
@@ -164,6 +208,7 @@ for (const act of acts) {
       try { lesson = act.generate(createRng(run * 7919 + level * 13), level); } catch (e) { fail(`${act.id} L${level}`, 'generazione: ' + e.message); continue; }
       lesson.forEach((s, i) => {
         verify(s, `${act.id} L${level} step${i}`);
+        if (s.type === 'bins' && act.id === 'monomi') verifySimilar(s, `${act.id} L${level} step${i}`);
         if (s.twin) { try { verify(s.twin(), `${act.id} L${level} step${i} gemello`); } catch (e) { fail(`${act.id} L${level} step${i}`, 'gemello: ' + e.message); } }
       });
     }

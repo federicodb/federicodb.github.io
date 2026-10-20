@@ -2,6 +2,45 @@ import { scene } from '../contesti.js';
 import { frac, tx } from '../../js/engine/helpers.js';
 import { tree, table } from '../../js/gfx/svg.js';
 
+/** Stima: dove sta la probabilità tra impossibile (0) e certo (1) */
+function placeProb(rng) {
+  // mai metà e metà: la risposta cadrebbe proprio sul segno di ½
+  const [r, b] = rng.until(() => [rng.int(1, 9), rng.int(1, 9)], ([x, y]) => x !== y);
+  const p = r / (r + b);
+  return {
+    type: 'place',
+    prompt: `Un'urna contiene ${r} palline rosse e ${b} blu. Dove sta, su questa retta, la probabilità di estrarre una rossa?`,
+    min: 0, max: 1, snap: 0.01, tol: 0.06,
+    ticks: [{ v: 0, label: '0' }, { v: 0.5, label: '½' }, { v: 1, label: '1' }, { v: 0.25, major: false }, { v: 0.75, major: false }],
+    instruction: '0 = impossibile, 1 = certo. Tocca o trascina sulla retta.',
+    answer: p, answerLabel: `${r}/${r + b}`,
+    label: 'Probabilità di estrarre una rossa',
+    hint: r === b ? 'Rosse e blu sono tante quante.' : `Ci sono ${r > b ? 'più' : 'meno'} rosse che blu: la probabilità è ${r > b ? 'più' : 'meno'} di metà.`,
+    explain: `$$P = \\dfrac{\\text{casi favorevoli}}{\\text{casi possibili}} = ${frac(r, r + b)} \\approx ${tx(p, 2)}$$`,
+    twin: () => placeProb(rng),
+  };
+}
+
+/** Smista eventi del lancio di un dado: certi, possibili, impossibili */
+function binsEvents(rng) {
+  const pool = [
+    ['esce un numero minore di 7', 'certo'], ['esce un numero da 1 a 6', 'certo'], ['esce un numero maggiore di 0', 'certo'],
+    ['esce 7', 'impossibile'], ['esce 0', 'impossibile'], ['esce un numero maggiore di 6', 'impossibile'], ['esce 2,5', 'impossibile'],
+    ['esce un numero pari', 'possibile'], ['esce un multiplo di 3', 'possibile'], ['esce 6', 'possibile'], ['esce un numero primo', 'possibile'], ['esce un numero minore di 3', 'possibile'],
+  ];
+  const by = (k) => rng.shuffle(pool.filter((e) => e[1] === k));
+  const items = [...by('certo').slice(0, 2), ...by('impossibile').slice(0, 2), ...by('possibile').slice(0, 2)].map(([t, bin]) => ({ label: `«${t}»`, bin }));
+  return {
+    type: 'bins',
+    prompt: 'Si lancia un dado a sei facce. Smista gli eventi.',
+    bins: [{ id: 'impossibile', label: 'Impossibile' }, { id: 'possibile', label: 'Possibile' }, { id: 'certo', label: 'Certo' }],
+    items,
+    hint: 'Certo: succede in tutti i 6 casi. Impossibile: in nessuno. Possibile: in alcuni sì e in altri no.',
+    explain: 'Con un dado escono solo 1, 2, 3, 4, 5, 6. Un evento è certo se è vero per tutti e sei ($P = 1$), impossibile se non lo è per nessuno ($P = 0$), possibile negli altri casi ($0 < P < 1$).',
+    twin: () => binsEvents(rng),
+  };
+}
+
 function urn(rng) {
   const r = rng.int(1, 9), b = rng.int(1, 9), g = rng.int(0, 6);
   const tot = r + b + g;
@@ -129,8 +168,8 @@ export default {
   ],
   generate(rng, level) {
     const learn = { type: 'learn', title: 'Contare bene', body: 'Se tutti i casi sono ugualmente probabili: $$P = \\dfrac{\\text{casi favorevoli}}{\\text{casi possibili}}$$ La probabilità va da 0 (impossibile) a 1 (certo). Si può scrivere anche in percentuale.' };
-    if (level === 1) return [learn, urn(rng), urn(rng), complement(rng), urn(rng), complement(rng)];
-    if (level === 2) return [learn, dice(rng), complement(rng), fairGame(rng), dice(rng), urn(rng)];
+    if (level === 1) return [learn, urn(rng), placeProb(rng), complement(rng), urn(rng), complement(rng)];
+    if (level === 2) return [learn, dice(rng), complement(rng), fairGame(rng), dice(rng), binsEvents(rng)];
     return [learn, independent(rng), atLeastOne(rng), independent(rng), atLeastOne(rng), fairGame(rng)];
   },
 };

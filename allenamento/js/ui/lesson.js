@@ -11,6 +11,7 @@ import { chart, board } from '../gfx/libs.js';
 import { attachKeypad } from './keypad.js';
 import { toggleCalculator, closeCalculator, calcEval, fmtIt } from './calculator.js';
 import { sfx, haptic, flyText } from './fx.js';
+import { INTERACTIVE } from './interact.js';
 
 const TEST = typeof location !== 'undefined' && new URLSearchParams(location.search).has('test');
 const PRAISE = ['Esatto!', 'Giusto!', 'Perfetto!', 'Ben fatto!', 'Proprio così!', 'Grande!', 'Sì!'];
@@ -58,7 +59,9 @@ export function renderVisuals(box, step, { after = false } = {}) {
 export function runLesson(root, ctx, opts) {
   const queue = opts.steps.slice();
   const exam = !!opts.exam;
-  const res = { graded: 0, firstTry: 0, xp: 0, bestCombo: 0, twins: 0, perStep: [], misses: [], answers: [] };
+  // log: un elemento per domanda valutata (tipo, al primo colpo?), per il radar di fine lezione
+  // bets: scommesse "Sono sicuro" vinte e perse; learned: i titoli delle schede "scopri" (per la carta)
+  const res = { graded: 0, firstTry: 0, xp: 0, bestCombo: 0, twins: 0, twinsOffered: 0, perStep: [], misses: [], answers: [], log: [], bets: { right: 0, wrong: 0 }, learned: [] };
   let i = 0;
   let combo = 0;
   let cleanupStep = () => {};
@@ -133,8 +136,10 @@ export function runLesson(root, ctx, opts) {
     for (const a of actions) {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = a.primary ? 'btn big' + (a.kind ? ' ' + a.kind : '') : 'btn-ghost';
+      b.className = a.primary ? 'btn big' + (a.kind ? ' ' + a.kind : '') : 'btn-ghost' + (a.cls ? ' ' + a.cls : '');
       b.textContent = a.label;
+      if (a.pressed != null) b.setAttribute('aria-pressed', String(a.pressed));
+      if (a.title) b.title = a.title;
       if (a.disabled) b.disabled = true;
       b.addEventListener('click', a.run);
       if (a.primary) {
@@ -169,6 +174,7 @@ export function runLesson(root, ctx, opts) {
     window.scrollTo({ top: 0 });
 
     if (step.type === 'learn') {
+      if (step.title) res.learned.push(step.title);
       card.innerHTML = `${kicker}<h2>${esc(step.title || '')}</h2><div class="prompt" data-body></div><div data-vis></div><div class="widget" data-w></div>`;
       html(card.querySelector('[data-body]'), step.body);
       renderVisuals(card.querySelector('[data-vis]'), step);
@@ -185,9 +191,11 @@ export function runLesson(root, ctx, opts) {
     let checkBtn;
     const setReady = (ok) => { if (checkBtn) checkBtn.disabled = !ok; };
     const ctl = RENDER[step.type](inputBox, step, setReady);
+    if (TEST) window.__solve = ctl.solve || null;
     cleanupStep = ctl.cleanup || (() => {});
     let attempts = 0;
     let hintShown = false;
+    let betOn = false; // "Sono sicuro": si può scommettere solo al primo tentativo
 
     const showHint = () => {
       if (hintShown || !step.hint) return;
@@ -196,9 +204,11 @@ export function runLesson(root, ctx, opts) {
       hb.className = 'hint-box';
       html(hb, '<b>Aiuto.</b> ' + step.hint);
     };
+    const canBet = !exam && !step._isTwin;
     const neutralBar = () =>
       setBar('', '', [
         ...(!exam && step.hint && !hintShown ? [{ label: 'Aiuto', run: () => { showHint(); neutralBar(); } }] : []),
+        ...(canBet && attempts === 0 ? [{ label: 'Sono sicuro ×2', cls: 'bet', pressed: betOn, title: 'Se sei sicuro e hai ragione, il moltiplicatore raddoppia', run: () => { betOn = !betOn; sfx.tap(); neutralBar(); } }] : []),
         { label: exam ? 'Conferma' : 'Verifica', primary: true, disabled: !ctl.ready(), run: verify, ref: (b) => (checkBtn = b) },
       ]);
 
@@ -220,19 +230,25 @@ export function runLesson(root, ctx, opts) {
       }
       const graded = !step._isTwin;
       const binary = (step.type === 'choice' && step.options.length <= 2) || step.type === 'truefalse';
+      const bet = betOn && attempts === 1;
       if (r.ok) {
         const first = attempts === 1;
-        let gain;
-        if (step._isTwin) { gain = XP.twin; res.twins++; }
-        else if (first) { combo++; gain = XP.firstTry * comboMultiplier(combo); }
-        else gain = XP.secondTry;
+        // punteggio alla Balatro: fiches (valore della domanda) × moltiplicatore (combo, scommessa, stima perfetta)
+        let chips;
+        let mult = 1;
+        if (step._isTwin) { chips = XP.twin; res.twins++; }
+        else if (first) { combo++; chips = XP.firstTry; mult = comboMultiplier(combo); }
+        else chips = XP.secondTry;
+        if (bet) { mult *= 2; res.bets.right++; }
+        if (r.precise) mult *= 1.5;
         res.bestCombo = Math.max(res.bestCombo, combo);
-        const got = ctx.addXp(gain, { combo });
+        const got = ctx.addXp(chips * mult, { combo });
         res.xp += got;
         if (graded) {
           res.graded++;
           if (first) res.firstTry++;
           res.perStep.push({ act: step._act, first });
+          res.log.push({ type: step.type, first });
         }
         if (!first) queueTwin(step);
         ctl.lock(true);
@@ -240,10 +256,11 @@ export function runLesson(root, ctx, opts) {
         haptic([10, 30, 10]);
         flyText(checkBtn || bar, `+${got} XP`);
         if (comboEl && combo >= 2) { comboEl.classList.remove('hot'); void comboEl.offsetWidth; comboEl.classList.add('hot'); }
-        const praise = COMBO_PRAISE[combo] || PRAISE[Math.floor(Math.random() * PRAISE.length)];
+        const praise = bet ? 'Fiducia ben riposta!' : r.precise ? 'Stima perfetta!' : COMBO_PRAISE[combo] || PRAISE[Math.floor(Math.random() * PRAISE.length)];
+        const score = mult !== 1 ? `${chips} × ${String(Math.round(mult * 100) / 100).replace('.', ',')} = +${got} XP` : `+${got} XP`;
         const { feedback } = setBar(
           'good',
-          `<h3>${icons.check.replace('<svg', '<svg width="26" height="26"')} ${praise} <span class="xp-chip">+${got} XP</span></h3>${r.message ? `<p>${r.message}</p>` : ''}
+          `<h3>${ctx.mood ? ctx.mood(combo >= 3 ? 'great' : 'good') : icons.check.replace('<svg', '<svg width="26" height="26"')} ${praise} <span class="xp-chip">${score}</span></h3>${r.message ? `<p>${r.message}</p>` : ''}
            ${step.explain ? `<details><summary>Rivedi il ragionamento</summary><div>${step.explain}</div><div data-after></div></details>` : ''}`,
           [{ label: 'Continua', primary: true, kind: 'good', run: next }],
         );
@@ -252,6 +269,7 @@ export function runLesson(root, ctx, opts) {
         return;
       }
       combo = 0;
+      if (bet) res.bets.wrong++;
       drawProgress();
       sfx.bad();
       haptic([40, 40, 40]);
@@ -260,7 +278,7 @@ export function runLesson(root, ctx, opts) {
       card.classList.add('shake');
       if (attempts === 1 && !binary) {
         ctl.markWrong(r);
-        setBar('bad', `<h3>Non ancora</h3><p>${r.message || 'Rileggi il testo e controlla i calcoli.'}</p>`, [
+        setBar('bad', `<h3>${ctx.mood ? ctx.mood('think') : ''}Non ancora</h3>${bet ? '<p><b>Eri sicuro: rileggi il tuo ragionamento, passo per passo. Dove cede?</b></p>' : ''}<p>${r.message || 'Rileggi il testo e controlla i calcoli.'}</p>`, [
           ...(step.hint && !hintShown ? [{ label: 'Aiuto', run: () => { showHint(); retry(); } }] : []),
           { label: 'Riprova', primary: true, kind: 'bad', run: retry },
         ]);
@@ -272,6 +290,7 @@ export function runLesson(root, ctx, opts) {
       if (graded) {
         res.graded++;
         res.perStep.push({ act: step._act, first: false });
+        res.log.push({ type: step.type, first: false });
         res.misses.push({ prompt: step.prompt, explain: step.explain });
       }
       const twinQueued = queueTwin(step);
@@ -321,6 +340,7 @@ export function runLesson(root, ctx, opts) {
     if (exam || step._isTwin || !step.twin) return false;
     const t = step.twin();
     Object.assign(t, { _isTwin: true, _act: step._act, _kicker: step._kicker });
+    res.twinsOffered++;
     queue.splice(i + 1, 0, t);
     drawProgress();
     return true;
@@ -332,6 +352,7 @@ export function runLesson(root, ctx, opts) {
 
   // ---------- un renderer per tipo di domanda ----------
   const RENDER = {
+    ...INTERACTIVE,
     choice(box, step, setReady) {
       const opts = shuffle(step.options); // la posizione della risposta giusta cambia sempre
       const figs = opts.some((o) => o.label.includes('opt-fig'));

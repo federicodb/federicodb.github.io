@@ -29,10 +29,14 @@ function tone(freqs, { type = 'sine', gap = 0.08, dur = 0.16, vol = 0.12 } = {})
   }
 }
 
+// Do maggiore pentatonico (do re mi sol la) su tre ottave
+const PENTA = [523, 587, 659, 784, 880, 1047, 1175, 1319, 1568, 1760, 2093, 2349, 2637, 3136];
 export const sfx = {
   tap: () => tone([880], { dur: 0.05, vol: 0.04 }),
-  good: (combo = 0) => tone([660 + combo * 30, 990 + combo * 40], { gap: 0.07 }),
-  bad: () => tone([220, 175], { type: 'triangle', gap: 0.1, vol: 0.09 }),
+  // giusto: arpeggio sulla scala pentatonica, che parte più in alto a ogni risposta della combo
+  good: (combo = 0) => { const k = Math.min(combo, 9); tone([PENTA[k], PENTA[k + 2], PENTA[k + 4]], { gap: 0.06, dur: 0.18 }); },
+  // sbagliato: niente "buzzer", un accordo aperto basso e morbido (quinta), che invita a ricontrollare
+  bad: () => tone([196, 294], { gap: 0.03, dur: 0.32, vol: 0.07 }),
   done: () => tone([523, 659, 784, 1047], { gap: 0.09, dur: 0.22 }),
   level: () => tone([392, 523, 659, 784, 1047, 1319], { gap: 0.07, dur: 0.25 }),
   coin: () => tone([1319, 1760], { gap: 0.05, dur: 0.1, vol: 0.07 }),

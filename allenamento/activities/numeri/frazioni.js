@@ -125,6 +125,46 @@ function expression(rng) {
   };
 }
 
+// ---------- interattivi ----------
+/** Stima: posiziona la frazione sulla retta da 0 a 1 (con il solo riferimento di metà) */
+function placeFraction(rng) {
+  const q = rng.pick([3, 4, 5, 6, 8, 10]);
+  const p = rng.until(() => rng.int(1, q - 1), (x) => x * 2 !== q);
+  return {
+    type: 'place',
+    prompt: `Dove si trova $${frac(p, q)}$ sulla retta? Stima a occhio: c'è solo il segno di metà.`,
+    min: 0, max: 1, snap: 0.01, tol: 0.06,
+    ticks: [{ v: 0, label: '0' }, { v: 0.5, label: '½' }, { v: 1, label: '1' }],
+    answer: p / q, answerLabel: `${p}/${q}`,
+    label: `Posizione di ${p}/${q}`,
+    why: (v) => (v > p / q ? `Troppo a destra: ${p}/${q} è ${p * 2 < q ? 'meno' : 'più'} di metà, ma non così tanto.` : `Troppo a sinistra: ${p}/${q} è ${p * 2 < q ? 'meno' : 'più'} di metà, ma non così poco.`),
+    hint: `Dividi il segmento da 0 a 1 in ${q} parti uguali e contane ${p}.`,
+    explain: `Il segmento da 0 a 1 diviso in ${q} parti: $${frac(p, q)}$ è alla ${p}ª tacca, ${p * 2 < q ? 'prima' : 'dopo'} di metà.`,
+    explainFig: fractionBar(p, q),
+    twin: () => placeFraction(rng),
+  };
+}
+
+/** Ordina quattro frazioni dalla più piccola alla più grande */
+function sortFractions(rng) {
+  const items = [];
+  while (items.length < 4) {
+    const q = rng.pick([2, 3, 4, 5, 6, 8, 9, 10, 12]);
+    const p = rng.int(1, q + 2);
+    if (items.some((x) => Math.abs(x.value - p / q) < 0.02)) continue;
+    items.push({ label: `$${frac(p, q)}$`, value: p / q, p, q });
+  }
+  const sorted = items.slice().sort((a, b) => a.value - b.value);
+  return {
+    type: 'sort',
+    prompt: 'Trascina le frazioni in ordine, dalla più piccola alla più grande.',
+    items,
+    hint: 'Confronta ogni frazione con $\\frac{1}{2}$ e con $1$, oppure trasformale in numeri decimali.',
+    explain: `In decimali: ${sorted.map((x) => `$${frac(x.p, x.q)} \\approx ${String(Math.round(x.value * 100) / 100).replace('.', '{,}')}$`).join(', ')}.`,
+    twin: () => sortFractions(rng),
+  };
+}
+
 export default {
   id: 'frazioni',
   area: 'numeri',
@@ -147,8 +187,8 @@ export default {
       body: `$\\dfrac{1}{2}$, $\\dfrac{2}{4}$, $\\dfrac{3}{6}$ indicano la stessa parte dell'intero: cambia solo in quante parti lo dividi. Qui sotto ${d / 2} parti su ${d}: metà della barra.`,
       fig: fractionBar(d / 2, d),
     };
-    if (level === 1) return [learn, equivalent(rng), compare(rng), fractionOf(rng), equivalent(rng), compare(rng)];
-    if (level === 2) return [{ type: 'learn', title: 'Per sommare servono parti uguali', body: 'Non si possono sommare terzi e quarti così come sono: si trasformano entrambi in dodicesimi. $$\\dfrac{1}{3} + \\dfrac{1}{4} = \\dfrac{4}{12} + \\dfrac{3}{12} = \\dfrac{7}{12}$$' }, addSub(rng), fractionOf(rng), addSub(rng), addSub(rng), compare(rng)];
+    if (level === 1) return [learn, equivalent(rng), compare(rng), fractionOf(rng), equivalent(rng), placeFraction(rng)];
+    if (level === 2) return [{ type: 'learn', title: 'Per sommare servono parti uguali', body: 'Non si possono sommare terzi e quarti così come sono: si trasformano entrambi in dodicesimi. $$\\dfrac{1}{3} + \\dfrac{1}{4} = \\dfrac{4}{12} + \\dfrac{3}{12} = \\dfrac{7}{12}$$' }, addSub(rng), fractionOf(rng), addSub(rng), addSub(rng), sortFractions(rng)];
     return [{ type: 'learn', title: 'Moltiplicare è "prendere una parte di"', body: '$\\dfrac{2}{3}\\cdot\\dfrac{3}{4}$ vuol dire prendere i due terzi di tre quarti. Dividere per una frazione è moltiplicare per la sua inversa.' }, mulDiv(rng), expression(rng), mulDiv(rng), expression(rng), mulDiv(rng)];
   },
 };

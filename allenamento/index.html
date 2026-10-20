@@ -13,7 +13,7 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap">
   <link rel="stylesheet" href="vendor/katex/katex.min.css">
   <link rel="stylesheet" href="vendor/jsxgraph.css">
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -23,6 +23,14 @@
       if (localStorage.getItem('orfini_theme') === 'light') {
         document.documentElement.classList.add('theme-light');
         document.documentElement.setAttribute('data-theme', 'light');
+      }
+      // colore degli accenti dell'utente attivo, prima del primo disegno (niente lampo di ciano)
+      var acc = (JSON.parse(localStorage.getItem('orfini_quest_v2') || '{}').settings || {}).accent;
+      if (acc && isFinite(acc.h)) {
+        var st = document.documentElement.style;
+        st.setProperty('--acc-h', acc.h);
+        st.setProperty('--acc-l-d', acc.ld + '%');
+        st.setProperty('--acc-l-l', acc.ll + '%');
       }
     } catch (e) {}
   </script>

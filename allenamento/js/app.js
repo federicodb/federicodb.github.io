@@ -4,6 +4,7 @@ import { avatarSVG, milestoneItems, itemInfo, unlockText } from './game/avatar.j
 import { icons, toast, modal, esc } from './ui/dom.js';
 import { sfx, haptic, confetti, setFxSettings } from './ui/fx.js';
 import { setIndirizzo } from '../activities/contesti.js';
+import { applyAccent } from './ui/accent.js';
 
 const store = (() => {
   try {
@@ -26,6 +27,11 @@ export const app = {
   save() { G.save(store, this.state); },
   teacherMode() { return new URLSearchParams(location.search).has('docente') || this.state.settings.teacher; },
   avatar(size = 64) { return avatarSVG(this.state.inventory.equipped, { size }); },
+  /** L'avatar come mascotte: stesso personaggio, espressione che cambia con l'esito */
+  mood(kind, size = 44) {
+    const faces = { good: { eyes: 'happy', mouth: 'grin' }, great: { eyes: 'star', mouth: 'laugh' }, think: { eyes: 'side', mouth: 'wow' } };
+    return `<span class="mood" aria-hidden="true">${avatarSVG({ ...this.state.inventory.equipped, ...(faces[kind] || {}) }, { size })}</span>`;
+  },
 
   /** XP con gestione di livelli e missioni. Restituisce gli XP effettivi. */
   addXp(n, { combo = 0 } = {}) {
@@ -140,6 +146,7 @@ export const app = {
     document.documentElement.classList.toggle('lim', !!s.lim);
     document.documentElement.classList.toggle('big-text', !!s.bigText);
     setIndirizzo(this.state.profile.indirizzo || null);
+    applyAccent(s.accent);
     setFxSettings(s);
   },
 };
