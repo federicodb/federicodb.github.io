@@ -12,11 +12,11 @@ export function renderMath(el) {
   fitMath(el);
 }
 
-/** Formule in display più larghe del loro spazio: si rimpiccioliscono fino al 72%; oltre, scorrono
- *  da sole (mai la pagina intera). Si ricalcola quando cambia la larghezza dello schermo. */
+/** Formule in display (e nei tasselli da ordinare) più larghe del loro spazio: si rimpiccioliscono fino al 72%;
+ *  oltre, scorrono da sole (mai la pagina intera). Si ricalcola quando cambia la larghezza dello schermo. */
 const MIN_FIT = 0.72;
 export function fitMath(root = document) {
-  for (const d of root.querySelectorAll('.katex-display')) {
+  for (const d of root.querySelectorAll('.katex-display, .order-chip > span')) {
     d.style.fontSize = '';
     d.classList.remove('math-scroll');
     const over = d.scrollWidth - d.clientWidth;

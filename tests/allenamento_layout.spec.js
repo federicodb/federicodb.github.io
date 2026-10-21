@@ -12,6 +12,20 @@ function overflowing() {
   const vw = document.documentElement.clientWidth;
   const out = [];
   if (document.documentElement.scrollWidth > vw) out.push(`pagina +${document.documentElement.scrollWidth - vw}px`);
+  // contenuto più largo del telefono: il browser rimpicciolisce la pagina e la barra in basso esce dallo schermo
+  if (vw > 360 || (window.visualViewport && window.visualViewport.scale < 0.99)) out.push(`pagina rimpicciolita (larga ${vw}px)`);
+  // testo che esce dal proprio pulsante
+  for (const btn of document.querySelectorAll('.lesson button, .actionbar button')) {
+    const r = btn.getBoundingClientRect();
+    if (!r.width) continue;
+    const walker = document.createTreeWalker(btn, NodeFilter.SHOW_TEXT);
+    for (let t = walker.nextNode(); t; t = walker.nextNode()) {
+      if (!t.textContent.trim() || t.parentElement.closest('.katex-mathml, .math-scroll')) continue;
+      const range = document.createRange();
+      range.selectNodeContents(t);
+      if ([...range.getClientRects()].some((q) => q.right > r.right + 1 || q.left < r.left - 1)) { out.push(`testo fuori da button.${btn.className.split(' ')[0]}: "${btn.textContent.trim().slice(0, 30)}"`); break; }
+    }
+  }
   for (const el of document.querySelectorAll('.lesson *, .actionbar *')) {
     if (el.closest('.katex-mathml, .math-scroll, .g-table-wrap, .calc') || (el.closest('svg') && el.tagName !== 'svg')) continue;
     const b = el.getBoundingClientRect();
@@ -32,6 +46,8 @@ test.describe('Orfini Math Quest: impaginazione a 360 px', () => {
       test.setTimeout(90_000);
       const problems = [];
       for (let level = 1; level <= 3; level++) {
+        // ricarica vera: i festeggiamenti in coda dal livello precedente non devono aprirsi sopra la nuova lezione
+        await page.goto('about:blank');
         await page.goto(`/allenamento/?test&docente#/lezione/${act.id}/${level}`);
         await page.locator('.actionbar .btn.big').waitFor();
         for (let n = 0; n < 16; n++) {

@@ -402,7 +402,7 @@ const ricarico = {
   nome: 'Prezzo di vendita e prezzo di costo (SP/CP)',
   anni: [2, 3], mat: ['MAT_K1', 'MAT_C2'], prereq: ['percentuali'],
   idea: 'Le percentuali di guadagno si calcolano sul costo; un +x% e un −x% sullo stesso prezzo di vendita fanno perdere x²/100 %.',
-  passi: ['Rapporta tutto a 100: prezzo di vendita (SP) e prezzo di costo (CP).', 'Guadagno o perdita % $= \\left(\\dfrac{SP}{CP} - 1\\right)\\cdot 100$: si divide per il costo.', 'Due articoli venduti allo stesso prezzo, uno al $+x\\%$ e uno al $-x\\%$: in totale si perde il $\\frac{x^2}{100}\\%$.'],
+  passi: ['Rapporta tutto a 100: prezzo di vendita (SP) e prezzo di costo (CP).', 'Guadagno o perdita in percentuale: $\\left(\\dfrac{SP}{CP} - 1\\right)\\cdot 100$, cioè si divide per il costo.', 'Due articoli venduti allo stesso prezzo, uno al $+x\\%$ e uno al $-x\\%$: in totale si perde il $\\frac{x^2}{100}\\%$.'],
   genera(rng) {
     if (rng.chance(0.5)) {
       const x = rng.pick([10, 20, 30, 40]);
@@ -422,7 +422,7 @@ const ricarico = {
   },
   errore() {
     return {
-      q: '\\text{prezzo di vendita } 120\\ €,\\ \\text{costo } 100\\ €',
+      q: 'SP = 120\\ €,\\ CP = 100\\ €',
       passi: ['Guadagno: $120 - 100 = 20$ €', 'Percentuale: $\\dfrac{20}{120}\\cdot 100 \\approx 16{,}7\\%$', 'Il guadagno è circa il $16{,}7\\%$'],
       sbagliato: 1,
       perche: 'La percentuale di guadagno si calcola sul costo: $\\dfrac{20}{100}\\cdot 100 = 20\\%$.',

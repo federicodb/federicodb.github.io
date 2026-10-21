@@ -68,3 +68,13 @@ export function createRng(seed = newSeed()) {
   };
   return rng;
 }
+
+/**
+ * Generatore delle varianti della settimana: decide *quale tipo* di esercizio compare in ogni posto
+ * della lezione (i numeri li decide sempre `rng`). L'app lo aggancia come `rng.week` con un seed
+ * ricavato da settimana + attività + livello: per sette giorni la classe trova le stesse varianti,
+ * la settimana dopo cambiano. Senza `rng.week` (test, anteprime) coincide con `rng`, così i test
+ * provano tutte le varianti.
+ *   const pick = (...gens) => settimana(rng).pick(gens)(rng);
+ */
+export const settimana = (rng) => rng.week || rng;

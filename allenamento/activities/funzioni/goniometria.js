@@ -1,4 +1,5 @@
 import { tx, frac } from '../../js/engine/helpers.js';
+import { settimana } from '../../js/engine/rng.js';
 import { unitCircle, plane } from '../../js/gfx/svg.js';
 
 const NICE = [30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
@@ -83,6 +84,96 @@ function waveRead(rng) {
   };
 }
 
+// ---------- varianti: stesse competenze, formati diversi (scelte una volta a settimana) ----------
+const radTex = (d) => {
+  const k = g(d, 180), num = d / k, den = 180 / k;
+  if (den === 1) return `${num === 1 ? '' : num}\\pi`;
+  return `\\dfrac{${num === 1 ? '' : num}\\pi}{${den}}`;
+};
+const NOT_AXIS = NICE.filter((x) => x % 90 !== 0);
+
+/** Dai radianti ai gradi */
+function toDeg(rng) {
+  const d = rng.pick(NICE);
+  const k = g(d, 180);
+  return {
+    type: 'number', unit: '°',
+    cas: { eval: `${d / k}*180/${180 / k}` },
+    prompt: `Converti in gradi: $${radTex(d)}$ radianti.`,
+    answer: d,
+    traps: [{ value: Math.round((d * Math.PI) / 180 * 100) / 100, msg: 'Hai sostituito π con 3,14: per avere i gradi π vale 180°.' }],
+    hint: '$\\pi$ radianti $= 180°$: sostituisci $\\pi$ con $180°$.',
+    explain: `$$${radTex(d)}\\cdot\\dfrac{180°}{\\pi} = ${d}°$$`,
+    twin: () => toDeg(rng),
+  };
+}
+
+/** Smista angoli (in gradi o in radianti) nei quadranti */
+function quadrantBins(rng) {
+  const ds = rng.until(() => rng.shuffle(NOT_AXIS).slice(0, 6), (v) => new Set(v.map((d) => Math.floor(d / 90))).size >= 3);
+  const names = ['I', 'II', 'III', 'IV'];
+  return {
+    type: 'bins',
+    prompt: 'In quale quadrante cade il lato dell\'angolo? Smista.',
+    bins: names.map((n) => ({ id: n, label: n })),
+    items: ds.map((d) => ({ label: rng.chance(0.5) ? `$${d}°$` : `$${radTex(d)}$`, bin: names[Math.floor(d / 90)] })),
+    hint: 'I quadranti cambiano a $90° = \\dfrac{\\pi}{2}$, $180° = \\pi$ e $270° = \\dfrac{3\\pi}{2}$.',
+    explain: ds.slice().sort((a, b) => a - b).map((d) => `$${d}°$: ${names[Math.floor(d / 90)]}`).join(' · '),
+    twin: () => quadrantBins(rng),
+  };
+}
+
+/** Ordina angoli scritti un po' in gradi e un po' in radianti */
+function radSort(rng) {
+  const ds = rng.shuffle(NICE).slice(0, 4);
+  const asRad = rng.shuffle([true, false, rng.chance(0.5), rng.chance(0.5)]);
+  return {
+    type: 'sort',
+    prompt: 'Ordina gli angoli dal più piccolo al più grande.',
+    items: ds.map((d, i) => ({ label: asRad[i] ? `$${radTex(d)}$` : `$${d}°$`, value: d })),
+    hint: 'Porta tutto in gradi: $\\pi = 180°$.',
+    explain: `$$${ds.slice().sort((a, b) => a - b).map((d) => `${radTex(d)} = ${d}°`).join(' \;<\; ')}$$`,
+    twin: () => radSort(rng),
+  };
+}
+
+/** Valori per simmetria a partire da quelli del primo quadrante */
+function symmetricValue(rng) {
+  const [fn, d, base] = rng.pick([['sin', 150, 30], ['sin', 210, 30], ['sin', 330, 30], ['cos', 120, 60], ['cos', 240, 60], ['cos', 300, 60]]);
+  const v = Math.round((fn === 'sin' ? Math.sin((d * Math.PI) / 180) : Math.cos((d * Math.PI) / 180)) * 2) / 2;
+  return {
+    type: 'number',
+    fig: unitCircle(d),
+    cas: { eval: `${fn}(${d} deg)` },
+    prompt: `Sapendo che $\\${fn}\\,${base}° = \\dfrac{1}{2}$, quanto vale $\\${fn}\\,${d}°$?`,
+    answer: v,
+    traps: [{ value: -v, msg: `Il valore assoluto è giusto, il segno no: ${fn === 'sin' ? 'il seno è la y del punto' : 'il coseno è la x del punto'}, guarda dove si trova.` }],
+    hint: `$${d}°$ è simmetrico di $${base}°$ rispetto a uno degli assi: cambia al massimo il segno.`,
+    explain: `$${d}°$ ha lo stesso angolo di riferimento di $${base}°$, e nel suo quadrante il ${fn === 'sin' ? 'seno' : 'coseno'} è ${v > 0 ? 'positivo' : 'negativo'}: $\\${fn}\\,${d}° = ${v > 0 ? '' : '-'}\\dfrac{1}{2}$.`,
+    twin: () => symmetricValue(rng),
+  };
+}
+
+/** Ampiezza e periodo letti dalla formula */
+function waveFromFormula(rng) {
+  const [k, kTex, T, Twrong] = rng.pick([[2, '2x', '\\pi', '4\\pi'], [3, '3x', '\\dfrac{2\\pi}{3}', '6\\pi'], [0.5, '\\dfrac{x}{2}', '4\\pi', '\\pi']]);
+  const A = rng.until(() => rng.int(1, 5), (a) => a !== k && 2 * a !== k);
+  const kLbl = k === 0.5 ? '\\dfrac{1}{2}' : k;
+  return {
+    type: 'choice',
+    prompt: `Quali sono ampiezza e periodo di $y = ${A === 1 ? '' : A}\\sin\\left(${kTex}\\right)$?`,
+    options: rng.shuffle([
+      { label: `ampiezza $${A}$, periodo $${T}$`, correct: true },
+      { label: `ampiezza $${A}$, periodo $${Twrong}$`, why: `Il periodo è $\\dfrac{2\\pi}{k}$: si divide per ${k === 0.5 ? '$\\tfrac{1}{2}$' : k}, non si moltiplica.` },
+      { label: `ampiezza $${kLbl}$, periodo $${T}$`, why: 'L\'ampiezza è il numero che moltiplica il seno, non quello dentro la parentesi.' },
+      { label: `ampiezza $${2 * A}$, periodo $${T}$`, why: 'Questa è la distanza tra massimo e minimo: l\'ampiezza è la metà.' },
+    ]),
+    explain: `$$A = ${A} \\qquad T = \\dfrac{2\\pi}{${kLbl}} = ${T}$$`,
+    explainFig: plane({ xmin: 0, xmax: 4 * Math.PI, ymin: -A - 1, ymax: A + 1, width: 340, height: 200, step: Math.PI / 2, labelStep: Math.PI, fns: [{ f: (x) => A * Math.sin(k * x) }], labels: false }),
+    twin: () => waveFromFormula(rng),
+  };
+}
+
 export default {
   id: 'goniometria',
   area: 'funzioni',
@@ -119,9 +210,10 @@ export default {
       fig: unitCircle(40),
       figFallbackOnly: true,
     };
-    if (level === 1) return [learn, toRad(rng), signQuadrant(rng), toRad(rng), toRad(rng), signQuadrant(rng)];
-    if (level === 2) return [learn, signQuadrant(rng), valueNotable(rng), valueNotable(rng), signQuadrant(rng), valueNotable(rng)];
-    return [learn, waveRead(rng), waveRead(rng), valueNotable(rng), waveRead(rng), waveRead(rng)];
+    const pick = (...gens) => settimana(rng).pick(gens)(rng);
+    if (level === 1) return [learn, pick(toRad, toDeg), pick(signQuadrant, quadrantBins), toRad(rng), pick(toDeg, radSort), pick(signQuadrant, quadrantBins, radSort)];
+    if (level === 2) return [learn, pick(signQuadrant, quadrantBins), valueNotable(rng), pick(valueNotable, symmetricValue), pick(signQuadrant, symmetricValue), valueNotable(rng)];
+    return [learn, waveRead(rng), pick(waveRead, waveFromFormula), pick(valueNotable, symmetricValue), pick(waveRead, waveFromFormula), waveRead(rng)];
   },
 };
 

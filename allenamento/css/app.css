@@ -124,7 +124,7 @@ p { margin: 0 0 0.75em; text-wrap: pretty; }
 li { text-wrap: pretty; }
 .katex { white-space: nowrap; }
 /* nei testi lunghi le formule in linea possono andare a capo dopo = + − (come in tipografia matematica) */
-.prompt .katex, .feedback .katex, .explain-card .katex, .hint-box .katex, .card [data-body] .katex, .widget .katex { white-space: normal; }
+.prompt .katex, .feedback .katex, .explain-card .katex, .hint-box .katex, .card [data-body] .katex, .widget .katex, .order-chip .katex, .option .katex, .tf-text .katex { white-space: normal; }
 /* formule in display: mai più larghe della scheda (fitMath le rimpicciolisce, poi scorrono da sole) */
 .katex-display > .katex { white-space: nowrap; }
 .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-block: 2px; }
@@ -376,7 +376,7 @@ html.theme-light .node.done .sq { background: hsl(var(--hue), 80%, 34%); }
 .options.figs .option { flex-direction: column; align-items: stretch; }
 
 .tf { display: grid; gap: 10px; margin-top: 16px; }
-.tf-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface-2); border: 2px solid transparent; }
+.tf-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface-2); border: 2px solid transparent; }
 .tf-row.right { border-color: var(--good); }
 .tf-row.wrong { border-color: var(--bad); }
 .tf-btns { display: flex; gap: 6px; }
@@ -414,7 +414,9 @@ html.theme-light .node.done .sq { background: hsl(var(--hue), 80%, 34%); }
 .order-label { font-size: 0.9375rem; color: var(--muted); margin: 16px 0 6px; }
 .order-built { min-height: 64px; padding: 10px; border: 2px dashed var(--line); border-radius: var(--r-md); display: grid; gap: 8px; counter-reset: ord; }
 .order-pool { display: grid; gap: 8px; }
-.order-chip { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 52px; padding: 8px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; box-shadow: 0 3px 0 var(--line); color: var(--text); }
+.order-chip { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 52px; padding: 8px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; box-shadow: 0 3px 0 var(--line); color: var(--text); min-width: 0; max-width: 100%; }
+.order-chip > span { flex: 1; min-width: 0; overflow-wrap: break-word; }
+.order-chip > span.math-scroll { overflow-x: auto; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
 .order-built .order-chip { counter-increment: ord; background: var(--accent-soft); }
 .order-built .order-chip::before { content: counter(ord); font-family: var(--font-num); color: var(--muted); font-size: 0.9375rem; }
 
@@ -438,7 +440,8 @@ html.theme-light .node.done .sq { background: hsl(var(--hue), 80%, 34%); }
 .actions .btn { min-width: 140px; }
 @media (max-width: 640px) {
   .actions { width: 100%; }
-  .actions .btn { min-width: 0; flex: 1; padding-inline: 12px; }
+  /* base auto, non 0: se i pulsanti non stanno in una riga, vanno a capo invece di uscire dallo schermo */
+  .actions > .btn, .actions > .btn-ghost { min-width: auto; flex: 1 1 auto; padding-inline: 12px; }
 }
 .xp-chip { font-family: var(--font-num); font-weight: 700; color: var(--good); padding: 2px 8px; border-radius: 999px; background: var(--good-bg); font-size: 0.9375rem; }
 body.in-lesson main#main { padding-bottom: 210px; }
@@ -736,7 +739,7 @@ body.in-lesson .toasts { bottom: auto; top: 70px; }
   .brand-words { display: none; }
   .site-link-long { display: none; }
   .pill { padding: 0 8px; height: 38px; gap: 4px; }
-  .actions .btn { min-width: 0; flex: 1; padding-inline: 14px; }
+  .actions .btn { min-width: auto; flex: 1 1 auto; padding-inline: 14px; }
   .actions { width: 100%; }
   .node { margin-left: calc(var(--x) * var(--sq) * 1.2); }
 }

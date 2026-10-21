@@ -88,6 +88,7 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
     gap: 24px;
     padding: 28px 0;
     border-top: 1px solid var(--cm-line);
+    min-width: 0;
 }
 .cm-phases > li::before {
     content: counter(phase);
@@ -102,7 +103,7 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
 }
 .cm-phases h3 { font: 700 1.25rem var(--font-ui); color: var(--text-main); margin-bottom: 8px; }
 .cm-phases p { max-width: var(--cm-measure); }
-.cm-display { margin: 8px 0; }
+.cm-display { margin: 8px 0; max-width: 100%; overflow-x: auto; }
 .cm-principles { margin-top: 24px; }
 .cm-principles dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 32px; margin-top: 24px; }
 .cm-principles dt { font: 700 1.0625rem var(--font-ui); color: var(--text-main); margin-bottom: 6px; }
@@ -264,8 +265,8 @@ html.theme-light .cm { --cm-ok: hsl(155, 75%, 26%); --cm-no: hsl(335, 70%, 40%);
     .cm-tech-foot .cm-quest { width: 100%; }
 }
 @media (max-width: 420px) {
-    .cm-phases > li { grid-template-columns: 36px minmax(0, 1fr); }
-    .cm-phases > li::before { font-size: 1.5rem; }
+    .cm-phases > li { gap: 12px; }
+    .cm-phases > li::before { font-size: 1.5rem; width: 28px; }
     .cm-subtabs [role=tab] { padding: 8px 12px; font-size: 0.875rem; }
 }
 

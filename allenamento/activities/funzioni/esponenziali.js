@@ -1,4 +1,5 @@
 import { tx, euro } from '../../js/engine/helpers.js';
+import { settimana } from '../../js/engine/rng.js';
 import { plane } from '../../js/gfx/svg.js';
 
 function expEquation(rng) {
@@ -31,8 +32,7 @@ function negExp(rng) {
   };
 }
 
-function growth(rng) {
-  const kind = rng.pick(['pop', 'money', 'viral']);
+function growth(rng, kind = rng.pick(['pop', 'money', 'viral'])) {
   const n = rng.int(2, 5);
   if (kind === 'money') {
     const C = rng.pick([1000, 2000, 5000]), r = rng.pick([10, 20]);
@@ -47,7 +47,7 @@ function growth(rng) {
       explain: `$$M = ${C}\\cdot ${tx(1 + r / 100)}^{${n}} = ${tx(M)}\\ €$$ Anno per anno: ${Array.from({ length: n + 1 }, (_, i) => euro(C * (1 + r / 100) ** i)).join(' → ')}.`,
       chart: { type: 'line', alt: 'Crescita del capitale', data: { labels: Array.from({ length: n + 1 }, (_, i) => `anno ${i}`), datasets: [{ label: 'Capitale', data: Array.from({ length: n + 1 }, (_, i) => +(C * (1 + r / 100) ** i).toFixed(2)) }] }, legend: false },
       chartAfter: true,
-      twin: () => growth(rng),
+      twin: () => growth(rng, kind),
     };
   }
   if (kind === 'viral') {
@@ -61,7 +61,7 @@ function growth(rng) {
       explain: `$$N(${d}) = ${s + 1}^{${d - 1}} = ${(s + 1) ** (d - 1)}$$ La crescita esponenziale all'inizio sembra lenta, poi esplode.`,
       chart: { type: 'bar', alt: 'Crescita giornaliera', data: { labels: Array.from({ length: d }, (_, i) => `g${i + 1}`), datasets: [{ label: 'Persone', data: Array.from({ length: d }, (_, i) => (s + 1) ** i) }] }, legend: false },
       chartAfter: true,
-      twin: () => growth(rng),
+      twin: () => growth(rng, kind),
     };
   }
   const P0 = rng.pick([1000, 2000, 5000]), half = rng.pick([2, 3, 5, 8]);
@@ -73,7 +73,7 @@ function growth(rng) {
     traps: [{ value: P0 - (P0 / 2) * n, msg: 'Non si toglie sempre la stessa quantità: ogni volta si dimezza ciò che resta.' }],
     hint: `In ${t} ore ci sono ${n} periodi di dimezzamento.`,
     explain: `$$${P0}\\cdot\\left(\\dfrac{1}{2}\\right)^{${n}} = ${tx(P0 / 2 ** n)}\\ \\text{mg}$$`,
-    twin: () => growth(rng),
+    twin: () => growth(rng, kind),
   };
 }
 
@@ -90,6 +90,73 @@ function graphId(rng) {
     options: rng.shuffle(opts).map((o) => ({ label: `<span class="opt-fig">${plane({ xmin: -3, xmax: 3, ymin: -1, ymax: 8, width: 170, height: 200, labels: false, fns: [{ f: o.f }], points: [{ x: 0, y: o.f(0), r: 3 }] })}</span>`, correct: !!o.ok, why: o.why })),
     explain: `$y = a^x$ passa sempre per $(0;\\,1)$ ed è ${base > 1 ? 'crescente perché la base è maggiore di 1' : 'decrescente perché la base è tra 0 e 1'}. Non tocca mai l'asse x.`,
     twin: () => graphId(rng),
+  };
+}
+
+// ---------- varianti: stesse competenze, formati diversi (scelte una volta a settimana) ----------
+const money = (rng) => growth(rng, 'money');
+const viral = (rng) => growth(rng, 'viral');
+const halfLife = (rng) => growth(rng, 'pop');
+
+/** Ordina potenze con esponente negativo, nullo e frazionario */
+function expSort(rng) {
+  const pool = [
+    ['2^{-2}', 1 / 4, '\\tfrac{1}{4}'], ['2^{-1}', 1 / 2, '\\tfrac{1}{2}'], ['3^{-1}', 1 / 3, '\\tfrac{1}{3}'], ['10^{-1}', 1 / 10, '0{,}1'],
+    ['5^{0}', 1, '1'], ['2^{0}', 1, '1'], ['\\left(\\tfrac{1}{2}\\right)^{-2}', 4, '4'], ['\\left(\\tfrac{1}{3}\\right)^{-1}', 3, '3'],
+    ['4^{1/2}', 2, '2'], ['9^{1/2}', 3, '3'], ['2^{3}', 8, '8'], ['3^{2}', 9, '9'],
+    ['\\left(\\tfrac{1}{2}\\right)^{2}', 1 / 4, '\\tfrac{1}{4}'], ['10^{-2}', 1 / 100, '0{,}01'],
+  ];
+  const items = rng.until(() => rng.shuffle(pool).slice(0, 4), (v) => new Set(v.map((x) => x[1])).size === 4);
+  return {
+    type: 'sort',
+    prompt: 'Ordina dal più piccolo al più grande.',
+    items: items.map(([t, v]) => ({ label: `$${t}$`, value: v })),
+    hint: 'Un esponente negativo dà il reciproco, l\'esponente zero dà 1, l\'esponente $\\tfrac{1}{2}$ è la radice quadrata.',
+    explain: `$$${items.slice().sort((x, y) => x[1] - y[1]).map(([t, , v]) => `${t} = ${v}`).join(' \\;<\\; ')}$$`,
+    twin: () => expSort(rng),
+  };
+}
+
+/** Smista successioni: si aggiunge sempre lo stesso numero o si moltiplica sempre per lo stesso fattore? */
+function growthBins(rng) {
+  const seen = new Set();
+  const make = (expo) => rng.until(() => {
+    const a = rng.int(1, 6);
+    const seq = expo ? (() => { const r = rng.pick([2, 3]); return [0, 1, 2, 3].map((i) => a * r ** i); })() : (() => { const d = rng.int(2, 9); return [0, 1, 2, 3].map((i) => a + d * i); })();
+    return rng.chance(0.3) ? seq.reverse() : seq;
+  }, (seq) => !seen.has(seq.join()));
+  const items = rng.shuffle([true, true, true, false, false, false]).map((expo) => {
+    const seq = make(expo);
+    seen.add(seq.join());
+    return { label: `$${seq.join(';\\ ')};\\ \\ldots$`, bin: expo ? 'exp' : 'lin' };
+  });
+  return {
+    type: 'bins',
+    prompt: 'Smista le successioni secondo il tipo di crescita (o di calo).',
+    bins: [{ id: 'lin', label: 'Lineare: + sempre lo stesso' }, { id: 'exp', label: 'Esponenziale: × sempre lo stesso' }],
+    items,
+    hint: 'Guarda come si passa da un numero al successivo: differenza costante o rapporto costante?',
+    explain: 'Se la differenza tra due numeri vicini è sempre la stessa la crescita è lineare; se è sempre lo stesso il rapporto (×2, ×3, oppure ÷2 quando cala) è esponenziale.',
+    twin: () => growthBins(rng),
+  };
+}
+
+/** Equazione con basi diverse da riscrivere come potenze della stessa base */
+function expEquationBase(rng) {
+  const [b, m] = rng.pick([[2, 2], [2, 3], [3, 2], [5, 2]]);
+  const B = b ** m;
+  const t = rng.int(1, b === 2 ? 4 : 3), k = rng.intNot(-2, 2);
+  const n = m * (t + k);
+  if (n <= 0) return expEquationBase(rng);
+  return {
+    type: 'number',
+    cas: { solveNum: `${B}^(x+(${k}))-${b}^${n}` },
+    prompt: `Risolvi: $$${B}^{x ${k < 0 ? '-' : '+'} ${Math.abs(k)}} = ${b}^{${n}}$$`,
+    answer: t,
+    traps: [{ value: n - k, msg: `Le basi sono diverse: prima scrivi ${B} come potenza di ${b}.` }, { value: n / m, msg: `$x ${k < 0 ? '-' : '+'} ${Math.abs(k)} = ${n / m}$: manca l'ultimo passaggio.` }].filter((x) => x.value !== t),
+    hint: `$${B} = ${b}^{${m}}$, quindi $${B}^{x ${k < 0 ? '-' : '+'} ${Math.abs(k)}} = ${b}^{${m}(x ${k < 0 ? '-' : '+'} ${Math.abs(k)})}$.`,
+    explain: `$$${b}^{${m}(x ${k < 0 ? '-' : '+'} ${Math.abs(k)})} = ${b}^{${n}} \\Rightarrow ${m}(x ${k < 0 ? '-' : '+'} ${Math.abs(k)}) = ${n} \\Rightarrow x ${k < 0 ? '-' : '+'} ${Math.abs(k)} = ${n / m} \\Rightarrow x = ${t}$$`,
+    twin: () => expEquationBase(rng),
   };
 }
 
@@ -114,8 +181,9 @@ export default {
       body: 'Una crescita lineare aggiunge sempre la stessa quantità; una crescita esponenziale moltiplica sempre per lo stesso fattore. All\'inizio si somigliano, poi l\'esponenziale stacca tutto.',
       fig: plane({ xmin: 0, xmax: 6, ymin: 0, ymax: 64, width: 300, height: 240, ystep: 8, fns: [{ f: (x) => 2 ** x, label: 'y = 2ˣ' }, { f: (x) => 6 * x + 1, cls: 'g-fn2', label: 'y = 6x + 1', labelX: 4.6 }] }),
     };
-    if (level === 1) return [learn, graphId(rng), negExp(rng), graphId(rng), negExp(rng), graphId(rng)];
-    if (level === 2) return [learn, expEquation(rng), expEquation(rng), negExp(rng), expEquation(rng), graphId(rng)];
-    return [learn, growth(rng), growth(rng), expEquation(rng), growth(rng), growth(rng)];
+    const pick = (...gens) => settimana(rng).pick(gens)(rng);
+    if (level === 1) return [learn, pick(graphId, growthBins), pick(negExp, expSort), negExp(rng), pick(graphId, expSort), pick(graphId, growthBins)];
+    if (level === 2) return [learn, pick(expEquation, expEquationBase), expEquation(rng), pick(negExp, expSort), pick(expEquation, expEquationBase), pick(graphId, growthBins)];
+    return [learn, pick(money, viral, halfLife), pick(viral, halfLife, growthBins), pick(expEquation, expEquationBase), pick(money, halfLife), pick(money, viral)];
   },
 };

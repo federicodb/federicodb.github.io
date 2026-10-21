@@ -1,5 +1,6 @@
 import { scene } from '../contesti.js';
 import { tx, euro } from '../../js/engine/helpers.js';
+import { settimana } from '../../js/engine/rng.js';
 import { plane } from '../../js/gfx/svg.js';
 
 function breakEven(rng) {
@@ -74,6 +75,69 @@ function constraint(rng) {
   };
 }
 
+// ---------- varianti: stesse competenze, formati diversi (scelte una volta a settimana) ----------
+
+/** Pareggio al contrario: quanti pezzi si pensa di vendere è noto, si cerca il prezzo */
+function breakEvenPrice(rng) {
+  const [F, q] = rng.until(() => [rng.pick([600, 800, 1200, 1500, 2000]), rng.pick([40, 50, 60, 80, 100])], ([f, n]) => f % n === 0);
+  const c = rng.pick([4, 5, 7, 8]);
+  const p = c + F / q;
+  const what = scene(rng, 'prodotto');
+  return {
+    type: 'number', unit: '€',
+    cas: { eval: `${c}+${F}/${q}` },
+    prompt: `Un laboratorio scolastico produce ${what}. Costi fissi: ${euro(F)}; costo per pezzo: ${euro(c)}. Si prevede di venderne ${q}. A quale prezzo vanno venduti per andare in pareggio?`,
+    answer: p,
+    traps: [{ value: F / q, msg: 'Così copri solo i costi fissi: ogni pezzo deve pagare anche il proprio costo.' }],
+    hint: `Pareggio: $${q}\\cdot p = ${F} + ${c}\\cdot ${q}$.`,
+    explain: `$$${q}p = ${F} + ${c * q} = ${F + c * q} \\Rightarrow p = ${tx(p)}\\ €$$ Ogni pezzo paga il suo costo (${euro(c)}) più la sua quota dei costi fissi ($${F}/${q} = ${F / q}$ €).`,
+    twin: () => breakEvenPrice(rng),
+  };
+}
+
+/** Il punto in cui due tariffe si equivalgono */
+function tariffThreshold(rng) {
+  const [a, b, x] = rng.until(() => {
+    const A = { f: rng.pick([0, 5]), v: rng.pick([0.2, 0.25, 0.3]) };
+    const B = { f: rng.pick([10, 12, 15]), v: rng.pick([0.05, 0.1]) };
+    return [A, B, ((B.f - A.f) * 100) / Math.round((A.v - B.v) * 100)];
+  }, (v) => Number.isInteger(v[2]));
+  return {
+    type: 'number', unit: 'minuti',
+    cas: { eval: `(${b.f}-${a.f})/(${a.v}-${b.v})` },
+    prompt: `Tariffa A: ${euro(a.f)} al mese + ${euro(a.v)} a minuto. Tariffa B: ${euro(b.f)} al mese + ${euro(b.v)} a minuto. Con quanti minuti al mese le due tariffe costano uguale?`,
+    answer: x,
+    traps: [{ value: Math.round((b.f - a.f) / a.v), msg: 'Si confrontano le differenze: quella dei fissi e quella dei costi al minuto.' }].filter((t) => t.value !== x),
+    hint: `Uguaglia i costi: $${tx(a.f)} + ${tx(a.v)}x = ${tx(b.f)} + ${tx(b.v)}x$.`,
+    explain: `$$${tx(a.v - b.v)}x = ${b.f - a.f} \\Rightarrow x = ${x}$$ Sotto i ${x} minuti conviene A (fisso più basso), sopra conviene B (minuto più economico).`,
+    explainFig: plane({ xmin: 0, xmax: Math.ceil((x * 2) / 10) * 10, ymin: 0, ymax: Math.ceil(a.f + a.v * x * 2), width: 320, height: 220, fns: [{ f: (t) => a.f + a.v * t, label: 'A' }, { f: (t) => b.f + b.v * t, cls: 'g-fn2', label: 'B' }], points: [{ x, y: a.f + a.v * x, label: `${x} min` }], xName: 'min', yName: '€' }),
+    twin: () => tariffThreshold(rng),
+  };
+}
+
+/** Vero o falso su un modello di guadagno */
+function profitTF(rng) {
+  const a = rng.pick([1, 2]), b = rng.pick([40, 60, 80, 100]), F = rng.pick([100, 200, 300]);
+  const qBest = b / (2 * a);
+  const G = -a * qBest * qBest + b * qBest - F;
+  const wrongMax = rng.chance(0.5);
+  return {
+    type: 'truefalse',
+    prompt: `Il guadagno giornaliero di un'officina è $G(q) = -${a === 1 ? '' : a}q^2 + ${b}q - ${F}$ euro, dove $q$ è il numero di interventi. Indica se ogni affermazione è vera o falsa.`,
+    statements: rng.shuffle([
+      { text: `il guadagno è massimo con ${wrongMax ? 2 * qBest : qBest} interventi`, value: !wrongMax },
+      { text: `con 0 interventi si perdono ${F} €`, value: true },
+      { text: `con ${2 * qBest} interventi si guadagna come con 0 interventi`, value: true },
+      { text: 'più interventi si fanno, più si guadagna', value: false },
+      { text: `il guadagno massimo è ${rng.chance(0.5) ? `${G} €` : `${b * qBest} €`}`, value: null },
+    ]).slice(0, 4).map((st) => (st.value === null ? { ...st, value: st.text.endsWith(`${G} €`) } : st)),
+    hint: 'È una parabola rivolta verso il basso: il massimo è nel vertice, e i valori sono simmetrici rispetto al vertice.',
+    explain: `$q_V = \\dfrac{${b}}{2\\cdot ${a}} = ${qBest}$ e $G(${qBest}) = ${G}$ €. $G(0) = -${F}$: senza interventi restano da pagare i costi fissi. Per simmetria $G(${2 * qBest}) = G(0)$: oltre il vertice il guadagno cala.`,
+    explainFig: plane({ xmin: 0, xmax: 2 * qBest, ymin: Math.min(-F, 0) - 10, ymax: G + 50, width: 320, height: 230, fns: [{ f: (q) => -a * q * q + b * q - F }], points: [{ x: qBest, y: G, label: 'massimo' }], xName: 'q', yName: '€' }),
+    twin: () => profitTF(rng),
+  };
+}
+
 export default {
   id: 'problemi-scelta',
   area: 'funzioni',
@@ -90,8 +154,9 @@ export default {
   ],
   generate(rng, level) {
     const learn = { type: 'learn', title: 'Modellare una decisione', body: 'Si scrive la grandezza da rendere massima (o minima) come funzione di una variabile, si disegnano le alternative e si confronta. Il caso continuo usa rette e parabole; il caso con vincoli cerca il meglio nei vertici della regione ammissibile.' };
-    if (level === 1) return [learn, breakEven(rng), breakEven(rng), compareTariffs(rng), breakEven(rng), compareTariffs(rng)];
-    if (level === 2) return [learn, compareTariffs(rng), breakEven(rng), compareTariffs(rng), maxProfit(rng), compareTariffs(rng)];
-    return [learn, maxProfit(rng), constraint(rng), maxProfit(rng), constraint(rng), maxProfit(rng)];
+    const pick = (...gens) => settimana(rng).pick(gens)(rng);
+    if (level === 1) return [learn, breakEven(rng), pick(breakEven, breakEvenPrice), compareTariffs(rng), pick(breakEven, breakEvenPrice), compareTariffs(rng)];
+    if (level === 2) return [learn, compareTariffs(rng), pick(breakEven, breakEvenPrice), pick(compareTariffs, tariffThreshold), pick(maxProfit, profitTF), pick(compareTariffs, tariffThreshold)];
+    return [learn, pick(maxProfit, profitTF), constraint(rng), maxProfit(rng), constraint(rng), pick(maxProfit, profitTF)];
   },
 };

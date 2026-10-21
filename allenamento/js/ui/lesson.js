@@ -6,7 +6,7 @@ import { checkNumber, checkExpr, checkNumbers } from '../engine/check.js';
 import { parse, toTex, variables } from '../engine/expr.js';
 import { normalizeCommon, normalizeNumber } from '../engine/normalize.js';
 import { XP, comboMultiplier } from '../game/game.js';
-import { html, tex, renderMath, icons, esc, ask } from './dom.js';
+import { html, tex, renderMath, fitMath, icons, esc, ask } from './dom.js';
 import { chart, board } from '../gfx/libs.js';
 import { attachKeypad } from './keypad.js';
 import { toggleCalculator, closeCalculator, calcEval, fmtIt } from './calculator.js';
@@ -485,6 +485,7 @@ export function runLesson(root, ctx, opts) {
         };
         built.forEach((it) => bEl.appendChild(mk(it, 'built')));
         pool.forEach((it) => pEl.appendChild(mk(it, 'pool')));
+        requestAnimationFrame(() => fitMath(box)); // a schermo: i passaggi lunghi si adattano al tassello
       };
       draw();
       return {

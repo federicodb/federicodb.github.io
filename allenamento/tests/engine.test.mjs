@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { parse, evaluate, toTex } from '../js/engine/expr.js';
 import { checkNumber, checkExpr } from '../js/engine/check.js';
-import { createRng } from '../js/engine/rng.js';
+import { createRng, settimana } from '../js/engine/rng.js';
+import parabola from '../activities/funzioni/parabola.js';
 
 const ev = (s, sc={}) => evaluate(parse(s), sc);
 assert.equal(ev('2+3*4'), 14);
@@ -42,5 +43,14 @@ for (let i=0;i<10;i++) assert.equal(r1.int(1,100), r2.int(1,100));
 const r = createRng(1); const seen = new Set();
 for (let i=0;i<2000;i++){ const v=r.int(-3,3); assert.ok(v>=-3&&v<=3); seen.add(v); }
 assert.equal(seen.size, 7);
+// varianti della settimana: stessa settimana => stessi tipi di esercizio, numeri nuovi; settimane diverse => varianti diverse
+const rs = createRng(5);
+assert.equal(settimana(rs), rs);
+const lesson = (seed, week) => { const g = createRng(seed); g.week = createRng(week); return parabola.generate(g, 1); };
+const kinds = (steps) => steps.map((st) => st.type).join();
+const prompts = (steps) => steps.map((st) => st.prompt + JSON.stringify(st.items || st.statements || '')).join();
+assert.equal(kinds(lesson(1, 777)), kinds(lesson(2, 777)));
+assert.notEqual(prompts(lesson(1, 777)), prompts(lesson(2, 777)));
+assert.ok(new Set(Array.from({ length: 20 }, (_, w) => kinds(lesson(1, w)))).size > 1);
 console.log(toTex(parse('3x^2-(x+1)/2')));
 console.log('engine OK');

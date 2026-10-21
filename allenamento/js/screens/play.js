@@ -8,11 +8,17 @@ import { sfx, confetti, countUp } from '../ui/fx.js';
 import { skillScores, skillChart, discoveryCard, saveCard } from '../ui/summary.js';
 import { levelOpen, prereqBlock } from './home.js';
 
+/** Aggancia a `rng` il generatore delle varianti della settimana (vedi settimana() in engine/rng.js) */
+function conSettimana(app, rng, actId, level) {
+  rng.week = createRng(G.hashSeed(`${G.weekStart(app.today())}|${actId}|${level}`));
+  return rng;
+}
+
 export function startLesson(app, actId, level) {
   const act = byId[actId];
   if (!act || !act.levels[level - 1]) { location.hash = '#/'; return; }
   if (!levelOpen(app, act, level)) { location.hash = '#/'; return; }
-  const steps = act.generate(createRng(), level).map((s) => ({ ...s, _act: act.id }));
+  const steps = act.generate(conSettimana(app, createRng(), act.id, level), level).map((s) => ({ ...s, _act: act.id }));
   app.state.lastActivity = act.id;
   app.save();
   app.stopLesson = runLesson(app.main, app, {
@@ -32,7 +38,7 @@ export function startTestOut(app, actId, level) {
   if (levelOpen(app, act, level)) { location.hash = `#/lezione/${actId}/${level}`; return; }
   const rng = createRng();
   let pool = [];
-  for (let k = 0; k < 3 && pool.length < 4; k++) pool = pool.concat(act.generate(rng, level).filter((st) => st.type !== 'learn' && st.type !== 'widget'));
+  for (let k = 0; k < 3 && pool.length < 4; k++) pool = pool.concat(act.generate(conSettimana(app, rng, act.id, level), level).filter((st) => st.type !== 'learn' && st.type !== 'widget'));
   const steps = rng.shuffle(pool).slice(0, 4).map((st) => ({ ...st, _act: act.id, _kicker: `Prova d'ingresso: livello ${level}` }));
   app.stopLesson = runLesson(app.main, app, {
     calc: app.state.settings.calc !== false && act.area !== 'calcolo', // i trucchi sono calcolo mentale
@@ -86,7 +92,7 @@ export function startReview(app) {
   for (const id of ids) {
     const act = byId[id];
     const lvl = Math.max(1, Math.min(act.levels.length, s.activities[id].stars || 1));
-    const graded = act.generate(rng, lvl).filter((st) => st.type !== 'learn' && st.type !== 'widget');
+    const graded = act.generate(conSettimana(app, rng, id, lvl), lvl).filter((st) => st.type !== 'learn' && st.type !== 'widget');
     const per = ids.length === 1 ? 5 : ids.length === 2 ? 3 : 2;
     rng.shuffle(graded).slice(0, per).forEach((st) => steps.push({ ...st, _act: id, _kicker: `Ripasso: ${act.title}` }));
   }
