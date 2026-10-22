@@ -1,9 +1,44 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-22 11:36:58
+   Data: 2026-10-22 11:55:39
 */
 
 const db = [
+    {
+        "title": "Arcade Challenge: MCM & MCD",
+        "excerpt": "Arcade Challenge: gioco arcade a sfida per allenare m.c.m., M.C.D. e scomposizione in fattori primi: sincronie spaziali, teglie da tagliare, casi da detective e Factor Blaster.",
+        "tags": [
+            "1 EL",
+            "1 GP",
+            "1 MA",
+            "ARCADE",
+            "ARCADE CHALLENGE",
+            "ARITMETICA",
+            "BIENNIO",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CIT_5:IMPARARE A IMPARARE",
+            "DIVISIBILITÀ",
+            "EU:DIGITALE",
+            "EU:IMPARAREIMPARARE",
+            "EU:STEM",
+            "FATTORI PRIMI",
+            "GAMIFICATION",
+            "LAB",
+            "MAT:CALCOLO",
+            "MAT:MODELLIZZAZIONE",
+            "MAT:PROBLEMSOLVING",
+            "MATEMATICA",
+            "MCD",
+            "MCM",
+            "VIDEOGIOCO"
+        ],
+        "date": "2026-10-16",
+        "url": "content/apps/MCD_mcm_1el_001.html",
+        "type": "app",
+        "icon": "🔢",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp"
+    },
     {
         "title": "Arcade Challenge: Scomposizioni & Parabola",
         "excerpt": "Arcade Challenge: gioco arcade a sfida, inclusivo, per allenare la scomposizione con prodotti notevoli, trinomio speciale e associazione equazione-grafico della parabola. Contestualizzato sugli indirizzi PTOF dell'IPIA Orfini di Foligno.",
@@ -86,41 +121,6 @@ const db = [
                 ]
             }
         ]
-    },
-    {
-        "title": "Arcade Challenge: MCM & MCD",
-        "excerpt": "Arcade Challenge: gioco arcade a sfida per allenare m.c.m., M.C.D. e scomposizione in fattori primi: sincronie spaziali, teglie da tagliare, casi da detective e Factor Blaster.",
-        "tags": [
-            "1 EL",
-            "1 GP",
-            "1 MA",
-            "ARCADE",
-            "ARCADE CHALLENGE",
-            "ARITMETICA",
-            "BIENNIO",
-            "CIT_4:COMPETENZA DIGITALE",
-            "CIT_5:IMPARARE A IMPARARE",
-            "DIVISIBILITÀ",
-            "EU:DIGITALE",
-            "EU:IMPARAREIMPARARE",
-            "EU:STEM",
-            "FATTORI PRIMI",
-            "GAMIFICATION",
-            "LAB",
-            "MAT:CALCOLO",
-            "MAT:MODELLIZZAZIONE",
-            "MAT:PROBLEMSOLVING",
-            "MATEMATICA",
-            "MCD",
-            "MCM",
-            "VIDEOGIOCO"
-        ],
-        "date": "2026-10-16",
-        "url": "content/apps/MCD_mcm_1el_001.html",
-        "type": "app",
-        "icon": "🔢",
-        "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp"
     },
     {
         "title": "Prodotti Notevoli: dimostrazioni geometriche 2D e 3D",
@@ -235,6 +235,7 @@ const db = [
         "type": "app",
         "icon": "🏛️",
         "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp",
         "allenamento": [
             {
                 "id": "percentuali",
