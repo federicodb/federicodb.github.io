@@ -2,100 +2,55 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
     <title>FuncLab AI: Esploratore di Funzioni</title>
-    
+
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
     <script src="../assets/js/orfini-shared.js"></script>
 
-    <meta name="description" content="Laboratorio interattivo di analisi matematica: piano cartesiano con zoom/pan, generatore di funzioni con AI, visualizzazione LaTeX, tratti analitici e Tutor Socratico con sintesi vocale.">
+    <meta name="description" content="Laboratorio interattivo di analisi matematica: descrivi una funzione a parole e l'AI la disegna su un piano cartesiano navigabile (zoom, trascinamento, lettura dei punti), con zeri, massimi e minimi evidenziati, più funzioni sovrapposte e Tutor Socratico con sintesi vocale.">
     <meta name="keywords" content="Matematica, Analisi, Funzioni, Studio di Funzione, Grafici, AI, Gemini, Tutor Socratico, Piano Cartesiano, Education, Laboratorio">
-    <meta name="date" content="2026-09-09">
+    <meta name="date" content="2026-10-22">
+    <meta name="theme-color" content="#000000">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
-    <!-- KaTeX CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-
+    <!-- L'app vive su Google AI Studio, che inserisce la chiave Gemini tramite il suo proxy:
+         gli studenti non devono avere né incollare una chiave. Qui la si incorpora a tutta pagina. -->
     <style>
-        /* Theme Configuration */
-        :root {
-            /* Dark Theme (Default - AMOLED) */
-            --bg-app: #000000;
-            --bg-panel: #121212;
-            --border-color: #333333;
-            --accent-primary: #6366f1; /* Indigo */
-            --accent-secondary: #10b981; /* Emerald */
-            --text-main: #ffffff;
-            --text-muted: #a3a3a3;
-            --grid-line: rgba(255, 255, 255, 0.1);
-            --axis-line: #525252;
+        :root { color-scheme: dark; --bar: 44px; }
+        html, body { margin: 0; height: 100%; background: #000; color: #fff; font-family: Inter, system-ui, -apple-system, sans-serif; }
+        body { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
+        .bar {
+            flex: none; height: var(--bar); display: flex; align-items: center; gap: 10px;
+            padding: 0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+            background: #0a0a0a; border-bottom: 1px solid #262626; font-size: 13px;
         }
-
-        body.light {
-            /* Light Theme */
-            --bg-app: #f8fafc;
-            --bg-panel: #ffffff;
-            --border-color: #e2e8f0;
-            --accent-primary: #4f46e5;
-            --accent-secondary: #059669;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --grid-line: rgba(0, 0, 0, 0.05);
-            --axis-line: #94a3b8;
-        }
-
-        body {
-            background-color: var(--bg-app);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            overflow: hidden;
-            width: 100vw;
-            height: 100dvh;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Glassmorphism Panels */
-        .glass-panel {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
-        ::-webkit-scrollbar-track { background: transparent; }
-
-        /* Typography */
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        /* High Contrast Selection */
-        ::selection {
-            background-color: var(--accent-primary);
-            color: white;
-        }
-
-        /* No-scrollbar utility */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .bar a { color: #d4d4d4; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; border: 1px solid #262626; white-space: nowrap; }
+        .bar a:hover, .bar a:focus-visible { color: #fff; border-color: #6366f1; outline: none; }
+        .bar .title { flex: 1; min-width: 0; text-align: center; color: #a3a3a3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bar .title b { color: #fff; }
+        /* il pulsante del sito è già nella barra: niente FAB sovrapposto all'app */
+        .bar .orfini-back-btn { position: static !important; width: auto !important; height: auto !important; box-shadow: none !important; background: none !important; }
+        .stage { position: relative; flex: 1; min-height: 0; }
+        .stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+        .loading { position: absolute; inset: 0; display: grid; place-items: center; color: #737373; font-size: 14px; pointer-events: none; }
+        @media (max-width: 520px) { .bar .title, .bar .long { display: none; } .bar { justify-content: space-between; } }
     </style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <!-- FuncLab AI Application Module -->
-    <script type="module" src="funclab_js/funclab_app.js"></script>
+    <nav class="bar" aria-label="Navigazione">
+        <a class="orfini-back-btn" href="../../index.html" title="Torna a Orfini Math Lab">← <span>Orfini Math Lab</span></a>
+        <span class="title"><b>FuncLab AI</b> · Esploratore di Funzioni</span>
+        <a href="https://funclab-ai-esploratore-di-funzioni.ai.studio/" target="_blank" rel="noopener" title="Apri FuncLab AI in una nuova scheda">Apri <span class="long">a tutto schermo</span> ↗</a>
+    </nav>
+    <main class="stage">
+        <div class="loading" id="loading">Caricamento di FuncLab AI…</div>
+        <iframe
+            src="https://funclab-ai-esploratore-di-funzioni.ai.studio/"
+            title="FuncLab AI: Esploratore di Funzioni"
+            allow="autoplay; fullscreen; clipboard-write"
+            referrerpolicy="strict-origin-when-cross-origin"
+            onload="document.getElementById('loading').remove()"></iframe>
+    </main>
 </body>
 </html>

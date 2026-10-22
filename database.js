@@ -1,9 +1,68 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-22 11:55:39
+   Data: 2026-10-22 18:01:40
 */
 
 const db = [
+    {
+        "title": "FuncLab AI: Esploratore di Funzioni",
+        "excerpt": "Laboratorio interattivo di analisi matematica: descrivi una funzione a parole e l'AI la disegna su un piano cartesiano navigabile (zoom, trascinamento, lettura dei punti), con zeri, massimi e minimi evidenziati, più funzioni sovrapposte e Tutor Socratico con sintesi vocale.",
+        "tags": [
+            "AI",
+            "ANALISI",
+            "EDUCATION",
+            "FUNZIONI",
+            "GEMINI",
+            "GRAFICI",
+            "LABORATORIO",
+            "MATEMATICA",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "PIANO CARTESIANO",
+            "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA",
+            "STUDIO DI FUNZIONE",
+            "TUTOR SOCRATICO"
+        ],
+        "date": "2026-10-22",
+        "url": "content/apps/functions_lab_008.html",
+        "type": "app",
+        "icon": "📈",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/functions_lab_008.webp",
+        "allenamento": [
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_K2"
+                ]
+            }
+        ]
+    },
     {
         "title": "Arcade Challenge: MCM & MCD",
         "excerpt": "Arcade Challenge: gioco arcade a sfida per allenare m.c.m., M.C.D. e scomposizione in fattori primi: sincronie spaziali, teglie da tagliare, casi da detective e Factor Blaster.",
@@ -418,65 +477,6 @@ const db = [
                 "mat": [
                     "MAT_C4",
                     "MAT_K3"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "FuncLab AI: Esploratore di Funzioni",
-        "excerpt": "Laboratorio interattivo di analisi matematica: piano cartesiano con zoom/pan, generatore di funzioni con AI, visualizzazione LaTeX, tratti analitici e Tutor Socratico con sintesi vocale.",
-        "tags": [
-            "AI",
-            "ANALISI",
-            "EDUCATION",
-            "FUNZIONI",
-            "GEMINI",
-            "GRAFICI",
-            "LABORATORIO",
-            "MATEMATICA",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "PIANO CARTESIANO",
-            "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA",
-            "STUDIO DI FUNZIONE",
-            "TUTOR SOCRATICO"
-        ],
-        "date": "2026-09-09",
-        "url": "content/apps/functions_lab_008.html",
-        "type": "app",
-        "icon": "📈",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/functions_lab_008.webp",
-        "allenamento": [
-            {
-                "id": "studio-funzione",
-                "titolo": "Studio di funzione",
-                "url": "allenamento/#/lezione/studio-funzione/1",
-                "mat": [
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
-                "mat": [
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "proporzioni",
-                "titolo": "Proporzioni",
-                "url": "allenamento/#/lezione/proporzioni/1",
-                "mat": [
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_K2"
                 ]
             }
         ]
