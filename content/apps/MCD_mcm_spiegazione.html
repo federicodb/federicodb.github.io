@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0722">
+<title>MCM & MCD in 60 secondi</title>
+<meta name="description" content="Animazione di un minuto che spiega m.c.m., M.C.D. e fattori primi attraverso le quattro missioni di Arcade Challenge (Orfini Math Lab).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: una "console" arcade centrata — schermo 16:9, barra comandi, sottotitoli, testo completo. Un solo look scuro, come il gioco. */
+:root{
+  --bg1:#22125a; --bg2:#0a0722; --panel:#1a1046; --panel2:#2a2070;
+  --line:rgba(255,255,255,.12); --fg:#ffffff; --muted:#bdb6ee; --ink:#10082e;
+  --y:#ffd23f; --yd:#b8901a; --b:#4cc9f0; --bd:#1a7fa3; --o:#ff8c42; --od:#b85a1c;
+  --g:#3ddc84; --gd:#1a8a4e; --p:#9b5de5; --pd:#6532a8; --k:#f15bb5; --kd:#a62a78;
+  --disp:'Lilita One','Fredoka',system-ui,sans-serif;
+  --body:'Fredoka',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+html{background:var(--bg2)}
+body{
+  background:radial-gradient(1200px 700px at 50% -10%,var(--bg1),var(--bg2)) var(--bg2);
+  color:var(--fg); font-family:var(--body); font-size:16px; line-height:1.5;
+  min-height:100%;
+}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow a{color:var(--muted);text-decoration:none}
+.eyebrow a:hover{color:var(--fg)}
+h1{font-family:var(--disp);font-weight:400;font-size:clamp(34px,6vw,56px);line-height:1.02;margin:0;color:var(--y);
+  text-shadow:0 4px 0 var(--ink);text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--muted);font-size:17px}
+.screen{position:relative;border-radius:22px;padding:10px;background:var(--panel);
+  border:1px solid var(--line);box-shadow:0 10px 0 #070516,0 30px 60px rgba(0,0,0,.45)}
+canvas{display:block;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:14px;background:var(--bg2);cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{font-family:var(--disp);font-size:18px;letter-spacing:.02em;border:0;border-radius:14px;padding:10px 18px;
+  background:var(--c,var(--panel2));color:var(--t,var(--fg));box-shadow:0 5px 0 var(--d,#150f45);cursor:pointer;
+  transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--d,#150f45)}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,input:focus-visible{outline:3px solid var(--y);outline-offset:3px}
+.play{--c:var(--y);--d:var(--yd);--t:#3a2a00;min-width:120px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:10px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--y)}
+.time{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{font-family:var(--body);font-weight:600;font-size:14px;color:var(--fg);background:transparent;border:2px solid var(--line);
+  border-radius:999px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:7px;align-items:center}
+.chap::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.chap[aria-current="true"]{border-color:var(--c);background:rgba(255,255,255,.06)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.2vw,21px);line-height:1.45;font-weight:500;max-width:70ch}
+.caption b{color:var(--y);font-weight:600}
+section.tx{border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:14px}
+section.tx h2{font-family:var(--disp);font-weight:400;font-size:26px;margin:0;color:var(--fg)}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 26px}
+.txlist li{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ts{align-self:flex-start;font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--c);border:0;border-radius:8px;padding:2px 8px;cursor:pointer}
+.txlist strong{font-family:var(--disp);font-weight:400;font-size:19px}
+.txlist p{margin:0;color:var(--muted);max-width:60ch}
+.cta{display:inline-block;align-self:flex-start;text-decoration:none;--c:var(--g);--d:var(--gd);--t:#063a1f}
+.hint{font-size:13px;color:var(--muted);margin:0}
+/* modalità incorporata (?embed): solo schermo e comandi */
+.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:17px}
+@media (max-width:560px){.btn{font-size:16px;padding:9px 14px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="https://federicodb.github.io/index.html">← Orfini Math Lab</a> · Aritmetica · Biennio</div>
+    <h1>MCM &amp; MCD in 60 secondi</h1>
+    <p class="lead">Un minuto per capire le quattro missioni di Arcade Challenge: quando le cose tornano insieme, come tagliare in parti uguali, come spezzare un numero nei suoi fattori primi.</p>
+  </header>
+
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: m.c.m., M.C.D. e fattori primi nelle missioni di Arcade Challenge"></canvas>
+  </div>
+
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="61" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:01</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare e spiegare.</p>
+
+  <a class="btn cta" href="https://federicodb.github.io/content/apps/MCD_mcm_1el_001.html">🎮 Gioca ad Arcade Challenge</a>
+
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 61;
+const DISP = "'Lilita One','Fredoka',system-ui,sans-serif";
+const BODY = "'Fredoka',system-ui,sans-serif";
+const MONO = "'JetBrains Mono',ui-monospace,monospace";
+const B = '#4cc9f0', O = '#ff8c42', G = '#3ddc84', Y = '#ffd23f', RED = '#ff4d6d', P = '#9b5de5', K = '#f15bb5';
+const INK = '#10082e', MUT = '#bdb6ee', PANEL = '#1a1046', PANEL2 = '#2a2070';
+const PRIMEC = { 2: B, 3: G, 5: Y, 7: K };
+
+const MODES = [
+  { icon: '🚀', name: 'Sincronia', tag: 'm.c.m.', c: B, d: '#1a7fa3', t: INK },
+  { icon: '🍕', name: 'Teglia Spaziale', tag: 'M.C.D.', c: O, d: '#b85a1c', t: INK },
+  { icon: '🕵️', name: 'Detective', tag: 'mcm o MCD?', c: P, d: '#6532a8', t: '#fff' },
+  { icon: '💥', name: 'Factor Blaster', tag: 'fattori primi', c: K, d: '#a62a78', t: '#fff' }
+];
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: Y,
+    cap: 'Arcade Challenge allena tre idee: il <b>minimo comune multiplo</b>, il <b>massimo comune divisore</b> e la <b>scomposizione in fattori primi</b>.' },
+  { id: 'mcm', label: 'Sincronia', a: 5, b: 19, ...MODES[0],
+    cap: 'Tre pianeti fanno un giro in 3, 4 e 6 giorni. Ognuno torna in cima sui multipli del suo periodo. Tornano tutti insieme al primo multiplo comune: <b>m.c.m.(3, 4, 6) = 12</b>.' },
+  { id: 'mcd', label: 'Teglia Spaziale', a: 19, b: 33, ...MODES[1],
+    cap: 'Una teglia 18 × 12 va tagliata in quadrati uguali, senza avanzi. Il lato deve dividere sia 18 sia 12. Il più grande divisore comune è <b>M.C.D.(18, 12) = 6</b>.' },
+  { id: 'fac', label: 'Factor Blaster', a: 33, b: 44, ...MODES[3],
+    cap: 'Si spara all\'asteroide solo con numeri primi che lo dividono. 60 ÷ 2 ÷ 2 ÷ 3 ÷ 5 = 1, quindi <b>60 = 2² · 3 · 5</b>. Il 7 non divide 15: colpo a vuoto.' },
+  { id: 'det', label: 'Detective', a: 44, b: 56, ...MODES[2],
+    cap: 'Qualcosa si <b>ripete</b> e torna <b>insieme</b>? Serve il m.c.m. Devi dividere in parti <b>uguali</b>, le più grandi possibile? Serve il M.C.D.' },
+  { id: 'end', label: 'Riepilogo', a: 56, b: 61, c: G,
+    cap: 'Si ripete e torna insieme: <b>m.c.m.</b> Divido in parti uguali: <b>M.C.D.</b> Ora tocca a te: scegli una missione!' }
+];
+
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 3);
+const back = p => 1 + 2.70158 * Math.pow(p - 1, 3) + 1.70158 * Math.pow(p - 1, 2);
+function rng(s) { return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const r1 = rng(7), STARS = Array.from({ length: 110 }, () => ({ x: r1() * W, y: r1() * H, r: r1() * 1.6 + .4, ph: r1() * 6.28 }));
+const r2 = rng(42), AST = Array.from({ length: 15 }, () => .8 + r2() * .26);
+const SHARD = Array.from({ length: 18 }, (_, i) => ({ a: i / 18 * 6.283 + r2() * .3, s: .7 + r2() * .6 }));
+
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || ''} ${size}px ${o.f || DISP}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col;
+  if ('letterSpacing' in ctx) ctx.letterSpacing = o.ls || '0px';
+  ctx.fillText(s, x, y);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+}
+function T3(s, x, y, size, col, o = {}) { T(s, x, y + Math.max(3, size * .06), size, INK, o); T(s, x, y, size, col, o); }
+function W_(s, size, f = DISP, w = '') { ctx.font = `${w} ${size}px ${f}`; return ctx.measureText(s).width; }
+function pop(x, y, p, fn, rot = 0) {
+  if (p <= 0) return;
+  const s = back(Math.min(p, 1));
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  const keep = BASE; BASE = keep * Math.min(1, p * 2.5); A(1); fn(); BASE = keep;
+  ctx.restore(); A(1);
+}
+function pill(x, y, r, fill, label, tc = INK, size) {
+  circ(x, y, r); ctx.fillStyle = fill; ctx.fill();
+  T(String(label), x, y + 1, size || r * 1.05, tc);
+}
+function btn3d(x, y, w, h, c, d, rad = 22) {
+  rr(x, y + 7, w, h, rad); ctx.fillStyle = d; ctx.fill();
+  rr(x, y, w, h, rad); ctx.fillStyle = c; ctx.fill();
+}
+function chip(m) {
+  const lab = `${m.icon} ${m.name.toUpperCase()}`, tag = m.tag;
+  const w1 = W_(lab, 26), w2 = W_(tag, 20, BODY, 600), w = w1 + w2 + 64;
+  btn3d(32, 26, w, 54, m.c, m.d, 27);
+  T(lab, 54, 54, 26, m.t, { al: 'left' });
+  A(.8); T(tag, 54 + w1 + 22, 54, 20, m.t, { al: 'left', f: BODY, w: 600 }); A(1);
+}
+
+/* ---------- scene: intro ---------- */
+function sIntro(u) {
+  pop(640, 205, prog(u, 0, .7), () => T3('MCM & MCD', 0, 0, 124, Y));
+  A(prog(u, .4, .9)); T('ARCADE CHALLENGE', 640, 298, 40, B, { ls: '8px' }); A(1);
+  MODES.forEach((m, i) => {
+    const x = 640 + (i - 1.5) * 272, y = 470;
+    pop(x, y, prog(u, .8 + i * .25, 1.4 + i * .25), () => {
+      btn3d(-122, -82, 244, 164, m.c, m.d, 24);
+      T(m.icon, 0, -36, 50, '#fff');
+      T(m.name, 0, 22, 28, m.t);
+      A(.85); T(m.tag, 0, 54, 20, m.t, { f: BODY, w: 600 }); A(1);
+    });
+  });
+  A(prog(u, 2.2, 2.8)); T('Quattro missioni, una sola idea: multipli e divisori', 640, 625, 26, MUT, { f: BODY, w: 500 }); A(1);
+}
+
+/* ---------- scene: Sincronia (m.c.m.) ---------- */
+function sMcm(u) {
+  const PER = [3, 4, 6], C = [B, O, G], RAD = [95, 155, 215];
+  const day = clamp((u - 1.5) / 9) * 12;
+  const cx = 330, cy = 410;
+  // orbite + guida "cima"
+  ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.14)';
+  RAD.forEach(r => { circ(cx, cy, r); ctx.stroke(); });
+  ctx.setLineDash([8, 10]); ctx.strokeStyle = 'rgba(255,210,63,.55)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(cx, cy - 30); ctx.lineTo(cx, cy - 248); ctx.stroke(); ctx.setLineDash([]);
+  T('cima', cx, cy - 266, 20, Y, { f: BODY, w: 600 });
+  const sg = ctx.createRadialGradient(cx, cy, 4, cx, cy, 40); sg.addColorStop(0, '#fff6c4'); sg.addColorStop(1, Y);
+  circ(cx, cy, 34); ctx.fillStyle = sg; ctx.fill();
+  // pianeti
+  PER.forEach((p, i) => {
+    const ang = -Math.PI / 2 + Math.PI * 2 * day / p, x = cx + RAD[i] * Math.cos(ang), y = cy + RAD[i] * Math.sin(ang);
+    const m = Math.round(day / p) * p, dist = Math.abs(day - m);
+    if (m > 0 && m <= 12 && dist < .35) { A(1 - dist / .35); ctx.strokeStyle = C[i]; ctx.lineWidth = 4; circ(x, y, 26 + (1 - dist / .35) * 14); ctx.stroke(); A(1); }
+    circ(x, y + 4, 22); ctx.fillStyle = INK; ctx.fill();
+    pill(x, y, 22, C[i], p, INK, 24);
+  });
+  if (day >= 12) { const k = prog(u, 10.5, 11.5); A(1 - k); ctx.strokeStyle = Y; ctx.lineWidth = 5; circ(cx, cy - 155, 60 + 120 * k); ctx.stroke(); A(1); }
+  const dShow = Math.min(12, Math.floor(day + 1e-6));
+  T(`giorno ${dShow}`, cx, 672, 40, day >= 12 ? Y : '#fff');
+
+  // pannello multipli
+  T('Quando torna in cima ogni pianeta?', 940, 150, 30, '#fff', { f: BODY, w: 600 });
+  const X = v => 700 + v * 40;
+  for (let v = 1; v <= 12; v++) T(String(v), X(v), 222, 16, v === 12 && day >= 12 ? Y : 'rgba(189,182,238,.7)', { f: MONO, w: 500 });
+  ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(X(.5), 240); ctx.lineTo(X(12.6), 240); ctx.stroke();
+  // cursore del tempo
+  if (u > 1.5) { A(.55); ctx.fillStyle = Y; ctx.fillRect(X(day) - 1.5, 232, 3, 290); A(1); }
+  const rowsY = [290, 390, 490];
+  PER.forEach((p, i) => {
+    const y = rowsY[i];
+    pill(642, y, 21, C[i], p, INK, 22);
+    for (let v = p; v <= 12; v += p) pop(X(v), y, prog(day, v - .55, v), () => pill(0, 0, 19, C[i], v, INK, 20));
+  });
+  // colonna 12
+  const hk = prog(u, 10.6, 11.2);
+  if (hk > 0) { A(hk); ctx.strokeStyle = Y; ctx.lineWidth = 4; rr(X(12) - 31, 252, 62, 270, 18); ctx.stroke(); A(1); }
+  pop(940, 595, prog(u, 11, 11.6), () => T3('m.c.m.(3, 4, 6) = 12', 0, 0, 50, Y));
+  A(prog(u, 11.6, 12.2)); T('Dopo 12 giorni sono di nuovo tutti allineati in cima.', 940, 650, 23, MUT, { f: BODY, w: 500 }); A(1);
+}
+
+/* ---------- scene: Teglia Spaziale (M.C.D.) ---------- */
+function sMcd(u) {
+  const ux = 26, X0 = 110, Y0 = 228, w = 18, h = 12;
+  rr(X0, Y0, w * ux, h * ux, 10); ctx.fillStyle = PANEL; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3; ctx.stroke();
+  T('18 cm', X0 + w * ux / 2, Y0 - 28, 26, MUT, { f: BODY, w: 600 });
+  ctx.save(); ctx.translate(X0 - 30, Y0 + h * ux / 2); ctx.rotate(-Math.PI / 2); T('12 cm', 0, 0, 26, MUT, { f: BODY, w: 600 }); ctx.restore();
+
+  const TR = [
+    { s: 4, a: 1.5, col: O, msg: 'Lato 4: 18 ÷ 4 non è esatto → avanzo ✗', mc: RED },
+    { s: 3, a: 5, col: G, msg: 'Lato 3: niente avanzi, ma 24 pezzi piccoli ✓', mc: G },
+    { s: 6, a: 8, col: Y, msg: 'Lato 6: 6 pezzi, i più grandi possibile ★', mc: Y }
+  ];
+  let cur = null; TR.forEach(tr => { if (u >= tr.a) cur = tr; });
+  if (cur) {
+    const s = cur.s, cols = Math.floor(w / s), rows = Math.floor(h / s), n = cols * rows;
+    const k = Math.ceil(prog(u, cur.a, cur.a + 1.3) * n);
+    for (let q = 0; q < k; q++) {
+      const c = q % cols, r = Math.floor(q / cols), sz = s * ux;
+      rr(X0 + c * sz + 3, Y0 + r * sz + 3, sz - 6, sz - 6, 8);
+      ctx.fillStyle = cur.col; A(.88); ctx.fill(); A(1);
+      ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+    }
+    if (s === 4 && u >= cur.a + 1.4) {
+      const lp = prog(u, cur.a + 1.4, cur.a + 1.8), lx = X0 + 16 * ux;
+      A(lp); ctx.fillStyle = 'rgba(255,77,109,.3)'; ctx.fillRect(lx + 3, Y0 + 3, 2 * ux - 6, h * ux - 6);
+      ctx.save(); ctx.beginPath(); ctx.rect(lx + 3, Y0 + 3, 2 * ux - 6, h * ux - 6); ctx.clip();
+      ctx.strokeStyle = RED; ctx.lineWidth = 3;
+      for (let yy = -60; yy < h * ux + 60; yy += 18) { ctx.beginPath(); ctx.moveTo(lx, Y0 + yy); ctx.lineTo(lx + 60, Y0 + yy - 60); ctx.stroke(); }
+      ctx.restore();
+      ctx.save(); ctx.translate(lx + ux, Y0 + h * ux / 2); ctx.rotate(-Math.PI / 2); T('AVANZO!', 0, 0, 24, '#fff'); ctx.restore(); A(1);
+    }
+    A(prog(u, cur.a + 1.4, cur.a + 1.9)); T(cur.msg, X0 + w * ux / 2, 596, 24, cur.mc, { f: BODY, w: 600 }); A(1);
+  } else {
+    A(prog(u, .3, .9)); T('Quadrati uguali, senza avanzi: che lato scegliere?', X0 + w * ux / 2, 596, 24, MUT, { f: BODY, w: 500 }); A(1);
+  }
+
+  // pannello divisori
+  T('Che lato può avere il quadrato?', 960, 150, 30, '#fff', { f: BODY, w: 600 });
+  const R18 = [1, 2, 3, 6, 9, 18], R12 = [1, 2, 3, 4, 6, 12], COM = new Set([1, 2, 3, 6]);
+  const rows = [{ lab: 'Divisori di 18', v: R18, y: 296, ly: 242, d: 0 }, { lab: 'Divisori di 12', v: R12, y: 436, ly: 382, d: .3 }];
+  rows.forEach(row => {
+    T(row.lab, 700, row.ly, 24, MUT, { al: 'left', f: BODY, w: 600 });
+    row.v.forEach((v, i) => {
+      const x = 728 + i * 85, ck = prog(u, 8 + i * .12, 8.5 + i * .12), com = COM.has(v);
+      const isMax = v === 6 && u >= 10.2;
+      pop(x, row.y, prog(u, .4 + row.d + i * .1, 1 + row.d + i * .1), () => {
+        if (isMax) { A(.5 + .5 * Math.sin(u * 6)); circ(0, 0, 36); ctx.fillStyle = 'rgba(255,210,63,.35)'; ctx.fill(); A(1); }
+        A(com ? 1 : 1 - .6 * ck);
+        circ(0, 0, 27); ctx.fillStyle = isMax ? Y : (com && ck > 0 ? O : PANEL2); ctx.fill();
+        T(String(v), 0, 1, 26, isMax || (com && ck > 0) ? INK : '#fff');
+        A(1);
+      });
+      if (cur && cur.s === v && u < cur.a + 3.2) { ctx.strokeStyle = cur.mc; ctx.lineWidth = 4; circ(x, row.y, 33); ctx.stroke(); }
+    });
+    if (cur && cur.s === 4 && u < cur.a + 3.2 && !row.v.includes(4)) {
+      A(prog(u, cur.a + .3, cur.a + .8)); T('4 ✗', 1222, row.y, 24, RED, { f: BODY, w: 700 }); A(1);
+    }
+  });
+  pop(960, 560, prog(u, 10.6, 11.2), () => T3('M.C.D.(18, 12) = 6', 0, 0, 50, Y));
+  A(prog(u, 11.2, 11.8)); T('Il divisore comune più grande: niente avanzi, pezzi enormi.', 960, 615, 23, MUT, { f: BODY, w: 500 }); A(1);
+}
+
+/* ---------- scene: Factor Blaster ---------- */
+function sFac(u) {
+  const SH = [{ p: 2, t: 1.2, hit: 1 }, { p: 2, t: 2.9, hit: 1 }, { p: 7, t: 4.6, hit: 0 }, { p: 3, t: 6.3, hit: 1 }, { p: 5, t: 8.0, hit: 1 }];
+  const AX = 400, AY = 330, BTN = [2, 3, 5, 7], bx = p => 400 + (BTN.indexOf(p) - 1.5) * 95;
+  let v = 60; const log = [];
+  SH.forEach(s => { if (u >= s.t + .45) { if (s.hit) { log.push({ s: `${v} ÷ ${s.p} = ${v / s.p}`, t: s.t + .45, c: '#fff' }); v /= s.p; } else log.push({ s: `${v} ÷ ${s.p} → non esatto`, t: s.t + .45, c: RED }); } });
+  const rad = val => 40 + 80 * Math.sqrt(val / 60);
+  const last = SH[SH.length - 1].t + .45, gone = prog(u, last, last + .4);
+  let shake = 0; SH.forEach(s => { const d = u - (s.t + .45); if (d > 0 && d < .3) shake = Math.sin(d * 60) * 7 * (1 - d / .3); });
+  // asteroide
+  if (gone < 1) {
+    const r = rad(Math.max(v, 1)) * (1 - gone);
+    ctx.save(); ctx.translate(AX + shake, AY); ctx.rotate(u * .35);
+    ctx.beginPath(); AST.forEach((k, i) => { const a = i / AST.length * Math.PI * 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * r * k, Math.sin(a) * r * k); }); ctx.closePath();
+    ctx.fillStyle = '#4b3c8f'; ctx.fill(); ctx.strokeStyle = '#8f7fe0'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.fillStyle = 'rgba(16,8,46,.45)'; circ(r * .35, -r * .3, r * .16); ctx.fill(); circ(-r * .4, r * .35, r * .12); ctx.fill();
+    ctx.restore();
+    if (gone === 0) T(String(v), AX + shake, AY + 2, 26 + r * .45, '#fff');
+  }
+  // schegge e etichette
+  SH.forEach(s => {
+    const d = u - (s.t + .45);
+    if (s.hit && d > 0 && d < .8) {
+      A(1 - d / .8);
+      for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + s.t, rr_ = 70 + d * 220; ctx.fillStyle = PRIMEC[s.p]; ctx.fillRect(AX + Math.cos(a) * rr_ - 6, AY + Math.sin(a) * rr_ - 6, 12, 12); }
+      T(`÷${s.p}`, AX + 130, AY - 90 - d * 60, 40, PRIMEC[s.p]); A(1);
+    }
+  });
+  if (gone > 0) {
+    const d = u - last; A(1 - prog(d, .6, 1.4));
+    SHARD.forEach((sh, i) => { const rr_ = 30 + d * 300 * sh.s; ctx.fillStyle = i % 2 ? '#8f7fe0' : Y; ctx.fillRect(AX + Math.cos(sh.a) * rr_ - 7, AY + Math.sin(sh.a) * rr_ - 7, 14, 14); }); A(1);
+    pop(AX, AY, prog(u, last + .3, last + .8), () => pill(0, 0, 44, G, 1, INK, 46));
+  }
+  // pulsanti primi + proiettili
+  BTN.forEach(p => {
+    let press = 0; SH.forEach(s => { const d = u - s.t; if (s.p === p && d > 0 && d < .25) press = 1 - d / .25; });
+    const x = bx(p), y = 655;
+    circ(x, y + 6, 30); ctx.fillStyle = INK; ctx.fill();
+    ctx.save(); ctx.translate(x, y + press * 5); ctx.scale(1 - press * .08, 1 - press * .08); pill(0, 0, 30, PRIMEC[p], p, INK, 30); ctx.restore();
+  });
+  SH.forEach(s => {
+    const p = prog(u, s.t, s.t + .45), x0 = bx(s.p), y0 = 620;
+    const ty = AY + (s.hit ? 0 : rad(15) * .9);
+    if (p > 0 && p < 1) { const e = eo(p); pill(x0 + (AX - x0) * e, y0 + (ty - y0) * e, 18, PRIMEC[s.p], s.p, INK, 20); }
+    if (!s.hit) {
+      const q = prog(u, s.t + .45, s.t + 1.1);
+      if (q > 0 && q < 1) { A(1 - q); pill(AX + 260 * q, ty + 150 * q - 120 * Math.sin(q * Math.PI), 18, PRIMEC[s.p], s.p, INK, 20); A(1); }
+      const m = prog(u, s.t + .45, s.t + .7) * (1 - prog(u, s.t + 1.6, s.t + 1.9));
+      A(m); T('7 non divide 15: colpo a vuoto, −2 s', AX, 140, 26, RED, { f: BODY, w: 600 }); A(1);
+    }
+  });
+  // pannello scomposizione
+  T('Scomposizione in fattori primi', 950, 150, 30, '#fff', { f: BODY, w: 600 });
+  T('60 =', 760, 250, 44, '#fff', { al: 'left' });
+  let j = 0;
+  SH.forEach(s => {
+    if (!s.hit) return;
+    const x = 885 + j * 84;
+    if (j > 0 && u >= s.t + .45) T('·', x - 42, 250, 40, MUT);
+    pop(x, 250, prog(u, s.t + .45, s.t + .95), () => pill(0, 0, 26, PRIMEC[s.p], s.p, INK, 28));
+    j++;
+  });
+  log.forEach((l, i) => { A(prog(u, l.t, l.t + .3)); T(l.s, 760, 328 + i * 42, 24, l.c === '#fff' ? MUT : l.c, { al: 'left', f: MONO, w: 500 }); A(1); });
+  pop(950, 580, prog(u, 9.1, 9.7), () => T3('60 = 2² · 3 · 5', 0, 0, 54, Y));
+  A(prog(u, 9.7, 10.2)); T('Quando resta 1, la scomposizione è finita.', 950, 636, 23, MUT, { f: BODY, w: 500 }); A(1);
+}
+
+/* ---------- scene: Detective ---------- */
+function parse(str) { return str.split(/\[\[(.+?)\]\]/).map((t, i) => ({ t, k: i % 2 === 1, ki: (i - 1) / 2 })); }
+const CASES = [
+  { y: 112, a: 0, kA: 1.4, stA: 3.4, ansA: 4.3, op: 'm.c.m.', icon: '🔁', c: B, label: 'CASO 1 · 🚨',
+    seg: parse("Due fari lampeggiano: uno [[ogni]] 6 secondi, l'altro [[ogni]] 8 secondi. Si sono appena accesi insieme: tra quanti secondi [[si accenderanno di nuovo insieme]]?"),
+    ans: 'm.c.m.(6, 8) = 24 secondi' },
+  { y: 396, a: 5.4, kA: 6.5, stA: 8.4, ansA: 9.3, op: 'M.C.D.', icon: '✂️', c: O, label: 'CASO 2 · 💐',
+    seg: parse('Un fioraio ha 48 rose e 36 tulipani. Vuole comporre [[mazzi tutti uguali]] usando tutti i fiori, [[il maggior numero possibile]]. Quanti mazzi?'),
+    ans: 'M.C.D.(48, 36) = 12 mazzi' }
+];
+function sDet(u) {
+  CASES.forEach(cs => {
+    const ap = prog(u, cs.a, cs.a + .6); if (ap <= 0) return;
+    const x = 90, w = 1100, h = 262, y = cs.y + (1 - eo(ap)) * 40;
+    const keep = BASE; BASE = keep * ap; A(1);
+    rr(x, y, w, h, 26); ctx.fillStyle = PANEL; ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.15)'; ctx.lineWidth = 2; ctx.stroke();
+    T(cs.label, x + 36, y + 40, 18, MUT, { al: 'left', f: MONO, w: 700, ls: '2px' });
+    // testo con parole chiave
+    const size = 29, lh = 42, maxW = 790;
+    ctx.font = `500 ${size}px ${BODY}`; const sp = ctx.measureText(' ').width;
+    const words = []; cs.seg.forEach(s => s.t.split(' ').filter(Boolean).forEach(wd => words.push({ wd, k: s.k, ki: s.ki })));
+    let lx = 0, li = 0; words.forEach(o => { o.ww = ctx.measureText(o.wd).width; if (lx + o.ww > maxW && lx > 0) { li++; lx = 0; } o.x = lx; o.li = li; lx += o.ww + sp; });
+    words.forEach((o, i) => {
+      const tx = x + 36 + o.x, ty = y + 88 + o.li * lh;
+      if (o.k) {
+        const hp = prog(u, cs.kA + o.ki * .5, cs.kA + o.ki * .5 + .35);
+        const nxt = words[i + 1], join = nxt && nxt.k && nxt.ki === o.ki && nxt.li === o.li ? sp : 0;
+        if (hp > 0) { rr(tx - 4, ty - size * .62, (o.ww + 8 + join) * hp, size * 1.24, 8); ctx.fillStyle = cs.c; A(.32); ctx.fill(); A(1);
+          ctx.fillStyle = cs.c; ctx.fillRect(tx, ty + size * .56, o.ww * hp, 4); }
+      }
+      T(o.wd, tx, ty, size, o.k && u >= cs.kA ? '#fff' : '#e3defd', { al: 'left', f: BODY, w: 500 });
+    });
+    // timbro
+    const sp_ = prog(u, cs.stA, cs.stA + .35);
+    if (sp_ > 0) {
+      ctx.save(); ctx.translate(x + w - 150, y + h / 2 - 14); ctx.rotate(-.12); const s = 1 + .8 * (1 - eo(sp_)); ctx.scale(s, s);
+      const k2 = BASE; BASE = k2 * sp_; A(1);
+      rr(-118, -46, 236, 92, 18); ctx.fillStyle = cs.c; A(.16); ctx.fill(); A(1); ctx.strokeStyle = cs.c; ctx.lineWidth = 5; ctx.stroke();
+      T(`${cs.icon} ${cs.op}`, 0, 2, 38, cs.c); BASE = k2; ctx.restore(); A(1);
+    }
+    A(prog(u, cs.ansA, cs.ansA + .4)); T('→ ' + cs.ans, x + 36, y + h - 36, 30, cs.c, { al: 'left' }); A(1);
+    BASE = keep; A(1);
+  });
+}
+
+/* ---------- scene: riepilogo ---------- */
+function sEnd(u) {
+  const R = [
+    { x: 360, q: 'Si ripete e torna insieme?', big: '→ m.c.m.', s: 'il più piccolo multiplo comune', icon: '🔁', c: B, d: '#1a7fa3' },
+    { x: 920, q: 'Divido in parti uguali?', big: '→ M.C.D.', s: 'il più grande divisore comune', icon: '✂️', c: O, d: '#b85a1c' }
+  ];
+  R.forEach((r, i) => pop(r.x, 280, prog(u, .1 + i * .35, .7 + i * .35), () => {
+    btn3d(-260, -135, 520, 270, r.c, r.d, 28);
+    T(r.icon, 0, -78, 52, '#fff');
+    T(r.q, 0, -12, 30, INK, { f: BODY, w: 600 });
+    T(r.big, 0, 48, 58, INK);
+    A(.8); T(r.s, 0, 100, 23, INK, { f: BODY, w: 600 }); A(1);
+  }));
+  pop(640, 520, prog(u, 1.3, 1.9), () => T3('Ora tocca a te: scegli una missione!', 0, 0, 46, Y));
+  MODES.forEach((m, i) => pop(640 + (i - 1.5) * 110, 615, prog(u, 2 + i * .15, 2.5 + i * .15), () => {
+    btn3d(-40, -40, 80, 80, m.c, m.d, 20); T(m.icon, 0, 1, 40, '#fff');
+  }));
+}
+
+const FN = { intro: sIntro, mcm: sMcm, mcd: sMcd, fac: sFac, det: sDet, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta da dentro il gioco; #mcm #mcd #fac #det → parte da quella missione e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#22125a'); g.addColorStop(1, '#0a0722');
+  ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const now = reduce ? 0 : performance.now() / 1000;
+  ctx.fillStyle = '#fff';
+  STARS.forEach(s => { ctx.globalAlpha = .2 + .35 * (.5 + .5 * Math.sin(now * 1.3 + s.ph)); circ(s.x, s.y, s.r); ctx.fill(); });
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.icon) chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map((sc, i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = speed + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+})();
+</script>
+</body>
+</html>

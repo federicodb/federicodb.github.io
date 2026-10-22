@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-20 12:18:57
+   Data: 2026-10-22 11:36:58
 */
 
 const db = [

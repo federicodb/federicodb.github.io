@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0722">
+<title>Scomposizioni & Parabola in un minuto</title>
+<meta name="description" content="Animazione di un minuto che spiega prodotti notevoli, trinomio speciale, zeri e vertice della parabola e scomposizione completa attraverso le quattro missioni di Arcade Challenge (Orfini Math Lab).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Lilita+One&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: una "console" arcade centrata — schermo 16:9, barra comandi, sottotitoli, testo completo. Un solo look scuro, come il gioco. */
+:root{
+  --bg1:#22125a; --bg2:#0a0722; --panel:#1a1046; --panel2:#2a2070;
+  --line:rgba(255,255,255,.12); --fg:#ffffff; --muted:#bdb6ee; --ink:#10082e;
+  --y:#ffd23f; --yd:#b8901a; --b:#4cc9f0; --bd:#1a7fa3; --o:#ff8c42; --od:#b85a1c;
+  --g:#3ddc84; --gd:#1a8a4e; --p:#9b5de5; --pd:#6532a8; --k:#f15bb5; --kd:#a62a78;
+  --disp:'Lilita One','Fredoka',system-ui,sans-serif;
+  --body:'Fredoka',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+html{background:var(--bg2)}
+body{
+  background:radial-gradient(1200px 700px at 50% -10%,var(--bg1),var(--bg2)) var(--bg2);
+  color:var(--fg); font-family:var(--body); font-size:16px; line-height:1.5;
+  min-height:100%;
+}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow a{color:var(--muted);text-decoration:none}
+.eyebrow a:hover{color:var(--fg)}
+h1{font-family:var(--disp);font-weight:400;font-size:clamp(34px,6vw,56px);line-height:1.02;margin:0;color:var(--y);
+  text-shadow:0 4px 0 var(--ink);text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--muted);font-size:17px}
+.screen{position:relative;border-radius:22px;padding:10px;background:var(--panel);
+  border:1px solid var(--line);box-shadow:0 10px 0 #070516,0 30px 60px rgba(0,0,0,.45)}
+canvas{display:block;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:14px;background:var(--bg2);cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{font-family:var(--disp);font-size:18px;letter-spacing:.02em;border:0;border-radius:14px;padding:10px 18px;
+  background:var(--c,var(--panel2));color:var(--t,var(--fg));box-shadow:0 5px 0 var(--d,#150f45);cursor:pointer;
+  transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--d,#150f45)}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,input:focus-visible{outline:3px solid var(--y);outline-offset:3px}
+.play{--c:var(--y);--d:var(--yd);--t:#3a2a00;min-width:120px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:10px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--y)}
+.time{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{font-family:var(--body);font-weight:600;font-size:14px;color:var(--fg);background:transparent;border:2px solid var(--line);
+  border-radius:999px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:7px;align-items:center}
+.chap::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.chap[aria-current="true"]{border-color:var(--c);background:rgba(255,255,255,.06)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.2vw,21px);line-height:1.45;font-weight:500;max-width:70ch}
+.caption b{color:var(--y);font-weight:600}
+section.tx{border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:14px}
+section.tx h2{font-family:var(--disp);font-weight:400;font-size:26px;margin:0;color:var(--fg)}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 26px}
+.txlist li{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ts{align-self:flex-start;font-family:var(--mono);font-size:13px;color:var(--ink);background:var(--c);border:0;border-radius:8px;padding:2px 8px;cursor:pointer}
+.txlist strong{font-family:var(--disp);font-weight:400;font-size:19px}
+.txlist p{margin:0;color:var(--muted);max-width:60ch}
+.cta{display:inline-block;align-self:flex-start;text-decoration:none;--c:var(--g);--d:var(--gd);--t:#063a1f}
+.hint{font-size:13px;color:var(--muted);margin:0}
+/* modalità incorporata (?embed): solo schermo e comandi */
+.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:17px}
+@media (max-width:560px){.btn{font-size:16px;padding:9px 14px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="https://federicodb.github.io/index.html">← Orfini Math Lab</a> · Algebra · Biennio</div>
+    <h1>Scomposizioni &amp; Parabola in un minuto</h1>
+    <p class="lead">Un minuto per capire le quattro missioni di Arcade Challenge: la differenza di quadrati vista come area, il trinomio somma-prodotto, zeri e vertice della parabola, la scomposizione completa.</p>
+  </header>
+
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: prodotti notevoli, trinomio speciale, parabola e scomposizione completa nelle missioni di Arcade Challenge"></canvas>
+  </div>
+
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="67" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:07</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare e spiegare.</p>
+
+  <a class="btn cta" href="https://federicodb.github.io/content/apps/arcade_challenge_scomposizioni_parabola.html">🎮 Gioca ad Arcade Challenge</a>
+
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 67;
+const DISP = "'Lilita One','Fredoka',system-ui,sans-serif";
+const BODY = "'Fredoka',system-ui,sans-serif";
+const MONO = "'JetBrains Mono',ui-monospace,monospace";
+const B = '#4cc9f0', O = '#ff8c42', G = '#3ddc84', Y = '#ffd23f', RED = '#ff4d6d', P = '#9b5de5', K = '#f15bb5';
+const INK = '#10082e', MUT = '#bdb6ee', PANEL = '#1a1046', PANEL2 = '#2a2070';
+
+const MODES = [
+  { icon: '📐', name: 'Area Lab', tag: 'Prodotti Notevoli', c: B, d: '#1a7fa3', t: INK },
+  { icon: '🧩', name: 'Trinomio Lab', tag: 'Trinomio Speciale', c: O, d: '#b85a1c', t: INK },
+  { icon: '📡', name: 'Parabola Radar', tag: 'Equazione ↔ Grafico', c: P, d: '#6532a8', t: '#fff' },
+  { icon: '💥', name: 'Factor Blaster', tag: 'Scomposizione Totale', c: K, d: '#a62a78', t: '#fff' }
+];
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: Y,
+    cap: 'Arcade Challenge allena la <b>scomposizione dei polinomi</b>: prodotti notevoli, trinomio speciale, il grafico della <b>parabola</b> e la scomposizione completa.' },
+  { id: 'prod', label: 'Area Lab', a: 5, b: 19, ...MODES[0],
+    cap: 'Da un quadrato di lato x togli l\'angolo 3 × 3: resta <b>x² − 9</b>. Spostando la striscia nasce un rettangolo di lati x + 3 e x − 3: <b>x² − 9 = (x − 3)(x + 3)</b>. Non è (x − 3)²: quello ha anche il doppio prodotto −6x.' },
+  { id: 'trin', label: 'Trinomio Lab', a: 19, b: 33, ...MODES[1],
+    cap: 'In <b>x² + 5x + 6</b> servono due numeri con <b>somma 5</b> e <b>prodotto 6</b>. 1 e 6 danno somma 7, −2 e −3 hanno i segni sbagliati, 2 e 3 vanno bene: <b>x² + 5x + 6 = (x + 2)(x + 3)</b>.' },
+  { id: 'para', label: 'Parabola Radar', a: 33, b: 48, ...MODES[2],
+    cap: '<b>y = x² − 2x − 3 = (x + 1)(x − 3)</b>. Ogni fattore si annulla col segno opposto: zeri in <b>x = −1</b> e <b>x = 3</b>. Il vertice sta a metà: <b>V(1; −4)</b>. Con a = 1 > 0 la parabola è rivolta verso l\'alto.' },
+  { id: 'fac', label: 'Factor Blaster', a: 48, b: 61, ...MODES[3],
+    cap: 'Si spara all\'asteroide solo con i fattori che lo dividono. <b>2x² − 18</b>: prima il fattore comune 2, poi (x − 3) e (x + 3). (x − 2) non divide: colpo a vuoto, −2 s. Risultato: <b>2(x − 3)(x + 3)</b>.' },
+  { id: 'end', label: 'Riepilogo', a: 61, b: 67, c: G,
+    cap: 'Prima il <b>fattore comune</b>, poi conta i termini: due quadrati col meno o un trinomio somma-prodotto. Gli <b>zeri</b> hanno il segno opposto a quello nei fattori. Ora tocca a te!' }
+];
+
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 3);
+const back = p => 1 + 2.70158 * Math.pow(p - 1, 3) + 1.70158 * Math.pow(p - 1, 2);
+const lerp = (a, b, k) => a + (b - a) * k;
+function rng(s) { return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const r1 = rng(7), STARS = Array.from({ length: 110 }, () => ({ x: r1() * W, y: r1() * H, r: r1() * 1.6 + .4, ph: r1() * 6.28 }));
+const r2 = rng(42), AST = Array.from({ length: 15 }, () => .8 + r2() * .26);
+const SHARD = Array.from({ length: 18 }, (_, i) => ({ a: i / 18 * 6.283 + r2() * .3, s: .7 + r2() * .6 }));
+
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || ''} ${size}px ${o.f || DISP}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col;
+  if ('letterSpacing' in ctx) ctx.letterSpacing = o.ls || '0px';
+  ctx.fillText(s, x, y);
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+}
+function T3(s, x, y, size, col, o = {}) { T(s, x, y + Math.max(3, size * .06), size, INK, o); T(s, x, y, size, col, o); }
+function W_(s, size, f = DISP, w = '') { ctx.font = `${w} ${size}px ${f}`; return ctx.measureText(s).width; }
+const MO = { f: MONO, w: 700 }, BO = { f: BODY, w: 600 };
+function pop(x, y, p, fn, rot = 0) {
+  if (p <= 0) return;
+  const s = back(Math.min(p, 1));
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  const keep = BASE; BASE = keep * Math.min(1, p * 2.5); A(1); fn(); BASE = keep;
+  ctx.restore(); A(1);
+}
+function pill(x, y, r, fill, label, tc = INK, size) {
+  circ(x, y, r); ctx.fillStyle = fill; ctx.fill();
+  T(String(label), x, y + 1, size || r * 1.05, tc);
+}
+function btn3d(x, y, w, h, c, d, rad = 22) {
+  rr(x, y + 7, w, h, rad); ctx.fillStyle = d; ctx.fill();
+  rr(x, y, w, h, rad); ctx.fillStyle = c; ctx.fill();
+}
+function chip(m) {
+  const lab = `${m.icon} ${m.name.toUpperCase()}`, tag = m.tag;
+  const w1 = W_(lab, 26), w2 = W_(tag, 20, BODY, 600), w = w1 + w2 + 64;
+  btn3d(32, 26, w, 54, m.c, m.d, 27);
+  T(lab, 54, 54, 26, m.t, { al: 'left' });
+  A(.8); T(tag, 54 + w1 + 22, 54, 20, m.t, { al: 'left', f: BODY, w: 600 }); A(1);
+}
+/* etichetta con fondo scuro, per testi sopra il grafico */
+function tag(s, x, y, size, col, al = 'center') {
+  const w = W_(s, size, MONO, 700) + 16, x0 = al === 'left' ? x - 8 : al === 'right' ? x - w + 8 : x - w / 2;
+  rr(x0, y - size * .72, w, size * 1.44, 8); ctx.fillStyle = 'rgba(10,7,34,.82)'; ctx.fill();
+  T(s, x, y, size, col, { ...MO, al });
+}
+function msgAt(u, list, x, y) {
+  let cur = null; list.forEach(m => { if (u >= m[0]) cur = m; });
+  if (!cur) return;
+  A(prog(u, cur[0], cur[0] + .4)); T(cur[1], x, y, 24, cur[2], BO); A(1);
+}
+
+/* ---------- scene: intro ---------- */
+function sIntro(u) {
+  pop(640, 150, prog(u, 0, .6), () => T3('SCOMPOSIZIONI & PARABOLA', 0, 0, 54, '#fff'));
+  pop(640, 245, prog(u, .3, .9), () => T3('ARCADE CHALLENGE', 0, 0, 96, Y));
+  MODES.forEach((m, i) => {
+    const x = 640 + (i - 1.5) * 272, y = 455;
+    pop(x, y, prog(u, .8 + i * .25, 1.4 + i * .25), () => {
+      btn3d(-122, -82, 244, 164, m.c, m.d, 24);
+      T(m.icon, 0, -36, 50, '#fff');
+      T(m.name, 0, 22, 28, m.t);
+      A(.85); T(m.tag, 0, 54, 20, m.t, BO); A(1);
+    });
+  });
+  A(prog(u, 2.2, 2.8)); T('Quattro missioni, una sola idea: spezzare un polinomio in fattori', 640, 625, 26, MUT, { f: BODY, w: 500 }); A(1);
+}
+
+/* ---------- scene: Area Lab (differenza di quadrati come area) ---------- */
+function sProd(u) {
+  const X0 = 140, Y0 = 190, XL = 300, B3 = 90, IN = XL - B3;
+  const ap = prog(u, .3, 1), cut = prog(u, 1.6, 2.2), gone = prog(u, 3.2, 3.9);
+  const mv = eo(prog(u, 4.6, 6.6)), done = prog(u, 6.8, 7.4);
+  const keep = BASE; BASE = keep * ap; A(1);
+  // pezzo alto: x per (x − 3)
+  ctx.fillStyle = B; ctx.fillRect(X0, Y0, XL, IN);
+  A(cut); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.strokeRect(X0, Y0, XL, IN); A(1);
+  // angolo 3 × 3 che si toglie
+  if (gone < 1) {
+    A(1 - gone); ctx.fillStyle = B; ctx.fillRect(X0 + IN, Y0 + IN, B3, B3);
+    A((1 - gone) * cut); ctx.fillStyle = RED; ctx.fillRect(X0 + IN, Y0 + IN, B3, B3);
+    ctx.save(); ctx.beginPath(); ctx.rect(X0 + IN, Y0 + IN, B3, B3); ctx.clip();
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3;
+    for (let k = -B3; k < B3 * 2; k += 18) { ctx.beginPath(); ctx.moveTo(X0 + IN + k, Y0 + XL); ctx.lineTo(X0 + IN + k + B3, Y0 + IN); ctx.stroke(); }
+    ctx.restore();
+    T('−9', X0 + IN + B3 / 2, Y0 + IN + B3 / 2, 32, '#fff', MO); A(1);
+  }
+  // striscia (x − 3) per 3: ruota e va a destra
+  const cx = lerp(X0 + IN / 2, X0 + XL + B3 / 2, mv), cy = lerp(Y0 + IN + B3 / 2, Y0 + IN / 2, mv) - Math.sin(mv * Math.PI) * 50;
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(-Math.PI / 2 * mv);
+  ctx.fillStyle = B; ctx.fillRect(-IN / 2, -B3 / 2, IN, B3);
+  A(cut); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.strokeRect(-IN / 2, -B3 / 2, IN, B3); A(1);
+  ctx.restore();
+  // contorno del quadrato iniziale, poi del rettangolo finale
+  A(1 - cut); ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 3; ctx.strokeRect(X0, Y0, XL, XL); A(1);
+  A(done); ctx.strokeStyle = Y; ctx.lineWidth = 5; rr(X0 - 4, Y0 - 4, XL + B3 + 8, IN + 8, 8); ctx.stroke(); A(1);
+  A(1 - cut); T('x²', X0 + XL / 2, Y0 + XL / 2, 64, INK, MO); A(1);
+  // misure dei lati
+  A(1 - done); T('x', X0 + XL / 2, Y0 - 30, 30, MUT, MO); A(1);
+  A(done); T('x + 3', X0 + (XL + B3) / 2, Y0 - 30, 30, Y, MO); A(1);
+  ctx.save(); ctx.translate(X0 - 34, Y0 + lerp(XL / 2, IN / 2, done)); ctx.rotate(-Math.PI / 2);
+  A(1 - done); T('x', 0, 0, 30, MUT, MO); A(done); T('x − 3', 0, 0, 30, Y, MO); A(1);
+  ctx.restore();
+  A(cut * (1 - gone)); T('3', X0 + XL + 22, Y0 + IN + B3 / 2, 26, '#ffb3c1', MO); T('3', X0 + IN + B3 / 2, Y0 + XL + 24, 26, '#ffb3c1', MO); A(1);
+  BASE = keep; A(1);
+  msgAt(u, [[.3, 'Un quadrato di lato x: area x²', MUT], [1.6, 'Togli l\'angolo 3 × 3: resta x² − 9', '#ffb3c1'],
+    [4.6, 'Sposta la striscia di lato 3…', MUT], [7, '…ed è un rettangolo (x + 3) per (x − 3)', Y]], X0 + (XL + B3) / 2, 615);
+
+  // pannello formula
+  T('Differenza di quadrati', 960, 150, 30, '#fff', BO);
+  pop(960, 230, prog(u, .6, 1.2), () => T3('x² − 9', 0, 0, 60, '#fff', MO));
+  A(prog(u, 2.2, 2.8)); T('= x² − 3²', 960, 305, 36, MUT, MO);
+  T('due quadrati separati da un meno', 960, 352, 22, MUT, { f: BODY, w: 500 }); A(1);
+  pop(960, 430, prog(u, 7.4, 8), () => T3('= (x − 3)(x + 3)', 0, 0, 46, Y, MO));
+  const ep = prog(u, 9.6, 10.1);
+  if (ep > 0) {
+    const keep2 = BASE; BASE = keep2 * ep; A(1);
+    rr(725, 500, 470, 150, 20); ctx.fillStyle = PANEL; ctx.fill(); ctx.strokeStyle = RED; ctx.lineWidth = 3; ctx.stroke();
+    T('(x − 3)² ?', 960, 545, 34, '#fff', MO);
+    const sp = prog(u, 10.4, 10.9), sw = W_('(x − 3)² ?', 34, MONO, 700);
+    ctx.strokeStyle = RED; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(960 - sw / 2 - 8, 545); ctx.lineTo(960 - sw / 2 - 8 + (sw + 16) * sp, 545); ctx.stroke();
+    A(prog(u, 10.8, 11.3)); T('✗ No: (x − 3)² = x² − 6x + 9', 960, 595, 24, RED, BO);
+    T('ha anche il doppio prodotto −6x', 960, 628, 22, MUT, { f: BODY, w: 500 });
+    BASE = keep2; A(1);
+  }
+}
+
+/* ---------- scene: Trinomio Lab (somma e prodotto) ---------- */
+const TR_ROWS = [
+  { pq: '(1; 6)', pr: '+6', s: '+7', v: '✗', c: RED, t: 2.4 },
+  { pq: '(−2; −3)', pr: '+6', s: '−5', v: 'segni ✗', c: Y, t: 4.0 },
+  { pq: '(2; 3)', pr: '+6', s: '+5', v: '✓', c: G, t: 5.6 }
+];
+function sTrin(u) {
+  const stroke = (w, h) => { ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.strokeRect(-w / 2, -h / 2, w, h); };
+  const lblOut = prog(u, 7.6, 8);
+  // quadrato x²
+  pop(240, 310, prog(u, .3, .9), () => { ctx.fillStyle = B; ctx.fillRect(-120, -120, 240, 240); stroke(240, 240); A(1 - lblOut); T('x²', 0, 0, 56, INK, MO); });
+  // 5 strisce x: 2 a destra, 3 sotto
+  for (let i = 0; i < 5; i++) {
+    const k = eo(prog(u, 7.8 + i * .15, 8.6 + i * .15));
+    const to = i < 2 ? [380 + 40 * i, 310, 0] : [240, 450 + 40 * (i - 2), Math.PI / 2];
+    const x = lerp(420 + 52 * i, to[0], k), y = lerp(310, to[1], k) - Math.sin(k * Math.PI) * 30;
+    pop(x, y, prog(u, .9 + i * .12, 1.4 + i * .12), () => {
+      ctx.fillStyle = P; ctx.fillRect(-20, -120, 40, 240); stroke(40, 240);
+      T('x', 0, 0, 22, '#fff', MO);
+    }, to[2] * k);
+  }
+  // 6 quadretti unitari: riempiono l'angolo 2 × 3
+  for (let j = 0; j < 6; j++) {
+    const k = eo(prog(u, 8.6 + j * .1, 9.3 + j * .1));
+    const x = lerp(420 + 48 * j, 380 + 40 * (j % 2), k), y = lerp(510, 450 + 40 * Math.floor(j / 2), k) - Math.sin(k * Math.PI) * 30;
+    pop(x, y, prog(u, 1.4 + j * .1, 1.9 + j * .1), () => { ctx.fillStyle = G; ctx.fillRect(-20, -20, 40, 40); stroke(40, 40); });
+  }
+  A(prog(u, 1.8, 2.3) * (1 - lblOut));
+  T('5x', 524, 458, 28, '#d9c6ff', MO); T('6', 540, 562, 28, G, MO); A(1);
+  const dn = prog(u, 9.9, 10.4);
+  A(dn); ctx.strokeStyle = Y; ctx.lineWidth = 5; rr(116, 186, 328, 368, 8); ctx.stroke();
+  T('x + 2', 280, 158, 30, Y, MO);
+  ctx.save(); ctx.translate(86, 370); ctx.rotate(-Math.PI / 2); T('x + 3', 0, 0, 30, Y, MO); ctx.restore(); A(1);
+  msgAt(u, [[1.4, 'Un quadrato, 5 strisce x e 6 quadretti', MUT], [7.8, 'Con 2 e 3 i pezzi fanno un rettangolo', MUT], [10, 'Lati del rettangolo: (x + 2) e (x + 3)', Y]], 330, 625);
+
+  // pannello somma-prodotto
+  const cx = 975;
+  T('Due numeri: somma 5, prodotto 6', cx, 150, 30, '#fff', BO);
+  pop(cx, 218, prog(u, .5, 1.1), () => T3('x² + 5x + 6', 0, 0, 54, '#fff', MO));
+  [['somma s = +5', 860, O], ['prodotto P = +6', 1090, K]].forEach(([s, x, c], i) => {
+    const p = prog(u, 1.2 + i * .3, 1.7 + i * .3); if (p <= 0) return;
+    A(p); const w = W_(s, 22, MONO, 700) + 28;
+    rr(x - w / 2, 272, w, 40, 20); ctx.fillStyle = c; ctx.fill(); T(s, x, 293, 22, INK, MO); A(1);
+  });
+  const COL = [810, 945, 1060, 1170];
+  A(prog(u, 2, 2.4)); ['(p; q)', 'p · q', 'p + q', ''].forEach((h, i) => T(h, COL[i], 355, 22, MUT, BO)); A(1);
+  TR_ROWS.forEach((r, i) => {
+    const y = 408 + i * 54, ap = prog(u, r.t, r.t + .4), vp = prog(u, r.t + .8, r.t + 1.2);
+    if (ap <= 0) return;
+    if (r.c === G && vp > 0) { A(vp * .25); rr(740, y - 24, 490, 48, 12); ctx.fillStyle = G; ctx.fill(); A(1); }
+    A(ap); T(r.pq, COL[0], y, 26, '#fff', MO); T(r.pr, COL[1], y, 26, K, MO); A(1);
+    A(vp); T(r.s, COL[2], y, 26, r.c === G ? G : RED, MO); T(r.v, COL[3], y, 24, r.c, BO); A(1);
+  });
+  pop(cx, 590, prog(u, 10.2, 10.8), () => T3('= (x + 2)(x + 3)', 0, 0, 44, Y, MO));
+  A(prog(u, 10.8, 11.3)); T('2 + 3 = 5   e   2 · 3 = 6', cx, 645, 24, MUT, MO); A(1);
+}
+
+/* ---------- scene: Parabola Radar (zeri e vertice) ---------- */
+function sPara(u) {
+  const ox = 290, oy = 424, sx = 62, sy = 49;
+  const PX = x => ox + x * sx, PY = y => oy - y * sy, f = x => x * x - 2 * x - 3;
+  const neg = n => String(n).replace('-', '−');
+  const keep = BASE; BASE = keep * prog(u, 0, .6); A(1);
+  rr(80, 112, 548, 578, 18); ctx.fillStyle = 'rgba(26,16,70,.9)'; ctx.fill();
+  ctx.save(); rr(80, 112, 548, 578, 18); ctx.clip();
+  ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth = 1;
+  for (let x = -3; x <= 5; x++) { ctx.beginPath(); ctx.moveTo(PX(x), 112); ctx.lineTo(PX(x), 690); ctx.stroke(); }
+  for (let y = -5; y <= 6; y++) { ctx.beginPath(); ctx.moveTo(80, PY(y)); ctx.lineTo(628, PY(y)); ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(255,255,255,.65)'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(80, oy); ctx.lineTo(628, oy); ctx.moveTo(ox, 112); ctx.lineTo(ox, 690); ctx.stroke();
+  [-2, -1, 1, 2, 3, 4, 5].forEach(x => T(neg(x), PX(x), oy + 22, 20, MUT, { f: MONO, w: 500 }));
+  [-4, -2, 2, 4].forEach(y => T(neg(y), ox - 12, PY(y), 20, MUT, { f: MONO, w: 500, al: 'right' }));
+  // asse di simmetria x = 1
+  A(prog(u, 8, 8.4)); ctx.setLineDash([10, 10]); ctx.strokeStyle = Y; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(PX(1), 112); ctx.lineTo(PX(1), 690); ctx.stroke(); ctx.setLineDash([]); A(1);
+  // curva disegnata da sinistra a destra
+  const ck = prog(u, 9.8, 11.3);
+  if (ck > 0) {
+    ctx.strokeStyle = B; ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.beginPath();
+    const x1 = -2.4 + 6.8 * ck;
+    for (let x = -2.4; x <= x1 + 1e-9; x += .05) ctx[x === -2.4 ? 'moveTo' : 'lineTo'](PX(x), PY(f(x)));
+    ctx.lineTo(PX(x1), PY(f(x1))); ctx.stroke();
+  }
+  ctx.restore();
+  // zero sbagliato (errore tipico)
+  const ep = prog(u, 11.8, 12.2) * (1 - prog(u, 14.4, 14.9));
+  if (ep > 0) {
+    A(ep); ctx.setLineDash([6, 6]); ctx.strokeStyle = RED; ctx.lineWidth = 3; circ(PX(-3), oy, 16); ctx.stroke(); ctx.setLineDash([]);
+    tag('x = −3 ✗', PX(-3) - 4, oy + 58, 22, RED, 'left'); A(1);
+  }
+  // zeri, vertice, intersezione con l'asse y
+  [[-1, 5.6, 'x = −1', 'right'], [3, 6.4, 'x = 3', 'left']].forEach(([x, t, s, al]) => {
+    pop(PX(x), oy, prog(u, t, t + .5), () => { circ(0, 0, 12); ctx.fillStyle = G; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke(); });
+    A(prog(u, t + .2, t + .6)); tag(s, PX(x) + (al === 'left' ? 18 : -18), oy - 30, 22, G, al); A(1);
+  });
+  pop(PX(1), PY(-4), prog(u, 8.6, 9.1), () => { ctx.rotate(Math.PI / 4); ctx.fillStyle = Y; ctx.fillRect(-11, -11, 22, 22); ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.strokeRect(-11, -11, 22, 22); });
+  A(prog(u, 8.8, 9.2)); tag('V(1; −4)', PX(1) + 22, PY(-4), 22, Y, 'left'); A(1);
+  pop(ox, PY(-3), prog(u, 11.3, 11.8), () => { circ(0, 0, 10); ctx.fillStyle = K; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke(); });
+  A(prog(u, 11.5, 11.9)); tag('(0; −3)', ox - 18, PY(-3), 22, K, 'right'); A(1);
+  BASE = keep; A(1);
+
+  // pannello: dall'equazione agli zeri
+  const cx = 960;
+  T('Dall\'equazione al grafico', cx, 150, 30, '#fff', BO);
+  pop(cx, 212, prog(u, .5, 1.1), () => T3('y = x² − 2x − 3', 0, 0, 44, '#fff', MO));
+  A(prog(u, 1.8, 2.3)); T('somma −2, prodotto −3  →  +1 e −3', cx, 268, 22, MUT, { f: BODY, w: 500 }); A(1);
+  pop(cx, 325, prog(u, 3.2, 3.8), () => T3('y = (x + 1)(x − 3)', 0, 0, 40, Y, MO));
+  A(prog(u, 5.2, 5.6)); T('x + 1 = 0  →  x = −1', cx, 392, 26, G, MO); A(1);
+  A(prog(u, 6.0, 6.4)); T('x − 3 = 0  →  x = 3', cx, 432, 26, G, MO); A(1);
+  A(prog(u, 8.0, 8.4)); T('vertice: x = (−1 + 3) ÷ 2 = 1', cx, 492, 24, Y, MO); A(1);
+  A(prog(u, 8.6, 9.0)); T('y = 1 − 2 − 3 = −4', cx, 530, 24, Y, MO); A(1);
+  A(prog(u, 10, 10.4)); T('a = 1 > 0: concavità verso l\'alto ∪', cx, 585, 24, B, BO); A(1);
+  if (ep > 0) {
+    A(ep); rr(725, 618, 470, 60, 16); ctx.fillStyle = PANEL; ctx.fill(); ctx.strokeStyle = RED; ctx.lineWidth = 3; ctx.stroke();
+    T('✗ x = −3? No: x − 3 = 0 per x = +3', cx, 648, 22, RED, BO); A(1);
+  }
+}
+
+/* ---------- scene: Factor Blaster ---------- */
+const FB = ['2', 'x', 'x − 2', 'x − 3', 'x + 3'], FBC = [B, G, Y, K, O];
+const FSH = [{ f: '2', t: 1.2, hit: 1 }, { f: 'x − 2', t: 3.4, hit: 0 }, { f: 'x − 3', t: 5.4, hit: 1 }, { f: 'x + 3', t: 7.2, hit: 1 }];
+const FHIT = FSH.filter(s => s.hit), FST = ['2x² − 18', 'x² − 9', 'x + 3', '1'], FRAD = [130, 112, 84, 84];
+const flab = f => f.length === 1 ? f : `(${f})`, fcol = f => FBC[FB.indexOf(f)];
+function sFac(u) {
+  const AX = 380, AY = 300, BY = 630;
+  const ws = FB.map(f => Math.max(64, W_(flab(f), 24, MONO, 700) + 32));
+  let xx = AX - (ws.reduce((a, b) => a + b, 0) + 14 * (FB.length - 1)) / 2;
+  const BX = ws.map(w => { const c = xx + w / 2; xx += w + 14; return c; });
+  const bx = f => BX[FB.indexOf(f)];
+  let st = 0, r = FRAD[0];
+  FHIT.forEach((s, i) => { if (u >= s.t + .45) st++; r += (FRAD[i + 1] - FRAD[i]) * eo(prog(u, s.t + .45, s.t + .9)); });
+  const last = FHIT[FHIT.length - 1].t + .45, gone = prog(u, last, last + .4);
+  let shake = 0; FSH.forEach(s => { const d = u - (s.t + .45); if (d > 0 && d < .3) shake = Math.sin(d * 60) * 7 * (1 - d / .3); });
+  // asteroide con il polinomio rimasto
+  if (gone < 1) {
+    const rad = r * (1 - gone);
+    ctx.save(); ctx.translate(AX + shake, AY); ctx.rotate(u * .35);
+    ctx.beginPath(); AST.forEach((k, i) => { const a = i / AST.length * Math.PI * 2; ctx[i ? 'lineTo' : 'moveTo'](Math.cos(a) * rad * k, Math.sin(a) * rad * k); }); ctx.closePath();
+    ctx.fillStyle = '#4b3c8f'; ctx.fill(); ctx.strokeStyle = '#8f7fe0'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.fillStyle = 'rgba(16,8,46,.45)'; circ(rad * .4, -rad * .45, rad * .16); ctx.fill(); circ(-rad * .45, rad * .45, rad * .12); ctx.fill();
+    ctx.restore();
+    if (gone === 0) {
+      const s = FST[st], w = W_(s, 30, MONO, 700) + 36;
+      rr(AX + shake - w / 2, AY - 27, w, 54, 14); ctx.fillStyle = 'rgba(10,7,36,.88)'; ctx.fill(); ctx.strokeStyle = Y; ctx.lineWidth = 2.5; ctx.stroke();
+      T(s, AX + shake, AY + 1, 30, '#fff', MO);
+    }
+  }
+  FSH.forEach(s => {
+    const d = u - (s.t + .45);
+    if (s.hit && d > 0 && d < .8) {
+      A(1 - d / .8);
+      for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + s.t, q = 80 + d * 220; ctx.fillStyle = fcol(s.f); ctx.fillRect(AX + Math.cos(a) * q - 6, AY + Math.sin(a) * q - 6, 12, 12); }
+      T('÷ ' + flab(s.f), AX + 170, AY - 110 - d * 60, 36, fcol(s.f), MO); A(1);
+    }
+  });
+  if (gone > 0) {
+    const d = u - last; A(1 - prog(d, .6, 1.4));
+    SHARD.forEach((sh, i) => { const q = 30 + d * 300 * sh.s; ctx.fillStyle = i % 2 ? '#8f7fe0' : Y; ctx.fillRect(AX + Math.cos(sh.a) * q - 7, AY + Math.sin(sh.a) * q - 7, 14, 14); }); A(1);
+    pop(AX, AY, prog(u, last + .3, last + .8), () => pill(0, 0, 44, G, 1, INK, 46));
+  }
+  // cannoni (pulsanti dei fattori) e colpi
+  FB.forEach((f, i) => {
+    let press = 0; FSH.forEach(s => { const d = u - s.t; if (s.f === f && d > 0 && d < .25) press = 1 - d / .25; });
+    const w = ws[i], x = BX[i];
+    rr(x - w / 2, BY - 28 + 6, w, 56, 16); ctx.fillStyle = INK; ctx.fill();
+    rr(x - w / 2, BY - 28 + press * 5, w, 56, 16); ctx.fillStyle = FBC[i]; ctx.fill();
+    T(flab(f), x, BY + 1 + press * 5, 24, INK, MO);
+  });
+  FSH.forEach(s => {
+    const p = prog(u, s.t, s.t + .45), x0 = bx(s.f), y0 = BY - 36;
+    const tx = s.hit ? AX : AX + r * .9, ty = s.hit ? AY : AY + r * .6;
+    if (p > 0 && p < 1) { const e = eo(p); circ(x0 + (tx - x0) * e, y0 + (ty - y0) * e, 14); ctx.fillStyle = fcol(s.f); ctx.fill(); }
+    if (!s.hit) {
+      const q = prog(u, s.t + .45, s.t + 1.1);
+      if (q > 0 && q < 1) { A(1 - q); circ(tx + 220 * q, ty - 140 * Math.sin(q * Math.PI), 14); ctx.fillStyle = fcol(s.f); ctx.fill(); A(1); }
+      A(prog(u, s.t + .45, s.t + .7) * (1 - prog(u, s.t + 1.9, s.t + 2.2)));
+      T('(x − 2) non divide x² − 9: colpo a vuoto, −2 s', AX, 495, 24, RED, BO); A(1);
+    }
+  });
+  // tempo che scorre (il colpo a vuoto costa 2 secondi)
+  const secs = Math.max(0, Math.ceil(30 - Math.min(u, last) - (u >= 3.85 ? 2 : 0)));
+  T(`⏱ ${secs} s`, 40, 125, 26, u >= 3.85 && u < 5.5 ? RED : Y, { ...MO, al: 'left' });
+
+  // pannello: la catena delle divisioni
+  T('Spara solo fattori che dividono', 975, 150, 30, '#fff', BO);
+  A(prog(u, .3, .8)); T('parti da', 760, 225, 22, MUT, { ...BO, al: 'left' }); T(FST[0], 880, 225, 32, '#fff', { ...MO, al: 'left' }); A(1);
+  FHIT.forEach((s, i) => {
+    const y = 225 + (i + 1) * 62, op = '÷ ' + flab(s.f);
+    A(prog(u, s.t + .45, s.t + .85));
+    T(op, 760, y, 28, fcol(s.f), { ...MO, al: 'left' });
+    T('→ ' + FST[i + 1], 760 + W_(op, 28, MONO, 700) + 18, y, 28, i === 2 ? G : '#fff', { ...MO, al: 'left' }); A(1);
+  });
+  A(prog(u, 8.4, 8.8)); T('2x² − 18', 975, 500, 32, '#fff', MO); A(1);
+  pop(975, 558, prog(u, 8.6, 9.2), () => T3('= 2(x − 3)(x + 3)', 0, 0, 44, Y, MO));
+  A(prog(u, 9.2, 9.7)); T('Prima il fattore comune, poi x² − 9.', 975, 618, 23, MUT, { f: BODY, w: 500 }); A(1);
+}
+
+/* ---------- scene: riepilogo ---------- */
+function sEnd(u) {
+  const R = [
+    { ...MODES[0], h: 'Due quadrati, un −', f1: 'A² − B² =', f2: '(A − B)(A + B)' },
+    { ...MODES[1], h: 'Trinomio speciale', f1: 'p + q = s', f2: 'p · q = P' },
+    { ...MODES[2], h: 'Zeri della parabola', f1: '(x − 3) = 0', f2: '→ x = +3' },
+    { ...MODES[3], h: 'Prima il comune', f1: '2x² − 18 =', f2: '2(x² − 9)' }
+  ];
+  R.forEach((r, i) => pop(640 + (i - 1.5) * 290, 290, prog(u, .1 + i * .3, .7 + i * .3), () => {
+    btn3d(-130, -140, 260, 280, r.c, r.d, 26);
+    T(r.icon, 0, -88, 48, '#fff');
+    T(r.h, 0, -26, 23, r.t, BO);
+    T(r.f1, 0, 34, 24, r.t, MO);
+    T(r.f2, 0, 78, 24, r.t, MO);
+  }));
+  pop(640, 545, prog(u, 1.6, 2.2), () => T3('Ora tocca a te: scegli una missione!', 0, 0, 46, Y));
+  MODES.forEach((m, i) => pop(640 + (i - 1.5) * 110, 640, prog(u, 2.3 + i * .15, 2.8 + i * .15), () => {
+    btn3d(-40, -40, 80, 80, m.c, m.d, 20); T(m.icon, 0, 1, 40, '#fff');
+  }));
+}
+
+const FN = { intro: sIntro, prod: sProd, trin: sTrin, para: sPara, fac: sFac, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta da dentro il gioco; #prod #trin #para #fac → parte da quella missione e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#22125a'); g.addColorStop(1, '#0a0722');
+  ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const now = reduce ? 0 : performance.now() / 1000;
+  ctx.fillStyle = '#fff';
+  STARS.forEach(s => { ctx.globalAlpha = .2 + .35 * (.5 + .5 * Math.sin(now * 1.3 + s.ph)); circ(s.x, s.y, s.r); ctx.fill(); });
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.icon) chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map((sc, i) => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = speed + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+})();
+</script>
+</body>
+</html>

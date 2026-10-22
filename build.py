@@ -679,6 +679,10 @@ def main():
                     if filename.startswith("."):
                         continue
 
+                    # Le spiegazioni animate si aprono dal pulsante "Spiegami" dentro la loro app: non sono voci del catalogo
+                    if filename.endswith("_spiegazione.html"):
+                        continue
+
                     # Strategia di estrazione in base al tipo
                     if content_type == "app" and filename.endswith(".html"):
                         meta = extract_html_meta(file_path)
