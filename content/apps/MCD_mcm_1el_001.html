@@ -423,6 +423,8 @@
             html { touch-action: manipulation; }
             body.ingame { overflow: hidden; overscroll-behavior: none; }
             body.ingame .orfini-back-btn { display: none !important; }
+            /* l'occhio di orfini-shared.js (mostra/nascondi pannello) finirebbe sopra il tasto ✓ */
+            body.ingame .ui-toggle-btn { display: none !important; }
             body.ingame .app { padding: 0; }
             #s-game.active {
                 position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; gap: 8px; animation: none;
@@ -454,6 +456,13 @@
             #s-game .num { font-size: 21px; min-width: 44px; padding: 3px 10px; border-radius: 12px; }
             #s-game .nums { margin-top: 8px; gap: 6px; }
             #s-game .goal { margin-top: 6px; }
+            /* il tastierino lascia poco spazio al testo: numeri e obiettivo vanno in cima
+               (i numeri restano agganciati in alto mentre il racconto scorre sotto) */
+            #s-game .prompt { display: flex; flex-direction: column; }
+            #s-game .prompt > * { flex: none; }
+            #s-game .prompt > .chips-s { order: -3; }
+            #s-game .prompt > .nums { order: -2; margin-top: 0; padding-bottom: 6px; position: sticky; top: 0; z-index: 1; background: #120c36; }
+            #s-game .prompt > .goal { order: -1; margin: 0 0 6px; }
             #s-game .scaf { font-size: 14px; padding: 7px 10px; }
             #s-game .tc { min-width: 42px; height: 36px; font-size: 17px; }
             #s-game .chain { font-size: 18px; margin-top: 8px; }
