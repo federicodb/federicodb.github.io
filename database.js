@@ -1,9 +1,48 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-22 18:01:40
+   Data: 2026-10-26 19:47:55
 */
 
 const db = [
+    {
+        "title": "Arcade Challenge: Unità di misura",
+        "excerpt": "Arcade Challenge: gioco arcade a sfida sulle equivalenze tra unità di misura: sali e scendi l'ascensore dei multipli, regola gli slider del laboratorio, abbina le coppie equivalenti e smista i pacchi sul nastro. Lunghezze, capacità, superfici, volumi e tempi.",
+        "tags": [
+            "1 EL",
+            "1 GP",
+            "1 MA",
+            "ARCADE",
+            "ARCADE CHALLENGE",
+            "BIENNIO",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CIT_5:IMPARARE A IMPARARE",
+            "EQUIVALENZE",
+            "EU:DIGITALE",
+            "EU:IMPARAREIMPARARE",
+            "EU:STEM",
+            "GAMIFICATION",
+            "LAB",
+            "LUNGHEZZE",
+            "MAT:CALCOLO",
+            "MAT:MODELLIZZAZIONE",
+            "MAT:PROBLEMSOLVING",
+            "MATEMATICA",
+            "MISURA",
+            "MULTIPLI E SOTTOMULTIPLI",
+            "SISTEMA INTERNAZIONALE",
+            "SUPERFICI",
+            "TEMPI",
+            "UNITÀ DI MISURA",
+            "VIDEOGIOCO",
+            "VOLUMI"
+        ],
+        "date": "2026-10-26",
+        "url": "content/apps/arcade_challenge_unita_di_misura.html",
+        "type": "app",
+        "icon": "👾",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/arcade_challenge_unita_di_misura.webp"
+    },
     {
         "title": "FuncLab AI: Esploratore di Funzioni",
         "excerpt": "Laboratorio interattivo di analisi matematica: descrivi una funzione a parole e l'AI la disegna su un piano cartesiano navigabile (zoom, trascinamento, lettura dei punti), con zeri, massimi e minimi evidenziati, più funzioni sovrapposte e Tutor Socratico con sintesi vocale.",
