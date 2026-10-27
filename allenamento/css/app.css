@@ -298,6 +298,13 @@ body.in-lesson .layout { display: block; }
 html.theme-light .unit-glyph { color: hsl(var(--hue), 85%, 30%); }
 .unit-glyph[data-len='1'] { --gk: 1.35; }
 .unit-glyph[data-len='long'] { --gk: 0.85; letter-spacing: -0.03em; }
+/* glifi disegnati (glyphHTML): stessa taglia per tutte le icone, qualunque sia la lunghezza del simbolo */
+.unit-glyph svg { width: 1.625rem; height: 1.625rem; }
+.prereq-chip .unit-glyph svg { width: 1.3125rem; height: 1.3125rem; }
+.glyph-big svg { width: 1em; height: 1em; display: block; }
+.pick-glyph svg { width: 1.25em; height: 1.25em; }
+/* media "x̄": barretta disegnata, il segno combinante cadeva spostato nei font del sito */
+.ovl { display: inline-block; border-top: 0.09em solid currentColor; line-height: 0.62; padding-top: 0.06em; }
 .unit-head h3 { margin: 0; }
 .unit-head small { color: var(--muted); display: block; font-size: 0.9375rem; line-height: 1.35; }
 .path { display: grid; gap: calc(var(--sq) * 0.8); padding-left: 6px; }

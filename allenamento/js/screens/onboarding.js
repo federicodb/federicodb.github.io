@@ -3,7 +3,7 @@ import * as G from '../game/game.js';
 import { areas, YEARS } from '../../activities/catalogo.js';
 import { INDIRIZZI } from '../../activities/contesti.js';
 import { avatarSVG, PARTS } from '../game/avatar.js';
-import { icons, esc } from '../ui/dom.js';
+import { icons, esc, glyphHTML } from '../ui/dom.js';
 import { sfx, confetti } from '../ui/fx.js';
 
 export function viewOnboarding(app, step = 0) {
@@ -79,7 +79,7 @@ export function viewOnboarding(app, step = 0) {
       <h1>Qual è il tuo indirizzo?</h1>
       <p class="muted">Sono gli indirizzi dell'Orfini. Se lo scegli, molti problemi parleranno del tuo laboratorio e del tuo futuro lavoro; se preferisci di no, useremo situazioni di tutti i giorni. Al serale: Fashion Factory o Servizi Socio-Sanitari.</p>
       <div class="pick-grid wide-picks" data-ind>
-        ${INDIRIZZI.map((i) => `<button class="pick" data-v="${i.id}" aria-pressed="${cur === i.id}"><span class="pick-glyph" aria-hidden="true">${esc(i.glyph)}</span>${esc(i.name)}<small>${esc(i.official)}</small></button>`).join('')}
+        ${INDIRIZZI.map((i) => `<button class="pick" data-v="${i.id}" aria-pressed="${cur === i.id}"><span class="pick-glyph" aria-hidden="true">${glyphHTML(i.glyph)}</span>${esc(i.name)}<small>${esc(i.official)}</small></button>`).join('')}
         <button class="pick" data-v="" aria-pressed="${cur === null}"><span class="pick-glyph" aria-hidden="true">€</span>Preferisco di no<small>Matematica della vita di tutti i giorni</small></button>
       </div>
       <button class="btn big wide" data-next ${cur === undefined ? 'disabled' : ''}>Avanti</button>

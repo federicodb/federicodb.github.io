@@ -43,6 +43,20 @@ export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&a
 const S = (body, vb = '0 0 24 24') => `<svg viewBox="${vb}" aria-hidden="true">${body}</svg>`;
 const st = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
 
+/** Glifi delle attività che nessun font del sito contiene (il browser li prendeva da un font di sistema, minuscoli):
+ *  disegnati come le altre icone. "x̄" resta testo, con la barretta in CSS. I dati delle attività non cambiano. */
+const GLYPH_SVG = {
+  '⚙': S(`<circle cx="12" cy="12" r="6.5" ${st}/><circle cx="12" cy="12" r="2.2" ${st}/><path ${st} stroke-width="2.6" d="M12 5.5v-3M16.6 7.4l2.1-2.1M18.5 12h3M16.6 16.6l2.1 2.1M12 18.5v3M7.4 16.6l-2.1 2.1M5.5 12h-3M7.4 7.4 5.3 5.3"/>`),
+  '▭': S(`<rect ${st} x="2.5" y="6" width="19" height="12" rx="1.5"/>`),
+  '◷': S(`<circle cx="12" cy="12" r="9" ${st}/><path ${st} d="M12 12h9M12 12l5.5-5.5M16 12a4 4 0 0 0-1.2-2.8"/>`),
+  '◺◺': S(`<path ${st} d="M2.5 20v-6l6 6zM11 20V5l11 15z"/>`),
+};
+export function glyphHTML(g) {
+  if (GLYPH_SVG[g]) return GLYPH_SVG[g];
+  if (g === 'x̄') return '<span class="ovl">x</span>';
+  return esc(g);
+}
+
 export const icons = {
   // marchio: il Δ del discriminante in un quadrato
   brand: `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="11" fill="var(--accent)"/><path d="M20 9 L31 30 L9 30 Z" fill="none" stroke="var(--on-accent, #050507)" stroke-width="3.4" stroke-linejoin="round"/><path d="M14 23h12" stroke="var(--on-accent, #050507)" stroke-width="2.2" stroke-linecap="round" opacity=".55"/></svg>`,

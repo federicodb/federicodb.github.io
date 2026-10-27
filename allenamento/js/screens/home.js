@@ -3,7 +3,7 @@ import * as G from '../game/game.js';
 import { gradientVars } from '../ui/accent.js';
 import { areasFor, allActivities, byId, YEARS, MAT_LABELS, visibleFor, PREREQ } from '../../activities/catalogo.js';
 import { INDIRIZZI_BY_ID } from '../../activities/contesti.js';
-import { icons, stars, esc, html, modal } from '../ui/dom.js';
+import { icons, stars, esc, html, modal, glyphHTML } from '../ui/dom.js';
 import { sfx, confetti, flyText } from '../ui/fx.js';
 import { itemInfo, avatarSVG } from '../game/avatar.js';
 
@@ -11,7 +11,7 @@ import { itemInfo, avatarSVG } from '../game/avatar.js';
 function glyph(g, attrs = '') {
   const n = [...g].length;
   const len = n === 1 ? ' data-len="1"' : n >= 5 ? ' data-len="long"' : '';
-  return `<span class="unit-glyph"${len}${attrs}>${esc(g)}</span>`;
+  return `<span class="unit-glyph"${len}${attrs}>${glyphHTML(g)}</span>`;
 }
 
 export function levelOpen(app, act, level) {
@@ -64,7 +64,7 @@ export function viewHome(app, filter) {
         <h2>${esc(nx.act.title)}</h2>
         <p style="margin:0">Livello ${nx.level}: ${esc(nx.act.levels[nx.level - 1].name)}</p>
         <a class="btn big" href="#/lezione/${nx.act.id}/${nx.level}">Gioca</a>
-        <span class="glyph-big" aria-hidden="true">${esc(nx.act.glyph)}</span>
+        <span class="glyph-big" aria-hidden="true">${glyphHTML(nx.act.glyph)}</span>
       </section>`
     : `<section class="continue"><h2>Hai tre stelle ovunque</h2><p>Allenati con i ripassi e le sfide: i numeri cambiano ogni volta.</p><a class="btn" href="#/sfide">Vai alle sfide</a></section>`;
 
