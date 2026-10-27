@@ -25,7 +25,10 @@ const isFont = (url) => url.hostname === 'fonts.googleapis.com' || url.hostname 
 async function networkFirst(req) {
   const cache = await caches.open(CACHE);
   try {
-    const res = await fetch(req);
+    // no-cache: il browser riconvalida col server (304 se invariato) invece di usare la sua cache HTTP,
+    // che altrimenti poteva dare un modulo vecchio accanto a uno nuovo (import mancante → pagina bianca).
+    // Le navigazioni non accettano opzioni su una Request esistente: restano come sono.
+    const res = await (req.mode === 'navigate' ? fetch(req) : fetch(req, { cache: 'no-cache' }));
     if (res.ok) cache.put(req, res.clone());
     return res;
   } catch (err) {
