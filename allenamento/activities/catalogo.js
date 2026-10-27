@@ -6,6 +6,7 @@
 // PER AGGIUNGERE UN'ATTIVITÀ: crea il file (copia activities/_modello.js), importalo qui
 // e aggiungilo alla lista `activities` dell'area giusta. L'ordine è quello della mappa.
 
+import relativi from './numeri/numeri-relativi.js';
 import frazioni from './numeri/frazioni.js';
 import percentuali from './numeri/percentuali.js';
 import potenze from './numeri/potenze.js';
@@ -16,6 +17,7 @@ import monomi from './polinomi/monomi.js';
 import prodotti from './polinomi/prodotti-notevoli.js';
 import scomposizioni from './polinomi/scomposizioni.js';
 import eq1 from './equazioni/equazioni-primo-grado.js';
+import eq1s from './equazioni/equazioni-primo-grado-speciali.js';
 import dis1 from './equazioni/disequazioni-primo-grado.js';
 import eq2 from './equazioni/equazioni-secondo-grado.js';
 import dis2 from './equazioni/disequazioni-secondo-grado.js';
@@ -52,9 +54,9 @@ import { TRUCCHI } from './calcolo/trucchi.js';
 export const areas = [
   // matematica al lavoro: si vede solo l'attività dell'indirizzo scelto (o quella della vita reale)
   { id: 'lavoro', title: 'Matematica al lavoro', summary: 'Problemi veri del tuo indirizzo.', hue: 18, mat: 'MAT_C2', activities: [vita, meccanico, elettrico, moda, grafica, odonto, socio] },
-  { id: 'numeri', title: 'Numeri', summary: 'Frazioni, percentuali, potenze, radicali.', hue: 190, mat: 'MAT_K1', activities: [frazioni, percentuali, potenze, proporzioni, notazione, radicali] },
+  { id: 'numeri', title: 'Numeri', summary: 'Numeri relativi, frazioni, percentuali, potenze, radicali.', hue: 190, mat: 'MAT_K1', activities: [relativi, frazioni, percentuali, potenze, proporzioni, notazione, radicali] },
   { id: 'polinomi', title: 'Polinomi', summary: 'Il calcolo con le lettere.', hue: 255, mat: 'MAT_K1', activities: [monomi, prodotti, scomposizioni] },
-  { id: 'equazioni', title: 'Equazioni e disequazioni', summary: 'Primo e secondo grado.', hue: 285, mat: 'MAT_A3', activities: [eq1, dis1, eq2, dis2] },
+  { id: 'equazioni', title: 'Equazioni e disequazioni', summary: 'Primo e secondo grado.', hue: 285, mat: 'MAT_A3', activities: [eq1, eq1s, dis1, eq2, dis2] },
   { id: 'rette', title: 'Funzioni lineari e rette', summary: 'Grafici, pendenze, rette nel piano.', hue: 160, mat: 'MAT_K2', activities: [lineari, pendenza, parallele] },
   { id: 'sistemi', title: 'Sistemi lineari', summary: 'Due equazioni, due incognite.', hue: 130, mat: 'MAT_A3', activities: [sistemi] },
   { id: 'geometria', title: 'Geometria', summary: 'Aree, solidi, Pitagora, trigonometria.', hue: 28, mat: 'MAT_K3', activities: [aree, pitagora, similitudine, solidi, trigonometria] },
@@ -91,6 +93,7 @@ export const MAT_LABELS = {
 // PREREQUISITI: cosa conviene saper fare prima di un'attività (solo legami didattici diretti).
 // Si vedono nella scheda dell'attività; dopo due lezioni di fila sotto l'80% si suggerisce di ripassarli.
 export const PREREQ = {
+  frazioni: ['numeri-relativi'],
   percentuali: ['frazioni'],
   proporzioni: ['frazioni'],
   'notazione-scientifica': ['potenze'],
@@ -98,6 +101,7 @@ export const PREREQ = {
   'prodotti-notevoli': ['monomi'],
   scomposizioni: ['prodotti-notevoli'],
   'equazioni-1': ['monomi'],
+  'equazioni-1-speciali': ['equazioni-1', 'frazioni', 'prodotti-notevoli'],
   'disequazioni-1': ['equazioni-1'],
   'equazioni-2': ['scomposizioni', 'equazioni-1'],
   'disequazioni-2': ['equazioni-2', 'disequazioni-1'],

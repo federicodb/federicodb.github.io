@@ -267,6 +267,59 @@ function solveStep(rng, level) {
   };
 }
 
+/** Equazioni immediate: un solo passo (x + a = b, ax = b, x/a = b, −x = b) */
+function immediateStep(rng) {
+  const x = rng.intNot(-9, 9);
+  const kind = rng.pick(['add', 'mul', 'div', 'neg']);
+  if (kind === 'add') {
+    const a = rng.intNot(-12, 12, [0, -x]);
+    return {
+      type: 'number', cas: { solve: `x+(${a})=${x + a}` },
+      prompt: `Risolvi: $$${poly([[1, 'x'], [a, '']])} = ${x + a}$$ $x = $`,
+      answer: x,
+      traps: [{ value: x + 2 * a, msg: `Per togliere ${par(a)} dal primo membro si ${a > 0 ? 'sottrae' : 'aggiunge'} ${Math.abs(a)} a entrambi i membri: il segno cambia.` }],
+      hint: `Cosa devi fare a entrambi i membri per lasciare la x da sola?`,
+      explain: `$$x = ${x + a} ${a > 0 ? '-' : '+'} ${Math.abs(a)} = ${x}$$`,
+      twin: () => immediateStep(rng),
+    };
+  }
+  if (kind === 'mul') {
+    const a = rng.intNot(-9, 9, [0, 1, -1]);
+    const traps = [{ value: a * x * a, msg: `${a} moltiplica la x: per toglierlo si divide per ${par(a)}, non si moltiplica.` }];
+    if (a * x - a !== x) traps.push({ value: a * x - a, msg: `${a} moltiplica la x: va diviso, non sottratto.` });
+    return {
+      type: 'number', cas: { solve: `${a}*x=${a * x}` },
+      prompt: `Risolvi: $$${poly([[a, 'x']])} = ${a * x}$$ $x = $`,
+      answer: x,
+      traps: traps.filter((t) => t.value !== x),
+      hint: `Dividi entrambi i membri per ${par(a)}.`,
+      explain: `$$x = ${a * x} : ${par(a)} = ${x}$$`,
+      twin: () => immediateStep(rng),
+    };
+  }
+  if (kind === 'div') {
+    const a = rng.int(2, 6), b = rng.intNot(-8, 8);
+    return {
+      type: 'number', cas: { solve: `x/${a}=${b}` },
+      prompt: `Risolvi: $$\\dfrac{x}{${a}} = ${b}$$ $x = $`,
+      answer: a * b,
+      traps: [{ value: b / a, msg: `La x è divisa per ${a}: per liberarla si moltiplica per ${a}.` }].filter((t) => t.value !== a * b),
+      hint: `Moltiplica entrambi i membri per ${a}.`,
+      explain: `$$x = ${b} \\cdot ${a} = ${a * b}$$`,
+      twin: () => immediateStep(rng),
+    };
+  }
+  return {
+    type: 'number', cas: { solve: `-x=${-x}` },
+    prompt: `Risolvi: $$-x = ${-x}$$ $x = $`,
+    answer: x,
+    traps: [{ value: -x, msg: '$-x$ vuol dire $(-1)\\cdot x$: dividi (o moltiplica) entrambi i membri per $-1$.' }],
+    hint: 'Cambia segno a entrambi i membri.',
+    explain: `$$-x = ${-x} \\;\\Rightarrow\\; x = ${x}$$`,
+    twin: () => immediateStep(rng),
+  };
+}
+
 function verifyStep(rng, level) {
   const v = GEN[level](rng);
   const fake = v.x + rng.pick([-2, -1, 1, 2]);
@@ -296,17 +349,20 @@ export default {
   summary: 'La bilancia: stesse operazioni a destra e a sinistra.',
   glyph: 'x=?',
   levels: [
-    { name: 'Un passo e poi un altro', desc: 'Equazioni del tipo ax + b = c' },
+    { name: 'Immediate, poi a due passi', desc: 'x + a = b, ax = b, poi ax + b = c' },
     { name: 'x da tutte e due le parti', desc: 'Equazioni del tipo ax + b = cx + d' },
     { name: 'Con le parentesi', desc: 'Prima la distributiva, poi la bilancia' },
   ],
   generate(rng, level) {
+    const learn = {
+      type: 'learn',
+      title: 'Un\'equazione è una bilancia in equilibrio',
+      body: 'Qualsiasi cosa fai a un piatto, devi farla anche all\'altro: aggiungere, togliere, moltiplicare o dividere per lo stesso numero (diverso da zero). Così l\'uguaglianza resta vera.',
+    };
+    // livello 1: si parte dalle equazioni immediate (un solo passo), poi quelle a due passi
+    if (level === 1) return [learn, immediateStep(rng), immediateStep(rng), balanceStep(rng, 1), firstMove(rng, 1), solveStep(rng, 1), verifyStep(rng, 1)];
     return [
-      {
-        type: 'learn',
-        title: 'Un\'equazione è una bilancia in equilibrio',
-        body: 'Qualsiasi cosa fai a un piatto, devi farla anche all\'altro: aggiungere, togliere, moltiplicare o dividere per lo stesso numero (diverso da zero). Così l\'uguaglianza resta vera.',
-      },
+      learn,
       balanceStep(rng, level),
       firstMove(rng, level),
       orderStep(rng, level),

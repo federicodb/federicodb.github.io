@@ -90,8 +90,8 @@ section.tx h2{font-family:var(--disp);font-weight:400;font-size:26px;margin:0;co
     <button class="btn play" id="play" type="button">▶ Play</button>
     <button class="btn" id="speed" type="button" title="Velocità di riproduzione">1×</button>
     <div class="scrub">
-      <input id="seek" type="range" min="0" max="67" step="0.1" value="4" aria-label="Posizione nell'animazione">
-      <span class="time" id="time">0:04 / 1:07</span>
+      <input id="seek" type="range" min="0" max="78" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:18</span>
     </div>
   </div>
   <div class="chaps" id="chaps"></div>
@@ -108,7 +108,7 @@ section.tx h2{font-family:var(--disp);font-weight:400;font-size:26px;margin:0;co
 
 <script>
 (() => {
-const W = 1280, H = 720, TOTAL = 67;
+const W = 1280, H = 720, TOTAL = 78;
 const DISP = "'Lilita One','Fredoka',system-ui,sans-serif";
 const BODY = "'Fredoka',system-ui,sans-serif";
 const MONO = "'JetBrains Mono',ui-monospace,monospace";
@@ -132,7 +132,9 @@ const SC = [
     cap: '<b>y = x² − 2x − 3 = (x + 1)(x − 3)</b>. Ogni fattore si annulla col segno opposto: zeri in <b>x = −1</b> e <b>x = 3</b>. Il vertice sta a metà: <b>V(1; −4)</b>. Con a = 1 > 0 la parabola è rivolta verso l\'alto.' },
   { id: 'fac', label: 'Factor Blaster', a: 48, b: 61, ...MODES[3],
     cap: 'Si spara all\'asteroide solo con i fattori che lo dividono. <b>2x² − 18</b>: prima il fattore comune 2, poi (x − 3) e (x + 3). (x − 2) non divide: colpo a vuoto, −2 s. Risultato: <b>2(x − 3)(x + 3)</b>.' },
-  { id: 'end', label: 'Riepilogo', a: 61, b: 67, c: G,
+  { id: 'fac2', label: 'Livelli avanzati', a: 61, b: 72, ...MODES[3],
+    cap: 'Nei livelli Veterano e Leggenda: <b>cubo di binomio</b> x³ + 6x² + 12x + 8 = (x + 2)³ e <b>raccoglimento parziale</b> x³ + 3x² + 2x + 6 = (x + 3)(x² + 2). Il cannone x² − 9 divide, ma <b>non è irriducibile</b>: va spezzato in (x − 3)(x + 3). Colpire per primo il fattore comune vale un bonus.' },
+  { id: 'end', label: 'Riepilogo', a: 72, b: 78, c: G,
     cap: 'Prima il <b>fattore comune</b>, poi conta i termini: due quadrati col meno o un trinomio somma-prodotto. Gli <b>zeri</b> hanno il segno opposto a quello nei fattori. Ora tocca a te!' }
 ];
 
@@ -468,6 +470,24 @@ function sFac(u) {
   A(prog(u, 9.2, 9.7)); T('Prima il fattore comune, poi x² − 9.', 975, 618, 23, MUT, { f: BODY, w: 500 }); A(1);
 }
 
+/* ---------- scene: Factor Blaster, livelli avanzati ---------- */
+function sFac2(u) {
+  T3('Livelli Veterano e Leggenda', 640, 125, 44, Y);
+  const ROWS = [
+    { y: 245, t: .4, title: 'Cubo di binomio', c: B, a: 'x³ + 6x² + 12x + 8', b: '= (x + 2)³', note: '4 termini, estremi cubi: (x + 2) tre volte' },
+    { y: 410, t: 3.4, title: 'Raccoglimento parziale', c: O, a: 'x³ + 3x² + 2x + 6', b: '= x²(x + 3) + 2(x + 3) = (x + 3)(x² + 2)', note: 'raggruppa i termini a due a due' },
+    { y: 575, t: 6.4, title: 'Divide, ma non basta', c: K, a: 'x² − 9', b: '= (x − 3)(x + 3)', note: 'spezzalo ancora: solo fattori irriducibili' }
+  ];
+  ROWS.forEach(r => pop(640, r.y, prog(u, r.t, r.t + .6), () => {
+    rr(-570, -66, 1140, 132, 22); ctx.fillStyle = PANEL; ctx.fill(); ctx.strokeStyle = r.c; ctx.lineWidth = 3; ctx.stroke();
+    T(r.title, -540, -34, 24, r.c, { ...BO, al: 'left' });
+    A(.8); T(r.note, 540, -34, 20, MUT, { ...BO, al: 'right' }); A(1);
+    const wa = W_(r.a, 30, MONO, 700);
+    T(r.a, -540, 20, 30, '#fff', { ...MO, al: 'left' });
+    A(prog(u, r.t + 1.1, r.t + 1.6)); T(r.b, -540 + wa + 16, 20, 30, G, { ...MO, al: 'left' }); A(1);
+  }));
+}
+
 /* ---------- scene: riepilogo ---------- */
 function sEnd(u) {
   const R = [
@@ -489,7 +509,7 @@ function sEnd(u) {
   }));
 }
 
-const FN = { intro: sIntro, prod: sProd, trin: sTrin, para: sPara, fac: sFac, end: sEnd };
+const FN = { intro: sIntro, prod: sProd, trin: sTrin, para: sPara, fac: sFac, fac2: sFac2, end: sEnd };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
 /* ?embed → aperta da dentro il gioco; #prod #trin #para #fac → parte da quella missione e si ferma a fine scena */
@@ -497,7 +517,12 @@ const EMBED = new URLSearchParams(location.search).has('embed');
 if (EMBED) document.documentElement.classList.add('embed');
 (() => {
   const k = SC.findIndex(s => s.id === location.hash.slice(1));
-  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  if (k >= 0) {
+    t = SC[k].a + .01;
+    // una missione può avere più scene di fila (fac → fac2): il pulsante della missione le mostra tutte
+    let j = k; while (SC[j + 1] && SC[j + 1].id.startsWith(SC[k].id)) j++;
+    if (EMBED) { playing = true; stopAt = SC[j].b; }
+  }
   else if (EMBED) { t = 0; playing = true; }
 })();
 const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };

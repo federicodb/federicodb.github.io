@@ -1,12 +1,12 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-26 19:47:55
+   Data: 2026-10-27 17:48:33
 */
 
 const db = [
     {
         "title": "Arcade Challenge: Unità di misura",
-        "excerpt": "Arcade Challenge: gioco arcade a sfida sulle equivalenze tra unità di misura: sali e scendi l'ascensore dei multipli, regola gli slider del laboratorio, abbina le coppie equivalenti e smista i pacchi sul nastro. Lunghezze, capacità, superfici, volumi e tempi.",
+        "excerpt": "Arcade Challenge: gioco arcade a sfida sulle equivalenze tra unità di misura: sali e scendi l'ascensore dei multipli, regola gli slider del laboratorio, abbina le coppie equivalenti, smista i pacchi sul nastro e risolvi problemi reali di cantiere. Lunghezze, litri, superfici, volumi e tempi.",
         "tags": [
             "1 EL",
             "1 GP",

@@ -8,7 +8,7 @@
     <title>Arcade Challenge: Unità di misura</title>
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
 
-    <meta name="description" content="Arcade Challenge: gioco arcade a sfida sulle equivalenze tra unità di misura: sali e scendi l'ascensore dei multipli, regola gli slider del laboratorio, abbina le coppie equivalenti e smista i pacchi sul nastro. Lunghezze, capacità, superfici, volumi e tempi.">
+    <meta name="description" content="Arcade Challenge: gioco arcade a sfida sulle equivalenze tra unità di misura: sali e scendi l'ascensore dei multipli, regola gli slider del laboratorio, abbina le coppie equivalenti, smista i pacchi sul nastro e risolvi problemi reali di cantiere. Lunghezze, litri, superfici, volumi e tempi.">
     <!-- Metadati essenziali per build.py e visualizzazione Hub Olografico -->
     <meta name="keywords" content="Matematica, Misura, Unità di misura, Equivalenze, Multipli e sottomultipli, Sistema Internazionale, Lunghezze, Superfici, Volumi, Tempi, Mat:Calcolo, Mat:ProblemSolving, Mat:Modellizzazione, EU:STEM, EU:Digitale, EU:ImparareImparare, CIT_4:COMPETENZA DIGITALE, CIT_5:IMPARARE A IMPARARE, Arcade Challenge, Gamification, Videogioco, Arcade, Lab, 1 EL, 1 GP, 1 MA, Biennio">
     <meta name="date" content="2026-10-26">
@@ -100,7 +100,8 @@
         @keyframes floaty { 50% { transform: translateY(-6px); } }
         .tagline { text-align: center; color: var(--muted); font-weight: 500; margin: 12px 0 22px; }
         .modes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 820px; margin: 0 auto; }
-        @media (min-width: 900px) { .modes { grid-template-columns: repeat(4, 1fr); max-width: none; } }
+        @media (min-width: 900px) { .modes { grid-template-columns: repeat(5, 1fr); max-width: none; } }
+        @media (max-width: 899px) { .modes > :last-child:nth-child(odd) { grid-column: 1 / -1; min-height: 150px; } }
         .mode-card {
             position: relative; overflow: hidden; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 16px;
             border-radius: 26px; min-height: 210px; background: linear-gradient(165deg, color-mix(in srgb, var(--c) 85%, #fff), var(--c) 45%, var(--d));
@@ -261,7 +262,23 @@
         .card.glow { animation: glow .9s ease-in-out infinite; }
         @keyframes glow { 50% { box-shadow: 0 6px 0 #150f45, 0 0 0 5px #fff, 0 0 28px var(--b); } }
         .card.lifted { opacity: .3; }
+        .card.out { opacity: .2; pointer-events: none; text-decoration: line-through; }
+        .card.out::after { content: '🦉'; position: absolute; top: 4px; right: 8px; font-size: 16px; text-decoration: none; }
         .dragghost { position: fixed; z-index: 200; pointer-events: none; transform: translate(-50%, -50%) rotate(-4deg) scale(1.08); opacity: .95; min-width: 110px; }
+
+        /* cantiere: tastierino con virgola */
+        .kp { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .kp .ctl { min-height: 50px; font-size: 24px; }
+        .kp .kp-ok { grid-column: 1 / -1; font-size: 20px; }
+        .est { display: flex; flex-direction: column; gap: 10px; }
+        .est-q { font-weight: 600; line-height: 1.35; }
+        .est-b { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+        .est-b .ctl { font-size: 17px; min-height: 58px; padding: 4px; }
+        /* scelta del contesto (indirizzo) nella missione Cantiere */
+        .scen { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 6px; }
+        .scen-btn { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 14px; background: var(--card2); border: 3px solid transparent; font-weight: 700; font-size: 14px; box-shadow: 0 4px 0 #120c38; }
+        .scen-btn span { font-size: 18px; }
+        .scen-btn.on { border-color: var(--y); background: #3a2c86; }
 
         /* nastro: bidoni */
         .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -428,6 +445,11 @@
             #s-game .stage-wrap { flex: none; height: clamp(170px, calc(100vh - 430px), 46vh); height: clamp(170px, calc(100dvh - 430px), 46dvh); }
             body.m-match #s-game .stage-wrap { flex: 1 1 auto; height: auto; min-height: 0; }
             body.m-match #s-game .panel { flex: none; max-height: 34%; }
+            /* Cantiere: il testo del problema è essenziale, la scena si stringe */
+            body.m-cantiere #s-game .stage-wrap { height: clamp(110px, 22dvh, 190px); }
+            body.m-cantiere #s-game .prompt { min-height: 84px; }
+            body.m-cantiere #s-game .kp .ctl { min-height: 42px; font-size: 21px; }
+            body.m-cantiere #s-game .kp { gap: 6px; }
             #s-game .stage { height: 100%; aspect-ratio: auto; border-radius: 18px; border-width: 2px; }
             #s-game .panel { flex: 1 1 auto; min-height: 0; padding: 10px; gap: 8px; border-radius: 18px; }
             #s-game .prompt { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; font-size: 15px; line-height: 1.38; padding-right: 2px; }
@@ -584,6 +606,7 @@
         <section class="screen" id="s-mode">
             <div class="screen-head"><button class="back" data-go="home" aria-label="Indietro">‹</button><h2 id="modeTitle"></h2><button class="btn3d mode-explain" style="--c:#4cc9f0;--d:#1a7fa3;--t:#10082e" data-explain="mode">▶ Spiegami</button></div>
             <div class="tipcard" id="modeTip"></div>
+            <div class="scen" id="trackPick" aria-label="Contesto dei problemi"></div>
             <div class="path" id="levelPath"></div>
         </section>
 
@@ -705,8 +728,12 @@
         'km²': { d: 'A', p: 6 }, 'hm²': { d: 'A', p: 4 }, 'dam²': { d: 'A', p: 2 }, 'm²': { d: 'A', p: 0 }, 'dm²': { d: 'A', p: -2 }, 'cm²': { d: 'A', p: -4 }, 'mm²': { d: 'A', p: -6 },
         'm³': { d: 'V', p: 3 }, 'dm³': { d: 'V', p: 0 }, 'cm³': { d: 'V', p: -3 }, 'mm³': { d: 'V', p: -6 },
         hL: { d: 'V', p: 2 }, daL: { d: 'V', p: 1 }, L: { d: 'V', p: 0 }, dL: { d: 'V', p: -1 }, cL: { d: 'V', p: -2 }, mL: { d: 'V', p: -3 },
-        h: { d: 'T', m: 3600 }, min: { d: 'T', m: 60 }, s: { d: 'T', m: 1 }
+        h: { d: 'T', m: 3600 }, min: { d: 'T', m: 60 }, s: { d: 'T', m: 1 },
+        // velocità: m = decimi di km/h contenuti nell'unità (1 m/s = 3,6 km/h = 36 decimi)
+        'km/h': { d: 'S', m: 10 }, 'm/s': { d: 'S', m: 36 }
     };
+    /* fattore non decimale tra due unità con "m" (tempi, velocità), scritto all'italiana */
+    const fTxt = f => String(+f.toFixed(4)).replace('.', ',');
     /* scale decimali: ogni gradino vale 10^k */
     const SCALES = {
         len: { units: ['km', 'hm', 'dam', 'm', 'dm', 'cm', 'mm'], k: 1, name: 'lunghezze' },
@@ -734,27 +761,31 @@
     function conv(q, u2) {
         const A = U[q.u], B = U[u2];
         if (!A || !B || A.d !== B.d) return null;
-        if (A.d !== 'T') return Q(q.n, q.e + A.p - B.p, u2);
-        let num = q.n * A.m, e = q.e;
-        for (let i = 0; i < 6; i++) { if (num % B.m === 0) return Q(num / B.m, e, u2); num *= 10; e--; }
+        if (A.m == null) return Q(q.n, q.e + A.p - B.p, u2);
+        return scaleQ(q, A.m, B.m, u2);
+    }
+    /* q · num/den espresso esattamente (se possibile con al massimo 6 decimali in più) */
+    function scaleQ(q, num, den, u2) {
+        let n = q.n * num, e = q.e;
+        for (let i = 0; i < 6; i++) { if (n % den === 0) return Q(n / den, e, u2); n *= 10; e--; }
         return null;
     }
     function key(q) {
         const A = U[q.u];
-        if (A.d === 'T') { const z = norm(q.n * A.m, q.e); return 'T' + z.n + 'e' + z.e; }
+        if (A.m != null) { const z = norm(q.n * A.m, q.e); return A.d + z.n + 'e' + z.e; }
         const z = norm(q.n, q.e + A.p); return A.d + z.n + 'e' + z.e;
     }
     const same = (a, b) => key(a) === key(b);
     /* misura "leggibile": al massimo 4 cifre significative, 3 decimali e 7 cifre in tutto */
     const nice = q => String(q.n).length <= 4 && q.e >= -3 && fn(q).replace(/\D/g, '').length <= 7;
     const scaleOf = u => Object.keys(SCALES).find(k => SCALES[k].units.includes(u));
-    const DIMNAME = { len: 'lunghezze', cap: 'capacità', area: 'superfici', vol: 'volumi', time: 'tempi', mix: 'litri e volumi' };
+    const DIMNAME = { len: 'lunghezze', cap: 'capacità', area: 'superfici', vol: 'volumi', time: 'tempi', mix: 'litri e volumi', vel: 'velocità' };
 
     /* come si passa da q a q2: fattore e spostamento della virgola */
     function howTo(q, q2) {
         const A = U[q.u], B = U[q2.u];
-        if (A.d === 'T') {
-            const big = A.m > B.m, f = big ? A.m / B.m : B.m / A.m;
+        if (A.m != null) {
+            const big = A.m > B.m, f = fTxt(big ? A.m / B.m : B.m / A.m);
             return big ? `1 ${q.u} = ${f} ${q2.u}: si moltiplica per ${f}. ${fq(q)} × ${f} = <b>${fq(q2)}</b>`
                 : `1 ${q2.u} = ${f} ${q.u}: si divide per ${f}. ${fn(q)} : ${f} = <b>${fq(q2)}</b>`;
         }
@@ -770,13 +801,18 @@
     const NICE = [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 15, 18, 25, 35, 45, 48, 72, 75, 125, 250, 305, 375, 450];
     const TIME_SRC = [[5, -1], [15, -1], [2, 0], [25, -2], [75, -2], [3, 0], [12, -1], [1, -1], [25, -1], [4, 0], [35, -1], [2, -1]];
     const TIME_PAIRS = [['h', 'min'], ['h', 'min'], ['min', 's'], ['min', 's'], ['h', 's']];
+    // velocità in m/s che danno km/h "tondi": 5 m/s = 18 km/h, 25 m/s = 90 km/h, 2,5 m/s = 9 km/h…
+    const VEL_SRC = [[5, 0], [10, 0], [15, 0], [20, 0], [25, 0], [30, 0], [25, -1], [35, 0], [40, 0]];
+    const LITRE = [['L', 'mL'], ['L', 'mL'], ['L', 'cL'], ['L', 'dL'], ['hL', 'L'], ['dL', 'mL'], ['cL', 'mL']];
     const MIX = [['L', 'dm³'], ['mL', 'cm³'], ['L', 'cm³'], ['dm³', 'mL'], ['m³', 'L'], ['hL', 'dm³'], ['cL', 'cm³'], ['dL', 'cm³']];
     function genPair(dim, maxStep = 2) {
         for (let t = 0; t < 600; t++) {
             let q;
             if (dim === 'time') { const [a, b] = pick(TIME_PAIRS), [n, e] = pick(TIME_SRC); q = Q(n, e, a); const q2 = conv(q, b); if (!q2 || !nice(q2)) continue; return Math.random() < .3 && q2.n < 1000 ? [q2, q] : [q, q2]; }
+            if (dim === 'vel') { const [n, e] = pick(VEL_SRC); q = Q(n, e, 'm/s'); const q2 = conv(q, 'km/h'); if (!q2) continue; return Math.random() < .5 ? [q2, q] : [q, q2]; }
             let a, b;
             if (dim === 'mix') { [a, b] = pick(MIX); if (Math.random() < .5) [a, b] = [b, a]; }
+            else if (dim === 'cap' && Math.random() < .6) { [a, b] = pick(LITRE); if (Math.random() < .5) [a, b] = [b, a]; }   // le conversioni di tutti i giorni: litri ↔ mL, cL, dL, hL
             else { const S = SCALES[dim].units, i = rnd(0, S.length - 1), j = i + pick([-1, 1]) * rnd(1, maxStep); if (j < 0 || j >= S.length) continue; a = S[i]; b = S[j]; }
             q = Q(pick(NICE), rnd(-2, 1), a);
             const q2 = conv(q, b);
@@ -795,10 +831,11 @@
                 if (fr) add(Q(w * 60 + fr, 0, q2.u), 'tempo60');                // 1,5 h → 1 h 50 min = 110 min
             } else add(Q(q.n, q.e - 2, q2.u), 'tempo60');                       // 90 min → 0,9 h
         }
+        if (A.d === 'S') add(scaleQ(q, B.m, A.m, q2.u), 'velocita');           // ×3,6 al posto di :3,6 (o viceversa)
         if (A.d === 'V' && /L$/.test(q.u) !== /L$/.test(q2.u)) add(Q(q.n, q.e, q2.u), 'litro');   // 1 L = 1 cm³
         const sk = scaleOf(q.u);
         if (sk && sk === scaleOf(q2.u) && SCALES[sk].k > 1) add(Q(q.n, q.e + (A.p - B.p) / SCALES[sk].k, q2.u), 'gradino');   // un posto a gradino
-        if (A.d !== 'T') add(Q(q.n, q.e - (A.p - B.p), q2.u), 'verso');         // virgola dalla parte sbagliata
+        if (A.m == null) add(Q(q.n, q.e - (A.p - B.p), q2.u), 'verso');         // virgola dalla parte sbagliata
         add(Q(q2.n, q2.e + 1, q2.u), 'virgola'); add(Q(q2.n, q2.e - 1, q2.u), 'virgola');
         add(Q(q2.n, q2.e + 2, q2.u), 'virgola'); add(Q(q2.n, q2.e - 2, q2.u), 'virgola');
         return out;
@@ -810,6 +847,7 @@
         const r = val(given) / val(q2), z = Math.round(Math.log10(r));
         const MSG = {
             tempo60: 'I tempi <b>non sono decimali</b>: 1 h = 60 min e 1 min = 60 s, non 100.',
+            velocita: 'Da km/h a m/s si <b>divide</b> per 3,6; da m/s a km/h si <b>moltiplica</b> per 3,6 (1 m/s = 3,6 km/h).',
             litro: 'Attenzione: <b>1 L = 1 dm³</b> (un cubo di 10 cm di lato), mentre 1 cm³ è solo 1 mL.',
             gradino: `Hai spostato la virgola di un posto a gradino, ma nelle ${U[q2.u].d === 'A' ? 'superfici ogni gradino vale <b>×100</b> (2 posti)' : 'volumi ogni gradino vale <b>×1000</b> (3 posti)'}.`,
             verso: 'Hai spostato la virgola <b>dalla parte sbagliata</b>: se l\'unità diventa più piccola il numero deve diventare più grande, e viceversa.',
@@ -829,7 +867,7 @@
             name: 'Ascensore', icon: '🛗', c: '#4cc9f0', d: '#1a7fa3', tag: '×10 ÷10', desc: 'Sali e scendi la scala dei multipli', wave: 8,
             tip: 'Ogni piano è un\'unità di misura. <b>Scendendo</b> l\'unità diventa più piccola e il numero più grande (×10 a piano, ×100 per le superfici, ×1000 per i volumi). <b>Salendo</b> si divide. Trova il piano in cui la misura vale il numero richiesto!',
             levels: [
-                { label: 'Fattorino', sub: 'lunghezze · display acceso', dark: false, steps: 2, lim: 25, deck: ['len', 'len', 'len', 'len', 'len', 'len', 'len', 'len'] },
+                { label: 'Fattorino', sub: 'lunghezze e litri · display acceso', dark: false, steps: 2, lim: 25, deck: ['len', 'len', 'len', 'len', 'len', 'cap', 'cap', 'cap'] },
                 { label: 'Tecnico', sub: 'lunghezze e capacità · display spento', dark: true, steps: 3, lim: 25, deck: ['len', 'len', 'len', 'len', 'cap', 'cap', 'cap', 'cap'] },
                 { label: 'Ingegnere', sub: 'superfici e volumi · display spento', dark: true, steps: 2, lim: 35, deck: ['area', 'area', 'area', 'area', 'vol', 'vol', 'vol', 'len'] }]
         },
@@ -843,24 +881,32 @@
         },
         match: {
             name: 'Coppie', icon: '🔗', c: '#9b5de5', d: '#6532a8', tag: 'match', desc: 'Abbina le misure equivalenti', wave: 5,
-            tip: 'Tocca due carte equivalenti (oppure trascina una carta sulla sua gemella). Occhio alle <b>trappole</b>: misure con le stesse cifre ma la virgola in un altro posto!',
+            tip: 'Tocca due carte equivalenti (oppure trascina una carta sulla sua gemella). Molte carte hanno <b>le stesse cifre</b>: decidono le unità! E qualche carta è una <b>civetta 🦉</b> senza gemella.',
             levels: [
-                { label: 'Novizio', sub: '3 coppie · lunghezze', pairs: 3, dims: ['len'], lim: 30, deck: ['len', 'len', 'len', 'len', 'len'] },
-                { label: 'Esperto', sub: '4 coppie · + capacità e tempi', pairs: 4, dims: ['len', 'cap', 'time'], lim: 45, deck: ['len', 'cap', 'cap', 'time', 'time'] },
-                { label: 'Maestro', sub: '5 coppie · tutto, con trappole', pairs: 5, dims: ['area', 'vol', 'mix', 'time', 'len'], lim: 60, deck: ['area', 'vol', 'mix', 'time', 'mix'] }]
+                { label: 'Novizio', sub: '3 coppie + 1 civetta · lunghezze e litri', pairs: 3, fam: 2, decoys: 1, dims: ['len', 'cap'], lim: 40, deck: ['len', 'cap', 'len', 'cap', 'len'] },
+                { label: 'Esperto', sub: '4 coppie + 2 civette · + tempi', pairs: 4, fam: 2, decoys: 2, dims: ['len', 'cap', 'time'], lim: 55, deck: ['len', 'cap', 'cap', 'time', 'time'] },
+                { label: 'Maestro', sub: '5 coppie + 2 civette · tutto, anche km/h', pairs: 5, fam: 3, decoys: 2, dims: ['area', 'vol', 'mix', 'time', 'len', 'vel'], lim: 70, deck: ['area', 'vol', 'mix', 'vel', 'mix'] }]
         },
         nastro: {
             name: 'Nastro', icon: '📦', c: '#ff8c42', d: '#b85a1c', tag: 'trasporta', desc: 'Trascina il pacco nel bidone giusto', wave: 8,
             tip: 'Il pacco scorre sul nastro: trascinalo (o tocca il bidone) con la misura <b>equivalente</b>, prima che cada in fondo!',
             levels: [
-                { label: 'Magazziniere', sub: 'lunghezze', lim: 16, deck: ['len', 'len', 'len', 'len', 'len', 'len', 'len', 'len'] },
-                { label: 'Caporeparto', sub: 'lunghezze, capacità e tempi', lim: 14, deck: ['len', 'len', 'cap', 'cap', 'cap', 'time', 'time', 'time'] },
-                { label: 'Direttore', sub: 'superfici, volumi, litri', lim: 14, deck: ['area', 'area', 'vol', 'vol', 'mix', 'mix', 'time', 'len'] }]
+                { label: 'Magazziniere', sub: 'lunghezze e litri · nastro lento', lim: 34, deck: ['len', 'len', 'len', 'cap', 'len', 'cap', 'len', 'cap'] },
+                { label: 'Caporeparto', sub: 'lunghezze, capacità e tempi', lim: 30, deck: ['len', 'len', 'cap', 'cap', 'cap', 'time', 'time', 'time'] },
+                { label: 'Direttore', sub: 'superfici, volumi, litri, velocità', lim: 28, deck: ['area', 'area', 'vol', 'vol', 'mix', 'mix', 'vel', 'vel'] }]
+        },
+        cantiere: {
+            name: 'Cantiere', icon: '🏗️', c: '#f15bb5', d: '#a62a78', tag: 'problemi reali', desc: 'Superfici e volumi nel mondo reale', wave: 6,
+            tip: 'Problemi veri: piastrelle, campi, piscine, acquari. Leggi bene <b>in che unità</b> è chiesta la risposta e scrivila con il tastierino (la virgola c\'è!). Nei problemi a due passi: prima <b>stessa unità</b> per tutte le misure, poi calcola area o volume, poi converti.',
+            levels: [
+                { label: 'Geometra', sub: 'superfici: m², cm², ettari', lim: 50, deck: ['area', 'area', 'area', 'area', 'area', 'area'] },
+                { label: 'Idraulico', sub: 'volumi e litri', lim: 55, deck: ['vol', 'mix', 'vol', 'mix', 'vol', 'mix'] },
+                { label: 'Progettista', sub: 'calcola area o volume, poi converti', lim: 90, deck: ['area2', 'vol2', 'area2', 'vol2', 'vol2', 'area2'] }]
         }
     };
-    const MODE_KEYS = ['scala', 'lab', 'match', 'nastro'];
+    const MODE_KEYS = ['scala', 'lab', 'match', 'nastro', 'cantiere'];
     const LV_MULT = [1, 1.5, 2];
-    const DIFF = { len: 0, cap: .5, time: 1.4, mix: 1.6, area: 1.8, vol: 2 };
+    const DIFF = { len: 0, cap: .5, time: 1.4, mix: 1.6, area: 1.8, vol: 2, vel: 2.1, area2: 2.2, vol2: 2.6 };
     /* grandezza della domanda + regola da ricordare (mostrata dopo la risposta) */
     const ARCH = {
         len: ['lunghezze', 'ogni gradino della scala vale ×10: la virgola si sposta di <b>1 posto</b>.'],
@@ -868,7 +914,10 @@
         area: ['superfici', 'ogni gradino vale <b>×100</b>: la virgola si sposta di <b>2 posti</b>.'],
         vol: ['volumi', 'ogni gradino vale <b>×1000</b>: la virgola si sposta di <b>3 posti</b>.'],
         mix: ['litri e volumi', '<b>1 L = 1 dm³</b> e <b>1 mL = 1 cm³</b>.'],
-        time: ['tempi', 'non sono decimali: <b>1 h = 60 min</b>, <b>1 min = 60 s</b>, 1 h = 3600 s.']
+        time: ['tempi', 'non sono decimali: <b>1 h = 60 min</b>, <b>1 min = 60 s</b>, 1 h = 3600 s.'],
+        vel: ['velocità', 'km/h → m/s: <b>: 3,6</b>; m/s → km/h: <b>× 3,6</b>. Perché 1 km/h = 1000 m in 3600 s.'],
+        area2: ['area e conversione', 'prima tutte le misure nella <b>stessa unità</b>, poi base × altezza, poi converti (×100 a gradino).'],
+        vol2: ['volume e conversione', 'prima tutte le misure nella <b>stessa unità</b>, poi lunghezza × larghezza × altezza; <b>1 dm³ = 1 L</b>.']
     };
     /* diario degli errori tipici: titolo + consiglio */
     const DIARY = {
@@ -877,8 +926,11 @@
         gradino: ['Superfici e volumi come le lunghezze', 'm² → dm² è ×100, m³ → dm³ è ×1000: non ×10!'],
         tempo60: ['Tempi trattati come decimali', '1,5 h non è 1 h 50 min: è 1 h e mezza = 90 min. Si moltiplica per 60.'],
         litro: ['Litri e cm³ confusi', '1 L = 1 dm³ = 1000 cm³. Quindi 1 mL = 1 cm³.'],
+        velocita: ['×3,6 e :3,6 scambiati', 'Una velocità in km/h ha un numero più grande della stessa in m/s: 36 km/h = 10 m/s.'],
         piano: ['Piano sbagliato nell\'ascensore', 'Confronta i due numeri: quante volte si è spostata la virgola? Tanti piani quanti posti (diviso 2 o 3 per superfici e volumi).'],
         tempo: ['Tempo scaduto', 'Prima scegli il fattore (×10, ×100, ×1000, ×60), poi sposta la virgola.'],
+        passaggio: ['Problema lasciato a metà', 'Hai calcolato bene area o volume, ma la risposta era chiesta in un\'altra unità: manca la conversione.'],
+        miste: ['Misure in unità diverse moltiplicate', 'Prima di moltiplicare porta tutte le misure nella stessa unità (es. 80 cm = 0,8 m).'],
         generico: ['Equivalenza da ricontrollare', 'Usa la tabella delle unità: scrivi le cifre e sposta la virgola.']
     };
 
@@ -1043,6 +1095,7 @@
     function scaleHTML(u1, u2) {
         const sk = scaleOf(u1) === scaleOf(u2) ? scaleOf(u1) : null;
         if (U[u1].d === 'T') return `<div class="ladder">${['h', 'min', 's'].map(u => `<span class="${u === u1 || u === u2 ? 'on' : ''}">${u}</span>`).join('<i>×60 →</i>')}</div>`;
+        if (U[u1].d === 'S') return `<div class="ladder"><span class="on">km/h</span><i>: 3,6 →</i><span class="on">m/s</span><i>· e indietro ×3,6 (1 km/h = 1000 m in 3600 s)</i></div>`;
         if (!sk) return `<div class="ladder"><span class="on">1 L</span><i>=</i><span class="on">1 dm³</span><i>·</i><span>1 mL</span><i>=</i><span>1 cm³</span><i>·</i><span>1 m³</span><i>=</i><span>1000 L</span></div>`;
         const S = SCALES[sk], f = fmtNum(1, S.k);
         return `<div class="ladder">${S.units.map(u => `<span class="${u === u1 || u === u2 ? 'on' : ''}">${u}</span>`).join(`<i>×${f} →</i>`)}</div>`;
@@ -1074,6 +1127,7 @@
             phase: 'idle', hintsQ: 0, hintsTot: 0, seen: new Set(), diag: {}, errStreak: 0, okStreak: 0, free: 0, rip: new Set()
         };
         R.deck = buildDeck(mode, R.L);
+        IMPL.match.cleanup();
         MODE_KEYS.forEach(k => document.body.classList.toggle('m-' + k, k === mode));
         show('game'); resize(); renderHearts(); updateScore(); nextQuestion(); startLoop();
     }
@@ -1313,7 +1367,7 @@
        ========================================================= */
     function factorPhrase(q, q2) {
         const A = U[q.u], B = U[q2.u];
-        if (A.d === 'T') { const big = A.m > B.m, f = big ? A.m / B.m : B.m / A.m; return big ? `1 ${q.u} = ${f} ${q2.u} → si moltiplica per <b>${f}</b>` : `1 ${q2.u} = ${f} ${q.u} → si divide per <b>${f}</b>`; }
+        if (A.m != null) { const big = A.m > B.m, f = fTxt(big ? A.m / B.m : B.m / A.m); return big ? `1 ${q.u} = ${f} ${q2.u} → si moltiplica per <b>${f}</b>` : `1 ${q2.u} = ${f} ${q.u} → si divide per <b>${f}</b>`; }
         const dp = A.p - B.p, f = fmtNum(1, Math.abs(dp));
         if (!dp) return `1 ${q.u} = 1 ${q2.u}: è la <b>stessa misura</b>, cambia solo il nome`;
         return dp > 0 ? `1 ${q.u} = ${f} ${q2.u} → si moltiplica per <b>${f}</b>` : `1 ${q2.u} = ${f} ${q.u} → si divide per <b>${f}</b>`;
@@ -1322,7 +1376,7 @@
     function calcTxt(q, q2) {
         const A = U[q.u], B = U[q2.u];
         let op, f;
-        if (A.d === 'T') { op = A.m > B.m ? '×' : ':'; f = A.m > B.m ? A.m / B.m : B.m / A.m; }
+        if (A.m != null) { op = A.m > B.m ? '×' : ':'; f = fTxt(A.m > B.m ? A.m / B.m : B.m / A.m); }
         else { const dp = A.p - B.p; if (!dp) return `${fn(q)} ${q.u} = ${fn(q)} ${q2.u}: stessa misura!`; op = dp > 0 ? '×' : ':'; f = fmtNum(1, Math.abs(dp)); }
         return `${fn(q)} ${op} ${f} = <b>?</b> ${q2.u}`;
     }
@@ -1475,20 +1529,38 @@
        ========================================================= */
     const boardEl = $('#board');
     IMPL.match = {
+        /* Le carte arrivano a "famiglie" con le stesse cifre (0,3 km · 300 m · 3 km · 3000 m · 30 dam…):
+           le cifre da sole non bastano, bisogna ragionare sulle unità. Le civette sono carte senza gemella. */
         gen(L, dim) {
-            const pairs = [], keys = new Set();
+            const pairs = [], keys = new Set(), okv = q => q && nice(q) && val(q) >= .001;
             const okPair = pr => { const k = key(pr[0]); if (keys.has(k)) return false; keys.add(k); pairs.push(pr); return true; };
-            okPair(freshPair(dim, 2));
-            for (let t = 0; pairs.length < L.pairs && t < 200; t++) {
-                // trappola: stesse cifre di una coppia già sul tavolo, virgola spostata
-                if (R.lvl > 0 && Math.random() < .45) {
-                    const [a, b] = pick(pairs), a2 = Q(a.n, a.e + pick([-1, 1]), a.u), b2 = conv(a2, b.u);
-                    if (b2 && nice(a2) && nice(b2) && val(a2) >= .001 && val(b2) >= .001 && okPair([a2, b2])) continue;
+            for (let guard = 0; pairs.length < L.pairs && guard < 300; guard++) {
+                const d = pairs.length === 0 ? dim : (Math.random() < .5 ? dim : pick(L.dims));
+                const base = freshPair(d, 2);
+                if (!okPair(base)) continue;
+                const [a, b] = base, sk = scaleOf(a.u);
+                if (U[a.u].m != null) continue;                  // tempi e velocità: le cifre cambiano già da sole
+                let need = Math.min((L.fam || 1) - 1, L.pairs - pairs.length);
+                for (let t = 0; need > 0 && t < 80; t++) {
+                    const S = sk ? SCALES[sk].units : null;
+                    const ua = S ? S[clamp(S.indexOf(a.u) + rnd(-1, 1), 0, S.length - 1)] : a.u;
+                    const a2 = Q(a.n, a.e + pick([-2, -1, 1, 2]), ua);
+                    let ub = b.u;
+                    if (S && scaleOf(b.u) === sk) { const i = S.indexOf(ua), j = i + pick([-1, 1]) * rnd(1, 2); if (j < 0 || j >= S.length) continue; ub = S[j]; }
+                    const b2 = conv(a2, ub);
+                    if (okv(a2) && okv(b2) && okPair([a2, b2])) need--;
                 }
-                okPair(freshPair(Math.random() < .5 ? dim : pick(L.dims), 2));
             }
-            const cards = shuffle(pairs.flatMap((pr, i) => pr.map(q => ({ q, pair: i, done: false }))));
-            return { dim, pairs, cards, found: 0, miss: 0, sel: -1, glow: [] };
+            // civette: le trappole tipiche di una coppia (virgola spostata, 1 L = 1 cm³, ore decimali) che non equivalgono a nessuna carta
+            const cardKeys = new Set(pairs.map(p => key(p[0]))), decoys = [];
+            for (let t = 0; decoys.length < (L.decoys || 0) && t < 60; t++) {
+                const [a, b] = pick(pairs);
+                const cand = shuffle([...traps(a, b).map(x => x.q), Q(a.n, a.e + pick([-1, 1]), a.u)]);
+                const c = cand.find(x => okv(x) && fn(x).replace(/\D/g, '').length <= 6 && !cardKeys.has(key(x)));
+                if (c) { cardKeys.add(key(c)); decoys.push(c); }
+            }
+            const cards = shuffle([...pairs.flatMap((pr, i) => pr.map(q => ({ q, pair: i, done: false }))), ...decoys.map(q => ({ q, pair: -1, done: false }))]);
+            return { dim, pairs, cards, decoys: decoys.length, found: 0, miss: 0, sel: -1, glow: [] };
         },
         setup(q) {
             this.prompt(q); setControls(''); this.render(q); boardEl.classList.add('on');
@@ -1497,19 +1569,22 @@
         cleanup() { boardEl.classList.remove('on'); boardEl.innerHTML = ''; this.endDrag(); },
         render(q) {
             const n = q.cards.length, narrow = CW < 520;
-            boardEl.style.setProperty('--cols', narrow ? 2 : n <= 6 ? 3 : n / 2);
-            boardEl.innerHTML = q.cards.map((c, i) => `<button class="card ${c.done ? 'done' : ''} ${q.sel === i ? 'sel' : ''} ${q.glow.includes(i) && !c.done ? 'glow' : ''}" data-card="${i}" aria-label="${esc(fq(c.q))}">${esc(fq(c.q))}</button>`).join('');
+            boardEl.style.setProperty('--cols', narrow ? 2 : n <= 6 ? 3 : n <= 8 ? 4 : n <= 10 ? 5 : 4);
+            boardEl.innerHTML = q.cards.map((c, i) => `<button class="card ${c.done ? 'done' : ''} ${c.out ? 'out' : ''} ${q.over && c.pair < 0 ? 'owl' : ''} ${q.sel === i ? 'sel' : ''} ${q.glow.includes(i) && !c.done ? 'glow' : ''}" data-card="${i}" aria-label="${esc(fq(c.q))}">${esc(fq(c.q))}</button>`).join('');
         },
         prompt(q) {
-            $('#prompt').innerHTML = `${topChips(q)}<div>Abbina le misure <b>equivalenti</b>: tocca due carte, oppure trascina una carta sopra la sua gemella. Ogni abbinamento sbagliato è un errore!</div>${scafHTML(q)}<div class="goal">🎯 Trova le ${q.pairs.length} coppie · errori: ${q.miss}</div>`;
+            const dc = q.decoys ? ` Attenzione: ${q.decoys === 1 ? 'una carta è una <b>civetta 🦉</b>' : `${q.decoys} carte sono <b>civette 🦉</b>`} senza gemella.` : '';
+            $('#prompt').innerHTML = `${topChips(q)}<div>Abbina le misure <b>equivalenti</b>: tocca due carte, oppure trascina una carta sopra la sua gemella. Le cifre ingannano: guarda le <b>unità</b>!${dc}</div>${scafHTML(q)}<div class="goal">🎯 Trova le ${q.pairs.length} coppie · errori: ${q.miss}</div>`;
         },
         ladder(q) {
-            const dims = [...new Set(q.pairs.map(p => scaleOf(p[0].u) && scaleOf(p[0].u) === scaleOf(p[1].u) ? scaleOf(p[0].u) : U[p[0].u].d === 'T' ? 'time' : 'mix'))];
-            return [
-                { id: 'strat', label: 'Strategia', html: `🧭 Per confrontare due misure portale alla <b>stessa unità</b>. Regole sul tavolo:<br>${dims.map(d => `• <b>${ARCH[d][0]}</b>: ${ARCH[d][1]}`).join('<br>')}` },
-                { id: 'g1', label: 'Mostra coppia' }, { id: 'g2', label: 'Mostra coppia' }];
+            const dims = [...new Set(q.pairs.map(p => scaleOf(p[0].u) && scaleOf(p[0].u) === scaleOf(p[1].u) ? scaleOf(p[0].u) : U[p[0].u].d === 'T' ? 'time' : U[p[0].u].d === 'S' ? 'vel' : 'mix'))];
+            const L = [{ id: 'strat', label: 'Strategia', html: `🧭 Scegli una carta e <b>convertila</b> nell'unità delle altre: solo una ha davvero lo stesso valore. Regole sul tavolo:<br>${dims.map(d => `• <b>${ARCH[d][0]}</b>: ${ARCH[d][1]}`).join('<br>')}` }];
+            if (q.decoys) L.push({ id: 'civ', label: 'Togli civetta', html: '🦉 Una carta civetta è stata tolta dal tavolo.' });
+            L.push({ id: 'g1', label: 'Mostra coppia' }, { id: 'g2', label: 'Mostra coppia' });
+            return L;
         },
         onHint(q, id) {
+            if (id === 'civ') { const c = q.cards.find(c => c.pair < 0 && !c.out); if (c) c.out = true; q.sel = -1; return this.render(q); }
             if (id !== 'g1' && id !== 'g2') return;
             const p = q.pairs.findIndex((_, i) => !q.cards.some(c => c.pair === i && c.done) && !q.glow.some(g => q.cards[g].pair === i));
             if (p >= 0) q.glow.push(...q.cards.map((c, i) => c.pair === p ? i : -1).filter(i => i >= 0));
@@ -1525,7 +1600,7 @@
         },
         tryMatch(a, b) {
             const q = R.q, A = q.cards[a], B = q.cards[b];
-            if (A.pair === B.pair) {
+            if (A.pair === B.pair && A.pair >= 0) {
                 A.done = B.done = true; q.found++; SFX.coin(); vibrate(20);
                 floatText(`${fq(A.q)} = ${fq(B.q)}`, 50, 40, 'pts');
                 burst(CW / 2, CH / 2, ['#3ddc84', '#ffd23f', '#fff'], 22, 4);
@@ -1545,7 +1620,8 @@
         finish(q) {
             if (!R || R.q !== q) return;
             boardEl.classList.remove('on');
-            const list = `<span class="fxl">${q.pairs.map(p => `${fq(p[0])} = ${fq(p[1])}`).join(' · ')}</span>`;
+            const owls = q.cards.filter(c => c.pair < 0).map(c => fq(c.q));
+            const list = `<span class="fxl">${q.pairs.map(p => `${fq(p[0])} = ${fq(p[1])}`).join(' · ')}${owls.length ? `<br>🦉 Civette: ${owls.join(', ')}` : ''}</span>`;
             if (!q.miss) return resolve('ok', { title: 'Tavolo pulito!', text: `Tutte le ${q.pairs.length} coppie senza errori.${list}` });
             resolve(q.miss === 1 ? 'near' : 'bad', { text: `Coppie trovate con ${q.miss} ${q.miss === 1 ? 'errore' : 'errori'}.${q.lastMsg ? ' Ultimo errore: ' + q.lastMsg : ''}${list}` });
         },
@@ -1708,6 +1784,239 @@
     cv.addEventListener('pointercancel', () => { if (R && R.q) R.q.drag = null; });
 
     /* =========================================================
+       MODALITÀ 5 — CANTIERE (problemi di realtà)
+       Risposta scritta con il tastierino. Livello 3: prima si calcola
+       area o volume (anche da misure in unità diverse), poi si converte.
+       ========================================================= */
+    const LIN2 = { mm: 'mm²', cm: 'cm²', dm: 'dm²', m: 'm²' }, LIN3 = { mm: 'mm³', cm: 'cm³', dm: 'dm³', m: 'm³' };
+    const nq = (v, u) => Array.isArray(v) ? Q(v[0], v[1], u) : Q(v, 0, u);
+    /* prodotto di lunghezze: nella loro unità se è la stessa per tutte, altrimenti in metri */
+    function prodQ(ls) {
+        const one = ls.every(l => l.u === ls[0].u), base = one ? ls : ls.map(l => conv(l, 'm'));
+        const u = one ? ls[0].u : 'm', T = ls.length === 2 ? LIN2 : LIN3;
+        return Q(base.reduce((s, l) => s * l.n, 1), base.reduce((s, l) => s + l.e, 0), T[u]);
+    }
+    const P1 = (ico, txt, src, ask) => ({ ico, txt, src, ask });
+    const CANT = {
+        area: [
+            () => P1('🟫', s => `Una piastrella quadrata ha un'area di ${s}. Quanti <b>dm²</b> sono?`, nq(pick([400, 625, 900, 1600, 2500]), 'cm²'), 'dm²'),
+            () => P1('🌾', s => `Un campo di grano misura ${s} (ettari: 1 ha = 1 hm²). Quanti <b>m²</b> sono?`, nq(pick([[15, -1], [25, -1], 3, [8, -1], 12]), 'hm²'), 'm²'),
+            () => P1('🏫', s => `Il pavimento dell'aula misura ${s}. Quanti <b>dm²</b> di linoleum servono?`, nq(pick([48, 54, 63, 72]), 'm²'), 'dm²'),
+            () => P1('📱', s => `Lo schermo di uno smartphone ha un'area di ${s}. Quanti <b>mm²</b> sono?`, nq(pick([98, 120, 85]), 'cm²'), 'mm²'),
+            () => P1('🌳', s => `Un parco naturale ha un'area di ${s}. Quanti <b>ettari (hm²)</b> sono?`, nq(pick([[35, -2], [12, -1], [8, -1], [25, -1]]), 'km²'), 'hm²'),
+            () => P1('✉️', s => `Un francobollo ha un'area di ${s}. Quanti <b>cm²</b> sono?`, nq(pick([400, 600, 750]), 'mm²'), 'cm²'),
+            () => P1('📄', s => `Un foglio A4 ha un'area di circa ${s}. Quanti <b>m²</b> sono?`, nq(624, 'cm²'), 'm²'),
+            () => P1('🏠', s => `Un appartamento misura ${s}. Quante <b>are (dam²)</b> sono? (1 ara = 1 dam²)`, nq(pick([85, 120, 95]), 'm²'), 'dam²')],
+        vol: [
+            () => P1('🧱', s => `Un mattone ha un volume di ${s}. Quanti <b>cm³</b> sono?`, nq(pick([[18, -1], [24, -1], [15, -1]]), 'dm³'), 'cm³'),
+            () => P1('🚚', s => `Un camion trasporta ${s} di sabbia. Quanti <b>dm³</b> sono?`, nq(pick([12, 8, 15]), 'm³'), 'dm³'),
+            () => P1('🧊', s => `Un cubetto di ghiaccio ha un volume di ${s}. Quanti <b>mm³</b> sono?`, nq(pick([8, 27, 12]), 'cm³'), 'mm³'),
+            () => P1('🪵', s => `Una trave di legno ha un volume di ${s}. Quanti <b>dm³</b> sono?`, nq(pick([[45, -3], [12, -2], [8, -2]]), 'm³'), 'dm³')],
+        mix: [
+            () => P1('🏊', s => `Una piscina contiene ${s} d'acqua. Quanti <b>litri</b> sono?`, nq(pick([375, 120, 450]), 'm³'), 'L'),
+            () => P1('🍾', s => `Una bottiglia contiene ${s}. Quanti <b>cm³</b> sono?`, nq(pick([[15, -1], [5, -1], 2]), 'L'), 'cm³'),
+            () => P1('⛽', s => `Il serbatoio di un'auto contiene ${s} di benzina. Quanti <b>m³</b> sono?`, nq(pick([45, 50, 60]), 'L'), 'm³'),
+            () => P1('🥤', s => `Una lattina contiene ${s}. Quanti <b>litri</b> sono?`, nq(pick([330, 250, 500]), 'mL'), 'L'),
+            () => P1('💉', s => `Una siringa contiene ${s} di farmaco. Quanti <b>mL</b> sono?`, nq(pick([[25, -1], 5, 10]), 'cm³'), 'mL'),
+            () => P1('🍷', s => `Una botte contiene ${s} di vino. Quanti <b>litri</b> sono?`, nq(pick([[25, -1], [12, -1], 3]), 'hL'), 'L'),
+            () => P1('💧', s => `Una goccia d'acqua ha un volume di circa ${s}. Quanti <b>mm³</b> sono?`, nq(pick([[5, -2], [4, -2]]), 'mL'), 'mm³')],
+        area2: [
+            () => ({ ico: '🏠', ls: [nq(pick([4, 5, 6]), 'm'), nq(pick([[35, -1], [25, -1], [45, -1], 3]), 'm')], ask: 'dm²', t: (a, b) => `Una stanza rettangolare misura ${a} × ${b}. Quanti <b>dm²</b> di pavimento bisogna coprire?` }),
+            () => ({ ico: '🌾', ls: [nq(pick([200, 250, 300, 400]), 'm'), nq(pick([100, 120, 150, 250]), 'm')], ask: 'hm²', t: (a, b) => `Un terreno rettangolare misura ${a} × ${b}. Quanti <b>ettari (hm²)</b> sono?` }),
+            () => ({ ico: '🍽️', ls: [nq(pick([[15, -1], 2, [18, -1]]), 'm'), nq(pick([80, 90, 120]), 'cm')], ask: 'm²', t: (a, b) => `Una tovaglia rettangolare misura ${a} × ${b}. Quanti <b>m²</b> di stoffa servono?` }),
+            () => ({ ico: '🖼️', ls: [nq(pick([70, 50, 60]), 'cm'), nq(pick([50, 40, 90]), 'cm')], ask: 'm²', t: (a, b) => `Un poster misura ${a} × ${b}. Quanti <b>m²</b> di carta servono?` }),
+            () => ({ ico: '🚪', ls: [nq(2, 'm'), nq(pick([80, 90, 70]), 'cm')], ask: 'dm²', t: (a, b) => `Una porta misura ${a} × ${b}. Quanti <b>dm²</b> di vernice bisogna stendere su un lato?` })],
+        vol2: [
+            () => ({ ico: '🐠', ls: [nq(pick([40, 50, 60, 80]), 'cm'), nq(pick([25, 30, 40]), 'cm'), nq(pick([30, 40, 50]), 'cm')], ask: 'L', t: (a, b, c) => `Un acquario misura ${a} × ${b} × ${c}. Quanti <b>litri</b> d'acqua contiene, pieno?` }),
+            () => ({ ico: '🛁', ls: [nq(2, 'm'), nq(pick([[15, -1], [12, -1]]), 'm'), nq(pick([50, 80, 60]), 'cm')], ask: 'L', t: (a, b, c) => `Una vasca misura ${a} × ${b} ed è profonda ${c}. Quanti <b>litri</b> contiene, piena?` }),
+            () => ({ ico: '🥛', ls: (s => [nq(s, 'cm'), nq(s, 'cm'), nq(pick([15, 20, 25]), 'cm')])(pick([6, 7, 8])), ask: 'L', t: (a, b, c) => `Un cartone del latte misura ${a} × ${b} × ${c}. Quanti <b>litri</b> contiene?` }),
+            () => ({ ico: '🛢️', ls: (s => [s, s, s])(nq(pick([[12, -1], [15, -1], [8, -1], 2]), 'm')), ask: 'L', t: a => `Una cisterna a forma di cubo ha lo spigolo di ${a}. Quanti <b>litri</b> contiene?` }),
+            () => ({ ico: '🚛', ls: [nq(pick([3, 4]), 'm'), nq(2, 'm'), nq(pick([50, 40]), 'cm')], ask: 'dm³', t: (a, b, c) => `Il cassone di un camion misura ${a} × ${b} × ${c}. Quanti <b>dm³</b> di ghiaia può contenere?` })]
+    };
+    /* contesti per indirizzo (IPIA Orfini): escono più spesso se lo studente sceglie il suo laboratorio */
+    const TRACKS = [
+        { id: 'gen', icon: '🌐', name: 'Tutti i giorni' }, { id: 'ma', icon: '⚙️', name: 'Meccanico' }, { id: 'el', icon: '⚡', name: 'Elettrico' },
+        { id: 'gp', icon: '🎨', name: 'Grafica' }, { id: 'moda', icon: '👗', name: 'Moda' }, { id: 'od', icon: '🦷', name: 'Odontotecnico' }, { id: 'sss', icon: '🩺', name: 'Socio-sanitario' }];
+    const CANT_TRACK = {
+        ma: {
+            area: [() => P1('⚙️', s => `Una lamiera d'acciaio ha una superficie di ${s}. Quanti <b>dm²</b> sono?`, nq(pick([[25, -1], [18, -1], [32, -1]]), 'm²'), 'dm²'),
+                () => P1('🔩', s => `La testa di un pistone ha un'area di ${s}. Quanti <b>mm²</b> sono?`, nq(pick([[785, -1], 50, 64]), 'cm²'), 'mm²')],
+            vol: [() => P1('🧱', s => `Un blocco di alluminio da fresare ha un volume di ${s}. Quanti <b>cm³</b> sono?`, nq(pick([[8, -1], [12, -1], [25, -2]]), 'dm³'), 'cm³')],
+            mix: [() => P1('🏍️', s => `La cilindrata di uno scooter è ${s}. Quanti <b>litri</b> sono?`, nq(pick([125, 250, 300]), 'cm³'), 'L'),
+                () => P1('🛢️', s => `La coppa dell'olio di un'auto contiene ${s}. Quanti <b>cm³</b> sono?`, nq(pick([[45, -1], 4, [35, -1]]), 'L'), 'cm³')],
+            area2: [() => ({ ico: '⚙️', ls: [nq(pick([[12, -1], [15, -1]]), 'm'), nq(pick([80, 60]), 'cm')], ask: 'dm²', t: (a, b) => `Una lamiera rettangolare misura ${a} × ${b}. Quanti <b>dm²</b> di lamiera sono?` })],
+            vol2: [() => ({ ico: '🛢️', ls: [nq(50, 'cm'), nq(40, 'cm'), nq(pick([30, 25]), 'cm')], ask: 'L', t: (a, b, c) => `Il serbatoio dell'olio di una pressa misura ${a} × ${b} × ${c}. Quanti <b>litri</b> contiene?` })]
+        },
+        el: {
+            area: [() => P1('☀️', s => `Un pannello fotovoltaico ha una superficie di ${s}. Quanti <b>dm²</b> sono?`, nq(pick([[16, -1], [18, -1], 2]), 'm²'), 'dm²'),
+                () => P1('🔌', s => `La sezione di un cavo elettrico è ${s}. Quanti <b>cm²</b> sono?`, nq(pick([[25, -1], 4, 6]), 'mm²'), 'cm²')],
+            vol: [() => P1('🔋', s => `Una batteria per accumulo ha un volume di ${s}. Quanti <b>cm³</b> sono?`, nq(pick([[24, -1], [15, -1]]), 'dm³'), 'cm³')],
+            mix: [() => P1('🚿', s => `Uno scaldabagno elettrico contiene ${s} d'acqua. Quanti <b>m³</b> sono?`, nq(pick([80, 50, 100]), 'L'), 'm³')],
+            area2: [() => ({ ico: '🗄️', ls: [nq(60, 'cm'), nq(pick([80, 90]), 'cm')], ask: 'm²', t: (a, b) => `Lo sportello di un quadro elettrico misura ${a} × ${b}. Quanti <b>m²</b> di lamiera servono?` })],
+            vol2: [() => ({ ico: '🔌', ls: [nq(2, 'm'), nq(4, 'cm'), nq(pick([3, 5]), 'cm')], ask: 'dm³', t: (a, b, c) => `Una canalina per cavi lunga ${a} ha una sezione di ${b} × ${c}. Quanti <b>dm³</b> di spazio offre?` })]
+        },
+        gp: {
+            area: [() => P1('🖼️', s => `Un manifesto ha una superficie di ${s}. Quanti <b>cm²</b> sono?`, nq(pick([[72, -2], [5, -1], [35, -2]]), 'm²'), 'cm²'),
+                () => P1('💳', s => `Un biglietto da visita ha un'area di ${s}. Quanti <b>mm²</b> sono?`, nq(pick([[4675, -2], 45]), 'cm²'), 'mm²')],
+            mix: [() => P1('🖨️', s => `Una cartuccia d'inchiostro contiene ${s}. Quanti <b>cm³</b> sono?`, nq(pick([12, 15, 8]), 'mL'), 'cm³')],
+            area2: [() => ({ ico: '📰', ls: pick([[nq(50, 'cm'), nq(70, 'cm')], [nq(30, 'cm'), nq(42, 'cm')]]), ask: 'm²', t: (a, b) => `Una locandina misura ${a} × ${b}. Quanti <b>m²</b> di carta servono?` })],
+            vol2: [() => ({ ico: '📦', ls: [nq(30, 'cm'), nq(20, 'cm'), nq(pick([25, 10]), 'cm')], ask: 'L', t: (a, b, c) => `Uno scatolone per le risme misura ${a} × ${b} × ${c}. Quanti <b>litri</b> di volume ha?` })]
+        },
+        moda: {
+            area: [() => P1('🧵', s => `Un rotolo di tessuto copre ${s}. Quanti <b>dm²</b> sono?`, nq(pick([15, 12, [75, -1]]), 'm²'), 'dm²')],
+            mix: [() => P1('🧴', s => `Un flacone di tintura per tessuti contiene ${s}. Quanti <b>litri</b> sono?`, nq(pick([250, 750, 500]), 'mL'), 'L')],
+            area2: [() => ({ ico: '✂️', ls: [nq(pick([[14, -1], [15, -1]]), 'm'), nq(90, 'cm')], ask: 'm²', t: (a, b) => `Un taglio di stoffa misura ${a} × ${b}. Quanti <b>m²</b> di tessuto sono?` })],
+            vol2: [() => ({ ico: '👟', ls: [nq(33, 'cm'), nq(20, 'cm'), nq(12, 'cm')], ask: 'L', t: (a, b, c) => `Una scatola per scarpe misura ${a} × ${b} × ${c}. Quanti <b>litri</b> di volume ha?` })]
+        },
+        od: {
+            area: [() => P1('🦷', s => `La superficie di una corona dentale è ${s}. Quanti <b>mm²</b> sono?`, nq(pick([[8, -1], [12, -1], [6, -1]]), 'cm²'), 'mm²')],
+            vol: [() => P1('🧪', s => `Per una protesi servono ${s} di resina. Quanti <b>mm³</b> sono?`, nq(pick([[25, -1], [18, -1], 3]), 'cm³'), 'mm³')],
+            mix: [() => P1('🧴', s => `Un flacone di monomero contiene ${s}. Quanti <b>litri</b> sono?`, nq(pick([100, 250]), 'mL'), 'L')],
+            area2: [() => ({ ico: '🦷', ls: [nq(4, 'cm'), nq(pick([25, 30]), 'mm')], ask: 'cm²', t: (a, b) => `Una lastrina per modelli misura ${a} × ${b}. Quanti <b>cm²</b> sono?` })],
+            vol2: [() => ({ ico: '🦷', ls: [nq(20, 'mm'), nq(15, 'mm'), nq(pick([14, 12]), 'mm')], ask: 'cm³', t: (a, b, c) => `Un blocchetto di zirconia misura ${a} × ${b} × ${c}. Quanti <b>cm³</b> sono?` })]
+        },
+        sss: {
+            area: [() => P1('🛏️', s => `Una stanza di degenza misura ${s}. Quanti <b>dm²</b> di pavimento sono?`, nq(pick([18, 24, 16]), 'm²'), 'dm²')],
+            mix: [() => P1('💧', s => `Una flebo contiene ${s} di soluzione. Quanti <b>litri</b> sono?`, nq(pick([500, 250, 100]), 'mL'), 'L'),
+                () => P1('🥄', s => `Una dose di sciroppo è di ${s}. Quanti <b>cm³</b> sono?`, nq(pick([5, 10, [25, -1]]), 'mL'), 'cm³')],
+            area2: [() => ({ ico: '🏥', ls: [nq(12, 'm'), nq(pick([[85, -1], 9]), 'm')], ask: 'dam²', t: (a, b) => `Una palestra riabilitativa misura ${a} × ${b}. Quante <b>are (dam²)</b> sono?` })],
+            vol2: [() => ({ ico: '🌊', ls: [nq(3, 'm'), nq(2, 'm'), nq(pick([[12, -1], 1]), 'm')], ask: 'L', t: (a, b, c) => `Una vasca per idroterapia misura ${a} × ${b} × ${c}. Quanti <b>litri</b> contiene?` })]
+        }
+    };
+    IMPL.cantiere = {
+        gen(L, dim) {
+            const own = (CANT_TRACK[P.track] || {})[dim] || [];
+            for (let t = 0; t < 40; t++) {
+                const T = pick(own.length && Math.random() < .6 ? own : CANT[dim])();
+                let q;
+                if (T.ls) {
+                    const mid = prodQ(T.ls), ans = conv(mid, T.ask);
+                    const mixed = T.ls.some(l => l.u !== T.ls[0].u);
+                    q = { dim, ico: T.ico, two: true, ls: T.ls, mid, ans, ask: T.ask, mixed, naive: T.ls.reduce((s, l) => s * val(l), 1), txt: T.t(...T.ls.map(fq)) };
+                } else {
+                    const ans = conv(T.src, T.ask);
+                    q = { dim, ico: T.ico, two: false, src: T.src, mid: T.src, ans, ask: T.ask, txt: T.txt(`<span class="qty">${fq(T.src)}</span>`) };
+                }
+                const k = q.txt + q.ask;
+                if (q.ans && (!R.seen.has(k) || t > 30)) { R.seen.add(k); q.input = ''; return q; }
+            }
+        },
+        setup(q) {
+            this.prompt(q);
+            // prima una stima (controllo dell'ordine di grandezza), poi il calcolo
+            const v = val(q.ans);
+            if (q.two) {
+                let r = Math.round(Math.log10(v)); if (Math.abs(Math.pow(10, r) - v) < 1e-12) r++;   // mai una soglia uguale al risultato
+                const T = Math.pow(10, r), Tq = Q(1, r, q.ask);
+                q.estAns = v > T ? 'up' : 'down';
+                q.estQ = `il risultato in <b>${q.ask}</b> sarà più o meno di <b>${fq(Tq)}</b>?`;
+                q.estOpts = [['up', `📈 più di ${fq(Tq)}`], ['down', `📉 meno di ${fq(Tq)}`]];
+            } else {
+                const o = val(q.src);
+                q.estAns = Math.abs(v - o) < 1e-12 ? 'eq' : v > o ? 'up' : 'down';
+                q.estQ = `in <b>${q.ask}</b> il numero sarà più grande, uguale o più piccolo di <b>${fn(q.src)}</b>?`;
+                q.estOpts = [['up', '📈 più grande'], ['eq', '= uguale'], ['down', '📉 più piccolo']];
+            }
+            setControls(`<div class="est"><div class="est-q">🤔 Prima una stima: ${q.estQ}</div><div class="est-b">${q.estOpts.map(([id, l]) => `<button class="ctl" data-est="${id}">${l}</button>`).join('')}</div></div>`);
+            setDisplay('stima…', false);
+        },
+        estimate(id) {
+            const q = R.q; if (R.phase !== 'input' || q.estDone) return;
+            q.estDone = true; q.estOK = id === q.estAns;
+            if (q.estOK) { SFX.coin(); floatText('🎯 Stima giusta!', 50, 30, 'pts'); say('🎯 Stima giusta: se il calcolo torna, bonus ×1,15. Ora calcola!', 'info'); }
+            else {
+                SFX.miss();
+                say(q.two ? 'La stima non torna: ricontrolla l\'ordine di grandezza mentre calcoli.' : 'La stima non torna: unità più piccola → numero più grande, unità più grande → numero più piccolo.');
+            }
+            const k = v => `<button class="ctl" data-kp="${v}">${v}</button>`;
+            setControls(`<div class="kp">${[7, 8, 9].map(k).join('')}<button class="ctl" data-kp="del" aria-label="Cancella">⌫</button>${[4, 5, 6].map(k).join('')}<button class="ctl" data-kp=",">,</button>${[1, 2, 3, 0].map(k).join('')}<button class="ctl go kp-ok" data-kp="ok">✓ Conferma</button></div>`);
+            this.disp(q);
+        },
+        disp(q) { setDisplay(`${q.input || '?'}&nbsp;<small style="font-size:.6em;opacity:.75">${q.ask}</small>`, !!q.input); },
+        prompt(q) {
+            $('#prompt').innerHTML = `${topChips(q)}<div>${q.ico} ${q.txt}</div>${scafHTML(q)}<div class="goal">🎯 Risposta in <b>${q.ask}</b></div>`;
+        },
+        ladder(q) {
+            if (!q.two) return [
+                { id: 'fat', label: 'Fattore', html: `🔁 ${factorPhrase(q.src, q.ans)}.${scaleHTML(q.src.u, q.ans.u)}` },
+                { id: 'calc', label: 'Il conto', html: `🧮 ${calcTxt(q.src, q.ans)}` }];
+            const what = q.ls.length === 2 ? 'Area = base × altezza' : 'Volume = lunghezza × larghezza × altezza';
+            const same1 = q.mixed ? `Prima porta tutto in metri: ${q.ls.map(l => fq(conv(l, 'm'))).join(' · ')}. ` : '';
+            return [
+                { id: 'step', label: 'Primo passo', html: `📐 ${same1}${what}.` },
+                { id: 'mid', label: 'Risultato intermedio', html: `📏 ${q.ls.length === 2 ? 'Area' : 'Volume'} = <b>${fq(q.mid)}</b>. Ora converti in ${q.ask}.` },
+                { id: 'fat', label: 'Conversione', html: `🔁 ${factorPhrase(q.mid, q.ans)}.${scaleHTML(q.mid.u, q.ans.u)}` }];
+        },
+        key(e) {
+            if (!R.q.estDone) return false;
+            if (/^[0-9]$/.test(e.key)) { this.type(e.key); return true; }
+            if (e.key === ',' || e.key === '.') { this.type(','); return true; }
+            if (e.key === 'Backspace') { this.type('del'); return true; }
+            if (e.key === 'Enter') { this.type('ok'); return true; }
+            return false;
+        },
+        type(k) {
+            const q = R.q; if (R.phase !== 'input') return;
+            const b = $(`[data-kp="${k}"]`); if (b) { b.classList.add('press'); setTimeout(() => b.classList.remove('press'), 110); }
+            SFX.tap();
+            if (k === 'ok') return this.submit();
+            if (k === 'del') q.input = q.input.slice(0, -1);
+            else if (k === ',') { if (!q.input.includes(',')) q.input = (q.input || '0') + ','; }
+            else if (q.input.replace(',', '').length < 10) q.input = (q.input === '0' ? '' : q.input) + k;
+            this.disp(q);
+        },
+        parse(s) { const m = s.match(/^(\d+)(?:,(\d*))?$/); if (!m) return null; const d = m[2] || ''; return Q(parseInt(m[1] + d, 10), -d.length, R.q.ask); },
+        submit() {
+            const q = R.q, g = this.parse(q.input);
+            if (!g || (!g.n && !q.input.replace(/[0,]/g, ''))) { nudgeDisplay(); say('Scrivi il numero con il tastierino.'); return; }
+            R.answerAt = performance.now(); R.phase = 'anim'; q.user = g; q.reveal = true; SFX.pop();
+            setTimeout(() => this.finish(q), RM ? 300 : 800);
+        },
+        finish(q) {
+            if (!R || R.q !== q) return;
+            const g = q.user, how = q.two
+                ? `<span class="fxl">${q.mixed ? 'Stessa unità: ' : ''}${(q.mixed ? q.ls.map(l => conv(l, 'm')) : q.ls).map(fq).join(' × ')} = ${fq(q.mid)}. ${howTo(q.mid, q.ans)}</span>`
+                : `<span class="fxl">${howTo(q.src, q.ans)}</span>`;
+            if (same(g, q.ans)) { burst(CW / 2, CH / 2, ['#3ddc84', '#ffd23f', '#fff'], 50, 6); return resolve('ok', { title: 'Lavoro a regola d\'arte!', k: q.estOK ? 1.15 : 1, text: `Risposta: <b>${fq(q.ans)}</b>.${q.estOK ? ' 🎯 Anche la stima era giusta: bonus ×1,15!' : ''}${how}` }); }
+            let tag, msg;
+            if (q.two && q.mid.u !== q.ans.u && fn(g) === fn(q.mid)) { tag = 'passaggio'; msg = `${fn(q.mid)} è il risultato in ${q.mid.u}: manca la conversione in ${q.ask}.`; }
+            else if (q.two && q.mixed && Math.abs(val(g) - q.naive) < 1e-9 * Math.max(1, q.naive)) { tag = 'miste'; msg = 'Hai moltiplicato misure espresse in unità diverse: prima vanno portate tutte nella stessa unità.'; }
+            else { const d = diagnose(q.mid, q.ans, g); tag = d.tag; msg = d.msg; }
+            resolve('bad', { tag, text: `Hai scritto ${fq(g)}. ${msg} La risposta era <b>${fq(q.ans)}</b>.${how}` });
+        },
+        draw(q, now) {
+            const cx = CW / 2, big = clamp(CH * .16, 34, 80);
+            if (q.two) {
+                const n = q.ls.length, labs = q.ls.map(fq);
+                if (n === 2) {
+                    const r = clamp(val(conv(q.ls[1], 'm')) / val(conv(q.ls[0], 'm')), .3, 1), w = Math.min(CW * .62, (CH * .5) / r), h = w * r, x = cx - w / 2, y = CH * .46 - h / 2;
+                    ctx.fillStyle = 'rgba(241,91,181,.25)'; ctx.fillRect(x, y, w, h); ctx.strokeStyle = '#f15bb5'; ctx.lineWidth = 3; ctx.strokeRect(x, y, w, h);
+                    txt(labs[0], cx, y - 14, 16, '#fff', 'center', 'rgba(0,0,0,.6)'); txt(labs[1], x + w + 8, y + h / 2, 16, '#fff', 'left', 'rgba(0,0,0,.6)');
+                    emoji(q.ico, cx, y + h / 2, Math.min(big, h * .6));
+                } else {
+                    const s = Math.min(CW, CH) * .17, ox = cx - s * .4, oy = CH * .5, dx = s * .8, dy = s * .45, H = s * 1.05, W2 = s * 1.6;
+                    const fr = [[ox - W2 / 2, oy], [ox + W2 / 2, oy], [ox + W2 / 2, oy - H], [ox - W2 / 2, oy - H]];
+                    const poly = (pts, c) => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fillStyle = c; ctx.fill(); ctx.strokeStyle = '#f15bb5'; ctx.lineWidth = 2; ctx.stroke(); };
+                    poly([fr[3], fr[2], [fr[2][0] + dx, fr[2][1] - dy], [fr[3][0] + dx, fr[3][1] - dy]], 'rgba(241,91,181,.35)');
+                    poly([fr[1], [fr[1][0] + dx, fr[1][1] - dy], [fr[2][0] + dx, fr[2][1] - dy], fr[2]], 'rgba(241,91,181,.2)');
+                    poly(fr, 'rgba(241,91,181,.28)');
+                    txt(labs[0], ox, oy + 16, 15, '#fff', 'center', 'rgba(0,0,0,.6)');
+                    txt(labs[1], ox + W2 / 2 + dx / 2 + 8, oy - dy / 2 + 6, 15, '#fff', 'left', 'rgba(0,0,0,.6)');
+                    txt(labs[2], ox - W2 / 2 - 8, oy - H / 2, 15, '#fff', 'right', 'rgba(0,0,0,.6)');
+                    emoji(q.ico, ox, oy - H / 2, Math.min(big, H * .55));
+                }
+            } else {
+                emoji(q.ico, cx, CH * .3, big * 1.2);
+                fitTxt(`${fq(q.src)} → ? ${q.ask}`, cx, CH * .58, clamp(CH * .08, 18, 36), CW - 30, '#fff', 'center', 'rgba(0,0,0,.6)');
+            }
+            if (q.reveal) {
+                const ok = same(q.user, q.ans);
+                fitTxt(ok ? `✔ ${fq(q.ans)}` : `${fq(q.user)} ≠ ${fq(q.ans)}`, cx, CH - 24, clamp(CH * .065, 16, 28), CW - 30, ok ? '#3ddc84' : '#ff8da2', 'center', 'rgba(0,0,0,.7)');
+            } else if (q.open.has('mid')) fitTxt(`= ${fq(q.mid)} → ? ${q.ask}`, cx, CH - 24, clamp(CH * .06, 15, 26), CW - 30, '#ffd23f', 'center', 'rgba(0,0,0,.7)');
+        }
+    };
+
+    /* =========================================================
        FINE PARTITA
        ========================================================= */
     function endRun() {
@@ -1788,8 +2097,14 @@
         curMode = k; const M = MODES[k];
         $('#modeTitle').textContent = `${M.icon} ${M.name}`;
         $('#modeTip').innerHTML = `<span>💡</span><p>${M.tip}</p>`;
-        renderPath(); show('mode');
+        renderTracks(); renderPath(); show('mode');
     }
+    function renderTracks() {
+        const el = $('#trackPick'); el.style.display = curMode === 'cantiere' ? '' : 'none';
+        const cur = P.track || 'gen';
+        el.innerHTML = TRACKS.map(t => `<button class="scen-btn ${t.id === cur ? 'on' : ''}" data-track="${t.id}" aria-pressed="${t.id === cur}"><span>${t.icon}</span>${t.name}</button>`).join('');
+    }
+    $('#trackPick').addEventListener('click', e => { const b = e.target.closest('[data-track]'); if (b) { P.track = b.dataset.track; saveP(); SFX.tap(); renderTracks(); } });
     function renderPath() {
         const k = curMode, M = MODES[k];
         const unl = M.levels.map((_, i) => i === 0 || (P.stars[k + '-' + (i - 1)] || 0) >= 1);
@@ -1849,6 +2164,8 @@
         if (b.dataset.lift) { if (b.dataset.lift === 'ok') IMPL.scala.submit(); else IMPL.scala.move(b.dataset.lift === 'up' ? -1 : 1); }
         else if (b.dataset.fine) IMPL.lab.fine(b.dataset.fine);
         else if (b.dataset.bin) IMPL.nastro.choose(+b.dataset.bin);
+        else if (b.dataset.kp) IMPL.cantiere.type(b.dataset.kp);
+        else if (b.dataset.est) IMPL.cantiere.estimate(b.dataset.est);
     });
     hintBtn.addEventListener('click', () => {
         if (!R || !R.q || R.phase !== 'input') return;

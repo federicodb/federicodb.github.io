@@ -171,7 +171,7 @@
         .path { position: relative; display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 36px 0 30px; }
         .path::before { content: ''; position: absolute; top: 70px; bottom: 90px; left: 50%; border-left: 6px dotted rgba(255, 255, 255, .16); transform: translateX(-50%); }
         .node-wrap { position: relative; display: flex; flex-direction: column; align-items: center; transform: translateX(calc(var(--x, 0) * 1px)); }
-        .node-wrap:nth-child(1) { --x: -60; } .node-wrap:nth-child(2) { --x: 60; } .node-wrap:nth-child(3) { --x: -30; }
+        .node-wrap:nth-child(1) { --x: -60; } .node-wrap:nth-child(2) { --x: 60; } .node-wrap:nth-child(3) { --x: -30; } .node-wrap:nth-child(4) { --x: 50; } .node-wrap:nth-child(5) { --x: -40; }
         .node {
             width: 96px; height: 96px; border-radius: 50%; font-family: var(--disp); font-size: 40px;
             background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 65%, #fff), var(--c) 55%, var(--d));
@@ -831,19 +831,24 @@
             levels: [
                 { label: 'Base', sub: '2 fattori lineari (6 cannoni)', time: 24, deck: ['diff1', 'quad1', 'trin1', 'diff1', 'trin1', 'quad1', 'trinNeg', 'diff1'] },
                 { label: 'Medio', sub: '3 fattori con k o x (8 cannoni)', time: 30, deck: ['trinNeg', 'raccDiff', 'raccXDiff', 'raccTrin', 'raccXTrin', 'raccQuad', 'raccXDiff', 'raccTrin'] },
-                { label: 'Esperto', sub: 'fino a 4 fattori e x⁴ − b⁴ (8 cannoni)', time: 38, deck: ['raccXDiff', 'raccXTrin', 'raccKXDiff', 'biquad4', 'raccKXTrin', 'diffA2', 'biquad4', 'raccKXDiff'] }
+                { label: 'Esperto', sub: 'fino a 4 fattori, x⁴ − b⁴ e (ax ± b)² (8 cannoni)', time: 38, deck: ['raccXDiff', 'raccXTrin', 'quadA', 'biquad4', 'raccKXTrin', 'diffA2', 'quadA', 'raccKXDiff'] },
+                { label: 'Veterano', sub: 'quadrati e differenze non banali, cubo di binomio (8 cannoni)', time: 42, deck: ['quadA', 'diffA2', 'quadX2', 'diffX4', 'cubo1', 'cubo1', 'quadX2', 'diffX4'] },
+                { label: 'Leggenda', sub: 'raccoglimento parziale e cubi con coefficiente (8 cannoni)', time: 50, deck: ['cubo1', 'raccParz', 'cuboA', 'raccParz', 'raccParzDiff', 'biquadA', 'raccKCubo', 'raccParzDiff'] }
             ]
         }
     };
     const MODE_KEYS = ['prod', 'trin', 'para', 'fac'];
-    const LV_MULT = [1, 1.5, 2];
+    const LV_MULT = [1, 1.5, 2, 2.5, 3];
     const WAVE = 8;
 
     const DIFF = {
         prod: { diff1: 0, quadP: 0.4, quadM: 0.7, diffA: 1.4, quadA: 1.8, raccDiff: 2.2, raccQuad: 2.5, raccXDiff: 2.8, raccXQuad: 3.0, biquadDiff: 3.3 },
         trin: { posPos: 0, negNeg: 1.0, discP: 1.7, discN: 1.9, negBig: 2.5, discBigP: 2.8, discBigN: 3.0 },
         para: { eqUp: 0, rootsUp: 0.6, eqDown: 1.2, rootsDown: 1.6, tangent: 2.0, vertex: 2.5, stretchEq: 2.9, rootsStretch: 3.2 },
-        fac: { diff1: 0, quad1: 0.4, trin1: 0.8, trinNeg: 1.3, raccDiff: 1.8, raccQuad: 2.0, raccTrin: 2.2, raccXDiff: 2.5, raccXTrin: 2.8, diffA2: 3.0, raccKXDiff: 3.3, raccKXTrin: 3.5, biquad4: 3.8 }
+        fac: {
+            diff1: 0, quad1: 0.4, trin1: 0.8, trinNeg: 1.3, raccDiff: 1.8, raccQuad: 2.0, raccTrin: 2.2, raccXDiff: 2.5, raccXTrin: 2.8, diffA2: 3.0, quadA: 3.1, raccKXDiff: 3.3, raccKXTrin: 3.5, biquad4: 3.8,
+            quadX2: 3.4, diffX4: 3.6, cubo1: 3.9, raccParz: 4.2, cuboA: 4.4, raccParzDiff: 4.7, biquadA: 4.8, raccKCubo: 5.0
+        }
     };
 
     const ARCH = {
@@ -891,8 +896,29 @@
             diffA2: ['Differenza di quadrati con coeff.', '(ax − b)(ax + b).'],
             raccKXDiff: ['Raccoglimento kx + Diff. quadrati', 'Colpisci k, x e i fattori coniugati.'],
             raccKXTrin: ['Raccoglimento kx + Trinomio', 'Riduci k e x, poi scomponi.'],
-            biquad4: ['Differenza di quarte potenze', 'x⁴ − b⁴ = (x² + b²)(x − b)(x + b).']
+            biquad4: ['Differenza di quarte potenze', 'x⁴ − b⁴ = (x² + b²)(x − b)(x + b).'],
+            quadA: ['Quadrato di binomio con coeff.', 'a²x² ± 2abx + b² = (ax ± b)²: radici dei termini estremi e controllo del doppio prodotto.'],
+            quadX2: ['Quadrato di binomio in x²', 'x⁴ + 2bx² + b² = (x² + b)²: la base A è x², non x.'],
+            diffX4: ['Differenza di quadrati in x²', 'a²x⁴ − b² = (ax² − b)(ax² + b): se b non è un quadrato, ax² − b non si scompone più (nei razionali).'],
+            cubo1: ['Cubo di binomio', 'x³ + 3bx² + 3b²x + b³ = (x + b)³: 4 termini, il primo e l’ultimo sono cubi.'],
+            cuboA: ['Cubo di binomio con coeff.', '(ax + b)³ = a³x³ + 3a²bx² + 3ab²x + b³: radici cubiche degli estremi, poi verifica i tripli prodotti.'],
+            raccKCubo: ['Raccoglimento k + Cubo', 'Prima raccogli k, poi riconosci il cubo di binomio.'],
+            raccParz: ['Raccoglimento parziale', 'x³ + bx² + cx + bc = x²(x + b) + c(x + b) = (x + b)(x² + c).'],
+            raccParzDiff: ['Raccoglimento parziale + Diff. quadrati', 'Raggruppa a due a due, raccogli (x + b) e poi scomponi x² − d².'],
+            biquadA: ['Differenza di quarte potenze con coeff.', 'a⁴x⁴ − b⁴ = (a²x² + b²)(ax − b)(ax + b).']
         }
+    };
+    /* consiglio mostrato dopo un colpo a vuoto, per tipo di scomposizione */
+    const FAC_MISS_TIP = {
+        quadA: 'Cerca A e B: A² è il primo termine, B² l’ultimo, e il termine centrale deve essere 2AB.',
+        quadX2: 'Il polinomio ha x⁴ e x²: prova a vederlo come quadrato di (x² + b).',
+        diffX4: 'Sono due quadrati: A = ax², B = b. Il fattore ax² − b non si scompone ulteriormente.',
+        cubo1: 'Quattro termini tutti positivi, primo e ultimo cubi: è un cubo di binomio, colpisci (x + b) tre volte.',
+        cuboA: 'Radice cubica del primo termine e dell’ultimo: (ax + b)³, colpisci tre volte lo stesso binomio.',
+        raccKCubo: 'Prima il fattore numerico comune, poi il cubo di binomio.',
+        raccParz: 'Raggruppa i termini a due a due: x²(x + b) + c(x + b). Il fattore x² + c con c > 0 non si scompone.',
+        raccParzDiff: 'Raggruppa a due a due e raccogli (x + b): resta x² − d², una differenza di quadrati.',
+        biquadA: 'Differenza di quadrati due volte: prima (a²x² − b²)(a²x² + b²), poi spezza ancora a²x² − b².'
     };
 
     const DIARY = {
@@ -905,6 +931,7 @@
         concavita: ['Concavità o apertura errata', 'Se a > 0 la parabola volge in alto (∪); se a < 0 in basso (∩).'],
         raccDimenticato: ['Fattore comune dimenticato', 'Prima dei prodotti notevoli, raccogli sempre il M.C.D. comune.'],
         fattoreErrato: ['Fattore che non divide il polinomio', 'Osserva grado, coefficiente e termine noto prima di sparare.'],
+        nonIrriducibile: ['Fattore che si scompone ancora', 'x² − 9 divide il polinomio, ma è (x − 3)(x + 3): la scomposizione è completa solo con fattori irriducibili.'],
         tempo: ['Tempo scaduto su Factor Blaster', 'Raccogli subito 2, 3 o x per abbassare i coefficienti!']
     };
 
@@ -1971,8 +1998,8 @@
         if (lbl === '3') return { 0: 3 };
         if (lbl === '5') return { 0: 5 };
         if (lbl === 'x') return { 1: 1 };
-        const mQuad = lbl.match(/^x²\s*\+\s*(\d+)$/);
-        if (mQuad) return { 2: 1, 0: Number(mQuad[1]) };
+        const mQuad = lbl.match(/^(\d*)x²\s*([+−])\s*(\d+)$/);
+        if (mQuad) return { 2: mQuad[1] ? Number(mQuad[1]) : 1, 0: (mQuad[2] === '−' ? -1 : 1) * Number(mQuad[3]) };
         const mLin = lbl.match(/^(\d*)x\s*([+−])\s*(\d+)$/);
         if (mLin) {
             const a = mLin[1] ? Number(mLin[1]) : 1;
@@ -2073,6 +2100,47 @@
                     const b = pick([2, 3]);
                     factorsLeft = [`x² + ${b * b}`, fmtBinom(1, -b), fmtBinom(1, b)];
                     hintText = `Differenza di quarte potenze con fattore irriducibile.`;
+                } else if (arch === 'quadA') {
+                    // (ax ± b)² con a > 1: il doppio prodotto va controllato
+                    const a = pick([2, 3, 4, 5]), b = pick([1, 2, 3, 4, 5].filter(v => gcd(a, v) === 1)) * pick([1, -1]);
+                    const f = fmtBinom(a, b);
+                    factorsLeft = [f, f];
+                    hintText = `Quadrato di binomio: A = ${a}x, B = ${Math.abs(b)} e il termine centrale è 2·A·B = ${2 * a * Math.abs(b)}x. Colpisci due volte (${f}).`;
+                } else if (arch === 'quadX2') {
+                    const b = rnd(1, 5), f = fmtPoly([[2, 1], [0, b]]);
+                    factorsLeft = [f, f];
+                    hintText = `Quadrato di binomio con A = x²: x⁴ + ${2 * b}x² + ${b * b} = (${f})².`;
+                } else if (arch === 'diffX4') {
+                    // a²x⁴ − b² con ax² − b irriducibile nei razionali (b/a non è un quadrato)
+                    const [a, b] = pick([[1, 2], [1, 3], [1, 5], [1, 6], [1, 7], [2, 1], [2, 3], [2, 5], [3, 1], [3, 2], [3, 4]]);
+                    factorsLeft = [fmtPoly([[2, a], [0, -b]]), fmtPoly([[2, a], [0, b]])];
+                    hintText = `Differenza di quadrati: A = ${a > 1 ? a : ''}x², B = ${b}. ${fmtPoly([[2, a], [0, -b]])} non si scompone più.`;
+                } else if (arch === 'cubo1') {
+                    const b = rnd(1, 4), f = fmtBinom(1, b);
+                    factorsLeft = [f, f, f];
+                    hintText = `Cubo di binomio: x³ e ${b * b * b} sono cubi, i termini centrali sono 3·${b}·x² e 3·${b * b}·x. Colpisci tre volte (${f}).`;
+                } else if (arch === 'cuboA') {
+                    const [a, b] = pick([[2, 1], [2, 3], [3, 1], [3, 2]]), f = fmtBinom(a, b);
+                    factorsLeft = [f, f, f];
+                    hintText = `Cubo di binomio: ${a * a * a}x³ = (${a}x)³ e ${b * b * b} = ${b}³. Colpisci tre volte (${f}).`;
+                } else if (arch === 'raccKCubo') {
+                    const k = String(pick([2, 3])), b = rnd(1, 2), f = fmtBinom(1, b);
+                    factorsLeft = [k, f, f, f];
+                    hintText = `Raccogli ${k}, poi riconosci il cubo di binomio (${f})³.`;
+                } else if (arch === 'raccParz') {
+                    // (x + b)(x² + c) = x³ + bx² + cx + bc
+                    const b = rnd(1, 5) * pick([1, -1]), c = rnd(1, 6);
+                    factorsLeft = [fmtBinom(1, b), fmtPoly([[2, 1], [0, c]])];
+                    hintText = `Raccoglimento parziale: raggruppa x³ ${b > 0 ? '+' : '−'} ${Math.abs(b)}x² e ${c}x ${b > 0 ? '+' : '−'} ${Math.abs(b * c)}, poi raccogli (${fmtBinom(1, b)}).`;
+                } else if (arch === 'raccParzDiff') {
+                    // (x + b)(x − d)(x + d) = x³ + bx² − d²x − bd²
+                    const d = rnd(1, 4); let b = rnd(1, 4) * pick([1, -1]); if (Math.abs(b) === d) b = b > 0 ? b + 1 : b - 1;
+                    factorsLeft = [fmtBinom(1, b), fmtBinom(1, -d), fmtBinom(1, d)];
+                    hintText = `Raggruppa: x²(${fmtBinom(1, b)}) − ${d * d}(${fmtBinom(1, b)}) = (${fmtBinom(1, b)})(x² − ${d * d}), poi la differenza di quadrati.`;
+                } else if (arch === 'biquadA') {
+                    const [a, b] = pick([[2, 1], [2, 3], [3, 1], [3, 2], [1, 3]]);
+                    factorsLeft = [fmtPoly([[2, a * a], [0, b * b]]), fmtBinom(a, -b), fmtBinom(a, b)];
+                    hintText = `Differenza di quadrati due volte: (${fmtPoly([[2, a * a], [0, -b * b]])})(${fmtPoly([[2, a * a], [0, b * b]])}), poi spezza ${fmtPoly([[2, a * a], [0, -b * b]])}.`;
                 }
 
                 const origPoly = multiplyFactorList(factorsLeft);
@@ -2081,23 +2149,46 @@
                 const nBtns = R.lvl === 0 ? 6 : 8;
 
                 const btnSet = new Set(factorsLeft);
+                // distrattori: il segno opposto (x − b invece di x + b, x² − c invece di x² + c) e, con a > 1, il binomio senza coefficiente
                 for (const f of factorsLeft) {
-                    const m = f.match(/^(\d*)x\s*([+−])\s*(\d+)$/);
-                    if (m) {
-                        const a = m[1] ? Number(m[1]) : 1;
-                        const oppSgn = m[2] === '−' ? 1 : -1;
-                        btnSet.add(fmtBinom(a, oppSgn * Number(m[3])));
+                    const pm = factorToPolyMap(f);
+                    if (pm[2] == null && pm[1] != null && pm[0] != null) {
+                        btnSet.add(fmtBinom(pm[1], -pm[0]));
+                        if (pm[1] > 1) btnSet.add(fmtBinom(1, pm[0]));
+                    } else if (pm[2] != null && pm[0] != null && !/^biquad/.test(arch)) {   // in a⁴x⁴ − b⁴ il fattore a²x² − b² divide davvero
+                        btnSet.add(fmtPoly([[2, pm[2]], [0, -pm[0]]]));
                     }
+                }
+                if (/^cubo|Cubo/.test(arch)) { const b = factorToPolyMap(factorsLeft[factorsLeft.length - 1]); btnSet.add(fmtBinom(b[1], 3 * b[0])); }
+                // un cannone "sbagliato" non deve mai dividere davvero il polinomio (es. x² − 1 con il fattore x + 1)
+                const fullPoly = factorsLeft.reduce((acc, f) => mulPoly(acc, factorToPolyMap(f)), { 0: 1 });
+                const valAt = x => Object.entries(fullPoly).reduce((s, [d, c]) => s + c * Math.pow(x, +d), 0);
+                for (const d of [...btnSet]) {
+                    if (factorsLeft.includes(d)) continue;
+                    const pm = factorToPolyMap(d);
+                    const roots = pm[2] == null && pm[1] ? [-pm[0] / pm[1]] : pm[2] && pm[0] < 0 ? [Math.sqrt(-pm[0] / pm[2]), -Math.sqrt(-pm[0] / pm[2])] : [];
+                    if (roots.some(x => Math.abs(valAt(x)) < 1e-9)) btnSet.delete(d);
                 }
                 if (R.lvl >= 1) { btnSet.add('2'); btnSet.add('3'); btnSet.add('x'); }
                 if (arch === 'biquad4') { btnSet.add('x² + 4'); btnSet.add('x² + 9'); }
                 const fallbackBins = ['x + 1', 'x − 1', 'x + 2', 'x − 2', 'x + 3', 'x − 3', 'x + 4', 'x − 4'];
                 while (btnSet.size < nBtns) btnSet.add(pick(fallbackBins));
-                const btns = shuffle([...btnSet].slice(0, nBtns));
+                const list = [...btnSet].slice(0, nBtns);
+                // dal livello Esperto: un cannone che divide ma NON è irriducibile (es. x² − 9 accanto a x − 3 e x + 3)
+                let comp = null;
+                if (R.lvl >= 2) for (const f of factorsLeft) {
+                    const pm = factorToPolyMap(f);
+                    if (pm[2] == null && pm[1] && pm[0] > 0 && factorsLeft.includes(fmtBinom(pm[1], -pm[0]))) {
+                        comp = { label: fmtPoly([[2, pm[1] * pm[1]], [0, -pm[0] * pm[0]]]), parts: [fmtBinom(pm[1], -pm[0]), f] };
+                        break;
+                    }
+                }
+                if (comp && !list.includes(comp.label)) { const i = list.findIndex(b => !factorsLeft.includes(b)); if (i >= 0) list[i] = comp.label; else comp = null; }
+                const btns = shuffle(list);
 
                 return {
                     sig: `${arch}:${origPoly}`,
-                    arch, factorsLeft, totalFactors, got: [], chain: [origPoly],
+                    arch, factorsLeft, factorsAll: [...factorsLeft], comp, totalFactors, got: [], chain: [origPoly],
                     origPoly, ansStr, btns, nBtns, hintText, miss: 0, lasers: [], rule: ''
                 };
             }, 'fac');
@@ -2156,23 +2247,35 @@
                     R.phase = 'anim'; R.answerAt = now; q.dead = true;
                     burst(CW / 2, CH * 0.38, ['#ffd23f', '#ff8c42', '#f15bb5', '#fff'], 70, 7);
                     shake(12); SFX.boom();
+                    // bonus "raccoglimento prima": il fattore comune colpito per primo
+                    const MONO = ['2', '3', '5', 'x'], hadMono = q.factorsAll.some(f => MONO.includes(f)), firstMono = MONO.includes(q.got[0]);
+                    const bonus = hadMono && firstMono ? 1.2 : 1;
+                    const note = !hadMono ? '' : firstMono ? '<span class="fxl">🧲 Bonus raccoglimento ×1,2: hai colpito per primo il fattore comune!</span>' : '<span class="fxl">💡 Conviene colpire per primo il fattore comune: vale un bonus ×1,2.</span>';
                     setTimeout(() => {
                         if (R && R.q === q) {
                             resolve('ok', {
                                 title: q.miss ? 'Asteroide Scomposto!' : 'Scomposizione Perfetta!',
-                                k: Math.max(.4, 1 - .2 * q.miss),
-                                text: `Hai scomposto completamente il polinomio:<span class="fxl">${q.origPoly} = ${q.ansStr}</span>`
+                                k: Math.max(.4, 1 - .2 * q.miss) * bonus,
+                                text: `Hai scomposto completamente il polinomio:<span class="fxl">${q.origPoly} = ${q.ansStr}</span>${note}`
                             });
                         }
                     }, 750);
                 }
+            } else if (q.comp && val === q.comp.label && q.comp.parts.every(p => q.factorsLeft.includes(p))) {
+                // divide davvero, ma non è irriducibile: niente penalità, però va spezzato
+                SFX.near();
+                floatText('Divide… ma si spezza ancora!', 50, 35, 'pts');
+                q.rule = `${dispVal} divide il polinomio, ma <b>non è irriducibile</b>: ${q.comp.label} = (${q.comp.parts[0]})(${q.comp.parts[1]}). Colpisci i due fattori.`;
+                R.diag.nonIrriducibile = (R.diag.nonIrriducibile || 0) + 1;
+                this.prompt(q);
+                if (btn) { btn.classList.remove('miss'); void btn.offsetWidth; btn.classList.add('miss'); }
             } else {
                 q.miss++;
                 q.lasers.push({ t0: now, ok: false });
                 SFX.miss(); shake(6);
                 R.qStart -= 2000;
                 floatText(`${dispVal} non divide! −2s`, 50, 35, 'bad');
-                q.rule = `Il fattore ${dispVal} non divide il polinomio rimasto.`;
+                q.rule = `Il fattore ${dispVal} non divide il polinomio rimasto.${FAC_MISS_TIP[q.arch] ? ' ' + FAC_MISS_TIP[q.arch] : ''}`;
                 R.diag.fattoreErrato = (R.diag.fattoreErrato || 0) + 1;
                 this.prompt(q);
                 if (btn) { btn.classList.remove('miss'); void btn.offsetWidth; btn.classList.add('miss'); }
@@ -2334,7 +2437,8 @@
         saveP();
         const tr = TRACKS[P.track] || TRACKS.gen;
         const lb = store.get('lb', []); lb.push({ n: P.name, a: P.avatar, m, l: lv, s: r.score, d: t, tr: tr.code }); lb.sort((a, b) => b.s - a.s); store.set('lb', lb.slice(0, 60));
-        const unlock = prevStars === 0 && stars >= 1 && lv < 2, next = lv < 2 && (P.stars[key] || 0) >= 1;
+        const lastLv = MODES[m].levels.length - 1;
+        const unlock = prevStars === 0 && stars >= 1 && lv < lastLv, next = lv < lastLv && (P.stars[key] || 0) >= 1;
         const dk = Object.entries(r.diag).filter(([t]) => DIARY[t]).sort((a, b) => b[1] - a[1]).slice(0, 3);
         const diary = dk.length
             ? `<div class="diary"><div class="diary-h">📓 Diario Didattico: cosa ripassare</div>${dk.map(([t, n]) => `<div class="drow"><b>${DIARY[t][0]}</b>${n > 1 ? ` <span>×${n}</span>` : ''}<small>${DIARY[t][1]}</small></div>`).join('')}<div class="dnote">Aiuti usati: ${r.hintsTot}.</div></div>`
@@ -2398,14 +2502,14 @@
         $('#muteBtn').textContent = P.muted ? '🔇' : '🔊';
     }
 
-    const starsOf = m => [0, 1, 2].reduce((s, i) => s + (P.stars[m + '-' + i] || 0), 0);
+    const starsOf = m => MODES[m].levels.reduce((s, _, i) => s + (P.stars[m + '-' + i] || 0), 0);
     function renderHome() {
         $('#modeGrid').innerHTML = MODE_KEYS.map((k, i) => {
             const M = MODES[k];
             return `<button class="mode-card" data-mode="${k}" style="--c:${M.c};--d:${M.d};--sd:${i * .6}s">
                 <span class="mc-ico">${M.icon}</span><span class="mc-tag">${M.tag}</span>
                 <span class="mc-name">${M.name}</span><span class="mc-desc">${M.desc}</span>
-                <span class="mc-stars">★ ${starsOf(k)}/9</span>
+                <span class="mc-stars">★ ${starsOf(k)}/${M.levels.length * 3}</span>
             </button>`;
         }).join('');
     }
@@ -2421,7 +2525,7 @@
         const k = curMode, M = MODES[k];
         const unl = M.levels.map((_, i) => i === 0 || (P.stars[k + '-' + (i - 1)] || 0) >= 1);
         let rec = M.levels.findIndex((_, i) => unl[i] && (P.stars[k + '-' + i] || 0) < 3);
-        if (rec < 0) rec = 2;
+        if (rec < 0) rec = M.levels.length - 1;
         $('#levelPath').innerHTML = M.levels.map((L, i) => {
             const st = P.stars[k + '-' + i] || 0, best = P.best[k + '-' + i] || 0;
             return `<div class="node-wrap ${i === rec ? 'rec' : ''}">${i === rec ? `<span class="node-bubble">${st ? 'MIGLIORA!' : 'GIOCA!'}</span>` : ''}
@@ -2518,7 +2622,7 @@
         const n = $('#vName').value, s = parseInt($('#vScore').value, 10), d = $('#vDate').value, c = $('#vCode').value.trim().toUpperCase();
         const out = $('#vRes');
         if (!n || isNaN(s) || !d || c.length !== 6) { out.textContent = 'Compila tutti i campi.'; out.style.color = 'var(--y)'; return; }
-        for (const m of MODE_KEYS) for (let l = 0; l < 3; l++) {
+        for (const m of MODE_KEYS) for (let l = 0; l < MODES[m].levels.length; l++) {
             if (vcode(n, m, l, s, d) === c) {
                 out.textContent = `✅ Codice autentico: ${MODES[m].name} · Livello ${MODES[m].levels[l].label}`;
                 out.style.color = 'var(--g)'; return;
