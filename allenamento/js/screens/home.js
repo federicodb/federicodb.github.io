@@ -7,6 +7,13 @@ import { icons, stars, esc, html, modal } from '../ui/dom.js';
 import { sfx, confetti, flyText } from '../ui/fx.js';
 import { itemInfo, avatarSVG } from '../game/avatar.js';
 
+/** Glifo dell'attività nel suo riquadro: simboli singoli più grandi, formule lunghe più piccole (così restano dentro) */
+function glyph(g, attrs = '') {
+  const n = [...g].length;
+  const len = n === 1 ? ' data-len="1"' : n >= 5 ? ' data-len="long"' : '';
+  return `<span class="unit-glyph"${len}${attrs}>${esc(g)}</span>`;
+}
+
 export function levelOpen(app, act, level) {
   if (app.teacherMode() || level === 1) return true;
   return (app.state.activities[act.id]?.stars || 0) >= level - 1;
@@ -201,7 +208,7 @@ function areaBlock(app, area) {
       const isDue = st?.due && st.due <= d;
       return `<div class="unit">
         <button class="unit-head" data-open="${act.id}" aria-label="Dettagli: ${esc(act.title)}">
-          <span class="unit-glyph">${esc(act.glyph)}</span>
+          ${glyph(act.glyph)}
           <span><h3>${esc(act.title)}</h3><small>${esc(act.summary)}</small></span>
           ${stars(st?.stars || 0, act.levels.length)}
         </button>
@@ -230,7 +237,7 @@ export function prereqBlock(app, id, title) {
   if (!list.length) return '';
   return `<div class="prereq"><b>${esc(title)}</b><div class="prereq-list">${list.map((p) => {
     const st = app.state.activities[p.id]?.stars || 0;
-    return `<a class="prereq-chip" style="--hue:${p.hue}" href="#/lezione/${p.id}/${Math.max(1, st)}"><span class="unit-glyph" aria-hidden="true">${esc(p.glyph)}</span><span>${esc(p.title)}</span>${stars(st, p.levels.length)}</a>`;
+    return `<a class="prereq-chip" style="--hue:${p.hue}" href="#/lezione/${p.id}/${Math.max(1, st)}">${glyph(p.glyph, ' aria-hidden="true"')}<span>${esc(p.title)}</span>${stars(st, p.levels.length)}</a>`;
   }).join('')}</div></div>`;
 }
 
@@ -242,7 +249,7 @@ export function openActivity(app, act) {
   wrap.className = 'sheet-backdrop';
   wrap.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t" style="--hue:${act.hue}">
     <div class="grab"></div>
-    <div class="spread"><span class="unit-glyph">${esc(act.glyph)}</span><button class="icon-btn" data-x aria-label="Chiudi">${icons.close}</button></div>
+    <div class="spread">${glyph(act.glyph)}<button class="icon-btn" data-x aria-label="Chiudi">${icons.close}</button></div>
     <h2 id="sheet-t" style="margin-top:10px">${esc(act.title)}</h2>
     <p class="muted">${esc(act.summary)}</p>
     <div class="mat-tags">

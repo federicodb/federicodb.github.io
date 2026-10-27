@@ -154,7 +154,7 @@ Tutto in SVG con Pointer Events: dito, mouse e penna della LIM funzionano allo s
 
 - **Telefono**: barra delle sezioni in basso; tastierino matematico al posto della tastiera di sistema, chiuso finché non si tocca la casella (tasto ⌄ per richiuderlo, ABC per la tastiera normale); la spiegazione di un errore va nella scheda, così la barra in basso non copre la domanda; i filtri per argomento sono raccolti; pulsanti da almeno 48 px.
 - **Tablet e PC**: colonna laterale, tastiera fisica (Invio per verificare, 1–4 per le risposte).
-- **LIM**: Profilo → Modalità LIM (testi e pulsanti più grandi) con il tema chiaro per il proiettore.
+- **LIM**: Profilo → Tema chiaro per il proiettore, e Testo grande se serve.
 - **Leggibilità**: testo base 17 px (Testo grande: +12,5%), Inter per testi e titoli di sezione, nessuna sillabazione automatica, pulsanti che vanno a capo tra parole intere, superfici lisce senza quadrettatura, contrasto verificato nei due temi (anche cursori e testi delle lavagne).
 - **Verifica automatica** su 6 schermi (360, 390, 768, 1024, 1366 px, LIM 1920) e due temi: nessuna sovrapposizione tra elementi, nessuno scorrimento orizzontale.
 

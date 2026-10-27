@@ -143,7 +143,6 @@ export const app = {
 
   applySettings() {
     const s = this.state.settings;
-    document.documentElement.classList.toggle('lim', !!s.lim);
     document.documentElement.classList.toggle('big-text', !!s.bigText);
     setIndirizzo(this.state.profile.indirizzo || null);
     setClasse(this.state.profile.year);

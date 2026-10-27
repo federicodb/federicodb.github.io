@@ -78,7 +78,6 @@ export function viewProfile(app, section) {
           <div class="field"><label>Schermo e suoni</label><div class="segmented">
             <button type="button" data-toggle="theme" aria-pressed="${light}">Tema chiaro</button>
             <button type="button" data-toggle="bigText" aria-pressed="${!!s.settings.bigText}">Testo grande</button>
-            <button type="button" data-toggle="lim" aria-pressed="${!!s.settings.lim}">Modalità LIM</button>
             <button type="button" data-toggle="calc" aria-pressed="${s.settings.calc !== false}">Calcolatrice</button>
             <button type="button" data-toggle="sound" aria-pressed="${s.settings.sound}">Suoni</button>
             <button type="button" data-toggle="haptics" aria-pressed="${s.settings.haptics}">Vibrazione</button>
