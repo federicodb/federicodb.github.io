@@ -726,16 +726,24 @@ html.theme-light .nav-link.nav-link-cta {
     border: 1.5px solid var(--glass-border);
     box-shadow: 0 0 0 0.5px var(--glass-border);
     /* Anti-aliasing buffer */
-    transition: var(--transition);
+    /* solo proprietà che non cambiano l'impaginazione: niente reflow del testo al passaggio */
+    transition: transform 0.35s cubic-bezier(0.2, 0, 0.2, 1), border-color 0.35s ease, box-shadow 0.35s ease;
     text-decoration: none;
     color: inherit;
 }
 
+/* Hover: la card si solleva senza cambiare misure. Lo spessore del bordo resta 1.5px
+   (cambiarlo restringeva il contenuto, mandava a capo il titolo e spostava le card vicine);
+   il bordo più marcato è un anello in box-shadow, che non occupa spazio. */
 .card:hover {
-    transform: translateY(-8px) scale(1.01);
+    transform: translateY(-6px);
     border-color: var(--class-border, var(--primary));
-    border-width: 2px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 0.5px var(--class-border, var(--primary));
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--class-border, var(--primary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card, .card-bg { transition: none; }
+    .card:hover { transform: none; }
 }
 
 .card-bg {
