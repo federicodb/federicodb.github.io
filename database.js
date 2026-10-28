@@ -1,9 +1,89 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-27 17:48:33
+   Data: 2026-10-28 11:13:11
 */
 
 const db = [
+    {
+        "title": "$\\pi$ is irrational: perché π non è una frazione",
+        "excerpt": "Percorso guidato in quattro tappe sul numero $\\pi$: srotolare una ruota, cercare un'unità comune tra diametro e circonferenza, due lancette il cui disegno non si chiude mai e cifre decimali che non si ripetono. Con domande di previsione, quiz finale e spiegazione animata.",
+        "tags": [
+            "$\\PI$",
+            "1 EL",
+            "1 GP",
+            "1 MA",
+            "2 EL",
+            "2 GP",
+            "2 MA",
+            "APPROSSIMAZIONE",
+            "BIENNIO",
+            "CIRCONFERENZA",
+            "CIT_4:COMPETENZA DIGITALE",
+            "DECIMALI PERIODICI",
+            "DIAMETRO",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "INCOMMENSURABILITÀ",
+            "IRRAZIONALITÀ",
+            "LAB",
+            "MAT:CALCOLO",
+            "MAT:GEOMETRIA",
+            "MATEMATICA",
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI",
+            "MAT_K3:GEOMETRIA EUCLIDEA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "NUMERI",
+            "NUMERI IRRAZIONALI",
+            "NUMERI RAZIONALI",
+            "PI GRECO",
+            "SIMULAZIONE"
+        ],
+        "date": "2026-10-28",
+        "url": "content/apps/pi_is_irrational.html",
+        "type": "app",
+        "icon": "🔢",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/pi_is_irrational.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "notazione-scientifica",
+                "titolo": "Notazione scientifica",
+                "url": "allenamento/#/lezione/notazione-scientifica/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            }
+        ]
+    },
     {
         "title": "Arcade Challenge: Unità di misura",
         "excerpt": "Arcade Challenge: gioco arcade a sfida sulle equivalenze tra unità di misura: sali e scendi l'ascensore dei multipli, regola gli slider del laboratorio, abbina le coppie equivalenti, smista i pacchi sul nastro e risolvi problemi reali di cantiere. Lunghezze, litri, superfici, volumi e tempi.",
@@ -203,19 +283,19 @@ const db = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "funzioni-lineari",
                 "titolo": "Funzioni lineari",
                 "url": "allenamento/#/lezione/funzioni-lineari/1",
                 "mat": [
                     "MAT_K2"
-                ]
-            },
-            {
-                "id": "calcolo-quadrato-del-5",
-                "titolo": "Quadrati che finiscono per 5",
-                "url": "allenamento/#/lezione/calcolo-quadrato-del-5/1",
-                "mat": [
-                    "MAT_K1"
                 ]
             }
         ]
@@ -286,9 +366,9 @@ const db = [
                 ]
             },
             {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -437,9 +517,9 @@ const db = [
                 ]
             },
             {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
                 "mat": [
                     "MAT_A3"
                 ]
@@ -702,9 +782,9 @@ const db = [
                 ]
             },
             {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
@@ -734,6 +814,14 @@ const db = [
         "thumbnail": "content/assets/thumbnails/polinomi_challenge_v2_pro.webp",
         "allenamento": [
             {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "monomi",
                 "titolo": "Monomi e polinomi",
                 "url": "allenamento/#/lezione/monomi/1",
@@ -753,14 +841,6 @@ const db = [
                 "id": "calcolo-vicino-a-100",
                 "titolo": "Numeri vicini a 100",
                 "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "frazioni",
-                "titolo": "Frazioni",
-                "url": "allenamento/#/lezione/frazioni/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -1003,20 +1083,21 @@ const db = [
                 ]
             },
             {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
                 ]
             },
             {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
                 "mat": [
-                    "MAT_A3"
+                    "MAT_A3",
+                    "MAT_K1"
                 ]
             }
         ]
@@ -1107,6 +1188,14 @@ const db = [
                 ]
             },
             {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "monomi",
                 "titolo": "Monomi e polinomi",
                 "url": "allenamento/#/lezione/monomi/1",
@@ -1118,14 +1207,6 @@ const db = [
                 "id": "scomposizioni",
                 "titolo": "Scomposizioni",
                 "url": "allenamento/#/lezione/scomposizioni/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -1166,6 +1247,14 @@ const db = [
                 ]
             },
             {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "monomi",
                 "titolo": "Monomi e polinomi",
                 "url": "allenamento/#/lezione/monomi/1",
@@ -1179,70 +1268,6 @@ const db = [
                 "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
                     "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "$\\pi$ is irrational: visualizzare l'incommensurabilità",
-        "excerpt": "Esplorazione geometrica e visiva del numero $\\pi$. Scopri l'incommensurabilità tra circonferenza e diametro osservando la rettificazione del cerchio e la natura non periodica delle sue cifre decimali.",
-        "tags": [
-            "$\\PI$",
-            "3D",
-            "GEOMETRIA",
-            "INCOMMENSURABILITÀ",
-            "IRRAZIONALITÀ",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "PI GRECO",
-            "ROTAZIONE",
-            "WEBGL"
-        ],
-        "date": "2026-04-21",
-        "url": "content/apps/pi_is_irrational.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/pi_is_irrational.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3"
                 ]
             }
         ]
@@ -1772,6 +1797,15 @@ const db = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -1781,19 +1815,11 @@ const db = [
                 ]
             },
             {
-                "id": "frazioni",
-                "titolo": "Frazioni",
-                "url": "allenamento/#/lezione/frazioni/1",
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
                     "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
                 ]
             }
         ]
@@ -1939,6 +1965,15 @@ const db = [
         "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.webp",
         "allenamento": [
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -1963,15 +1998,6 @@ const db = [
                 "mat": [
                     "MAT_A2",
                     "MAT_K2"
-                ]
-            },
-            {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
                 ]
             }
         ]
@@ -2004,6 +2030,15 @@ const db = [
         "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp",
         "allenamento": [
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -2028,15 +2063,6 @@ const db = [
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
-                ]
-            },
-            {
-                "id": "sistemi-lineari",
-                "titolo": "Sistemi lineari",
-                "url": "allenamento/#/lezione/sistemi-lineari/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_C2"
                 ]
             }
         ]
@@ -2087,6 +2113,14 @@ const db = [
         "thumbnail": "content/assets/thumbnails/decodifica_la_matematica.webp",
         "allenamento": [
             {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "calcolo-vicino-a-100",
                 "titolo": "Numeri vicini a 100",
                 "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
@@ -2106,14 +2140,6 @@ const db = [
                 "id": "percentuali",
                 "titolo": "Percentuali",
                 "url": "allenamento/#/lezione/percentuali/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "potenze",
-                "titolo": "Proprietà delle potenze",
-                "url": "allenamento/#/lezione/potenze/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -2233,6 +2259,15 @@ const db = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -2242,19 +2277,11 @@ const db = [
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "disequazioni-2",
-                "titolo": "Disequazioni di secondo grado",
-                "url": "allenamento/#/lezione/disequazioni-2/1",
-                "mat": [
-                    "MAT_A3"
+                    "MAT_K1"
                 ]
             }
         ]
@@ -2486,6 +2513,14 @@ const db = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "calcolo-vicino-a-100",
                 "titolo": "Numeri vicini a 100",
                 "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
@@ -2494,17 +2529,9 @@ const db = [
                 ]
             },
             {
-                "id": "monomi",
-                "titolo": "Monomi e polinomi",
-                "url": "allenamento/#/lezione/monomi/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -2597,6 +2624,14 @@ const db = [
         "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.webp",
         "allenamento": [
             {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "monomi",
                 "titolo": "Monomi e polinomi",
                 "url": "allenamento/#/lezione/monomi/1",
@@ -2616,14 +2651,6 @@ const db = [
                 "id": "calcolo-vicino-a-100",
                 "titolo": "Numeri vicini a 100",
                 "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
                 "mat": [
                     "MAT_K1"
                 ]
@@ -2873,6 +2900,15 @@ const db = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -2885,14 +2921,6 @@ const db = [
                 "id": "calcolo-lavorare-insieme",
                 "titolo": "Lavorare insieme",
                 "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
                 "mat": [
                     "MAT_A3"
                 ]
@@ -3011,6 +3039,14 @@ const db = [
         "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp",
         "allenamento": [
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -3030,14 +3066,6 @@ const db = [
                 "id": "sistemi-lineari",
                 "titolo": "Sistemi lineari",
                 "url": "allenamento/#/lezione/sistemi-lineari/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
                 "mat": [
                     "MAT_A3"
                 ]

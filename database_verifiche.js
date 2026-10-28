@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-27 17:48:33
+   Data: 2026-10-28 11:13:11
 */
 
 const db_verifiche = [
@@ -48,6 +48,23 @@ const db_verifiche = [
         "thumbnail": "content/assets/thumbnails/1EL___verifica_15_maggio_2026.webp",
         "allenamento": [
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "equazioni-1",
                 "titolo": "Equazioni di primo grado",
                 "url": "allenamento/#/lezione/equazioni-1/1",
@@ -60,24 +77,6 @@ const db_verifiche = [
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
-                "mat": [
-                    "MAT_A2",
-                    "MAT_C3"
-                ]
-            },
-            {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
@@ -129,6 +128,14 @@ const db_verifiche = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -142,14 +149,6 @@ const db_verifiche = [
                 "url": "allenamento/#/lezione/equazioni-2/1",
                 "mat": [
                     "MAT_A3"
-                ]
-            },
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
                 ]
             }
         ],
@@ -206,18 +205,18 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
                 ]
             },
             {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
@@ -417,6 +416,15 @@ const db_verifiche = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -429,14 +437,6 @@ const db_verifiche = [
                 "id": "equazioni-2",
                 "titolo": "Equazioni di secondo grado",
                 "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "disequazioni-2",
-                "titolo": "Disequazioni di secondo grado",
-                "url": "allenamento/#/lezione/disequazioni-2/1",
                 "mat": [
                     "MAT_A3"
                 ]
@@ -496,6 +496,15 @@ const db_verifiche = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -510,15 +519,6 @@ const db_verifiche = [
                 "url": "allenamento/#/lezione/equazioni-2/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
-                "mat": [
-                    "MAT_A2",
                     "MAT_K2"
                 ]
             }
@@ -566,6 +566,15 @@ const db_verifiche = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -581,14 +590,6 @@ const db_verifiche = [
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
                 ]
             }
         ],
@@ -679,6 +680,15 @@ const db_verifiche = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -694,14 +704,6 @@ const db_verifiche = [
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
                 ]
             }
         ],
@@ -755,6 +757,15 @@ const db_verifiche = [
                 ]
             },
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -770,14 +781,6 @@ const db_verifiche = [
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
                 ]
             }
         ],
@@ -921,18 +924,18 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
                 ]
             },
             {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
@@ -1103,18 +1106,18 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
                 ]
             },
             {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
                 "mat": [
                     "MAT_A3",
                     "MAT_K1"
@@ -1216,6 +1219,14 @@ const db_verifiche = [
         "thumbnail": "content/assets/thumbnails/2GP___verifica_1_ottobre_2025.webp",
         "allenamento": [
             {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -1235,14 +1246,6 @@ const db_verifiche = [
                 "id": "sistemi-lineari",
                 "titolo": "Sistemi lineari",
                 "url": "allenamento/#/lezione/sistemi-lineari/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
                 "mat": [
                     "MAT_A3"
                 ]

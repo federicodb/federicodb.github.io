@@ -1,503 +1,1325 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>$\pi$ is irrational: visualizzare l'incommensurabilità</title>
-    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>$\pi$ is irrational: perché π non è una frazione</title>
+  <meta name="description" content="Percorso guidato in quattro tappe sul numero $\pi$: srotolare una ruota, cercare un'unità comune tra diametro e circonferenza, due lancette il cui disegno non si chiude mai e cifre decimali che non si ripetono. Con domande di previsione, quiz finale e spiegazione animata.">
+  <meta name="keywords" content="Matematica, $\pi$, pi greco, numeri, numeri irrazionali, numeri razionali, irrazionalità, incommensurabilità, circonferenza, diametro, decimali periodici, approssimazione, Mat:Calcolo, Mat:Geometria, MAT_K1:Insiemi numerici, MAT_A1:Calcolo negli insiemi numerici, MAT_K3:Geometria euclidea, EU:STEM, EU:Digitale, 1 EL, 2 EL, 1 GP, 2 GP, 1 MA, 2 MA, Biennio, Lab, Simulazione">
+  <meta name="date" content="2026-10-28">
+  <meta name="theme-color" content="#000000">
+  <link rel="canonical" href="https://federicodb.github.io/content/apps/pi_is_irrational.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://federicodb.github.io/content/apps/pi_is_irrational.html">
+  <meta property="og:title" content="π is irrational: perché π non è una frazione">
+  <meta property="og:description" content="Quattro tappe per scoprire perché π non è una frazione: la ruota, l'unità comune, le due lancette, le cifre.">
+  <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.webp">
+  <!-- Tema chiaro/scuro condiviso con la home (chiave orfini_theme): applicato prima del rendering -->
+  <script>
+    if (localStorage.getItem('orfini_theme') === 'light') {
+      document.documentElement.classList.add('theme-light');
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  </script>
+  <script src="../assets/js/theme-toggle.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="window.typesetMath && window.typesetMath(document.body)"></script>
+  <style>
+    /* ===== Tema del sito: nero AMOLED (default) e chiaro, come la home ===== */
+    :root {
+      --bg: #000000;
+      --surface: #0b0b0e;
+      --surface-2: #121216;
+      --surface-3: #1c1c22;
+      --border: rgba(255, 255, 255, 0.11);
+      --text: #ececf1;
+      --text-2: #c9c9d2;
+      --muted: #9a9aa6;
+      --dim: #6f6f7a;
+      --primary: hsl(190, 100%, 45%);
+      --primary-soft: hsla(190, 100%, 45%, 0.14);
+      --on-primary: #00161c;
+      /* Colori con significato: uguali in tutte le tappe e nella spiegazione */
+      --c-d: #fbbf24;      /* diametro, lancetta lunga */
+      --c-c: #22d3ee;      /* circonferenza, lancetta corta */
+      --c-bad: #fb7185;    /* avanzo, cifra che non torna */
+      --c-ok: #34d399;     /* chiusura, cifra che torna */
+      --grid: rgba(255, 255, 255, 0.16);
+      --sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --mono: 'Space Mono', ui-monospace, monospace;
+      --title: 'Syne', 'Inter', sans-serif;
+      color-scheme: dark;
+    }
+    html.theme-light {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-2: #f0f2f5;
+      --surface-3: #e3e6eb;
+      --border: rgba(15, 23, 42, 0.13);
+      --text: #12141a;
+      --text-2: #2c313b;
+      --muted: #4f5664;
+      --dim: #6b7280;
+      --primary: hsl(190, 90%, 30%);
+      --primary-soft: hsla(190, 90%, 30%, 0.12);
+      --on-primary: #ffffff;
+      --c-d: #b45309;
+      --c-c: #0e7490;
+      --c-bad: #be123c;
+      --c-ok: #047857;
+      --grid: rgba(15, 23, 42, 0.2);
+      color-scheme: light;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color .25s ease, color .25s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+    button { font-family: inherit; }
 
-    <meta name="description" content="Esplorazione geometrica e visiva del numero $\pi$. Scopri l'incommensurabilità tra circonferenza e diametro osservando la rettificazione del cerchio e la natura non periodica delle sue cifre decimali.">
-    <meta name="keywords" content="matematica, $\pi$, pi greco, geometria, WebGL, 3d, rotazione, incommensurabilità, irrazionalità">
-    <meta name="date" content="2026-04-21">
+    /* ===== Intestazione ===== */
+    .app-header { border-bottom: 1px solid var(--border); background: var(--surface); padding: 12px 16px; }
+    .head-in { max-width: 1700px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .head-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+    .head-left, .head-right { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 9999px;
+      background: var(--primary-soft); border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+      color: var(--primary); font-size: 12px; font-weight: 600;
+    }
+    .chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+    h1 { font-family: var(--title); font-size: clamp(18px, 2.2vw, 24px); font-weight: 800; letter-spacing: -.01em; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+    .formula-badge {
+      font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--c-c);
+      background: color-mix(in srgb, var(--c-c) 10%, transparent); border: 1px solid color-mix(in srgb, var(--c-c) 30%, transparent);
+      padding: 2px 10px; border-radius: 8px;
+    }
+    .btn-explain {
+      display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 14px; border-radius: 9999px;
+      border: 1px solid var(--primary); background: var(--primary-soft); color: var(--primary);
+      font-size: 13px; font-weight: 700; cursor: pointer; transition: all .2s ease;
+    }
+    .btn-explain:hover { background: var(--primary); color: var(--on-primary); }
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}], throwOnError: false});"></script>
-    <style>
-        :root {
-            --bg-color: #000000;
-            --panel-bg: rgba(5, 5, 7, 0.9);
-            --text-main: #f0f0f0;
-            --accent: #ff4444;
-            --border-radius: 12px;
-        }
+    /* Pulsante tema (come nella home) */
+    .orfini-theme-toggle {
+      width: 36px; height: 36px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; transition: all .2s ease;
+    }
+    .orfini-theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+    .orfini-theme-toggle svg { width: 18px; height: 18px; }
+    .orfini-theme-toggle .theme-icon-moon { display: none; }
+    html.theme-light .orfini-theme-toggle .theme-icon-sun { display: none; }
+    html.theme-light .orfini-theme-toggle .theme-icon-moon { display: block; }
 
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
-            user-select: none;
-            touch-action: none;
-        }
+    /* ORFINI-BACK (stesso pulsante delle altre app) */
+    .orfini-back-btn {
+      display: inline-flex; align-items: center; gap: 6px; border-radius: 9999px; padding: 6px 14px;
+      background: var(--surface-2); color: var(--text) !important; border: 1px solid var(--border);
+      font-size: 13px; font-weight: 700; text-decoration: none !important; transition: all .2s ease; line-height: 1.2;
+    }
+    .orfini-back-btn:hover { border-color: var(--primary); color: var(--primary) !important; }
+    :fullscreen .orfini-back-btn { display: none !important; }
+    @media (max-width: 640px) { .orfini-back-btn .orfini-back-text { display: none; } .orfini-back-btn { padding: 6px 10px; } }
 
-        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+    /* Schede delle tappe */
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+    .tab-btn {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 7px 14px; border-radius: 12px;
+      border: 1px solid var(--border); background: transparent; color: var(--text-2);
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s ease;
+    }
+    .tab-btn:hover { background: var(--surface-3); color: var(--text); }
+    .tab-btn .n {
+      width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center;
+      font-family: var(--mono); font-size: 12px; font-weight: 700; background: var(--surface-3); color: var(--muted);
+    }
+    .tab-btn[aria-selected="true"] { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); box-shadow: 0 0 14px var(--primary-soft); }
+    .tab-btn[aria-selected="true"] .n { background: var(--primary); color: var(--on-primary); }
+    .tab-btn.done .n { background: color-mix(in srgb, var(--c-ok) 25%, transparent); color: var(--c-ok); }
 
-        #ui-layer {
-            position: absolute; top: 20px; right: 20px; width: 340px; z-index: 10;
-            display: flex; flex-direction: column; gap: 12px; pointer-events: none;
-        }
+    /* ===== Area principale ===== */
+    .layout { width: 100%; max-width: 1700px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+    .stage-card {
+      flex: 1; min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .stage-bar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px;
+      padding: 9px 14px; border-bottom: 1px solid var(--border); background: var(--surface-2); font-size: 13px;
+    }
+    #stage-label { font-weight: 600; color: var(--text-2); }
+    .status { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+    .status.ok { color: var(--c-ok); }
+    .status.bad { color: var(--c-bad); }
+    .stage-wrap { position: relative; height: clamp(320px, 60vh, 620px); background: var(--bg); }
+    #stage { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+    .side, .stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+    .card .stack { gap: 12px; }
+    @media (min-width: 1024px) {
+      .app-header { padding: 12px 24px; }
+      .layout { flex-direction: row; align-items: flex-start; padding: 20px 24px; gap: 20px; }
+      /* altezza = spazio sotto l'intestazione (--hh, misurata dallo script): il disegno è tutto visibile senza scorrere */
+      .stage-card { position: sticky; top: 12px; height: min(calc(100dvh - var(--hh, 120px) - 40px), 880px); min-height: 480px; }
+      .stage-wrap { flex: 1; height: auto; }
+      .side { width: 430px; flex-shrink: 0; }
+    }
+    .layout.no-stage .stage-card { display: none; }
+    .layout.no-stage .side { width: 100%; }
 
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: var(--border-radius);
-            padding: 24px;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            pointer-events: auto;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-            max-height: 85vh; overflow-y: auto;
-            position: relative;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    /* Schede laterali */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+    .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .card h2, .card h3 { margin: 0; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--text); }
+    .card p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--text-2); }
+    .card .small { font-size: 13px; color: var(--muted); }
+    .mini-explain {
+      flex-shrink: 0; min-height: 32px; padding: 4px 12px; border-radius: 9999px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--primary); font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .mini-explain:hover { border-color: var(--primary); }
+    .remember { border-color: color-mix(in srgb, var(--c-ok) 35%, var(--border)); }
+    .remember h3 { color: var(--c-ok); }
+    .remember p b { color: var(--text); }
 
-        .panel.collapsed { max-height: 75px; overflow: hidden; padding-bottom: 0; }
+    /* Comandi */
+    .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 8px 16px;
+      border-radius: 12px; border: 1px solid var(--border); background: var(--surface-3); color: var(--text);
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s ease, border-color .15s ease, transform .08s ease;
+    }
+    .btn:hover { border-color: var(--primary); }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .45; cursor: default; }
+    .btn-primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+    .val { font-family: var(--mono); font-weight: 700; color: var(--primary); font-size: 14px; }
+    input[type=range] { width: 100%; min-height: 28px; accent-color: var(--primary); cursor: pointer; margin: 0; }
+    .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+    .seg button {
+      min-height: 40px; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--text-2); font-size: 14px; font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums;
+    }
+    .seg button[aria-pressed="true"] { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+    .seg-label { font-size: 13px; font-weight: 600; color: var(--text-2); }
+    .readout {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
+      font-size: 14px; line-height: 1.7; color: var(--text-2);
+    }
+    .readout b { font-family: var(--mono); color: var(--text); font-weight: 700; }
+    .readout .k-d { color: var(--c-d); } .readout .k-c { color: var(--c-c); }
+    .readout .k-bad { color: var(--c-bad); } .readout .k-ok { color: var(--c-ok); }
+    .num-in {
+      width: 70px; min-height: 40px; padding: 4px 8px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text); font-family: var(--mono); font-size: 16px; text-align: center;
+    }
+    table.prove { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+    table.prove th { text-align: left; font-weight: 600; color: var(--muted); padding: 4px 6px; border-bottom: 1px solid var(--border); }
+    table.prove td { padding: 4px 6px; font-family: var(--mono); color: var(--text-2); border-bottom: 1px solid var(--border); }
+    table.prove tr.best td { color: var(--c-ok); }
 
-        .toggle-ui {
-            position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%; cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--accent); z-index: 20;
-            transition: transform 0.4s;
-        }
+    /* Domande di previsione e verifica */
+    .quiz-q { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.5; margin: 0; }
+    .opts { display: flex; flex-direction: column; gap: 8px; }
+    .opts.inline { flex-direction: row; flex-wrap: wrap; }
+    .opt {
+      text-align: left; min-height: 44px; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text); font-size: 15px; font-weight: 500; cursor: pointer; transition: border-color .15s ease;
+    }
+    .opt:hover:not(:disabled) { border-color: var(--primary); }
+    .opt:disabled { cursor: default; }
+    .opt.ok { border-color: var(--c-ok); background: color-mix(in srgb, var(--c-ok) 14%, var(--surface-2)); }
+    .opt.no { border-color: var(--c-bad); background: color-mix(in srgb, var(--c-bad) 12%, var(--surface-2)); }
+    .feedback { font-size: 14px; line-height: 1.55; color: var(--text-2); border-left: 3px solid var(--border); padding: 2px 0 2px 12px; margin: 0; }
+    .feedback.ok { border-color: var(--c-ok); }
+    .feedback.no { border-color: var(--c-bad); }
+    .feedback strong { color: var(--text); }
+    .quiz-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .quiz-count { font-size: 12px; font-family: var(--mono); color: var(--muted); }
 
-        .collapsed .toggle-ui { transform: rotate(-180deg); }
+    .quiz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+    .q-num { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .score { font-size: 16px; font-weight: 600; color: var(--text); }
+    .links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .links a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    .links a:hover { text-decoration: underline; }
 
-        h1 { margin: 0 0 5px 0; font-size: 1.2rem; color: #fff; letter-spacing: 3px; font-weight: 300; }
-        .subtitle { margin: 0 0 20px 0; font-size: 0.7rem; color: #aaa; text-transform: uppercase; }
+    /* Navigazione tra le tappe */
+    .pager { width: 100%; max-width: 1700px; margin: 0 auto; padding: 0 12px 16px; display: flex; justify-content: space-between; gap: 10px; }
+    @media (min-width: 1024px) { .pager { padding: 0 24px 20px; } }
+    .pager .btn[hidden] { display: none; }
+    footer { border-top: 1px solid var(--border); background: var(--surface); padding: 10px 16px; text-align: center; font-size: 12px; color: var(--dim); }
 
-        .control-group {
-            display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;
-            padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
+    [hidden] { display: none !important; }
 
-        .control-header { display: flex; justify-content: space-between; font-size: 0.8rem; letter-spacing: 1px; }
+    /* Spiegazione animata in finestra sopra l'app (sopra anche al pulsante "← Orfini Math Lab") */
+    .explain {
+      position: fixed; inset: 0; z-index: 2147483647; display: grid; place-items: center;
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      background: rgba(0, 0, 0, .82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    .explain-box {
+      position: relative; width: min(1000px, 100%); height: min(88vh, 820px); border-radius: 18px; overflow: hidden;
+      background: #000; border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 30px 60px rgba(0, 0, 0, .6);
+    }
+    .explain-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .explain-close {
+      position: absolute; top: 10px; right: 10px; z-index: 2; width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .2); background: #121216; color: #ececf1; font: 700 20px/1 var(--sans); cursor: pointer;
+    }
+    .explain-close:hover { border-color: #22d3ee; color: #22d3ee; }
 
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 2px; background: rgba(255, 255, 255, 0.15); }
-        input[type=range]::-webkit-slider-thumb {
-            height: 14px; width: 14px; border-radius: 50%;
-            background: var(--accent); cursor: pointer; -webkit-appearance: none; margin-top: -6px;
-            box-shadow: 0 0 10px var(--accent);
-        }
-
-        .btn-row { display: flex; gap: 8px; margin-top: 10px; }
-        button {
-            flex: 1; background: rgba(255,255,255,0.05); color: #fff;
-            border: 1px solid rgba(255,255,255,0.1); padding: 12px;
-            border-radius: 6px; cursor: pointer; font-size: 0.75rem;
-            transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;
-        }
-        button.active { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); border-color: var(--accent); }
-
-        #info { position: absolute; bottom: 20px; left: 20px; font-size: 0.65rem; color: #555; pointer-events: none; }
-
-        /* Controlli di Navigazione 3D */
-        .nav-controls {
-            position: absolute;
-            bottom: 40px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
-            pointer-events: auto;
-        }
-
-        .nav-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        .nav-btn:hover {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-        }
-
-        .nav-btn svg { width: 20px; height: 20px; }
-    </style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 9999px; }
+  </style>
 </head>
 <body>
-<!-- ORFINI-BACK START -->
-<style>
-.orfini-back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(15, 23, 42, 0.8);
-  color: #e2e8f0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-  padding: 6px 14px;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  pointer-events: auto;
-  line-height: 1.2;
-}
-.orfini-back-btn:hover {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255, 255, 255, 0.35);
-  color: #ffffff !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-}
-.orfini-back-btn-fixed-left {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 10000;
-}
-.orfini-back-btn-fixed-right {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 10000;
-}
-.orfini-back-btn-header {
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-.orfini-back-arrow {
-  font-size: 14px;
-  line-height: 1;
-}
-/* Regole separate: un selettore non riconosciuto invaliderebbe l'intera lista */
-:fullscreen .orfini-back-btn { display: none !important; }
-:-webkit-full-screen .orfini-back-btn { display: none !important; }
-@media (display-mode: fullscreen) { .orfini-back-btn { display: none !important; } }
-@media (max-width: 640px) {
-  .orfini-back-btn .orfini-back-text {
-    display: none;
-  }
-  .orfini-back-btn {
-    padding: 6px 10px;
-  }
-}
-</style>
-<a href="../../index.html" class="orfini-back-btn orfini-back-btn-fixed-left" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
-  <span class="orfini-back-arrow">←</span>
-  <span class="orfini-back-text">Orfini Math Lab</span>
-</a>
-<!-- ORFINI-BACK END -->
 
-<div id="canvas-container"></div>
-
-    <div id="ui-layer">
-        <div class="panel" id="settings-panel">
-            <div class="toggle-ui" id="btn-toggle-ui" onclick="toggleUI()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </div>
-            <h1>\(\pi \text{ is irrational}\)</h1>
-            <p class="subtitle">Ultra High Resolution & Glow Shader</p>
-
-            <div class="control-group">
-                <div class="control-header"><span>Evoluzione Sferica</span><span id="val-morph">0%</span></div>
-                <input type="range" id="slider-morph" min="0" max="1" step="0.005" value="0">
-            </div>
-
-            <div class="control-group">
-                <div class="control-header"><span>Densità Matematica</span><span id="val-step">600</span></div>
-                <input type="range" id="slider-step" min="100" max="2000" step="10" value="600">
-            </div>
-
-            <div class="control-group">
-                <div class="control-header"><span>Velocità Flusso</span><span id="val-speed">1.0x</span></div>
-                <input type="range" id="slider-speed" min="0.1" max="5" step="0.1" value="1.0">
-            </div>
-
-            <div class="control-group">
-                <div class="control-header"><span>Bagliore (Glow)</span><span id="val-glow">0.5</span></div>
-                <input type="range" id="slider-glow" min="0" max="2" step="0.05" value="0.5">
-            </div>
-
-            <div class="btn-row">
-                <button id="btn-play" class="active">PAUSA</button>
-                <button id="btn-reset">RESET</button>
-            </div>
+  <header class="app-header">
+    <div class="head-in">
+      <div class="head-row">
+        <div class="head-left">
+          <!-- ORFINI-BACK START -->
+          <a href="../../index.html" class="orfini-back-btn" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
+            <span aria-hidden="true">←</span>
+            <span class="orfini-back-text">Orfini Math Lab</span>
+          </a>
+          <!-- ORFINI-BACK END -->
+          <span class="chip"><span class="dot"></span>Numeri irrazionali</span>
+          <h1><span>π is irrational</span><span class="formula-badge">π = C : d</span></h1>
         </div>
+        <div class="head-right">
+          <button class="btn-explain" type="button" data-explain="">▶ Spiegami come funziona</button>
+          <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Tappe del percorso">
+        <button class="tab-btn" role="tab" id="tab-ruota" aria-controls="panel-ruota" data-tappa="ruota"><span class="n">1</span>Srotola la ruota</button>
+        <button class="tab-btn" role="tab" id="tab-unita" aria-controls="panel-unita" data-tappa="unita"><span class="n">2</span>L'unità comune</button>
+        <button class="tab-btn" role="tab" id="tab-lancette" aria-controls="panel-lancette" data-tappa="lancette"><span class="n">3</span>Le due lancette</button>
+        <button class="tab-btn" role="tab" id="tab-cifre" aria-controls="panel-cifre" data-tappa="cifre"><span class="n">4</span>Le cifre</button>
+        <button class="tab-btn" role="tab" id="tab-verifica" aria-controls="panel-verifica" data-tappa="verifica"><span class="n">✓</span>Verifica</button>
+      </nav>
     </div>
+  </header>
 
-    <div class="nav-controls">
-        <div class="nav-btn" onclick="controls.zoomIn()" title="Zoom In">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+  <main class="layout" id="layout">
+    <section class="stage-card" aria-label="Area di disegno">
+      <div class="stage-bar">
+        <span id="stage-label"></span>
+        <span id="stage-status" class="status" aria-live="polite"></span>
+      </div>
+      <div class="stage-wrap">
+        <canvas id="stage" role="img" aria-label=""></canvas>
+      </div>
+    </section>
+
+    <aside class="side">
+
+      <!-- ===== Tappa 1 ===== -->
+      <div class="tab-panel" id="panel-ruota" role="tabpanel" aria-labelledby="tab-ruota">
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><h2>Tappa 1 · Srotola la ruota</h2><button class="mini-explain" type="button" data-explain="mode">▶ Spiegami</button></div>
+            <p>Una ruota ha il <b style="color:var(--c-d)">diametro</b> lungo 1. Premi <b>Srotola</b>: la ruota fa un giro completo e lascia a terra la sua <b style="color:var(--c-c)">circonferenza</b>. Poi scegli una lente per leggere dove arriva il punto rosso.</p>
+            <div class="row">
+              <button class="btn btn-primary" type="button" id="r-play">▶ Srotola</button>
+            </div>
+            <div class="field">
+              <div class="field-head"><label for="r-k">Giro della ruota</label><span class="val" id="r-k-val">0%</span></div>
+              <input type="range" id="r-k" min="0" max="1000" step="1" value="0">
+            </div>
+            <div class="field">
+              <span class="seg-label" id="r-lens-lab">Lente sul punto d'arrivo</span>
+              <div class="seg" id="r-lens" role="group" aria-labelledby="r-lens-lab">
+                <button type="button" data-v="0" aria-pressed="true">Nessuna</button>
+                <button type="button" data-v="1" aria-pressed="false">Decimi</button>
+                <button type="button" data-v="2" aria-pressed="false">Centesimi</button>
+                <button type="button" data-v="3" aria-pressed="false">Millesimi</button>
+                <button type="button" data-v="4" aria-pressed="false">Decimillesimi</button>
+              </div>
+            </div>
+            <div class="readout" id="r-read"></div>
+          </div>
+          <div class="card quiz" data-quiz="ruota"></div>
+          <div class="card remember">
+            <h3>Da ricordare</h3>
+            <p><b>π</b> è il rapporto tra circonferenza e diametro: $\pi = C : d \approx 3{,}14159\ldots$ In ogni cerchio, grande o piccolo, la circonferenza è circa 3,14 volte il diametro: $C = \pi \cdot d$.</p>
+          </div>
         </div>
-        <div class="nav-btn" onclick="controls.zoomOut()" title="Zoom Out">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </div>
+
+      <!-- ===== Tappa 2 ===== -->
+      <div class="tab-panel" id="panel-unita" role="tabpanel" aria-labelledby="tab-unita" hidden>
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><h2>Tappa 2 · L'unità comune</h2><button class="mini-explain" type="button" data-explain="mode">▶ Spiegami</button></div>
+            <p>Cerchiamo un pezzetto che misuri <b>esattamente</b> sia il diametro sia la circonferenza. Dividi il <b style="color:var(--c-d)">diametro</b> in $q$ pezzetti uguali e guarda quanti ne entrano nella <b style="color:var(--c-c)">circonferenza</b>. Se non avanzasse niente, avremmo $\pi = \text{pezzetti} : q$.</p>
+            <div class="field">
+              <div class="field-head"><label for="u-q">Il diametro diviso in $q$ parti</label><span class="val" id="u-q-val">q = 1</span></div>
+              <div class="row" style="flex-wrap:nowrap">
+                <button class="btn" type="button" id="u-minus" aria-label="Una parte in meno">−</button>
+                <input type="range" id="u-q" min="1" max="120" step="1" value="1">
+                <button class="btn" type="button" id="u-plus" aria-label="Una parte in più">+</button>
+              </div>
+            </div>
+            <div class="field">
+              <span class="seg-label" id="u-quick-lab">Prova questi</span>
+              <div class="seg" id="u-quick" role="group" aria-labelledby="u-quick-lab">
+                <button type="button" data-v="1" aria-pressed="true">q = 1</button>
+                <button type="button" data-v="7" aria-pressed="false">q = 7</button>
+                <button type="button" data-v="106" aria-pressed="false">q = 106</button>
+                <button type="button" data-v="113" aria-pressed="false">q = 113</button>
+              </div>
+            </div>
+            <div class="readout" id="u-read"></div>
+            <div class="field">
+              <span class="seg-label">Le tue prove migliori</span>
+              <table class="prove"><thead><tr><th>q</th><th>pezzetti</th><th>frazione</th><th>distanza da π</th></tr></thead><tbody id="u-prove"></tbody></table>
+            </div>
+          </div>
+          <div class="card quiz" data-quiz="unita"></div>
+          <div class="card remember">
+            <h3>Da ricordare</h3>
+            <p>Diametro e circonferenza sono <b>incommensurabili</b>: nessun pezzetto, per piccolo che sia, entra un numero intero di volte in tutti e due. $\frac{22}{7}$ (Archimede, III secolo a.C.) e $\frac{355}{113}$ (Zu Chongzhi, V secolo) sono ottime approssimazioni di π, ma non sono π.</p>
+          </div>
         </div>
-        <div class="nav-btn" id="btn-pan" onclick="togglePanMode()" title="Modalità Pan">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"></polyline><polyline points="9 5 12 2 15 5"></polyline><polyline points="15 19 12 22 9 19"></polyline><polyline points="19 9 22 12 19 15"></polyline><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
+      </div>
+
+      <!-- ===== Tappa 3 ===== -->
+      <div class="tab-panel" id="panel-lancette" role="tabpanel" aria-labelledby="tab-lancette" hidden>
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><h2>Tappa 3 · Le due lancette</h2><button class="mini-explain" type="button" data-explain="mode">▶ Spiegami</button></div>
+            <p>La <b style="color:var(--c-c)">lancetta corta</b> è attaccata alla punta della <b style="color:var(--c-d)">lancetta lunga</b> e gira $r$ volte più veloce. La punta disegna una figura. Scegli $r$: la figura <b>si chiude</b>, cioè la punta torna esattamente al punto di partenza?</p>
+            <div class="field">
+              <span class="seg-label" id="l-r-lab">Quante volte più veloce gira la corta: r</span>
+              <div class="seg" id="l-r" role="group" aria-labelledby="l-r-lab">
+                <button type="button" data-v="3" aria-pressed="false">3</button>
+                <button type="button" data-v="7/2" aria-pressed="false">7/2</button>
+                <button type="button" data-v="22/7" aria-pressed="true">22/7</button>
+                <button type="button" data-v="355/113" aria-pressed="false">355/113</button>
+                <button type="button" data-v="pi" aria-pressed="false">π</button>
+                <button type="button" data-v="libera" aria-pressed="false">Scegli tu</button>
+              </div>
+            </div>
+            <div class="row" id="l-free" hidden>
+              <label for="l-p" class="seg-label">r =</label>
+              <input class="num-in" type="number" id="l-p" min="1" max="40" value="5" aria-label="Numeratore">
+              <span aria-hidden="true">/</span>
+              <input class="num-in" type="number" id="l-q" min="1" max="40" value="3" aria-label="Denominatore">
+              <span class="small" id="l-free-red"></span>
+            </div>
+            <div class="row">
+              <button class="btn btn-primary" type="button" id="l-play">▶ Avvia</button>
+              <button class="btn" type="button" id="l-reset">↺ Ricomincia</button>
+              <button class="btn" type="button" id="l-j7">Vai a 7 giri</button>
+              <button class="btn" type="button" id="l-j113">Vai a 113 giri</button>
+            </div>
+            <div class="field">
+              <div class="field-head"><label for="l-speed">Velocità</label><span class="val" id="l-speed-val">0,5 giri/s</span></div>
+              <input type="range" id="l-speed" min="1" max="40" step="1" value="5">
+            </div>
+            <div class="readout" id="l-read"></div>
+          </div>
+          <div class="card quiz" data-quiz="lancette"></div>
+          <div class="card remember">
+            <h3>Da ricordare</h3>
+            <p>Se $r = \frac{p}{q}$ è una frazione ridotta, il disegno si chiude dopo <b>q giri</b> della lancetta lunga. Con $r = \pi$ non si chiude mai: π non si può scrivere come frazione. Si dice che π è <b>irrazionale</b> (lo ha dimostrato J. H. Lambert nel 1761).</p>
+          </div>
         </div>
-        <div class="nav-btn" onclick="resetView()" title="Reset Vista">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+      </div>
+
+      <!-- ===== Tappa 4 ===== -->
+      <div class="tab-panel" id="panel-cifre" role="tabpanel" aria-labelledby="tab-cifre" hidden>
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><h2>Tappa 4 · Le cifre</h2><button class="mini-explain" type="button" data-explain="mode">▶ Spiegami</button></div>
+            <p>Nella <b>divisione in colonna</b> guarda i resti: dividendo per $q$ possono uscire solo $0, 1, \ldots, q-1$. Poi, nella <b>caccia al periodo</b>, prova a trovare un gruppo di cifre di π che si ripete sempre uguale.</p>
+            <div class="seg" id="c-view" role="group" aria-label="Vista">
+              <button type="button" data-v="div" aria-pressed="true">Divisione in colonna</button>
+              <button type="button" data-v="caccia" aria-pressed="false">Caccia al periodo</button>
+            </div>
+            <div id="c-div-ctrl" class="stack">
+              <div class="field">
+                <span class="seg-label" id="c-frac-lab">Frazione</span>
+                <div class="seg" id="c-frac" role="group" aria-labelledby="c-frac-lab">
+                  <button type="button" data-v="1/3" aria-pressed="false">1/3</button>
+                  <button type="button" data-v="3/8" aria-pressed="false">3/8</button>
+                  <button type="button" data-v="5/12" aria-pressed="false">5/12</button>
+                  <button type="button" data-v="1/7" aria-pressed="false">1/7</button>
+                  <button type="button" data-v="22/7" aria-pressed="true">22/7</button>
+                </div>
+              </div>
+              <div class="row">
+                <button class="btn btn-primary" type="button" id="c-next">Prossima cifra ▶</button>
+                <button class="btn" type="button" id="c-all">Fino in fondo</button>
+                <button class="btn" type="button" id="c-restart">↺ Ricomincia</button>
+              </div>
+            </div>
+            <div id="c-hunt-ctrl" class="stack" hidden>
+              <div class="field">
+                <span class="seg-label" id="c-num-lab">Numero</span>
+                <div class="seg" id="c-num" role="group" aria-labelledby="c-num-lab">
+                  <button type="button" data-v="pi" aria-pressed="true">π</button>
+                  <button type="button" data-v="22/7" aria-pressed="false">22/7</button>
+                  <button type="button" data-v="355/113" aria-pressed="false">355/113</button>
+                </div>
+              </div>
+              <div class="field">
+                <div class="field-head"><label for="c-L">Lunghezza del periodo da provare</label><span class="val" id="c-L-val">1 cifra</span></div>
+                <div class="row" style="flex-wrap:nowrap">
+                  <button class="btn" type="button" id="c-minus" aria-label="Periodo più corto">−</button>
+                  <input type="range" id="c-L" min="1" max="120" step="1" value="1">
+                  <button class="btn" type="button" id="c-plus" aria-label="Periodo più lungo">+</button>
+                </div>
+              </div>
+              <div class="row"><button class="btn" type="button" id="c-tryall">Prova tutti i periodi da 1 a 120</button></div>
+            </div>
+            <div class="readout" id="c-read"></div>
+          </div>
+          <div class="card quiz" data-quiz="cifre"></div>
+          <div class="card remember">
+            <h3>Da ricordare</h3>
+            <p><b>Numeri razionali</b> = frazioni = decimali finiti o periodici. <b>Numeri irrazionali</b> = decimali illimitati e non periodici, come π, $\sqrt{2}$ e il numero aureo φ.</p>
+          </div>
         </div>
+      </div>
+
+      <!-- ===== Verifica ===== -->
+      <div class="tab-panel" id="panel-verifica" role="tabpanel" aria-labelledby="tab-verifica" hidden>
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><h2>Verifica · Razionale o irrazionale?</h2></div>
+            <p>Dieci domande su tutto il percorso. Per ogni risposta trovi il perché: se sbagli, rileggilo e torna alla tappa che ti serve.</p>
+            <div class="quiz-foot">
+              <span class="score" id="v-score" aria-live="polite">Risposte date: 0 su 10</span>
+              <button class="btn" type="button" id="v-reset">↺ Ricomincia la verifica</button>
+            </div>
+          </div>
+          <div class="quiz-grid" id="v-grid"></div>
+          <div class="card">
+            <h3>Continua con</h3>
+            <div class="links">
+              <a href="sqrt2_is_irrational.html">√2 is irrational: la diagonale del quadrato →</a>
+              <a href="phi_is_irrational_01.html">φ is irrational: il rapporto aureo →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <nav class="pager" aria-label="Tappa precedente e successiva">
+    <button class="btn" type="button" id="pg-prev">◀ Tappa precedente</button>
+    <button class="btn btn-primary" type="button" id="pg-next">Tappa successiva ▶</button>
+  </nav>
+
+  <footer>&copy; 2026 Orfini Math Lab &bull; Laboratorio Matematico Orfini Foligno &bull; Progetto Open Source</footer>
+
+  <div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
+    <div class="explain-box">
+      <button class="explain-close" id="explainClose" type="button" aria-label="Chiudi spiegazione">✕</button>
+      <iframe id="explainFrame" title="Spiegazione animata: perché π è irrazionale" allow="fullscreen"></iframe>
     </div>
+  </div>
 
-    <div id="info">LABORATORIO ORFINI | 3D PI-FLOW SIMULATOR</div>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const TAPPE = ['ruota', 'unita', 'lancette', 'cifre', 'verifica'];
+const PI = Math.PI;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SANS = "'Inter', system-ui, sans-serif", MONO = "'Space Mono', ui-monospace, monospace";
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+/* ---------- formattazione all'italiana ---------- */
+const fmt = (x, d) => x.toFixed(d).replace('.', ',');
+const fmtSig = x => {                       // abbastanza decimali da vedere le prime cifre non nulle
+  const a = Math.abs(x);
+  if (a === 0) return '0';
+  const d = Math.min(9, Math.max(2, Math.ceil(-Math.log10(a)) + 1));
+  return fmt(a, d);
+};
+const fmtInt = n => Math.round(n).toLocaleString('it-IT');
+const gcd = (a, b) => { while (b) [a, b] = [b, a % b]; return a; };
 
-    <script>
-        const PI = Math.PI;
-        const R_I = 2.0;
-        const R_O = R_I * PI;
-        const R_S = 4.5;
-        const MAX_SEGS = 250000; // Ultra high res
-        const CURVE_RES = 32;
+/* KaTeX: le formule nel testo, anche in quello generato dopo */
+window.typesetMath = el => {
+  if (window.renderMathInElement) renderMathInElement(el, {
+    delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }], throwOnError: false
+  });
+};
 
-        let scene, camera, renderer, controls;
-        let isPlaying = true;
-        let time = 0;
-        let speed = 1.0;
-        let morph = 0.0;
-        let lastT = 0;
-        let step = 1.0 / 600.0;
+/* ---------- colori dal tema ---------- */
+let C = {};
+function readColors() {
+  const s = getComputedStyle(document.documentElement), g = n => s.getPropertyValue(n).trim();
+  C = { bg: g('--bg'), surface: g('--surface-2'), text: g('--text'), text2: g('--text-2'), muted: g('--muted'), dim: g('--dim'),
+        grid: g('--grid'), border: g('--border'), d: g('--c-d'), c: g('--c-c'), bad: g('--c-bad'), ok: g('--c-ok') };
+}
+readColors();
 
-        let p1, p2;
-        let traceGeo, traceMat;
-        let count = 0;
-        let pos2D, pos3D, times, colors;
+/* ---------- canvas ---------- */
+const cv = $('stage'), ctx = cv.getContext('2d');
+let W = 1, H = 1, DPR = 1;
+const FS = () => Math.max(13, Math.min(20, Math.min(W, H) / 30));
+function text(s, x, y, o = {}) {
+  ctx.font = `${o.w || 500} ${o.size || FS()}px ${o.mono ? MONO : SANS}`;
+  ctx.fillStyle = o.col || C.text; ctx.textAlign = o.al || 'center'; ctx.textBaseline = o.bl || 'middle';
+  ctx.fillText(s, x, y);
+}
+function line(x1, y1, x2, y2, col, w = 1, dash) {
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]);
+}
+function dot(x, y, r, col) { ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * PI); ctx.fillStyle = col; ctx.fill(); }
+function ring(x, y, r, col, w = 2) { ctx.beginPath(); ctx.arc(x, y, r, 0, 2 * PI); ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke(); }
+function panel(x, y, w, h) {
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, 14) : ctx.rect(x, y, w, h);
+  ctx.fillStyle = C.surface; ctx.fill(); ctx.strokeStyle = C.border; ctx.lineWidth = 1; ctx.stroke();
+}
+/* Lente: ingrandimento in potenze di 10 tale che una distanza di g px diventi almeno "min" px */
+const lensMag = (g, min) => g >= min ? 1 : Math.min(1e9, Math.pow(10, Math.ceil(Math.log10(min / Math.max(g, 1e-12)))));
 
-        const uniforms = {
-            uTime: { value: 0.0 },
-            uMorph: { value: 0.0 },
-            uGlow: { value: 0.5 },
-            uColorA: { value: new THREE.Color('#ff2200') },
-            uColorB: { value: new THREE.Color('#ffaa00') }
-        };
+let raf = 0, lastTs = 0;
+function requestDraw() { if (!raf) raf = requestAnimationFrame(frame); }
+function frame(ts) {
+  raf = 0;
+  const dt = lastTs ? Math.min(.1, (ts - lastTs) / 1000) : 0;
+  const m = MOD[cur];
+  const again = !!(m && m.step && m.step(dt));
+  lastTs = again ? ts : 0;
+  draw();
+  if (again) requestDraw();
+}
+function draw() {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  const m = MOD[cur];
+  if (m && m.draw) m.draw();
+}
+function fit() {
+  const r = cv.getBoundingClientRect();
+  if (r.width < 2 || r.height < 2) return;
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = r.width; H = r.height;
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  L3.full = true;
+  requestDraw();
+}
+new ResizeObserver(fit).observe(cv);
+const header = document.querySelector('.app-header');
+new ResizeObserver(() => document.documentElement.style.setProperty('--hh', header.offsetHeight + 'px')).observe(header);
 
-        window.onload = () => {
-            init();
-            initUI();
-            animate();
-        };
+const statusEl = $('stage-status');
+function setStatus(s, kind = '') { statusEl.textContent = s; statusEl.className = 'status' + (kind ? ' ' + kind : ''); }
 
-        function init() {
-            const container = document.getElementById('canvas-container');
-            const isMobile = window.innerWidth < 768;
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, isMobile ? 22 : 15);
+/* Gruppi di pulsanti a scelta singola (aria-pressed) */
+function seg(id, onPick) {
+  const box = $(id);
+  box.addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if (!b) return;
+    box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+    onPick(b.dataset.v);
+  });
+  return v => box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.v === String(v) ? 'true' : 'false'));
+}
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            container.appendChild(renderer.domElement);
+/* ======================================================================
+   TAPPA 1 — Srotola la ruota
+   ====================================================================== */
+const R1 = { k: 0, anim: false, lens: 0 };
+const LENS_NAMES = ['', 'un decimo', 'un centesimo', 'un millesimo', 'un decimillesimo'];
+const ruota = {
+  label: 'Tappa 1 · Una ruota di diametro 1 fa un giro completo',
+  aria: 'Una ruota di diametro 1 rotola su una retta graduata e srotola la sua circonferenza',
+  step(dt) {
+    if (!R1.anim) return false;
+    R1.k = Math.min(1, R1.k + dt / 4);
+    if (R1.k >= 1) R1.anim = false;
+    ruota.ui();
+    return R1.anim;
+  },
+  ui() {
+    $('r-k').value = Math.round(R1.k * 1000);
+    $('r-k-val').textContent = Math.round(R1.k * 100) + '%';
+    $('r-play').textContent = R1.anim ? '❚❚ Pausa' : (R1.k >= 1 ? '↺ Srotola di nuovo' : '▶ Srotola');
+    const x = PI * R1.k, n = Math.max(2, R1.lens + 1);
+    const s = Math.pow(10, -Math.max(1, R1.lens)), a = Math.floor(x / s + 1e-9) * s;
+    let html = `Strada percorsa: <b class="k-c">${fmt(x, n)}…</b> diametri`;
+    if (R1.lens && R1.k > 0) html += `<br>Il punto rosso è tra <b>${fmt(a, R1.lens)}</b> e <b>${fmt(a + s, R1.lens)}</b>`;
+    if (R1.k >= 1) html += `<br>Un giro completo: la circonferenza misura <b class="k-c">π ≈ 3,14159…</b>`;
+    $('r-read').innerHTML = html;
+    if (cur === 'ruota') setStatus(R1.k >= 1 ? 'giro completo: C = π · d' : `giro: ${Math.round(R1.k * 100)}%`, R1.k >= 1 ? 'ok' : '');
+  },
+  draw() {
+    const m = Math.max(14, W * 0.035);
+    const U = Math.min((W - 2 * m) / 4.75, H * 0.28);       // lunghezza del diametro in px
+    const x0 = (W - 4.75 * U) / 2 + 0.55 * U;               // posizione dello 0
+    const lineY = m + U + 18, r = U / 2, k = R1.k;
+    const X = v => x0 + v * U;
+    const fs = FS();
+    // retta graduata
+    line(X(-0.3), lineY, X(4.15), lineY, C.dim, 2);
+    for (let i = 0; i <= 41; i++) {
+      const v = i / 10, big = i % 10 === 0;
+      line(X(v), lineY, X(v), lineY + (big ? 12 : 6), big ? C.muted : C.grid, big ? 2 : 1);
+      if (big) text(String(v), X(v), lineY + 14 + fs * .7, { mono: true, w: 700, col: C.muted, size: fs });
+    }
+    // circonferenza già srotolata
+    line(X(0), lineY, X(PI * k), lineY, C.c, 5);
+    // cicloide del punto rosso
+    ctx.beginPath();
+    for (let i = 0; i <= 160; i++) {
+      const s = k * i / 160, a = PI / 2 + 2 * PI * s;
+      const px = X(PI * s) + r * Math.cos(a), py = lineY - r + r * Math.sin(a);
+      i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+    }
+    ctx.strokeStyle = C.bad; ctx.globalAlpha = .45; ctx.lineWidth = 1.5; ctx.setLineDash([4, 5]); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+    // ruota: la parte di bordo non ancora srotolata è piena, quella già a terra è tratteggiata
+    const cx = X(PI * k), cy = lineY - r, phi = 2 * PI * k, aP = PI / 2 + phi;
+    ctx.beginPath(); ctx.arc(cx, cy, r, PI / 2, aP); ctx.strokeStyle = C.grid; ctx.lineWidth = 2; ctx.setLineDash([5, 6]); ctx.stroke(); ctx.setLineDash([]);
+    if (k < 1) { ctx.beginPath(); ctx.arc(cx, cy, r, aP, PI / 2 + 2 * PI); ctx.strokeStyle = C.c; ctx.lineWidth = 5; ctx.stroke(); }
+    // diametro che gira con la ruota
+    const px = cx + r * Math.cos(aP), py = cy + r * Math.sin(aP);
+    line(px, py, cx - r * Math.cos(aP), cy - r * Math.sin(aP), C.d, 3);
+    dot(cx, cy, 3.5, C.d);
+    text('d = 1', cx - Math.sin(aP) * fs * 2.4, cy + Math.cos(aP) * fs * 1.4, { col: C.d, w: 700, size: fs });   // accanto al diametro
+    dot(px, py, 6, C.bad);
+    // arrivo
+    if (k >= 1) {
+      line(X(PI), lineY - 2, X(PI), lineY - U - 6, C.c, 1.5, [4, 4]);
+      text('π ≈ 3,14', X(PI), Math.max(fs * .8, lineY - U - 6 - fs * .8), { col: C.c, w: 700, mono: true, size: fs });
+    }
+    // lente
+    const py0 = lineY + 30 + fs * 1.6, ph = H - m - py0, pw = W - 2 * m;
+    if (ph < 70) return;
+    panel(m, py0, pw, ph);
+    if (!R1.lens) {
+      text(k > 0 ? 'Scegli una lente per leggere dove arriva il punto rosso' : 'Premi «Srotola» oppure trascina lo slider', W / 2, py0 + ph / 2, { col: C.muted, size: fs });
+      return;
+    }
+    const n = R1.lens, s = Math.pow(10, -n), span = 10 * s, x = PI * k;
+    const Lw = Math.min(Math.floor(x / span + 1e-9) * span, 4 - span);
+    const l0 = m + 24, l1 = m + pw - 24, LX = v => l0 + (v - Lw) / span * (l1 - l0);
+    // raccordo "lente"
+    ctx.beginPath(); ctx.moveTo(X(Lw), lineY + 2); ctx.lineTo(l0, py0); ctx.moveTo(X(Lw + span), lineY + 2); ctx.lineTo(l1, py0);
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.setLineDash([3, 4]); ctx.stroke(); ctx.setLineDash([]);
+    text(`Lente ×${fmtInt(Math.pow(10, n))}: una tacca ogni ${LENS_NAMES[n]}`, m + 16, py0 + 12 + fs * .6, { al: 'left', col: C.muted, size: fs * .9, w: 600 });
+    const by = py0 + ph * .52;
+    line(l0, by, l1, by, C.dim, 2);
+    if (x > Lw) line(l0, by, LX(Math.min(x, Lw + span)), by, C.c, 8);
+    const every = pw > 560 ? 1 : pw > 380 ? 2 : 5;
+    for (let j = 0; j <= 10; j++) {
+      const v = Lw + j * s, big = j === 0 || j === 10 || j === 5;
+      line(LX(v), by - (big ? 14 : 9), LX(v), by + (big ? 14 : 9), big ? C.muted : C.grid, big ? 2 : 1.5);
+      if (j % every === 0) text(fmt(v, n), LX(v), by + 18 + fs * .6, { mono: true, size: fs * .85, col: C.muted });
+    }
+    if (k > 0 && x >= Lw && x <= Lw + span) {
+      const mx = LX(x);
+      ctx.beginPath(); ctx.moveTo(mx, by - 12); ctx.lineTo(mx - 8, by - 26); ctx.lineTo(mx + 8, by - 26); ctx.closePath(); ctx.fillStyle = C.bad; ctx.fill();
+      dot(mx, by, 6, C.bad);
+      const a = Math.floor(x / s + 1e-9) * s;
+      text(`${k >= 1 ? 'π' : 'il punto'} è tra ${fmt(a, n)} e ${fmt(a + s, n)}`, W / 2, py0 + ph - 10 - fs * .6, { w: 700, col: C.text, size: fs });
+    }
+  }
+};
+$('r-play').addEventListener('click', () => {
+  if (R1.anim) { R1.anim = false; ruota.ui(); return; }
+  if (R1.k >= 1) R1.k = 0;
+  if (reduce) { R1.k = 1; ruota.ui(); requestDraw(); return; }
+  R1.anim = true; ruota.ui(); requestDraw();
+});
+$('r-k').addEventListener('input', e => { R1.anim = false; R1.k = e.target.value / 1000; ruota.ui(); requestDraw(); });
+seg('r-lens', v => { R1.lens = +v; ruota.ui(); requestDraw(); });
 
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
+/* ======================================================================
+   TAPPA 2 — L'unità comune
+   ====================================================================== */
+const U2 = { q: 1, prove: new Map() };
+const unitaCalc = q => { const e = PI * q, p = Math.max(1, Math.round(e)); return { p, diff: e - p }; };   // diff > 0 avanza, < 0 sfora
+const setQuick = seg('u-quick', v => setQ(+v, true));
+function setQ(q, record) {
+  U2.q = Math.max(1, Math.min(120, q));
+  if (record) U2.prove.set(U2.q, unitaCalc(U2.q));
+  unita.ui(); requestDraw();
+}
+const unita = {
+  label: 'Tappa 2 · Diametro e circonferenza misurati con lo stesso pezzetto',
+  aria: 'Il diametro diviso in parti uguali e la circonferenza srotolata coperta con gli stessi pezzetti',
+  ui() {
+    const { q } = U2, { p, diff } = unitaCalc(q);
+    $('u-q').value = q; $('u-q-val').textContent = 'q = ' + q; setQuick(q);
+    const fr = p / q;
+    $('u-read').innerHTML =
+      `Nella circonferenza entrano circa <b class="k-d">${p}</b> pezzetti: ` +
+      (diff > 0 ? `<b class="k-bad">avanza ${fmtSig(diff)}</b> di pezzetto` : `con ${p} si <b class="k-bad">sfora di ${fmtSig(diff)}</b> di pezzetto`) +
+      `<br>Frazione: <b>${p}/${q} = ${fmt(fr, 7)}…</b><br>π vale <b class="k-c">3,1415927…</b>: distanza <b>${fmtSig(fr - PI)}</b>`;
+    const rows = [...U2.prove.entries()].map(([qq, v]) => ({ q: qq, p: v.p, e: Math.abs(v.p / qq - PI) }))
+      .sort((a, b) => a.e - b.e).slice(0, 5);
+    $('u-prove').innerHTML = rows.map((r, i) =>
+      `<tr class="${i === 0 ? 'best' : ''}"><td>${r.q}</td><td>${r.p}</td><td>${r.p}/${r.q}</td><td>${fmtSig(r.e)}${i === 0 ? ' ★' : ''}</td></tr>`).join('');
+    if (cur === 'unita') setStatus(`${diff > 0 ? 'avanza' : 'sfora di'} ${fmtSig(diff)} di pezzetto · mai zero`, 'bad');
+  },
+  draw() {
+    const { q } = U2, { p, diff } = unitaCalc(q), fs = FS();
+    const m = Math.max(16, W * 0.04);
+    const D = (W - 2 * m) / (PI + 0.25), x0 = m, u = D / q, E = x0 + PI * D;
+    const y1 = m + fs * 2.2, y2 = y1 + Math.max(60, H * 0.14);
+    // diametro diviso in q parti
+    text(`diametro diviso in ${q} ${q === 1 ? 'parte' : 'parti'}`, x0, y1 - fs * 1.2, { al: 'left', col: C.d, w: 700, size: fs });
+    ctx.fillStyle = C.d; ctx.fillRect(x0, y1 - 6, D, 12);
+    if (q > 1) for (let j = 1; j < q; j++) { const xx = x0 + j * u; line(xx, y1 - 6, xx, y1 + 6, C.bg, q > 50 ? .6 : 1.5); }
+    // circonferenza srotolata
+    text('circonferenza srotolata (π volte il diametro)', x0, y2 - fs * 1.2, { al: 'left', col: C.c, w: 700, size: fs });
+    ctx.fillStyle = C.c; ctx.fillRect(x0, y2 - 6, PI * D, 12);
+    // pezzetti messi sotto la circonferenza
+    const yp = y2 + 10;
+    for (let j = 0; j < p; j++) {
+      ctx.fillStyle = C.d; ctx.globalAlpha = j % 2 ? .55 : .95;
+      ctx.fillRect(x0 + j * u, yp, Math.max(.6, u - (q > 50 ? 0 : 1)), 12);
+    }
+    ctx.globalAlpha = 1;
+    const pe = x0 + p * u;
+    ctx.fillStyle = C.bad; ctx.globalAlpha = .9;
+    if (diff > 0) ctx.fillRect(pe, yp, E - pe, 12); else ctx.fillRect(E, yp, pe - E, 12);
+    ctx.globalAlpha = 1;
+    line(E, y2 - 14, E, yp + 20, C.text, 1.5);
+    text(`${p} pezzetti`, x0, yp + 30 + fs * .5, { al: 'left', col: C.d, size: fs, w: 600 });
+    text(diff > 0 ? `avanza ${fmtSig(diff)} di pezzetto` : `sfora di ${fmtSig(diff)} di pezzetto`, W - m, yp + 30 + fs * .5, { al: 'right', col: C.bad, size: fs, w: 700 });
+    // lente sulla fine della circonferenza
+    const py0 = yp + 52 + fs * 1.2, ph = H - m - py0, pw = W - 2 * m;
+    if (ph < 80) return;
+    panel(m, py0, pw, ph);
+    const g = Math.abs(diff) * u;
+    let M = lensMag(g, Math.min(120, pw * .22));
+    while (M > 1 && g * M > pw * .4) M /= 10;          // l'avanzo ingrandito deve restare dentro la lente
+    const pcx = m + pw / 2, hw = (pw / 2 - 10) / M, LX = v => pcx + (v - E) * M;
+    ctx.beginPath(); ctx.moveTo(E - hw, yp + 14); ctx.lineTo(m + 10, py0); ctx.moveTo(E + hw, yp + 14); ctx.lineTo(m + pw - 10, py0);
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.setLineDash([3, 4]); ctx.stroke(); ctx.setLineDash([]);
+    text(`Lente ×${fmtInt(M)} sulla fine della circonferenza`, m + 16, py0 + 12 + fs * .6, { al: 'left', col: C.muted, size: fs * .9, w: 600 });
+    ctx.save(); ctx.beginPath(); ctx.rect(m + 2, py0 + 2, pw - 4, ph - 4); ctx.clip();
+    const by = py0 + ph * .5;
+    ctx.fillStyle = C.c; ctx.fillRect(m, by - 26, LX(E) - m, 14);
+    const jMin = Math.max(0, Math.floor((E - hw - x0) / u) - 1), jMax = Math.min(p - 1, Math.ceil((E + hw - x0) / u) + 1);
+    for (let j = jMin; j <= jMax; j++) {
+      ctx.fillStyle = C.d; ctx.globalAlpha = j % 2 ? .55 : .95;
+      ctx.fillRect(LX(x0 + j * u), by - 6, (u) * M, 14);
+    }
+    ctx.globalAlpha = 1;
+    const lpe = LX(pe), lE = LX(E);
+    ctx.fillStyle = C.bad; ctx.globalAlpha = .9;
+    ctx.fillRect(Math.min(lpe, lE), by - 6, Math.abs(lpe - lE), 14);
+    ctx.globalAlpha = 1;
+    line(lE, by - 40, lE, by + 30, C.text, 2);
+    ctx.restore();
+    text('fine della circonferenza', lE, by - 40 - fs * .7, { col: C.text, size: fs * .85, w: 600 });
+    text(diff > 0 ? `avanzo: ${fmtSig(diff)} di pezzetto` : `il ${p}° pezzetto sfora di ${fmtSig(diff)}`, W / 2, py0 + ph - 10 - fs * .6, { col: C.bad, w: 700, size: fs });
+  }
+};
+$('u-q').addEventListener('input', e => setQ(+e.target.value, false));
+$('u-q').addEventListener('change', e => setQ(+e.target.value, true));
+$('u-minus').addEventListener('click', () => setQ(U2.q - 1, true));
+$('u-plus').addEventListener('click', () => setQ(U2.q + 1, true));
+U2.prove.set(1, unitaCalc(1));
 
-            const geo = new THREE.SphereGeometry(0.08, 16, 16);
-            p1 = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xff4444 }));
-            p2 = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
-            scene.add(p1, p2);
+/* ======================================================================
+   TAPPA 3 — Le due lancette
+   ====================================================================== */
+const MAX_GIRI = 200;
+const L3 = { key: '22/7', r: 22 / 7, q: 7, t: 0, playing: false, speed: .5, traceT: 0, full: true };
+const trace = document.createElement('canvas'), tctx = trace.getContext('2d');
+function setR(key) {
+  L3.key = key;
+  if (key === 'pi') { L3.r = PI; L3.q = null; }
+  else {
+    let p, q;
+    if (key === 'libera') {
+      p = Math.max(1, Math.min(40, Math.round(+$('l-p').value || 1)));
+      q = Math.max(1, Math.min(40, Math.round(+$('l-q').value || 1)));
+    } else [p, q] = key.split('/').map(Number).concat([1]).slice(0, 2);
+    const g = gcd(p, q); L3.r = p / q; L3.q = q / g;
+    $('l-free-red').textContent = key === 'libera' ? (g > 1 ? `= ${p / g}/${q / g} ridotta` : 'già ridotta') : '';
+  }
+  $('l-free').hidden = key !== 'libera';
+  L3.t = 0; L3.playing = false; L3.full = true;
+  lancette.ui(); requestDraw();
+}
+function geom() {
+  const wide = W >= H * 1.25, m = 14;
+  const L = wide ? H * 0.215 : Math.min(W * 0.215, H * 0.17);
+  const cx = wide ? Math.min(W * 0.4, Math.max(2.25 * L + m, W * 0.36)) : W / 2;
+  const cy = wide ? H / 2 : 2.2 * L + m;
+  let lens;
+  if (wide) { const lx = cx + 2.25 * L + m, lw = Math.min(300, W - lx - m); lens = { x: lx, y: H / 2 - Math.min(lw, H - 2 * m) / 2, w: lw, h: Math.min(lw, H - 2 * m) }; }
+  else { const ly = cy + 2.2 * L + m; lens = { x: m, y: ly, w: W - 2 * m, h: H - ly - m }; }
+  return { L, cx, cy, lens };
+}
+const tip = (G, tau) => {
+  const a1 = -PI / 2 + 2 * PI * tau, a2 = -PI / 2 + 2 * PI * L3.r * tau;
+  return [G.cx + G.L * Math.cos(a1) + G.L * Math.cos(a2), G.cy + G.L * Math.sin(a1) + G.L * Math.sin(a2)];
+};
+function traceTo(G, t) {
+  if (L3.full || trace.width !== cv.width || trace.height !== cv.height) {
+    trace.width = cv.width; trace.height = cv.height; L3.traceT = 0; L3.full = false;
+  }
+  if (t <= L3.traceT) { if (t < L3.traceT) { L3.full = true; traceTo(G, t); } return; }
+  const dtau = 1 / (150 * Math.max(1, L3.r));
+  tctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  tctx.beginPath();
+  let tau = L3.traceT, [x, y] = tip(G, tau); tctx.moveTo(x, y);
+  while (tau < t) { tau = Math.min(t, tau + dtau); [x, y] = tip(G, tau); tctx.lineTo(x, y); }
+  tctx.strokeStyle = C.c; tctx.globalAlpha = .85; tctx.lineWidth = 1.3; tctx.lineJoin = 'round'; tctx.stroke();
+  L3.traceT = t;
+}
+const distAfter = n => { const v = 2 * Math.abs(Math.sin(PI * n * L3.r)); return v < 1e-9 ? 0 : v; };   // in lunghezze di lancetta
+const limitT = () => L3.q || MAX_GIRI;
+function bestReturn(nMax) {
+  let best = null;
+  for (let n = 1; n <= nMax; n++) { const d = distAfter(n); if (!best || d < best.d - 1e-15) best = { n, d }; if (d === 0) break; }
+  return best;
+}
+const lancette = {
+  label: 'Tappa 3 · La punta delle lancette disegna una figura',
+  aria: 'Due lancette: la corta, attaccata alla punta della lunga, gira r volte più veloce e la sua punta disegna una curva',
+  step(dt) {
+    if (!L3.playing) return false;
+    L3.t += dt * L3.speed;
+    if (L3.t >= limitT()) { L3.t = limitT(); L3.playing = false; }
+    lancette.ui();
+    return L3.playing;
+  },
+  ui() {
+    const n = Math.floor(L3.t + 1e-9), closed = L3.q && L3.t >= L3.q - 1e-9;
+    $('l-play').textContent = L3.playing ? '❚❚ Pausa' : (L3.t >= limitT() ? '↺ Da capo' : '▶ Avvia');
+    const rTxt = L3.key === 'pi' ? 'π' : L3.key === 'libera' ? `${$('l-p').value}/${$('l-q').value}` : L3.key;
+    let html = `r = <b>${rTxt}</b> · giri della lunga: <b class="k-d">${fmt(L3.t, 2)}</b> · della corta: <b class="k-c">${fmt(L3.t * L3.r, 2)}</b>`;
+    const best = n >= 1 ? bestReturn(n) : null;
+    if (closed) html += `<br><b class="k-ok">Il disegno si è chiuso dopo ${L3.q} ${L3.q === 1 ? 'giro' : 'giri'}</b>: la punta è tornata esattamente alla partenza.`;
+    else if (best) html += `<br>Ritorno più vicino finora: dopo <b>${best.n}</b> ${best.n === 1 ? 'giro' : 'giri'}, a <b class="k-bad">${fmtSig(best.d)}</b> lancette dalla partenza`;
+    else html += '<br>Dopo ogni giro della lunga controlliamo quanto la punta è lontana dalla partenza.';
+    if (L3.key === 'pi' && L3.t >= MAX_GIRI) html += `<br>${MAX_GIRI} giri e non si è ancora chiuso: non si chiuderà mai.`;
+    $('l-read').innerHTML = html;
+    if (cur === 'lancette') {
+      if (closed) setStatus(`chiuso dopo ${L3.q} ${L3.q === 1 ? 'giro' : 'giri'}`, 'ok');
+      else if (n >= 1) setStatus(`dopo ${n} ${n === 1 ? 'giro' : 'giri'}: distanza ${fmtSig(distAfter(n))}`, 'bad');
+      else setStatus('');
+    }
+  },
+  draw() {
+    const G = geom(), fs = FS();
+    traceTo(G, L3.t);
+    ctx.drawImage(trace, 0, 0, W, H);
+    const S = tip(G, 0);
+    ring(S[0], S[1], 7, C.text, 2);
+    // lancette
+    const a1 = -PI / 2 + 2 * PI * L3.t, a2 = -PI / 2 + 2 * PI * L3.r * L3.t;
+    const A = [G.cx + G.L * Math.cos(a1), G.cy + G.L * Math.sin(a1)], T = [A[0] + G.L * Math.cos(a2), A[1] + G.L * Math.sin(a2)];
+    line(G.cx, G.cy, A[0], A[1], C.d, 5); line(A[0], A[1], T[0], T[1], C.c, 4);
+    dot(G.cx, G.cy, 6, C.d); dot(A[0], A[1], 5, C.c); dot(T[0], T[1], 6, C.bad);
+    text(`giri: ${fmt(L3.t, 1)}`, 14, 14 + fs * .6, { al: 'left', mono: true, w: 700, col: C.d, size: fs });
+    // lente sul punto di partenza
+    const ln = G.lens;
+    if (ln.w < 120 || ln.h < 90) return;
+    panel(ln.x, ln.y, ln.w, ln.h);
+    const n = Math.floor(L3.t + 1e-9), closed = L3.q && L3.t >= L3.q - 1e-9;
+    const lf = Math.min(fs * .85, ln.w / 14);
+    text('Lente sulla partenza', ln.x + ln.w / 2, ln.y + 10 + lf * .7, { col: C.muted, size: lf, w: 600 });
+    const cxl = ln.x + ln.w / 2, cyl = ln.y + ln.h * .42;
+    if (n < 1) {
+      ring(cxl, cyl, 8, C.text, 2);
+      text('partenza', cxl, cyl + 22, { col: C.muted, size: lf });
+      text('aspetta il primo giro…', cxl, ln.y + ln.h - 12 - lf * .5, { col: C.muted, size: lf });
+      return;
+    }
+    const P = tip(G, n), dx = P[0] - S[0], dy = P[1] - S[1], dpx = Math.hypot(dx, dy);
+    const M = closed || dpx === 0 ? 1 : lensMag(dpx, Math.min(ln.w, ln.h) * .18);
+    const sc = Math.min(M, (Math.min(ln.w, ln.h) * .3) / Math.max(dpx, 1e-12));
+    const Q = [cxl + dx * sc, cyl + dy * sc];
+    if (!closed && dpx > 0) line(cxl, cyl, Q[0], Q[1], C.bad, 1.5, [4, 4]);
+    ring(cxl, cyl, 9, C.text, 2);
+    dot(Q[0], Q[1], 6, closed ? C.ok : C.bad);
+    const col = closed ? C.ok : C.bad, yb = ln.y + ln.h - 10;
+    text(`dopo ${n} ${n === 1 ? 'giro' : 'giri'}`, cxl, yb - lf * 3.3, { col, size: lf, w: 700 });
+    text(closed ? 'distanza 0: si chiude!' : `distanza ${fmtSig(distAfter(n))}`, cxl, yb - lf * 2, { col, size: lf, w: 700 });
+    text(closed ? 'ingrandimento ×1' : `ingrandimento ×${fmtInt(M)}`, cxl, yb - lf * .6, { col: C.muted, size: lf * .9 });
+  }
+};
+seg('l-r', setR);
+['l-p', 'l-q'].forEach(id => $(id).addEventListener('change', () => setR('libera')));
+$('l-play').addEventListener('click', () => {
+  if (L3.playing) { L3.playing = false; lancette.ui(); return; }
+  if (L3.t >= limitT()) { L3.t = 0; L3.full = true; }
+  if (reduce) { L3.t = Math.min(limitT(), Math.floor(L3.t) + 1); lancette.ui(); requestDraw(); return; }
+  L3.playing = true; lancette.ui(); requestDraw();
+});
+$('l-reset').addEventListener('click', () => { L3.t = 0; L3.playing = false; L3.full = true; lancette.ui(); requestDraw(); });
+const jump = n => { L3.playing = false; L3.t = Math.min(n, limitT()); L3.full = true; lancette.ui(); requestDraw(); };
+$('l-j7').addEventListener('click', () => jump(7));
+$('l-j113').addEventListener('click', () => jump(113));
+const SPEEDS = v => v / 10;
+$('l-speed').addEventListener('input', e => { L3.speed = SPEEDS(+e.target.value); $('l-speed-val').textContent = fmt(L3.speed, 1) + ' giri/s'; });
 
-            traceGeo = new THREE.BufferGeometry();
-            pos2D = new Float32Array(MAX_SEGS * CURVE_RES * 6);
-            pos3D = new Float32Array(MAX_SEGS * CURVE_RES * 6);
-            times = new Float32Array(MAX_SEGS * CURVE_RES * 2);
-            colors = new Float32Array(MAX_SEGS * CURVE_RES * 6);
+/* ======================================================================
+   TAPPA 4 — Le cifre
+   ====================================================================== */
+/* Cifre decimali di π con la formula di Machin (π = 16·arctg(1/5) − 4·arctg(1/239)), in interi grandi */
+function piDecimals(n) {
+  const S = 10n ** BigInt(n + 12);
+  const atanInv = x => {
+    x = BigInt(x); const x2 = x * x;
+    let term = S / x, sum = 0n, k = 1n, sign = 1n;
+    while (term !== 0n) { sum += sign * (term / k); term /= x2; k += 2n; sign = -sign; }
+    return sum;
+  };
+  const pi = 16n * atanInv(5) - 4n * atanInv(239);
+  return (pi / 10n ** 12n).toString().slice(1);      // senza il 3 iniziale
+}
+function fracDecimals(a, b, n) { let r = a % b, s = ''; for (let i = 0; i < n; i++) { r *= 10; s += Math.floor(r / b); r %= b; } return s; }
+const NDIG = 400;
+const DIGITS = { pi: piDecimals(NDIG), '22/7': fracDecimals(22, 7, NDIG), '355/113': fracDecimals(355, 113, NDIG) };
+const NUM_NAME = { pi: 'π', '22/7': '22/7', '355/113': '355/113' };
+/* Divisione in colonna: resti e cifre fino a resto 0 o a un resto già visto */
+function divisione(a, b) {
+  const I = Math.floor(a / b), r0 = a % b, rows = [], seen = new Map([[r0, 0]]);
+  let r = r0, rep = -1;
+  while (r !== 0 && rows.length < 40) {
+    const n10 = r * 10, d = Math.floor(n10 / b), nr = n10 % b;
+    rows.push({ r, n10, d, nr });
+    if (nr !== 0 && seen.has(nr)) { rep = seen.get(nr); break; }
+    seen.set(nr, rows.length); r = nr;
+  }
+  return { a, b, I, r0, rows, rep };
+}
+const C4 = { view: 'div', frac: '22/7', div: divisione(22, 7), steps: 0, num: 'pi', L: 1, tryAll: null };
+const shownDigits = () => {
+  const fs = FS(), m = 14, top = m + fs * 4.2, bottom = H - m - fs * 1.6;
+  for (let c = 30; c >= 12; c--) {
+    const cols = Math.floor((W - 2 * m) / c), rows = Math.floor((bottom - top) / (c * 1.15));
+    if (cols * rows >= Math.max(240, 2 * C4.L + 24) || c === 12) return { c, cols, rows, n: Math.min(NDIG, cols * rows), top, m };
+  }
+};
+function huntStats(num, L, n) {
+  const d = DIGITS[num]; let bad = 0;
+  for (let i = L; i < n; i++) if (d[i] !== d[i - L]) bad++;
+  return { bad, tot: Math.max(0, n - L) };
+}
+const cifre = {
+  get label() { return C4.view === 'div' ? 'Tappa 4 · Divisione in colonna: guarda i resti' : 'Tappa 4 · Caccia al periodo nelle cifre decimali'; },
+  aria: 'Divisione in colonna con i resti, oppure le cifre decimali colorate secondo il periodo provato',
+  ui() {
+    $('c-div-ctrl').hidden = C4.view !== 'div';
+    $('c-hunt-ctrl').hidden = C4.view !== 'caccia';
+    const D = C4.div, done = C4.steps >= D.rows.length;
+    $('c-next').disabled = $('c-all').disabled = done;
+    let html = '';
+    if (C4.view === 'div') {
+      html = `Dividendo per <b>${D.b}</b> i resti possibili sono solo <b>${D.b}</b>: 0, 1, …, ${D.b - 1}.`;
+      if (done) html += D.rep < 0
+        ? `<br><b class="k-ok">Resto 0: la divisione finisce.</b> ${D.a}/${D.b} è un decimale finito.`
+        : `<br><b class="k-bad">Il resto ${D.rows[D.rows.length - 1].nr} è già uscito</b>: da qui le cifre si ripetono. Periodo: <b>${D.rows.slice(D.rep).map(r => r.d).join('')}</b>.`;
+      if (cur === 'cifre') setStatus(done ? (D.rep < 0 ? 'decimale finito' : 'decimale periodico') : `cifre calcolate: ${C4.steps}`, done ? 'ok' : '');
+    } else {
+      const g = shownDigits(), st = huntStats(C4.num, C4.L, g.n);
+      $('c-L').value = C4.L; $('c-L-val').textContent = C4.L + (C4.L === 1 ? ' cifra' : ' cifre');
+      html = `Con un periodo di <b>${C4.L}</b> ${C4.L === 1 ? 'cifra' : 'cifre'}: ` +
+        (st.bad ? `<b class="k-bad">${st.bad}</b> cifre su ${st.tot} non tornano.` : `<b class="k-ok">tutte le ${st.tot} cifre tornano!</b>`);
+      if (C4.num !== 'pi') {
+        let k = 0; while (k < NDIG && DIGITS[C4.num][k] === DIGITS.pi[k]) k++;
+        html += `<br>${NUM_NAME[C4.num]} ha uguali a π solo le prime <b>${k}</b> cifre decimali.`;
+      }
+      if (C4.tryAll && C4.tryAll.num === C4.num) html += '<br>' + C4.tryAll.html;
+      if (cur === 'cifre') setStatus(st.bad ? `${st.bad} cifre non tornano` : 'periodo trovato', st.bad ? 'bad' : 'ok');
+    }
+    $('c-read').innerHTML = html;
+  },
+  draw() { C4.view === 'div' ? drawDiv() : drawHunt(); }
+};
+function drawDiv() {
+  const D = C4.div, fs = FS() * 1.05, m = Math.max(16, W * .04), wide = W > 640;
+  const n = C4.steps, digits = D.rows.slice(0, n).map(r => r.d).join('');
+  const done = n >= D.rows.length;
+  // risultato in alto
+  let res = `${D.a} : ${D.b} = ${D.I}`;
+  if (n) res += ',' + digits;
+  text(res + (done ? '' : '…'), m, m + fs, { al: 'left', mono: true, w: 700, size: fs * 1.35, col: C.text });
+  // righe della divisione
+  const colW = wide ? W * .56 : W - 2 * m, rowH = Math.min(fs * 1.9, (H * (wide ? .78 : .5)) / Math.max(7, D.rows.length + 1));
+  const y0 = m + fs * 3.2;
+  text('resto × 10', m, y0, { al: 'left', col: C.muted, size: fs * .8, w: 600 });
+  text(`: ${D.b}`, m + colW * .36, y0, { al: 'left', col: C.muted, size: fs * .8, w: 600 });
+  text('cifra', m + colW * .58, y0, { al: 'left', col: C.muted, size: fs * .8, w: 600 });
+  text('nuovo resto', m + colW * .76, y0, { al: 'left', col: C.muted, size: fs * .8, w: 600 });
+  D.rows.slice(0, n).forEach((r, i) => {
+    const y = y0 + (i + 1) * rowH, last = done && i === n - 1, inPer = D.rep >= 0 && i >= D.rep;
+    text(`${r.r} × 10 = ${r.n10}`, m, y, { al: 'left', mono: true, size: fs, col: C.text2 });
+    text(`: ${D.b}`, m + colW * .36, y, { al: 'left', mono: true, size: fs, col: C.muted });
+    text(String(r.d), m + colW * .58, y, { al: 'left', mono: true, size: fs, w: 700, col: inPer && done ? C.c : C.text });
+    text(String(r.nr), m + colW * .76, y, { al: 'left', mono: true, size: fs, w: 700, col: last ? (D.rep < 0 ? C.ok : C.bad) : C.text });
+    if (last && D.rep >= 0) ring(m + colW * .76 + ctx.measureText(String(r.nr)).width / 2, y, fs * .85, C.bad, 2);
+  });
+  // resti possibili
+  const used = new Set([D.r0, ...D.rows.slice(0, n).map(r => r.nr)]);
+  const bx = wide ? m + colW + 10 : m, by = wide ? y0 : y0 + (Math.max(n, 1) + 1.2) * rowH, bw = wide ? W - bx - m : W - 2 * m;
+  text(`resti possibili dividendo per ${D.b}`, bx, by, { al: 'left', col: C.muted, size: fs * .8, w: 600 });
+  const cs = Math.min(fs * 2.3, (bw - 8) / Math.min(D.b, 6) - 8), per = Math.max(1, Math.floor((bw + 8) / (cs + 8)));
+  for (let v = 0; v < D.b; v++) {
+    const cx = bx + (v % per) * (cs + 8) + cs / 2, cy = by + fs * 1.4 + Math.floor(v / per) * (cs + 8) + cs / 2;
+    const isLast = done && n > 0 && D.rows[n - 1].nr === v;
+    ctx.beginPath(); ctx.arc(cx, cy, cs / 2, 0, 2 * PI);
+    ctx.fillStyle = used.has(v) && v !== 0 ? C.c : C.surface; ctx.globalAlpha = used.has(v) && v !== 0 ? .3 : 1; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = isLast ? (v === 0 ? C.ok : C.bad) : (used.has(v) ? C.c : C.border); ctx.lineWidth = isLast ? 3 : 1.5; ctx.stroke();
+    text(String(v), cx, cy + 1, { mono: true, w: 700, size: Math.min(fs, cs * .45), col: used.has(v) ? C.text : C.dim });
+  }
+  // decimale finale con il periodo segnato
+  if (done) {
+    const ys = H - m - fs * .6;
+    const ante = D.rep < 0 ? digits : digits.slice(0, D.rep), per_ = D.rep < 0 ? '' : digits.slice(D.rep);
+    ctx.font = `700 ${fs * 1.3}px ${MONO}`;
+    const s1 = `${D.I},${ante}`, w1 = ctx.measureText(s1).width;
+    text(s1, m, ys, { al: 'left', mono: true, w: 700, size: fs * 1.3, col: C.text });
+    if (per_) {
+      text(per_, m + w1, ys, { al: 'left', mono: true, w: 700, size: fs * 1.3, col: C.c });
+      ctx.font = `700 ${fs * 1.3}px ${MONO}`;
+      const w2 = ctx.measureText(per_).width;
+      line(m + w1, ys - fs * .95, m + w1 + w2, ys - fs * .95, C.c, 2.5);
+      text(`= ${D.I},${ante}${per_}${per_}${per_}…`, m + w1 + w2 + 14, ys, { al: 'left', mono: true, size: fs * .9, col: C.muted });
+    }
+  }
+}
+function drawHunt() {
+  const g = shownDigits(), d = DIGITS[C4.num], L = C4.L, fs = FS();
+  text(`${NUM_NAME[C4.num]} = 3,${d.slice(0, 14)}…`, g.m, g.m + fs, { al: 'left', mono: true, w: 700, size: fs * 1.15 });
+  text(`ogni cifra confrontata con quella ${L} posti prima`, g.m, g.m + fs * 2.6, { al: 'left', col: C.muted, size: fs * .85 });
+  const lg = [[C.ok, 'torna'], [C.bad, 'non torna']];
+  let lx = W - g.m;
+  lg.reverse().forEach(([col, s]) => { text(s, lx, g.m + fs * 2.6, { al: 'right', size: fs * .85, col: C.muted }); ctx.font = `500 ${fs * .85}px ${SANS}`; lx -= ctx.measureText(s).width + 8; dot(lx - 5, g.m + fs * 2.6, 5, col); lx -= 22; });
+  const c = g.c, ox = g.m + ((W - 2 * g.m) - g.cols * c) / 2;
+  for (let i = 0; i < g.n; i++) {
+    const x = ox + (i % g.cols) * c, y = g.top + Math.floor(i / g.cols) * c * 1.15;
+    let col = C.text2, bg = null;
+    if (i < L) { bg = C.surface; col = C.text; }
+    else if (d[i] === d[i - L]) col = C.ok;
+    else { bg = C.bad; col = C.bad; }
+    if (bg) { ctx.fillStyle = bg; ctx.globalAlpha = i < L ? 1 : .16; ctx.fillRect(x + 1, y + 1, c - 2, c * 1.15 - 2); ctx.globalAlpha = 1; }
+    if (i < L) { ctx.strokeStyle = C.c; ctx.lineWidth = 1; ctx.strokeRect(x + 1.5, y + 1.5, c - 3, c * 1.15 - 3); }
+    text(d[i], x + c / 2, y + c * .6, { mono: true, w: 700, size: c * .62, col });
+  }
+  text(`le prime ${L} ${L === 1 ? 'cifra (bordata) è il blocco' : 'cifre (bordate) sono il blocco'} che dovrebbe ripetersi · cifre mostrate: ${g.n}`, W / 2, H - g.m - fs * .4, { col: C.muted, size: fs * .8 });
+}
+seg('c-view', v => { C4.view = v; $('stage-label').textContent = cifre.label; cifre.ui(); requestDraw(); });
+const setFrac = seg('c-frac', v => { const [a, b] = v.split('/').map(Number); C4.frac = v; C4.div = divisione(a, b); C4.steps = 0; cifre.ui(); requestDraw(); });
+$('c-next').addEventListener('click', () => { C4.steps = Math.min(C4.div.rows.length, C4.steps + 1); cifre.ui(); requestDraw(); });
+$('c-all').addEventListener('click', () => { C4.steps = C4.div.rows.length; cifre.ui(); requestDraw(); });
+$('c-restart').addEventListener('click', () => { C4.steps = 0; cifre.ui(); requestDraw(); });
+seg('c-num', v => { C4.num = v; cifre.ui(); requestDraw(); });
+const setL = L => { C4.L = Math.max(1, Math.min(120, L)); cifre.ui(); requestDraw(); };
+$('c-L').addEventListener('input', e => setL(+e.target.value));
+$('c-minus').addEventListener('click', () => setL(C4.L - 1));
+$('c-plus').addEventListener('click', () => setL(C4.L + 1));
+$('c-tryall').addEventListener('click', () => {
+  const n = shownDigits().n; let best = null;
+  for (let L = 1; L <= 120; L++) { const s = huntStats(C4.num, L, n); if (!s.bad) { best = { L, bad: 0, tot: s.tot }; break; } if (!best || s.bad / s.tot < best.bad / best.tot) best = { L, ...s }; }
+  C4.tryAll = { num: C4.num, html: best.bad === 0
+    ? `Prova automatica: il periodo più corto è di <b class="k-ok">${best.L}</b> cifre.`
+    : `Prova automatica: <b class="k-bad">nessun periodo da 1 a 120 funziona</b>. Il migliore (${best.L} cifre) sbaglia ancora ${best.bad} cifre su ${best.tot}.` };
+  setL(best.L);
+});
 
-            traceGeo.setAttribute('position', new THREE.BufferAttribute(pos2D, 3));
-            traceGeo.setAttribute('aPos3D', new THREE.BufferAttribute(pos3D, 3));
-            traceGeo.setAttribute('aTime', new THREE.BufferAttribute(times, 1));
-            traceGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+/* ======================================================================
+   Domande di previsione (una tappa alla volta)
+   ====================================================================== */
+const DOMANDE = {
+  ruota: [
+    { q: 'Prima di srotolare: dopo un giro completo, dove arriva il punto rosso?', opts: ['Tra 2 e 3', 'Esattamente a 3', 'Tra 3 e 4', 'Esattamente a 4'], ok: 2,
+      perche: 'Arriva poco dopo il 3: la circonferenza è circa <strong>3,14 volte</strong> il diametro. Questo numero si chiama π.' },
+    { q: 'Con una lente sempre più potente, il punto cadrà prima o poi esattamente su una tacca?', opts: ['Sì, basta una lente abbastanza potente', 'No, cade sempre tra due tacche'], ok: 1,
+      perche: 'Se cadesse su una tacca, π sarebbe un decimale finito, cioè una frazione (per esempio 314/100). Nelle prossime tappe scopri <strong>perché non succede mai</strong>.' }
+  ],
+  unita: [
+    { q: 'Con il diametro diviso in 7 parti, quanti pezzetti servono per coprire la circonferenza?', opts: ['21', '22', '23'], ok: 1,
+      perche: '22 pezzetti la coprono quasi perfettamente: sforano di meno di un centesimo di pezzetto. Per questo $\\pi \\approx \\frac{22}{7}$, come già sapeva Archimede.' },
+    { q: 'Esiste un numero di parti q che rende l\'avanzo esattamente zero?', opts: ['Sì, basta cercare bene', 'No, nessuno'], ok: 1,
+      perche: 'Se esistesse, diametro e circonferenza sarebbero multipli dello stesso pezzetto e π sarebbe la frazione $\\frac{p}{q}$. Non succede mai: diametro e circonferenza sono <strong>incommensurabili</strong>.' }
+  ],
+  lancette: [
+    { q: 'Con r = 7/2, dopo quanti giri della lancetta lunga il disegno si chiude?', opts: ['Dopo 2 giri', 'Dopo 3,5 giri', 'Dopo 7 giri', 'Mai'], ok: 0,
+      perche: 'Dopo 2 giri la lunga ha fatto 2 giri e la corta 7: tutte e due sono di nuovo alla partenza nello stesso istante. Conta il <strong>denominatore</strong> della frazione ridotta.' },
+    { q: 'E con r = 22/7?', opts: ['Dopo 1 giro', 'Dopo 7 giri', 'Dopo 22 giri', 'Mai'], ok: 1,
+      perche: 'Dopo 7 giri della lunga la corta ne ha fatti esattamente 22. Provalo con il pulsante «Vai a 7 giri».' },
+    { q: 'Con r = π, dopo 7 giri la punta passa vicinissima alla partenza. Si chiude?', opts: ['Sì, dopo 7 giri', 'Sì, ma dopo molti più giri', 'No, mai'], ok: 2,
+      perche: 'Ci va vicino dopo 7 giri (π ≈ 22/7) e ancora di più dopo 113 (π ≈ 355/113), ma non torna mai esattamente: per chiudersi, π dovrebbe essere una frazione.' }
+  ],
+  cifre: [
+    { q: 'Dividendo per 7, quanti resti diversi da zero possono uscire?', opts: ['6', '7', 'Infiniti'], ok: 0,
+      perche: 'Solo 1, 2, 3, 4, 5, 6. Dopo al massimo 6 passi un resto torna e da lì le cifre si ripetono: il periodo di 1/7 è 142857.' },
+    { q: 'Un numero con infinite cifre decimali che non si ripetono mai a gruppi può essere una frazione?', opts: ['Sì', 'No'], ok: 1,
+      perche: 'Ogni frazione dà un decimale <strong>finito</strong> (resto 0) o <strong>periodico</strong> (un resto torna). π non è né l\'uno né l\'altro: è irrazionale.' }
+  ]
+};
+const QSTATE = {};
+function renderQuiz(tappa) {
+  const box = document.querySelector(`.quiz[data-quiz="${tappa}"]`), list = DOMANDE[tappa];
+  const st = QSTATE[tappa] || (QSTATE[tappa] = { i: 0, ans: null });
+  const D = list[st.i];
+  box.innerHTML = `<div class="card-head"><h3>Prevedi e rispondi</h3><span class="quiz-count">${st.i + 1} di ${list.length}</span></div>
+    <p class="quiz-q">${D.q}</p>
+    <div class="opts">${D.opts.map((o, k) => `<button type="button" class="opt" data-k="${k}">${o}</button>`).join('')}</div>
+    <p class="feedback" hidden></p>
+    <div class="quiz-foot" hidden><span></span><button type="button" class="btn">${st.i < list.length - 1 ? 'Domanda successiva ▶' : 'Ricomincia le domande'}</button></div>`;
+  const opts = [...box.querySelectorAll('.opt')], fb = box.querySelector('.feedback'), foot = box.querySelector('.quiz-foot');
+  const show = k => {
+    opts.forEach((b, j) => { b.disabled = true; if (j === D.ok) b.classList.add('ok'); else if (j === k) b.classList.add('no'); });
+    fb.hidden = false; fb.className = 'feedback ' + (k === D.ok ? 'ok' : 'no');
+    fb.innerHTML = (k === D.ok ? '<strong>Giusto.</strong> ' : '<strong>Non proprio.</strong> ') + D.perche;
+    foot.hidden = false; typesetMath(fb);
+    if (list.every((_, j) => (QSTATE[tappa].done || []).includes(j))) document.getElementById('tab-' + tappa).classList.add('done');
+  };
+  opts.forEach(b => b.addEventListener('click', () => {
+    st.ans = +b.dataset.k; (st.done || (st.done = [])).includes(st.i) || st.done.push(st.i); show(st.ans);
+  }));
+  foot.querySelector('button').addEventListener('click', () => { st.i = (st.i + 1) % list.length; st.ans = null; renderQuiz(tappa); });
+  if (st.ans != null) show(st.ans);
+  typesetMath(box);
+}
+Object.keys(DOMANDE).forEach(renderQuiz);
 
-            traceMat = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-                vertexShader: `
-                    attribute vec3 aPos3D;
-                    attribute float aTime;
-                    varying float vAlpha;
-                    varying vec3 vCol;
-                    uniform float uTime, uMorph, uGlow;
-                    void main() {
-                        vCol = color;
-                        float age = max(0.0, uTime - aTime);
-                        vAlpha = (0.3 + uGlow * 0.5) * exp(-age * 0.1);
-                        vec3 finalPos = mix(position, aPos3D, uMorph);
-                        gl_Position = projectionMatrix * modelViewMatrix * vec4(finalPos, 1.0);
-                    }
-                `,
-                fragmentShader: `
-                    varying float vAlpha;
-                    varying vec3 vCol;
-                    void main() {
-                        if (vAlpha < 0.01) discard;
-                        gl_FragColor = vec4(vCol, vAlpha);
-                    }
-                `,
-                vertexColors: true
-            });
+/* ======================================================================
+   Verifica finale
+   ====================================================================== */
+const RI = ['razionale', 'irrazionale'];
+const VERIFICA = [
+  { q: '3,14 è un numero…', opts: RI, ok: 0, perche: '3,14 = 314/100 è una frazione. È solo un\'approssimazione di π, non π.' },
+  { q: '$\\frac{22}{7}$ è un numero…', opts: RI, ok: 0, perche: 'È una frazione: il suo decimale 3,142857 142857… è periodico. È vicino a π, ma non è π.' },
+  { q: 'π è un numero…', opts: RI, ok: 1, perche: 'Il disegno delle lancette non si chiude mai e le cifre non si ripetono a gruppi: π non è una frazione.' },
+  { q: '0,333… (il 3 si ripete per sempre) è un numero…', opts: RI, ok: 0, perche: 'È periodico: 0,333… = 1/3.' },
+  { q: '$\\sqrt{2}$ è un numero…', opts: RI, ok: 1, perche: 'Lato e diagonale di un quadrato sono incommensurabili, come diametro e circonferenza. Lo vedi nell\'app «√2 is irrational».' },
+  { q: '0,1010010001… (ogni volta uno zero in più) è un numero…', opts: RI, ok: 1, perche: 'Le cifre seguono una regola, ma nessun gruppo si ripete sempre uguale: non è periodico, quindi non è una frazione.' },
+  { q: '1,25 è un numero…', opts: RI, ok: 0, perche: '1,25 = 125/100 = 5/4: è un decimale finito.' },
+  { q: 'Una ruota ha il diametro di 2 m. Quanto misura la circonferenza?', opts: ['Esattamente 6,28 m', '2π m, cioè circa 6,28 m', '6 m'], ok: 1, perche: '$C = \\pi \\cdot d = 2\\pi$ m. Il valore 6,28 è approssimato: le cifre di π continuano.' },
+  { q: 'Le due lancette con r = 5/3: dopo quanti giri della lunga il disegno si chiude?', opts: ['Dopo 3 giri', 'Dopo 5 giri', 'Mai'], ok: 0, perche: 'Conta il denominatore della frazione ridotta: dopo 3 giri la lunga ha fatto 3 giri e la corta 5.' },
+  { q: 'Dividendo per 13, il periodo può essere lungo al massimo…', opts: ['12 cifre', '13 cifre', 'Non c\'è limite'], ok: 0, perche: 'I resti diversi da zero sono 1, 2, …, 12: entro 12 passi un resto torna e le cifre ricominciano.' }
+];
+const VANS = new Array(VERIFICA.length).fill(null);
+function renderVerifica() {
+  const grid = $('v-grid');
+  grid.innerHTML = VERIFICA.map((D, i) => `<div class="card" data-i="${i}">
+      <span class="q-num">Domanda ${i + 1}</span>
+      <p class="quiz-q">${D.q}</p>
+      <div class="opts${D.opts === RI ? ' inline' : ''}">${D.opts.map((o, k) => `<button type="button" class="opt" data-k="${k}">${o}</button>`).join('')}</div>
+      <p class="feedback" hidden></p></div>`).join('');
+  grid.querySelectorAll('.card').forEach(card => {
+    const i = +card.dataset.i, D = VERIFICA[i], opts = [...card.querySelectorAll('.opt')], fb = card.querySelector('.feedback');
+    const show = k => {
+      opts.forEach((b, j) => { b.disabled = true; if (j === D.ok) b.classList.add('ok'); else if (j === k) b.classList.add('no'); });
+      fb.hidden = false; fb.className = 'feedback ' + (k === D.ok ? 'ok' : 'no');
+      fb.innerHTML = (k === D.ok ? '<strong>Giusto.</strong> ' : '<strong>Non proprio.</strong> ') + D.perche; typesetMath(fb);
+    };
+    opts.forEach(b => b.addEventListener('click', () => { VANS[i] = +b.dataset.k; show(VANS[i]); score(); }));
+    if (VANS[i] != null) show(VANS[i]);
+  });
+  typesetMath(grid); score();
+}
+function score() {
+  const given = VANS.filter(v => v != null).length, good = VANS.filter((v, i) => v === VERIFICA[i].ok).length;
+  $('v-score').textContent = given < VERIFICA.length
+    ? `Risposte date: ${given} su ${VERIFICA.length} · giuste: ${good}`
+    : `Hai risposto bene a ${good} domande su ${VERIFICA.length}. ${good >= 9 ? 'Ottimo lavoro!' : good >= 6 ? 'Buon lavoro: rileggi i perché delle risposte sbagliate.' : 'Ripassa le tappe e riprova: ce la fai.'}`;
+  if (given === VERIFICA.length) $('tab-verifica').classList.add('done');
+}
+$('v-reset').addEventListener('click', () => { VANS.fill(null); $('tab-verifica').classList.remove('done'); renderVerifica(); });
+renderVerifica();
 
-            scene.add(new THREE.LineSegments(traceGeo, traceMat));
-            window.addEventListener('resize', onResize);
-        }
+/* ======================================================================
+   Navigazione tra le tappe (schede WAI-ARIA, indirizzo #tappa per QR e link)
+   ====================================================================== */
+const MOD = { ruota, unita, lancette, cifre };
+let cur = TAPPE.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'ruota';
+const tabs = TAPPE.map(t => $('tab-' + t));
+function go(t, focus) {
+  if (!TAPPE.includes(t)) return;
+  if (cur === 'lancette' && t !== 'lancette') { L3.playing = false; }
+  if (cur === 'ruota' && t !== 'ruota') { R1.anim = false; }
+  cur = t;
+  tabs.forEach(b => { const on = b.dataset.tappa === t; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+  TAPPE.forEach(x => { $('panel-' + x).hidden = x !== t; });
+  $('layout').classList.toggle('no-stage', t === 'verifica');
+  const i = TAPPE.indexOf(t);
+  $('pg-prev').hidden = i === 0; $('pg-next').hidden = i === TAPPE.length - 1;
+  if (location.hash.slice(1) !== t) history.replaceState(null, '', '#' + t);
+  const m = MOD[t];
+  if (m) {
+    $('stage-label').textContent = m.label; cv.setAttribute('aria-label', m.aria);
+    setStatus(''); m.ui(); requestAnimationFrame(fit);
+  }
+}
+tabs.forEach((b, i) => {
+  b.addEventListener('click', () => go(b.dataset.tappa));
+  b.addEventListener('keydown', e => {
+    let j = null;
+    if (e.key === 'ArrowRight') j = (i + 1) % tabs.length;
+    if (e.key === 'ArrowLeft') j = (i - 1 + tabs.length) % tabs.length;
+    if (e.key === 'Home') j = 0;
+    if (e.key === 'End') j = tabs.length - 1;
+    if (j != null) { e.preventDefault(); go(TAPPE[j], true); }
+  });
+});
+$('pg-prev').addEventListener('click', () => { go(TAPPE[Math.max(0, TAPPE.indexOf(cur) - 1)]); window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+$('pg-next').addEventListener('click', () => { go(TAPPE[Math.min(TAPPE.length - 1, TAPPE.indexOf(cur) + 1)]); window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+window.addEventListener('hashchange', () => go(location.hash.slice(1)));
 
-        function initUI() {
-            document.getElementById('slider-morph').oninput = e => {
-                morph = parseFloat(e.target.value);
-                uniforms.uMorph.value = morph;
-                document.getElementById('val-morph').textContent = Math.round(morph * 100) + "%";
-            };
-            document.getElementById('slider-glow').oninput = e => {
-                uniforms.uGlow.value = parseFloat(e.target.value);
-                document.getElementById('val-glow').textContent = e.target.value;
-            };
-            document.getElementById('slider-speed').oninput = e => {
-                speed = parseFloat(e.target.value);
-                document.getElementById('val-speed').textContent = speed.toFixed(1) + "x";
-            };
-            document.getElementById('slider-step').oninput = e => {
-                step = 1.0 / parseInt(e.target.value);
-                document.getElementById('val-step').textContent = e.target.value;
-                reset();
-            };
-            document.getElementById('btn-play').onclick = () => {
-                isPlaying = !isPlaying;
-                document.getElementById('btn-play').textContent = isPlaying ? "PAUSA" : "PLAY";
-                document.getElementById('btn-play').classList.toggle('active');
-            };
-            document.getElementById('btn-reset').onclick = reset;
-        }
+/* Cambio di tema: ricolora il disegno */
+new MutationObserver(() => { readColors(); L3.full = true; requestDraw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+if (document.fonts) document.fonts.ready.then(() => requestDraw());
 
-        function reset() {
-            time = 0; lastT = 0; count = 0;
-            traceGeo.setDrawRange(0, 0);
-            updatePos(0);
-        }
+/* ======================================================================
+   Spiegami: la spiegazione animata si apre in una finestra sopra l'app
+   ====================================================================== */
+function openExplainer(scena = '') {
+  $('explainFrame').src = 'pi_is_irrational_spiegazione.html?embed=1' + (scena ? '#' + scena : '');
+  $('explain').hidden = false;
+  $('explainClose').focus();
+}
+function closeExplainer() {
+  $('explain').hidden = true;
+  $('explainFrame').src = 'about:blank';   // ferma l'animazione
+}
+$('explainClose').addEventListener('click', closeExplainer);
+$('explain').addEventListener('click', e => { if (e.target.id === 'explain') closeExplainer(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('explain').hidden) closeExplainer(); });
+/* Quando la scena (o l'animazione intera) finisce, si torna all'app da soli */
+window.addEventListener('message', e => {
+  if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-finita') setTimeout(closeExplainer, 1500);
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-explain]');
+  if (b) openExplainer(b.dataset.explain === 'mode' ? cur : b.dataset.explain);
+});
 
-        function getCoord(t) {
-            const r1 = t, r2 = t * PI;
-            const b2d = new THREE.Vector3(R_I * Math.cos(r1), R_I * Math.sin(r1), 0);
-            const p2d = new THREE.Vector3(R_O * Math.cos(r2), R_O * Math.sin(r2), 0);
-            // Sfera
-            const b3d = new THREE.Vector3(R_S * Math.cos(r1), R_S * Math.sin(r1), 0);
-            const p3d = new THREE.Vector3(0, R_S * Math.cos(r2), R_S * Math.sin(r2));
-            return { b2d, p2d, b3d, p3d };
-        }
-
-        function updatePos(t) {
-            const c = getCoord(t);
-            p1.position.lerpVectors(c.b2d, c.b3d, morph);
-            p2.position.lerpVectors(c.p2d, c.p3d, morph);
-        }
-
-        function addSeg(t) {
-            if (count >= MAX_SEGS) return;
-            const c = getCoord(t);
-            let op = count * CURVE_RES * 6;
-            let ot = count * CURVE_RES * 2;
-            let oc = count * CURVE_RES * 6;
-
-            for (let i = 0; i < CURVE_RES; i++) {
-                const f1 = i / CURVE_RES, f2 = (i + 1) / CURVE_RES;
-                const v1_2 = new THREE.Vector3().lerpVectors(c.b2d, c.p2d, f1);
-                const v2_2 = new THREE.Vector3().lerpVectors(c.b2d, c.p2d, f2);
-                const v1_3 = new THREE.Vector3().lerpVectors(c.b3d, c.p3d, f1).normalize().multiplyScalar(R_S);
-                const v2_3 = new THREE.Vector3().lerpVectors(c.b3d, c.p3d, f2).normalize().multiplyScalar(R_S);
-
-                pos2D.set([v1_2.x, v1_2.y, v1_2.z, v2_2.x, v2_2.y, v2_2.z], op);
-                pos3D.set([v1_3.x, v1_3.y, v1_3.z, v2_3.x, v2_3.y, v2_3.z], op);
-                times.set([t, t], ot);
-
-                const color = new THREE.Color().lerpColors(uniforms.uColorA.value, uniforms.uColorB.value, f1);
-                colors.set([color.r, color.g, color.b, color.r, color.g, color.b], oc);
-
-                op += 6; ot += 2; oc += 6;
-            }
-            count++;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            if (isPlaying) {
-                time += 0.01 * speed;
-                for (let t = lastT; t < time; t += step) addSeg(t);
-                lastT = time;
-                traceGeo.setDrawRange(0, count * CURVE_RES * 2);
-                traceGeo.attributes.position.needsUpdate = true;
-                traceGeo.attributes.aPos3D.needsUpdate = true;
-                traceGeo.attributes.aTime.needsUpdate = true;
-                traceGeo.attributes.color.needsUpdate = true;
-                uniforms.uTime.value = time;
-            }
-            updatePos(time);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-
-        function resetView() {
-            controls.reset();
-            const isMobile = window.innerWidth < 768;
-            camera.position.set(0, 0, isMobile ? 22 : 15);
-            setPanMode(false);
-        }
-
-        let isPanMode = false;
-        function togglePanMode() {
-            setPanMode(!isPanMode);
-        }
-
-        function setPanMode(active) {
-            isPanMode = active;
-            const btn = document.getElementById('btn-pan');
-            if (active) {
-                controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
-                controls.touches.ONE = THREE.TOUCH.PAN;
-                btn.classList.add('active');
-            } else {
-                controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
-                controls.touches.ONE = THREE.TOUCH.ROTATE;
-                btn.classList.remove('active');
-            }
-        }
-
-        // Estensione controlli per zoom programmatico
-        controls.zoomIn = function() {
-            camera.position.multiplyScalar(0.9);
-        };
-        controls.zoomOut = function() {
-            camera.position.multiplyScalar(1.1);
-        };
-
-        function onResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function toggleUI() {
-            document.getElementById('settings-panel').classList.toggle('collapsed');
-        }
-    </script>
-    <script src="../assets/js/orfini-shared.js"></script>
+go(cur);
+})();
+</script>
 </body>
 </html>
