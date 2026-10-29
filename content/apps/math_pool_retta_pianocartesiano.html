@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#000000">
 <title>Math Pool: Biliardo Cartesiano e retta</title>
 <link rel="stylesheet" href="../assets/style/orfini-shared.css">
-<meta name="description" content="Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, poi usa pendenze e simmetrie per i tiri di sponda. Per smartphone, tablet, PC e LIM.">
-<meta name="keywords" content="Matematica, Geometria Analitica, Retta, Piano Cartesiano, Biliardo, Gamification, Simmetria, 2 GP, 3 MEC">
-<meta name="date" content="2026-10-28">
+<meta name="description" content="Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, usa pendenze e simmetrie per i tiri di sponda e la parabola (dal vertice o dagli zeri, come prodotto di due rette) per i tiri a effetto. Per smartphone, tablet, PC e LIM.">
+<meta name="keywords" content="Matematica, Geometria Analitica, Retta, Parabola, Piano Cartesiano, Biliardo, Gamification, Simmetria, 2 GP, 3 MEC">
+<meta name="date" content="2026-10-29">
 <script src="../assets/js/orfini-shared.js"></script>
 <!--
   Math Pool 3D · serie giochi Orfini Math Lab (skill orfini-games, template 3D)
@@ -111,7 +111,7 @@
   .unariga { white-space: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.25) transparent; }
   :root[data-layout="lato"] #corpo { padding-top: calc(var(--u) * .8); }
   #pannello[data-stato="chiuso"] #corpo, #pannello[data-stato="chiuso"] #tastierino { visibility: hidden; }
-  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin-bottom: calc(var(--u) * .7);
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 4px; margin-bottom: calc(var(--u) * .7);
     background: #000; border: 1px solid var(--bordo); border-radius: calc(var(--u) * .8); }
   .tabs button { min-height: calc(var(--tocco) * .9); border: 0; border-radius: calc(var(--u) * .6); background: transparent;
     color: var(--testo2); font-weight: 700; font-size: calc(var(--u) * .9); cursor: pointer; }
@@ -353,6 +353,7 @@
       <button role="tab" data-tab="lab" aria-selected="false">Lab</button>
       <button role="tab" data-tab="tiro" aria-selected="true">Tiro</button>
       <button role="tab" data-tab="sponde" aria-selected="false">Sponde</button>
+      <button role="tab" data-tab="effetto" aria-selected="false">Effetto</button>
     </div>
     <div id="contenuto"></div>
   </div>
@@ -510,15 +511,15 @@ const COLORATE = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15];
 
 // ───────────────────────────────────────────── STATO E SALVATAGGI
 const asp = Object.assign({ tappeto: 'verde', cornice: 'legno', accento: 'ciano', set: 'classico', numero: 6 }, leggi('orfini.pool.aspetto', {}));
-const prog = Object.assign({ tiro: { max: 1, stelle: {} }, sponde: { max: 1, stelle: {} }, punti: 0, serie: 0, giorno: null }, leggi('orfini.pool.progressi', {}));
+const prog = Object.assign({ tiro: { max: 1, stelle: {} }, sponde: { max: 1, stelle: {} }, effetto: { max: 1, stelle: {} }, punti: 0, serie: 0, giorno: null }, leggi('orfini.pool.progressi', {}));
 const salvaProg = () => scrivi('orfini.pool.progressi', prog);
-const stelleTotali = () => ['tiro', 'sponde'].reduce((s, t) => s + Object.values(prog[t].stelle).reduce((a, b) => a + b, 0), 0);
+const stelleTotali = () => ['tiro', 'sponde', 'effetto'].reduce((s, t) => s + Object.values(prog[t].stelle).reduce((a, b) => a + b, 0), 0);
 const tabSalvata = leggi('orfini.pool.tab', 'tiro');
 // set: ogni livello è fatto di TAVOLI_SET tavoli (buche da prendere); il livello successivo si sblocca a set finito
 const TAVOLI_SET = 3;
 const sets = leggi('orfini.pool.set', {});   // { tiro: { livello, stelle: [stelle di ogni tavolo fatto] }, sponde: … }
 const S = {
-  tab: ['lab', 'tiro', 'sponde'].includes(tabSalvata) ? tabSalvata : 'tiro',
+  tab: ['lab', 'tiro', 'sponde', 'effetto'].includes(tabSalvata) ? tabSalvata : 'tiro',
   stato: 'mira', vista: 'alto', lento: false, sfida: null, labQ: 1, mira: null, trascina: null,
   tiro: null, ultimoTiro: null, foto: null, replay: null, campo: null,
   giocatori: leggi('orfini.pool.giocatori', 1), turno: 0, punteggi: [0, 0],
@@ -732,6 +733,9 @@ const lineaRetta = nuovaLinea(2.5, false, 0.55), lineaRitorno = nuovaLinea(2.5, 
 const lineaDistanza = nuovaLinea(3, true, 0.9), lineaBloccata = nuovaLinea(3, true, 0.85), lineaRitornoEst = nuovaLinea(2, true, 0.45);
 const lineeScelta = [0, 1, 2].map(() => nuovaLinea(2.5, true, 0.75));                    // percorsi delle palle candidate
 const lineaAnteprima = nuovaLinea(3.5, false, 0.95), lineaAnteprimaEst = nuovaLinea(2, true, 0.5);   // anteprima mentre si scrive
+const lineeParabola = [nuovaLinea(3, false, 0.95), nuovaLinea(3, false, 0.95)];                  // effetto: la parabola (fino a due archi)
+const lineaR1 = nuovaLinea(2.5, false, 0.8), lineaR2 = nuovaLinea(2.5, false, 0.8), lineaScan = nuovaLinea(2, true, 0.7);   // parabola = r₁ · r₂
+const puntiScan = [0, 1, 2].map(() => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 12), new THREE.MeshBasicMaterial({ toneMapped: false })); m.visible = false; scene.add(m); return m; });
 
 // piano cartesiano infinito in stile Tron: il tavolo è una finestra su un piano che continua tutto intorno, con la stessa unità.
 // Griglia disegnata nello shader (righe nitide a ogni zoom), assi al neon, tacche a ogni unità, numeri solo ogni 5;
@@ -1174,6 +1178,7 @@ function passoFisico() {
   for (let s = 0; s < FIS.sottopassi; s++) {
     for (const p of palle) {
       if (!p.attiva) continue;
+      if (p.curva) { muoviSuCurva(p, h); continue; }
       const v = Math.hypot(p.vx, p.vy);
       if (v > 0) {
         const nv = v - FIS.attrito * h;
@@ -1222,7 +1227,19 @@ function passoFisico() {
   aggiornaScie();
   registraFotogramma();
 }
+// effetto (massè): la palla percorre esattamente la parabola y = A x² + B x + C; l'attrito la rallenta come sempre.
+// Un urto con una palla o con una sponda la restituisce alla fisica normale.
+function muoviSuCurva(p, h) {
+  const c = p.curva, v = Math.hypot(p.vx, p.vy), nv = v - FIS.attrito * h;
+  if (nv < FIS.sogliaFerma) { p.vx = p.vy = 0; p.curva = null; return; }
+  const pend = (x) => 2 * c.A * x + c.B, passoX = (x) => c.s / Math.sqrt(1 + pend(x) ** 2), ds = nv * h;
+  const x = p.x + ds * passoX(p.x + 0.5 * ds * passoX(p.x));   // punto medio: segue bene anche le curve strette
+  const L = Math.sqrt(1 + pend(x) ** 2);
+  p.x = x; p.y = c.A * x * x + c.B * x + c.C;
+  p.vx = nv * c.s / L; p.vy = nv * c.s * pend(x) / L;
+}
 function urtoBocce(a, b, vrel, x, y) {
+  a.curva = b.curva = null;
   if (S.tiro) S.tiro.contatti.push([a.n, b.n]);
   if (vrel < 0.15) return;
   const ora = performance.now();
@@ -1231,6 +1248,7 @@ function urtoBocce(a, b, vrel, x, y) {
   evento('bocce', clamp(vrel / 8, 0, 1), x, y, a.n === 0 ? b.n : a.n);
 }
 function rimbalzo(p, vn, x, y, sp) {
+  p.curva = null;
   if (S.tiro) S.tiro.rimbalzi.push({ n: p.n, vx: p.vx, vy: p.vy, x: p.x, y: p.y, sponda: sp.linea });
   if (vn > 0.1) evento('sponda', clamp(vn / 8, 0, 1), x, y, p.n);
 }
@@ -1465,19 +1483,19 @@ const tavoloN = (set) => Math.min(TAVOLI_SET, set.stelle.length + (S.sfida?.esit
 const oggi = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 function nuovaSfida(opz = {}) {
   const tab = S.tab, giorno = !!opz.giorno;
-  const livello = giorno ? (tab === 'tiro' ? 5 : 4) : clamp(opz.livello ?? prog[tab].max, 1, prog[tab].max);
-  let seme = giorno ? Number(oggi().replace(/-/g, '')) * 10 + (tab === 'tiro' ? 1 : 2) : (opz.seme ?? Math.floor(Math.random() * 1e9));
+  const livello = giorno ? { tiro: 5, sponde: 4, effetto: 3 }[tab] : clamp(opz.livello ?? prog[tab].max, 1, prog[tab].max);
+  let seme = giorno ? Number(oggi().replace(/-/g, '')) * 10 + { tiro: 1, sponde: 2, effetto: 3 }[tab] : (opz.seme ?? Math.floor(Math.random() * 1e9));
   let dati = null;
   if (!giorno) {   // si continua il set in corso dello stesso livello, altrimenti se ne apre uno nuovo
     const st = sets[tab];
     if (opz.nuovoSet || !st || st.livello !== livello || st.stelle.length >= TAVOLI_SET) { sets[tab] = { livello, stelle: [] }; scrivi('orfini.pool.set', sets); }
   }
-  const genera = tab === 'sponde' ? generaSponde : profiloTiro(livello).scelta ? generaScelta : generaTiro;
+  const genera = tab === 'sponde' ? generaSponde : tab === 'effetto' ? generaEffetto : profiloTiro(livello).scelta ? generaScelta : generaTiro;
   for (let tentativi = 0; !dati && tentativi < 30; tentativi++, seme++) dati = genera(livello, mulberry32(seme));
   seme--;
   if (!dati && tab === 'tiro') dati = generaTiro(6, mulberry32(seme));
   S.sfida = { tab, livello, giorno, seme, dati, indice: 0, errori: 0, aiuti: 0, tiri: 0, riassunti: [], aiutiVisti: {}, valori: {} };
-  S.sfida.passi = tab === 'tiro' ? (dati.scelta ? passiScelta(dati) : passiTiro(dati)) : passiSponde(dati);
+  S.sfida.passi = tab === 'tiro' ? (dati.scelta ? passiScelta(dati) : passiTiro(dati)) : tab === 'effetto' ? passiEffetto(dati) : passiSponde(dati);
   dispostaSfida();
 }
 function dispostaSfida() {
@@ -1491,7 +1509,7 @@ function dispostaSfida() {
     d.nQ = COLORATE[Math.floor(rnd() * COLORATE.length)];
     lista.push(creaPalla(d.nQ, d.Q.x, d.Q.y, 'Q'));
     if (d.R) lista.push(creaPalla(d.nR, d.R.x, d.R.y, 'R'));
-  } else lista.push(creaPalla(8, d.blocco.x, d.blocco.y, 'ostacolo'));
+  } else if (d.blocco) lista.push(creaPalla(8, d.blocco.x, d.blocco.y, 'ostacolo'));
   const occ = lista.map((p) => ({ x: p.x, y: p.y }));
   const liberi = COLORATE.filter((n) => !lista.some((p) => p.n === n) && n !== d.nR);
   piazzaDecoro(d.decoro ?? 0, d.percorsi, occ, rnd).forEach((o, i) => lista.push(creaPalla(liberi[i], o.x, o.y, 'decoro')));
@@ -1633,6 +1651,140 @@ function traiettoriaVerso(X) {
   const P = palle[0], L = Math.hypot(X.x - P.x, X.y - P.y);
   return L < 1e-6 ? null : prevedi(P.x, P.y, (X.x - P.x) / L, (X.y - P.y) / L, 1, P);
 }
+// ───────────────────────────────────────────── EFFETTO: PARABOLE
+// Forma col vertice y = a(x − h)² + k oppure con gli zeri y = a(x − x₁)(x − x₂). La bianca segue la parabola fino alla buca.
+function profiloEffetto(l) {
+  const den = (dd) => (a) => dd.includes(frazione(a)?.d) && Math.abs(frazione(a).n) <= 4;
+  if (l === 1) return { forma: 'vertice', inV: true, aOk: (a) => [0.25, 0.5, 1, 2].includes(Math.abs(a)), decoro: 0, nota: 'Parabola dal vertice' };
+  if (l === 2) return { forma: 'vertice', inV: false, aOk: den([1, 2, 4]), decoro: 1, nota: 'Vertice sul tavolo · la bianca sulla curva' };
+  if (l === 3) return { forma: 'zeri', aOk: den([1, 2, 3, 4]), decoro: 1, nota: 'Parabola dagli zeri' };
+  if (l === 4) return { forma: 'zeri', aOk: den([2, 3, 4, 5, 6]), aFraz: true, decoro: 2, nota: 'Zeri · a frazionario' };
+  return { forma: 'mista', aOk: den([1, 2, 3, 4, 5, 6, 8, 9]), decoro: 3, nota: 'Vertice o zeri' };
+}
+function coeffParabola(d, a = d.a) {   // y = A x² + B x + C
+  return d.forma === 'zeri' ? { A: a, B: -a * (d.x1 + d.x2), C: a * d.x1 * d.x2 } : { A: a, B: -2 * a * d.V.x, C: a * d.V.x * d.V.x + d.V.y };
+}
+const valParabola = (c, x) => c.A * x * x + c.B * x + c.C;
+// il percorso da x0 alla buca: dentro il tavolo, lontano dalle sponde, dalle altre buche e dalle palle
+function percorsoValido(c, x0, B, ostacoli = []) {
+  const pts = [];
+  for (let i = 0; i <= 120; i++) { const x = lerp(x0, B.x, i / 120); pts.push({ x, y: valParabola(c, x) }); }
+  for (const q of pts) {
+    if (Math.hypot(q.x - B.x, q.y - B.y) < B.R + 0.15) break;   // ormai in buca
+    if (Math.abs(q.x) > 9.4 || Math.abs(q.y) > 4.55) return null;
+    if (SPONDE.some((sp) => { const v = puntoVicino(q.x, q.y, sp); return Math.hypot(q.x - v.x, q.y - v.y) < T.r + 0.08; })) return null;
+    if (BUCHE.some((b) => b !== B && Math.hypot(q.x - b.x, q.y - b.y) < b.R + 0.35)) return null;
+    if (ostacoli.some((o) => Math.hypot(q.x - o.x, q.y - o.y) < 2 * T.r + 0.35)) return null;
+  }
+  return pts;
+}
+function generaEffetto(l, rnd) {
+  const pr = profiloEffetto(l), forma = pr.forma === 'mista' ? (rnd() < 0.5 ? 'vertice' : 'zeri') : pr.forma;
+  const cand = [];
+  if (forma === 'vertice') {
+    for (let h = -8; h <= 8; h++) for (let k = -4; k <= 4; k++) for (const B of BUCHE) {
+      const dx = B.x - h; if (Math.abs(dx) < 3) continue;
+      const a = (B.y - k) / (dx * dx); if (!a || !pr.aOk(a)) continue;
+      const d = { forma, V: { x: h, y: k }, a };
+      if (pr.inV ?? rnd() < 0.5) { d.P = { x: h, y: k }; cand.push({ d, B }); continue; }
+      for (let xp = -8; xp <= 8; xp++) {   // la bianca altrove sulla curva, dalla parte opposta alla buca rispetto al vertice
+        const yp = a * (xp - h) ** 2 + k;
+        if (Math.sign(xp - h) !== -Math.sign(dx) || Math.abs(xp - h) < 2 || !intero(yp) || Math.abs(yp) > 4) continue;
+        cand.push({ d: { ...d, P: { x: xp, y: yp } }, B });
+      }
+    }
+  } else {
+    for (let x1 = -9; x1 <= 9; x1++) for (let x2 = -9; x2 <= 9; x2++) for (const B of BUCHE) {
+      if (Math.abs(x2 - x1) < 2 || Math.sign(x2 - x1) !== Math.sign(B.x - x2) || Math.abs(B.x - x2) < 2) continue;   // la porta tra la bianca e la buca
+      const a = B.y / ((B.x - x1) * (B.x - x2)); if (!pr.aOk(a) || (pr.aFraz && intero(a))) continue;
+      cand.push({ d: { forma, x1, x2, a, P: { x: x1, y: 0 }, V: { x: (x1 + x2) / 2, y: -a * ((x2 - x1) / 2) ** 2 } }, B });
+    }
+  }
+  for (let i = cand.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [cand[i], cand[j]] = [cand[j], cand[i]]; }
+  for (const { d, B } of cand) {
+    if (!lontanoBuche(d.P.x, d.P.y, 1.6) || Math.hypot(B.x - d.P.x, B.y - d.P.y) < 6) continue;
+    const c = coeffParabola(d), pts = percorsoValido(c, d.P.x, B);
+    if (!pts) continue;
+    // la 8 sulla strada dritta P → B, lontana dalla curva: senza effetto non si passa
+    let blocco = null;
+    for (const t of [0.5, 0.42, 0.58, 0.35, 0.65]) {
+      const X = { x: lerp(d.P.x, B.x, t), y: lerp(d.P.y, B.y, t) };
+      if (pts.every((q) => Math.hypot(q.x - X.x, q.y - X.y) > 2 * T.r + 0.4) && dentro(X.x, X.y, 9.2, 4.3) && lontanoBuche(X.x, X.y, 1.3)) { blocco = X; break; }
+    }
+    if (!blocco) continue;
+    const zeri = d.forma === 'zeri' ? [d.x1, d.x2] : (() => { const r = -d.V.y / d.a; if (r < 0) return null; const s = Math.sqrt(r); return intero(s) && s > 0 ? [d.V.x - s, d.V.x + s] : null; })();
+    const tappe = pts.filter((_, i) => i % 10 === 0).concat([pts[pts.length - 1]]);   // le palle di disturbo stanno lontane dalla curva
+    return { ...d, B, blocco, zeri, nota: pr.nota, decoro: pr.decoro, percorsi: tappe.slice(1).map((q, i) => [tappe[i], q]), curva: pts };
+  }
+  return null;
+}
+// scritture delle parabole: a può essere la lettera 'a'
+const fattore = (x0) => x0 === 0 ? 'x' : `(x ${x0 > 0 ? '−' : '+'} ${num(Math.abs(x0))})`;
+const coefA = (a) => typeof a === 'string' ? a : uguale(a, 1) ? '' : uguale(a, -1) ? '−' : num(a) + (esatto(a) && frazione(a).d > 1 ? ' · ' : '');
+const parabolaV = (a, h, k) => `y = ${coefA(a)}${h === 0 ? 'x²' : fattore(h) + '²'}${k ? (k > 0 ? ' + ' : ' − ') + num(Math.abs(k)) : ''}`;
+const parabolaZ = (a, x1, x2) => `y = ${coefA(a)}${fattore(x1)}${fattore(x2)}`;
+const rettaFattore = (a, x0) => `y = ${coefA(a)}${x0 === 0 ? 'x' : typeof a === 'string' || !uguale(a, 1) ? fattore(x0) : `x ${x0 > 0 ? '−' : '+'} ${num(Math.abs(x0))}`}`;
+function passiEffetto(d) {
+  const { P, B, V, a } = d;
+  const anteprimaA = (v) => v.a === null || Math.abs(v.a) < 1e-9 ? {} : { parabola: coeffParabola(d, v.a) };
+  const tira = { titolo: 'Tira con effetto!', tira: true, testo: 'Trascina all\'indietro come una fionda: vicino alla direzione giusta la stecca si aggancia alla <b>tangente</b> della parabola e dà l\'effetto. La palla curva lungo la tua parabola: serve abbastanza forza per arrivare in buca.' };
+  const nonPassa = (v) => v.a === null ? 'Scrivi un numero: intero o frazione.' : 'Guarda la parabola tratteggiata: non passa per la buca B.';
+  if (d.forma === 'vertice') {
+    const dx = B.x - V.x, dy = B.y - V.y;
+    const passi = [
+      { id: 'vertice', titolo: 'Il vertice V', testo: d.P.x === V.x && d.P.y === V.y
+          ? 'Con l\'effetto la bianca parte in orizzontale: è proprio nel <b>vertice</b> della parabola. Scrivi le coordinate del vertice: la parabola sarà y = a(x − h)² + k.'
+          : 'Il vertice V della parabola è segnato sul tavolo. Scrivi le sue coordinate: la parabola sarà y = a(x − h)² + k.',
+        campi: ['V(', { k: 'h', ph: 'h' }, ';', { k: 'k', ph: 'k' }, ')'],
+        verifica: (v) => uguale(v.h, V.x) && uguale(v.k, V.y) ? { ok: true, riassunto: parabolaV('a', V.x, V.y) } : { ok: false, msg: 'Leggi le coordinate del vertice: prima la x, poi la y.' },
+        aiuti: [`V${coord(V.x, V.y)}: h = ${num(V.x)}, k = ${num(V.y)}`] },
+      { id: 'a', titolo: 'Trova a con la buca', testo: `La parabola passa per la buca B${coord(B.x, B.y)}: sostituisci x = ${num(B.x)} e y = ${num(B.y)} in ${parabolaV('a', V.x, V.y)} e ricava a. Mentre scrivi vedi la parabola.`,
+        campi: ['a =', { k: 'a', ph: 'a' }], anteprima: anteprimaA,
+        verifica: (v) => uguale(v.a, a) ? { ok: true, riassunto: parabolaV(a, V.x, V.y), msg: d.zeri ? `Si può scrivere anche come prodotto di due rette: ${parabolaZ(a, d.zeri[0], d.zeri[1])}. Guarda il piano.` : undefined } : { ok: false, msg: nonPassa(v) },
+        aiuti: [`${num(B.y)} = a · (${num(B.x)} − ${par(V.x)})² + ${par(V.y)}`, `${num(B.y)} − ${par(V.y)} = a · ${num(dx * dx)}`, `a = ${num(dy)} / ${num(dx * dx)} = ${num(a)}`] },
+    ];
+    if (d.P.x !== V.x || d.P.y !== V.y) passi.push({ id: 'P', titolo: 'La bianca è sulla curva?', testo: `La bianca P ha x = ${num(P.x)}. Sostituiscila nella parabola: se trovi y = ${num(P.y)}, la palla parte proprio dalla curva.`,
+      campi: ['y =', { k: 'y', ph: 'y' }],
+      verifica: (v) => uguale(v.y, P.y) ? { ok: true, riassunto: `y(${num(P.x)}) = ${num(P.y)} ✓` } : { ok: false, msg: `Calcola ${num(a)} · (${num(P.x)} − ${par(V.x)})² + ${par(V.y)}.` },
+      aiuti: [`y = ${num(a)} · (${num(P.x - V.x)})² + ${par(V.y)}`, `y = ${num(a)} · ${num((P.x - V.x) ** 2)} + ${par(V.y)} = ${num(P.y)}`] });
+    passi.push(tira);
+    return passi;
+  }
+  const { x1, x2 } = d, p1 = B.x - x1, p2 = B.x - x2;
+  return [
+    { id: 'zeri', titolo: 'Gli zeri della parabola', testo: `Con l'effetto la bianca parte dall'asse x e deve ripassarci nella <b>porta</b>. Dove la parabola tocca l'asse x ci sono i suoi <b>zeri</b>: scrivi x₁ (la bianca) e x₂ (la porta). La parabola sarà y = a(x − x₁)(x − x₂).`,
+      campi: ['x₁ =', { k: 'x1', ph: 'x₁' }, '·', 'x₂ =', { k: 'x2', ph: 'x₂' }],
+      verifica: (v) => (uguale(v.x1, x1) && uguale(v.x2, x2)) || (uguale(v.x1, x2) && uguale(v.x2, x1)) ? { ok: true, riassunto: parabolaZ('a', x1, x2) } : { ok: false, msg: 'Gli zeri sono le x dei punti sull\'asse x: la bianca e la porta.' },
+      aiuti: [`P${coord(x1, 0)} e porta${coord(x2, 0)}: x₁ = ${num(x1)}, x₂ = ${num(x2)}`] },
+    { id: 'a', titolo: 'Trova a con la buca', testo: `Sostituisci la buca B${coord(B.x, B.y)} in ${parabolaZ('a', x1, x2)} e ricava a. Mentre scrivi vedi la parabola.`,
+      campi: ['a =', { k: 'a', ph: 'a' }], anteprima: anteprimaA,
+      verifica: (v) => uguale(v.a, a) ? { ok: true, riassunto: parabolaZ(a, x1, x2), msg: 'La parabola è il prodotto di due rette: guarda il piano, r₁ · r₂ dà la y della parabola.' } : { ok: false, msg: nonPassa(v) },
+      aiuti: [`${num(B.y)} = a · (${num(B.x)} − ${par(x1)}) · (${num(B.x)} − ${par(x2)})`, `${num(B.y)} = a · ${par(p1)} · ${par(p2)} = a · ${par(p1 * p2)}`, `a = ${num(B.y)} / ${par(p1 * p2)} = ${num(a)}`] },
+    { id: 'vertZ', titolo: 'Il vertice, a metà tra gli zeri', testo: 'Il vertice sta a metà tra i due zeri: x<sub>V</sub> = (x₁ + x₂) / 2. Poi trova y<sub>V</sub> sostituendo x<sub>V</sub> nella parabola.',
+      campi: ['V(', { k: 'xv', ph: 'x' }, ';', { k: 'yv', ph: 'y' }, ')'],
+      anteprima: (v) => v.xv === null || v.yv === null ? {} : { punto: { x: v.xv, y: v.yv }, nome: 'V' },
+      verifica: (v) => uguale(v.xv, V.x) && uguale(v.yv, V.y) ? { ok: true, riassunto: `V${coord(V.x, V.y)}`, msg: `Le due forme sono la stessa parabola: ${parabolaV(a, V.x, V.y)}.` }
+        : { ok: false, msg: !uguale(v.xv, V.x) ? 'x_V = (x₁ + x₂) / 2.' : 'Sostituisci x_V nella parabola per trovare y_V.' },
+      aiuti: [`x_V = (${num(x1)} + ${par(x2)}) / 2 = ${num(V.x)}`, `y_V = ${num(a)} · (${num(V.x)} − ${par(x1)}) · (${num(V.x)} − ${par(x2)}) = ${num(V.y)}`] },
+    tira,
+  ];
+}
+// la traiettoria con l'effetto, da P alla buca, nello stesso formato di prevedi()
+function previsioneCurva(P) {
+  const d = S.sfida.dati, c = coeffParabola(d), punti = [];
+  for (let i = 0; i <= 80; i++) { const x = lerp(P.x, d.B.x, i / 80); punti.push([x, valParabola(c, x)]); }
+  return { punti, segmenti: [], contatto: null, buca: d.B, fine: punti[punti.length - 1] };
+}
+// archi della parabola dentro l'inquadratura (al massimo due)
+function archiParabola(c, b = riquadro) {
+  const archi = []; let cur = null;
+  for (let i = 0; i <= 240; i++) {
+    const x = lerp(b.x0, b.x1, i / 240), y = valParabola(c, x);
+    if (y >= b.y0 && y <= b.y1) { (cur ||= []).push([x, y]); } else if (cur) { archi.push(cur); cur = null; }
+  }
+  if (cur) archi.push(cur);
+  return archi.filter((a) => a.length > 1).slice(0, 2);
+}
 function esitoTraiettoria(pr) {
   const d = S.sfida.dati;
   if (pr.contatto) return `la bianca colpisce la palla ${pr.contatto.n}`;
@@ -1645,7 +1797,12 @@ const passoCorrente = () => S.sfida?.passi[S.sfida.indice];
 const puoTirare = () => S.stato === 'mira' && (S.tab === 'lab' || !!passoCorrente()?.tira);
 function direzioneAlgebrica() {
   const sf = S.sfida; if (!sf || !passoCorrente()?.tira) return null;
-  const d = sf.dati, P = palle[0], M = sf.tab === 'tiro' ? d.Q : d.I;
+  const d = sf.dati, P = palle[0];
+  if (sf.tab === 'effetto') {   // tangente alla parabola nella bianca, verso la buca
+    const c = coeffParabola(d), sx = Math.sign(d.B.x - P.x), m = 2 * c.A * P.x + c.B, L = Math.hypot(1, m);
+    return { x: sx / L, y: sx * m / L };
+  }
+  const M = sf.tab === 'tiro' ? d.Q : d.I;
   const L = Math.hypot(M.x - P.x, M.y - P.y);
   return { x: (M.x - P.x) / L, y: (M.y - P.y) / L };
 }
@@ -1653,9 +1810,10 @@ function direzioneAlgebrica() {
 // ───────────────────────────────────────────── GRAFICA DI STATO (rette, etichette, buca chiamata)
 function aggiornaGrafica() {
   togliEtichette();
-  for (const l of [lineaRetta, lineaRitorno, lineaRitornoEst, lineaSpecchio, lineaSbagliata, lineaDistanza, lineaBloccata, lineaAnteprima, lineaAnteprimaEst, ...lineeScelta]) l.visible = false;
+  for (const l of [lineaRetta, lineaRitorno, lineaRitornoEst, lineaSpecchio, lineaSbagliata, lineaDistanza, lineaBloccata, lineaAnteprima, lineaAnteprimaEst, ...lineeScelta, ...lineeParabola, lineaR1, lineaR2, lineaScan]) l.visible = false;
+  puntiScan.forEach((m) => { m.visible = false; }); clearInterval(scansione.t);
   for (const s of SPONDE) s.mesh.material.emissive.set(0x000000);
-  anelloBuca.visible = anelloSpecchio.visible = anelloAnteprima.visible = false; segniQ.forEach((m) => { m.visible = false; });
+  anelloBuca.visible = anelloSpecchio.visible = anelloAnteprima.visible = false; anelloSpecchio.scale.setScalar(1); segniQ.forEach((m) => { m.visible = false; });
   adattaCamera();   // prima l'inquadratura: le rette si tagliano sui suoi bordi
   const acc = new THREE.Color(coloreAccento());
   if (S.tab === 'lab') aggiornaLab();
@@ -1678,6 +1836,20 @@ function aggiornaGrafica() {
       if (d.R) etichetta('R', `R${coord(d.R.x, d.R.y)}`, d.R.x, d.R.y, 'R');
       if (d.rettaOk) { impostaLinea(lineaRetta, clipRetta(d.m, d.q)); lineaRetta.material.color.copy(acc); }
       if (passoFatto('q')) { segna(segniQ[0], 0, d.q, acc); etichetta('qmark', `q = ${num(d.q)}`, 0, d.q, 'Q', 0.35); }
+    } else if (sf.tab === 'effetto') {
+      if (!passoFatto('a')) {   // la strada dritta è chiusa dalla 8
+        impostaLinea(lineaBloccata, [[d.P.x, d.P.y], [d.blocco.x, d.blocco.y]]); lineaBloccata.material.color.set(cssVar('--errore'));
+        etichetta('blocco', '✕ dritto non si passa', d.blocco.x, d.blocco.y, 'no', 0.45);
+      }
+      const segno = d.forma === 'zeri' ? { x: d.x2, y: 0, t: `porta${coord(d.x2, 0)}` } : d.P.x !== d.V.x || d.P.y !== d.V.y ? { x: d.V.x, y: d.V.y, t: `V${coord(d.V.x, d.V.y)}` } : null;
+      if (segno) {
+        anelloSpecchio.position.set(segno.x, 0.04, -segno.y); anelloSpecchio.scale.setScalar(0.55); anelloSpecchio.material.color.set(cssVar('--avviso')); anelloSpecchio.visible = true;
+        etichetta('segno', segno.t, segno.x, segno.y, 'B', 0.75);
+      } else etichetta('V', `vertice V${coord(d.V.x, d.V.y)}`, d.V.x, d.V.y - 1.05, 'I', 0);
+      if (passoFatto('a')) {
+        archiParabola(coeffParabola(d)).forEach((arco, i) => { impostaLinea(lineeParabola[i], arco); lineeParabola[i].material.color.copy(acc); });
+        if (d.zeri) mostraProdotto(d);
+      }
     } else {
       for (const s of SPONDE) if (s.linea === d.linea) s.mesh.material.emissive.copy(acc).multiplyScalar(0.35);
       const fatto = (id) => sf.passi.slice(0, i).some((p) => p.id === id), oriz = d.tipo === 'orizzontale', sg = Math.sign(d.c);
@@ -1711,6 +1883,32 @@ function aggiornaGrafica() {
   aggiornaHud();
   richiediRender();
 }
+// la parabola come prodotto di due rette: r₁ = a(x − x₁), r₂ = x − x₂; un cursore scorre sulle x intere e mostra r₁ · r₂ = y
+const scansione = { t: 0 };
+function mostraProdotto(d) {
+  const [x1, x2] = d.zeri, a = d.a, r1 = (x) => a * (x - x1), r2 = (x) => x - x2, c1 = '#c77dff', c2 = cssVar('--avviso');
+  impostaLinea(lineaR1, clipRetta(a, -a * x1), 0.05); lineaR1.material.color.set(c1);
+  impostaLinea(lineaR2, clipRetta(1, -x2), 0.05); lineaR2.material.color.set(c2);
+  // etichette delle rette agli estremi dell'inquadratura, lontano dagli zeri dove scorre il cursore
+  const b = riquadro, xm = (x1 + x2) / 2, xe1 = xm > (b.x0 + b.x1) / 2 ? b.x0 + 2.5 : b.x1 - 2.5;
+  const xe2 = [x2 + b.y1 - 1.2, x2 + b.y0 + 1.2].filter((x) => x > b.x0 + 1.5 && x < b.x1 - 1.5).sort((u, v) => Math.abs(v - xm) - Math.abs(u - xm))[0] ?? xe1;   // dove r₂ esce in alto o in basso
+  etichetta('r1', 'r₁: ' + rettaFattore(a, x1), xe1, clamp(r1(xe1), b.y0 + 1, b.y1 - 1), 'm', 0.4);
+  etichetta('r2', 'r₂: ' + rettaFattore(1, x2), xe2, clamp(r2(xe2), b.y0 + 1, b.y1 - 1), 'm', 0.4);
+  puntiScan[0].material.color.set(c1); puntiScan[1].material.color.set(c2); puntiScan[2].material.color.set(cssVar('--ok'));
+  const xs = [];
+  for (let x = Math.min(x1, x2) - 1; x <= Math.max(x1, x2) + 1; x++) if (Math.abs(x) <= 10) xs.push(x);
+  xs.push((x1 + x2) / 2);   // alla fine resta sul vertice
+  let i = 0;
+  const passo = () => {
+    const x = xs[i], y1 = r1(x), y2 = r2(x), y = y1 * y2;
+    [[y1, 0], [y2, 1], [y, 2]].forEach(([v, j]) => { puntiScan[j].position.set(x, 0.08, -v); puntiScan[j].visible = Math.abs(v) <= 30; });
+    impostaLinea(lineaScan, [[x, Math.min(y1, y2, y)], [x, Math.max(y1, y2, y)]], 0.05); lineaScan.material.color.set('#ffffff');
+    etichetta('scan', `${par(y1)} · ${par(y2)} = ${num(y)}`, x, clamp(Math.min(y1, y2, y) - 0.5, b.y0 + 0.6, b.y1 - 0.6), 'I', 0);   // sotto i tre punti
+    richiediRender();
+    if (++i >= xs.length) clearInterval(scansione.t);
+  };
+  clearInterval(scansione.t); passo(); scansione.t = setInterval(passo, ridotto ? 1600 : 1000);
+}
 function clipRetta(m, q, b = riquadro) {   // segmento della retta y = mx + q dentro l'inquadratura
   const pts = [];
   for (const x of [b.x0, b.x1]) { const y = m * x + q; if (y >= b.y0 - 1e-9 && y <= b.y1 + 1e-9) pts.push([x, y]); }
@@ -1738,7 +1936,7 @@ function aggiornaGuida() {
     fantasma.visible = stecca.visible = false; $('carica').classList.add('nascosto'); aggiornaHud(); richiediRender(); return;
   }
   const lab = S.tab === 'lab', d = M.dir;
-  const prev = prevedi(P.x, P.y, d.x, d.y, lab ? 3 : 0, P);
+  const prev = S.tab === 'effetto' && M.agganciata ? previsioneCurva(P) : prevedi(P.x, P.y, d.x, d.y, lab ? 3 : 0, P);
   const col = new THREE.Color(M.agganciata ? cssVar('--ok') : coloreAccento());
   impostaLinea(lineaMira, prev.punti.slice(0, 2)); lineaMira.material.color.copy(col);
   if (lab && prev.punti.length > 2) { impostaLinea(lineaRimbalzi, prev.punti.slice(1)); lineaRimbalzi.material.color.copy(col); } else lineaRimbalzi.visible = false;
@@ -1787,6 +1985,8 @@ function tira(d, k) {
   S.foto = fotografa();
   S.tiro = { contatti: [], rimbalzi: [], buche: [], k, v, dir: { ...d }, agganciata: !!S.mira?.agganciata, reg: S.tab !== 'lab' ? { frames: [], eventi: [], foto: S.foto } : null };
   P.vx = d.x * v; P.vy = d.y * v;
+  const A = S.tab === 'effetto' ? direzioneAlgebrica() : null;   // agganciata alla tangente: parte l'effetto
+  if (A && d.x * A.x + d.y * A.y > 0.99999) { const c = coeffParabola(S.sfida.dati); P.curva = { ...c, s: Math.sign(S.sfida.dati.B.x - P.x) }; S.tiro.curvo = true; }
   S.stato = 'tiro'; S.mira = null;
   aggiornaGuida();
   posizionaStecca(P, d, 0); setTimeout(() => { stecca.visible = false; richiediRender(); }, 160);
@@ -1810,9 +2010,11 @@ function concludiTiro() {
   const bersaglio = sf.tab === 'tiro' ? d.nQ : 0;
   const preso = t.buche.find((x) => x.n === bersaglio);
   const biancaDentro = t.buche.some((x) => x.n === 0);
-  if (preso && preso.b === d.B.i && !(sf.tab === 'tiro' && biancaDentro)) { successo(); return; }
+  if (preso && preso.b === d.B.i && !(sf.tab === 'tiro' && biancaDentro) && (sf.tab !== 'effetto' || t.curvo)) { successo(); return; }
   let msg;
-  if (preso) msg = 'Buca sbagliata!';
+  if (preso && preso.b === d.B.i) msg = 'Dritta non vale: aggancia la stecca alla parabola per dare l\'effetto.';
+  else if (preso) msg = 'Buca sbagliata!';
+  else if (sf.tab === 'effetto' && t.contatti.some((c) => c.includes(0))) msg = 'Hai toccato un\'altra palla: con l\'effetto segui la parabola.';
   else if (sf.tab === 'tiro' && biancaDentro) msg = 'Bianca in buca: fallo!';
   else if (sf.tab === 'sponde' && t.contatti.some((c) => c.includes(0))) msg = 'Hai toccato un\'altra palla: segui la retta della sponda.';
   else if (t.agganciata) msg = 'Troppo piano! La direzione era giusta: carica di più il tiro.';
@@ -2010,6 +2212,8 @@ function renderPannello() {
     const sf = S.sfida, d = sf.dati, tp = prog[sf.tab];
     const consegna = d.scelta && !d.Q
       ? `Scegli una delle palle colorate e mandala in buca colpendola con la bianca (P). <span class="coord">P${coord(d.P.x, d.P.y)}</span>`
+      : sf.tab === 'effetto'
+      ? `<span class="obiettivo"><b>Obiettivo:</b> manda la bianca P nella buca B con un tiro ad <b>effetto</b>: la palla curva lungo una <b>parabola</b>. Dritto non si può: c'è la palla 8 in mezzo.<br><b>Regola:</b> con l'effetto la palla segue esattamente la parabola che calcoli.</span><span class="coord">P${coord(d.P.x, d.P.y)} · B${coord(d.B.x, d.B.y)}${d.forma === 'zeri' ? ` · porta${coord(d.x2, 0)}` : d.V.x !== d.P.x || d.V.y !== d.P.y ? ` · V${coord(d.V.x, d.V.y)}` : ''}</span>`
       : sf.tab === 'tiro'
       ? `Manda la palla <b>${d.nQ}</b> (Q) nella buca <b>B</b> colpendola con la bianca (P). <span class="coord">P${coord(d.P.x, d.P.y)} · Q${coord(d.Q.x, d.Q.y)} · B${coord(d.B.x, d.B.y)}</span>`
       : `<span class="obiettivo"><b>Obiettivo:</b> manda la bianca P nella buca B con <b>un solo rimbalzo</b> sulla sponda <b>${d.linea}</b>. Tirare dritto non si può: c'è la palla 8 in mezzo. Con i calcoli trovi il punto della sponda da colpire.<br><b>Regola:</b> sulla sponda la palla rimbalza come in uno specchio, la pendenza cambia segno.</span><span class="coord">P${coord(d.P.x, d.P.y)} · B${coord(d.B.x, d.B.y)}</span>`;
@@ -2102,7 +2306,15 @@ function mostraAnteprima() {
   }
   if (a.punto && Math.abs(a.punto.x) <= 24 && Math.abs(a.punto.y) <= 18) {
     anelloAnteprima.position.set(a.punto.x, 0.05, -a.punto.y); anelloAnteprima.material.color.set(cssVar('--avviso')); anelloAnteprima.visible = true;
-    etichetta('ant', `B'${coord(a.punto.x, a.punto.y)}?`, a.punto.x, a.punto.y, 'B', 0.95);
+    etichetta('ant', `${a.nome ?? "B'"}${coord(a.punto.x, a.punto.y)}?`, a.punto.x, a.punto.y, 'B', 0.95);
+  }
+  if (a.parabola) {   // effetto: la parabola con la a scritta; verde se passa per la buca
+    const passa = Math.abs(valParabola(a.parabola, d.B.x) - d.B.y) < 1e-6, archi = archiParabola(a.parabola);
+    const arco = archi.sort((u, v) => v.length - u.length)[0];
+    if (arco) {
+      impostaLinea(lineaAnteprimaEst, arco, 0.06); lineaAnteprimaEst.material.color.set(cssVar(passa ? '--ok' : '--avviso'));
+      etichetta('ant', passa ? 'passa per B!' : 'non passa per B', d.B.x - Math.sign(d.B.x || 1) * 2.2, d.B.y - Math.sign(d.B.y) * 1.2, passa ? 'I' : 'm', 0);
+    }
   }
   if (layout === 'sotto' && $('pannello').dataset.stato === 'pieno') apriPannello('meta');   // il tavolo deve vedersi
   richiediRender();
@@ -2245,7 +2457,7 @@ function aggiornaHud() {
   if (S.tab === 'lab') r1 = 'Lab · tiro libero';
   else {
     const set = setOra();
-    r1 = `${S.tab === 'tiro' ? 'Tiro' : 'Sponde'} · ${S.sfida?.giorno ? 'sfida del giorno' : 'liv. ' + S.sfida?.livello}${set ? ` · tavolo ${tavoloN(set)}/${TAVOLI_SET}` : ''}`;
+    r1 = `${{ tiro: 'Tiro', sponde: 'Sponde', effetto: 'Effetto' }[S.tab]} · ${S.sfida?.giorno ? 'sfida del giorno' : 'liv. ' + S.sfida?.livello}${set ? ` · tavolo ${tavoloN(set)}/${TAVOLI_SET}` : ''}`;
     r2.push(`★ ${stelleTotali()} · ${prog.punti.toLocaleString('it-IT')} pt`);
     if (prog.serie >= 2) r2.push(`<span class="serie">serie ×${fmt([1, 1, 1.2, 1.5, 2][Math.min(prog.serie, 4)], 1)}</span>`);
     if (S.giocatori === 2) r2.push(`<span class="turno">G1 ${S.punteggi[0]} · G2 ${S.punteggi[1]} · tocca a G${S.turno + 1}</span>`);
@@ -2428,7 +2640,7 @@ ridimensiona();
 if (S.tab === 'lab') nuovoLab(); else nuovaSfida();
 renderPannello();
 aggiornaIcone();
-$('msgAvvio').innerHTML = 'Il piano cartesiano è stampato sul panno.<br><b>Tiro</b>: calcola la retta che porta la palla in buca.<br><b>Sponde</b>: usa pendenze e simmetrie per rimbalzare.<br><b>Lab</b>: gioca libero e guarda le rette.<br>Ogni livello è un <b>set di ' + TAVOLI_SET + ' tavoli</b>: mandali tutti in buca per sbloccare il successivo.<br>Per tirare tieni il dito sul tavolo e trascina all\'indietro, come una fionda.';
+$('msgAvvio').innerHTML = 'Il piano cartesiano è stampato sul panno.<br><b>Tiro</b>: calcola la retta che porta la palla in buca.<br><b>Sponde</b>: usa pendenze e simmetrie per rimbalzare.<br><b>Effetto</b>: la palla curva lungo una parabola.<br><b>Lab</b>: gioca libero e guarda le rette.<br>Ogni livello è un <b>set di ' + TAVOLI_SET + ' tavoli</b>: mandali tutti in buca per sbloccare il successivo.<br>Per tirare tieni il dito sul tavolo e trascina all\'indietro, come una fionda.';
 $('bGioca').classList.remove('nascosto');
 $('bGioca').addEventListener('click', () => { Suono.avvia(); Suono.clic(); $('schermata').classList.add('nascosto'); teniAcceso(); adattaCamera(); renderPannello(); });
 $('bGioca').focus();

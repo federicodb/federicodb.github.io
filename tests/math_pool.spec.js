@@ -17,6 +17,10 @@ async function soluzione(page) {
       const xR = P.x + Math.sign(Q.x - P.x) * Math.floor(Math.abs(Q.x - P.x) / 2);
       return { m: { m: fr(m) }, sost: { y: fr(P.y), m: fr(m), x: fr(P.x) }, q: { q: fr(q) }, eq: { m: fr(m), q: fr(q) }, buca: { y: fr(m * B.x + q) }, R: { x: fr(xR), y: fr(m * xR + q) } }[p.id];
     }
+    if (sf.tab === 'effetto') {
+      const { V, a, P } = d;
+      return { vertice: { h: fr(V.x), k: fr(V.y) }, a: { a: fr(a) }, P: { y: fr(P.y) }, zeri: { x1: fr(d.x1), x2: fr(d.x2) }, vertZ: { xv: fr(V.x), yv: fr(V.y) } }[p.id];
+    }
     const { Bs, m, q, I, mR, tipo } = d, oriz = tipo === 'orizzontale';
     return { specchio: oriz ? { y: fr(Bs.y) } : { x: fr(Bs.x) }, m: { m: fr(m) }, q: { q: fr(q) }, I: oriz ? { x: fr(I.x) } : { y: fr(I.y) }, pendenze: { m: fr(m), mr: fr(mR) } }[p.id];
   });
@@ -69,7 +73,7 @@ test('fisica: per molti tavoli generati il tiro lungo la retta calcolata va in b
   await avvia(page, 'tiro');
   const falliti = await page.evaluate(() => {
     const o = window.__orfini, out = [];
-    for (const tab of ['tiro', 'sponde']) {
+    for (const tab of ['tiro', 'sponde', 'effetto']) {
       o.cambiaTab(tab);
       o.prog[tab].max = 8;
       for (let liv = 1; liv <= 8; liv++) for (let seme = 1; seme <= 6; seme++) {
@@ -391,11 +395,80 @@ test.describe('spiegami', () => {
     page.on('pageerror', (e) => errori.push(e.message));
     await page.goto('/content/apps/math_pool_retta_pianocartesiano_spiegazione.html');
     const scene = await page.evaluate(() => window.__spiega.SC.map((s) => ({ id: s.id, a: s.a, b: s.b })));
-    expect(scene.map((s) => s.id)).toEqual(['intro', 'tiro', 'scelta', 'sponde', 'lab', 'end']);
+    expect(scene.map((s) => s.id)).toEqual(['intro', 'tiro', 'scelta', 'sponde', 'effetto', 'lab', 'end']);
     for (const s of scene) for (let x = s.a; x < s.b; x += 0.5) await page.evaluate((v) => { window.__spiega.t = v; }, x);
     expect(errori).toEqual([]);
     await page.goto('/content/apps/math_pool_retta_pianocartesiano_spiegazione.html?embed=1#scelta');
     await expect(page.locator('#cap')).toContainText('Nei livelli alti');
     await expect(page.locator('header')).toBeHidden();
+  });
+});
+
+test.describe('effetto', () => {
+  test('ogni livello genera una parabola: vertice ai primi livelli, zeri dal 3, sempre con la 8 sulla strada dritta', async ({ page }) => {
+    await avvia(page, 'effetto');
+    const r = await page.evaluate(() => {
+      const o = window.__orfini, out = [];
+      o.prog.effetto.max = 6;
+      for (let liv = 1; liv <= 6; liv++) for (let seme = 1; seme <= 5; seme++) {
+        o.nuovaSfida({ livello: liv, seme: seme * 13 + liv });
+        const d = o.S.sfida.dati;
+        out.push({ liv, forma: d.forma, inV: d.P.x === d.V.x && d.P.y === d.V.y, blocco: !!d.blocco, passaB: Math.abs(d.a * 0 + (d.forma === 'zeri' ? d.a * (d.B.x - d.x1) * (d.B.x - d.x2) : d.a * (d.B.x - d.V.x) ** 2 + d.V.y) - d.B.y) < 1e-9 });
+      }
+      return out;
+    });
+    for (const x of r) { expect(x.blocco).toBe(true); expect(x.passaB).toBe(true); }
+    expect(r.filter((x) => x.liv === 1).every((x) => x.forma === 'vertice' && x.inV)).toBe(true);
+    expect(r.filter((x) => x.liv === 2).every((x) => x.forma === 'vertice' && !x.inV)).toBe(true);
+    expect(r.filter((x) => x.liv === 3 || x.liv === 4).every((x) => x.forma === 'zeri')).toBe(true);
+  });
+
+  test('vertice: con i passi risolti la bianca curva lungo la parabola e va in buca; il tiro dritto non vale', async ({ page }) => {
+    await avvia(page, 'effetto');
+    await risolviPassi(page);
+    const r = await page.evaluate(() => {
+      const o = window.__orfini, d = o.S.sfida.dati, c = { A: d.a, B: -2 * d.a * d.V.x, C: d.a * d.V.x ** 2 + d.V.y };
+      o.tira(o.direzioneAlgebrica(), 1);
+      let scarto = 0;
+      for (let n = 0; n < 4000 && o.S.stato === 'tiro'; n++) {
+        o.passoFisico();
+        const P = o.palle[0];
+        if (P.curva && Math.hypot(P.x - d.B.x, P.y - d.B.y) > d.B.R + 0.3) scarto = Math.max(scarto, Math.abs(P.y - (c.A * P.x * P.x + c.B * P.x + c.C)));   // fino all'imbocco della buca
+        if (o.tuttoFermo()) { o.concludiTiro(); break; }
+      }
+      return { ok: !!o.S.sfida.esito, scarto };
+    });
+    expect(r.ok).toBe(true);
+    expect(r.scarto).toBeLessThan(1e-9);
+    // senza la 8 in mezzo un tiro dritto in buca entra, ma non vale
+    const dritto = await page.evaluate(() => {
+      const o = window.__orfini; o.nuovaSfida({ livello: 1, seme: 99 });
+      const sf = o.S.sfida, d = sf.dati, P = o.palle[0];
+      sf.indice = sf.passi.length - 1;
+      o.palle.filter((p) => p.n !== 0).forEach((p) => { p.attiva = false; p.visibile = false; });
+      const L = Math.hypot(d.B.x - P.x, d.B.y - P.y);
+      o.tira({ x: (d.B.x - P.x) / L, y: (d.B.y - P.y) / L }, 1); o.avanzaFinoAFermo();
+      return { buca: o.S.ultimoTiro.buche.some((b) => b.n === 0), esito: !!sf.esito };
+    });
+    expect(dritto).toEqual({ buca: true, esito: false });
+    await expect(page.locator('#avviso')).toContainText('Dritta non vale');
+  });
+
+  test('zeri: anteprima della parabola mentre si scrive a, poi il prodotto di due rette sul piano', async ({ page }) => {
+    await avvia(page, 'effetto');
+    await page.evaluate(() => { const o = window.__orfini; o.prog.effetto.max = 3; o.nuovaSfida({ livello: 3, seme: 3 }); o.renderPannello(); });
+    const d = await page.evaluate(() => { const x = window.__orfini.S.sfida.dati; return { x1: x.x1, x2: x.x2, a: x.a }; });
+    await page.fill('.passo.attivo .campo[data-k="x1"]', String(d.x1));
+    await page.fill('.passo.attivo .campo[data-k="x2"]', String(d.x2));
+    await page.evaluate(() => window.__orfini.verificaPasso());
+    await page.fill('.passo.attivo .campo[data-k="a"]', '7');
+    await expect(page.locator('.etichetta', { hasText: 'non passa per B' })).toHaveCount(1);
+    const sol = await soluzione(page);
+    await page.fill('.passo.attivo .campo[data-k="a"]', sol.a);
+    await expect(page.locator('.etichetta', { hasText: 'passa per B!' })).toHaveCount(1);
+    await page.evaluate(() => window.__orfini.verificaPasso());
+    await expect(page.locator('.etichetta', { hasText: 'r₁:' })).toHaveCount(1);
+    await expect(page.locator('.etichetta', { hasText: 'r₂:' })).toHaveCount(1);
+    await expect(page.locator('.etichetta', { hasText: /^[^:]+\s·\s[^:]+\s=\s[^:]+$/ })).toHaveCount(1);   // il cursore r₁ · r₂ = y
   });
 });

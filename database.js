@@ -1,9 +1,66 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-28 20:50:56
+   Data: 2026-10-29 13:03:44
 */
 
 const db = [
+    {
+        "title": "Math Pool: Biliardo Cartesiano e retta",
+        "excerpt": "Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, usa pendenze e simmetrie per i tiri di sponda e la parabola (dal vertice o dagli zeri, come prodotto di due rette) per i tiri a effetto. Per smartphone, tablet, PC e LIM.",
+        "tags": [
+            "2 GP",
+            "3 MEC",
+            "BILIARDO",
+            "GAMIFICATION",
+            "GEOMETRIA ANALITICA",
+            "MATEMATICA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "PARABOLA",
+            "PIANO CARTESIANO",
+            "RETTA",
+            "SIMMETRIA"
+        ],
+        "date": "2026-10-29",
+        "url": "content/apps/math_pool_retta_pianocartesiano.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "parabola",
+                "titolo": "La parabola",
+                "url": "allenamento/#/lezione/parabola/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
+    },
     {
         "title": "$\\pi$ is irrational: perché π non è una frazione",
         "excerpt": "Percorso guidato in quattro tappe sul numero $\\pi$: srotolare una ruota, cercare un'unità comune tra diametro e circonferenza, due lancette il cui disegno non si chiude mai e cifre decimali che non si ripetono. Con domande di previsione, quiz finale e spiegazione animata.",
@@ -80,62 +137,6 @@ const db = [
                 "mat": [
                     "MAT_A1",
                     "MAT_K1"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "Math Pool: Biliardo Cartesiano e retta",
-        "excerpt": "Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, poi usa pendenze e simmetrie per i tiri di sponda. Per smartphone, tablet, PC e LIM.",
-        "tags": [
-            "2 GP",
-            "3 MEC",
-            "BILIARDO",
-            "GAMIFICATION",
-            "GEOMETRIA ANALITICA",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "PIANO CARTESIANO",
-            "RETTA",
-            "SIMMETRIA"
-        ],
-        "date": "2026-10-28",
-        "url": "content/apps/math_pool_retta_pianocartesiano.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3"
                 ]
             }
         ]

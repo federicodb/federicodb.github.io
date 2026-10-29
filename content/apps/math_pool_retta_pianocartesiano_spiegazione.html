@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Math Pool in 60 secondi</title>
-<meta name="description" content="Animazione di un minuto che spiega Math Pool: la retta y = mx + q per mandare la palla in buca, la scelta della palla più comoda, le sponde come specchio e il Lab (Orfini Math Lab).">
+<title>Math Pool in 70 secondi</title>
+<meta name="description" content="Animazione di poco più di un minuto che spiega Math Pool: la retta y = mx + q per mandare la palla in buca, la scelta della palla più comoda, le sponde come specchio, l'effetto lungo una parabola prodotto di due rette e il Lab (Orfini Math Lab).">
 <style>
 /* Stesso look del gioco: nero AMOLED, pannelli scuri bordati, accento ciano, piano cartesiano al neon. */
 :root{
@@ -66,8 +66,8 @@ section.tx h2{font-weight:800;font-size:24px;margin:0}
 <div class="wrap">
   <header>
     <div class="eyebrow"><a href="https://federicodb.github.io/index.html">← Orfini Math Lab</a> · Geometria analitica · Biennio</div>
-    <h1>Math Pool in 60 secondi</h1>
-    <p class="lead">Un minuto per capire il biliardo cartesiano: la retta y = mx + q che manda la palla in buca, la scelta della palla più comoda, la sponda che fa da specchio e il Lab per giocare libero.</p>
+    <h1>Math Pool in 70 secondi</h1>
+    <p class="lead">Un minuto per capire il biliardo cartesiano: la retta y = mx + q che manda la palla in buca, la scelta della palla più comoda, la sponda che fa da specchio, l'effetto che curva la palla lungo una parabola e il Lab per giocare libero.</p>
   </header>
 
   <div class="screen">
@@ -78,8 +78,8 @@ section.tx h2{font-weight:800;font-size:24px;margin:0}
     <button class="btn play" id="play" type="button">▶ Play</button>
     <button class="btn" id="speed" type="button" title="Velocità di riproduzione">1×</button>
     <div class="scrub">
-      <input id="seek" type="range" min="0" max="60" step="0.1" value="4" aria-label="Posizione nell'animazione">
-      <span class="time" id="time">0:04 / 1:00</span>
+      <input id="seek" type="range" min="0" max="73" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:13</span>
     </div>
   </div>
   <div class="chaps" id="chaps"></div>
@@ -96,10 +96,10 @@ section.tx h2{font-weight:800;font-size:24px;margin:0}
 
 <script>
 (() => {
-const W = 1280, H = 720, TOTAL = 60;
+const W = 1280, H = 720, TOTAL = 73;
 const BODY = 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
 const MONO = 'ui-monospace,"SFMono-Regular",Menlo,monospace';
-const ACC = '#4cc9f0', OK = '#3ddc97', ERR = '#ff5d73', WARN = '#ffb703', VIO = '#c77dff', MUT = '#9ba1b6', FG = '#eef0fa';
+const MAG = '#ff4d9d', ACC = '#4cc9f0', OK = '#3ddc97', ERR = '#ff5d73', WARN = '#ffb703', VIO = '#c77dff', MUT = '#9ba1b6', FG = '#eef0fa';
 const FELT = '#0d6b3c', CORN = '#5b3518', BIANCA = '#f6f3ea';
 const COL = { 3: '#d62828', 5: '#f77f00', 8: '#141414', 2: '#1d4ed8', 6: '#138a36' };
 const R = 0.35;   // raggio delle palle, in quadretti (come nel gioco)
@@ -109,21 +109,24 @@ const MODES = {
   tiro: { icon: '🎱', name: 'Tiro', tag: 'y = mx + q', c: ACC },
   scelta: { icon: '🎯', name: 'Scegli la palla', tag: 'dal livello 7', c: VIO },
   sponde: { icon: '↩', name: 'Sponde', tag: 'lo specchio', c: WARN },
+  effetto: { icon: '🌀', name: 'Effetto', tag: 'parabola', c: MAG },
   lab: { icon: '🧪', name: 'Lab', tag: 'gioco libero', c: OK },
 };
 const SC = [
   { id: 'intro', label: 'Intro', a: 0, b: 5, c: ACC,
-    cap: 'In Math Pool il <b>piano cartesiano è stampato sul panno</b> e continua tutto intorno al tavolo. Ogni livello è un <b>set di 3 tavoli</b>: finiscili e si sblocca il successivo.' },
+    cap: 'In Math Pool il <b>piano cartesiano è stampato sul panno</b> e continua tutto intorno al tavolo. Quattro modalità: <b>Tiro</b> e <b>Sponde</b> con le rette, <b>Effetto</b> con le parabole, <b>Lab</b> per giocare libero. Ogni livello è un <b>set di 3 tavoli</b>.' },
   { id: 'tiro', label: 'Tiro', a: 5, b: 20, ...MODES.tiro,
     cap: 'P(−4; −3) e Q(−2; 1): Δx = 2, Δy = 4, quindi <b>m = 4/2 = 2</b>. Scambiare Δx e Δy dà 1/2, e la retta manca Q. Poi q = −3 − 2 · (−4) = 5: la retta <b>y = 2x + 5</b> passa per la buca B(0; 5).' },
   { id: 'scelta', label: 'Scegli la palla', a: 20, b: 30, ...MODES.scelta,
     cap: 'Nei livelli alti ogni palla colorata è già allineata con la bianca e con una buca. La palla 3 dà <b>m = 3</b>, la palla 5 dà m = 1/2: scegli i conti più comodi (+20 punti).' },
   { id: 'sponde', label: 'Sponde', a: 30, b: 48, ...MODES.sponde,
     cap: 'La sponda è uno <b>specchio</b>. Mentre scrivi la x del punto I vedi subito la traiettoria. Il riflesso della buca è B\'(10; 15): la retta da P a B\' è y = x + 5 e tocca la sponda in <b>I(0; 5)</b>. Sulla sponda la pendenza cambia segno: <b>1 → −1</b>.' },
-  { id: 'lab', label: 'Lab', a: 48, b: 55, ...MODES.lab,
+  { id: 'effetto', label: 'Effetto', a: 48, b: 61, ...MODES.effetto,
+    cap: 'Con l\'effetto la palla curva lungo una <b>parabola</b>. Gli zeri sono la bianca (−5; 0) e la porta (−1; 0): y = a(x + 5)(x + 1), e la buca B(0; −5) dà <b>a = −1</b>. La parabola è il <b>prodotto di due rette</b>: r₁ = −(x + 5) e r₂ = x + 1.' },
+  { id: 'lab', label: 'Lab', a: 61, b: 68, ...MODES.lab,
     cap: 'Nel Lab sposti le palle e la retta si aggiorna da sola: con Q(2; 1) è y = ½x, con Q(2; 3) diventa <b>y = x + 1</b>.' },
-  { id: 'end', label: 'Riepilogo', a: 55, b: 60, c: OK,
-    cap: '<b>m = Δy / Δx</b>, <b>q = y − m · x</b> e sulla sponda <b>m → −m</b>. Tre tavoli per set, poi il livello successivo. Ora tocca a te!' },
+  { id: 'end', label: 'Riepilogo', a: 68, b: 73, c: OK,
+    cap: '<b>m = Δy / Δx</b>, <b>q = y − m · x</b>, sulla sponda <b>m → −m</b> e con l\'effetto <b>parabola = r₁ · r₂</b>. Tre tavoli per set, poi il livello successivo. Ora tocca a te!' },
 ];
 
 /* ---------- helpers ---------- */
@@ -236,7 +239,12 @@ function chip(m) {
 function sIntro(u) {
   const M = mappa(640, 400, 28);
   A(prog(u, 0, .8)); pianoNeon(M); tavolo(M); A(1);
-  pop(640, 90, prog(u, .2, .9), () => { ctx.save(); ctx.shadowColor = ACC; ctx.shadowBlur = 26; T('MATH POOL', 0, 0, 84, ACC, { w: 900 }); ctx.restore(); });
+  pop(640, 80, prog(u, .2, .9), () => { ctx.save(); ctx.shadowColor = ACC; ctx.shadowBlur = 26; T('MATH POOL', 0, 0, 76, ACC, { w: 900 }); ctx.restore(); });
+  // le quattro modalità, la nuova in evidenza: rette e parabole
+  ['tiro', 'sponde', 'effetto', 'lab'].forEach((id, i) => pop(640 + (i - 1.5) * 250, 168, prog(u, .6 + i * .18, 1.1 + i * .18), () => {
+    const m = MODES[id], lab = `${m.icon} ${m.name}`, w = Wt(lab, 22) + 36;
+    rr(-w / 2, -21, w, 42, 21); ctx.fillStyle = m.c; ctx.fill(); T(lab, 0, 1, 22, '#000', { w: 800 });
+  }));
   palla(M, -4, -3, BIANCA, 0, prog(u, 1, 1.4));
   palla(M, -2, 1, COL[3], 3, prog(u, 1.3, 1.7));
   A(prog(u, 1, 1.4)); pill('P(−4; −3)', M.X(-4), M.Y(-3) + 34, '#fff'); A(1);
@@ -406,6 +414,59 @@ function sSponde(u) {
   }
 }
 
+/* ---------- scena: Effetto (parabola = prodotto di due rette) ---------- */
+function sEffetto(u) {
+  const M = mappa(400, 372, 32), { X, Y } = M;
+  pianoNeon(M); tavolo(M);
+  const x1 = -5, x2 = -1, B = [0, -5], par = (x) => -(x - x1) * (x - x2), r1 = (x) => -(x - x1), r2 = (x) => x - x2;
+  // la porta e la strada dritta chiusa dalla 8
+  anello(M, x2, 0, .5, WARN, 1);
+  pill('porta(−1; 0)', X(x2) + 84, Y(0) + 30, WARN, { size: 20 });
+  const bl = 1 - prog(u, 4, 4.4);
+  if (bl > 0) { A(bl); linea(M, x1, 0, -2.5, -2.5, ERR, { dash: [10, 9], w: 3 }); pill('✕ dritto non si passa', X(-3.6), Y(-3.1), ERR, { size: 20 }); A(1); }
+  anello(M, B[0], B[1], .95, ACC, 1 - prog(u, 12.2, 12.5));
+  // le due rette sul piano, poi la parabola che nasce dai prodotti
+  const rl = prog(u, 4.2, 5);
+  if (rl > 0) {
+    A(rl); linea(M, -11.5, r1(-11.5), 6, r1(6), VIO, { w: 3 }); linea(M, -7.5, r2(-7.5), 6.5, r2(6.5), WARN, { w: 3 });
+    pill('r₁: y = −(x + 5)', X(-9), Y(r1(-9)) - 26, VIO, { size: 20 }); pill('r₂: y = x + 1', X(4.2), Y(r2(4.2)) + 30, WARN, { size: 20 }); A(1);
+  }
+  const XS = [-5, -4, -3, -2, -1], k = Math.floor(prog(u, 5, 8.6) * 5 - 1e-9);
+  if (u > 5) {
+    const fino = Math.min(XS[Math.max(0, k)] + prog(u, 5 + Math.max(0, k) * .72, 5.72 + Math.max(0, k) * .72), -1), pts = [];
+    for (let x = -5; x <= fino + 1e-9; x += .05) pts.push([x, par(x)]);
+    if (u > 8.6) for (let x = -1; x <= 0.001; x += .05) pts.push([x, par(x)]);
+    if (pts.length > 1) polilinea(M, pts, ACC, { w: 4, glow: true });
+    if (u < 9.2) {
+      const x = XS[Math.max(0, k)], a1 = r1(x), a2 = r2(x), y = a1 * a2;
+      ctx.save(); ctx.setLineDash([6, 6]); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(x), Y(Math.min(a1, a2, y))); ctx.lineTo(X(x), Y(Math.max(a1, a2, y))); ctx.stroke(); ctx.restore();
+      [[a1, VIO], [a2, WARN], [y, OK]].forEach(([v, c]) => { circ(X(x), Y(v), 8); ctx.fillStyle = c; ctx.fill(); });
+      const f = (v) => v < 0 ? `(${String(v).replace('-', '−')})` : String(v);
+      pill(`${f(a1)} · ${f(a2)} = ${String(y).replace('-', '−')}`, X(x), Y(Math.min(a1, a2, y)) + 34, OK);
+    }
+  }
+  // il tiro con effetto lungo la parabola
+  const kk = eio(prog(u, 9.6, 12)), xb = lerp(x1, 0, kk), cad = prog(u, 12, 12.4);
+  palla(M, -2.5, -2.5, COL[8], 8);
+  palla(M, xb, par(xb), BIANCA, 0, 1 - cad, 1 - .5 * cad);
+  if (u < 9.6) pill('P(−5; 0)', X(x1) - 30, Y(0) - 32, '#fff');
+  pill('B(0; −5)', X(0) + 92, Y(-5) + 2, ACC);
+  grande('BUCA!', X(-2), Y(-1.8), prog(u, 12.1, 12.7), ACC);
+
+  // pannello
+  const px = 812;
+  riquadro(790, 112, 466, 560);
+  T('La parabola dagli zeri', px, 150, 26, FG, { al: 'left', w: 800 });
+  riga('zeri: x₁ = −5, x₂ = −1', px, 204, MUT, prog(u, 1, 1.5), 22);
+  riga('y = a(x + 5)(x + 1)', px, 246, FG, prog(u, 1.5, 2), 26);
+  riga('B: −5 = a · 5 · 1', px, 294, MUT, prog(u, 2.3, 2.8), 22);
+  riga('a = −1', px, 334, ACC, prog(u, 2.8, 3.3), 26);
+  pop(px + 210, 400, prog(u, 3.4, 4), () => { rr(-205, -32, 410, 64, 14); ctx.fillStyle = '#000'; ctx.fill(); ctx.strokeStyle = ACC; ctx.lineWidth = 2; ctx.stroke(); T('y = −(x + 5)(x + 1)', 0, 2, 28, '#fff', { f: MONO, w: 800 }); });
+  pop(px + 210, 478, prog(u, 5, 5.6), () => { rr(-205, -30, 410, 60, 14); ctx.fillStyle = MAG; ctx.fill(); T('parabola = r₁ · r₂', 0, 2, 28, '#000', { w: 800 }); });
+  riga('vertice a metà: V(−3; 4)', px, 552, FG, prog(u, 8.6, 9.1), 22);
+  riga('y = −(x + 3)² + 4', px, 594, MUT, prog(u, 9, 9.5), 24);
+}
+
 /* ---------- scena: Lab ---------- */
 function sLab(u) {
   const M = mappa(400, 372, 32);
@@ -442,14 +503,15 @@ function sEnd(u) {
   const M = mappa(640, 400, 28);
   A(.5); pianoNeon(M); A(1);
   const C = [
-    { x: 240, t: 'Pendenza', f: 'm = Δy / Δx', c: ACC },
-    { x: 640, t: 'Intercetta', f: 'q = y − m · x', c: ACC },
-    { x: 1040, t: 'Sponda', f: 'm → −m', c: WARN },
+    { x: 175, t: 'Pendenza', f: 'm = Δy / Δx', c: ACC },
+    { x: 485, t: 'Intercetta', f: 'q = y − m · x', c: ACC },
+    { x: 795, t: 'Sponda', f: 'm → −m', c: WARN },
+    { x: 1105, t: 'Effetto', f: 'r₁ · r₂', c: MAG },
   ];
-  C.forEach((c, i) => pop(c.x, 250, prog(u, .1 + i * .3, .7 + i * .3), () => {
-    rr(-180, -110, 360, 220, 22); ctx.fillStyle = 'rgba(8,8,10,.95)'; ctx.fill(); ctx.strokeStyle = c.c; ctx.lineWidth = 3; ctx.stroke();
-    T(c.t, 0, -48, 28, MUT, { w: 700 });
-    T(c.f, 0, 22, 36, c.c, { f: MONO, w: 800 });
+  C.forEach((c, i) => pop(c.x, 250, prog(u, .1 + i * .25, .7 + i * .25), () => {
+    rr(-145, -105, 290, 210, 22); ctx.fillStyle = 'rgba(8,8,10,.95)'; ctx.fill(); ctx.strokeStyle = c.c; ctx.lineWidth = 3; ctx.stroke();
+    T(c.t, 0, -46, 26, MUT, { w: 700 });
+    T(c.f, 0, 22, 30, c.c, { f: MONO, w: 800 });
   }));
   pop(640, 460, prog(u, 1.2, 1.7), () => {
     T('Set di 3 tavoli → livello successivo', 0, 0, 30, FG, { w: 700 });
@@ -457,7 +519,7 @@ function sEnd(u) {
   pop(640, 560, prog(u, 1.8, 2.4), () => { ctx.save(); ctx.shadowColor = OK; ctx.shadowBlur = 20; T('Ora tocca a te!', 0, 0, 56, OK, { w: 900 }); ctx.restore(); });
 }
 
-const FN = { intro: sIntro, tiro: sTiro, scelta: sScelta, sponde: sSponde, lab: sLab, end: sEnd };
+const FN = { intro: sIntro, tiro: sTiro, scelta: sScelta, sponde: sSponde, effetto: sEffetto, lab: sLab, end: sEnd };
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
 /* ?embed → aperta da dentro il gioco; #tiro #scelta #sponde #lab → parte da quella scena e si ferma a fine scena */
