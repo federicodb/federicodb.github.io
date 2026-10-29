@@ -152,6 +152,10 @@
   .campo:focus { border-color: var(--accento); outline: none; }
   .campo.no { border-color: var(--errore); } .campo.si { border-color: var(--ok); }
   .azioni { display: flex; gap: .5em; } .azioni .primario { flex: 1; }
+  .scelte { display: grid; gap: .45em; }
+  .btn.scegli { justify-content: flex-start; width: 100%; font: 700 clamp(.78em, 4.2cqi, .9em) ui-monospace, Menlo, monospace; text-align: left; }
+  .btn.scegli span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .btn.scegli i { width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--c); flex: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
   .aiuti { margin-top: .5em; display: grid; gap: .3em; }
   .aiuto { padding: .45em .65em; border: 1px solid rgba(255,183,3,.35); background: rgba(255,183,3,.07); border-radius: .5em; color: #ffd98a;
     font-family: ui-monospace, Menlo, monospace; font-size: clamp(.8em, 4cqi, .9em); line-height: 1.5; white-space: nowrap; overflow-x: auto; }
@@ -181,18 +185,21 @@
     font: 700 calc(var(--u) * 1.05) ui-monospace, Menlo, monospace; cursor: pointer; touch-action: manipulation; }
   #tastierino button:active { background: var(--accento); color: var(--su-accento); }
   #tastierino .ok { background: var(--accento); color: var(--su-accento); }
-  /* telefono in orizzontale: testata su una riga, tastierino su due righe da 8 tasti */
+  /* tastierino su due righe da 8 tasti: lascia spazio a campo, messaggio e tavolo; il ✓ fa da Verifica */
+  #tastierino { grid-template-columns: repeat(8, 1fr); gap: 4px; padding: 5px calc(var(--u) * .5) 6px; }
+  #tastierino button { min-height: max(40px, calc(var(--u) * 2)); min-width: 0; padding: 0; font-size: var(--u); }
+  #tastierino [data-t="1"] { order: 1; } #tastierino [data-t="2"] { order: 2; } #tastierino [data-t="3"] { order: 3; } #tastierino [data-t="4"] { order: 4; }
+  #tastierino [data-t="5"] { order: 5; } #tastierino [data-t="6"] { order: 6; } #tastierino [data-t="7"] { order: 7; } #tastierino [data-t="8"] { order: 8; }
+  #tastierino [data-t="9"] { order: 9; } #tastierino [data-t="0"] { order: 10; } #tastierino [data-t="−"] { order: 11; } #tastierino [data-t="/"] { order: 12; }
+  #tastierino [data-t=","] { order: 13; } #tastierino [data-t="canc"] { order: 14; } #tastierino [data-t="succ"] { order: 15; } #tastierino [data-t="ok"] { order: 16; }
+  #pannello.tastiera .passo.attivo [data-azione="verifica"] { display: none; }
+  .formula { scroll-margin-top: calc(var(--u) * 2.2); }
+  /* telefono in orizzontale: testata su una riga */
   @media (max-height: 520px) {
     :root[data-layout="lato"] #testata { flex-wrap: nowrap; }
     :root[data-layout="lato"] .hud { flex: 0 1 auto; min-width: 0; white-space: normal; font-size: calc(var(--u) * .8); line-height: 1.25; border-radius: .7em; }
     :root[data-layout="lato"] .hud .r { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     :root[data-layout="lato"] .hud .r + .r::before { content: none; }
-    :root[data-layout="lato"] #tastierino { grid-template-columns: repeat(8, 1fr); gap: 4px; padding: 5px calc(var(--u) * .5) max(6px, env(safe-area-inset-bottom)); }
-    :root[data-layout="lato"] #tastierino button { min-height: 38px; font-size: var(--u); }
-    :root[data-layout="lato"] #tastierino [data-t="1"] { order: 1; } :root[data-layout="lato"] #tastierino [data-t="2"] { order: 2; } :root[data-layout="lato"] #tastierino [data-t="3"] { order: 3; } :root[data-layout="lato"] #tastierino [data-t="4"] { order: 4; }
-    :root[data-layout="lato"] #tastierino [data-t="5"] { order: 5; } :root[data-layout="lato"] #tastierino [data-t="6"] { order: 6; } :root[data-layout="lato"] #tastierino [data-t="7"] { order: 7; } :root[data-layout="lato"] #tastierino [data-t="8"] { order: 8; }
-    :root[data-layout="lato"] #tastierino [data-t="9"] { order: 9; } :root[data-layout="lato"] #tastierino [data-t="0"] { order: 10; } :root[data-layout="lato"] #tastierino [data-t="−"] { order: 11; } :root[data-layout="lato"] #tastierino [data-t="/"] { order: 12; }
-    :root[data-layout="lato"] #tastierino [data-t=","] { order: 13; } :root[data-layout="lato"] #tastierino [data-t="canc"] { order: 14; } :root[data-layout="lato"] #tastierino [data-t="succ"] { order: 15; } :root[data-layout="lato"] #tastierino [data-t="ok"] { order: 16; }
   }
 
   #aspetto { position: fixed; z-index: 10001; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
@@ -226,6 +233,18 @@
   @keyframes vibraX { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(calc(var(--amp, 4px) * -1)); } 40% { transform: translateX(var(--amp, 4px)); }
     60% { transform: translateX(calc(var(--amp, 4px) * -.6)); } 80% { transform: translateX(calc(var(--amp, 4px) * .6)); } }
   :root[data-lim] #pannello { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  /* Spiegami: la spiegazione animata in una finestra sopra il gioco (sopra anche il tasto home) */
+  .explain { position: fixed; inset: 0; z-index: 10005; display: grid; place-items: center;
+    padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    background: rgba(0,0,0,.86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .explain[hidden] { display: none; }
+  .explain-box { position: relative; width: min(1000px, 100%); height: min(88dvh, 820px); border-radius: calc(var(--u) * 1.1); overflow: hidden;
+    background: #000; border: 1px solid var(--bordo); }
+  .explain-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .explain-close { position: absolute; top: 10px; right: 10px; z-index: 2; width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid var(--bordo); background: var(--pannello2); color: var(--testo); font: 700 20px/1 system-ui, sans-serif; cursor: pointer; }
+  .explain-close:hover { border-color: var(--accento); color: var(--accento); }
+  .scheda .riga { display: flex; flex-wrap: wrap; justify-content: center; gap: .6em; }
   @media (prefers-reduced-motion: reduce) { .btn { transition: none; } #pannello { transition: none !important; } #grande.via { animation-duration: .01s; } }
 </style>
 <script type="importmap">
@@ -355,7 +374,13 @@
     <div class="logo">ORFINI MATH LAB</div>
     <h1>Math Pool</h1>
     <p id="msgAvvio">Caricamento del tavolo…</p>
-    <div class="riga"><button class="btn primario grande nascosto" id="bGioca">Gioca</button></div>
+    <div class="riga"><button class="btn primario grande nascosto" id="bGioca">Gioca</button><button class="btn grande" type="button" data-explain="">▶ Spiegami come funziona</button></div>
+  </div>
+</div>
+<div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
+  <div class="explain-box">
+    <button class="explain-close" id="explainClose" type="button" aria-label="Chiudi spiegazione">✕</button>
+    <iframe id="explainFrame" title="Spiegazione animata di Math Pool" allow="fullscreen"></iframe>
   </div>
 </div>
 <div id="errore" class="nascosto"></div>
@@ -481,7 +506,6 @@ const SET_PALLE = [
   { id: 'oro', nome: 'Oro e argento', c: ['#e6c35c', '#c0c7d1', '#d4a64a', '#9aa3ad', '#f0d68a', '#b8bec7', '#c9a24a', '#202020'], stelle: 15 },
 ];
 const NUMERI_PALLE = [1, 3, 6, 10, 15];
-const DECORO = { 1: 0, 3: 2, 6: 3, 10: 4, 15: 6 };   // palle "di disturbo" nelle sfide, lontane dal percorso
 const COLORATE = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15];
 
 // ───────────────────────────────────────────── STATO E SALVATAGGI
@@ -491,7 +515,7 @@ const salvaProg = () => scrivi('orfini.pool.progressi', prog);
 const stelleTotali = () => ['tiro', 'sponde'].reduce((s, t) => s + Object.values(prog[t].stelle).reduce((a, b) => a + b, 0), 0);
 const tabSalvata = leggi('orfini.pool.tab', 'tiro');
 // set: ogni livello è fatto di TAVOLI_SET tavoli (buche da prendere); il livello successivo si sblocca a set finito
-const TAVOLI_SET = 5;
+const TAVOLI_SET = 3;
 const sets = leggi('orfini.pool.set', {});   // { tiro: { livello, stelle: [stelle di ogni tavolo fatto] }, sponde: … }
 const S = {
   tab: ['lab', 'tiro', 'sponde'].includes(tabSalvata) ? tabSalvata : 'tiro',
@@ -594,44 +618,6 @@ for (const b of BUCHE) {
 const matBucaChiamata = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0xffffff, emissiveIntensity: 1.6 });
 const anelloBuca = new THREE.Mesh(new THREE.TorusGeometry(1, 0.06, 8, 48), matBucaChiamata);
 anelloBuca.rotation.x = -Math.PI / 2; anelloBuca.visible = false; scene.add(anelloBuca);
-// piano cartesiano esteso oltre il tavolo: serve a vedere l'intercetta q e il riflesso B' quando cadono fuori.
-// In vista 3D la prospettiva ingigantisce i numeri vicini e affolla l'orizzonte: lì restano solo assi e griglia larga, che sfumano.
-const EST = { w: 64, h: 44 };
-const estCanvas = document.createElement('canvas');
-estCanvas.width = 2048; estCanvas.height = Math.round(2048 * EST.h / EST.w);
-const estTex = new THREE.CanvasTexture(estCanvas); estTex.colorSpace = THREE.SRGBColorSpace;
-const pianoEsteso = new THREE.Mesh(new THREE.PlaneGeometry(EST.w, EST.h), new THREE.MeshBasicMaterial({ map: estTex, toneMapped: false }));
-pianoEsteso.rotation.x = -Math.PI / 2; pianoEsteso.position.y = -0.03; scene.add(pianoEsteso);
-function disegnaPianoEsteso() {
-  const g = estCanvas.getContext('2d'), CW = estCanvas.width, CH = estCanvas.height, ppu = CW / EST.w;
-  const X = (x) => (x + EST.w / 2) * ppu, Y = (y) => (EST.h / 2 - y) * ppu;
-  const lc = coloreAccento(), in3D = S.vista === 'inclinata';
-  g.fillStyle = '#000'; g.fillRect(0, 0, CW, CH);
-  const righe = (passo, alfa) => {
-    g.strokeStyle = hexA('#ffffff', alfa); g.lineWidth = 1.5; g.beginPath();
-    for (let x = -32; x <= 32; x += passo) { g.moveTo(X(x), 0); g.lineTo(X(x), CH); }
-    for (let y = -22; y <= 22; y += passo) { g.moveTo(0, Y(y)); g.lineTo(CW, Y(y)); }
-    g.stroke();
-  };
-  if (!in3D) righe(1, 0.06);
-  righe(5, in3D ? 0.09 : 0.13);
-  g.strokeStyle = hexA(lc, in3D ? 0.4 : 0.6); g.lineWidth = 3; g.beginPath();
-  g.moveTo(0, Y(0)); g.lineTo(CW, Y(0)); g.moveTo(X(0), 0); g.lineTo(X(0), CH); g.stroke();
-  if (in3D) {
-    const sf = g.createRadialGradient(X(0), Y(0), BOX.w * 0.45 * ppu, X(0), Y(0), EST.w * 0.42 * ppu);
-    sf.addColorStop(0, 'rgba(0,0,0,0)'); sf.addColorStop(1, 'rgba(0,0,0,1)');
-    g.fillStyle = sf; g.fillRect(0, 0, CW, CH);
-    g.fillStyle = '#000'; g.fillRect(X(-BOX.w / 2), Y(BOX.h / 2), BOX.w * ppu, BOX.h * ppu);
-    estTex.needsUpdate = true; return;
-  }
-  g.fillStyle = hexA('#ffffff', 0.6); g.font = `600 ${Math.round(ppu * 0.42)}px system-ui, sans-serif`;
-  g.textAlign = 'center'; g.textBaseline = 'top';
-  for (let x = -31; x <= 31; x++) if (Math.abs(x) > 11) g.fillText(String(x).replace('-', '−'), X(x), Y(0) + ppu * 0.15);
-  g.textAlign = 'right'; g.textBaseline = 'middle';
-  for (let y = -21; y <= 21; y++) if (Math.abs(y) > 6) g.fillText(String(y).replace('-', '−'), X(0) - ppu * 0.2, Y(y));
-  g.fillStyle = '#000'; g.fillRect(X(-BOX.w / 2), Y(BOX.h / 2), BOX.w * ppu, BOX.h * ppu);   // sotto il tavolo nero: dalle buche si vede il vuoto
-  estTex.needsUpdate = true;
-}
 // segni dei punti fuori dal tavolo: intercette (0; q) e riflesso B'
 const segniQ = [0, 1].map(() => {
   const m = new THREE.Mesh(new THREE.RingGeometry(0.17, 0.3, 32).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, toneMapped: false }));
@@ -744,6 +730,74 @@ function impostaLinea(l, punti, h = 0.03) {
 const lineaMira = nuovaLinea(3), lineaRimbalzi = nuovaLinea(2.5, true, 0.8), lineaOggetto = nuovaLinea(2.5, false, 0.85), lineaTangente = nuovaLinea(2, true, 0.6);
 const lineaRetta = nuovaLinea(2.5, false, 0.55), lineaRitorno = nuovaLinea(2.5, false, 0.55), lineaSbagliata = nuovaLinea(3, true, 0.95), lineaSpecchio = nuovaLinea(2, true, 0.45);
 const lineaDistanza = nuovaLinea(3, true, 0.9), lineaBloccata = nuovaLinea(3, true, 0.85), lineaRitornoEst = nuovaLinea(2, true, 0.45);
+const lineeScelta = [0, 1, 2].map(() => nuovaLinea(2.5, true, 0.75));                    // percorsi delle palle candidate
+const lineaAnteprima = nuovaLinea(3.5, false, 0.95), lineaAnteprimaEst = nuovaLinea(2, true, 0.5);   // anteprima mentre si scrive
+
+// piano cartesiano infinito in stile Tron: il tavolo è una finestra su un piano che continua tutto intorno, con la stessa unità.
+// Griglia disegnata nello shader (righe nitide a ogni zoom), assi al neon, tacche a ogni unità, numeri solo ogni 5;
+// sfuma nel buio con la distanza dal tavolo. Sotto il tavolo resta nero: dalle buche si vede il vuoto.
+const EST = { w: 400, h: 400 };
+const pianoEsteso = new THREE.Mesh(new THREE.PlaneGeometry(EST.w, EST.h), new THREE.ShaderMaterial({
+  uniforms: { uCol: { value: new THREE.Color() }, uFade: { value: new THREE.Vector2(60, 90) }, uBox: { value: new THREE.Vector2(BOX.w / 2, BOX.h / 2) } },
+  vertexShader: `varying vec2 vP;
+    void main() { vec4 w = modelMatrix * vec4(position, 1.0); vP = vec2(w.x, -w.z); gl_Position = projectionMatrix * viewMatrix * w; }`,
+  fragmentShader: `uniform vec3 uCol; uniform vec2 uFade; uniform vec2 uBox; varying vec2 vP;
+    float righe(vec2 p, float passo, float px) { vec2 c = p / passo, g = abs(fract(c - 0.5) - 0.5) / fwidth(c); return 1.0 - min(min(g.x, g.y) / px, 1.0); }
+    void main() {
+      if (abs(vP.x) < uBox.x && abs(vP.y) < uBox.y) { gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); return; }
+      float fw = max(fwidth(vP.x), fwidth(vP.y));
+      float minori = righe(vP, 1.0, 1.0) * clamp(1.4 - fw * 2.5, 0.0, 1.0);   // le righe fitte spariscono quando diventano troppo fitte
+      float maggiori = righe(vP, 5.0, 1.3);
+      float assi = 1.0 - min(min(abs(vP.y) / fwidth(vP.y), abs(vP.x) / fwidth(vP.x)) / 2.2, 1.0);
+      float alone = exp(-min(abs(vP.x), abs(vP.y)) * 7.0);
+      vec2 t = abs(fract(vP - 0.5) - 0.5) / fwidth(vP);
+      float tacche = (1.0 - min(t.x / 1.6, 1.0)) * step(abs(vP.y), 0.2) + (1.0 - min(t.y / 1.6, 1.0)) * step(abs(vP.x), 0.2);
+      float r = length(vP), sf = 1.0 - smoothstep(uFade.x, uFade.y, r);
+      vec3 col = uCol * (minori * 0.11 + maggiori * 0.3 + min(tacche, 1.0) * 0.9 + alone * 0.35 + assi * 1.6) * sf;
+      gl_FragColor = vec4(col, 1.0);
+      #include <colorspace_fragment>
+    }`,
+}));
+pianoEsteso.rotation.x = -Math.PI / 2; pianoEsteso.position.y = -0.03; scene.add(pianoEsteso);
+// numeri sul piano solo ogni 5, fuori dal tavolo; dentro ci sono quelli stampati sul panno
+const numeriPiano = new THREE.Group(); scene.add(numeriPiano);
+{
+  const etich = [];
+  for (const x of [-30, -25, -20, -15, 15, 20, 25, 30]) etich.push([x, x, -0.62]);
+  for (const y of [-20, -15, -10, 10, 15, 20]) etich.push([y, -0.85, y]);
+  for (const [v, x, y] of etich) {
+    const c = document.createElement('canvas'); c.width = 128; c.height = 64; const g = c.getContext('2d');
+    g.font = '700 44px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillStyle = '#fff';
+    g.fillText(String(v).replace('-', '−'), 64, 34);
+    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 0.55).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, toneMapped: false }));
+    m.position.set(x, -0.02, -y); numeriPiano.add(m);
+  }
+}
+// contorno al neon della cornice e alone sul piano: il tavolo "si accende" sul piano
+const contorno = nuovaLinea(2, false, 0.9);
+{
+  const bx = BOX.w / 2, by = BOX.h / 2;
+  impostaLinea(contorno, [[-bx, -by], [bx, -by], [bx, by], [-bx, by], [-bx, -by]], HR + 0.004);
+}
+const alone = (() => {
+  const M = 2.2, Wt = BOX.w + 2 * M, Ht = BOX.h + 2 * M, c = document.createElement('canvas');
+  c.width = 1024; c.height = Math.round(1024 * Ht / Wt); const g = c.getContext('2d'), k = c.width / Wt;
+  g.shadowColor = '#fff'; g.shadowBlur = 0.9 * k; g.strokeStyle = '#fff'; g.lineWidth = 0.12 * k;
+  for (let i = 0; i < 3; i++) g.strokeRect(M * k, M * k, BOX.w * k, BOX.h * k);
+  const tex = new THREE.CanvasTexture(c);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(Wt, Ht).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
+  m.position.y = -0.025; scene.add(m); return m;
+})();
+function disegnaPianoEsteso() {   // colore dell'interfaccia; in vista 3D il piano sfuma prima, verso l'orizzonte
+  const lc = coloreAccento(), in3D = S.vista === 'inclinata';
+  pianoEsteso.material.uniforms.uCol.value.set(lc);
+  pianoEsteso.material.uniforms.uFade.value.set(in3D ? 16 : 60, in3D ? 48 : 90);
+  for (const m of numeriPiano.children) m.material.color.set(lc);
+  numeriPiano.visible = true;
+  contorno.material.color.set(lc); alone.material.color.set(lc);
+  richiediRender();
+}
 const fantasma = new THREE.Mesh(new THREE.RingGeometry(T.r * 0.86, T.r, 40).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, depthWrite: false }));
 fantasma.visible = false; scene.add(fantasma);
 const stecca = new THREE.Group();
@@ -986,9 +1040,8 @@ function puntiDaMostrare() {   // punti delle equazioni che possono cadere fuori
   const pts = [];
   if (S.tab === 'tiro') { if (passoFatto('q')) pts.push([0, d.q]); }
   else {
-    if (passoFatto('specchio')) pts.push([d.Bs.x, d.Bs.y]);
+    if (d.modo === 'specchio') pts.push([d.Bs.x, d.Bs.y]);   // B' sta nell'inquadratura da subito: la camera non salta mentre lo si scrive
     if (passoFatto('q')) pts.push([0, d.q]);
-    if (passoFatto('q2')) pts.push([0, d.qR]);
   }
   return pts;
 }
@@ -1280,12 +1333,20 @@ function prevedi(px, py, dx, dy, maxRimbalzi, ignora) {
 // ───────────────────────────────────────────── LIVELLI
 const dentro = (x, y, mx = 9, my = 4) => Math.abs(x) <= mx && Math.abs(y) <= my;
 const lontanoBuche = (x, y, min = 1.6) => BUCHE.every((b) => Math.hypot(b.x - x, b.y - y) >= min);
+// un livello, una novità: pendenza intera, urto a catena, pendenza frazionaria, q frazionario, scelta della palla.
+// qFraz: false = q intero, true = q frazionario, null = indifferente. decoro = palle di disturbo lontane dai percorsi.
 function profiloTiro(l) {
-  if (l <= 2) return { dx: [1], dy: [1, 2], conR: false, nota: 'Pendenza intera' };
-  if (l <= 4) return { dx: [1], dy: [1, 2, 3], conR: true, nota: 'Pendenza intera · urto a catena' };
-  if (l <= 6) return { dx: [2], dy: [1, 3], conR: true, nota: 'Pendenza frazionaria · urto a catena' };
-  return { dx: [2, 3], dy: [1, 2, 4], conR: true, nota: 'Pendenza frazionaria · tavolo affollato' };
+  if (l === 1) return { dx: [1], dy: [1, 2], qFraz: false, decoro: 0, nota: 'Pendenza intera' };
+  if (l === 2) return { dx: [1], dy: [1, 2, 3], qFraz: false, decoro: 1, nota: 'Pendenza intera fino a 3' };
+  if (l === 3) return { dx: [1], dy: [1, 2, 3], conR: true, qFraz: false, decoro: 1, nota: 'Urto a catena' };
+  if (l === 4) return { dx: [2], dy: [1, 3], qFraz: false, decoro: 2, nota: 'Pendenza frazionaria' };
+  if (l === 5) return { dx: [2, 3], dy: [1, 2, 4], conR: true, qFraz: false, decoro: 2, nota: 'Pendenza frazionaria · urto a catena' };
+  if (l === 6) return { dx: [2, 3], dy: [1, 2, 4], qFraz: true, decoro: 3, nota: 'm e q frazionari' };
+  if (l === 7) return { scelta: true, mFraz: false, decoro: 2, nota: 'Scegli tu la palla' };
+  return { scelta: true, mFraz: true, decoro: 3, nota: 'Scegli la palla · m e q frazionari' };
 }
+const intero = (v) => Math.abs(v - Math.round(v)) < 1e-9;
+const complessita = (c) => (frazione(c.m)?.d ?? 99) * 10 + (frazione(c.q)?.d ?? 99);   // più è bassa, più i conti sono comodi
 function generaTiro(l, rnd) {
   const pr = profiloTiro(l);
   for (let t = 0; t < 4000; t++) {
@@ -1298,17 +1359,55 @@ function generaTiro(l, rnd) {
     if (Math.hypot(Qp.x - B.x, Qp.y - B.y) < 2.5 || Math.hypot(P.x - Qp.x, P.y - Qp.y) < 3) continue;
     if (pr.conR && Math.abs(P.x - Qp.x) < 3) continue;
     if (BUCHE.some((b) => b !== B && distSeg(b.x, b.y, P.x, P.y, B.x, B.y) < 1.4)) continue;
-    const m = uy / ux;
-    if (Math.abs(P.y - m * P.x) > 12) continue;   // l'intercetta deve restare visibile allargando l'inquadratura
-    return { P, Q: Qp, B, m, q: P.y - m * P.x, conR: pr.conR, nota: pr.nota, percorsi: [[P, B]] };
+    const m = uy / ux, q = P.y - m * P.x;
+    if (Math.abs(q) > 12) continue;   // l'intercetta deve restare visibile allargando l'inquadratura
+    if (pr.qFraz === false && !intero(q) || pr.qFraz === true && intero(q)) continue;
+    return { P, Q: Qp, B, m, q, conR: !!pr.conR, nota: pr.nota, decoro: pr.decoro, percorsi: [[P, B]] };
   }
   return null;
 }
+// livelli "scegli la palla": 2 o 3 palle colorate, ognuna allineata con la bianca e con una buca diversa
+function generaScelta(l, rnd) {
+  const pr = profiloTiro(l), posti = [];
+  for (let x = -7; x <= 7; x++) for (let y = -3; y <= 3; y++) if (lontanoBuche(x, y)) posti.push({ x, y });
+  for (let i = posti.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [posti[i], posti[j]] = [posti[j], posti[i]]; }
+  for (const P of posti) {
+    const cand = [];
+    for (const B of BUCHE) {
+      const vx = B.x - P.x, vy = B.y - P.y, g = gcd(vx, vy);
+      if (!vx || !vy) continue;
+      const u = { x: vx / g, y: vy / g }, m = u.y / u.x, q = P.y - m * P.x;
+      if (Math.abs(u.x) > 3 || Math.abs(u.y) > 4 || Math.abs(m) < 0.2 || Math.abs(q) > 12) continue;
+      if (BUCHE.some((b) => b !== B && distSeg(b.x, b.y, P.x, P.y, B.x, B.y) < 1.4)) continue;
+      const qs = [];
+      for (let k = 1; k < g; k++) {
+        const Q = { x: P.x + k * u.x, y: P.y + k * u.y };
+        if (dentro(Q.x, Q.y) && lontanoBuche(Q.x, Q.y, 2) && Math.hypot(Q.x - P.x, Q.y - P.y) >= 3 && Math.hypot(B.x - Q.x, B.y - Q.y) >= 2.5) qs.push(Q);
+      }
+      if (qs.length) cand.push({ B, Q: scegli(rnd, qs), m, q });
+    }
+    const scelti = [];   // nessuna palla sul percorso di un'altra
+    for (const c of cand) {
+      if (scelti.length === 3) break;
+      if (scelti.every((o) => distSeg(c.Q.x, c.Q.y, P.x, P.y, o.B.x, o.B.y) > 2 * T.r + 0.35 && distSeg(o.Q.x, o.Q.y, P.x, P.y, c.B.x, c.B.y) > 2 * T.r + 0.35)) scelti.push(c);
+    }
+    if (scelti.length < 2) continue;
+    scelti.forEach((c) => { c.compl = complessita(c); });
+    if (new Set(scelti.map((c) => c.compl)).size < 2) continue;   // la scelta deve contare: conti più o meno comodi
+    if (pr.mFraz && !scelti.every((c) => !intero(c.m))) continue;
+    if (pr.mFraz && !scelti.some((c) => !intero(c.q))) continue;
+    if (!pr.mFraz && !scelti.some((c) => intero(c.m))) continue;
+    return { scelta: true, P, candidati: scelti, conR: false, nota: pr.nota, decoro: pr.decoro, percorsi: scelti.map((c) => [P, c.B]) };
+  }
+  return null;
+}
+// prima si trova il punto della sponda guardando l'anteprima, poi si impara il trucco dello specchio; i numeri si complicano piano
 function profiloSponde(l) {
-  if (l <= 2) return { tipo: 'orizzontale', den: 1, nota: 'Sponda lunga · pendenza intera' };
-  if (l <= 4) return { tipo: 'orizzontale', den: 4, nota: 'Sponda lunga · pendenza frazionaria' };
-  if (l <= 6) return { tipo: 'verticale', den: 5, nota: 'Sponda corta' };
-  return { tipo: 'mista', den: 5, nota: 'Sponda lunga o corta' };
+  if (l === 1) return { tipo: 'orizzontale', den: 1, modo: 'prova', decoro: 0, nota: 'Trova il punto della sponda' };
+  if (l === 2) return { tipo: 'orizzontale', den: 1, modo: 'specchio', decoro: 1, nota: 'Lo specchio: il riflesso della buca' };
+  if (l === 3) return { tipo: 'orizzontale', den: 3, modo: 'specchio', decoro: 2, nota: 'Lo specchio · pendenza frazionaria' };
+  if (l === 4) return { tipo: 'verticale', den: 3, modo: 'specchio', decoro: 2, nota: 'Sponda corta' };
+  return { tipo: 'mista', den: 4, modo: 'specchio', decoro: 3, nota: 'Sponda lunga o corta' };
 }
 function generaSponde(l, rnd) {
   const pr = profiloSponde(l);
@@ -1345,7 +1444,8 @@ function generaSponde(l, rnd) {
     const Bs = tipo === 'orizzontale' ? { x: B.x, y: 2 * c - B.y } : { x: 2 * c - B.x, y: B.y };
     const q = P.y - m * P.x, mR = -m;
     if (Math.abs(q) > 15 || Math.abs(I.y - mR * I.x) > 15 || Math.abs(Bs.x) > 20) continue;
-    return { tipo, c, linea: tipo === 'orizzontale' ? `y = ${num(c)}` : `x = ${num(c)}`, P, I, B, Bs, m, q, mR, qR: I.y - mR * I.x, blocco, nota: pr.nota, percorsi: [[P, I], [I, B]] };
+    return { tipo, c, linea: tipo === 'orizzontale' ? `y = ${num(c)}` : `x = ${num(c)}`, P, I, B, Bs, m, q, mR, qR: I.y - mR * I.x, blocco, nota: pr.nota,
+      modo: pr.modo, decoro: pr.decoro, percorsi: [[P, I], [I, B]] };
   }
   return null;
 }
@@ -1372,24 +1472,29 @@ function nuovaSfida(opz = {}) {
     const st = sets[tab];
     if (opz.nuovoSet || !st || st.livello !== livello || st.stelle.length >= TAVOLI_SET) { sets[tab] = { livello, stelle: [] }; scrivi('orfini.pool.set', sets); }
   }
-  for (let tentativi = 0; !dati && tentativi < 30; tentativi++, seme++) dati = tab === 'tiro' ? generaTiro(livello, mulberry32(seme)) : generaSponde(livello, mulberry32(seme));
+  const genera = tab === 'sponde' ? generaSponde : profiloTiro(livello).scelta ? generaScelta : generaTiro;
+  for (let tentativi = 0; !dati && tentativi < 30; tentativi++, seme++) dati = genera(livello, mulberry32(seme));
   seme--;
+  if (!dati && tab === 'tiro') dati = generaTiro(6, mulberry32(seme));
   S.sfida = { tab, livello, giorno, seme, dati, indice: 0, errori: 0, aiuti: 0, tiri: 0, riassunti: [], aiutiVisti: {}, valori: {} };
-  S.sfida.passi = tab === 'tiro' ? passiTiro(dati) : passiSponde(dati);
+  S.sfida.passi = tab === 'tiro' ? (dati.scelta ? passiScelta(dati) : passiTiro(dati)) : passiSponde(dati);
   dispostaSfida();
 }
 function dispostaSfida() {
   const sf = S.sfida, d = sf.dati;
-  const rnd = mulberry32(sf.seme + 99);   // il decoro cambia con il numero di palle, il problema no
+  const rnd = mulberry32(sf.seme + 99);
   const lista = [creaPalla(0, d.P.x, d.P.y, 'P')];
-  if (sf.tab === 'tiro') {
+  if (d.scelta) {   // numeri diversi per le palle candidate
+    const nn = [...COLORATE].sort(() => rnd() - 0.5);
+    d.candidati.forEach((c, i) => { c.n = nn[i]; lista.push(creaPalla(c.n, c.Q.x, c.Q.y, 'cand')); });
+  } else if (sf.tab === 'tiro') {
     d.nQ = COLORATE[Math.floor(rnd() * COLORATE.length)];
     lista.push(creaPalla(d.nQ, d.Q.x, d.Q.y, 'Q'));
     if (d.R) lista.push(creaPalla(d.nR, d.R.x, d.R.y, 'R'));
   } else lista.push(creaPalla(8, d.blocco.x, d.blocco.y, 'ostacolo'));
   const occ = lista.map((p) => ({ x: p.x, y: p.y }));
   const liberi = COLORATE.filter((n) => !lista.some((p) => p.n === n) && n !== d.nR);
-  piazzaDecoro(DECORO[asp.numero] ?? 3, d.percorsi, occ, rnd).forEach((o, i) => lista.push(creaPalla(liberi[i], o.x, o.y, 'decoro')));
+  piazzaDecoro(d.decoro ?? 0, d.percorsi, occ, rnd).forEach((o, i) => lista.push(creaPalla(liberi[i], o.x, o.y, 'decoro')));
   impostaPalle(lista);
   S.stato = 'mira'; S.mira = null; S.foto = null;
   aggiornaGrafica();
@@ -1411,11 +1516,11 @@ function passiTiro(d) {
   const xMin = Math.min(P.x, Qp.x), xMax = Math.max(P.x, Qp.x);
   const xSugg = P.x + Math.sign(Qp.x - P.x) * Math.floor(Math.abs(Qp.x - P.x) / 2);
   const passi = [
-    { titolo: 'Pendenza della retta PQ', testo: `Calcola m usando P${coord(P.x, P.y)} e Q${coord(Qp.x, Qp.y)}.`, campi: ['m =', { k: 'm', ph: 'es. 3/2' }],
+    { id: 'm', titolo: 'Pendenza della retta PQ', testo: `Calcola m usando P${coord(P.x, P.y)} e Q${coord(Qp.x, Qp.y)}.`, campi: ['m =', { k: 'm', ph: 'es. 3/2' }],
       verifica: (v) => uguale(v.m, m) ? { ok: true, riassunto: `m = ${num(m)}` }
         : { ok: false, msg: v.m === null ? 'Scrivi un numero intero o una frazione, ad esempio −3/2.' : 'Non è la pendenza giusta: la retta tratteggiata è quella che hai scritto. Δy e Δx vanno calcolati nello stesso ordine dei punti.', retta: v.m !== null ? { da: P, m: v.m } : null },
       aiuti: ['m = (y<sub>Q</sub> − y<sub>P</sub>) / (x<sub>Q</sub> − x<sub>P</sub>)', `m = (${num(Qp.y)} − ${par(P.y)}) / (${num(Qp.x)} − ${par(P.x)})`, `m = ${num(Qp.y - P.y)} / ${num(Qp.x - P.x)} = ${num(m)}`] },
-    { titolo: 'Sostituisci un punto in y = mx + q', testo: 'Scegli P oppure Q: scrivi la sua y, la pendenza e la sua x.', campi: [{ k: 'y', ph: 'y' }, '=', { k: 'm', ph: 'm' }, '·', { k: 'x', ph: 'x' }, '+ q'],
+    { id: 'sost', titolo: 'Sostituisci un punto in y = mx + q', testo: 'Scegli P oppure Q: scrivi la sua y, la pendenza e la sua x.', campi: [{ k: 'y', ph: 'y' }, '=', { k: 'm', ph: 'm' }, '·', { k: 'x', ph: 'x' }, '+ q'],
       prefill: () => ({ m: num(m) }),
       verifica: (v) => {
         const conP = uguale(v.x, P.x) && uguale(v.y, P.y), conQ = uguale(v.x, Qp.x) && uguale(v.y, Qp.y);
@@ -1426,19 +1531,19 @@ function passiTiro(d) {
     { id: 'q', titolo: 'Isola q', testo: 'Porta m·x dall\'altra parte dell\'uguale cambiando il segno: q = y − m·x.', campi: ['q =', { k: 'q', ph: 'q' }],
       verifica: (v) => uguale(v.q, q) ? { ok: true, riassunto: `q = ${num(q)}` } : { ok: false, msg: 'Ricontrolla il segno quando sposti m·x.' },
       aiuti: () => { const s = d.sost || P; return [`q = ${num(s.y)} − ${par(m)} · ${par(s.x)}`, `q = ${num(s.y)} − ${par(m * s.x)} = ${num(q)}`]; } },
-    { titolo: 'Equazione della retta', testo: 'Completa y = mx + q con i valori trovati.', campi: ['y =', { k: 'm', ph: 'm' }, 'x', { segno: 'q' }, { k: 'q', ph: 'q' }],
+    { id: 'eq', titolo: 'Equazione della retta', testo: 'Completa y = mx + q con i valori trovati.', campi: ['y =', { k: 'm', ph: 'm' }, 'x', { segno: 'q' }, { k: 'q', ph: 'q' }],
       verifica: (v) => {
         const qq = v.q === null && !v._vuoti.q ? null : (v.q ?? 0);
         if (uguale(v.m, m) && uguale(qq, q)) return { ok: true, riassunto: retta(m, q), dopo: () => { d.rettaOk = true; } };
         return { ok: false, msg: 'Non è ancora la retta per P e Q: quella tratteggiata è la retta che hai scritto.', retta: v.m !== null ? { m: v.m, q: qq ?? 0 } : null };
       },
       aiuti: [`m = ${num(m)} e q = ${num(q)}`] },
-    { titolo: 'La buca è sulla retta?', testo: `Sostituisci x = ${num(B.x)}: se ottieni y = ${num(B.y)}, la buca B${coord(B.x, B.y)} è allineata con P e Q.`, campi: ['y =', { k: 'y', ph: 'y' }],
+    { id: 'buca', titolo: 'La buca è sulla retta?', testo: `Sostituisci x = ${num(B.x)}: se ottieni y = ${num(B.y)}, la buca B${coord(B.x, B.y)} è allineata con P e Q.`, campi: ['y =', { k: 'y', ph: 'y' }],
       verifica: (v) => uguale(v.y, m * B.x + q) ? { ok: true, riassunto: `y(${num(B.x)}) = ${num(B.y)} ✓`, msg: 'Sì: B appartiene alla retta, quindi P, Q e B sono allineati.' }
         : { ok: false, msg: `Calcola ${num(m)} · ${par(B.x)} + ${par(q)}.` },
       aiuti: [`y = ${num(m)} · ${par(B.x)} + ${par(q)}`, `y = ${num(m * B.x)} + ${par(q)} = ${num(m * B.x + q)}`] },
   ];
-  if (d.conR) passi.push({ titolo: 'Palla R: urto a catena', testo: `Scegli una x tra ${num(xMin)} e ${num(xMax)} (esclusi) e calcola la sua y sulla retta: lì metto la palla R.`,
+  if (d.conR) passi.push({ id: 'R', titolo: 'Palla R: urto a catena', testo: `Scegli una x tra ${num(xMin)} e ${num(xMax)} (esclusi) e calcola la sua y sulla retta: lì metto la palla R.`,
     campi: ['R(', { k: 'x', ph: 'x' }, ';', { k: 'y', ph: 'y' }, ')'],
     verifica: (v) => {
       if (v.x === null || v.y === null) return { ok: false, msg: 'Scrivi entrambe le coordinate.' };
@@ -1451,18 +1556,55 @@ function passiTiro(d) {
   passi.push({ titolo: 'Tira!', tira: true, testo: 'Tieni il dito sul tavolo e trascina all\'indietro, come una fionda: la stecca si aggancia alla tua retta quando ci passi vicino. Più trascini, più il tiro è forte. In vista 3D parti dalla palla bianca. Su PC puoi anche tenere premuto Spazio.' });
   return passi;
 }
+function passiScelta(d) {   // i passi dopo la scelta si ricostruiscono sulla palla scelta (qui servono solo i titoli)
+  const c = d.candidati[0];
+  return [{ id: 'scelta', scelta: true, titolo: 'Scegli la palla', testo: 'Ogni palla colorata è già allineata con la bianca P e con una buca. Scegli quella con i conti più comodi: guarda Δy e Δx tra P e la palla. Toccala sul tavolo oppure qui sotto.' },
+    ...passiTiro({ ...d, Q: c.Q, B: c.B, m: c.m, q: c.q })];
+}
+function scegliPalla(i) {
+  const sf = S.sfida, d = sf.dati, c = d.candidati[i];
+  if (!passoCorrente()?.scelta || !c) return;
+  Object.assign(d, { Q: c.Q, B: c.B, m: c.m, q: c.q, nQ: c.n, furba: c.compl === Math.min(...d.candidati.map((x) => x.compl)) });
+  sf.riassunti[sf.indice] = `palla ${c.n} → B${coord(c.B.x, c.B.y)}`; sf.indice++;
+  sf.passi.splice(1, Infinity, ...passiTiro(d));
+  palle.forEach((p) => { if (p.ruolo === 'cand') p.ruolo = p.n === c.n ? 'Q' : 'decoro'; });
+  Suono.giusto(); Aptica.vibra('giusto', 1, { el: $('contenuto') });
+  aggiornaGrafica(); renderPannello();
+}
 function numeroLibero() { const usati = palle.map((p) => p.n); return COLORATE.find((n) => !usati.includes(n)); }
 function passiSponde(d) {
-  const { P, I, B, Bs, m, q, mR, qR, tipo, c, linea } = d;
+  const { P, I, B, Bs, m, q, mR, tipo, c, linea } = d;
   const oriz = tipo === 'orizzontale';
   const dist = Math.abs(c - (oriz ? B.y : B.x)), segnoOltre = c > 0 ? '+' : '−';
   const coordB = oriz ? 'y' : 'x', valB = oriz ? B.y : B.x, valBs = oriz ? Bs.y : Bs.x;
+  const kI = oriz ? 'x' : 'y', valI = oriz ? I.x : I.y;
+  const puntoI = (v) => v[kI] === null || v[kI] === undefined ? null : oriz ? { x: v[kI], y: c } : { x: c, y: v[kI] };
+  const verso = (v) => oriz ? (v[kI] < valI ? 'più a destra' : 'più a sinistra') : (v[kI] < valI ? 'più in alto' : 'più in basso');
+  const passoI = (testo, aiuti) => ({ id: 'I', titolo: `Il punto I sulla sponda ${linea}`, testo, campi: oriz ? ['I(', { k: 'x', ph: 'x' }, `; ${num(c)})`] : [`I(${num(c)};`, { k: 'y', ph: 'y' }, ')'],
+    anteprima: (v) => ({ verso: puntoI(v) }),
+    verifica: (v) => {
+      const X = puntoI(v);
+      if (!X) return { ok: false, msg: 'Scrivi un numero: intero o frazione.' };
+      if (uguale(v[kI], valI)) return { ok: true, riassunto: `I${coord(I.x, I.y)}`, msg: 'Sì: la palla arriva sulla sponda in I, rimbalza come allo specchio e va in buca.' };
+      const pr = traiettoriaVerso(X);
+      if (pr?.buca === B && !pr.contatto) return { ok: false, msg: 'Entra di striscio: il punto esatto è vicino, ed è un numero intero.' };
+      return { ok: false, msg: `Guarda la linea sul tavolo: così ${pr ? esitoTraiettoria(pr) : 'non si parte'}. Prova ${verso(v)}.` };
+    }, aiuti });
+  const tira = { titolo: 'Tira!', tira: true, testo: 'Trascina all\'indietro dal tavolo, come una fionda: la stecca si aggancia alla retta P → I. Il tiro deve avere abbastanza forza per arrivare in buca dopo il rimbalzo. In vista 3D parti dalla palla bianca.' };
+  if (d.modo === 'prova') return [
+    passoI(`Scrivi la ${kI} del punto I in cui la bianca deve colpire la sponda. Mentre scrivi, sul tavolo vedi subito la traiettoria: cerca quella che finisce nella buca B${coord(B.x, B.y)}.`,
+      [`Lo specchio: immagina la buca riflessa oltre la sponda, in B'${coord(Bs.x, Bs.y)}. Mirando a B' colpisci la sponda nel punto giusto.`, `La retta da P${coord(P.x, P.y)} a B'${coord(Bs.x, Bs.y)} tocca la sponda in ${kI} = ${num(valI)}.`]),
+    { id: 'pendenze', titolo: 'Le pendenze prima e dopo', testo: `Controlla la regola dello specchio: calcola la pendenza m da P${coord(P.x, P.y)} a I${coord(I.x, I.y)} e la pendenza m' da I a B${coord(B.x, B.y)}.`,
+      campi: ['m =', { k: 'm', ph: 'm' }, '·', 'm\' =', { k: 'mr', ph: 'm\'' }],
+      verifica: (v) => uguale(v.m, m) && uguale(v.mr, mR) ? { ok: true, riassunto: `m = ${num(m)} · m' = ${num(mR)}`, msg: 'Ecco la regola: sulla sponda la pendenza cambia segno, m\' = −m.' }
+        : { ok: false, msg: !uguale(v.m, m) ? 'm = Δy / Δx da P a I.' : 'm\' = Δy / Δx da I a B.' },
+      aiuti: [`m = (${num(I.y)} − ${par(P.y)}) / (${num(I.x)} − ${par(P.x)}) = ${num(m)}`, `m' = (${num(B.y)} − ${par(I.y)}) / (${num(B.x)} − ${par(I.x)}) = ${num(mR)}`] },
+    tira,
+  ];
   return [
-    { id: 'distanza', titolo: 'Quanto dista la buca dalla sponda?', testo: `Il trucco della sponda è uno specchio. Prima misura: quanti quadretti ci sono tra la buca B${coord(B.x, B.y)} e la sponda ${linea}? Segui la linea tratteggiata.`, campi: ['d =', { k: 'd', ph: 'd' }],
-      verifica: (v) => uguale(v.d, dist) ? { ok: true, riassunto: `d = ${num(dist)}` } : { ok: false, msg: `Conta i quadretti da ${coordB} = ${num(valB)} a ${coordB} = ${num(c)}.` },
-      aiuti: [`d = ${num(Math.max(c, valB))} − ${par(Math.min(c, valB))}`, `d = ${num(dist)}`] },
-    { id: 'specchio', titolo: 'Il riflesso B\' della buca', testo: `Immagina la sponda come uno specchio: B' è il riflesso della buca, come la tua immagine dietro lo specchio. Ha la stessa ${oriz ? 'x' : 'y'} di B e sta <b>oltre</b> la sponda, alla stessa distanza ${num(dist)}. Sta fuori dal tavolo!`,
+    { id: 'specchio', titolo: 'Il riflesso B\' della buca', testo: `La sponda è uno specchio: B' è il riflesso della buca, come la tua immagine dietro lo specchio. Ha la stessa ${oriz ? 'x' : 'y'} di B e sta <b>oltre</b> la sponda, alla stessa distanza d = ${num(dist)}. Mentre scrivi lo vedi sul piano, fuori dal tavolo.`,
       campi: oriz ? ['B\'(', `${num(B.x)};`, { k: 'y', ph: 'y' }, ')'] : ['B\'(', { k: 'x', ph: 'x' }, `; ${num(B.y)})`],
+      anteprima: (v) => { const val = oriz ? v.y : v.x; return val === null || val === undefined ? {} : { punto: oriz ? { x: B.x, y: val } : { x: val, y: B.y } }; },
       verifica: (v) => {
         const val = oriz ? v.y : v.x;
         if (uguale(val, valBs)) return { ok: true, riassunto: `B'${coord(Bs.x, Bs.y)}`, msg: 'Mirando a B\' "attraverso lo specchio" colpirai la sponda nel punto giusto.' };
@@ -1471,27 +1613,33 @@ function passiSponde(d) {
         return { ok: false, msg: `Parti dalla sponda ${linea} e vai oltre di ${num(dist)}: ${coordB}' = ${num(c)} ${segnoOltre} ${num(dist)}.` };
       },
       aiuti: [`Parti dalla sponda (${coordB} = ${num(c)}) e allontanati dal tavolo di ${num(dist)}.`, `${coordB}' = ${num(c)} ${segnoOltre} ${num(dist)} = ${num(valBs)}`] },
-    { id: 'm', titolo: 'Pendenza della retta P → B\'', testo: `Mirare a B' oltre lo specchio è come mirare al punto giusto della sponda. Calcola m con P${coord(P.x, P.y)} e B'${coord(Bs.x, Bs.y)}.`, campi: ['m =', { k: 'm', ph: 'm' }],
-      verifica: (v) => uguale(v.m, m) ? { ok: true, riassunto: `m = ${num(m)}` } : { ok: false, msg: 'Ricontrolla Δy/Δx tra P e B\'.', retta: v.m !== null ? { da: P, m: v.m } : null },
+    { id: 'm', titolo: 'Pendenza della retta P → B\'', testo: `Mirare a B' oltre lo specchio è come mirare al punto giusto della sponda. Calcola m con P${coord(P.x, P.y)} e B'${coord(Bs.x, Bs.y)}: mentre scrivi vedi la retta.`, campi: ['m =', { k: 'm', ph: 'm' }],
+      anteprima: (v) => v.m === null ? {} : { retta: { m: v.m, q: P.y - v.m * P.x } },
+      verifica: (v) => uguale(v.m, m) ? { ok: true, riassunto: `m = ${num(m)}` } : { ok: false, msg: 'La retta non passa per B\': ricontrolla Δy / Δx tra P e B\'.' },
       aiuti: [`m = (${num(Bs.y)} − ${par(P.y)}) / (${num(Bs.x)} − ${par(P.x)})`, `m = ${num(Bs.y - P.y)} / ${num(Bs.x - P.x)} = ${num(m)}`] },
     { id: 'q', titolo: 'Intercetta q', testo: 'Sostituisci P in y = mx + q e isola q.', campi: ['q =', { k: 'q', ph: 'q' }],
+      anteprima: (v) => v.q === null ? {} : { retta: { m, q: v.q } },
       verifica: (v) => uguale(v.q, q) ? { ok: true, riassunto: retta(m, q) } : { ok: false, msg: 'q = y_P − m · x_P: attenzione ai segni.' },
       aiuti: [`q = ${num(P.y)} − ${par(m)} · ${par(P.x)}`, `q = ${num(P.y)} − ${par(m * P.x)} = ${num(q)}`] },
-    oriz ? { id: 'I', titolo: 'Punto di sponda I', testo: `Dove la retta ${retta(m, q)} incontra la sponda ${linea}? Metti y = ${num(c)} e ricava x.`, campi: ['I(', { k: 'x', ph: 'x' }, `; ${num(c)})`],
-      verifica: (v) => uguale(v.x, I.x) ? { ok: true, riassunto: `I${coord(I.x, I.y)}` } : { ok: false, msg: `Risolvi ${num(c)} = ${retta(m, q).slice(4)}.` },
-      aiuti: [`${num(c)} = ${num(m)} · x + ${par(q)}`, `x = (${num(c)} − ${par(q)}) / ${par(m)} = ${num(I.x)}`] }
-      : { id: 'I', titolo: 'Punto di sponda I', testo: `Dove la retta ${retta(m, q)} incontra la sponda ${linea}? Metti x = ${num(c)} e calcola y.`, campi: [`I(${num(c)};`, { k: 'y', ph: 'y' }, ')'],
-        verifica: (v) => uguale(v.y, I.y) ? { ok: true, riassunto: `I${coord(I.x, I.y)}` } : { ok: false, msg: `Calcola ${num(m)} · ${par(c)} + ${par(q)}.` },
-        aiuti: [`y = ${num(m)} · ${par(c)} + ${par(q)}`, `y = ${num(m * c)} + ${par(q)} = ${num(I.y)}`] },
-    { id: 'm2', titolo: 'Pendenza dopo il rimbalzo', testo: 'Su una sponda parallela a un asse la palla esce come allo specchio: che pendenza ha la nuova retta?', campi: ['m\' =', { k: 'm', ph: 'm\'' }],
-      verifica: (v) => uguale(v.m, mR) ? { ok: true, riassunto: `m' = ${num(mR)}`, msg: 'Esatto: sulla sponda la pendenza cambia segno, m\' = −m.' } : { ok: false, msg: 'Guarda la retta tratteggiata: con questa pendenza la palla non va verso B.', retta: v.m !== null ? { da: I, m: v.m } : null },
-      aiuti: ['La sponda ribalta solo la componente della velocità perpendicolare alla sponda.', `m' = −m = ${num(mR)}`] },
-    { id: 'q2', titolo: 'Retta di ritorno', testo: `Scrivi la retta con pendenza m' = ${num(mR)} che passa per I${coord(I.x, I.y)}: trova q'.`, campi: ['y =', `${num(mR)}${esatto(mR) && frazione(mR).d > 1 ? ' ' : ''}x`, { segno: 'q' }, { k: 'q', ph: 'q\'' }],
-      verifica: (v) => uguale(v.q, qR) ? { ok: true, riassunto: retta(mR, qR), msg: `Controllo: per x = ${num(B.x)} viene y = ${num(mR * B.x + qR)}, proprio la buca B. Il tiro è pronto.` }
-        : { ok: false, msg: 'q\' = y_I − m\' · x_I.', retta: v.q !== null ? { m: mR, q: v.q } : null },
-      aiuti: [`q' = ${num(I.y)} − ${par(mR)} · ${par(I.x)}`, `q' = ${num(I.y)} − ${par(mR * I.x)} = ${num(qR)}`] },
-    { titolo: 'Tira!', tira: true, testo: 'Trascina all\'indietro dal tavolo, come una fionda: la stecca si aggancia alla retta P → I. Il tiro deve avere abbastanza forza per arrivare in buca dopo il rimbalzo. In vista 3D parti dalla palla bianca.' },
+    oriz ? passoI(`Dove la retta ${retta(m, q)} incontra la sponda ${linea}? Metti y = ${num(c)} e ricava x. Mentre scrivi vedi la traiettoria.`,
+        [`${num(c)} = ${num(m)} · x + ${par(q)}`, `x = (${num(c)} − ${par(q)}) / ${par(m)} = ${num(I.x)}`])
+      : passoI(`Dove la retta ${retta(m, q)} incontra la sponda ${linea}? Metti x = ${num(c)} e calcola y. Mentre scrivi vedi la traiettoria.`,
+        [`y = ${num(m)} · ${par(c)} + ${par(q)}`, `y = ${num(m * c)} + ${par(q)} = ${num(I.y)}`]),
+    tira,
   ];
+}
+// traiettoria della bianca mirando al punto X: stesse regole della fisica (un rimbalzo), per l'anteprima e i messaggi
+function traiettoriaVerso(X) {
+  const P = palle[0], L = Math.hypot(X.x - P.x, X.y - P.y);
+  return L < 1e-6 ? null : prevedi(P.x, P.y, (X.x - P.x) / L, (X.y - P.y) / L, 1, P);
+}
+function esitoTraiettoria(pr) {
+  const d = S.sfida.dati;
+  if (pr.contatto) return `la bianca colpisce la palla ${pr.contatto.n}`;
+  if (pr.buca) return pr.buca === d.B ? 'la palla va in buca' : 'la palla finisce in un\'altra buca';
+  const s0 = pr.segmenti[0];
+  if (pr.segmenti.length > 1 && !(d.tipo === 'orizzontale' ? uguale(s0.a[1], d.c) : uguale(s0.a[0], d.c))) return `la palla tocca prima un'altra sponda, non ${d.linea}`;
+  return 'dopo il rimbalzo la palla non trova la buca';
 }
 const passoCorrente = () => S.sfida?.passi[S.sfida.indice];
 const puoTirare = () => S.stato === 'mira' && (S.tab === 'lab' || !!passoCorrente()?.tira);
@@ -1505,15 +1653,23 @@ function direzioneAlgebrica() {
 // ───────────────────────────────────────────── GRAFICA DI STATO (rette, etichette, buca chiamata)
 function aggiornaGrafica() {
   togliEtichette();
-  for (const l of [lineaRetta, lineaRitorno, lineaRitornoEst, lineaSpecchio, lineaSbagliata, lineaDistanza, lineaBloccata]) l.visible = false;
+  for (const l of [lineaRetta, lineaRitorno, lineaRitornoEst, lineaSpecchio, lineaSbagliata, lineaDistanza, lineaBloccata, lineaAnteprima, lineaAnteprimaEst, ...lineeScelta]) l.visible = false;
   for (const s of SPONDE) s.mesh.material.emissive.set(0x000000);
-  anelloBuca.visible = anelloSpecchio.visible = false; segniQ.forEach((m) => { m.visible = false; });
+  anelloBuca.visible = anelloSpecchio.visible = anelloAnteprima.visible = false; segniQ.forEach((m) => { m.visible = false; });
   adattaCamera();   // prima l'inquadratura: le rette si tagliano sui suoi bordi
   const acc = new THREE.Color(coloreAccento());
   if (S.tab === 'lab') aggiornaLab();
   else {
     const sf = S.sfida, d = sf.dati, P = palle[0], i = sf.indice;
     if (P.visibile) etichetta('P', `P${coord(P.x, P.y)}`, P.x, P.y, 'P');
+    if (d.scelta && !d.Q) {   // prima della scelta: ogni candidata con il suo percorso fino alla buca
+      d.candidati.forEach((c, j) => {
+        impostaLinea(lineeScelta[j], [[P.x, P.y], [c.B.x, c.B.y]]); lineeScelta[j].material.color.set(colorePalla(c.n));
+        etichetta('Q' + j, `${c.n} · ${coord(c.Q.x, c.Q.y)}`, c.Q.x, c.Q.y, 'Q');
+        etichetta('B' + j, `B${coord(c.B.x, c.B.y)}`, c.B.x, c.B.y, 'B', 0.95);
+      });
+      aggiornaHud(); richiediRender(); return;
+    }
     anelloBuca.visible = true; anelloBuca.position.copy(W3(d.B.x, d.B.y, 0.02)); anelloBuca.scale.setScalar(d.B.R + 0.12);
     matBucaChiamata.emissive.copy(acc);
     etichetta('B', `B${coord(d.B.x, d.B.y)}`, d.B.x, d.B.y, 'B', 0.95);
@@ -1526,33 +1682,29 @@ function aggiornaGrafica() {
       for (const s of SPONDE) if (s.linea === d.linea) s.mesh.material.emissive.copy(acc).multiplyScalar(0.35);
       const fatto = (id) => sf.passi.slice(0, i).some((p) => p.id === id), oriz = d.tipo === 'orizzontale', sg = Math.sign(d.c);
       const lato = oriz ? [-6, d.c + 0.75 * sg] : [d.c + 0.65 * sg, 3];
-      etichetta('sponda', 'rimbalza su ' + d.linea, lato[0], lato[1] - 0.55, 'sponda');
+      etichetta('sponda', 'specchio: ' + d.linea, lato[0], lato[1] - 0.55, 'sponda');
       if (!fatto('I')) {   // l'obiettivo sul tavolo: la strada diretta è chiusa dalla 8
         impostaLinea(lineaBloccata, [[d.P.x, d.P.y], [d.blocco.x, d.blocco.y]]); lineaBloccata.material.color.set(cssVar('--errore'));
         etichetta('blocco', '✕ strada diretta bloccata', d.blocco.x, d.blocco.y, 'no', 0.45);
       }
-      if (!fatto('specchio')) {   // distanza buca–sponda, da misurare e poi da riportare oltre lo specchio
+      if (d.modo === 'specchio' && !fatto('specchio')) {   // distanza buca–sponda, da riportare oltre lo specchio
         const piede = oriz ? [d.B.x, d.c] : [d.c, d.B.y];
-        const pts = [[d.B.x, d.B.y], piede];
-        if (fatto('distanza')) pts.push([d.Bs.x, d.Bs.y]);   // la stessa distanza riportata oltre lo specchio
-        impostaLinea(lineaDistanza, pts, 0.6); lineaDistanza.material.color.set(cssVar('--avviso'));
-        const mx = (d.B.x + piede[0]) / 2, my = (d.B.y + piede[1]) / 2;
-        etichetta('dist', fatto('distanza') ? `d = ${num(Math.abs(d.c - (oriz ? d.B.y : d.B.x)))} · B' è altrettanto oltre la sponda` : 'd = ?', mx + (oriz ? 0.9 : 0), my, 'm', 0.2);
+        impostaLinea(lineaDistanza, [[d.B.x, d.B.y], piede], 0.6); lineaDistanza.material.color.set(cssVar('--avviso'));
+        etichetta('dist', `d = ${num(Math.abs(d.c - (oriz ? d.B.y : d.B.x)))}`, (d.B.x + piede[0]) / 2 + (oriz ? 0.9 : 0), (d.B.y + piede[1]) / 2, 'm', 0.2);
       }
       if (fatto('specchio')) {   // B' fuori dal tavolo, nel piano esteso
         anelloSpecchio.position.set(d.Bs.x, 0.04, -d.Bs.y); anelloSpecchio.material.color.set(cssVar('--avviso')); anelloSpecchio.visible = true;
         etichetta('Bs', `B'${coord(d.Bs.x, d.Bs.y)} · riflesso di B`, d.Bs.x, d.Bs.y, 'B', 0.95);
       }
-      if (fatto('q')) {   // retta P → B': il tratto vero fino alla sponda, poi il prolungamento oltre lo specchio
+      if (fatto('q') && !fatto('I')) {   // retta P → B': il tratto vero fino alla sponda, poi il prolungamento oltre lo specchio
         impostaLinea(lineaRetta, [[d.P.x, d.P.y], [d.I.x, d.I.y]]); lineaRetta.material.color.copy(acc);
         impostaLinea(lineaSpecchio, clipRetta(d.m, d.q), 0.6); lineaSpecchio.material.color.copy(acc);
-        segna(segniQ[0], 0, d.q, acc); etichetta('qmark', `q = ${num(d.q)}`, 0, d.q, 'Q', 0.35);
       }
-      if (fatto('I')) etichetta('I', `I${coord(d.I.x, d.I.y)}`, d.I.x, d.I.y, 'I', 0.35);
-      if (fatto('q2')) {
+      if (fatto('q')) { segna(segniQ[0], 0, d.q, acc); etichetta('qmark', `q = ${num(d.q)}`, 0, d.q, 'Q', 0.35); }
+      if (fatto('I')) {   // la traiettoria trovata: andata fino a I, ritorno fino alla buca
+        impostaLinea(lineaRetta, [[d.P.x, d.P.y], [d.I.x, d.I.y]]); lineaRetta.material.color.copy(acc);
         impostaLinea(lineaRitorno, [[d.I.x, d.I.y], [d.B.x, d.B.y]]); lineaRitorno.material.color.copy(acc);
-        impostaLinea(lineaRitornoEst, clipRetta(d.mR, d.qR), 0.6); lineaRitornoEst.material.color.copy(acc);
-        segna(segniQ[1], 0, d.qR, cssVar('--ok')); etichetta('qmark2', `q' = ${num(d.qR)}`, 0, d.qR, 'I', 0.35);
+        etichetta('I', `I${coord(d.I.x, d.I.y)}`, d.I.x, d.I.y, 'I', 0.35);
       }
     }
   }
@@ -1677,7 +1829,7 @@ function successo() {
   const stelle = crit.filter(Boolean).length;
   prog.serie = sf.errori === 0 ? prog.serie + 1 : 0;
   const mult = [1, 1, 1.2, 1.5, 2][Math.min(prog.serie, 4)];
-  const punti = Math.round((100 + 30 * (stelle - 1)) * mult);
+  const punti = Math.round((100 + 30 * (stelle - 1)) * mult) + (sf.dati.furba ? 20 : 0);
   prog.punti += punti;
   if (S.giocatori === 2) S.punteggi[S.turno] += punti;
   if (sf.giorno) { const g = prog.giorno?.data === oggi() ? prog.giorno : { data: oggi() }; g[sf.tab] = Math.max(g[sf.tab] || 0, stelle); prog.giorno = g; }
@@ -1688,7 +1840,7 @@ function successo() {
     if (set.stelle.length >= TAVOLI_SET) prog[sf.tab].max = Math.max(prog[sf.tab].max, sf.livello + 1);
   }
   salvaProg();
-  sf.esito = { stelle, crit, punti, mult };
+  sf.esito = { stelle, crit, punti, mult, furba: !!sf.dati.furba };
   Suono.successo(); Aptica.vibra('livello', 1);
   testoGrande('BUCA!');
   togliEtichette('P'); togliEtichette('Q'); togliEtichette('R');
@@ -1736,6 +1888,10 @@ canvas.addEventListener('pointerdown', (e) => {
       puntatore = e.pointerId; canvas.setPointerCapture(e.pointerId); aggiornaLab(); return;
     }
   }
+  if (passoCorrente()?.scelta) {
+    const j = S.sfida.dati.candidati.findIndex((c) => Math.hypot(c.Q.x - w.x, c.Q.y - w.y) < T.r * 2.2);
+    if (j >= 0) { scegliPalla(j); return; }
+  }
   if (!puoTirare()) { avviso('Completa prima i calcoli: il tiro si sblocca all\'ultimo passo.', '', 1800); return; }
   puntatore = e.pointerId; canvas.setPointerCapture(e.pointerId);
   S.mira = { sx: e.clientX, sy: e.clientY, x0: w.x, y0: w.y, dir: null, k: 0, agganciata: false, ultimoTic: 0 };
@@ -1774,7 +1930,7 @@ function versoQ() {
   const L = Math.hypot(Qb.x - P.x, Qb.y - P.y); return { x: (Qb.x - P.x) / L, y: (Qb.y - P.y) / L };
 }
 addEventListener('keydown', (e) => {
-  if (!avviato || !$('schermata').classList.contains('nascosto')) return;
+  if (!avviato || !$('schermata').classList.contains('nascosto') || !$('explain').hidden) return;
   if (e.target.closest('input')) { if (e.key === 'Enter') { e.preventDefault(); verificaPasso(); } return; }
   if (e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
   if (e.key === ' ' && !e.repeat && !spazio && puoTirare()) {   // Spazio: carica lungo la retta (o la mira da tastiera)
@@ -1847,22 +2003,27 @@ function renderPannello() {
       <details><summary><span>Pendenza m</span><b id="labM"></b></summary><div id="labMd"></div></details>
       <details><summary><span>Intercetta q</span><b id="labQq"></b></summary><div id="labQd"></div></details>
       <h4>Traiettoria prevista della bianca</h4><ol class="traiettoria" id="labTraiettoria"><li>Inizia a mirare per vederla: a ogni sponda la pendenza cambia segno.</li></ol>
-      <div class="piede"><button class="btn" data-azione="ricomponi">Ricomponi il tavolo</button></div>`;
+      <h4>Palle nel triangolo</h4><div class="campioni">${NUMERI_PALLE.map((n) => `<button class="sw" data-azione="numero" data-n="${n}" aria-pressed="${asp.numero === n}">${n}</button>`).join('')}</div>
+      <div class="piede"><button class="btn" data-azione="ricomponi">Ricomponi il tavolo</button><button class="btn" type="button" data-explain="mode">▶ Spiegami</button></div>`;
     aggiornaLab();
   } else {
     const sf = S.sfida, d = sf.dati, tp = prog[sf.tab];
-    const consegna = sf.tab === 'tiro'
+    const consegna = d.scelta && !d.Q
+      ? `Scegli una delle palle colorate e mandala in buca colpendola con la bianca (P). <span class="coord">P${coord(d.P.x, d.P.y)}</span>`
+      : sf.tab === 'tiro'
       ? `Manda la palla <b>${d.nQ}</b> (Q) nella buca <b>B</b> colpendola con la bianca (P). <span class="coord">P${coord(d.P.x, d.P.y)} · Q${coord(d.Q.x, d.Q.y)} · B${coord(d.B.x, d.B.y)}</span>`
-      : `<span class="obiettivo"><b>Obiettivo:</b> manda la bianca P nella buca B con <b>un solo rimbalzo</b> sulla sponda <b>${d.linea}</b>. Tirare dritto non si può: c'è la palla 8 in mezzo. Con i calcoli trovi il punto della sponda da colpire.</span><span class="coord">P${coord(d.P.x, d.P.y)} · B${coord(d.B.x, d.B.y)}</span>`;
+      : `<span class="obiettivo"><b>Obiettivo:</b> manda la bianca P nella buca B con <b>un solo rimbalzo</b> sulla sponda <b>${d.linea}</b>. Tirare dritto non si può: c'è la palla 8 in mezzo. Con i calcoli trovi il punto della sponda da colpire.<br><b>Regola:</b> sulla sponda la palla rimbalza come in uno specchio, la pendenza cambia segno.</span><span class="coord">P${coord(d.P.x, d.P.y)} · B${coord(d.B.x, d.B.y)}</span>`;
     const passi = sf.passi.map((p, i) => {
       if (i < sf.indice) return `<li class="passo fatto"><span class="num">✓</span><span class="tit-fatto">${p.titolo}</span><b class="ris">${sf.riassunti[i] || ''}</b></li>`;
       if (i > sf.indice) return `<li class="passo futuro"><span class="num">${i + 1}</span><span>${p.titolo}</span></li>`;
+      if (p.scelta) return `<li class="passo attivo" data-i="${i}"><div class="tit"><span class="num">${i + 1}</span><h3>${p.titolo}</h3></div><p class="spiega">${p.testo}</p>
+        <div class="scelte">${d.candidati.map((c, j) => `<button class="btn scegli" data-azione="scegli" data-i="${j}"><i style="--c:${colorePalla(c.n)}"></i><span>Palla ${c.n} · Q${coord(c.Q.x, c.Q.y)} → B${coord(c.B.x, c.B.y)}</span></button>`).join('')}</div></li>`;
       if (p.tira) return `<li class="passo attivo" data-i="${i}"><div class="tit"><span class="num">${i + 1}</span><h3>${p.titolo}</h3></div><p class="spiega">${p.testo}</p></li>`;
       const tutti = testo(p.aiuti) || [], visti = sf.aiutiVisti[i] || 0, restanti = tutti.length - visti;
       return `<li class="passo attivo" data-i="${i}"><div class="tit"><span class="num">${i + 1}</span><h3>${p.titolo}</h3></div>
-        <p class="spiega">${testo(p.testo)}</p><div class="formula">${campi(p)}</div>
+        <p class="spiega">${testo(p.testo)}</p><div class="formula">${campi(p)}</div><p class="msg" role="status"></p>
         <div class="azioni"><button class="btn primario" data-azione="verifica">Verifica</button><button class="btn" data-azione="aiuto" ${restanti > 0 ? '' : 'disabled'}>Aiuto${restanti > 0 ? ` (${restanti})` : ''}</button></div>
-        <div class="aiuti">${tutti.slice(0, visti).map((a) => `<div class="aiuto">${a}</div>`).join('')}</div><p class="msg" role="status"></p></li>`;
+        <div class="aiuti">${tutti.slice(0, visti).map((a) => `<div class="aiuto">${a}</div>`).join('')}</div></li>`;
     }).join('');
     const set = setOra(), setFinito = !!set && set.stelle.length >= TAVOLI_SET;
     const pallini = set ? `<div class="set" title="Ogni livello è un set di ${TAVOLI_SET} tavoli: finiscili tutti per sbloccare il successivo">${Array.from({ length: TAVOLI_SET }, (_, i) =>
@@ -1875,7 +2036,7 @@ function renderPannello() {
         : `<button class="btn primario" data-azione="prossimo">Prossimo tavolo (${set.stelle.length + 1} di ${TAVOLI_SET})</button>`;
       const fineSet = setFinito ? `<p><b>Set completato!</b> ★ ${set.stelle.reduce((a, b) => a + b, 0)} su ${3 * TAVOLI_SET} · Livello ${sf.livello + 1} sbloccato</p>` : '';
       esito = `<div class="esito"><div class="stelle">${[0, 1, 2].map((i) => `<span style="color:${i < e.stelle ? 'var(--avviso)' : 'var(--testo2)'}">${icona('stella', i < e.stelle)}</span>`).join('')}</div>
-        <p><b>+${e.punti}</b> punti${e.mult > 1 ? ` · serie ×${fmt(e.mult, 1)}` : ''}</p>
+        <p><b>+${e.punti}</b> punti${e.mult > 1 ? ` · serie ×${fmt(e.mult, 1)}` : ''}</p>${e.furba ? '<p class="nota">Scelta furba: hai preso la palla con i conti più comodi (+20).</p>' : ''}
         <ul>${e.crit.map((c, i) => `<li class="${c ? 'si' : ''}">${nomi[i]}</li>`).join('')}</ul>${fineSet}
         <div class="riga">${bottoni}<button class="btn" data-azione="rivedi">Rivedi al rallentatore</button></div></div>`;
     }
@@ -1884,7 +2045,7 @@ function renderPannello() {
         <div class="liv"><b>${sf.giorno ? 'Sfida del giorno' : 'Livello ' + sf.livello}</b><span>${sf.giorno ? `Stesso tavolo per tutta la classe · ${new Date().toLocaleDateString('it-IT')}` : d.nota}</span>${pallini}</div>
         <button class="btn mini" data-azione="livSucc" aria-label="Livello successivo" ${sf.livello >= tp.max || sf.giorno ? 'disabled' : ''}>›</button></div>
       <p class="consegna">${consegna}</p><ol class="passi">${passi}</ol>${esito}
-      <div class="piede"><button class="btn" data-azione="altro">Altro tavolo</button><button class="btn" data-azione="giorno">${sf.giorno ? 'Torna ai livelli' : 'Sfida del giorno'}</button></div>`;
+      <div class="piede"><button class="btn" data-azione="altro">Altro tavolo</button><button class="btn" data-azione="giorno">${sf.giorno ? 'Torna ai livelli' : 'Sfida del giorno'}</button><button class="btn" type="button" data-explain="mode">▶ Spiegami</button></div>`;
     const p = passoCorrente(), att = c.querySelector('.passo.attivo');
     if (att && p && !p.tira && !sf.esito) {
       const pre = p.prefill?.() || {};
@@ -1894,10 +2055,9 @@ function renderPannello() {
       aggiornaSegni(att);
     } else S.campo = null;
     if (p?.tira && S.stato === 'mira' && layout === 'sotto' && !sf.esito) setTimeout(() => { if (passoCorrente()?.tira && !S.sfida.esito) apriPannello('chiuso'); }, 900);
-    (sf.esito ? c.querySelector('.esito') : att)?.scrollIntoView({ block: 'nearest', behavior: ridotto ? 'auto' : 'smooth' });
   }
   legaTesti($('contenuto'));
-  aggiornaManiglia(); aggiornaTastierino();
+  aggiornaManiglia(); aggiornaTastierino(); inquadraAttivo(); mostraAnteprima();
 }
 function aggiornaSegni(radice) {
   if (!radice) return;
@@ -1906,11 +2066,51 @@ function aggiornaSegni(radice) {
     s.classList.toggle('via', /^\s*[-−–]/.test(el?.value || ''));
   });
 }
-function verificaPasso() {
-  const sf = S.sfida, p = passoCorrente(); if (!sf || !p || p.tira || S.stato !== 'mira' || sf.esito) return;
-  const att = $('contenuto').querySelector('.passo.attivo'); if (!att) return;
+function leggiCampi(att) {
   const v = { _vuoti: {} }, grezzi = {};
   att.querySelectorAll('.campo').forEach((el) => { grezzi[el.dataset.k] = el.value; v[el.dataset.k] = leggiNumero(el.value); v._vuoti[el.dataset.k] = el.value.trim() === ''; });
+  return { v, grezzi };
+}
+// il passo attivo resta leggibile sopra il tastierino: intero se ci sta, altrimenti dal campo in giù (campo, messaggio, aiuti)
+function inquadraAttivo() {
+  const corpo = $('corpo'), c = $('contenuto');
+  const el = c.querySelector('.esito') || c.querySelector('.passo.attivo'); if (!el) return;
+  const comp = ridotto ? 'auto' : 'smooth';
+  if (el.offsetHeight <= corpo.clientHeight - 8) el.scrollIntoView({ block: 'nearest', behavior: comp });
+  else (el.querySelector('.formula, .scelte') || el).scrollIntoView({ block: 'start', behavior: comp });
+}
+// anteprima mentre si scrive: la traiettoria verso il punto, la retta o il punto che lo studente sta scrivendo
+const anelloAnteprima = new THREE.Mesh(new THREE.TorusGeometry(T.Rc, 0.05, 8, 48), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.6, toneMapped: false }));
+anelloAnteprima.rotation.x = -Math.PI / 2; anelloAnteprima.visible = false; scene.add(anelloAnteprima);
+function mostraAnteprima() {
+  lineaAnteprima.visible = lineaAnteprimaEst.visible = anelloAnteprima.visible = false; togliEtichette('ant');
+  const p = passoCorrente(), att = $('contenuto').querySelector('.passo.attivo');
+  if (!p?.anteprima || !att || S.stato !== 'mira' || S.sfida?.esito) { richiediRender(); return; }
+  const a = p.anteprima(leggiCampi(att).v), d = S.sfida.dati;
+  if (a.verso) {
+    const pr = traiettoriaVerso(a.verso);
+    if (pr) {
+      const ok = pr.buca === d.B && !pr.contatto, fine = pr.fine;
+      impostaLinea(lineaAnteprima, pr.punti); lineaAnteprima.material.color.set(cssVar(ok ? '--ok' : '--avviso'));
+      etichetta('ant', ok ? 'in buca!' : pr.contatto ? `colpisce la ${pr.contatto.n}` : pr.buca ? 'buca sbagliata' : 'manca la buca', fine[0], fine[1], ok ? 'I' : 'm', 0.45);
+    }
+  }
+  if (a.retta) {
+    impostaLinea(lineaAnteprimaEst, clipRetta(a.retta.m, a.retta.q), 0.6); lineaAnteprimaEst.material.color.set(cssVar('--avviso'));
+    const xe = clamp(d.P.x + (d.P.x < 0 ? 3 : -3), -8, 8);
+    etichetta('ant', retta(a.retta.m, a.retta.q), xe, clamp(a.retta.m * xe + a.retta.q, -4.3, 4.3), 'm', 0.4);
+  }
+  if (a.punto && Math.abs(a.punto.x) <= 24 && Math.abs(a.punto.y) <= 18) {
+    anelloAnteprima.position.set(a.punto.x, 0.05, -a.punto.y); anelloAnteprima.material.color.set(cssVar('--avviso')); anelloAnteprima.visible = true;
+    etichetta('ant', `B'${coord(a.punto.x, a.punto.y)}?`, a.punto.x, a.punto.y, 'B', 0.95);
+  }
+  if (layout === 'sotto' && $('pannello').dataset.stato === 'pieno') apriPannello('meta');   // il tavolo deve vedersi
+  richiediRender();
+}
+function verificaPasso() {
+  const sf = S.sfida, p = passoCorrente(); if (!sf || !p || p.tira || p.scelta || S.stato !== 'mira' || sf.esito) return;
+  const att = $('contenuto').querySelector('.passo.attivo'); if (!att) return;
+  const { v, grezzi } = leggiCampi(att);
   sf.valori[sf.indice] = grezzi;
   const r = p.verifica(v), msg = att.querySelector('.msg');
   att.querySelectorAll('.campo').forEach((el) => { el.classList.toggle('si', r.ok); el.classList.toggle('no', !r.ok); });
@@ -1924,6 +2124,7 @@ function verificaPasso() {
   } else {
     if (!r.nonConta) sf.errori++;
     msg.className = 'msg errore'; msg.textContent = lega(r.msg || 'Non ancora.');
+    inquadraAttivo();
     Suono.errore(); Aptica.vibra('errore', 1, { el: att });
     mostraRettaSbagliata(r.retta);
     if (S.giocatori === 2 && !r.nonConta) { S.turno = 1 - S.turno; avviso(`Errore: tocca al Giocatore ${S.turno + 1}`, 'errore', 2000); aggiornaHud(); }
@@ -1946,6 +2147,8 @@ $('contenuto').addEventListener('click', (e) => {
     nuovaSfida(sf.giorno ? {} : { livello: finito ? sf.livello + 1 : sf.livello }); renderPannello();
   }
   else if (a === 'rifaiSet') { nuovaSfida({ livello: sf.livello, nuovoSet: true }); renderPannello(); }
+  else if (a === 'scegli') scegliPalla(+b.dataset.i);
+  else if (a === 'numero') { asp.numero = +b.dataset.n; scrivi('orfini.pool.aspetto', asp); nuovoLab(); renderPannello(); }
   else if (a === 'rivedi') avviaReplay();
   else if (a === 'ricomponi') nuovoLab();
 });
@@ -1954,7 +2157,7 @@ function salvaValori() {
   const g = {}; att.querySelectorAll('.campo').forEach((el) => { g[el.dataset.k] = el.value; }); S.sfida.valori[S.sfida.indice] = g;
 }
 $('contenuto').addEventListener('focusin', (e) => { if (e.target.classList.contains('campo')) { S.campo = e.target; aggiornaTastierino(); } });
-$('contenuto').addEventListener('input', (e) => { if (e.target.classList.contains('campo')) { e.target.classList.remove('no', 'si'); aggiornaSegni(e.target.closest('.passo')); } });
+$('contenuto').addEventListener('input', (e) => { if (e.target.classList.contains('campo')) { e.target.classList.remove('no', 'si'); aggiornaSegni(e.target.closest('.passo')); mostraAnteprima(); } });
 document.querySelector('.tabs').addEventListener('click', (e) => {
   const b = e.target.closest('[data-tab]'); if (!b || b.dataset.tab === S.tab || S.stato === 'tiro' || S.stato === 'replay') return;
   Suono.clic(); cambiaTab(b.dataset.tab);
@@ -1968,6 +2171,7 @@ function cambiaTab(tab) {
 function aggiornaTastierino() {
   const vis = tastieraVirtuale && S.campo && $('pannello').dataset.stato !== 'chiuso' && S.tab !== 'lab';
   $('tastierino').classList.toggle('nascosto', !vis);
+  $('pannello').classList.toggle('tastiera', !!vis);   // con il tastierino il ✓ fa da Verifica
 }
 $('tastierino').addEventListener('pointerdown', (e) => { if (e.target.closest('button')) e.preventDefault(); });
 $('tastierino').addEventListener('click', (e) => {
@@ -2067,8 +2271,6 @@ function renderAspetto() {
     <h3>Cornice</h3>${sw('cornice', CORNICI, asp.cornice, (x) => `<i style="--c:${x.c}"></i>`)}
     <h3>Colore dell'interfaccia</h3>${sw('accento', ACCENTI, asp.accento, (x) => `<i style="--c:${x.c}"></i>`)}
     <h3>Colori delle palle</h3>${sw('set', SET_PALLE, asp.set, (x) => `<i class="multi" style="--c1:${x.c[0]};--c2:${x.c[1]};--c3:${x.c[2]};--c4:${x.c[5]}"></i>`)}
-    <h3>Palle sul tavolo</h3>${seg('numero', NUMERI_PALLE.map((n) => [n, String(n)]), asp.numero)}
-    <p class="nota">Nel Lab è il numero di palle del triangolo; nelle sfide aggiunge palle di disturbo lontane dal percorso.</p>
     <h3>Vibrazione</h3>${seg('vibrazione', [[0, 'Spenta'], [1, 'Leggera'], [2, 'Piena']], Aptica.livello)}
     <p class="nota">${Aptica.reale ? 'Questo dispositivo vibra davvero; in più senti e vedi la vibrazione "analogica".' : Aptica.ios ? 'Su iPhone e iPad senti dei tic leggeri al tocco; il resto è vibrazione analogica: un colpo sonoro grave e il tavolo che trema.' : 'Questo dispositivo non vibra: la vibrazione è analogica, un colpo sonoro grave e il tavolo che trema.'}</p>
     <h3>Giocatori</h3>${seg('giocatori', [[1, 'Uno'], [2, 'Due a turno']], S.giocatori)}
@@ -2085,7 +2287,6 @@ $('aspettoCorpo').addEventListener('click', (e) => {
   else {
     asp[g] = g === 'numero' ? +v : v; scrivi('orfini.pool.aspetto', asp);
     applicaAspetto();
-    if (g === 'numero' && S.stato === 'mira') { if (S.tab === 'lab') nuovoLab(); else dispostaSfida(); }
   }
   renderAspetto();
 });
@@ -2233,9 +2434,31 @@ $('bGioca').addEventListener('click', () => { Suono.avvia(); Suono.clic(); $('sc
 $('bGioca').focus();
 if (DEBUG) window.__orfini = {
   S, T, FIS, BUCHE, prog, sets, TAVOLI_SET, Aptica, loop, THREE, camera, orbita, get palle() { return palle; },
-  tira, passoFisico, tuttoFermo, concludiTiro, cambiaTab, nuovaSfida, renderPannello, verificaPasso, direzioneAlgebrica, prevedi,
+  tira, passoFisico, tuttoFermo, concludiTiro, cambiaTab, nuovaSfida, renderPannello, verificaPasso, direzioneAlgebrica, prevedi, scegliPalla, profiloTiro,
   avanzaFinoAFermo(max = 4000) { let n = 0; while (S.stato === 'tiro' && n < max) { passoFisico(); n++; if (tuttoFermo()) { concludiTiro(); break; } } return n; },
 };
+// ───────────────────────────────────────────── SPIEGAMI (spiegazione animata in una finestra sopra il gioco)
+// scena: '' = tutta l'animazione, oppure 'tiro' | 'scelta' | 'sponde' | 'lab'
+function openExplainer(scena = '') {
+  $('explainFrame').src = 'math_pool_retta_pianocartesiano_spiegazione.html?embed=1' + (scena ? '#' + scena : '');
+  $('explain').hidden = false;
+  $('explainClose').focus();
+}
+function closeExplainer() {
+  $('explain').hidden = true;
+  $('explainFrame').src = 'about:blank';   // ferma l'animazione
+}
+$('explainClose').addEventListener('click', closeExplainer);
+$('explain').addEventListener('click', (e) => { if (e.target.id === 'explain') closeExplainer(); });
+addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('explain').hidden) closeExplainer(); });
+addEventListener('message', (e) => {   // a fine scena si torna al gioco da soli
+  if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-finita') setTimeout(closeExplainer, 1500);
+});
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-explain]'); if (!b) return;
+  Suono.clic();
+  openExplainer(b.dataset.explain === 'mode' ? (S.tab === 'tiro' && S.sfida?.dati?.scelta ? 'scelta' : S.tab) : b.dataset.explain);
+});
 avviato = true;
 requestAnimationFrame(frame);
 </script>

@@ -4,29 +4,30 @@ const { test, expect } = require('@playwright/test');
 
 const URL = '/content/apps/math_pool_retta_pianocartesiano.html?debug';
 
-// soluzioni dei passi calcolate dai dati del livello (stringhe come le scriverebbe uno studente)
+// soluzioni dei passi calcolate dai dati del livello (stringhe come le scriverebbe uno studente), per id del passo
 async function soluzione(page) {
   return page.evaluate(() => {
     const { S } = window.__orfini;
-    const sf = S.sfida, d = sf.dati, i = sf.indice, p = sf.passi[i];
+    const sf = S.sfida, d = sf.dati, p = sf.passi[sf.indice];
     const fr = (v) => { for (let den = 1; den <= 12; den++) { const n = Math.round(v * den); if (Math.abs(n / den - v) < 1e-9) return den === 1 ? String(n) : `${n}/${den}`; } return String(v); };
     if (p.tira) return null;
+    if (p.scelta) return 'scelta';
     if (sf.tab === 'tiro') {
       const { P, Q, B, m, q } = d;
       const xR = P.x + Math.sign(Q.x - P.x) * Math.floor(Math.abs(Q.x - P.x) / 2);
-      return [{ m: fr(m) }, { y: fr(P.y), m: fr(m), x: fr(P.x) }, { q: fr(q) }, { m: fr(m), q: fr(q) }, { y: fr(m * B.x + q) }, { x: fr(xR), y: fr(m * xR + q) }][i];
+      return { m: { m: fr(m) }, sost: { y: fr(P.y), m: fr(m), x: fr(P.x) }, q: { q: fr(q) }, eq: { m: fr(m), q: fr(q) }, buca: { y: fr(m * B.x + q) }, R: { x: fr(xR), y: fr(m * xR + q) } }[p.id];
     }
-    const { B, Bs, c, m, q, I, mR, qR, tipo } = d, oriz = tipo === 'orizzontale';
-    return [{ d: fr(Math.abs(c - (oriz ? B.y : B.x))) }, oriz ? { y: fr(Bs.y) } : { x: fr(Bs.x) }, { m: fr(m) }, { q: fr(q) },
-      oriz ? { x: fr(I.x) } : { y: fr(I.y) }, { m: fr(mR) }, { q: fr(qR) }][i];
+    const { Bs, m, q, I, mR, tipo } = d, oriz = tipo === 'orizzontale';
+    return { specchio: oriz ? { y: fr(Bs.y) } : { x: fr(Bs.x) }, m: { m: fr(m) }, q: { q: fr(q) }, I: oriz ? { x: fr(I.x) } : { y: fr(I.y) }, pendenze: { m: fr(m), mr: fr(mR) } }[p.id];
   });
 }
 async function risolviPassi(page) {
-  for (let n = 0; n < 10; n++) {
+  for (let n = 0; n < 12; n++) {
     const sol = await soluzione(page);
     if (!sol) return;
+    if (sol === 'scelta') { await page.click('.passo.attivo [data-azione="scegli"]'); continue; }
     for (const [k, v] of Object.entries(sol)) await page.fill(`.passo.attivo .campo[data-k="${k}"]`, v);
-    await page.click('.passo.attivo [data-azione="verifica"]');
+    await page.evaluate(() => window.__orfini.verificaPasso());
   }
 }
 async function avvia(page, tab = 'tiro') {
@@ -73,9 +74,14 @@ test('fisica: per molti tavoli generati il tiro lungo la retta calcolata va in b
       o.prog[tab].max = 8;
       for (let liv = 1; liv <= 8; liv++) for (let seme = 1; seme <= 6; seme++) {
         o.nuovaSfida({ livello: liv, seme: seme * 7919 + liv });
-        const sf = o.S.sfida; sf.indice = sf.passi.length - 1;   // salta i calcoli: qui si prova solo la fisica
-        o.tira(o.direzioneAlgebrica(), 1); o.avanzaFinoAFermo();
-        if (!sf.esito) out.push(`${tab} liv ${liv} seme ${seme}`);
+        const scelte = o.S.sfida.dati.candidati?.length || 1;
+        for (let j = 0; j < scelte; j++) {   // nei livelli con la scelta: ogni palla candidata deve andare in buca
+          if (j) o.nuovaSfida({ livello: liv, seme: seme * 7919 + liv });
+          if (o.S.sfida.dati.scelta) o.scegliPalla(j);
+          const sf = o.S.sfida; sf.indice = sf.passi.length - 1;   // salta i calcoli: qui si prova solo la fisica
+          o.tira(o.direzioneAlgebrica(), 1); o.avanzaFinoAFermo();
+          if (!sf.esito) out.push(`${tab} liv ${liv} seme ${seme} palla ${j}`);
+        }
       }
     }
     return out;
@@ -109,11 +115,9 @@ test('sponde: l\'obiettivo è esplicito e il punto della sponda non è scambiato
   await avvia(page, 'sponde');
   await expect(page.locator('.obiettivo')).toContainText('un solo rimbalzo');
   await expect(page.locator('.etichetta.no')).toContainText('bloccata');
-  await risolviPassi(page);   // risolve tutto, poi riprova da capo con l'errore tipico
-  await page.evaluate(() => { window.__orfini.nuovaSfida({ livello: 1, seme: 4242 }); window.__orfini.renderPannello(); });
-  const d = await page.evaluate(() => { const x = window.__orfini.S.sfida.dati; return { c: x.c, dist: Math.abs(x.c - (x.tipo === 'orizzontale' ? x.B.y : x.B.x)), k: x.tipo === 'orizzontale' ? 'y' : 'x' }; });
-  await page.fill('.passo.attivo .campo[data-k="d"]', String(d.dist));
-  await page.click('.passo.attivo [data-azione="verifica"]');
+  await expect(page.locator('.obiettivo')).toContainText('come in uno specchio');
+  await page.evaluate(() => { const o = window.__orfini; o.prog.sponde.max = 2; o.nuovaSfida({ livello: 2, seme: 4242 }); o.renderPannello(); });
+  const d = await page.evaluate(() => { const x = window.__orfini.S.sfida.dati; return { c: x.c, k: x.tipo === 'orizzontale' ? 'y' : 'x' }; });
   await page.fill(`.passo.attivo .campo[data-k="${d.k}"]`, String(d.c));
   await page.click('.passo.attivo [data-azione="verifica"]');
   await expect(page.locator('.passo.attivo .msg.errore')).toContainText('non il suo riflesso');
@@ -148,27 +152,29 @@ for (const [nome, vp] of [['desktop', { width: 1366, height: 768 }], ['telefono'
   });
 }
 
-test('set: un livello è fatto di 5 tavoli e il successivo si sblocca solo a set finito', async ({ page }) => {
+test('set: un livello è fatto di 3 tavoli e il successivo si sblocca solo a set finito', async ({ page }) => {
   test.setTimeout(90000);
   await avvia(page, 'tiro');
-  await expect(page.locator('.testa-liv .set')).toContainText('Tavolo 1 di 5');
-  await expect(page.locator('#hudSx')).toContainText('tavolo 1/5');
-  for (let n = 1; n <= 5; n++) {
+  const N = await page.evaluate(() => window.__orfini.TAVOLI_SET);
+  expect(N).toBe(3);
+  await expect(page.locator('.testa-liv .set')).toContainText(`Tavolo 1 di ${N}`);
+  await expect(page.locator('#hudSx')).toContainText(`tavolo 1/${N}`);
+  for (let n = 1; n <= N; n++) {
     await risolviPassi(page);
     await page.evaluate(() => { const o = window.__orfini; o.tira(o.direzioneAlgebrica(), 1); o.avanzaFinoAFermo(); });
     await expect(page.locator('.esito')).toBeVisible();
-    expect(await page.evaluate(() => window.__orfini.prog.tiro.max)).toBe(n < 5 ? 1 : 2);
-    if (n < 5) {
-      await expect(page.locator('.esito [data-azione="prossimo"]')).toContainText(`Prossimo tavolo (${n + 1} di 5)`);
+    expect(await page.evaluate(() => window.__orfini.prog.tiro.max)).toBe(n < N ? 1 : 2);
+    if (n < N) {
+      await expect(page.locator('.esito [data-azione="prossimo"]')).toContainText(`Prossimo tavolo (${n + 1} di ${N})`);
       await page.click('.esito [data-azione="prossimo"]');
-      await expect(page.locator('.testa-liv .set')).toContainText(`Tavolo ${n + 1} di 5`);
+      await expect(page.locator('.testa-liv .set')).toContainText(`Tavolo ${n + 1} di ${N}`);
       await expect(page.locator('.testa-liv .liv b').first()).toHaveText('Livello 1');
     }
   }
   await expect(page.locator('.esito')).toContainText('Set completato!');
   await page.click('.esito [data-azione="prossimo"]');
   await expect(page.locator('.testa-liv .liv b').first()).toHaveText('Livello 2');
-  await expect(page.locator('.testa-liv .set')).toContainText('Tavolo 1 di 5');
+  await expect(page.locator('.testa-liv .set')).toContainText(`Tavolo 1 di ${N}`);
 });
 
 test('vista 3D: l\'orbita resta davanti al tavolo, senza giri completi né spostamenti', async ({ page }) => {
@@ -214,6 +220,7 @@ test.describe('feedback aptico', () => {
     expect(await page.evaluate(() => window.__vibra.at(-1))).toEqual([50, 40, 50]);
     await risolviPassi(page);
     expect(await page.evaluate(() => window.__vibra.some((s) => JSON.stringify(s) === '[12,60,12]'))).toBe(true);
+    await page.waitForTimeout(100);   // uno studente non tira entro 60 ms dalla risposta: il filtro anti-raffica non c'entra
     await page.evaluate(() => { const o = window.__orfini; o.tira(o.direzioneAlgebrica(), 1); o.avanzaFinoAFermo(); });
     const seq = await page.evaluate(() => window.__vibra.map((s) => JSON.stringify(s)));
     expect(seq).toContain('[40]');                   // tiro a piena potenza
@@ -247,6 +254,15 @@ test.describe('telefono', () => {
   });
 });
 
+// l'elemento è tutto visibile nel pannello, sopra il tastierino (a scorrimento finito)
+function scopertoSopraTastierino(page, sel) {
+  return page.evaluate((sel) => {
+    const el = document.querySelector(sel); if (!el) return false;
+    const r = el.getBoundingClientRect(), corpo = document.querySelector('#corpo').getBoundingClientRect(), t = document.querySelector('#tastierino').getBoundingClientRect();
+    return r.top >= corpo.top - 1 && r.bottom <= Math.min(corpo.bottom, t.top) + 1;
+  }, sel);
+}
+
 test.describe('telefono in orizzontale', () => {
   test.use({ viewport: { width: 844, height: 390 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
   test('testata su una riga, tastierino su due righe, Verifica visibile', async ({ page }) => {
@@ -254,12 +270,11 @@ test.describe('telefono in orizzontale', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     const r = await page.evaluate(() => {
       const box = (s) => document.querySelector(s).getBoundingClientRect();
-      return { testata: box('#testata').height, tast: box('#tastierino').height, verifica: box('.passo.attivo [data-azione="verifica"]'), tastTop: box('#tastierino').top, pann: box('#pannello').left, testDx: box('#testata').right };
+      return { testata: box('#testata').height, tast: box('#tastierino').height, pann: box('#pannello').left, testDx: box('#testata').right };
     });
     expect(r.testata).toBeLessThan(60);
     expect(r.tast).toBeLessThan(100);
-    await expect.poll(() => page.evaluate(() => document.querySelector('.passo.attivo [data-azione="verifica"]').getBoundingClientRect().bottom
-      - document.querySelector('#tastierino').getBoundingClientRect().top)).toBeLessThanOrEqual(0);   // a scorrimento del pannello finito
+    await expect.poll(() => scopertoSopraTastierino(page, '.passo.attivo .formula')).toBe(true);
     expect(r.testDx).toBeLessThanOrEqual(r.pann);
   });
 });
@@ -271,10 +286,116 @@ test.describe('telefono in verticale', () => {
     const r = await page.evaluate(() => {
       const box = (s) => document.querySelector(s).getBoundingClientRect();
       const o = window.__orfini, v = new o.THREE.Vector3(0, 0, 6.5).project(o.camera);
-      return { verifica: box('.passo.attivo [data-azione="verifica"]').bottom, tastTop: box('#tastierino').top, pannTop: box('#pannello').top, bordoTavolo: (1 - v.y) / 2 * innerHeight };
+      return { pannTop: box('#pannello').top, bordoTavolo: (1 - v.y) / 2 * innerHeight };
     });
-    await expect.poll(() => page.evaluate(() => document.querySelector('.passo.attivo [data-azione="verifica"]').getBoundingClientRect().bottom
-      - document.querySelector('#tastierino').getBoundingClientRect().top)).toBeLessThanOrEqual(0);   // a scorrimento del pannello finito
+    await expect.poll(() => scopertoSopraTastierino(page, '.passo.attivo .formula')).toBe(true);
     expect(r.bordoTavolo).toBeLessThanOrEqual(r.pannTop + 1);
+  });
+});
+
+test.describe('telefono piccolo (360×640)', () => {
+  test.use({ viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  for (const tab of ['tiro', 'sponde']) {
+    test(`${tab}: il tastierino non copre mai campo, messaggio e tavolo`, async ({ page }) => {
+      test.setTimeout(90000);
+      await avvia(page, tab);
+      await expect(page.locator('#tastierino')).toBeVisible();
+      for (let n = 0; n < 8; n++) {
+        const sol = await soluzione(page);
+        if (!sol || sol === 'scelta') break;
+        await expect.poll(() => scopertoSopraTastierino(page, '.passo.attivo .formula')).toBe(true);
+        const k = Object.keys(sol)[0];
+        await page.fill(`.passo.attivo .campo[data-k="${k}"]`, '97');
+        await page.tap('#tastierino [data-t="ok"]');   // risposta sbagliata: il messaggio deve vedersi
+        await expect.poll(() => scopertoSopraTastierino(page, '.passo.attivo .msg')).toBe(true);
+        for (const [kk, v] of Object.entries(sol)) await page.fill(`.passo.attivo .campo[data-k="${kk}"]`, v);
+        await page.tap('#tastierino [data-t="ok"]');
+      }
+      const r = await page.evaluate(() => { const o = window.__orfini, v = new o.THREE.Vector3(0, 0, 6.5).project(o.camera); return { pannTop: document.querySelector('#pannello').getBoundingClientRect().top, bordo: (1 - v.y) / 2 * innerHeight }; });
+      expect(r.bordo).toBeLessThanOrEqual(r.pannTop + 1);
+    });
+  }
+});
+
+test('progressione del Tiro: pendenza intera, poi frazionaria, poi anche q frazionario; palle di disturbo per livello', async ({ page }) => {
+  await avvia(page, 'tiro');
+  const r = await page.evaluate(() => {
+    const o = window.__orfini, out = {}, intero = (v) => Math.abs(v - Math.round(v)) < 1e-9;
+    o.prog.tiro.max = 8;
+    for (let liv = 1; liv <= 6; liv++) {
+      const st = { mInt: 0, qInt: 0, decoro: 0, n: 0 };
+      for (let seme = 1; seme <= 8; seme++) {
+        o.nuovaSfida({ livello: liv, seme: seme * 31 + liv });
+        const d = o.S.sfida.dati; st.n++;
+        if (intero(d.m)) st.mInt++; if (intero(d.q)) st.qInt++;
+        st.decoro = o.palle.filter((p) => p.ruolo === 'decoro').length;
+      }
+      out[liv] = st;
+    }
+    return out;
+  });
+  for (const l of [1, 2, 3]) expect(r[l].mInt).toBe(r[l].n);
+  for (const l of [4, 5]) { expect(r[l].mInt).toBe(0); expect(r[l].qInt).toBe(r[l].n); }
+  expect(r[6].qInt).toBe(0);
+  expect(r[1].decoro).toBe(0);
+  expect(r[6].decoro).toBeGreaterThan(r[1].decoro);
+});
+
+test('scegli la palla: più candidate allineate, si sceglie toccando, il resto dei passi segue la palla scelta', async ({ page }) => {
+  await avvia(page, 'tiro');
+  await page.evaluate(() => { const o = window.__orfini; o.prog.tiro.max = 7; o.nuovaSfida({ livello: 7, seme: 77 }); o.renderPannello(); });
+  const n = await page.locator('.passo.attivo [data-azione="scegli"]').count();
+  expect(n).toBeGreaterThanOrEqual(2);
+  await page.locator('.passo.attivo [data-azione="scegli"]').nth(1).click();
+  const d = await page.evaluate(() => { const x = window.__orfini.S.sfida.dati; return { nQ: x.nQ, n1: x.candidati[1].n, passo: window.__orfini.S.sfida.passi[1].id }; });
+  expect(d.nQ).toBe(d.n1);
+  expect(d.passo).toBe('m');
+  await risolviPassi(page);
+  const ok = await page.evaluate(() => { const o = window.__orfini; o.tira(o.direzioneAlgebrica(), 1); o.avanzaFinoAFermo(); return !!o.S.sfida.esito; });
+  expect(ok).toBe(true);
+});
+
+test('sponde: mentre si scrive la x del punto I la traiettoria compare subito sul tavolo', async ({ page }) => {
+  await avvia(page, 'sponde');
+  const d = await page.evaluate(() => { const x = window.__orfini.S.sfida.dati; return { I: x.I, oriz: x.tipo === 'orizzontale' }; });
+  expect(d.oriz).toBe(true);
+  await page.fill('.passo.attivo .campo[data-k="x"]', String(d.I.x + 3));
+  await expect(page.locator('.etichetta', { hasText: 'in buca!' })).toHaveCount(0);
+  await page.fill('.passo.attivo .campo[data-k="x"]', String(d.I.x));
+  await expect(page.locator('.etichetta', { hasText: 'in buca!' })).toHaveCount(1);
+  expect(await page.evaluate(() => window.__orfini.S.sfida.indice)).toBe(0);   // l'anteprima non invia la risposta
+});
+
+test.describe('spiegami', () => {
+  test('dalla home e dal pannello si apre la scena giusta; mentre è aperta Spazio non tira', async ({ page }) => {
+    await page.goto(URL);
+    await page.evaluate(() => localStorage.clear());
+    await page.goto(URL);
+    await page.waitForSelector('#bGioca:not(.nascosto)');
+    await page.click('#schermata [data-explain=""]');
+    await expect(page.locator('#explain')).toBeVisible();
+    await expect(page.locator('#explainFrame')).toHaveAttribute('src', 'math_pool_retta_pianocartesiano_spiegazione.html?embed=1');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#explain')).toBeHidden();
+    await page.click('#bGioca');
+    await page.evaluate(() => window.__orfini.cambiaTab('sponde'));
+    await page.click('#contenuto [data-explain="mode"]');
+    await expect(page.locator('#explainFrame')).toHaveAttribute('src', 'math_pool_retta_pianocartesiano_spiegazione.html?embed=1#sponde');
+    await page.evaluate(() => { const o = window.__orfini; o.S.sfida.indice = o.S.sfida.passi.length - 1; });
+    await page.keyboard.down(' '); await page.waitForTimeout(300); await page.keyboard.up(' ');
+    expect(await page.evaluate(() => window.__orfini.S.stato)).toBe('mira');
+  });
+
+  test('la spiegazione disegna ogni scena senza errori e in embed parte dalla scena chiesta', async ({ page }) => {
+    const errori = [];
+    page.on('pageerror', (e) => errori.push(e.message));
+    await page.goto('/content/apps/math_pool_retta_pianocartesiano_spiegazione.html');
+    const scene = await page.evaluate(() => window.__spiega.SC.map((s) => ({ id: s.id, a: s.a, b: s.b })));
+    expect(scene.map((s) => s.id)).toEqual(['intro', 'tiro', 'scelta', 'sponde', 'lab', 'end']);
+    for (const s of scene) for (let x = s.a; x < s.b; x += 0.5) await page.evaluate((v) => { window.__spiega.t = v; }, x);
+    expect(errori).toEqual([]);
+    await page.goto('/content/apps/math_pool_retta_pianocartesiano_spiegazione.html?embed=1#scelta');
+    await expect(page.locator('#cap')).toContainText('Nei livelli alti');
+    await expect(page.locator('header')).toBeHidden();
   });
 });

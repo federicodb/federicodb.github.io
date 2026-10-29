@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Math Pool in 60 secondi</title>
+<meta name="description" content="Animazione di un minuto che spiega Math Pool: la retta y = mx + q per mandare la palla in buca, la scelta della palla più comoda, le sponde come specchio e il Lab (Orfini Math Lab).">
+<style>
+/* Stesso look del gioco: nero AMOLED, pannelli scuri bordati, accento ciano, piano cartesiano al neon. */
+:root{
+  --bg:#000; --panel:rgba(8,8,10,.94); --panel2:#111116; --line:rgba(255,255,255,.13);
+  --fg:#eef0fa; --muted:#9ba1b6; --acc:#4cc9f0; --ok:#3ddc97; --err:#ff5d73; --warn:#ffb703;
+  --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;min-height:100%}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow a{color:var(--muted);text-decoration:none}
+.eyebrow a:hover{color:var(--fg)}
+h1{font-weight:850;font-size:clamp(32px,6vw,52px);line-height:1.05;margin:0;color:var(--acc);text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--muted);font-size:17px}
+.screen{border-radius:18px;padding:8px;background:var(--panel2);border:1px solid var(--line)}
+canvas{display:block;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:12px;background:#000;cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{font:650 17px var(--body);border:1px solid var(--line);border-radius:12px;padding:10px 18px;min-height:44px;
+  background:var(--panel2);color:var(--fg);cursor:pointer;transition:transform .08s}
+.btn:active{transform:scale(.96)}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,input:focus-visible{outline:3px solid var(--warn);outline-offset:3px}
+.play{background:var(--acc);border-color:var(--acc);color:#000;min-width:120px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:10px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--acc)}
+.time{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{font:600 14px var(--body);color:var(--fg);background:transparent;border:2px solid var(--line);
+  border-radius:999px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:7px;align-items:center;min-height:36px}
+.chap::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.chap[aria-current="true"]{border-color:var(--c);background:rgba(255,255,255,.06)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.2vw,21px);line-height:1.45;font-weight:500;max-width:70ch}
+.caption b{color:var(--acc);font-weight:700}
+section.tx{border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:14px}
+section.tx h2{font-weight:800;font-size:24px;margin:0}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 26px}
+.txlist li{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ts{align-self:flex-start;font-family:var(--mono);font-size:13px;color:#000;background:var(--c);border:0;border-radius:8px;padding:2px 8px;cursor:pointer}
+.txlist strong{font-weight:800;font-size:18px}
+.txlist p{margin:0;color:var(--muted);max-width:60ch}
+.txlist p b{color:var(--fg)}
+.cta{display:inline-block;align-self:flex-start;text-decoration:none;background:var(--ok);border-color:var(--ok);color:#000}
+.hint{font-size:13px;color:var(--muted);margin:0}
+/* modalità incorporata (?embed): solo schermo e comandi */
+.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:17px}
+@media (max-width:560px){.btn{font-size:16px;padding:9px 14px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="https://federicodb.github.io/index.html">← Orfini Math Lab</a> · Geometria analitica · Biennio</div>
+    <h1>Math Pool in 60 secondi</h1>
+    <p class="lead">Un minuto per capire il biliardo cartesiano: la retta y = mx + q che manda la palla in buca, la scelta della palla più comoda, la sponda che fa da specchio e il Lab per giocare libero.</p>
+  </header>
+
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: rette, pendenze e rimbalzi sul tavolo da biliardo cartesiano di Math Pool"></canvas>
+  </div>
+
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="60" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:00</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare e spiegare.</p>
+
+  <a class="btn cta" href="https://federicodb.github.io/content/apps/math_pool_retta_pianocartesiano.html">🎮 Gioca a Math Pool</a>
+
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 60;
+const BODY = 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+const MONO = 'ui-monospace,"SFMono-Regular",Menlo,monospace';
+const ACC = '#4cc9f0', OK = '#3ddc97', ERR = '#ff5d73', WARN = '#ffb703', VIO = '#c77dff', MUT = '#9ba1b6', FG = '#eef0fa';
+const FELT = '#0d6b3c', CORN = '#5b3518', BIANCA = '#f6f3ea';
+const COL = { 3: '#d62828', 5: '#f77f00', 8: '#141414', 2: '#1d4ed8', 6: '#138a36' };
+const R = 0.35;   // raggio delle palle, in quadretti (come nel gioco)
+const BUCHE = [[-10, 5, .85], [0, 5, .7], [10, 5, .85], [-10, -5, .85], [0, -5, .7], [10, -5, .85]];
+
+const MODES = {
+  tiro: { icon: '🎱', name: 'Tiro', tag: 'y = mx + q', c: ACC },
+  scelta: { icon: '🎯', name: 'Scegli la palla', tag: 'dal livello 7', c: VIO },
+  sponde: { icon: '↩', name: 'Sponde', tag: 'lo specchio', c: WARN },
+  lab: { icon: '🧪', name: 'Lab', tag: 'gioco libero', c: OK },
+};
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: ACC,
+    cap: 'In Math Pool il <b>piano cartesiano è stampato sul panno</b> e continua tutto intorno al tavolo. Ogni livello è un <b>set di 3 tavoli</b>: finiscili e si sblocca il successivo.' },
+  { id: 'tiro', label: 'Tiro', a: 5, b: 20, ...MODES.tiro,
+    cap: 'P(−4; −3) e Q(−2; 1): Δx = 2, Δy = 4, quindi <b>m = 4/2 = 2</b>. Scambiare Δx e Δy dà 1/2, e la retta manca Q. Poi q = −3 − 2 · (−4) = 5: la retta <b>y = 2x + 5</b> passa per la buca B(0; 5).' },
+  { id: 'scelta', label: 'Scegli la palla', a: 20, b: 30, ...MODES.scelta,
+    cap: 'Nei livelli alti ogni palla colorata è già allineata con la bianca e con una buca. La palla 3 dà <b>m = 3</b>, la palla 5 dà m = 1/2: scegli i conti più comodi (+20 punti).' },
+  { id: 'sponde', label: 'Sponde', a: 30, b: 48, ...MODES.sponde,
+    cap: 'La sponda è uno <b>specchio</b>. Mentre scrivi la x del punto I vedi subito la traiettoria. Il riflesso della buca è B\'(10; 15): la retta da P a B\' è y = x + 5 e tocca la sponda in <b>I(0; 5)</b>. Sulla sponda la pendenza cambia segno: <b>1 → −1</b>.' },
+  { id: 'lab', label: 'Lab', a: 48, b: 55, ...MODES.lab,
+    cap: 'Nel Lab sposti le palle e la retta si aggiorna da sola: con Q(2; 1) è y = ½x, con Q(2; 3) diventa <b>y = x + 1</b>.' },
+  { id: 'end', label: 'Riepilogo', a: 55, b: 60, c: OK,
+    cap: '<b>m = Δy / Δx</b>, <b>q = y − m · x</b> e sulla sponda <b>m → −m</b>. Tre tavoli per set, poi il livello successivo. Ora tocca a te!' },
+];
+
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 3);
+const eio = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const back = p => 1 + 2.70158 * Math.pow(p - 1, 3) + 1.70158 * Math.pow(p - 1, 2);
+const lerp = (a, b, t) => a + (b - a) * t;
+
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || 700} ${size}px ${o.f || BODY}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col;
+  ctx.fillText(s, x, y);
+}
+function Wt(s, size, f = BODY, w = 700) { ctx.font = `${w} ${size}px ${f}`; return ctx.measureText(s).width; }
+function pop(x, y, p, fn) {
+  if (p <= 0) return;
+  const s = back(Math.min(p, 1));
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  const keep = BASE; BASE = keep * Math.min(1, p * 2.5); A(1); fn(); BASE = keep;
+  ctx.restore(); A(1);
+}
+// etichetta come nel gioco: pillola nera bordata, testo monospazio
+function pill(s, x, y, col, o = {}) {
+  const size = o.size || 20, w = Wt(s, size, MONO) + 22, h = size + 14;
+  rr(x - w / 2, y - h / 2, w, h, h / 2); ctx.fillStyle = o.bg || 'rgba(0,0,0,.82)'; ctx.fill();
+  ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke();
+  T(s, x, y + 1, size, o.tc || col, { f: MONO });
+}
+
+/* ---------- il tavolo: un riquadro del piano cartesiano ---------- */
+function mappa(cx, cy, U) { return { U, X: x => cx + x * U, Y: y => cy - y * U }; }
+function pianoNeon(M) {   // il piano continua oltre il tavolo, con la stessa unità
+  const { X, Y, U } = M;
+  const x0 = Math.floor(-X(0) / U) - 1, x1 = Math.ceil((W - X(0)) / U) + 1, y0 = Math.floor((Y(0) - H) / U) - 1, y1 = Math.ceil(Y(0) / U) + 1;
+  ctx.lineWidth = 1;
+  for (let x = x0; x <= x1; x++) { ctx.strokeStyle = x % 5 ? 'rgba(76,201,240,.09)' : 'rgba(76,201,240,.24)'; ctx.beginPath(); ctx.moveTo(X(x), 0); ctx.lineTo(X(x), H); ctx.stroke(); }
+  for (let y = y0; y <= y1; y++) { ctx.strokeStyle = y % 5 ? 'rgba(76,201,240,.09)' : 'rgba(76,201,240,.24)'; ctx.beginPath(); ctx.moveTo(0, Y(y)); ctx.lineTo(W, Y(y)); ctx.stroke(); }
+  ctx.save(); ctx.shadowColor = ACC; ctx.shadowBlur = 12; ctx.strokeStyle = ACC; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(W, Y(0)); ctx.moveTo(X(0), 0); ctx.lineTo(X(0), H); ctx.stroke(); ctx.restore();
+}
+function tavolo(M) {
+  const { X, Y, U } = M;
+  rr(X(-11.5), Y(6.5), 23 * U, 13 * U, U * .3); ctx.fillStyle = CORN; ctx.fill();
+  ctx.save(); ctx.shadowColor = ACC; ctx.shadowBlur = 16; ctx.strokeStyle = ACC; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+  ctx.fillStyle = '#d9d3c4';
+  for (let x = -10; x <= 10; x += 1) { circ(X(x), Y(6), x % 5 ? 2 : 3.5); ctx.fill(); circ(X(x), Y(-6), x % 5 ? 2 : 3.5); ctx.fill(); }
+  rr(X(-10.7), Y(5.7), 21.4 * U, 11.4 * U, 6); ctx.fillStyle = '#0a5730'; ctx.fill();
+  rr(X(-10.35), Y(5.35), 20.7 * U, 10.7 * U, 4); ctx.fillStyle = FELT; ctx.fill();
+  ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,255,255,.13)'; ctx.beginPath();
+  for (let x = -10; x <= 10; x++) { ctx.moveTo(X(x), Y(5)); ctx.lineTo(X(x), Y(-5)); }
+  for (let y = -5; y <= 5; y++) { ctx.moveTo(X(-10), Y(y)); ctx.lineTo(X(10), Y(y)); }
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 2.5; ctx.beginPath();
+  ctx.moveTo(X(-10), Y(0)); ctx.lineTo(X(10), Y(0)); ctx.moveTo(X(0), Y(-5)); ctx.lineTo(X(0), Y(5)); ctx.stroke();
+  for (let x = -8; x <= 8; x += 2) if (x) T(String(x).replace('-', '−'), X(x), Y(0) + 15, 20, 'rgba(255,255,255,.75)', { w: 600 });
+  for (const y of [-4, -2, 2, 4]) T(String(y).replace('-', '−'), X(0) - 18, Y(y), 20, 'rgba(255,255,255,.75)', { w: 600 });
+  for (const [bx, by, br] of BUCHE) { circ(X(bx), Y(by), br * U); ctx.fillStyle = '#000'; ctx.fill(); ctx.strokeStyle = '#7d838c'; ctx.lineWidth = 2; ctx.stroke(); }
+}
+function palla(M, x, y, col, n, a = 1, s = 1) {
+  if (a <= 0) return;
+  const { X, Y, U } = M, r = R * U * s;
+  A(a);
+  circ(X(x) + 2, Y(y) + 3, r); ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fill();
+  const g = ctx.createRadialGradient(X(x) - r * .35, Y(y) - r * .35, r * .1, X(x), Y(y), r);
+  g.addColorStop(0, '#fff'); g.addColorStop(.25, col); g.addColorStop(1, col);
+  circ(X(x), Y(y), r); ctx.fillStyle = g; ctx.fill();
+  if (n) { circ(X(x), Y(y), r * .5); ctx.fillStyle = BIANCA; ctx.fill(); T(String(n), X(x), Y(y) + 1, r * .75, '#111', { w: 800 }); }
+  A(1);
+}
+function linea(M, x1, y1, x2, y2, col, o = {}) {   // o.p: quanto ne è disegnato (0..1)
+  const { X, Y } = M, p = o.p ?? 1; if (p <= 0) return;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = o.w || 4; ctx.lineCap = 'round';
+  if (o.dash) ctx.setLineDash(o.dash);
+  if (o.glow) { ctx.shadowColor = col; ctx.shadowBlur = 12; }
+  ctx.beginPath(); ctx.moveTo(X(x1), Y(y1)); ctx.lineTo(X(lerp(x1, x2, p)), Y(lerp(y1, y2, p))); ctx.stroke(); ctx.restore();
+}
+function polilinea(M, pts, col, o = {}) {
+  const { X, Y } = M;
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = o.w || 4; ctx.lineCap = ctx.lineJoin = 'round';
+  if (o.dash) ctx.setLineDash(o.dash);
+  if (o.glow) { ctx.shadowColor = col; ctx.shadowBlur = 12; }
+  ctx.beginPath(); pts.forEach(([x, y], i) => ctx[i ? 'lineTo' : 'moveTo'](X(x), Y(y))); ctx.stroke(); ctx.restore();
+}
+function anello(M, x, y, r, col, a = 1) { const { X, Y, U } = M; A(a); ctx.save(); ctx.shadowColor = col; ctx.shadowBlur = 14; circ(X(x), Y(y), r * U); ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.stroke(); ctx.restore(); A(1); }
+function lungoPercorso(pts, s) {   // punto alla frazione s (0..1) di una spezzata
+  const L = []; let tot = 0;
+  for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); L.push(l); tot += l; }
+  let d = s * tot;
+  for (let i = 0; i < L.length; i++) { if (d <= L[i] || i === L.length - 1) { const k = L[i] ? clamp(d / L[i]) : 1; return [lerp(pts[i][0], pts[i + 1][0], k), lerp(pts[i][1], pts[i + 1][1], k)]; } d -= L[i]; }
+  return pts[pts.length - 1];
+}
+function riga(s, x, y, col, p, size = 26) { A(p); T(s, x, y, size, col, { al: 'left', f: MONO }); A(1); }
+function riquadro(x, y, w, h, col) { rr(x, y, w, h, 18); ctx.fillStyle = 'rgba(8,8,10,.92)'; ctx.fill(); ctx.strokeStyle = col || 'rgba(255,255,255,.14)'; ctx.lineWidth = 2; ctx.stroke(); }
+function grande(s, x, y, p, col = ACC) { pop(x, y, p, () => { ctx.save(); ctx.shadowColor = col; ctx.shadowBlur = 24; T(s, 0, 0, 72, col, { w: 900 }); ctx.restore(); }); }
+function chip(m) {
+  const lab = `${m.icon} ${m.name}`, w1 = Wt(lab, 26), w2 = Wt(m.tag, 20, MONO, 700), w = w1 + w2 + 60;
+  rr(24, 22, w, 52, 26); ctx.fillStyle = m.c; ctx.fill();
+  T(lab, 46, 49, 26, '#000', { al: 'left', w: 800 });
+  A(.75); T(m.tag, 46 + w1 + 18, 49, 20, '#000', { al: 'left', f: MONO }); A(1);
+}
+
+/* ---------- scena: intro ---------- */
+function sIntro(u) {
+  const M = mappa(640, 400, 28);
+  A(prog(u, 0, .8)); pianoNeon(M); tavolo(M); A(1);
+  pop(640, 90, prog(u, .2, .9), () => { ctx.save(); ctx.shadowColor = ACC; ctx.shadowBlur = 26; T('MATH POOL', 0, 0, 84, ACC, { w: 900 }); ctx.restore(); });
+  palla(M, -4, -3, BIANCA, 0, prog(u, 1, 1.4));
+  palla(M, -2, 1, COL[3], 3, prog(u, 1.3, 1.7));
+  A(prog(u, 1, 1.4)); pill('P(−4; −3)', M.X(-4), M.Y(-3) + 34, '#fff'); A(1);
+  A(prog(u, 1.3, 1.7)); pill('Q(−2; 1)', M.X(-2) + 70, M.Y(1), ACC); A(1);
+  anello(M, 0, 5, .95, ACC, prog(u, 1.6, 2));
+  A(prog(u, 1.6, 2)); pill('B(0; 5)', M.X(0) + 86, M.Y(5) - 2, WARN); A(1);
+  // il set: tre tavoli per livello
+  const sp = prog(u, 2.6, 3.2);
+  if (sp > 0) {
+    A(sp); riquadro(400, 612, 480, 78, 'rgba(255,183,3,.6)');
+    T('Ogni livello: set di 3 tavoli', 570, 651, 24, FG, { w: 700 });
+    for (let i = 0; i < 3; i++) {
+      const on = u > 3.4 + i * .4;
+      circ(790 + i * 34, 651, 12); ctx.fillStyle = on ? WARN : 'transparent'; ctx.fill(); ctx.strokeStyle = WARN; ctx.lineWidth = 3; ctx.stroke();
+    }
+    A(1);
+  }
+}
+
+/* ---------- scena: Tiro ---------- */
+function sTiro(u) {
+  const M = mappa(400, 372, 32);
+  pianoNeon(M); tavolo(M);
+  const P = [-4, -3], Q = [-2, 1], B = [0, 5];
+  // il tiro: la bianca arriva a contatto con Q, poi Q va in buca
+  const dir = [2 / Math.hypot(2, 4), 4 / Math.hypot(2, 4)], C = [Q[0] - 2 * R * dir[0], Q[1] - 2 * R * dir[1]];
+  const k1 = eo(prog(u, 10.6, 11.6)), k2 = eo(prog(u, 11.6, 12.8)), cad = prog(u, 12.8, 13.2);
+  const pb = [lerp(P[0], C[0], k1), lerp(P[1], C[1], k1)], pq = [lerp(Q[0], B[0], k2), lerp(Q[1], B[1], k2)];
+  anello(M, B[0], B[1], .95, ACC, 1 - cad);
+  // Δx e Δy
+  const dx = prog(u, 1, 2), dy = prog(u, 2, 3), via = 1 - prog(u, 10, 10.6);
+  if (dx > 0) { A(via); linea(M, P[0], P[1], Q[0], P[1], WARN, { p: dx, w: 4 }); A(via * dx); pill('Δx = 2', M.X(-3), M.Y(P[1]) + 30, WARN); A(1); }
+  if (dy > 0) { A(via); linea(M, Q[0], P[1], Q[0], Q[1], WARN, { p: dy, w: 4 }); A(via * dy); pill('Δy = 4', M.X(Q[0]) + 66, M.Y(-1), WARN); A(1); }
+  // errore tipico: Δx e Δy scambiati, m = 1/2
+  const er = prog(u, 4.2, 4.8) * (1 - prog(u, 6.6, 7));
+  if (er > 0) { A(er); linea(M, -10, -3 + .5 * (-10 + 4), 10, -3 + .5 * 14, ERR, { dash: [12, 10], w: 4 }); pill('la tua: y = ½x − 1', M.X(5), M.Y(1.2), ERR); A(1); }
+  // la retta y = 2x + 5
+  const rp = prog(u, 7, 8.2);
+  if (rp > 0) { A(via * .9 + .1 * (1 - via)); linea(M, -5, -5, 0, 5, ACC, { p: rp, w: 4, glow: true }); A(1); }
+  if (u > 8.2 && u < 10.6) { A(prog(u, 8.2, 8.6)); pill('q = 5', M.X(0) - 66, M.Y(5) + 34, ACC); A(1); }
+  palla(M, pq[0], pq[1], COL[3], 3, 1 - cad, 1 - .5 * cad);
+  palla(M, pb[0], pb[1], BIANCA, 0);
+  if (u < 10.4) { pill('P(−4; −3)', M.X(-4) - 84, M.Y(-3), '#fff'); pill('Q(−2; 1)', M.X(-2) - 80, M.Y(1), ACC); pill('B(0; 5)', M.X(0) + 88, M.Y(5) - 2, WARN); }
+  grande('BUCA!', M.X(0), M.Y(1.5), prog(u, 13, 13.6), ACC);
+
+  // pannello: i passi
+  const px = 812;
+  riquadro(790, 112, 466, 536);
+  T('Calcola la retta PQ', px, 152, 28, FG, { al: 'left', w: 800 });
+  riga('m = Δy / Δx', px, 214, MUT, prog(u, 1, 1.5));
+  riga('m = 4 / 2 = 2', px, 256, ACC, prog(u, 3, 3.5), 30);
+  if (er > 0) { A(er); T('4/2, non 2/4!', px, 300, 24, ERR, { al: 'left' }); T('Δy sopra, Δx sotto', px, 334, 22, ERR, { al: 'left', w: 500 }); A(1); }
+  riga('q = y − m · x', px, 372, MUT, prog(u, 7, 7.4));
+  riga('q = −3 − 2 · (−4) = 5', px, 412, ACC, prog(u, 7.4, 7.9), 24);
+  pop(px + 210, 476, prog(u, 8.2, 8.8), () => { rr(-200, -32, 400, 64, 14); ctx.fillStyle = '#000'; ctx.fill(); ctx.strokeStyle = ACC; ctx.lineWidth = 2; ctx.stroke(); T('y = 2x + 5', 0, 2, 34, '#fff', { f: MONO, w: 800 }); });
+  riga('x = 0 → y = 5: la buca B', px, 548, OK, prog(u, 9, 9.5), 23);
+  riga('è sulla retta ✓', px, 584, OK, prog(u, 9.2, 9.7), 23);
+}
+
+/* ---------- scena: Scegli la palla ---------- */
+function sScelta(u) {
+  const M = mappa(400, 372, 32);
+  pianoNeon(M); tavolo(M);
+  const P = [-2, -1], C3 = { n: 3, Q: [-1, 2], B: [0, 5] }, C5 = { n: 5, Q: [2, 1], B: [10, 5] };
+  const scelta = u > 5.4, via = prog(u, 5.4, 5.9);
+  // percorsi tratteggiati delle candidate
+  for (const c of [C3, C5]) {
+    const a = prog(u, .3, 1) * (c.n === 5 ? 1 - via : 1);
+    if (a > 0) { A(a); linea(M, P[0], P[1], c.B[0], c.B[1], COL[c.n], { dash: [10, 9], w: 3 }); A(1); }
+  }
+  // Δ delle due candidate
+  const t3 = prog(u, 1.3, 2.1) * (1 - via), t5 = prog(u, 2.3, 3.1) * (1 - via);
+  if (t3 > 0) { A(t3); linea(M, -2, -1, -1, -1, WARN, { w: 3 }); linea(M, -1, -1, -1, 2, WARN, { w: 3 }); pill('1', M.X(-1.5), M.Y(-1) + 22, WARN, { size: 20 }); pill('3', M.X(-1) + 24, M.Y(.5), WARN, { size: 20 }); A(1); }
+  if (t5 > 0) { A(t5); linea(M, -2, -1, 2, -1, WARN, { w: 3 }); linea(M, 2, -1, 2, 1, WARN, { w: 3 }); pill('4', M.X(0), M.Y(-1) + 22, WARN, { size: 20 }); pill('2', M.X(2) + 24, M.Y(0), WARN, { size: 20 }); A(1); }
+  // tiro sulla palla 3
+  const dir = [1 / Math.hypot(1, 3), 3 / Math.hypot(1, 3)], C = [C3.Q[0] - 2 * R * dir[0], C3.Q[1] - 2 * R * dir[1]];
+  const k1 = eo(prog(u, 6.8, 7.6)), k2 = eo(prog(u, 7.6, 8.6)), cad = prog(u, 8.6, 9);
+  anello(M, 0, 5, .95, ACC, scelta ? 1 - cad : 0);
+  palla(M, lerp(C3.Q[0], 0, k2), lerp(C3.Q[1], 5, k2), COL[3], 3, 1 - cad, 1 - .5 * cad);
+  palla(M, C5.Q[0], C5.Q[1], COL[5], 5);
+  palla(M, lerp(P[0], C[0], k1), lerp(P[1], C[1], k1), BIANCA, 0);
+  if (u < 6.6) pill('P(−2; −1)', M.X(-2) - 84, M.Y(-1), '#fff');
+  grande('BUCA!', M.X(0), M.Y(1.6), prog(u, 8.8, 9.4), ACC);
+
+  // pannello: le due scelte
+  const px = 812;
+  riquadro(790, 112, 466, 536);
+  T('Quale palla conviene?', px, 152, 28, FG, { al: 'left', w: 800 });
+  const card = (y, c, testo, m, p, sel, spenta) => {
+    if (p <= 0) return;
+    A(p * (spenta ? .4 : 1));
+    rr(px, y, 422, 116, 14); ctx.fillStyle = sel ? 'rgba(61,220,151,.1)' : '#050506'; ctx.fill();
+    ctx.strokeStyle = sel ? OK : 'rgba(255,255,255,.14)'; ctx.lineWidth = sel ? 3 : 2; ctx.stroke();
+    circ(px + 32, y + 36, 15); ctx.fillStyle = COL[c.n]; ctx.fill(); T(String(c.n), px + 32, y + 37, 16, '#fff', { w: 800 });
+    T(testo, px + 60, y + 37, 22, FG, { al: 'left', f: MONO });
+    T(m, px + 22, y + 82, 26, sel ? OK : FG, { al: 'left', f: MONO, w: 800 });
+    A(1);
+  };
+  card(196, C3, 'Q(−1; 2) → B(0; 5)', 'm = 3 / 1 = 3', prog(u, 1.2, 1.7), scelta, false);
+  card(330, C5, 'Q(2; 1) → B(10; 5)', 'm = 2 / 4 = 1/2', prog(u, 2.2, 2.7), false, scelta);
+  A(prog(u, 3.6, 4.1)); T('Pendenza intera:', px, 486, 24, MUT, { al: 'left', w: 600 }); T('conti più comodi', px, 518, 24, MUT, { al: 'left', w: 600 }); A(1);
+  pop(px + 210, 590, prog(u, 5.4, 6), () => { rr(-200, -32, 400, 64, 14); ctx.fillStyle = OK; ctx.fill(); T('Scelta furba: +20', 0, 2, 30, '#000', { w: 800 }); });
+}
+
+/* ---------- scena: Sponde ---------- */
+function sSponde(u) {
+  const M = mappa(372, 485, 30);
+  pianoNeon(M); tavolo(M);
+  const P = [-6, -1], B = [10, -5], OST = [2, -3], I = [0, 5], Bs = [10, 15];
+  const { X, Y } = M;
+  // la sponda y = 5 accesa come specchio
+  ctx.save(); ctx.shadowColor = WARN; ctx.shadowBlur = 14; ctx.strokeStyle = WARN; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.moveTo(X(-9.1), Y(5.35)); ctx.lineTo(X(-.65), Y(5.35)); ctx.moveTo(X(.65), Y(5.35)); ctx.lineTo(X(9.1), Y(5.35)); ctx.stroke(); ctx.restore();
+  pill('specchio: y = 5', X(-7.2), Y(5.35) - 30, WARN, { size: 20 });
+  const fine = prog(u, 15.6, 16);
+  anello(M, B[0], B[1], .95, ACC, 1 - fine);
+  // strada diretta bloccata
+  const bl = 1 - prog(u, 8.4, 8.8);
+  if (bl > 0) { A(bl * prog(u, .3, .8)); linea(M, P[0], P[1], OST[0], OST[1], ERR, { dash: [10, 9], w: 3 }); pill('✕ strada bloccata', X(-2), Y(-2) + 34, ERR, { size: 20 }); A(1); }
+  // anteprima: x = 3 (manca), poi x = 0 (in buca)
+  const a3 = prog(u, 3.4, 3.8) * (1 - prog(u, 5.8, 6.1)), a0 = prog(u, 6.2, 6.6) * (1 - prog(u, 8.2, 8.5));
+  if (a3 > 0) { A(a3); polilinea(M, [P, [3, 5], [10, 1 / 3]], WARN, { w: 4 }); pill('manca la buca', X(7.4), Y(1.6), WARN, { size: 20 }); A(1); }
+  if (a0 > 0) { A(a0); polilinea(M, [P, I, B], OK, { w: 4, glow: true }); pill('in buca!', X(7.6), Y(-2.4), OK, { size: 20 }); A(1); }
+  // lo specchio: d = 10, B' oltre la sponda, retta P → B'
+  const dd = prog(u, 8.6, 9.4), bs = prog(u, 9.4, 10), rp = prog(u, 10.2, 11.2);
+  if (dd > 0) { linea(M, 10.6, -5, 10.6, 5, WARN, { p: dd, dash: [8, 7], w: 3 }); linea(M, 10.6, 5, 10.6, 15, WARN, { p: bs, dash: [8, 7], w: 3 }); A(dd); pill('d = 10', X(10.6) - 56, Y(0), WARN, { size: 20 }); A(1); if (bs > 0) { A(bs); pill('d = 10', X(10.6) - 56, Y(10), WARN, { size: 20 }); A(1); } }
+  if (bs > 0) { anello(M, Bs[0], Bs[1], .85, WARN, bs); A(bs); pill("B'(10; 15)", X(10) - 120, Y(15), WARN); A(1); }
+  if (rp > 0) { linea(M, P[0], P[1], Bs[0], Bs[1], ACC, { p: rp, dash: [12, 9], w: 3 }); }
+  const iP = prog(u, 11.2, 11.7);
+  if (iP > 0) { A(iP); circ(X(0), Y(5), 9); ctx.fillStyle = OK; ctx.fill(); pill('I(0; 5)', X(0) - 66, Y(5) - 34, OK); A(1); }
+  // pendenze prima e dopo
+  const pd = prog(u, 12, 12.5) * (1 - prog(u, 15, 15.4));
+  if (pd > 0) { A(pd); polilinea(M, [P, I, B], ACC, { w: 4, glow: true }); pill('m = 1', X(-3) - 56, Y(2), ACC); pill("m' = −1", X(6.4), Y(-2.7), ACC); A(1); }
+  // il tiro con la sponda
+  const k = eio(prog(u, 15.2, 17.2)), cad = prog(u, 17.2, 17.6), pos = lungoPercorso([P, I, B], k);
+  if (u > 15.2) { A(.5); polilinea(M, [P, I, B], ACC, { w: 3 }); A(1); }
+  palla(M, OST[0], OST[1], COL[8], 8);
+  palla(M, pos[0], pos[1], BIANCA, 0, 1 - cad, 1 - .5 * cad);
+  if (u < 3) { pill('P(−6; −1)', X(-6), Y(-1) + 36, '#fff'); pill('B(10; −5)', X(10) - 90, Y(-5) + 2, WARN); }
+  grande('BUCA!', X(4), Y(-1), prog(u, 17.3, 17.8), ACC);
+
+  // pannello
+  const px = 790;
+  riquadro(768, 112, 488, 560);
+  T('Regola della sponda:', px, 150, 24, WARN, { al: 'left', w: 800 });
+  T('rimbalza come allo specchio', px, 184, 24, FG, { al: 'left', w: 600 });
+  // casella che si riempie: l'anteprima parte mentre si scrive
+  const val = u < 3.2 ? '' : u < 6 ? '3' : '0';
+  if (u < 8.6) {
+    A(prog(u, 2.2, 2.7));
+    T('Scrivi la x di I:', px, 246, 22, MUT, { al: 'left', w: 600 });
+    T('I(', px, 302, 34, FG, { al: 'left', f: MONO, w: 800 });
+    rr(px + 52, 274, 86, 56, 10); ctx.fillStyle = '#000'; ctx.fill(); ctx.strokeStyle = val === '0' ? OK : ACC; ctx.lineWidth = 3; ctx.stroke();
+    T(val, px + 95, 303, 32, FG, { f: MONO, w: 800 });
+    if ((u * 2 | 0) % 2 && u < 6.2) { ctx.fillStyle = ACC; ctx.fillRect(px + 95 + (val ? 14 : 0), 286, 3, 32); }
+    T('; 5)', px + 146, 302, 34, FG, { al: 'left', f: MONO, w: 800 });
+    T('la traiettoria si vede', px, 368, 22, MUT, { al: 'left', w: 500 });
+    T('prima di premere ✓', px, 398, 22, MUT, { al: 'left', w: 500 });
+    A(1);
+  } else {
+    riga("B'(10; 15): riflesso di B", px, 252, WARN, prog(u, 9.4, 9.9), 22);
+    riga("m = 16 / 16 = 1", px, 302, ACC, prog(u, 10.2, 10.7), 24);
+    riga('y = x + 5', px, 350, ACC, prog(u, 10.7, 11.2), 28);
+    riga('y = 5 → x = 0: I(0; 5)', px, 400, OK, prog(u, 11.2, 11.7), 22);
+    riga("prima m = 1, dopo m' = −1", px, 470, FG, prog(u, 12.4, 12.9), 22);
+    pop(px + 222, 548, prog(u, 13, 13.6), () => { rr(-210, -32, 420, 64, 14); ctx.fillStyle = '#000'; ctx.fill(); ctx.strokeStyle = WARN; ctx.lineWidth = 2; ctx.stroke(); T('sponda: m → −m', 0, 2, 32, WARN, { f: MONO, w: 800 }); });
+  }
+}
+
+/* ---------- scena: Lab ---------- */
+function sLab(u) {
+  const M = mappa(400, 372, 32);
+  pianoNeon(M); tavolo(M);
+  const P = [-2, -1], k = eio(prog(u, 2, 3.4)), Q = [2, lerp(1, 3, k)];
+  const m = (Q[1] - P[1]) / (Q[0] - P[0]), q = P[1] - m * P[0];
+  // retta che segue le palle, tagliata dentro il tavolo
+  const pts = [];
+  for (const x of [-10, 10]) { const y = m * x + q; if (y >= -5 && y <= 5) pts.push([x, y]); }
+  for (const y of [-5, 5]) { const x = (y - q) / m; if (x > -10 && x < 10) pts.push([x, y]); }
+  pts.sort((a, b) => a[0] - b[0]);
+  if (pts.length >= 2) { A(prog(u, .4, 1)); linea(M, pts[0][0], pts[0][1], pts[pts.length - 1][0], pts[pts.length - 1][1], ACC, { w: 4, glow: true }); A(1); }
+  palla(M, P[0], P[1], BIANCA, 0);
+  palla(M, Q[0], Q[1], COL[6], 6);
+  // il dito che trascina Q
+  if (u > 1.4 && u < 3.8) { A(prog(u, 1.4, 1.8) * (1 - prog(u, 3.4, 3.8))); circ(M.X(Q[0]) + 18, M.Y(Q[1]) + 18, 16); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fill(); A(1); }
+  pill('P(−2; −1)', M.X(-2) - 20, M.Y(-1) + 36, '#fff');
+  pill(`Q(2; ${k < .5 ? 1 : 3})`, M.X(2) + 76, M.Y(Q[1]), ACC);
+  // pannello
+  const px = 812;
+  riquadro(790, 160, 466, 400);
+  T('Sposta le palle:', px, 202, 26, FG, { al: 'left', w: 800 });
+  T('la retta si aggiorna', px, 238, 26, FG, { al: 'left', w: 800 });
+  const eq = k < .5 ? 'y = ½x' : 'y = x + 1', mm = k < .5 ? 'm = 2 / 4 = ½' : 'm = 4 / 4 = 1', qq = k < .5 ? 'q = −1 + 1 = 0' : 'q = −1 + 2 = 1';
+  T(mm, px, 318, 26, MUT, { al: 'left', f: MONO });
+  T(qq, px, 364, 26, MUT, { al: 'left', f: MONO });
+  rr(px, 410, 422, 70, 14); ctx.fillStyle = '#000'; ctx.fill(); ctx.strokeStyle = ACC; ctx.lineWidth = 2; ctx.stroke();
+  T(eq, px + 211, 446, 36, '#fff', { f: MONO, w: 800 });
+  A(prog(u, 4.4, 5)); T('Tiro libero, senza punteggio', px, 520, 22, MUT, { al: 'left', w: 500 }); A(1);
+}
+
+/* ---------- scena: riepilogo ---------- */
+function sEnd(u) {
+  const M = mappa(640, 400, 28);
+  A(.5); pianoNeon(M); A(1);
+  const C = [
+    { x: 240, t: 'Pendenza', f: 'm = Δy / Δx', c: ACC },
+    { x: 640, t: 'Intercetta', f: 'q = y − m · x', c: ACC },
+    { x: 1040, t: 'Sponda', f: 'm → −m', c: WARN },
+  ];
+  C.forEach((c, i) => pop(c.x, 250, prog(u, .1 + i * .3, .7 + i * .3), () => {
+    rr(-180, -110, 360, 220, 22); ctx.fillStyle = 'rgba(8,8,10,.95)'; ctx.fill(); ctx.strokeStyle = c.c; ctx.lineWidth = 3; ctx.stroke();
+    T(c.t, 0, -48, 28, MUT, { w: 700 });
+    T(c.f, 0, 22, 36, c.c, { f: MONO, w: 800 });
+  }));
+  pop(640, 460, prog(u, 1.2, 1.7), () => {
+    T('Set di 3 tavoli → livello successivo', 0, 0, 30, FG, { w: 700 });
+  });
+  pop(640, 560, prog(u, 1.8, 2.4), () => { ctx.save(); ctx.shadowColor = OK; ctx.shadowBlur = 20; T('Ora tocca a te!', 0, 0, 56, OK, { w: 900 }); ctx.restore(); });
+}
+
+const FN = { intro: sIntro, tiro: sTiro, scelta: sScelta, sponde: sSponde, lab: sLab, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta da dentro il gioco; #tiro #scelta #sponde #lab → parte da quella scena e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.icon) chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map((sc) => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = String(speed).replace('.', ',') + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+window.__spiega = { set t(v) { t = v; playing = false; draw(); ui(); }, SC };   // per i test e gli screenshot
+})();
+</script>
+</body>
+</html>
