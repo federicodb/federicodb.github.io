@@ -148,6 +148,43 @@ for (const [nome, vp] of [['desktop', { width: 1366, height: 768 }], ['telefono'
   });
 }
 
+test('set: un livello è fatto di 5 tavoli e il successivo si sblocca solo a set finito', async ({ page }) => {
+  test.setTimeout(90000);
+  await avvia(page, 'tiro');
+  await expect(page.locator('.testa-liv .set')).toContainText('Tavolo 1 di 5');
+  await expect(page.locator('#hudSx')).toContainText('tavolo 1/5');
+  for (let n = 1; n <= 5; n++) {
+    await risolviPassi(page);
+    await page.evaluate(() => { const o = window.__orfini; o.tira(o.direzioneAlgebrica(), 1); o.avanzaFinoAFermo(); });
+    await expect(page.locator('.esito')).toBeVisible();
+    expect(await page.evaluate(() => window.__orfini.prog.tiro.max)).toBe(n < 5 ? 1 : 2);
+    if (n < 5) {
+      await expect(page.locator('.esito [data-azione="prossimo"]')).toContainText(`Prossimo tavolo (${n + 1} di 5)`);
+      await page.click('.esito [data-azione="prossimo"]');
+      await expect(page.locator('.testa-liv .set')).toContainText(`Tavolo ${n + 1} di 5`);
+      await expect(page.locator('.testa-liv .liv b').first()).toHaveText('Livello 1');
+    }
+  }
+  await expect(page.locator('.esito')).toContainText('Set completato!');
+  await page.click('.esito [data-azione="prossimo"]');
+  await expect(page.locator('.testa-liv .liv b').first()).toHaveText('Livello 2');
+  await expect(page.locator('.testa-liv .set')).toContainText('Tavolo 1 di 5');
+});
+
+test('vista 3D: l\'orbita resta davanti al tavolo, senza giri completi né spostamenti', async ({ page }) => {
+  test.setTimeout(90000);
+  await avvia(page, 'lab');
+  await page.click('#bVista');
+  await page.waitForFunction(() => window.__orfini.orbita.enabled, null, { timeout: 8000 });
+  await page.mouse.move(150, 120); await page.mouse.down();
+  for (let i = 1; i <= 12; i++) await page.mouse.move(150 + i * 80, 120 + i * 40);
+  await page.mouse.up(); await page.waitForTimeout(1500);
+  const o = await page.evaluate(() => { const c = window.__orfini.orbita; return { az: c.getAzimuthalAngle(), pol: c.getPolarAngle(), pan: c.enablePan }; });
+  expect(Math.abs(o.az)).toBeLessThanOrEqual(0.62);
+  expect(o.pol).toBeLessThanOrEqual(1.09);
+  expect(o.pan).toBe(false);
+});
+
 test('vista 3D: trascinare sul tavolo fa orbitare la camera, dalla bianca si mira', async ({ page }) => {
   test.setTimeout(90000);   // il rendering software dei test è lento in vista 3D
   await avvia(page, 'lab');
@@ -207,5 +244,37 @@ test.describe('telefono', () => {
     await expect(page.locator('#tastierino')).toBeHidden();
     const piccoli = await page.evaluate(() => [...document.querySelectorAll('.barra .btn:not(.nascosto)')].filter((b) => b.getBoundingClientRect().height < 44).length);
     expect(piccoli).toBe(0);
+  });
+});
+
+test.describe('telefono in orizzontale', () => {
+  test.use({ viewport: { width: 844, height: 390 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  test('testata su una riga, tastierino su due righe, Verifica visibile', async ({ page }) => {
+    await avvia(page, 'tiro');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    const r = await page.evaluate(() => {
+      const box = (s) => document.querySelector(s).getBoundingClientRect();
+      return { testata: box('#testata').height, tast: box('#tastierino').height, verifica: box('.passo.attivo [data-azione="verifica"]'), tastTop: box('#tastierino').top, pann: box('#pannello').left, testDx: box('#testata').right };
+    });
+    expect(r.testata).toBeLessThan(60);
+    expect(r.tast).toBeLessThan(100);
+    await expect.poll(() => page.evaluate(() => document.querySelector('.passo.attivo [data-azione="verifica"]').getBoundingClientRect().bottom
+      - document.querySelector('#tastierino').getBoundingClientRect().top)).toBeLessThanOrEqual(0);   // a scorrimento del pannello finito
+    expect(r.testDx).toBeLessThanOrEqual(r.pann);
+  });
+});
+
+test.describe('telefono in verticale', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  test('il pannello usa lo spazio libero: Verifica sopra il tastierino, tavolo intero sopra il pannello', async ({ page }) => {
+    await avvia(page, 'tiro');
+    const r = await page.evaluate(() => {
+      const box = (s) => document.querySelector(s).getBoundingClientRect();
+      const o = window.__orfini, v = new o.THREE.Vector3(0, 0, 6.5).project(o.camera);
+      return { verifica: box('.passo.attivo [data-azione="verifica"]').bottom, tastTop: box('#tastierino').top, pannTop: box('#pannello').top, bordoTavolo: (1 - v.y) / 2 * innerHeight };
+    });
+    await expect.poll(() => page.evaluate(() => document.querySelector('.passo.attivo [data-azione="verifica"]').getBoundingClientRect().bottom
+      - document.querySelector('#tastierino').getBoundingClientRect().top)).toBeLessThanOrEqual(0);   // a scorrimento del pannello finito
+    expect(r.bordoTavolo).toBeLessThanOrEqual(r.pannTop + 1);
   });
 });

@@ -23,6 +23,7 @@
     --ok: #3ddc97; --errore: #ff5d73; --avviso: #ffb703;
     --u: clamp(14px, calc(0.9vmin + 8px), 22px);
     --tocco: max(44px, calc(var(--u) * 2.6));
+    --lato-w: min(calc(var(--u) * 26), 46vw);   /* larghezza del cassetto laterale, la stessa per pannello e testata */
     color-scheme: dark;
   }
   :root[data-lim] { --u: clamp(22px, 1.9vmin, 40px); --tocco: max(64px, calc(var(--u) * 2.6)); }
@@ -55,7 +56,8 @@
     padding: .3em .7em; border-radius: 999px; background: rgba(0,0,0,.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
   .hud .serie { color: var(--avviso); }
   .hud .turno { color: var(--accento); }
-  :root[data-layout="lato"] #testata { max-width: calc(100vw - min(26em, 46vw) - 68px); }
+  .hud .r + .r::before { content: " · "; color: var(--testo); }
+  :root[data-layout="lato"] #testata { max-width: calc(100vw - var(--lato-w) - 68px); }
 
   #etichette { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
   .etichetta { position: absolute; left: 0; top: 0; padding: .12em .5em; border-radius: 999px;
@@ -88,12 +90,12 @@
   /* pannello: bottom sheet in verticale, cassetto laterale in orizzontale */
   #pannello { position: fixed; z-index: 5; display: grid; background: var(--pannello); border: 1px solid var(--bordo);
     font-size: var(--u); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-sizing: border-box; }
-  :root[data-layout="sotto"] #pannello { left: 0; right: 0; bottom: 0; height: 46dvh; grid-template-rows: auto 1fr auto; grid-template-columns: 100%;
+  :root[data-layout="sotto"] #pannello { left: 0; right: 0; bottom: 0; height: var(--h-meta, 46dvh); grid-template-rows: auto 1fr auto; grid-template-columns: 100%;
     border-radius: calc(var(--u) * 1.1) calc(var(--u) * 1.1) 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom);
     transition: height .25s ease; }
   :root[data-layout="sotto"] #pannello[data-stato="chiuso"] { height: calc(var(--tocco) + env(safe-area-inset-bottom)); }
   :root[data-layout="sotto"] #pannello[data-stato="pieno"] { height: 86dvh; }
-  :root[data-layout="lato"] #pannello { top: 0; bottom: 0; right: 0; width: min(26em, 46vw); grid-template-columns: calc(var(--u) * 2.4) minmax(0, 1fr);
+  :root[data-layout="lato"] #pannello { top: 0; bottom: 0; right: 0; width: var(--lato-w); grid-template-columns: calc(var(--u) * 2.4) minmax(0, 1fr);
     grid-template-rows: 1fr auto; border-right: 0; border-radius: calc(var(--u) * 1.1) 0 0 calc(var(--u) * 1.1);
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) 0; transition: transform .25s ease; }
   :root[data-layout="lato"] #pannello[data-stato="chiuso"] { transform: translateX(calc(100% - var(--u) * 2.4)); }
@@ -117,6 +119,13 @@
   .testa-liv { display: flex; align-items: center; gap: .5em; }
   .testa-liv .liv { flex: 1; text-align: center; line-height: 1.25; }
   .testa-liv .liv span { display: block; font-size: .78em; color: var(--testo2); }
+  /* set di tavoli: un pallino per tavolo, pieno con le stelle prese, bordato quello in corso */
+  .set { display: flex; align-items: center; justify-content: center; gap: .35em; margin-top: .3em; font-size: .78em; color: var(--testo); }
+  .set i { width: 1.05em; height: 1.05em; border-radius: 50%; border: 2px solid var(--bordo); box-sizing: border-box; font-style: normal;
+    display: inline-grid; place-items: center; font-size: .8em; font-weight: 800; }
+  .set i.fatto { background: var(--avviso); border-color: var(--avviso); color: #000; }
+  .set i.ora { border-color: var(--accento); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accento) 35%, transparent); }
+  .set b { margin-left: .3em; }
   .consegna { margin: .7em 0; line-height: 1.45; color: var(--testo); font-size: .95em; }
   .obiettivo { display: block; padding: .65em .8em; border: 1px solid color-mix(in srgb, var(--accento) 45%, transparent); background: color-mix(in srgb, var(--accento) 7%, transparent); border-radius: calc(var(--u) * .7); line-height: 1.5; text-wrap: pretty; }
   .consegna .coord { display: block; margin-top: .45em; font-family: ui-monospace, Menlo, monospace; font-weight: 700; white-space: nowrap; overflow-x: auto; }
@@ -172,6 +181,19 @@
     font: 700 calc(var(--u) * 1.05) ui-monospace, Menlo, monospace; cursor: pointer; touch-action: manipulation; }
   #tastierino button:active { background: var(--accento); color: var(--su-accento); }
   #tastierino .ok { background: var(--accento); color: var(--su-accento); }
+  /* telefono in orizzontale: testata su una riga, tastierino su due righe da 8 tasti */
+  @media (max-height: 520px) {
+    :root[data-layout="lato"] #testata { flex-wrap: nowrap; }
+    :root[data-layout="lato"] .hud { flex: 0 1 auto; min-width: 0; white-space: normal; font-size: calc(var(--u) * .8); line-height: 1.25; border-radius: .7em; }
+    :root[data-layout="lato"] .hud .r { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    :root[data-layout="lato"] .hud .r + .r::before { content: none; }
+    :root[data-layout="lato"] #tastierino { grid-template-columns: repeat(8, 1fr); gap: 4px; padding: 5px calc(var(--u) * .5) max(6px, env(safe-area-inset-bottom)); }
+    :root[data-layout="lato"] #tastierino button { min-height: 38px; font-size: var(--u); }
+    :root[data-layout="lato"] #tastierino [data-t="1"] { order: 1; } :root[data-layout="lato"] #tastierino [data-t="2"] { order: 2; } :root[data-layout="lato"] #tastierino [data-t="3"] { order: 3; } :root[data-layout="lato"] #tastierino [data-t="4"] { order: 4; }
+    :root[data-layout="lato"] #tastierino [data-t="5"] { order: 5; } :root[data-layout="lato"] #tastierino [data-t="6"] { order: 6; } :root[data-layout="lato"] #tastierino [data-t="7"] { order: 7; } :root[data-layout="lato"] #tastierino [data-t="8"] { order: 8; }
+    :root[data-layout="lato"] #tastierino [data-t="9"] { order: 9; } :root[data-layout="lato"] #tastierino [data-t="0"] { order: 10; } :root[data-layout="lato"] #tastierino [data-t="−"] { order: 11; } :root[data-layout="lato"] #tastierino [data-t="/"] { order: 12; }
+    :root[data-layout="lato"] #tastierino [data-t=","] { order: 13; } :root[data-layout="lato"] #tastierino [data-t="canc"] { order: 14; } :root[data-layout="lato"] #tastierino [data-t="succ"] { order: 15; } :root[data-layout="lato"] #tastierino [data-t="ok"] { order: 16; }
+  }
 
   #aspetto { position: fixed; z-index: 10001; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%);
     width: min(30em, calc(100vw - 20px)); max-height: calc(100dvh - 20px); overflow-y: auto; box-sizing: border-box; padding: calc(var(--u) * 1);
@@ -468,6 +490,9 @@ const prog = Object.assign({ tiro: { max: 1, stelle: {} }, sponde: { max: 1, ste
 const salvaProg = () => scrivi('orfini.pool.progressi', prog);
 const stelleTotali = () => ['tiro', 'sponde'].reduce((s, t) => s + Object.values(prog[t].stelle).reduce((a, b) => a + b, 0), 0);
 const tabSalvata = leggi('orfini.pool.tab', 'tiro');
+// set: ogni livello è fatto di TAVOLI_SET tavoli (buche da prendere); il livello successivo si sblocca a set finito
+const TAVOLI_SET = 5;
+const sets = leggi('orfini.pool.set', {});   // { tiro: { livello, stelle: [stelle di ogni tavolo fatto] }, sponde: … }
 const S = {
   tab: ['lab', 'tiro', 'sponde'].includes(tabSalvata) ? tabSalvata : 'tiro',
   stato: 'mira', vista: 'alto', lento: false, sfida: null, labQ: 1, mira: null, trascina: null,
@@ -486,7 +511,7 @@ const icona = (n, pieno) => `<svg viewBox="0 0 24 24" fill="${pieno ? 'currentCo
 
 // ───────────────────────────────────────────── STAGE
 const canvas = $('gioco');
-const stage = { cssW: 0, cssH: 0, dpr: 1, profilo: 'desktop', lim: false };
+const stage = { cssW: 0, cssH: 0, dpr: 1, profilo: 'desktop', lim: false, hMeta: 0 };
 function rilevaProfilo() {
   const touch = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
   const lato = Math.min(innerWidth, innerHeight), lungo = Math.max(innerWidth, innerHeight);
@@ -517,9 +542,12 @@ const bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.3, 0.4, 0.95);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 const W3 = (x, y, h = 0) => new THREE.Vector3(x, h, -y);
-// vista 3D: si ruota attorno al tavolo (un dito / tasto sinistro), zoom con pinch o rotella, spostamento con due dita
+// vista 3D: un dito / tasto sinistro inclina e gira il tavolo di poco, pinch o rotella avvicinano.
+// Movimento contenuto (niente giri completi, niente spostamenti laterali): il tavolo resta sempre davanti, lato x in basso.
+const ORBITA = { azimut: THREE.MathUtils.degToRad(35), polareMin: THREE.MathUtils.degToRad(12), polareMax: THREE.MathUtils.degToRad(62), zoomMin: 0.7, zoomMax: 1.25 };
 const orbita = new OrbitControls(camera, canvas);
-Object.assign(orbita, { enabled: false, enableDamping: true, dampingFactor: 0.12, minDistance: 5, maxDistance: 120, maxPolarAngle: 1.35, screenSpacePanning: true });
+Object.assign(orbita, { enabled: false, enableDamping: true, dampingFactor: 0.07, rotateSpeed: 0.45, zoomSpeed: 0.6, enablePan: false,
+  minAzimuthAngle: -ORBITA.azimut, maxAzimuthAngle: ORBITA.azimut, minPolarAngle: ORBITA.polareMin, maxPolarAngle: ORBITA.polareMax });
 orbita.addEventListener('change', () => { sporco = true; });   // piano cartesiano (x, y) → mondo 3D (x, altezza, −y)
 
 // ───────────────────────────────────────────── TAVOLO
@@ -566,7 +594,8 @@ for (const b of BUCHE) {
 const matBucaChiamata = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0xffffff, emissiveIntensity: 1.6 });
 const anelloBuca = new THREE.Mesh(new THREE.TorusGeometry(1, 0.06, 8, 48), matBucaChiamata);
 anelloBuca.rotation.x = -Math.PI / 2; anelloBuca.visible = false; scene.add(anelloBuca);
-// piano cartesiano esteso oltre il tavolo: serve a vedere l'intercetta q e il riflesso B' quando cadono fuori
+// piano cartesiano esteso oltre il tavolo: serve a vedere l'intercetta q e il riflesso B' quando cadono fuori.
+// In vista 3D la prospettiva ingigantisce i numeri vicini e affolla l'orizzonte: lì restano solo assi e griglia larga, che sfumano.
 const EST = { w: 64, h: 44 };
 const estCanvas = document.createElement('canvas');
 estCanvas.width = 2048; estCanvas.height = Math.round(2048 * EST.h / EST.w);
@@ -576,7 +605,7 @@ pianoEsteso.rotation.x = -Math.PI / 2; pianoEsteso.position.y = -0.03; scene.add
 function disegnaPianoEsteso() {
   const g = estCanvas.getContext('2d'), CW = estCanvas.width, CH = estCanvas.height, ppu = CW / EST.w;
   const X = (x) => (x + EST.w / 2) * ppu, Y = (y) => (EST.h / 2 - y) * ppu;
-  const lc = coloreAccento();
+  const lc = coloreAccento(), in3D = S.vista === 'inclinata';
   g.fillStyle = '#000'; g.fillRect(0, 0, CW, CH);
   const righe = (passo, alfa) => {
     g.strokeStyle = hexA('#ffffff', alfa); g.lineWidth = 1.5; g.beginPath();
@@ -584,9 +613,17 @@ function disegnaPianoEsteso() {
     for (let y = -22; y <= 22; y += passo) { g.moveTo(0, Y(y)); g.lineTo(CW, Y(y)); }
     g.stroke();
   };
-  righe(1, 0.06); righe(5, 0.13);
-  g.strokeStyle = hexA(lc, 0.6); g.lineWidth = 3; g.beginPath();
+  if (!in3D) righe(1, 0.06);
+  righe(5, in3D ? 0.09 : 0.13);
+  g.strokeStyle = hexA(lc, in3D ? 0.4 : 0.6); g.lineWidth = 3; g.beginPath();
   g.moveTo(0, Y(0)); g.lineTo(CW, Y(0)); g.moveTo(X(0), 0); g.lineTo(X(0), CH); g.stroke();
+  if (in3D) {
+    const sf = g.createRadialGradient(X(0), Y(0), BOX.w * 0.45 * ppu, X(0), Y(0), EST.w * 0.42 * ppu);
+    sf.addColorStop(0, 'rgba(0,0,0,0)'); sf.addColorStop(1, 'rgba(0,0,0,1)');
+    g.fillStyle = sf; g.fillRect(0, 0, CW, CH);
+    g.fillStyle = '#000'; g.fillRect(X(-BOX.w / 2), Y(BOX.h / 2), BOX.w * ppu, BOX.h * ppu);
+    estTex.needsUpdate = true; return;
+  }
   g.fillStyle = hexA('#ffffff', 0.6); g.font = `600 ${Math.round(ppu * 0.42)}px system-ui, sans-serif`;
   g.textAlign = 'center'; g.textBaseline = 'top';
   for (let x = -31; x <= 31; x++) if (Math.abs(x) > 11) g.fillText(String(x).replace('-', '−'), X(x), Y(0) + ppu * 0.15);
@@ -960,7 +997,7 @@ function areaLibera() {
   const t = $('testata').getBoundingClientRect().bottom + 4;
   const p = $('pannello'), st = p.dataset.stato;
   let r = W, b = H;
-  if (layout === 'sotto') b = Math.min(H - $('maniglia').offsetHeight, H * 0.54);
+  if (layout === 'sotto') b = H - stage.hMeta;
   else r = st === 'chiuso' ? W - $('maniglia').offsetWidth : W - p.offsetWidth;
   return { l: 0, t, w: r, h: Math.max(80, b - t) };
 }
@@ -990,6 +1027,8 @@ function applicaCamera() {
 }
 function attivaOrbita() {   // a fine animazione della vista inclinata la camera passa ai controlli orbitali
   orbita.target.set(cam.cur.cx, 0, -cam.cur.cy + 0.6);
+  const d = camera.position.distanceTo(orbita.target);
+  orbita.minDistance = d * ORBITA.zoomMin; orbita.maxDistance = d * ORBITA.zoomMax;
   orbita.enabled = true; orbita.update();
   canvas.style.cursor = 'grab';
 }
@@ -1016,6 +1055,11 @@ function ridimensiona() {
   layout = (w / h > 1.15 && w >= 640) ? 'lato' : 'sotto';
   document.documentElement.dataset.layout = layout;
   stage.cssW = w; stage.cssH = h;
+  if (layout === 'sotto') {   // in verticale il pannello prende tutto lo spazio che il tavolo, a piena larghezza, non usa
+    const t = $('testata').getBoundingClientRect().bottom + 4, hTavolo = (BOX.h + 0.4) * w / (BOX.w + 0.4);
+    stage.hMeta = Math.round(clamp(h - t - hTavolo - 12, h * 0.46, h * 0.7));
+    document.documentElement.style.setProperty('--h-meta', stage.hMeta + 'px');
+  }
   const dpr = Math.min(devicePixelRatio || 1, 2);
   stage.dpr = Math.max(0.5, Math.min(dpr, Math.sqrt(BUDGET_PIXEL[quality.livello] / (w * h))));
   renderer.setPixelRatio(stage.dpr); renderer.setSize(w, h, false);
@@ -1316,12 +1360,18 @@ function piazzaDecoro(n, percorsi, occupati, rnd) {
   }
   return out;
 }
+const setOra = () => S.sfida && !S.sfida.giorno ? sets[S.sfida.tab] : null;
+const tavoloN = (set) => Math.min(TAVOLI_SET, set.stelle.length + (S.sfida?.esito ? 0 : 1));   // tavolo in corso (o appena preso), da 1
 const oggi = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 function nuovaSfida(opz = {}) {
   const tab = S.tab, giorno = !!opz.giorno;
   const livello = giorno ? (tab === 'tiro' ? 5 : 4) : clamp(opz.livello ?? prog[tab].max, 1, prog[tab].max);
   let seme = giorno ? Number(oggi().replace(/-/g, '')) * 10 + (tab === 'tiro' ? 1 : 2) : (opz.seme ?? Math.floor(Math.random() * 1e9));
   let dati = null;
+  if (!giorno) {   // si continua il set in corso dello stesso livello, altrimenti se ne apre uno nuovo
+    const st = sets[tab];
+    if (opz.nuovoSet || !st || st.livello !== livello || st.stelle.length >= TAVOLI_SET) { sets[tab] = { livello, stelle: [] }; scrivi('orfini.pool.set', sets); }
+  }
   for (let tentativi = 0; !dati && tentativi < 30; tentativi++, seme++) dati = tab === 'tiro' ? generaTiro(livello, mulberry32(seme)) : generaSponde(livello, mulberry32(seme));
   seme--;
   S.sfida = { tab, livello, giorno, seme, dati, indice: 0, errori: 0, aiuti: 0, tiri: 0, riassunti: [], aiutiVisti: {}, valori: {} };
@@ -1631,7 +1681,12 @@ function successo() {
   prog.punti += punti;
   if (S.giocatori === 2) S.punteggi[S.turno] += punti;
   if (sf.giorno) { const g = prog.giorno?.data === oggi() ? prog.giorno : { data: oggi() }; g[sf.tab] = Math.max(g[sf.tab] || 0, stelle); prog.giorno = g; }
-  else { const st = prog[sf.tab].stelle; st[sf.livello] = Math.max(st[sf.livello] || 0, stelle); prog[sf.tab].max = Math.max(prog[sf.tab].max, sf.livello + 1); }
+  else {
+    const st = prog[sf.tab].stelle, set = sets[sf.tab];
+    st[sf.livello] = Math.max(st[sf.livello] || 0, stelle);
+    set.stelle.push(stelle); scrivi('orfini.pool.set', sets);
+    if (set.stelle.length >= TAVOLI_SET) prog[sf.tab].max = Math.max(prog[sf.tab].max, sf.livello + 1);
+  }
   salvaProg();
   sf.esito = { stelle, crit, punti, mult };
   Suono.successo(); Aptica.vibra('livello', 1);
@@ -1768,8 +1823,11 @@ function apriPannello(stato) {
 function aggiornaManiglia() {
   let t;
   if (S.tab === 'lab') t = 'Lab · tiro libero';
-  else if (S.sfida?.esito) t = 'Buca! Apri per il prossimo livello';
-  else { const p = passoCorrente(); t = p ? `Passo ${S.sfida.indice + 1}/${S.sfida.passi.length} · ${p.titolo}` : ''; }
+  else if (S.sfida?.esito) t = S.sfida.giorno ? 'Buca! Sfida del giorno completata' : setOra().stelle.length >= TAVOLI_SET ? 'Set completato! Apri per il livello successivo' : 'Buca! Apri per il prossimo tavolo';
+  else {
+    const p = passoCorrente(), set = setOra();
+    t = p ? `${set ? `Tavolo ${tavoloN(set)}/${TAVOLI_SET} · ` : ''}Passo ${S.sfida.indice + 1}/${S.sfida.passi.length} · ${p.titolo}` : '';
+  }
   $('manigliaTesto').textContent = t;
 }
 function campi(p) {
@@ -1806,17 +1864,24 @@ function renderPannello() {
         <div class="azioni"><button class="btn primario" data-azione="verifica">Verifica</button><button class="btn" data-azione="aiuto" ${restanti > 0 ? '' : 'disabled'}>Aiuto${restanti > 0 ? ` (${restanti})` : ''}</button></div>
         <div class="aiuti">${tutti.slice(0, visti).map((a) => `<div class="aiuto">${a}</div>`).join('')}</div><p class="msg" role="status"></p></li>`;
     }).join('');
+    const set = setOra(), setFinito = !!set && set.stelle.length >= TAVOLI_SET;
+    const pallini = set ? `<div class="set" title="Ogni livello è un set di ${TAVOLI_SET} tavoli: finiscili tutti per sbloccare il successivo">${Array.from({ length: TAVOLI_SET }, (_, i) =>
+      i < set.stelle.length ? `<i class="fatto" aria-hidden="true">${set.stelle[i]}</i>` : `<i class="${i === set.stelle.length ? 'ora' : ''}" aria-hidden="true"></i>`).join('')}<b>Tavolo ${tavoloN(set)} di ${TAVOLI_SET}</b></div>` : '';
     let esito = '';
     if (sf.esito) {
       const e = sf.esito, nomi = ['Buca presa', 'Calcoli senza errori', 'Senza aiuti e al primo tiro'];
+      const bottoni = sf.giorno ? '<button class="btn primario" data-azione="prossimo">Torna ai livelli</button>'
+        : setFinito ? '<button class="btn primario" data-azione="prossimo">Livello successivo</button><button class="btn" data-azione="rifaiSet">Rifai il set</button>'
+        : `<button class="btn primario" data-azione="prossimo">Prossimo tavolo (${set.stelle.length + 1} di ${TAVOLI_SET})</button>`;
+      const fineSet = setFinito ? `<p><b>Set completato!</b> ★ ${set.stelle.reduce((a, b) => a + b, 0)} su ${3 * TAVOLI_SET} · Livello ${sf.livello + 1} sbloccato</p>` : '';
       esito = `<div class="esito"><div class="stelle">${[0, 1, 2].map((i) => `<span style="color:${i < e.stelle ? 'var(--avviso)' : 'var(--testo2)'}">${icona('stella', i < e.stelle)}</span>`).join('')}</div>
         <p><b>+${e.punti}</b> punti${e.mult > 1 ? ` · serie ×${fmt(e.mult, 1)}` : ''}</p>
-        <ul>${e.crit.map((c, i) => `<li class="${c ? 'si' : ''}">${nomi[i]}</li>`).join('')}</ul>
-        <div class="riga"><button class="btn primario" data-azione="prossimo">${sf.giorno ? 'Torna ai livelli' : 'Prossimo livello'}</button><button class="btn" data-azione="rivedi">Rivedi al rallentatore</button></div></div>`;
+        <ul>${e.crit.map((c, i) => `<li class="${c ? 'si' : ''}">${nomi[i]}</li>`).join('')}</ul>${fineSet}
+        <div class="riga">${bottoni}<button class="btn" data-azione="rivedi">Rivedi al rallentatore</button></div></div>`;
     }
     c.innerHTML = `<div class="testa-liv">
         <button class="btn mini" data-azione="livPrec" aria-label="Livello precedente" ${sf.livello <= 1 || sf.giorno ? 'disabled' : ''}>‹</button>
-        <div class="liv"><b>${sf.giorno ? 'Sfida del giorno' : 'Livello ' + sf.livello}</b><span>${sf.giorno ? `Stesso tavolo per tutta la classe · ${new Date().toLocaleDateString('it-IT')}` : d.nota}</span></div>
+        <div class="liv"><b>${sf.giorno ? 'Sfida del giorno' : 'Livello ' + sf.livello}</b><span>${sf.giorno ? `Stesso tavolo per tutta la classe · ${new Date().toLocaleDateString('it-IT')}` : d.nota}</span>${pallini}</div>
         <button class="btn mini" data-azione="livSucc" aria-label="Livello successivo" ${sf.livello >= tp.max || sf.giorno ? 'disabled' : ''}>›</button></div>
       <p class="consegna">${consegna}</p><ol class="passi">${passi}</ol>${esito}
       <div class="piede"><button class="btn" data-azione="altro">Altro tavolo</button><button class="btn" data-azione="giorno">${sf.giorno ? 'Torna ai livelli' : 'Sfida del giorno'}</button></div>`;
@@ -1875,7 +1940,12 @@ $('contenuto').addEventListener('click', (e) => {
   else if (a === 'giorno') { nuovaSfida(sf.giorno ? {} : { giorno: true }); renderPannello(); }
   else if (a === 'livPrec') { nuovaSfida({ livello: sf.livello - 1 }); renderPannello(); }
   else if (a === 'livSucc') { nuovaSfida({ livello: sf.livello + 1 }); renderPannello(); }
-  else if (a === 'prossimo') { if (S.giocatori === 2) S.turno = 1 - S.turno; nuovaSfida(sf.giorno ? {} : { livello: sf.livello + 1 }); renderPannello(); }
+  else if (a === 'prossimo') {
+    if (S.giocatori === 2) S.turno = 1 - S.turno;
+    const finito = sets[sf.tab]?.stelle.length >= TAVOLI_SET;
+    nuovaSfida(sf.giorno ? {} : { livello: finito ? sf.livello + 1 : sf.livello }); renderPannello();
+  }
+  else if (a === 'rifaiSet') { nuovaSfida({ livello: sf.livello, nuovoSet: true }); renderPannello(); }
   else if (a === 'rivedi') avviaReplay();
   else if (a === 'ricomponi') nuovoLab();
 });
@@ -1966,11 +2036,18 @@ function aggiornaTraiettoria(prev) {
 
 // ───────────────────────────────────────────── HUD, AVVISI, ASPETTO
 function aggiornaHud() {
-  let t = S.tab === 'lab' ? 'Lab · tiro libero'
-    : `${S.tab === 'tiro' ? 'Tiro' : 'Sponde'} · ${S.sfida?.giorno ? 'del giorno' : 'liv. ' + S.sfida?.livello} · ★ ${stelleTotali()} · ${prog.punti.toLocaleString('it-IT')} pt`;
-  if (prog.serie >= 2 && S.tab !== 'lab') t += ` <span class="serie">serie ×${fmt([1, 1, 1.2, 1.5, 2][Math.min(prog.serie, 4)], 1)}</span>`;
-  if (S.giocatori === 2 && S.tab !== 'lab') t += ` <span class="turno">· G1 ${S.punteggi[0]} · G2 ${S.punteggi[1]} · tocca a G${S.turno + 1}</span>`;
-  if (S.mira?.k > 0) t += ` · potenza ${Math.round(S.mira.k * 100)}%`;
+  // due righe: dove sei (modalità, livello, tavolo del set) e come stai andando (stelle, punti, serie, turno, potenza)
+  let r1, r2 = [];
+  if (S.tab === 'lab') r1 = 'Lab · tiro libero';
+  else {
+    const set = setOra();
+    r1 = `${S.tab === 'tiro' ? 'Tiro' : 'Sponde'} · ${S.sfida?.giorno ? 'sfida del giorno' : 'liv. ' + S.sfida?.livello}${set ? ` · tavolo ${tavoloN(set)}/${TAVOLI_SET}` : ''}`;
+    r2.push(`★ ${stelleTotali()} · ${prog.punti.toLocaleString('it-IT')} pt`);
+    if (prog.serie >= 2) r2.push(`<span class="serie">serie ×${fmt([1, 1, 1.2, 1.5, 2][Math.min(prog.serie, 4)], 1)}</span>`);
+    if (S.giocatori === 2) r2.push(`<span class="turno">G1 ${S.punteggi[0]} · G2 ${S.punteggi[1]} · tocca a G${S.turno + 1}</span>`);
+  }
+  if (S.mira?.k > 0) r2.push(`potenza ${Math.round(S.mira.k * 100)}%`);
+  let t = `<span class="r">${r1}</span>` + (r2.length ? `<span class="r">${r2.join(' · ')}</span>` : '');
   if ($('hudSx').innerHTML !== t) $('hudSx').innerHTML = t;
 }
 function avviso(testoMsg, tipo = '', ms = 1800) {
@@ -2041,8 +2118,9 @@ function impostaLim(v) {
 const azioni = {
   vista() {
     S.vista = S.vista === 'alto' ? 'inclinata' : 'alto';
+    disegnaPianoEsteso();
     if (S.vista === 'alto') { orbita.enabled = false; canvas.style.cursor = ''; cam.cur.tilt = 1; }
-    else avviso('Vista 3D: trascina sul tavolo per girarci attorno; per tirare parti dalla palla bianca.', '', 3200);
+    else avviso('Vista 3D: trascina sul tavolo per inclinarlo e girarlo un po\'; per tirare parti dalla palla bianca.', '', 3200);
     aggiornaIcone(); adattaCamera();
   },
   lento() { S.lento = !S.lento; loop.timeScaleTarget = S.lento ? 0.25 : 1; aggiornaIcone(); },
@@ -2149,12 +2227,12 @@ ridimensiona();
 if (S.tab === 'lab') nuovoLab(); else nuovaSfida();
 renderPannello();
 aggiornaIcone();
-$('msgAvvio').innerHTML = 'Il piano cartesiano è stampato sul panno.<br><b>Tiro</b>: calcola la retta che porta la palla in buca.<br><b>Sponde</b>: usa pendenze e simmetrie per rimbalzare.<br><b>Lab</b>: gioca libero e guarda le rette.<br>Per tirare tieni il dito sul tavolo e trascina all\'indietro, come una fionda.';
+$('msgAvvio').innerHTML = 'Il piano cartesiano è stampato sul panno.<br><b>Tiro</b>: calcola la retta che porta la palla in buca.<br><b>Sponde</b>: usa pendenze e simmetrie per rimbalzare.<br><b>Lab</b>: gioca libero e guarda le rette.<br>Ogni livello è un <b>set di ' + TAVOLI_SET + ' tavoli</b>: mandali tutti in buca per sbloccare il successivo.<br>Per tirare tieni il dito sul tavolo e trascina all\'indietro, come una fionda.';
 $('bGioca').classList.remove('nascosto');
 $('bGioca').addEventListener('click', () => { Suono.avvia(); Suono.clic(); $('schermata').classList.add('nascosto'); teniAcceso(); adattaCamera(); renderPannello(); });
 $('bGioca').focus();
 if (DEBUG) window.__orfini = {
-  S, T, FIS, BUCHE, prog, Aptica, loop, THREE, camera, orbita, get palle() { return palle; },
+  S, T, FIS, BUCHE, prog, sets, TAVOLI_SET, Aptica, loop, THREE, camera, orbita, get palle() { return palle; },
   tira, passoFisico, tuttoFermo, concludiTiro, cambiaTab, nuovaSfida, renderPannello, verificaPasso, direzioneAlgebrica, prevedi,
   avanzaFinoAFermo(max = 4000) { let n = 0; while (S.stato === 'tiro' && n < max) { passoFisico(); n++; if (tuttoFermo()) { concludiTiro(); break; } } return n; },
 };
