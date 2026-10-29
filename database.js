@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-28 11:13:11
+   Data: 2026-10-28 20:50:56
 */
 
 const db = [
@@ -80,6 +80,62 @@ const db = [
                 "mat": [
                     "MAT_A1",
                     "MAT_K1"
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Math Pool: Biliardo Cartesiano e retta",
+        "excerpt": "Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, poi usa pendenze e simmetrie per i tiri di sponda. Per smartphone, tablet, PC e LIM.",
+        "tags": [
+            "2 GP",
+            "3 MEC",
+            "BILIARDO",
+            "GAMIFICATION",
+            "GEOMETRIA ANALITICA",
+            "MATEMATICA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "PIANO CARTESIANO",
+            "RETTA",
+            "SIMMETRIA"
+        ],
+        "date": "2026-10-28",
+        "url": "content/apps/math_pool_retta_pianocartesiano.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
                 ]
             }
         ]
@@ -925,61 +981,6 @@ const db = [
         "icon": "📐",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/scale_logaritmiche.webp"
-    },
-    {
-        "title": "Math Pool: Biliardo Cartesiano e retta",
-        "excerpt": "Laboratorio interattivo e gamification di Geometria Analitica: gioca a biliardo sul piano cartesiano calcolando l'equazione della retta, coefficiente angolare e punti di intersezione per mandare la palla in buca.",
-        "tags": [
-            "2 GP",
-            "3 MEC",
-            "BILIARDO",
-            "GAMIFICATION",
-            "GEOMETRIA ANALITICA",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "PIANO CARTESIANO",
-            "RETTA"
-        ],
-        "date": "2026-05-21",
-        "url": "content/apps/math_pool_retta_pianocartesiano.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/math_pool_retta_pianocartesiano.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            }
-        ]
     },
     {
         "title": "Random Walk 3D | Hypercaos & Chromatic Memory",
