@@ -94,7 +94,7 @@
     border-radius: calc(var(--u) * 1.1) calc(var(--u) * 1.1) 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom);
     transition: height .25s ease; }
   :root[data-layout="sotto"] #pannello[data-stato="chiuso"] { height: calc(var(--tocco) + env(safe-area-inset-bottom)); }
-  :root[data-layout="sotto"] #pannello[data-stato="pieno"] { height: 86dvh; }
+  :root[data-layout="sotto"] #pannello[data-stato="pieno"] { height: calc(100dvh - var(--sotto-testata, 14dvh)); }   /* aperto del tutto: arriva sotto la barra dei comandi, non sopra */
   :root[data-layout="lato"] #pannello { top: 0; bottom: 0; right: 0; width: var(--lato-w); grid-template-columns: calc(var(--u) * 2.4) minmax(0, 1fr);
     grid-template-rows: 1fr auto; border-right: 0; border-radius: calc(var(--u) * 1.1) 0 0 calc(var(--u) * 1.1);
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) 0; transition: transform .25s ease; }
@@ -113,7 +113,7 @@
   #pannello[data-stato="chiuso"] #corpo, #pannello[data-stato="chiuso"] #tastierino { visibility: hidden; }
   .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 4px; margin-bottom: calc(var(--u) * .7);
     background: #000; border: 1px solid var(--bordo); border-radius: calc(var(--u) * .8); }
-  .tabs button { min-height: calc(var(--tocco) * .9); border: 0; border-radius: calc(var(--u) * .6); background: transparent;
+  .tabs button { min-height: var(--tocco); border: 0; border-radius: calc(var(--u) * .6); background: transparent;
     color: var(--testo2); font-weight: 700; font-size: calc(var(--u) * .9); cursor: pointer; }
   .tabs button[aria-selected="true"] { background: var(--accento); color: var(--su-accento); }
   .testa-liv { display: flex; align-items: center; gap: .5em; }
@@ -153,6 +153,14 @@
   .campo.no { border-color: var(--errore); } .campo.si { border-color: var(--ok); }
   .azioni { display: flex; gap: .5em; } .azioni .primario { flex: 1; }
   .scelte { display: grid; gap: .45em; }
+  .lab-mq { padding: .2em 0 .4em; }
+  .cursore { display: grid; grid-template-columns: 3.2em minmax(0, 1fr) 4.4em; align-items: center; gap: .55em; margin: .35em 0; font-weight: 700; }
+  .cursore input[type=range] { width: 100%; min-height: var(--tocco); margin: 0; accent-color: var(--accento); }
+  .cursore .campo { width: 100%; }
+  .cursore b { text-align: center; font-variant-numeric: tabular-nums; }
+  .cursore.due { grid-template-columns: 4.6em minmax(0, 1fr); }
+  .regola { margin-top: .3em; }
+  .verso { margin: .3em 0; } .verso .sw { flex: 1; justify-content: center; }
   .btn.scegli { justify-content: flex-start; width: 100%; font: 700 clamp(.78em, 4.2cqi, .9em) ui-monospace, Menlo, monospace; text-align: left; }
   .btn.scegli span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .btn.scegli i { width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--c); flex: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
@@ -177,7 +185,7 @@
   summary { display: flex; justify-content: space-between; padding: .6em .7em; cursor: pointer; min-height: 1.6em; align-items: center; }
   details > div { padding: 0 .7em .7em; font: .88em/1.6 ui-monospace, Menlo, monospace; color: var(--testo2); white-space: nowrap; overflow-x: auto; }
   h4 { margin: .9em 0 .4em; font-size: .9em; color: var(--testo2); text-transform: uppercase; letter-spacing: .06em; }
-  .traiettoria { margin: 0; padding-left: 1.3em; font: .88em/1.6 ui-monospace, Menlo, monospace; white-space: nowrap; }
+  .traiettoria { margin: 0; padding-left: 1.3em; font: .88em/1.6 ui-monospace, Menlo, monospace; text-wrap: pretty; }   /* va a capo tra un tratto e l'altro, mai dentro una formula */
   #tastierino { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 6px calc(var(--u) * .7) 8px;
     border-top: 1px solid var(--bordo); background: rgba(0,0,0,.6); }
   :root[data-layout="lato"] #tastierino { grid-column: 2; }
@@ -406,7 +414,7 @@ window.addEventListener('unhandledrejection', (e) => { if (!avviato) mostraError
 
 // numeri: frazioni esatte quando possibile, virgola decimale italiana, segno meno tipografico
 function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; }
-function frazione(v, maxDen = 12) {
+function frazione(v, maxDen = 64) {
   for (let d = 1; d <= maxDen; d++) { const n = Math.round(v * d); if (Math.abs(n / d - v) < 1e-9) return { n, d }; }
   return null;
 }
@@ -417,7 +425,11 @@ function num(v) {
   return (v < 0 ? '−' : '') + s;
 }
 const esatto = (v) => frazione(v) !== null;
-const numCirca = (v) => esatto(v) ? num(v) : '≈ ' + num(Math.round(v * 100) / 100);
+// nel Lab le coordinate sono decimali (le palle si fermano dove capita): frazioni solo se semplici, altrimenti decimali
+const dec = (v) => (v < 0 ? '−' : '') + Math.abs(v).toLocaleString('it-IT', { maximumFractionDigits: 2 });
+const numL = (v) => frazione(v, 12) ? num(v) : dec(v);
+const numCirca = (v) => frazione(v, 12) ? num(v) : '≈ ' + dec(v);
+const coordD = (x, y) => `(${dec(x)}; ${dec(y)})`;
 const par = (v) => v < 0 ? `(${num(v)})` : num(v);
 const coord = (x, y) => `(${num(x)}; ${num(y)})`;
 function leggiNumero(str) {
@@ -428,13 +440,13 @@ function leggiNumero(str) {
   return (isFinite(n) && isFinite(d) && d !== 0) ? n / d : null;
 }
 const uguale = (a, b) => a !== null && a !== undefined && Math.abs(a - b) < 1e-6;
-function retta(m, q) {
+function retta(m, q, f = num) {
   if (!isFinite(m)) return 'retta verticale';
   let s = 'y = ';
   if (Math.abs(m) > 1e-9) {
-    s += Math.abs(m - 1) < 1e-9 ? 'x' : Math.abs(m + 1) < 1e-9 ? '−x' : num(m) + (esatto(m) && frazione(m).d > 1 ? ' x' : 'x');
-    if (Math.abs(q) > 1e-9) s += (q > 0 ? ' + ' : ' − ') + num(Math.abs(q));
-  } else s += num(q);
+    s += Math.abs(m - 1) < 1e-9 ? 'x' : Math.abs(m + 1) < 1e-9 ? '−x' : f(m) + (esatto(m) && frazione(m).d > 1 ? ' x' : 'x');
+    if (Math.abs(q) > 1e-9) s += (q > 0 ? ' + ' : ' − ') + f(Math.abs(q));
+  } else s += f(q);
   return s;
 }
 function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -505,12 +517,31 @@ const SET_PALLE = [
   { id: 'daltonici', nome: 'Alto contrasto', c: ['#F0E442', '#0072B2', '#D55E00', '#CC79A7', '#E69F00', '#009E73', '#56B4E9', '#141414'] },
   { id: 'pastello', nome: 'Pastello', c: ['#ffe08a', '#9cc5ff', '#ff9f9f', '#cdb4ff', '#ffc89a', '#a8e6b8', '#f4a6d7', '#3a3a46'] },
   { id: 'oro', nome: 'Oro e argento', c: ['#e6c35c', '#c0c7d1', '#d4a64a', '#9aa3ad', '#f0d68a', '#b8bec7', '#c9a24a', '#202020'], stelle: 15 },
+  // set speciali: solo estetica (scie, scintille, urti), si sbloccano con le stelle
+  { id: 'luce', nome: '✨ Luminose', c: ['#fff36b', '#43e8ff', '#ff4fa3', '#b46bff', '#ffa64d', '#4dff9a', '#ff6bff', '#26283a'], fx: 'luce', stelle: 6 },
+  { id: 'veleno', nome: '☠ Velenose', c: ['#c3ff3b', '#39ff88', '#7cff4f', '#9d4dff', '#e1ff4d', '#00ff9c', '#b45cff', '#14210f'], fx: 'veleno', stelle: 12 },
+  { id: 'elettriche', nome: '⚡ Elettriche', c: ['#fff35c', '#3ad5ff', '#7a8cff', '#00f0ff', '#b4f1ff', '#4d7bff', '#9ff7ff', '#10131a'], fx: 'elettrico', stelle: 20 },
+  { id: 'lava', nome: '🔥 Lava', c: ['#ffcf3b', '#ff6a00', '#ff2d2d', '#ff8c42', '#ffb347', '#e63900', '#ff5e3a', '#2a0d00'], fx: 'fuoco', stelle: 28 },
+  { id: 'ghiaccio', nome: '❄ Ghiaccio', c: ['#f2fdff', '#9fe8ff', '#7cc7ff', '#c7f2ff', '#a8d8ff', '#5fb8ff', '#d9f6ff', '#2b3a4a'], fx: 'ghiaccio', stelle: 36 },
 ];
+const fxPalle = () => (SET_PALLE.find((x) => x.id === asp.set) || SET_PALLE[0]).fx;
 const NUMERI_PALLE = [1, 3, 6, 10, 15];
 const COLORATE = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15];
 
 // ───────────────────────────────────────────── STATO E SALVATAGGI
-const asp = Object.assign({ tappeto: 'verde', cornice: 'legno', accento: 'ciano', set: 'classico', numero: 6 }, leggi('orfini.pool.aspetto', {}));
+const asp = Object.assign({ tappeto: 'verde', cornice: 'legno', accento: 'ciano', set: 'classico', numero: 6,
+  tappetoHex: null, corniceHex: null, accentoHex: null, neonHex: null, neonForza: 1 }, leggi('orfini.pool.aspetto', {}));   // *Hex: colore su misura scelto con gli slider
+// colori su misura: tono e luce dagli slider, saturazione fissa per gruppo (resta un colore "da biliardo")
+const REGOLE = { tappeto: { s: 0.55, l: [0.08, 0.45] }, cornice: { s: 0.45, l: [0.1, 0.85] }, accento: { s: 0.88, l: [0.45, 0.75] }, neon: { s: 1, l: [0.4, 0.7] } };
+function hslHex(h, s, l) {
+  const f = (n) => { const k = (n + h / 30) % 12, a = s * Math.min(l, 1 - l); return Math.round(255 * (l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)))).toString(16).padStart(2, '0'); };
+  return '#' + f(0) + f(8) + f(4);
+}
+function hexHsl(hex) {
+  const n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  const h = d === 0 ? 0 : mx === r ? 60 * (((g - b) / d) % 6) : mx === g ? 60 * ((b - r) / d + 2) : 60 * ((r - g) / d + 4);
+  return { h: (h + 360) % 360, l: (mx + mn) / 2 };
+}
 const prog = Object.assign({ tiro: { max: 1, stelle: {} }, sponde: { max: 1, stelle: {} }, effetto: { max: 1, stelle: {} }, punti: 0, serie: 0, giorno: null }, leggi('orfini.pool.progressi', {}));
 const salvaProg = () => scrivi('orfini.pool.progressi', prog);
 const stelleTotali = () => ['tiro', 'sponde', 'effetto'].reduce((s, t) => s + Object.values(prog[t].stelle).reduce((a, b) => a + b, 0), 0);
@@ -523,6 +554,7 @@ const S = {
   stato: 'mira', vista: 'alto', lento: false, sfida: null, labQ: 1, mira: null, trascina: null,
   tiro: null, ultimoTiro: null, foto: null, replay: null, campo: null,
   giocatori: leggi('orfini.pool.giocatori', 1), turno: 0, punteggi: [0, 0],
+  lr: { m: 0.5, q: 0, verso: 1, forza: 0.6, ok: false },   // Lab: la bianca sta sulla retta y = mx + q e si tira lungo la retta
 };
 const ICONE = {
   vista: '<path d="M3 17l9 4 9-4M3 12l9 4 9-4M12 3l9 4-9 4-9-4z"/>', alto: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/>',
@@ -546,7 +578,10 @@ function rilevaProfilo() {
 }
 stage.profilo = rilevaProfilo();
 const BUDGET_PIXEL = [1.0e6, 2.2e6, 3.8e6];
-const coloreAccento = () => (ACCENTI.find((a) => a.id === asp.accento) || ACCENTI[0]).c;
+const coloreAccento = () => asp.accentoHex || (ACCENTI.find((a) => a.id === asp.accento) || ACCENTI[0]).c;
+const coloreNeon = () => asp.neonHex || coloreAccento();
+const colorePanno = () => asp.tappetoHex || (TAPPETI.find((t) => t.id === asp.tappeto) || TAPPETI[0]).c;
+const coloreCornice = () => asp.corniceHex || (CORNICI.find((c) => c.id === asp.cornice) || CORNICI[0]).c;
 
 // ───────────────────────────────────────────── RENDERER E SCENA
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: stage.profilo !== 'phone', powerPreference: 'high-performance' });
@@ -634,7 +669,7 @@ function disegnaPanno() {
   const tp = TAPPETI.find((t) => t.id === asp.tappeto) || TAPPETI[0];
   const lc = tp.griglia === 'accento' ? coloreAccento() : '#ffffff';
   g.globalCompositeOperation = 'source-over';
-  g.fillStyle = tp.c; g.fillRect(0, 0, CW, CH);
+  g.fillStyle = colorePanno(); g.fillRect(0, 0, CW, CH);
   const luce = g.createRadialGradient(CW / 2, CH / 2, CH * 0.1, CW / 2, CH / 2, CW * 0.6);
   luce.addColorStop(0, 'rgba(255,255,255,0.10)'); luce.addColorStop(1, 'rgba(0,0,0,0.38)');
   g.fillStyle = luce; g.fillRect(0, 0, CW, CH);
@@ -668,7 +703,7 @@ function disegnaPanno() {
   for (const b of BUCHE) { g.beginPath(); g.arc(X(b.x), Y(b.y), b.R * ppu, 0, Math.PI * 2); g.fill(); }
   g.globalCompositeOperation = 'source-over';
   pannoTex.needsUpdate = true;
-  const scuro = new THREE.Color(tp.c).multiplyScalar(0.72);
+  const scuro = new THREE.Color(colorePanno()).multiplyScalar(0.72);
   for (const s of SPONDE) { s.mesh.material.color.copy(scuro); s.mesh.material.emissive.set(0x000000); }
 }
 
@@ -710,7 +745,11 @@ function disegnaPalle() {
       }
     }
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-    const mat = MESH[n].mesh.material; mat.map?.dispose(); mat.map = tex; mat.needsUpdate = true;
+    const mat = MESH[n].mesh.material; mat.map?.dispose(); mat.map = tex;
+    const f = n ? fxPalle() : null;   // i set speciali brillano di luce propria (la bianca resta bianca)
+    mat.emissive.set(f ? col : '#000000'); mat.emissiveIntensity = { luce: 0.9, fuoco: 0.7, elettrico: 0.55, veleno: 0.45, ghiaccio: 0.15 }[f] ?? 0;
+    mat.transparent = f === 'ghiaccio'; mat.opacity = f === 'ghiaccio' ? 0.82 : 1;
+    mat.needsUpdate = true;
   }
 }
 
@@ -793,13 +832,13 @@ const alone = (() => {
   const m = new THREE.Mesh(new THREE.PlaneGeometry(Wt, Ht).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false }));
   m.position.y = -0.025; scene.add(m); return m;
 })();
-function disegnaPianoEsteso() {   // colore dell'interfaccia; in vista 3D il piano sfuma prima, verso l'orizzonte
-  const lc = coloreAccento(), in3D = S.vista === 'inclinata';
-  pianoEsteso.material.uniforms.uCol.value.set(lc);
+function disegnaPianoEsteso() {   // colore e intensità del neon; in vista 3D il piano sfuma prima, verso l'orizzonte
+  const lc = coloreNeon(), in3D = S.vista === 'inclinata', k = asp.neonForza ?? 1;
+  pianoEsteso.material.uniforms.uCol.value.set(lc).multiplyScalar(k);
   pianoEsteso.material.uniforms.uFade.value.set(in3D ? 16 : 60, in3D ? 48 : 90);
   for (const m of numeriPiano.children) m.material.color.set(lc);
-  numeriPiano.visible = true;
-  contorno.material.color.set(lc); alone.material.color.set(lc);
+  contorno.material.color.set(lc); contorno.material.opacity = 0.9 * Math.min(1, k); contorno.visible = k > 0.02;
+  alone.material.color.set(lc); alone.material.opacity = 0.55 * k; numeriPiano.visible = k > 0.05;
   richiediRender();
 }
 const fantasma = new THREE.Mesh(new THREE.RingGeometry(T.r * 0.86, T.r, 40).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, depthWrite: false }));
@@ -934,6 +973,7 @@ const Suono = (() => {
     tasto: () => tono({ freq: 1300, dur: 0.025, onda: 'square', vol: 0.03, varia: 0 }),
     carica: (k) => tono({ freq: 180 + 520 * k, dur: 0.05, onda: 'triangle', vol: 0.05, varia: 0 }),
     stecca: (k) => tono({ freq: 1100, a: 600, dur: 0.05, onda: 'triangle', vol: 0.12 + 0.3 * k, rumore: 0.5, filtro: 'bandpass', taglio: 2600, q: 1.5 }),
+    zap: (k) => tono({ freq: 1800, a: 300, dur: 0.09, onda: 'square', vol: 0.05 + 0.12 * k, rumore: 0.3, filtro: 'highpass', taglio: 3000 }),
     clack: (k, pan) => tono({ freq: 2300, a: 1900, dur: 0.045 + 0.03 * k, vol: 0.05 + 0.5 * k, rumore: 0.55, filtro: 'bandpass', taglio: 3400, q: 1.3, pan }),
     sponda: (k, pan) => tono({ freq: 120, a: 75, dur: 0.15, vol: 0.06 + 0.4 * k, rumore: 0.5, taglio: 520, pan }),
     buca: (pan) => { tono({ freq: 170, a: 60, dur: 0.38, vol: 0.32, rumore: 0.6, taglio: 700, pan, importante: true }); tono({ freq: 85, dur: 0.14, vol: 0.3, rumore: 0.4, taglio: 300, ritardo: 0.16, pan, importante: true }); },
@@ -1039,7 +1079,7 @@ const cam = { cur: null, tgt: { d: 30, ox: 0, oy: 0, tilt: 0, cx: 0, cy: 0 } };
 let riquadro = { x0: -BOX.w / 2, x1: BOX.w / 2, y0: -BOX.h / 2, y1: BOX.h / 2 };
 const passoFatto = (id) => !!S.sfida && S.sfida.passi.slice(0, S.sfida.indice).some((p) => p.id === id);
 function puntiDaMostrare() {   // punti delle equazioni che possono cadere fuori dal tavolo, appena lo studente li ha trovati
-  if (S.tab === 'lab') { const r = rettaLab(); return r && Math.abs(r.q) <= 20 ? [[0, r.q]] : []; }
+  if (S.tab === 'lab') return [];   // nel Lab l'inquadratura resta ferma: le palle in moto non devono far scalare il tavolo
   const d = S.sfida?.dati; if (!d) return [];
   const pts = [];
   if (S.tab === 'tiro') { if (passoFatto('q')) pts.push([0, d.q]); }
@@ -1052,6 +1092,7 @@ function puntiDaMostrare() {   // punti delle equazioni che possono cadere fuori
 function areaLibera() {
   const W = stage.cssW, H = stage.cssH;
   const t = $('testata').getBoundingClientRect().bottom + 4;
+  document.documentElement.style.setProperty('--sotto-testata', Math.round(t - 2) + 'px');   // il pannello aperto del tutto arriva fin qui
   const p = $('pannello'), st = p.dataset.stato;
   let r = W, b = H;
   if (layout === 'sotto') b = H - stage.hMeta;
@@ -1115,6 +1156,7 @@ function ridimensiona() {
   if (layout === 'sotto') {   // in verticale il pannello prende tutto lo spazio che il tavolo, a piena larghezza, non usa
     const t = $('testata').getBoundingClientRect().bottom + 4, hTavolo = (BOX.h + 0.4) * w / (BOX.w + 0.4);
     stage.hMeta = Math.round(clamp(h - t - hTavolo - 12, h * 0.46, h * 0.7));
+    document.documentElement.style.setProperty('--sotto-testata', Math.round(t + 2) + 'px');
     document.documentElement.style.setProperty('--h-meta', stage.hMeta + 'px');
   }
   const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -1272,11 +1314,31 @@ function ruota(p) {   // rotolamento visivo: asse = su × velocità, angolo = sp
   p.q.premultiply(_qr.setFromAxisAngle(_asse, ds / T.r));
 }
 function aggiornaScie() {
+  const f = fxPalle();
   for (const p of palle) {
     const s = SCIE[p.n], v = Math.hypot(p.x - p.px, p.y - p.py) * 60;
     if (p.visibile && v > 0.6) { s.punti.push([p.x, p.y, p.z]); if (s.punti.length > SCIA_N) s.punti.shift(); }
     else if (s.punti.length) s.punti.shift();
+    if (f && p.n && p.visibile && v > 0.8) scintillePalla(f, p);
   }
+}
+// palle speciali in corsa: bolle, braci, scintille, brina (solo particelle: la fisica non cambia)
+const scegliCol = (arr) => arr[Math.floor(Math.random() * arr.length)];
+function scintillePalla(f, p) {
+  const r = Math.random();
+  if (f === 'veleno' && r < 0.18) fx.emetti(p.x, p.y, 1, { colore: scegliCol(['#7cff4f', '#c3ff3b', '#b45cff']), vel: 0.25, su: 1.4, durata: 1, r: 0.07 });
+  else if (f === 'fuoco' && r < 0.3) fx.emetti(p.x, p.y, 1, { colore: scegliCol(['#ff6a00', '#ffcf3b', '#ff2d2d']), vel: 0.4, su: 1.8, durata: 0.6, r: 0.06 });
+  else if (f === 'elettrico' && r < 0.08) fx.emetti(p.x, p.y, 3, { colore: scegliCol(['#7df9ff', '#ffffff', '#4d7bff']), vel: 2.5, su: 0.6, durata: 0.18, r: 0.04 });
+  else if (f === 'luce' && r < 0.12) fx.emetti(p.x, p.y, 1, { colore: colorePalla(p.n), vel: 0.2, su: 0.3, durata: 0.5, r: 0.09 });
+  else if (f === 'ghiaccio' && r < 0.1) fx.emetti(p.x, p.y, 1, { colore: '#e8fbff', vel: 0.3, su: 0.2, durata: 0.7, r: 0.05 });
+}
+function urtoSpeciale(f, x, y, k, n) {
+  const quanti = 6 + 14 * k;
+  if (f === 'elettrico') { fx.emetti(x, y, quanti, { colore: '#7df9ff', vel: 4, su: 0.8, durata: 0.22, r: 0.04 }); Suono.zap(k); }
+  else if (f === 'ghiaccio') fx.emetti(x, y, quanti, { colore: '#f2fdff', vel: 2.4, su: 1, durata: 0.5, r: 0.05 });
+  else if (f === 'veleno') fx.emetti(x, y, quanti, { colore: '#7cff4f', vel: 1.6, su: 1.6, durata: 0.8, r: 0.07 });
+  else if (f === 'fuoco') fx.emetti(x, y, quanti, { colore: '#ffb347', vel: 2.8, su: 2.2, durata: 0.6, r: 0.06 });
+  else if (f === 'luce') fx.emetti(x, y, quanti, { colore: n ? colorePalla(n) : '#ffffff', vel: 3, su: 1.2, durata: 0.5, r: 0.1 });
 }
 function tuttoFermo() { return palle.every((p) => (!p.attiva || (p.vx === 0 && p.vy === 0)) && (!p.caduta || p.caduta.fine)); }
 function evento(tipo, k, x, y, n) {
@@ -1289,6 +1351,7 @@ function effettoEvento(tipo, k, x, y, n, aptico) {
   if (tipo === 'bocce') {
     Suono.clack(k, pan);
     fx.emetti(x, y, 3 + 16 * k, { colore: n ? colorePalla(n) : coloreAccento(), vel: 1.2 + 3 * k, durata: 0.45 });
+    if (fxPalle()) urtoSpeciale(fxPalle(), x, y, k, n);
     if (aptico && k > 0.12) Aptica.vibra('urto', k);
     if (k > 0.6) loop.hitStopFino = Math.max(loop.hitStopFino, performance.now() + 40);
   } else if (tipo === 'sponda') {
@@ -1354,12 +1417,12 @@ const lontanoBuche = (x, y, min = 1.6) => BUCHE.every((b) => Math.hypot(b.x - x,
 // un livello, una novità: pendenza intera, urto a catena, pendenza frazionaria, q frazionario, scelta della palla.
 // qFraz: false = q intero, true = q frazionario, null = indifferente. decoro = palle di disturbo lontane dai percorsi.
 function profiloTiro(l) {
-  if (l === 1) return { dx: [1], dy: [1, 2], qFraz: false, decoro: 0, nota: 'Pendenza intera' };
-  if (l === 2) return { dx: [1], dy: [1, 2, 3], qFraz: false, decoro: 1, nota: 'Pendenza intera fino a 3' };
+  if (l === 1) return { dx: [1], dy: [1, 2, 3], k1: 3, k2: 4, qFraz: false, decoro: 0, nota: 'Pendenza intera' };
+  if (l === 2) return { dx: [1], dy: [1, 2, 3, 4], k1: 3, k2: 4, qFraz: false, decoro: 1, nota: 'Pendenza intera fino a 4' };
   if (l === 3) return { dx: [1], dy: [1, 2, 3], conR: true, qFraz: false, decoro: 1, nota: 'Urto a catena' };
-  if (l === 4) return { dx: [2], dy: [1, 3], qFraz: false, decoro: 2, nota: 'Pendenza frazionaria' };
-  if (l === 5) return { dx: [2, 3], dy: [1, 2, 4], conR: true, qFraz: false, decoro: 2, nota: 'Pendenza frazionaria · urto a catena' };
-  if (l === 6) return { dx: [2, 3], dy: [1, 2, 4], qFraz: true, decoro: 3, nota: 'm e q frazionari' };
+  if (l === 4) return { dx: [2], dy: [1, 3, 5], qFraz: false, decoro: 2, nota: 'Pendenza frazionaria' };
+  if (l === 5) return { dx: [2, 3, 4], dy: [1, 2, 3, 5], conR: true, qFraz: false, decoro: 2, nota: 'Pendenza frazionaria · urto a catena' };
+  if (l === 6) return { dx: [2, 3, 4], dy: [1, 2, 3, 5], qFraz: true, decoro: 3, nota: 'm e q frazionari' };
   if (l === 7) return { scelta: true, mFraz: false, decoro: 2, nota: 'Scegli tu la palla' };
   return { scelta: true, mFraz: true, decoro: 3, nota: 'Scegli la palla · m e q frazionari' };
 }
@@ -1371,11 +1434,11 @@ function generaTiro(l, rnd) {
     const B = scegli(rnd, BUCHE), dx = scegli(rnd, pr.dx), dy = scegli(rnd, pr.dy);
     if (gcd(dx, dy) !== 1) continue;
     const ux = (rnd() < 0.5 ? -1 : 1) * dx, uy = (rnd() < 0.5 ? -1 : 1) * dy;   // direzione P → B
-    const k1 = 1 + Math.floor(rnd() * 3), k2 = 2 + Math.floor(rnd() * 3);
+    const k1 = 1 + Math.floor(rnd() * (pr.k1 ?? 3)), k2 = 2 + Math.floor(rnd() * (pr.k2 ?? 3));   // Δx, Δy tra i punti sono multipli: si semplifica
     const Qp = { x: B.x - k1 * ux, y: B.y - k1 * uy }, P = { x: Qp.x - k2 * ux, y: Qp.y - k2 * uy };
     if (!dentro(Qp.x, Qp.y) || !dentro(P.x, P.y) || !lontanoBuche(P.x, P.y) || !lontanoBuche(Qp.x, Qp.y, 2)) continue;
     if (Math.hypot(Qp.x - B.x, Qp.y - B.y) < 2.5 || Math.hypot(P.x - Qp.x, P.y - Qp.y) < 3) continue;
-    if (pr.conR && Math.abs(P.x - Qp.x) < 3) continue;
+    if (pr.conR && Math.abs(P.x - Qp.x) < 2) continue;
     if (BUCHE.some((b) => b !== B && distSeg(b.x, b.y, P.x, P.y, B.x, B.y) < 1.4)) continue;
     const m = uy / ux, q = P.y - m * P.x;
     if (Math.abs(q) > 12) continue;   // l'intercetta deve restare visibile allargando l'inquadratura
@@ -1422,10 +1485,10 @@ function generaScelta(l, rnd) {
 // prima si trova il punto della sponda guardando l'anteprima, poi si impara il trucco dello specchio; i numeri si complicano piano
 function profiloSponde(l) {
   if (l === 1) return { tipo: 'orizzontale', den: 1, modo: 'prova', decoro: 0, nota: 'Trova il punto della sponda' };
-  if (l === 2) return { tipo: 'orizzontale', den: 1, modo: 'specchio', decoro: 1, nota: 'Lo specchio: il riflesso della buca' };
+  if (l === 2) return { tipo: 'orizzontale', den: 2, modo: 'specchio', decoro: 1, nota: 'Lo specchio: il riflesso della buca' };
   if (l === 3) return { tipo: 'orizzontale', den: 3, modo: 'specchio', decoro: 2, nota: 'Lo specchio · pendenza frazionaria' };
-  if (l === 4) return { tipo: 'verticale', den: 3, modo: 'specchio', decoro: 2, nota: 'Sponda corta' };
-  return { tipo: 'mista', den: 4, modo: 'specchio', decoro: 3, nota: 'Sponda lunga o corta' };
+  if (l === 4) return { tipo: 'verticale', den: 10, modo: 'specchio', decoro: 2, nota: 'Sponda corta' };   // sulla sponda corta le distanze sono 10 e 20: decimi
+  return { tipo: 'mista', den: 4, denV: 10, modo: 'specchio', decoro: 3, nota: 'Sponda lunga o corta' };
 }
 function generaSponde(l, rnd) {
   const pr = profiloSponde(l);
@@ -1444,9 +1507,9 @@ function generaSponde(l, rnd) {
     const vi = tipo === 'orizzontale' ? { x: vo.x, y: -vo.y } : { x: -vo.x, y: vo.y };   // prima: la sponda è uno specchio
     if (vi.x === 0 || vi.y === 0) continue;
     const g = gcd(vi.x, vi.y), s = { x: vi.x / g, y: vi.y / g };
-    if (Math.abs(s.x) > pr.den) continue;
+    if (Math.abs(s.x) > (tipo === 'verticale' ? pr.denV ?? pr.den : pr.den)) continue;
     const m = s.y / s.x;
-    if (Math.abs(m) < 0.15 || Math.abs(m) > 4) continue;
+    if (Math.abs(m) < 0.15 || Math.abs(m) > 5) continue;
     const candidati = [];
     for (let k = 1; k <= 14; k++) { const P = { x: I.x - k * s.x, y: I.y - k * s.y }; if (dentro(P.x, P.y, 8.5, 3.8) && lontanoBuche(P.x, P.y) && Math.hypot(P.x - I.x, P.y - I.y) >= 3) candidati.push(P); }
     if (!candidati.length) continue;
@@ -1478,6 +1541,10 @@ function piazzaDecoro(n, percorsi, occupati, rnd) {
   }
   return out;
 }
+// tavoli già visti di recente (per scheda): la firma descrive il tavolo, "simile" è buca + pendenza
+const recenti = leggi('orfini.pool.recenti', {});
+const simile = (d) => `${d.B?.i ?? d.candidati?.map((c) => c.B.i).join(',')}|${d.m ?? d.a ?? ''}`;
+const firma = (d) => JSON.stringify([d.P, d.Q, d.I, d.V, d.x2, d.candidati?.map((c) => c.Q)]) + '#' + simile(d);
 const setOra = () => S.sfida && !S.sfida.giorno ? sets[S.sfida.tab] : null;
 const tavoloN = (set) => Math.min(TAVOLI_SET, set.stelle.length + (S.sfida?.esito ? 0 : 1));   // tavolo in corso (o appena preso), da 1
 const oggi = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
@@ -1491,9 +1558,18 @@ function nuovaSfida(opz = {}) {
     if (opz.nuovoSet || !st || st.livello !== livello || st.stelle.length >= TAVOLI_SET) { sets[tab] = { livello, stelle: [] }; scrivi('orfini.pool.set', sets); }
   }
   const genera = tab === 'sponde' ? generaSponde : tab === 'effetto' ? generaEffetto : profiloTiro(livello).scelta ? generaScelta : generaTiro;
-  for (let tentativi = 0; !dati && tentativi < 30; tentativi++, seme++) dati = genera(livello, mulberry32(seme));
-  seme--;
+  const casuale = !giorno && opz.seme === undefined, rec = (recenti[tab] ||= []);
+  for (let prova = 0; prova < (casuale ? 25 : 1); prova++) {
+    if (prova) seme = Math.floor(Math.random() * 1e9);
+    let x = null;
+    for (let tentativi = 0; !x && tentativi < 30; tentativi++, seme++) x = genera(livello, mulberry32(seme));
+    seme--;
+    if (!x) continue;
+    dati = x;
+    if (!casuale || (!rec.includes(firma(x)) && rec.at(-1)?.split('#')[1] !== simile(x))) break;
+  }
   if (!dati && tab === 'tiro') dati = generaTiro(6, mulberry32(seme));
+  if (casuale) { rec.push(firma(dati)); if (rec.length > 24) rec.shift(); scrivi('orfini.pool.recenti', recenti); }
   S.sfida = { tab, livello, giorno, seme, dati, indice: 0, errori: 0, aiuti: 0, tiri: 0, riassunti: [], aiutiVisti: {}, valori: {} };
   S.sfida.passi = tab === 'tiro' ? (dati.scelta ? passiScelta(dati) : passiTiro(dati)) : tab === 'effetto' ? passiEffetto(dati) : passiSponde(dati);
   dispostaSfida();
@@ -1525,6 +1601,7 @@ function nuovoLab() {
   for (let riga = 0; n <= N; riga++) for (let j = 0; j <= riga && n <= N; j++) lista.push(creaPalla(n++, 3 + riga * dx, (j - riga / 2) * 2 * T.r * 1.002));
   impostaPalle(lista);
   S.labQ = 1; S.stato = 'mira'; S.mira = null;
+  rettaSullaBianca();
   aggiornaGrafica();
 }
 
@@ -1654,12 +1731,12 @@ function traiettoriaVerso(X) {
 // ───────────────────────────────────────────── EFFETTO: PARABOLE
 // Forma col vertice y = a(x − h)² + k oppure con gli zeri y = a(x − x₁)(x − x₂). La bianca segue la parabola fino alla buca.
 function profiloEffetto(l) {
-  const den = (dd) => (a) => dd.includes(frazione(a)?.d) && Math.abs(frazione(a).n) <= 4;
-  if (l === 1) return { forma: 'vertice', inV: true, aOk: (a) => [0.25, 0.5, 1, 2].includes(Math.abs(a)), decoro: 0, nota: 'Parabola dal vertice' };
-  if (l === 2) return { forma: 'vertice', inV: false, aOk: den([1, 2, 4]), decoro: 1, nota: 'Vertice sul tavolo · la bianca sulla curva' };
-  if (l === 3) return { forma: 'zeri', aOk: den([1, 2, 3, 4]), decoro: 1, nota: 'Parabola dagli zeri' };
-  if (l === 4) return { forma: 'zeri', aOk: den([2, 3, 4, 5, 6]), aFraz: true, decoro: 2, nota: 'Zeri · a frazionario' };
-  return { forma: 'mista', aOk: den([1, 2, 3, 4, 5, 6, 8, 9]), decoro: 3, nota: 'Vertice o zeri' };
+  const fino = (dmax, nmax) => (a) => { const f = frazione(a); return !!f && f.d <= dmax && Math.abs(f.n) <= nmax; };
+  if (l === 1) return { forma: 'vertice', inV: true, dxMax: 8, aOk: fino(64, 9), decoro: 0, nota: 'Parabola dal vertice' };   // a = Δy / dx²: si divide per un quadrato
+  if (l === 2) return { forma: 'vertice', inV: false, dxMax: 8, aOk: fino(64, 9), decoro: 1, nota: 'Vertice sul tavolo · la bianca sulla curva' };
+  if (l === 3) return { forma: 'zeri', aOk: fino(12, 5), decoro: 1, nota: 'Parabola dagli zeri' };
+  if (l === 4) return { forma: 'zeri', aOk: fino(20, 5), aFraz: true, decoro: 2, nota: 'Zeri · a frazionario' };
+  return { forma: 'mista', dxMax: 7, aOk: fino(36, 9), aOkZ: fino(20, 5), decoro: 3, nota: 'Vertice o zeri' };
 }
 function coeffParabola(d, a = d.a) {   // y = A x² + B x + C
   return d.forma === 'zeri' ? { A: a, B: -a * (d.x1 + d.x2), C: a * d.x1 * d.x2 } : { A: a, B: -2 * a * d.V.x, C: a * d.V.x * d.V.x + d.V.y };
@@ -1671,8 +1748,8 @@ function percorsoValido(c, x0, B, ostacoli = []) {
   for (let i = 0; i <= 120; i++) { const x = lerp(x0, B.x, i / 120); pts.push({ x, y: valParabola(c, x) }); }
   for (const q of pts) {
     if (Math.hypot(q.x - B.x, q.y - B.y) < B.R + 0.15) break;   // ormai in buca
-    if (Math.abs(q.x) > 9.4 || Math.abs(q.y) > 4.55) return null;
-    if (SPONDE.some((sp) => { const v = puntoVicino(q.x, q.y, sp); return Math.hypot(q.x - v.x, q.y - v.y) < T.r + 0.08; })) return null;
+    if (Math.abs(q.x) > T.W - 0.1 || Math.abs(q.y) > T.H - 0.1) return null;   // il centro della palla resta dentro le sponde
+    if (SPONDE.some((sp) => { const v = puntoVicino(q.x, q.y, sp); return Math.hypot(q.x - v.x, q.y - v.y) < T.r + 0.05; })) return null;
     if (BUCHE.some((b) => b !== B && Math.hypot(q.x - b.x, q.y - b.y) < b.R + 0.35)) return null;
     if (ostacoli.some((o) => Math.hypot(q.x - o.x, q.y - o.y) < 2 * T.r + 0.35)) return null;
   }
@@ -1683,7 +1760,7 @@ function generaEffetto(l, rnd) {
   const cand = [];
   if (forma === 'vertice') {
     for (let h = -8; h <= 8; h++) for (let k = -4; k <= 4; k++) for (const B of BUCHE) {
-      const dx = B.x - h; if (Math.abs(dx) < 3) continue;
+      const dx = B.x - h; if (Math.abs(dx) < 3 || Math.abs(dx) > (pr.dxMax ?? 6)) continue;
       const a = (B.y - k) / (dx * dx); if (!a || !pr.aOk(a)) continue;
       const d = { forma, V: { x: h, y: k }, a };
       if (pr.inV ?? rnd() < 0.5) { d.P = { x: h, y: k }; cand.push({ d, B }); continue; }
@@ -1696,20 +1773,22 @@ function generaEffetto(l, rnd) {
   } else {
     for (let x1 = -9; x1 <= 9; x1++) for (let x2 = -9; x2 <= 9; x2++) for (const B of BUCHE) {
       if (Math.abs(x2 - x1) < 2 || Math.sign(x2 - x1) !== Math.sign(B.x - x2) || Math.abs(B.x - x2) < 2) continue;   // la porta tra la bianca e la buca
-      const a = B.y / ((B.x - x1) * (B.x - x2)); if (!pr.aOk(a) || (pr.aFraz && intero(a))) continue;
+      if ((x1 + x2) % 2) continue;   // vertice con la x intera
+      const a = B.y / ((B.x - x1) * (B.x - x2)); if (!(pr.aOkZ ?? pr.aOk)(a) || (pr.aFraz && intero(a))) continue;
+      if ((frazione(-a * ((x2 - x1) / 2) ** 2)?.d ?? 99) > 12) continue;   // y del vertice: una frazione semplice
       cand.push({ d: { forma, x1, x2, a, P: { x: x1, y: 0 }, V: { x: (x1 + x2) / 2, y: -a * ((x2 - x1) / 2) ** 2 } }, B });
     }
   }
   for (let i = cand.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [cand[i], cand[j]] = [cand[j], cand[i]]; }
   for (const { d, B } of cand) {
-    if (!lontanoBuche(d.P.x, d.P.y, 1.6) || Math.hypot(B.x - d.P.x, B.y - d.P.y) < 6) continue;
+    if (!lontanoBuche(d.P.x, d.P.y, 1.6) || Math.hypot(B.x - d.P.x, B.y - d.P.y) < 4.5) continue;
     const c = coeffParabola(d), pts = percorsoValido(c, d.P.x, B);
     if (!pts) continue;
     // la 8 sulla strada dritta P → B, lontana dalla curva: senza effetto non si passa
     let blocco = null;
     for (const t of [0.5, 0.42, 0.58, 0.35, 0.65]) {
       const X = { x: lerp(d.P.x, B.x, t), y: lerp(d.P.y, B.y, t) };
-      if (pts.every((q) => Math.hypot(q.x - X.x, q.y - X.y) > 2 * T.r + 0.4) && dentro(X.x, X.y, 9.2, 4.3) && lontanoBuche(X.x, X.y, 1.3)) { blocco = X; break; }
+      if (pts.every((q) => Math.hypot(q.x - X.x, q.y - X.y) > 2 * T.r + 0.25) && dentro(X.x, X.y, 9.2, 4.3) && lontanoBuche(X.x, X.y, 1.3)) { blocco = X; break; }
     }
     if (!blocco) continue;
     const zeri = d.forma === 'zeri' ? [d.x1, d.x2] : (() => { const r = -d.V.y / d.a; if (r < 0) return null; const s = Math.sqrt(r); return intero(s) && s > 0 ? [d.V.x - s, d.V.x + s] : null; })();
@@ -1816,7 +1895,7 @@ function aggiornaGrafica() {
   anelloBuca.visible = anelloSpecchio.visible = anelloAnteprima.visible = false; anelloSpecchio.scale.setScalar(1); segniQ.forEach((m) => { m.visible = false; });
   adattaCamera();   // prima l'inquadratura: le rette si tagliano sui suoi bordi
   const acc = new THREE.Color(coloreAccento());
-  if (S.tab === 'lab') aggiornaLab();
+  if (S.tab === 'lab') { aggiornaLab(); mostraRettaLab(); }
   else {
     const sf = S.sfida, d = sf.dati, P = palle[0], i = sf.indice;
     if (P.visibile) etichetta('P', `P${coord(P.x, P.y)}`, P.x, P.y, 'P');
@@ -2002,9 +2081,11 @@ function concludiTiro() {
       for (const [x, y] of [[-5, 0], [-6, 0], [-5, 1], [-5, -1], [-7, 0], [-4, 2]]) if (palle.every((p) => !p.attiva || Math.hypot(p.x - x, p.y - y) > 2 * T.r + 0.05)) {
         Object.assign(P, { x, y, px: x, py: y, z: T.r, pz: T.r, attiva: true, visibile: true, caduta: null }); break;
       }
-      aggiornaLab(); richiediRender();
+      rettaSullaBianca(); aggiornaLab(); mostraRettaLab(); richiediRender();
     }, 700);
-    S.stato = 'mira'; aggiornaLab(); return;
+    S.stato = 'mira';
+    if (P.attiva) { posaSuInteroLibero(P); rettaSullaBianca(); }   // la bianca si ferma su un punto a coordinate intere: q resta un numero pulito
+    aggiornaLab(); mostraRettaLab(); return;
   }
   const sf = S.sfida, d = sf.dati;
   const bersaglio = sf.tab === 'tiro' ? d.nQ : 0;
@@ -2112,16 +2193,20 @@ const fineP = (e) => {
   if (e.pointerId !== puntatore) return; puntatore = null;
   if (S.trascina) {   // rilascio: la palla si aggancia al punto a coordinate intere libero più vicino
     const p = S.trascina.p; S.trascina = null;
-    const cand = [];
-    for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++) cand.push([Math.round(p.x) + dx, Math.round(p.y) + dy]);
-    cand.sort((a, b) => Math.hypot(a[0] - p.x, a[1] - p.y) - Math.hypot(b[0] - p.x, b[1] - p.y));
-    const ok = cand.find(([x, y]) => dentro(x, y, 9, 4) && lontanoBuche(x, y, 1.2) && palle.every((o) => o === p || !o.attiva || Math.hypot(o.x - x, o.y - y) > 2 * T.r + 0.02));
-    if (ok) { p.x = p.px = ok[0]; p.y = p.py = ok[1]; }
-    Aptica.vibra('tasto', 1, { gesto: true }); aggiornaLab(); richiediRender(); return;
+    posaSuInteroLibero(p);
+    if (p.n === 0) rettaSullaBianca();
+    Aptica.vibra('tasto', 1, { gesto: true }); aggiornaLab(); mostraRettaLab(); richiediRender(); return;
   }
   if (S.mira && S.mira.k > 0.02 && S.mira.dir) tira(S.mira.dir, S.mira.k);
-  else { S.mira = null; aggiornaGuida(); }
+  else { S.mira = null; aggiornaGuida(); mostraRettaLab(); }
 };
+function posaSuInteroLibero(p) {   // la palla si aggancia al punto a coordinate intere libero più vicino
+  const cand = [];
+  for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++) cand.push([Math.round(p.x) + dx, Math.round(p.y) + dy]);
+  cand.sort((a, b) => Math.hypot(a[0] - p.x, a[1] - p.y) - Math.hypot(b[0] - p.x, b[1] - p.y));
+  const ok = cand.find(([x, y]) => dentro(x, y, 9, 4) && lontanoBuche(x, y, 1.2) && palle.every((o) => o === p || !o.attiva || Math.hypot(o.x - x, o.y - y) > 2 * T.r + 0.02));
+  if (ok) { p.x = p.px = ok[0]; p.y = p.py = ok[1]; }
+}
 canvas.addEventListener('pointerup', fineP);
 canvas.addEventListener('pointercancel', (e) => { if (e.pointerId === puntatore) { puntatore = null; S.mira = null; S.trascina = null; aggiornaGuida(); } });
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
@@ -2199,7 +2284,20 @@ function renderPannello() {
   const c = $('contenuto');
   if (S.tab === 'lab') {
     S.campo = null;
-    c.innerHTML = `<p class="consegna">Trascina le palle sul tavolo; tocca una palla colorata per farla diventare Q. Per tirare, tieni il dito sul tavolo e trascina all'indietro (in vista 3D parti dalla palla bianca).</p>
+    const cmp = (k, ph) => `<input class="campo" data-lab="${k}" aria-label="${ph}" placeholder="${ph}" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="${tastieraVirtuale ? 'none' : 'text'}" enterkeyhint="done">`;
+    c.innerHTML = `<div class="lab-mq">
+        <h4>Tira con la retta y = mx + q</h4>
+        <p class="consegna">m fa ruotare la retta attorno alla bianca, q la sposta su e giù insieme alla bianca. La traiettoria si vede subito, con i rimbalzi.</p>
+        <div class="eq" id="labEqMq"></div>
+        <label class="cursore"><span>m</span><input type="range" id="labMr" min="-4" max="4" step="0.25" aria-label="Pendenza m">${cmp('m', 'm')}</label>
+        <label class="cursore"><span>q</span><input type="range" id="labQr" min="-5" max="5" step="0.5" aria-label="Intercetta q">${cmp('q', 'q')}</label>
+        <div class="campioni verso"><button class="sw" data-azione="verso" data-v="-1">← verso sinistra</button><button class="sw" data-azione="verso" data-v="1">verso destra →</button></div>
+        <label class="cursore"><span>forza</span><input type="range" id="labF" min="0.1" max="1" step="0.05" aria-label="Forza del tiro"><b id="labFv"></b></label>
+        <p class="msg errore" id="labMsg" role="status"></p>
+        <div class="azioni"><button class="btn primario" data-azione="tiraLab">Tira lungo la retta</button><button class="btn" data-azione="usaPQ">Usa la retta PQ</button></div>
+      </div>
+      <h4>Retta per P e Q</h4>
+      <p class="consegna">Trascina le palle; tocca una palla colorata per farla diventare Q. Puoi anche tirare come una fionda: tieni il dito sul tavolo e trascina all'indietro.</p>
       <div class="scheda-lab"><div class="r"><span>Bianca P</span><b id="labP"></b></div><div class="r"><span>Palla Q</span><b id="labQ"></b></div></div>
       <div class="eq" id="labEq"></div>
       <details><summary><span>Pendenza m</span><b id="labM"></b></summary><div id="labMd"></div></details>
@@ -2207,7 +2305,7 @@ function renderPannello() {
       <h4>Traiettoria prevista della bianca</h4><ol class="traiettoria" id="labTraiettoria"><li>Inizia a mirare per vederla: a ogni sponda la pendenza cambia segno.</li></ol>
       <h4>Palle nel triangolo</h4><div class="campioni">${NUMERI_PALLE.map((n) => `<button class="sw" data-azione="numero" data-n="${n}" aria-pressed="${asp.numero === n}">${n}</button>`).join('')}</div>
       <div class="piede"><button class="btn" data-azione="ricomponi">Ricomponi il tavolo</button><button class="btn" type="button" data-explain="mode">▶ Spiegami</button></div>`;
-    aggiornaLab();
+    controlliLab(); aggiornaLab();
   } else {
     const sf = S.sfida, d = sf.dati, tp = prog[sf.tab];
     const consegna = d.scelta && !d.Q
@@ -2363,6 +2461,13 @@ $('contenuto').addEventListener('click', (e) => {
   else if (a === 'numero') { asp.numero = +b.dataset.n; scrivi('orfini.pool.aspetto', asp); nuovoLab(); renderPannello(); }
   else if (a === 'rivedi') avviaReplay();
   else if (a === 'ricomponi') nuovoLab();
+  else if (a === 'verso') { S.lr.verso = +b.dataset.v; controlliLab(); mostraRettaLab(); }
+  else if (a === 'tiraLab') { if (S.lr.ok && S.mira?.dir) tira(S.mira.dir, S.lr.forza); }
+  else if (a === 'usaPQ') {   // la retta per P e Q: si mira alla palla Q
+    const r = rettaLab(), P = palle[0], Qb = palle.find((p) => p.n === S.labQ && p.attiva);
+    if (!r || !Qb) { avviso('Con P e Q sulla stessa verticale la retta non ha la forma y = mx + q.', 'errore', 2200); return; }
+    Object.assign(S.lr, { m: r.m, q: r.q, verso: Math.sign(Qb.x - P.x) || 1 }); controlliLab(); mostraRettaLab();
+  }
 });
 function salvaValori() {
   const att = $('contenuto').querySelector('.passo.attivo'); if (!att || !S.sfida) return;
@@ -2377,11 +2482,12 @@ document.querySelector('.tabs').addEventListener('click', (e) => {
 function cambiaTab(tab) {
   S.tab = tab; scrivi('orfini.pool.tab', tab); S.mira = null; dirTastiera = null; aggiornaGuida();
   if (tab === 'lab') nuovoLab(); else nuovaSfida();
+  $('corpo').scrollTop = 0;   // una scheda nuova si apre dall'inizio, con le schede in vista
   apriPannello('meta'); renderPannello();
 }
 // tastierino interno: niente tastiera di sistema sopra il tavolo
 function aggiornaTastierino() {
-  const vis = tastieraVirtuale && S.campo && $('pannello').dataset.stato !== 'chiuso' && S.tab !== 'lab';
+  const vis = tastieraVirtuale && S.campo && $('pannello').dataset.stato !== 'chiuso' && (S.tab !== 'lab' || !!S.campo.closest?.('.lab-mq'));
   $('tastierino').classList.toggle('nascosto', !vis);
   $('pannello').classList.toggle('tastiera', !!vis);   // con il tastierino il ✓ fa da Verifica
 }
@@ -2390,9 +2496,9 @@ $('tastierino').addEventListener('click', (e) => {
   const b = e.target.closest('button'); if (!b) return;
   const t = b.dataset.t, el = S.campo;
   Suono.tasto(); Aptica.vibra('tasto', 1, { gesto: true });
-  if (t === 'ok') { verificaPasso(); return; }
+  if (t === 'ok') { if (S.tab === 'lab') { S.campo?.blur(); S.campo = null; controlliLab(); aggiornaTastierino(); } else verificaPasso(); return; }
   if (!el) return;
-  if (t === 'succ') { const tutti = [...el.closest('.passo').querySelectorAll('.campo')]; S.campo = tutti[(tutti.indexOf(el) + 1) % tutti.length]; S.campo.focus({ preventScroll: true }); return; }
+  if (t === 'succ') { const tutti = [...el.closest('.passo, .lab-mq').querySelectorAll('.campo')]; S.campo = tutti[(tutti.indexOf(el) + 1) % tutti.length]; S.campo.focus({ preventScroll: true }); return; }
   const s = el.selectionStart ?? el.value.length, f = el.selectionEnd ?? el.value.length;
   if (t === 'canc') { if (s === f && s > 0) el.setRangeText('', s - 1, s, 'end'); else el.setRangeText('', s, f, 'end'); }
   else el.setRangeText(t, s, f, 'end');
@@ -2413,39 +2519,83 @@ function aggiornaLab() {
   const P = palle[0];
   let Qb = palle.find((p) => p.n === S.labQ && p.attiva);
   if (!Qb) { Qb = palle.find((p) => p.n !== 0 && p.attiva); if (Qb) S.labQ = Qb.n; }
-  lineaRetta.visible = false; segniQ[0].visible = false; togliEtichette('qmark');
   if (!P.attiva) togliEtichette('P');
   if (!Qb) togliEtichette('Q');
-  if (P.attiva) etichetta('P', `P${coord(round1(P.x), round1(P.y))}`, P.x, P.y, 'P');
-  if (Qb) etichetta('Q', `Q${coord(round1(Qb.x), round1(Qb.y))}`, Qb.x, Qb.y, 'Q');
+  if (P.attiva) etichetta('P', `P${coordD(round1(P.x), round1(P.y))}`, P.x, P.y, 'P');
+  if (Qb) etichetta('Q', `Q${coordD(round1(Qb.x), round1(Qb.y))}`, Qb.x, Qb.y, 'Q');
   richiediRender();
   const el = (id) => document.getElementById(id);
   if (!el('labEq')) return;
-  el('labP').textContent = P.attiva ? coord(round1(P.x), round1(P.y)) : 'in buca';
-  el('labQ').textContent = Qb ? `n. ${Qb.n} ${coord(round1(Qb.x), round1(Qb.y))}` : '—';
+  el('labP').textContent = P.attiva ? coordD(round1(P.x), round1(P.y)) : 'in buca';
+  el('labQ').textContent = Qb ? `n. ${Qb.n} ${coordD(round1(Qb.x), round1(Qb.y))}` : '—';
   if (!Qb || !P.attiva) { el('labEq').textContent = '—'; return; }
   const x1 = round1(P.x), y1 = round1(P.y), x2 = round1(Qb.x), y2 = round1(Qb.y), dx = x2 - x1, dy = y2 - y1;
   if (Math.abs(dx) < 1e-9) {
-    el('labEq').textContent = `x = ${num(x1)}`; el('labM').textContent = 'non esiste'; el('labQq').textContent = '—';
+    el('labEq').textContent = `x = ${dec(x1)}`; el('labM').textContent = 'non esiste'; el('labQq').textContent = '—';
     el('labMd').textContent = 'Δx = 0: la retta è verticale.'; el('labQd').textContent = 'Una retta verticale non ha la forma y = mx + q.';
     return;
   }
   const m = dy / dx, q = y1 - m * x1;
-  el('labEq').textContent = retta(m, q);
+  el('labEq').textContent = lega(retta(m, q, numL));
   el('labM').textContent = numCirca(m); el('labQq').textContent = numCirca(q);
-  el('labMd').innerHTML = `m = Δy / Δx<br>m = (${num(y2)} − ${par(y1)}) / (${num(x2)} − ${par(x1)})<br>m = ${num(dy)} / ${num(dx)} = ${numCirca(m)}`;
-  el('labQd').innerHTML = `q = y<sub>P</sub> − m · x<sub>P</sub><br>q = ${num(y1)} − ${par(Math.round(m * 100) / 100)} · ${par(x1)}<br>q = ${numCirca(q)}`;
-  if (!S.trascina) adattaCamera();
-  impostaLinea(lineaRetta, clipRetta(m, q)); lineaRetta.material.color.set(coloreAccento());
-  if (Math.abs(q) <= 20) { segna(segniQ[0], 0, q, coloreAccento()); etichetta('qmark', `q = ${numCirca(q)}`, 0, q, 'Q', 0.35); }
+  const pd = (v) => v < 0 ? `(${dec(v)})` : dec(v);
+  el('labMd').innerHTML = `m = Δy / Δx<br>m = (${dec(y2)} − ${pd(y1)}) / (${dec(x2)} − ${pd(x1)})<br>m = ${dec(dy)} / ${dec(dx)} = ${numCirca(m)}`;
+  el('labQd').innerHTML = `q = y<sub>P</sub> − m · x<sub>P</sub><br>q = ${dec(y1)} − ${pd(Math.round(m * 100) / 100)} · ${pd(x1)}<br>q = ${numCirca(q)}`;
 }
+// Lab con m e q: la bianca si posa sulla retta alla sua x; la traiettoria prevista si aggiorna a ogni ritocco
+function posaSullaRetta() {
+  const P = palle[0], { m, q } = S.lr, y = m * P.x + q;
+  if (!P.attiva || Math.abs(y) > T.H - 0.4) return false;
+  if (palle.some((o) => o !== P && o.attiva && Math.hypot(o.x - P.x, o.y - y) < 2 * T.r + 0.02)) return false;
+  P.y = P.py = y; return true;
+}
+function mostraRettaLab() {
+  if (S.tab !== 'lab') return;
+  const lr = S.lr, P = palle[0];
+  lr.ok = S.stato === 'mira' && !S.trascina && posaSullaRetta();
+  impostaLinea(lineaRetta, clipRetta(lr.m, lr.q)); lineaRetta.material.color.set(coloreAccento());
+  togliEtichette('qmark'); segniQ[0].visible = false;
+  if (Math.abs(lr.q) <= 20) { segna(segniQ[0], 0, lr.q, coloreAccento()); etichetta('qmark', `q = ${numCirca(lr.q)}`, 0, lr.q, 'Q', 0.35); }
+  if (P.attiva) etichetta('P', `P${coordD(round1(P.x), round1(P.y))}`, P.x, P.y, 'P');
+  if (lr.ok) { const L = Math.hypot(1, lr.m); S.mira = { tastiera: true, lab: true, dir: { x: lr.verso / L, y: lr.verso * lr.m / L }, k: 0, agganciata: true, ultimoTic: 0 }; }
+  else if (S.mira?.lab) S.mira = null;
+  aggiornaGuida();
+  const el = (id) => document.getElementById(id);
+  if (!el('labEqMq')) return;
+  el('labEqMq').textContent = lega(retta(lr.m, lr.q));
+  document.querySelector('[data-azione="tiraLab"]').disabled = !lr.ok;
+  el('labMsg').textContent = lr.ok || S.stato !== 'mira' ? '' : !P.attiva ? 'La bianca è in buca: aspetta che torni sul tavolo.'
+    : lega(`Con questi valori la bianca andrebbe in y = ${numCirca(lr.m * P.x + lr.q)}: fuori dal tavolo o sopra un'altra palla. Cambia q.`);
+}
+// dopo un trascinamento o un tiro la retta segue la bianca: si tiene m, si ricalcola q
+function rettaSullaBianca() { const P = palle[0]; if (P.attiva) S.lr.q = Math.round((P.y - S.lr.m * P.x) * 1e9) / 1e9; controlliLab(); }
+function controlliLab() {   // allinea cursori, campi e verso ai valori di S.lr
+  const el = (id) => document.getElementById(id), lr = S.lr;
+  if (!el('labMr')) return;
+  el('labMr').value = clamp(lr.m, -4, 4); el('labQr').value = clamp(lr.q, -5, 5); el('labF').value = lr.forza;
+  el('labFv').textContent = Math.round(lr.forza * 100) + '%';
+  for (const k of ['m', 'q']) { const f = document.querySelector(`.campo[data-lab="${k}"]`); if (f !== document.activeElement) f.value = num(lr[k]); }
+  document.querySelectorAll('[data-azione="verso"]').forEach((b) => b.setAttribute('aria-pressed', +b.dataset.v === lr.verso));
+}
+$('contenuto').addEventListener('input', (e) => {
+  if (S.tab !== 'lab') return;
+  const t = e.target, lr = S.lr;
+  let nuovaM = null;
+  if (t.id === 'labMr') nuovaM = +t.value;
+  else if (t.id === 'labQr') lr.q = +t.value;
+  else if (t.id === 'labF') lr.forza = +t.value;
+  else if (t.dataset.lab) { const v = leggiNumero(t.value); if (v === null) return; if (t.dataset.lab === 'm') nuovaM = clamp(v, -20, 20); else lr.q = clamp(v, -50, 50); }
+  else return;
+  if (nuovaM !== null) { lr.m = nuovaM; if (S.stato === 'mira') rettaSullaBianca(); }   // m ruota la retta attorno alla bianca; q la sposta (con la bianca)
+  controlliLab(); mostraRettaLab();
+});
 let ultimaTraiettoria = 0;
 function aggiornaTraiettoria(prev) {
   const ora = performance.now(); if (ora - ultimaTraiettoria < 120) return; ultimaTraiettoria = ora;
   const el = document.getElementById('labTraiettoria'); if (!el) return;
   el.innerHTML = prev.segmenti.map((s, i) => {
     const eq = isFinite(s.m) ? `m ${numCirca(s.m)}` : 'verticale';
-    const fine = i === prev.segmenti.length - 1 ? (prev.buca ? ' → in buca!' : prev.contatto ? ` → colpisce la ${prev.contatto.n}` : '') : ` → sponda in ${coord(round1(s.a[0]), round1(s.a[1]))}`;
+    const fine = i === prev.segmenti.length - 1 ? (prev.buca ? ' → in buca!' : prev.contatto ? ` → colpisce la ${prev.contatto.n}` : '') : ` → sponda in ${coordD(round1(s.a[0]), round1(s.a[1]))}`;
     return `<li>${eq}${fine}</li>`;
   }).join('');
 }
@@ -2471,6 +2621,11 @@ function avviso(testoMsg, tipo = '', ms = 1800) {
   clearTimeout(avviso.t); avviso.t = setTimeout(() => a.classList.add('nascosto'), ms);
 }
 function testoGrande(t) { const g = $('grande'); g.textContent = t; g.classList.remove('via'); void g.offsetWidth; g.classList.add('via'); }
+function regola(g, hex) {   // slider tono e luce di un gruppo di colori
+  const R = REGOLE[g], { h, l } = hexHsl(hex);
+  return `<div class="regola" data-col="${g}"><label class="cursore due"><span>tono</span><input type="range" data-p="h" min="0" max="359" value="${Math.round(h)}" aria-label="Tono"></label>
+    <label class="cursore due"><span>luce</span><input type="range" data-p="l" min="${R.l[0] * 100}" max="${R.l[1] * 100}" value="${Math.round(clamp(l, R.l[0], R.l[1]) * 100)}" aria-label="Luce"></label></div>`;
+}
 function renderAspetto() {
   const st = stelleTotali();
   const sw = (gruppo, lista, sel, swatch) => `<div class="campioni">${lista.map((x) => {
@@ -2479,10 +2634,13 @@ function renderAspetto() {
   }).join('')}</div>`;
   const seg = (gruppo, voci, sel) => `<div class="campioni">${voci.map(([v, nome]) => `<button class="sw" data-gruppo="${gruppo}" data-val="${v}" aria-pressed="${String(sel) === String(v)}">${nome}</button>`).join('')}</div>`;
   $('aspettoCorpo').innerHTML = `
-    <h3>Tappeto</h3>${sw('tappeto', TAPPETI, asp.tappeto, (x) => `<i style="--c:${x.c}"></i>`)}
-    <h3>Cornice</h3>${sw('cornice', CORNICI, asp.cornice, (x) => `<i style="--c:${x.c}"></i>`)}
-    <h3>Colore dell'interfaccia</h3>${sw('accento', ACCENTI, asp.accento, (x) => `<i style="--c:${x.c}"></i>`)}
-    <h3>Colori delle palle</h3>${sw('set', SET_PALLE, asp.set, (x) => `<i class="multi" style="--c1:${x.c[0]};--c2:${x.c[1]};--c3:${x.c[2]};--c4:${x.c[5]}"></i>`)}
+    <h3>Tappeto</h3>${sw('tappeto', TAPPETI, asp.tappetoHex ? '' : asp.tappeto, (x) => `<i style="--c:${x.c}"></i>`)}${regola('tappeto', colorePanno())}
+    <h3>Cornice</h3>${sw('cornice', CORNICI, asp.corniceHex ? '' : asp.cornice, (x) => `<i style="--c:${x.c}"></i>`)}${regola('cornice', coloreCornice())}
+    <h3>Colore dell'interfaccia</h3>${sw('accento', ACCENTI, asp.accentoHex ? '' : asp.accento, (x) => `<i style="--c:${x.c}"></i>`)}${regola('accento', coloreAccento())}
+    <h3>Neon del piano</h3><div class="campioni"><button class="sw" data-gruppo="neonReset" data-val="1" aria-pressed="${!asp.neonHex}"><i style="--c:${coloreAccento()}"></i>Come l'interfaccia</button></div>
+    ${regola('neon', coloreNeon())}<label class="cursore due"><span>intensità</span><input type="range" data-forza min="0" max="150" step="5" value="${Math.round((asp.neonForza ?? 1) * 100)}" aria-label="Intensità del neon"></label>
+    <h3>Palle</h3>${sw('set', SET_PALLE, asp.set, (x) => `<i class="multi" style="--c1:${x.c[0]};--c2:${x.c[1]};--c3:${x.c[2]};--c4:${x.c[5]}"></i>`)}
+    <p class="nota">I set speciali si sbloccano con le stelle: brillano, lasciano scie e scintille, cambiano gli urti. Non cambiano il gioco.</p>
     <h3>Vibrazione</h3>${seg('vibrazione', [[0, 'Spenta'], [1, 'Leggera'], [2, 'Piena']], Aptica.livello)}
     <p class="nota">${Aptica.reale ? 'Questo dispositivo vibra davvero; in più senti e vedi la vibrazione "analogica".' : Aptica.ios ? 'Su iPhone e iPad senti dei tic leggeri al tocco; il resto è vibrazione analogica: un colpo sonoro grave e il tavolo che trema.' : 'Questo dispositivo non vibra: la vibrazione è analogica, un colpo sonoro grave e il tavolo che trema.'}</p>
     <h3>Giocatori</h3>${seg('giocatori', [[1, 'Uno'], [2, 'Due a turno']], S.giocatori)}
@@ -2496,15 +2654,39 @@ $('aspettoCorpo').addEventListener('click', (e) => {
   if (g === 'vibrazione') { Aptica.livello = +v; Aptica.vibra('giusto', 1, { el: $('aspetto'), gesto: true }); }
   else if (g === 'giocatori') { S.giocatori = +v; scrivi('orfini.pool.giocatori', S.giocatori); S.turno = 0; S.punteggi = [0, 0]; aggiornaHud(); }
   else if (g === 'lim') impostaLim(v === '1');
+  else if (g === 'neonReset') { asp.neonHex = null; scrivi('orfini.pool.aspetto', asp); disegnaPianoEsteso(); }
   else {
-    asp[g] = g === 'numero' ? +v : v; scrivi('orfini.pool.aspetto', asp);
+    asp[g] = g === 'numero' ? +v : v; asp[g + 'Hex'] = null;   // un campione cancella il colore su misura del gruppo
+    scrivi('orfini.pool.aspetto', asp);
     applicaAspetto();
   }
   renderAspetto();
 });
+// slider dei colori: si ridisegna solo la parte che cambia, al massimo una volta per fotogramma
+const daApplicare = new Set();
+$('aspettoCorpo').addEventListener('input', (e) => {
+  const t = e.target; if (t.type !== 'range') return;
+  if (t.hasAttribute('data-forza')) { asp.neonForza = +t.value / 100; daApplicare.add('neon'); }
+  else {
+    const box = t.closest('.regola'), g = box.dataset.col, R = REGOLE[g];
+    const h = +box.querySelector('[data-p="h"]').value, l = +box.querySelector('[data-p="l"]').value / 100;
+    asp[g + 'Hex'] = hslHex(h, R.s, l); daApplicare.add(g);
+    box.previousElementSibling?.querySelectorAll('.sw').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+  }
+  if (daApplicare.size === 1) requestAnimationFrame(() => {
+    for (const g of daApplicare) {
+      if (g === 'tappeto') disegnaPanno();
+      else if (g === 'cornice') applicaCornice();
+      else if (g === 'neon') disegnaPianoEsteso();
+      else if (g === 'accento') { document.documentElement.style.setProperty('--accento', coloreAccento()); applicaCornice(); disegnaPianoEsteso(); disegnaPalle(); aggiornaGrafica(); }
+    }
+    daApplicare.clear(); richiediRender();
+  });
+});
+$('aspettoCorpo').addEventListener('change', (e) => { if (e.target.type === 'range') scrivi('orfini.pool.aspetto', asp); });
 function applicaCornice() {
   const cor = CORNICI.find((c) => c.id === asp.cornice) || CORNICI[0];
-  matCornice.color.set(cor.c); matCornice.roughness = cor.rough; matCornice.metalness = cor.metal;
+  matCornice.color.set(coloreCornice()); matCornice.roughness = cor.rough; matCornice.metalness = cor.metal;
   stecca.userData.impugnatura.material.emissive.set(coloreAccento());
 }
 function applicaAspetto() {
@@ -2646,7 +2828,7 @@ $('bGioca').addEventListener('click', () => { Suono.avvia(); Suono.clic(); $('sc
 $('bGioca').focus();
 if (DEBUG) window.__orfini = {
   S, T, FIS, BUCHE, prog, sets, TAVOLI_SET, Aptica, loop, THREE, camera, orbita, get palle() { return palle; },
-  tira, passoFisico, tuttoFermo, concludiTiro, cambiaTab, nuovaSfida, renderPannello, verificaPasso, direzioneAlgebrica, prevedi, scegliPalla, profiloTiro,
+  tira, passoFisico, tuttoFermo, concludiTiro, cambiaTab, nuovaSfida, renderPannello, verificaPasso, direzioneAlgebrica, prevedi, scegliPalla, profiloTiro, cam, mostraRettaLab, asp, MESH, fx, pianoEsteso, contorno, renderAspetto, stelleTotali,
   avanzaFinoAFermo(max = 4000) { let n = 0; while (S.stato === 'tiro' && n < max) { passoFisico(); n++; if (tuttoFermo()) { concludiTiro(); break; } } return n; },
 };
 // ───────────────────────────────────────────── SPIEGAMI (spiegazione animata in una finestra sopra il gioco)

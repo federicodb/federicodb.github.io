@@ -472,3 +472,69 @@ test.describe('effetto', () => {
     await expect(page.locator('.etichetta', { hasText: /^[^:]+\s·\s[^:]+\s=\s[^:]+$/ })).toHaveCount(1);   // il cursore r₁ · r₂ = y
   });
 });
+
+test.describe('lab con m e q', () => {
+  test('la bianca si posa sulla retta, il tiro parte lungo (1, m), valori impossibili disattivano il tiro', async ({ page }) => {
+    await avvia(page, 'lab');
+    await page.fill('.campo[data-lab="m"]', '1/2');
+    await page.locator('#labQr').fill('1.5');
+    const r = await page.evaluate(() => { const o = window.__orfini, P = o.palle[0]; return { x: P.x, y: P.y, m: o.S.lr.m, q: o.S.lr.q, eq: document.querySelector('#labEqMq').textContent }; });
+    expect(r.m).toBe(0.5); expect(r.q).toBe(1.5);
+    expect(r.y).toBeCloseTo(0.5 * r.x + 1.5, 9);
+    expect(r.eq.replace(/\s/g, ' ')).toBe('y = 1/2 x + 3/2');
+    await page.click('[data-azione="tiraLab"]');
+    const v = await page.evaluate(() => { const P = window.__orfini.palle[0]; return P.vy / P.vx; });
+    expect(v).toBeCloseTo(0.5, 6);
+    await page.evaluate(() => window.__orfini.avanzaFinoAFermo());
+    await page.fill('.campo[data-lab="q"]', '40');
+    await expect(page.locator('[data-azione="tiraLab"]')).toBeDisabled();
+    await expect(page.locator('#labMsg')).toContainText('Cambia q');
+  });
+  test('durante un tiro con urti l\'inquadratura resta ferma (in tempo reale)', async ({ page }) => {
+    test.setTimeout(60000);   // 3 s di tiro reale più l'avvio: con il PC sotto carico supera i 30 s predefiniti
+    await avvia(page, 'lab');
+    await page.evaluate(() => { const o = window.__orfini; o.S.lr.m = 0; o.S.lr.q = 0; o.S.lr.verso = 1; o.mostraRettaLab(); window.__prima = JSON.stringify(o.cam.tgt); o.tira(o.S.mira.dir, 1); });
+    let cambi = 0;
+    for (let n = 0; n < 30; n++) { await page.waitForTimeout(100); if (await page.evaluate(() => JSON.stringify(window.__orfini.cam.tgt) !== window.__prima)) cambi++; }
+    expect(await page.evaluate(() => window.__orfini.S.tiro?.contatti.length ?? window.__orfini.S.ultimoTiro?.contatti.length ?? 0)).toBeGreaterThan(0);
+    expect(cambi).toBe(0);
+  });
+});
+
+test.describe('aspetto', () => {
+  test('slider dei colori: il tono cambia il panno, un campione torna al preset, il neon a 0 si spegne', async ({ page }) => {
+    await avvia(page, 'tiro');
+    await page.click('#bAspetto');
+    await page.locator('.regola[data-col="tappeto"] [data-p="h"]').fill('210');
+    await page.waitForTimeout(200);
+    expect(await page.evaluate(() => window.__orfini.asp.tappetoHex)).toMatch(/^#[0-9a-f]{6}$/);
+    await page.click('.sw[data-gruppo="tappeto"][data-val="rosso"]');
+    expect(await page.evaluate(() => window.__orfini.asp.tappetoHex)).toBeNull();
+    await page.locator('[data-forza]').fill('0');
+    await page.waitForTimeout(200);
+    const n = await page.evaluate(() => { const o = window.__orfini; return { col: o.pianoEsteso.material.uniforms.uCol.value.toArray(), contorno: o.contorno.visible }; });
+    expect(n.col).toEqual([0, 0, 0]);
+    expect(n.contorno).toBe(false);
+    await page.reload(); await page.waitForSelector('#bGioca:not(.nascosto)');
+    expect(await page.evaluate(() => window.__orfini.asp.neonForza)).toBe(0);   // la scelta resta salvata
+  });
+  test('palle speciali: bloccate senza stelle; sbloccate brillano e fanno scintille', async ({ page }) => {
+    await avvia(page, 'lab');
+    await page.click('#bAspetto');
+    await expect(page.locator('.sw[data-gruppo="set"][data-val="elettriche"]')).toBeDisabled();
+    await page.evaluate(() => { const o = window.__orfini; o.prog.tiro.stelle = { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 2 }; o.renderAspetto(); });
+    expect(await page.evaluate(() => window.__orfini.stelleTotali())).toBe(20);
+    await page.click('.sw[data-gruppo="set"][data-val="elettriche"]');
+    const r = await page.evaluate(() => {
+      const o = window.__orfini;
+      const e1 = o.MESH[1].mesh.material.emissiveIntensity, e0 = o.MESH[0].mesh.material.emissiveIntensity;
+      o.S.lr.m = 0; o.S.lr.q = 0; o.S.lr.verso = 1; o.mostraRettaLab(); o.tira(o.S.mira.dir, 1);
+      let max = 0; for (let n = 0; n < 240; n++) { o.passoFisico(); max = Math.max(max, o.fx.vivi); }
+      return { e1, e0, max };
+    });
+    expect(r.e1).toBeGreaterThan(0.3);
+    expect(r.e0).toBe(0);
+    expect(r.max).toBeGreaterThan(10);
+  });
+});
+
