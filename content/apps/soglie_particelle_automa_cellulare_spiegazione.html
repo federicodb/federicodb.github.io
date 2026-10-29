@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050507">
+<title>Automi e particelle in un minuto</title>
+<meta name="description" content="Animazione di un minuto che spiega il simulatore di automi cellulari e particelle: la regola B3/S23, le forze tra particelle, la matrice delle affinità, la soglia di accensione e la risposta della griglia (Orfini Math Lab).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Mono&display=swap">
+<style>
+/* Stessa grafica dell'app: nero AMOLED, superfici grafite, Inter per i testi, Space Mono per numeri e regole */
+:root{
+  --bg:#050507; --surf:hsl(240 6% 8%); --surf-2:hsl(240 6% 13%); --surf-3:hsl(240 5% 18%);
+  --line:hsl(240 5% 100% / .08); --line-2:hsl(240 5% 100% / .14);
+  --text:hsl(0 0% 93%); --muted:hsl(240 4% 66%); --acc:hsl(0 0% 84%);
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"Space Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+::selection{background:hsl(0 0% 84% / .3)}
+.wrap{max-width:1080px;margin:0 auto;padding-block:24px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:20px}
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--muted);text-decoration:none;font-size:14px}
+.back:hover{color:var(--text)}
+header{display:flex;flex-direction:column;gap:10px;margin-bottom:4px}
+h1{font-weight:600;font-size:clamp(30px,5vw,48px);line-height:1.08;letter-spacing:-.025em;margin:0;text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--muted);font-size:17px}
+.screen{border-radius:20px;padding:8px;background:var(--surf);border:1px solid var(--line);box-shadow:0 30px 60px -16px rgb(0 0 0/.75),0 2px 6px rgb(0 0 0/.4)}
+canvas{display:block;width:100%;aspect-ratio:16/9;border-radius:14px;background:#000;cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 18px;border-radius:999px;border:1px solid var(--line-2);
+  background:var(--surf-2);color:var(--text);font:500 15px var(--sans);cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}
+.btn:hover{background:var(--surf-3);border-color:hsl(0 0% 100%/.22)}
+.play{min-width:118px;background:var(--text);color:#000;border-color:transparent}
+.play:hover{background:#fff}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,.back:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.speed{min-width:64px;font-family:var(--mono);font-size:14px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:12px;min-width:0}
+.time{font:13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{--p:0%;flex:1;min-width:0;appearance:none;-webkit-appearance:none;height:28px;margin:0;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(to right,var(--acc) var(--p),var(--surf-3) var(--p))}
+input[type=range]::-moz-range-track{height:4px;border-radius:4px;background:var(--surf-3)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:4px;background:var(--acc)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-7px;border-radius:50%;background:#fff;border:0;box-shadow:0 1px 4px rgb(0 0 0/.6)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:0}
+input[type=range]:focus-visible{outline:none}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--acc)}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{min-height:40px;font:500 14px var(--sans);color:var(--muted);background:transparent;border:1px solid var(--line-2);border-radius:999px;padding:0 14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center;transition:color .15s,background .15s,border-color .15s}
+.chap::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
+.chap:hover{color:var(--text)}
+.chap[aria-current="true"]{color:var(--text);border-color:var(--c);background:var(--surf-2)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.1vw,20px);line-height:1.5;max-width:70ch;text-wrap:pretty}
+.caption b{font-weight:600;color:#fff}
+.hint{font-size:13px;color:var(--muted);margin:0}
+section.tx{border-top:1px solid var(--line);padding-top:24px;margin-top:8px;display:flex;flex-direction:column;gap:16px}
+section.tx h2{font-weight:600;font-size:22px;letter-spacing:-.01em;margin:0}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 28px}
+.txlist li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ts{align-self:flex-start;font:12px var(--mono);color:#000;background:var(--c);border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.txlist strong{font-weight:600;font-size:17px}
+.txlist p{margin:0;color:var(--muted);max-width:60ch}
+.txlist p b{color:var(--text);font-weight:600}
+/* modalità incorporata (?embed): solo schermo e comandi */
+.embed .back,.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:16px;padding-right:44px}
+@media (max-width:560px){.btn{padding:0 14px}.play{min-width:100px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="https://federicodb.github.io/index.html">← Orfini Math Lab</a>
+  <header>
+    <h1>Automi e particelle in un minuto</h1>
+    <p class="lead">Una griglia di celle che si accendono e si spengono con regole semplici, migliaia di particelle che si attraggono e si respingono: ecco come funzionano e come si influenzano a vicenda.</p>
+  </header>
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: automa cellulare, forze tra particelle, matrice delle affinità, soglia di accensione e risposta della griglia"></canvas>
+  </div>
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn speed" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="62" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:02</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare.</p>
+  <a class="btn cta" style="align-self:flex-start" href="https://federicodb.github.io/content/apps/soglie_particelle_automa_cellulare.html">Apri il simulatore</a>
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 62;
+const SANS = "Inter,system-ui,sans-serif", MONO = "'Space Mono',ui-monospace,monospace";
+const TXT = '#ececee', MUT = '#a3a3ab', DIM = '#55555c', LINE = 'rgba(255,255,255,.12)', CELL = '#101013';
+// accenti presi dalle palette dell'app: Fosforo, Brace, Abisso, Aurora
+const GRN = 'hsl(145 70% 62%)', ORG = 'hsl(22 95% 62%)', BLU = 'hsl(205 85% 65%)', VIO = 'hsl(275 75% 74%)', RED = 'hsl(350 85% 66%)';
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: '#d6d6da',
+    cap: 'Due sistemi sullo stesso schermo: un <b>automa cellulare</b>, una griglia di celle accese o spente, e migliaia di <b>particelle</b> che si attraggono e si respingono. Si influenzano a vicenda.' },
+  { id: 'automa', label: 'Regola B3/S23', a: 5, b: 19, c: GRN,
+    cap: 'Ogni cella conta le sue 8 vicine accese. Con la regola <b>B3/S23</b> una cella spenta si accende con esattamente 3 vicine; una accesa resta accesa con 2 o 3, altrimenti si spegne. Tre celle in fila diventano tre in colonna, e poi di nuovo in fila.' },
+  { id: 'particelle', label: 'Forze', a: 19, b: 32, c: ORG,
+    cap: 'Ogni particella sente solo le vicine dentro il <b>raggio d\'azione</b>. Troppo vicine si respingono sempre. Più in là la forza è un triangolo: vale l\'<b>affinità</b> al centro della fascia e zero ai bordi. Affinità positiva attrae, negativa respinge.' },
+  { id: 'affinita', label: 'Affinità', a: 32, b: 44, c: VIO,
+    cap: 'La <b>matrice delle affinità</b> dice quanto ogni specie è attratta dalle altre: riga = chi si muove, colonna = chi osserva. Se il verde è attratto dall\'arancio ma l\'arancio fugge dal verde, nasce un <b>inseguimento</b>.' },
+  { id: 'soglia', label: 'Soglia e risposta', a: 44, b: 56, c: BLU,
+    cap: 'La griglia conta le particelle in ogni cella: se sono almeno quante dice la <b>soglia di accensione</b>, la cella si accende. A sua volta la <b>risposta della griglia</b> spinge le particelle verso le celle accese (positiva) o lontano (negativa).' },
+  { id: 'end', label: 'Riepilogo', a: 56, b: 62, c: '#d6d6da',
+    cap: 'Le particelle accendono le celle, le celle spingono le particelle: un anello chiuso. Cambia soglia, risposta e affinità e guarda quali forme emergono.' }
+];
+
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 4);
+function rng(s) { return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || 500} ${size}px ${o.f || SANS}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col;
+  ctx.fillText(s, x, y);
+}
+// comparsa sobria: dissolvenza e leggera salita
+function show(p, fn, dy = 10) {
+  if (p <= 0) return;
+  const keep = BASE; BASE = keep * p; A(1);
+  ctx.save(); ctx.translate(0, (1 - eo(p)) * dy); fn(); ctx.restore();
+  BASE = keep; A(1);
+}
+function arrow(x1, y1, x2, y2, col, w = 4) {
+  const d = Math.hypot(x2 - x1, y2 - y1); if (d < 2) return;
+  const ux = (x2 - x1) / d, uy = (y2 - y1) / d, h = Math.min(16, d * .6);
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux * h * .8, y2 - uy * h * .8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - ux * h - uy * h * .6, y2 - uy * h + ux * h * .6); ctx.lineTo(x2 - ux * h + uy * h * .6, y2 - uy * h - ux * h * .6); ctx.closePath(); ctx.fill();
+}
+function dot(x, y, r, col) { circ(x, y, r); ctx.fillStyle = col; ctx.fill(); }
+function chip(sc) {
+  ctx.font = `600 22px ${SANS}`; const w = ctx.measureText(sc.label).width + 58;
+  rr(32, 28, w, 48, 24); ctx.fillStyle = 'rgba(20,20,24,.92)'; ctx.fill(); ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.stroke();
+  dot(56, 52, 6, sc.c); T(sc.label, 72, 53, 22, TXT, { al: 'left', w: 600 });
+}
+// cella della griglia: spenta, accesa o appena nata (col)
+function cella(x, y, s, on, col) {
+  rr(x + 2, y + 2, s - 4, s - 4, 6);
+  if (on > 0) { ctx.fillStyle = col || '#d4d4d8'; A(on); ctx.fill(); A(1); }
+  if (on < 1) { ctx.fillStyle = CELL; A(1 - on); ctx.fill(); A(1); ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1; ctx.stroke(); }
+}
+// fondale: griglia viva e particelle che fluttuano (dipende solo dal tempo)
+const r0 = rng(11), PART = Array.from({ length: 160 }, () => ({ x: r0() * W, y: r0() * H, a: r0() * 6.28, s: .3 + r0() * .7, k: r0() * 3 | 0 }));
+const FONDO = [GRN, ORG, BLU];
+function fondale(tt, alpha) {
+  const cs = 32;
+  for (let gy = 0; gy < H / cs; gy++) for (let gx = 0; gx < W / cs; gx++) {
+    const h = Math.sin(gx * 12.9898 + gy * 78.233 + Math.floor(tt * 1.5) * 3.7) * 43758.5453, v = h - Math.floor(h);
+    if (v > .9) { A(alpha * (v - .9) * 6); ctx.fillStyle = '#3a3a40'; ctx.fillRect(gx * cs + 2, gy * cs + 2, cs - 4, cs - 4); }
+  }
+  PART.forEach(p => { A(alpha * .8); const x = (p.x + Math.cos(p.a + tt * .3) * 40 * p.s + tt * 6 * p.s) % W, y = p.y + Math.sin(p.a * 2 + tt * .5) * 30 * p.s;
+    ctx.fillStyle = FONDO[p.k]; ctx.fillRect(x - 1.5, y - 1.5, 3, 3); });
+  A(1);
+}
+
+/* ---------- scena: intro ---------- */
+function sIntro(u, tt) {
+  fondale(tt, .55 + .2 * prog(u, 0, 1));
+  const g = ctx.createRadialGradient(640, 330, 40, 640, 330, 520); g.addColorStop(0, 'rgba(0,0,0,.85)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  show(prog(u, 0, .8), () => T('Automi e particelle', 640, 300, 84, '#fff', { w: 600 }), 16);
+  show(prog(u, .6, 1.4), () => T('celle che contano le vicine · particelle che si cercano', 640, 380, 28, MUT, { w: 400 }));
+  show(prog(u, 1.6, 2.4), () => {
+    const items = [['griglia', '#d4d4d8', 'q'], ['particelle', ORG, 'p'], ['si influenzano', BLU, 'l']];
+    items.forEach(([s, c, k], i) => {
+      const x = 380 + i * 260, y = 520;
+      if (k === 'q') { ctx.fillStyle = c; ctx.fillRect(x - 104, y - 9, 18, 18); }
+      else if (k === 'p') { [[-104, -6], [-92, 5], [-98, 9], [-86, -4]].forEach(([dx, dy]) => { ctx.fillStyle = c; ctx.fillRect(x + dx, y + dy - 2, 4, 4); }); }
+      else { ctx.strokeStyle = c; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x - 94, y, 9, .3, 5.6); ctx.stroke(); }
+      T(s, x - 74, y + 1, 24, TXT, { al: 'left' });
+    });
+  });
+}
+
+/* ---------- scena: regola B3/S23 ---------- */
+function sAutoma(u) {
+  const N = 7, s = 62, X0 = 110, Y0 = 170, cx = 3, cy = 3;
+  const at = (x, y) => [X0 + x * s, Y0 + y * s];
+  // tre fasi: nascita (3 vicine), sopravvivenza (2) poi spegnimento (4), lampeggiatore
+  let on = new Map(), center = 0, cnt = [], verdetto = null, fase = 0;
+  const key = (x, y) => x + ',' + y;
+  if (u < 4.6) {
+    fase = 1;
+    [[2, 2], [4, 2], [3, 4]].forEach(([x, y], i) => on.set(key(x, y), prog(u, .3 + i * .15, .7 + i * .15)));
+    cnt = [[2, 2], [4, 2], [3, 4]].map((c, i) => [c, 1.2 + i * .55]);
+    center = prog(u, 3.1, 3.5); if (u > 3.1) verdetto = ['3 vicine: si accende', GRN];
+  } else if (u < 9) {
+    fase = 2; const v = u - 4.6;
+    on.set(key(3, 3), 1);
+    [[2, 2], [4, 2]].forEach(([x, y]) => on.set(key(x, y), 1));
+    [[2, 4], [4, 4]].forEach(([x, y]) => on.set(key(x, y), prog(v, 2.4, 2.8)));
+    cnt = [[[2, 2], .4], [[4, 2], .9], [[2, 4], 2.9], [[4, 4], 3.3]];
+    if (v > 1.3 && v < 2.4) verdetto = ['2 vicine: resta accesa', GRN];
+    if (v > 3.7) { verdetto = ['4 vicine: troppo affollata, si spegne', RED]; on.set(key(3, 3), 1 - prog(v, 3.7, 4.1)); }
+    center = -1;
+  } else {
+    fase = 3; const v = u - 9, k = Math.floor(v / 1.25), q = prog(v - k * 1.25, 0, .25), hor = k % 2 === 0;
+    const H_ = [[2, 3], [3, 3], [4, 3]], V_ = [[3, 2], [3, 3], [3, 4]];
+    const cur = hor ? H_ : V_, prev = hor ? V_ : H_;
+    if (k === 0) cur.forEach(c => on.set(key(...c), prog(v, 0, .3)));
+    else { prev.forEach(c => on.set(key(...c), 1 - q)); cur.forEach(c => on.set(key(...c), Math.max(on.get(key(...c)) || 0, q))); }
+    on.set(key(3, 3), 1);
+    center = -1;
+  }
+  // griglia
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const [px, py] = at(x, y);
+    const isC = x === cx && y === cy && center >= 0;
+    cella(px, py, s, isC ? center : (on.get(key(x, y)) || 0), isC ? GRN : null);
+  }
+  // riquadro delle 8 vicine
+  if (fase < 3) {
+    const [bx, by] = at(cx - 1, cy - 1); ctx.strokeStyle = GRN; ctx.lineWidth = 3; ctx.setLineDash([10, 8]);
+    rr(bx - 4, by - 4, 3 * s + 8, 3 * s + 8, 12); ctx.stroke(); ctx.setLineDash([]);
+    const [ccx, ccy] = at(cx, cy); ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2; rr(ccx + 4, ccy + 4, s - 8, s - 8, 6); ctx.stroke();
+    const t0 = fase === 1 ? u : u - 4.6;
+    cnt.forEach(([[x, y], t], i) => show(prog(t0, t, t + .3), () => {
+      const [px, py] = at(x, y); dot(px + s / 2, py + s / 2, 18, '#000'); T(String(i + 1), px + s / 2, py + s / 2 + 1, 24, GRN, { f: MONO });
+    }, 0));
+  }
+  // pannello della regola
+  const RX = 700;
+  T('Regola', RX, 196, 24, MUT, { al: 'left' });
+  const bOn = fase === 1, sOn = fase === 2;
+  T('B3', RX, 262, 64, bOn ? GRN : TXT, { al: 'left', f: MONO });
+  T('/', RX + 92, 262, 64, DIM, { al: 'left', f: MONO });
+  T('S23', RX + 138, 262, 64, sOn ? GRN : TXT, { al: 'left', f: MONO });
+  T('B = nasce (born) con 3 vicine accese', RX, 336, 24, bOn ? TXT : MUT, { al: 'left' });
+  T('S = sopravvive (survive) con 2 o 3', RX, 374, 24, sOn ? TXT : MUT, { al: 'left' });
+  if (verdetto) show(1, () => T(verdetto[0], RX, 450, 30, verdetto[1], { al: 'left', w: 600 }), 0);
+  if (fase === 3) {
+    show(prog(u, 9.2, 9.8), () => {
+      T('Lampeggiatore: periodo 2', RX, 450, 30, GRN, { al: 'left', w: 600 });
+      T('le estremità hanno 1 vicina → si spengono', RX, 500, 24, MUT, { al: 'left' });
+      T('sopra e sotto il centro ne hanno 3 → nascono', RX, 538, 24, MUT, { al: 'left' });
+    });
+  }
+}
+
+/* ---------- scena: forze tra particelle ---------- */
+const BE = .3;   // nucleo: 30% del raggio d'azione, come nel simulatore
+const forza = (r, m) => r >= 1 ? 0 : r < BE ? r / BE - 1 : m * (1 - Math.abs(2 * r - 1 - BE) / (1 - BE));
+function sParticelle(u) {
+  // due passaggi: affinità +0,8 poi −0,6
+  const pass2 = u >= 6.6, v = pass2 ? u - 6.6 : u, m0 = .8, m1 = -.6;
+  const m = pass2 ? m0 + (m1 - m0) * eo(prog(v, 0, .8)) : m0;
+  const r = .08 + 1.02 * (.5 - .5 * Math.cos(Math.PI * prog(v, 1, 5.6)));
+  // sinistra: la particella i e la vicina j
+  const IX = 120, IY = 300, R = 440;
+  ctx.fillStyle = 'rgba(255,90,110,.10)'; ctx.fillRect(IX, IY - 70, R * BE, 140);
+  ctx.fillStyle = 'rgba(255,255,255,.04)'; ctx.fillRect(IX + R * BE, IY - 70, R * (1 - BE), 140);
+  ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(IX + R, IY - 70); ctx.lineTo(IX + R, IY + 70); ctx.stroke();
+  T('nucleo', IX + R * BE / 2, IY + 96, 20, RED);
+  T('fascia dell\'affinità', IX + R * (1 + BE) / 2, IY + 96, 20, MUT);
+  T('raggio', IX + R, IY - 92, 20, MUT);
+  const JX = IX + r * R, f = forza(r, m);
+  dot(IX, IY, 11, ORG); T('i', IX, IY + 36, 22, TXT, { f: MONO });
+  A(r > 1 ? .45 : 1); dot(JX, IY, 11, GRN); T('j', JX, IY + 36, 22, TXT, { f: MONO }); A(1);
+  if (Math.abs(f) > .02) arrow(IX, IY - 34, IX + f * 130, IY - 34, f > 0 ? GRN : RED, 5);
+  T(f > .02 ? 'i va verso j' : f < -.02 ? 'i si allontana da j' : 'nessuna forza', 330, 460, 28, f > .02 ? GRN : f < -.02 ? RED : MUT, { w: 600 });
+  // destra: grafico della forza in funzione della distanza
+  const GX = 700, GY = 330, GW = 500, GH = 140, X = rr_ => GX + rr_ / 1.1 * GW, Y = ff => GY - ff * GH;
+  ctx.strokeStyle = LINE; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(GX, GY); ctx.lineTo(GX + GW, GY); ctx.moveTo(GX, GY - GH - 20); ctx.lineTo(GX, GY + GH + 20); ctx.stroke();
+  T('forza su i', GX + 12, GY - GH - 34, 20, MUT, { al: 'left' });
+  T('distanza', GX + GW, GY + 30, 20, MUT, { al: 'right' });
+  [[BE, '0,3'], [1, '1']].forEach(([x, s]) => { ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.beginPath(); ctx.moveTo(X(x), GY - GH); ctx.lineTo(X(x), GY + GH); ctx.stroke(); T(s, X(x), GY + GH + 26, 20, DIM, { f: MONO }); });
+  T('+1', GX - 14, Y(1), 20, DIM, { al: 'right', f: MONO }); T('−1', GX - 14, Y(-1), 20, DIM, { al: 'right', f: MONO });
+  ctx.lineWidth = 4; ctx.lineJoin = 'round';
+  ctx.strokeStyle = RED; ctx.beginPath(); for (let k = 0; k <= 30; k++) { const x = k / 30 * BE; ctx[k ? 'lineTo' : 'moveTo'](X(x), Y(forza(x, m))); } ctx.stroke();
+  ctx.strokeStyle = m > 0 ? GRN : ORG; ctx.beginPath(); for (let k = 0; k <= 60; k++) { const x = BE + k / 60 * (1.1 - BE); ctx[k ? 'lineTo' : 'moveTo'](X(x), Y(forza(x, m))); } ctx.stroke();
+  dot(X(Math.min(r, 1.1)), Y(f), 9, '#fff');
+  const mp = X((1 + BE) / 2);
+  T(`affinità ${m >= 0 ? '+' : '−'}${Math.abs(m).toFixed(1).replace('.', ',')}`, mp, m > 0 ? Y(m) - 30 : Y(m) + 32, 24, m > 0 ? GRN : ORG, { f: MONO });
+  show(prog(v, 5.6, 6.2), () => T(pass2 ? 'Affinità negativa: anche la fascia respinge.' : 'Affinità positiva: nella fascia attrae.', 640, 610, 28, TXT, { w: 600 }), 0);
+}
+
+/* ---------- scena: matrice delle affinità ---------- */
+function sAffinita(u) {
+  const SP = [GRN, ORG, BLU], MX = [[.4, 1, 0], [-1, .4, 0], [0, 0, .4]];
+  const X0 = 150, Y0 = 220, s = 92;
+  T('chi osserva →', X0 + 1.5 * s, Y0 - 76, 22, MUT);
+  ctx.save(); ctx.translate(X0 - 70, Y0 + 1.5 * s); ctx.rotate(-Math.PI / 2); T('chi si muove →', 0, 0, 22, MUT); ctx.restore();
+  for (let j = 0; j < 3; j++) dot(X0 + j * s + s / 2, Y0 - 30, 10, SP[j]);
+  for (let i = 0; i < 3; i++) dot(X0 - 30, Y0 + i * s + s / 2, 10, SP[i]);
+  const hl = u > 1.4 && u < 7 ? (u < 4 ? [0, 1] : [1, 0]) : null;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+    const v = MX[i][j], x = X0 + j * s, y = Y0 + i * s;
+    show(prog(u, .2 + (i * 3 + j) * .06, .6 + (i * 3 + j) * .06), () => {
+      rr(x + 4, y + 4, s - 8, s - 8, 10);
+      if (v >= 0) { const g = Math.round(20 + v * 225); ctx.fillStyle = `rgb(${g},${g},${g})`; ctx.fill(); }
+      else { ctx.fillStyle = '#000'; ctx.fill(); ctx.strokeStyle = '#b5b5b5'; ctx.lineWidth = 6; ctx.stroke(); }
+      T((v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1).replace('.', ','), x + s / 2, y + s / 2 + 1, 22, v > .5 ? '#000' : TXT, { f: MONO });
+    }, 0);
+    if (hl && hl[0] === i && hl[1] === j) { ctx.strokeStyle = VIO; ctx.lineWidth = 4; rr(x - 2, y - 2, s + 4, s + 4, 14); ctx.stroke(); }
+  }
+  if (hl) T(hl[0] === 0 ? 'verde → arancio: +1, il verde è attratto' : 'arancio → verde: −1, l\'arancio fugge', X0 + 1.5 * s, Y0 + 3 * s + 50, 24, VIO, { w: 600 });
+  // destra: l'inseguimento
+  const p = prog(u, 4.6, 11.6), BX = 760 + 380 * eo(p) , AX = BX - 150 + 50 * Math.sin(p * 9) * (1 - p), Y = 380;
+  show(prog(u, 4.2, 4.8), () => {
+    for (let k = 1; k <= 14; k++) { const q = Math.max(0, p - k * .018), bx = 760 + 380 * eo(q), ax = bx - 150 + 50 * Math.sin(q * 9) * (1 - q); A(.35 * (1 - k / 15));
+      dot(ax, Y + Math.sin(q * 20) * 14, 7, GRN); dot(bx, Y - Math.sin(q * 16) * 10, 7, ORG); }
+    A(1);
+    const ay = Y + Math.sin(p * 20) * 14, by = Y - Math.sin(p * 16) * 10;
+    dot(AX, ay, 13, GRN); dot(BX, by, 13, ORG);
+    arrow(AX + 22, ay - 30, AX + 88, ay - 30, GRN, 4);
+    arrow(BX + 20, by + 34, BX + 80, by + 34, ORG, 4);
+    T('inseguimento', 980, 250, 30, TXT, { w: 600 });
+    T('l\'asimmetria della matrice crea movimento', 980, 520, 22, MUT);
+  });
+}
+
+/* ---------- scena: soglia e risposta ---------- */
+function sSoglia(u) {
+  // conteggio: 2, 5, 4, 3 particelle; soglia 4
+  const NUM = [2, 5, 4, 3], SOG = 4, s = 128, X0 = 120, Y0 = 150;
+  const r3 = rng(5), P = NUM.map(n => Array.from({ length: n }, () => [18 + r3() * (s - 36), 18 + r3() * (s - 36)]));
+  T('soglia di accensione = 4', X0 + 2 * s, Y0 - 30, 24, BLU, { f: MONO });
+  NUM.forEach((n, i) => {
+    const x = X0 + i * s, acc = n >= SOG ? prog(u, 3.4 + i * .1, 3.8 + i * .1) : 0;
+    cella(x, Y0, s, acc * .9, 'hsl(205 40% 32%)');
+    P[i].forEach(([dx, dy], k) => show(prog(u, .3 + k * .12 + i * .2, .6 + k * .12 + i * .2), () => { ctx.fillStyle = ORG; ctx.fillRect(x + dx - 3, Y0 + dy - 3, 6, 6); }, 0));
+    show(prog(u, 1.8 + i * .2, 2.2 + i * .2), () => T(String(n), x + s / 2, Y0 + s + 34, 30, n >= SOG && u > 3.4 ? BLU : TXT, { f: MONO }), 0);
+    if (u > 3.4) show(prog(u, 3.4 + i * .1, 3.8 + i * .1), () => T(n >= SOG ? 'accesa' : 'resta così', x + s / 2, Y0 + s + 72, 20, n >= SOG ? BLU : MUT), 0);
+  });
+  // a destra: la risposta della griglia
+  show(prog(u, 3.9, 4.5), () => { T('≥ 4 particelle', 720, 200, 30, TXT, { al: 'left', w: 600 }); T('→ la cella si accende', 720, 244, 26, MUT, { al: 'left' }); });
+  // sotto: la risposta della griglia
+  const v = u - 5.4; if (v < 0) return;
+  const neg = v > 3.4, k = neg ? -.8 : .8, RX = 120, RY = 500, cs = 96;
+  show(prog(v, 0, .5), () => {
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(120, 420); ctx.lineTo(1160, 420); ctx.stroke();
+    cella(RX, RY, cs, 0); cella(RX + cs, RY, cs, 0); cella(RX + 2 * cs, RY, cs, .9, 'hsl(205 40% 32%)');
+    T('sinistra: 0', RX + cs / 2, RY + cs + 28, 20, MUT, { f: MONO }); T('destra: 1', RX + 2.5 * cs, RY + cs + 28, 20, BLU, { f: MONO });
+    const off = 16 * Math.sin(prog(v - (neg ? 3.4 : 0), .5, 3) * Math.PI) * Math.sign(k);
+    dot(RX + 1.5 * cs + off, RY + cs / 2, 9, ORG);
+    arrow(RX + 1.5 * cs, RY - 26, RX + 1.5 * cs + k * 90, RY - 26, neg ? RED : BLU, 5);
+    T('spinta ∝ (destra − sinistra) × risposta', 520, 510, 24, TXT, { al: 'left', f: MONO });
+    T(`(1 − 0) × ${neg ? '(−0,8)' : '0,8'} = ${neg ? '−0,8' : '+0,8'}`, 520, 556, 24, neg ? RED : BLU, { al: 'left', f: MONO });
+    T(neg ? 'risposta negativa: fugge dalla cella accesa' : 'risposta positiva: sale verso la cella accesa', 520, 610, 24, MUT, { al: 'left' });
+  });
+}
+
+/* ---------- scena: riepilogo ---------- */
+function sEnd(u, tt) {
+  fondale(tt, .25);
+  const g = ctx.createRadialGradient(640, 360, 60, 640, 360, 560); g.addColorStop(0, 'rgba(0,0,0,.9)'); g.addColorStop(1, 'rgba(0,0,0,.2)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  const LX = 330, RX = 950, Y = 330;
+  show(prog(u, 0, .6), () => {
+    rr(LX - 150, Y - 50, 300, 100, 50); ctx.fillStyle = '#111114'; ctx.fill(); ctx.strokeStyle = ORG; ctx.lineWidth = 2; ctx.stroke(); T('Particelle', LX, Y + 1, 32, TXT, { w: 600 });
+    rr(RX - 150, Y - 50, 300, 100, 50); ctx.fillStyle = '#111114'; ctx.fill(); ctx.strokeStyle = BLU; ctx.lineWidth = 2; ctx.stroke(); T('Celle', RX, Y + 1, 32, TXT, { w: 600 });
+  });
+  show(prog(u, .6, 1.2), () => {
+    ctx.strokeStyle = ORG; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(LX + 60, Y - 60); ctx.quadraticCurveTo(640, Y - 210, RX - 60, Y - 60); ctx.stroke();
+    arrow(RX - 90, Y - 92, RX - 60, Y - 60, ORG, 4);
+    T('si affollano → accendono (soglia)', 640, Y - 168, 26, TXT);
+  });
+  show(prog(u, 1.2, 1.8), () => {
+    ctx.strokeStyle = BLU; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(RX - 60, Y + 60); ctx.quadraticCurveTo(640, Y + 210, LX + 60, Y + 60); ctx.stroke();
+    arrow(LX + 90, Y + 92, LX + 60, Y + 60, BLU, 4);
+    T('accese → spingono (risposta)', 640, Y + 168, 26, TXT);
+  });
+  show(prog(u, 2.4, 3), () => T('Cambia soglia, risposta e affinità: cosa emerge?', 640, 620, 30, '#fff', { w: 600 }));
+}
+
+const FN = { intro: sIntro, automa: sAutoma, particelle: sParticelle, affinita: sAffinita, soglia: sSoglia, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta da dentro il simulatore; #automa #particelle #affinita #soglia → parte da quella scena e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u, reduce ? sc.a + 2 : t);
+  BASE = f; A(1);
+  if (sc.id !== 'intro' && sc.id !== 'end') chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map(sc => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = String(speed).replace('.', ',') + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  seek.style.setProperty('--p', (t / TOTAL * 100) + '%');
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+})();
+</script>
+</body>
+</html>

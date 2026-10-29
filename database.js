@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-29 13:03:44
+   Data: 2026-10-29 20:42:17
 */
 
 const db = [
@@ -60,6 +60,36 @@ const db = [
                 ]
             }
         ]
+    },
+    {
+        "title": "Simulatore di Automi Cellulari e Particelle",
+        "excerpt": "Laboratorio interattivo: migliaia di particelle che si attraggono e si respingono secondo una matrice di affinità, accoppiate a un automa cellulare (Vita di Conway e altre regole) da una soglia di accensione. Esplora emergenza e sistemi complessi, con palette personalizzabili e spiegazione animata. Per LIM, tablet e smartphone.",
+        "tags": [
+            "3 MEC",
+            "4 EL",
+            "AUTOMI CELLULARI",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CODING",
+            "COMPLESSITÀ",
+            "EMERGENZA",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "FISICA",
+            "GIOCO DELLA VITA",
+            "IND_C2:CODING E SIMULAZIONI STEM",
+            "LAB",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "PARTICELLE",
+            "PENSIERO COMPUTAZIONALE",
+            "SIMULAZIONE"
+        ],
+        "date": "2026-10-29",
+        "url": "content/apps/soglie_particelle_automa_cellulare.html",
+        "type": "app",
+        "icon": "⚡",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp"
     },
     {
         "title": "$\\pi$ is irrational: perché π non è una frazione",
@@ -525,63 +555,6 @@ const db = [
         "icon": "📐",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.webp"
-    },
-    {
-        "title": "Simulatore di Automi Cellulari e Particelle",
-        "excerpt": "Laboratorio interattivo su automi cellulari e dinamica di particelle a soglia. Esplorazione visiva di sistemi complessi, transizioni di fase ed emergenza computazionale.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "AUTOMA CELLULARE",
-            "CODING",
-            "DINAMICA",
-            "FISICA",
-            "MATEMATICA",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "PARTICELLE",
-            "SIMULAZIONE",
-            "SISTEMI COMPLESSI"
-        ],
-        "date": "2026-09-30",
-        "url": "content/apps/soglie_particelle_automa_cellulare.html",
-        "type": "app",
-        "icon": "⚡",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
-        "allenamento": [
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "disequazioni-2",
-                "titolo": "Disequazioni di secondo grado",
-                "url": "allenamento/#/lezione/disequazioni-2/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            }
-        ]
     },
     {
         "title": "Le fasi della Luna",
