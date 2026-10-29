@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-29 20:42:17
+   Data: 2026-10-29 21:57:07
 */
 
 const db = [
@@ -90,6 +90,39 @@ const db = [
         "icon": "⚡",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp"
+    },
+    {
+        "title": "Snake of Life",
+        "excerpt": "Snake of Life: un serpente che impara da solo a sopravvivere nel Gioco della Vita di Conway. Nessuno gli spiega le regole: 16 serpenti per generazione, i migliori fanno figli e il cervello migliora. Per capire evoluzione, intelligenza artificiale e sistemi reali come epidemie, mode ed ecosistemi.",
+        "tags": [
+            "3 MEC",
+            "4 EL",
+            "ALGORITMI GENETICI",
+            "AUTOMI CELLULARI",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CODING",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "EVOLUZIONE",
+            "GAMIFICATION",
+            "GIOCO DELLA VITA",
+            "IND_C2:CODING E SIMULAZIONI STEM",
+            "LAB",
+            "MACHINE LEARNING",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MODELLI",
+            "PENSIERO COMPUTAZIONALE",
+            "RETI NEURALI",
+            "SELEZIONE NATURALE",
+            "SIMULAZIONE"
+        ],
+        "date": "2026-10-29",
+        "url": "content/apps/snake_conway_self.html",
+        "type": "app",
+        "icon": "💻",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/snake_conway_self.webp"
     },
     {
         "title": "$\\pi$ is irrational: perché π non è una frazione",

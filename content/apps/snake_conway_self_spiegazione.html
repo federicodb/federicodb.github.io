@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f4f6f8">
+<title>Snake of Life in un minuto</title>
+<meta name="description" content="Animazione di un minuto che spiega Snake of Life: il Gioco della Vita, come pensa il serpente, come impara per evoluzione, perché il voto decide cosa impara e cosa c'entra tutto questo con il mondo vero (Orfini Math Lab).">
+<script>
+  try {
+    const saved = localStorage.getItem('orfini_theme') || localStorage.getItem('snakeM3.theme');
+    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.dataset.theme = 'dark';
+  } catch (err) { /* storage non disponibile */ }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Stessa grafica di Snake of Life: Material 3 "Laboratorio", un colore = un significato */
+:root{ --r-m:.75rem; --r-l:1rem; --r-xl:1.4rem; --sans:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'Roboto Mono',ui-monospace,Menlo,monospace;
+  --shadow:0 1px 2px rgba(15,23,42,.06),0 2px 8px rgba(15,23,42,.06); }
+[data-theme="light"]{ color-scheme:light; --bg:#f4f6f8; --surface:#ffffff; --surface-2:#f0f3f6; --surface-3:#e3e8ee; --text:#15191e; --text-2:#4a5360;
+  --line:#dbe0e6; --line-strong:#9aa4b1; --accent:#1d4ed8; --on-accent:#ffffff; --accent-soft:#dbe6ff; --on-accent-soft:#10307f;
+  --snake:#2563eb; --snake-head:#0f2f8a; --danger:#e5484d; --food:#f2a516; --trail:#8b5cf6; --good:#1f9d55; --bad:#e5484d; --board:#ffffff; --board-grid:#e3e8ee; }
+[data-theme="dark"]{ color-scheme:dark; --bg:#0d1117; --surface:#161b22; --surface-2:#1c232c; --surface-3:#26303b; --text:#e8edf2; --text-2:#a5b0bd;
+  --line:#2c3641; --line-strong:#56626f; --accent:#5aa9ff; --on-accent:#06203f; --accent-soft:#1b3557; --on-accent-soft:#cfe3ff;
+  --snake:#5aa9ff; --snake-head:#c7e2ff; --danger:#ff5f66; --food:#ffc53d; --trail:#b197fc; --good:#3ddc84; --bad:#ff5f66; --board:#0a0e13; --board-grid:#1c232c; }
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent-soft);color:var(--on-accent-soft)}
+.wrap{max-width:1080px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text-2);text-decoration:none;font:500 14px var(--sans)}
+.back:hover{background:var(--surface-3);color:var(--text)}
+header{display:flex;flex-direction:column;gap:8px}
+h1{font:700 clamp(28px,4.6vw,44px)/1.1 var(--sans);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--text-2);font-size:17px}
+.screen{border-radius:var(--r-xl);padding:8px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow)}
+canvas{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--r-l);background:var(--board);cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--accent);font:500 15px var(--sans);cursor:pointer;text-decoration:none;transition:box-shadow .15s,filter .15s}
+.btn:hover{box-shadow:var(--shadow);filter:brightness(1.04)}
+.play{min-width:120px;background:var(--accent);color:var(--on-accent);border-color:transparent}
+.speed{min-width:64px;background:var(--accent-soft);color:var(--on-accent-soft);border-color:transparent;font-family:var(--mono);font-size:14px}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,.back:focus-visible,input:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:2px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:12px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:28px}
+.time{font:13px var(--mono);color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{min-height:40px;font:500 14px var(--sans);color:var(--text-2);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.chap::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chap:hover{background:var(--surface-2);color:var(--text)}
+.chap[aria-current="true"]{background:var(--accent-soft);color:var(--on-accent-soft);border-color:transparent}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.1vw,20px);line-height:1.5;max-width:70ch;text-wrap:pretty}
+.caption b{font-weight:700}
+.hint{font-size:13px;color:var(--text-2);margin:0}
+section.tx{border-top:1px solid var(--line);padding-top:24px;margin-top:8px;display:flex;flex-direction:column;gap:16px}
+section.tx h2{font:700 22px/1.3 var(--sans);margin:0}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 28px}
+.txlist li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ts{align-self:flex-start;font:500 12px var(--mono);color:#fff;background:var(--c);border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.txlist strong{font-weight:700;font-size:17px}
+.txlist p{margin:0;color:var(--text-2);max-width:60ch}
+.txlist p b{color:var(--text)}
+.embed .back,.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:16px;padding-right:44px}
+@media (max-width:560px){.btn{padding:0 14px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="https://federicodb.github.io/index.html">← Orfini Math Lab</a>
+  <header>
+    <h1>Snake of Life in un minuto</h1>
+    <p class="lead">Un serpente che nessuno ha programmato a giocare: impara da solo, generazione dopo generazione, in un mondo che cambia per conto suo. Ecco come funziona e cosa c'entra con il mondo vero.</p>
+  </header>
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: Gioco della Vita, come pensa il serpente, evoluzione, voto e collegamenti con il mondo reale"></canvas>
+  </div>
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn speed" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="73" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:13</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare.</p>
+  <a class="btn cta" style="align-self:flex-start" href="https://federicodb.github.io/content/apps/snake_conway_self.html">Gioca a Snake of Life</a>
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 73;
+const SANS = "Roboto,system-ui,sans-serif", MONO = "'Roboto Mono',ui-monospace,monospace";
+let C = {};
+function leggiColori() {
+  const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
+  C = { bg: g('--board'), grid: g('--board-grid'), s2: g('--surface-2'), s3: g('--surface-3'), text: g('--text'), text2: g('--text-2'), line: g('--line'), lineS: g('--line-strong'),
+    acc: g('--accent'), accSoft: g('--accent-soft'), onAccSoft: g('--on-accent-soft'), snake: g('--snake'), head: g('--snake-head'), live: g('--danger'), food: g('--food'),
+    trail: g('--trail'), good: g('--good'), bad: g('--bad') };
+}
+leggiColori();
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: '#2563eb',
+    cap: 'Un serpente deve sopravvivere in un mondo che cambia da solo. Nessuno gli spiega le regole: deve <b>imparare</b>.' },
+  { id: 'vita', label: 'Il mondo', a: 5, b: 18, c: '#e5484d',
+    cap: 'Il mondo è il <b>Gioco della Vita</b>: ogni cellula guarda le sue 8 vicine. Con 3 vicine nasce, con 2 o 3 resta viva, sola o troppo affollata muore. Le cellule rosse sono vive e se il serpente le tocca muore; quelle appena morte diventano <b>cibo</b> giallo per qualche secondo.' },
+  { id: 'pensa', label: 'Come pensa', a: 18, b: 32, c: '#2563eb',
+    cap: 'A ogni passo il serpente può andare a sinistra, dritto o a destra. Per ogni mossa fa una somma: ogni cosa che vede vale dei punti, il suo <b>peso</b>. Sceglie la mossa con più punti. All\'inizio i pesi sono a caso.' },
+  { id: 'evolve', label: 'Come impara', a: 32, b: 46, c: '#1f9d55',
+    cap: '16 serpenti giocano 3 partite a testa. I 4 migliori passano; gli altri vengono sostituiti da <b>figli</b> dei migliori: un po\' di un genitore, un po\' dell\'altro, più una piccola modifica a caso. Generazione dopo generazione, di solito il voto medio sale.' },
+  { id: 'voto', label: 'Il voto', a: 46, b: 56, c: '#f2a516',
+    cap: 'Chi è il migliore lo decide il <b>voto</b>. Con 1 punto per cibo vince il serpente che rischia e mangia tanto; se premi solo i passi, vince quello prudente. Cambi i premi e cambi quello che impara.' },
+  { id: 'realta', label: 'Nella realtà', a: 56, b: 68, c: '#8b5cf6',
+    cap: 'Le stesse idee descrivono il mondo vero: <b>vicini che si influenzano</b> (mode, video virali, incendi), <b>prova e copia chi va meglio</b> (selezione naturale, intelligenza artificiale), <b>conta cosa premi</b> (voti, like).' },
+  { id: 'end', label: 'Riepilogo', a: 68, b: 73, c: '#1d4ed8',
+    cap: 'Regole semplici, tanti tentativi e un voto bastano per comportamenti che sembrano intelligenti. Un modello non è la realtà, ma aiuta a farsi le domande giuste.' }
+];
+
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 4);
+const lerp = (a, b, p) => a + (b - a) * p;
+function rng(s) { return () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || 400} ${size}px ${o.f || SANS}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col; ctx.fillText(s, x, y);
+}
+function show(p, fn, dy = 10) {
+  if (p <= 0) return;
+  const keep = BASE; BASE = keep * p; A(1);
+  ctx.save(); ctx.translate(0, (1 - eo(p)) * dy); fn(); ctx.restore();
+  BASE = keep; A(1);
+}
+function arrow(x1, y1, x2, y2, col, w = 4) {
+  const d = Math.hypot(x2 - x1, y2 - y1); if (d < 2) return;
+  const ux = (x2 - x1) / d, uy = (y2 - y1) / d, h = Math.min(16, d * .6);
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux * h * .8, y2 - uy * h * .8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - ux * h - uy * h * .6, y2 - uy * h + ux * h * .6); ctx.lineTo(x2 - ux * h + uy * h * .6, y2 - uy * h - ux * h * .6); ctx.closePath(); ctx.fill();
+}
+function card(x, y, w, h, fill) { rr(x, y, w, h, 18); ctx.fillStyle = fill || C.s2; ctx.fill(); }
+function chip(sc) {
+  ctx.font = `500 22px ${SANS}`; const w = ctx.measureText(sc.label).width + 58;
+  rr(32, 28, w, 46, 12); ctx.fillStyle = C.accSoft; ctx.fill();
+  circ(56, 51, 6); ctx.fillStyle = sc.c; ctx.fill(); T(sc.label, 72, 52, 22, C.onAccSoft, { al: 'left', w: 500 });
+}
+// cella del tabellone: 0 vuota, 'v' viva, 'c' cibo
+function tile(x, y, s, kind, a = 1) {
+  rr(x + 2, y + 2, s - 4, s - 4, 6); ctx.fillStyle = C.grid; ctx.fill();
+  if (!kind || a <= 0) return;
+  A(a); rr(x + 2, y + 2, s - 4, s - 4, 6); ctx.fillStyle = kind === 'v' ? C.live : kind === 'c' ? C.food : kind === 's' ? C.snake : C.head; ctx.fill(); A(1);
+}
+function countBadge(x, y, n, col) { circ(x, y, 17); ctx.fillStyle = C.bg; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke(); T(String(n), x, y + 1, 20, col, { f: MONO, w: 700 }); }
+
+/* ---------- intro ---------- */
+const r0 = rng(3), GRID0 = Array.from({ length: 24 * 13 }, () => r0());
+function sIntro(u) {
+  const s = 40, X0 = 160, Y0 = 110;
+  for (let i = 0; i < GRID0.length; i++) {
+    const x = i % 24, y = (i / 24) | 0, v = GRID0[i];
+    const k = v > .86 ? 'v' : v > .8 ? 'c' : 0;
+    show(prog(u, .1 + v * .8, .5 + v * .8), () => tile(X0 + x * s, Y0 + y * s, s, k), 0);
+  }
+  // serpente
+  const sn = [[9, 8], [10, 8], [11, 8], [12, 8], [12, 7]];
+  show(prog(u, .8, 1.4), () => sn.forEach(([x, y], i) => tile(X0 + x * s, Y0 + y * s, s, i === sn.length - 1 ? 'h' : 's')), 0);
+  show(prog(u, 1.2, 2), () => {
+    ctx.fillStyle = C.bg; A(.97); rr(280, 196, 720, 218, 28); ctx.fill(); A(1);
+    T('Snake of Life', 640, 280, 76, C.text, { w: 700 });
+    T('il serpente che impara da solo', 640, 350, 28, C.text2);
+  });
+  show(prog(u, 2.2, 3), () => {
+    [['serpente', C.snake], ['cellula viva: da evitare', C.live], ['cibo', C.food]].forEach(([s_, c], i) => {
+      const x = [330, 560, 870][i]; rr(x - 26, 640, 22, 22, 5); ctx.fillStyle = c; ctx.fill(); T(s_, x + 6, 652, 24, C.text, { al: 'left', w: 500 });
+    });
+  });
+}
+
+/* ---------- vita: Gioco della Vita ---------- */
+function sVita(u) {
+  const N = 7, s = 62, X0 = 100, Y0 = 150, at = (x, y) => [X0 + x * s, Y0 + y * s];
+  const H_ = [[2, 3], [3, 3], [4, 3]], V_ = [[3, 2], [3, 3], [3, 4]];
+  const flip = prog(u, 3.6, 4.2);
+  const st = new Map();
+  H_.forEach(c => st.set(c + '', { k: 'v', a: prog(u, .2, .6) }));
+  if (flip > 0) {
+    st.set([2, 3] + '', { k: flip > .5 ? 'c' : 'v', a: 1 }); st.set([4, 3] + '', { k: flip > .5 ? 'c' : 'v', a: 1 });
+    st.set([3, 2] + '', { k: 'v', a: flip }); st.set([3, 4] + '', { k: 'v', a: flip });
+  }
+  // il serpente gira attorno alla colonna rossa e mangia il cibo
+  const PATH = [[0, 3], [1, 3], [2, 3], [2, 4], [2, 5], [3, 5], [4, 5], [4, 4], [4, 3], [5, 3]];
+  const EAT = { 2: [2, 3], 8: [4, 3] };
+  const sp = prog(u, 7.6, 12) * (PATH.length - 1), hi = Math.floor(sp);
+  const eaten = Object.keys(EAT).filter(k => u > 7.6 && hi >= +k).map(k => EAT[k] + '');
+  eaten.forEach(k => st.delete(k));
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const [px, py] = at(x, y), c = st.get([x, y] + '');
+    tile(px, py, s, c ? c.k : 0, c ? c.a : 1);
+  }
+  if (u > 7.6) {
+    const len = 3 + eaten.length;
+    for (let k = Math.max(0, hi - len + 1); k <= hi; k++) { const [px, py] = at(...PATH[k]); tile(px, py, s, k === hi ? 'h' : 's'); }
+  }
+  // conteggi: estremità 1 vicina, sopra il centro 3 vicine
+  if (u > 1 && u < 3.8) {
+    show(prog(u, 1, 1.4), () => {
+      const [ex, ey] = at(2, 3); ctx.strokeStyle = C.live; ctx.lineWidth = 3; ctx.setLineDash([8, 7]); rr(ex - s + 2, ey - s + 2, 3 * s - 4, 3 * s - 4, 12); ctx.stroke(); ctx.setLineDash([]);
+      countBadge(ex + s / 2, ey + s / 2, 1, C.live);
+    }, 0);
+    show(prog(u, 2.2, 2.6), () => { const [cx, cy] = at(3, 2); countBadge(cx + s / 2, cy + s / 2, 3, C.good); }, 0);
+  }
+  // pannello delle regole
+  const RX = 640;
+  T('Ogni cellula conta le sue 8 vicine', RX, 190, 30, C.text, { al: 'left', w: 700 });
+  const righe = [['3 vicine', 'nasce', C.good, .4], ['2 o 3 vicine', 'resta viva', C.text, .7], ['0, 1 o più di 3', 'muore', C.live, 1]];
+  righe.forEach(([a, b, c, t], i) => show(prog(u, t, t + .4), () => {
+    T(a, RX, 250 + i * 46, 26, C.text2, { al: 'left', f: MONO }); T('→ ' + b, RX + 250, 250 + i * 46, 26, c, { al: 'left', w: 700 });
+  }));
+  if (u > 1 && u < 3.8) show(prog(u, 1.2, 1.6), () => T('l\'estremità ha 1 vicina: muore · sopra il centro ce ne sono 3: nasce', RX, 410, 22, C.text2, { al: 'left' }), 0);
+  show(prog(u, 4.3, 4.9), () => {
+    rr(RX, 400, 560, 120, 18); ctx.fillStyle = C.s2; ctx.fill();
+    rr(RX + 22, 428, 26, 26, 6); ctx.fillStyle = C.food; ctx.fill();
+    T('Le cellule appena morte', RX + 64, 440, 24, C.text, { al: 'left', w: 700 });
+    T('diventano cibo per qualche secondo', RX + 64, 482, 24, C.text2, { al: 'left' });
+  });
+  show(prog(u, 8, 8.6), () => {
+    rr(RX + 22, 562, 26, 26, 6); ctx.fillStyle = C.live; ctx.fill();
+    T('Rosso = vivo = da evitare. Giallo = da mangiare.', RX + 64, 575, 24, C.text, { al: 'left', w: 500 });
+  });
+}
+
+/* ---------- pensa: come sceglie la mossa ---------- */
+function sPensa(u) {
+  const s = 64, X0 = 120, Y0 = 170, at = (x, y) => [X0 + x * s, Y0 + y * s];
+  // vista 5×5 con la testa al centro, davanti in alto
+  const LIVE = [[1, 2], [0, 2], [1, 1]], FOOD = [[3, 2]];
+  const turned = prog(u, 9.6, 10.2);
+  for (let y = 0; y < 5; y++) for (let x = 0; x < 5; x++) {
+    const [px, py] = at(x, y);
+    const k = LIVE.some(c => c[0] === x && c[1] === y) ? 'v' : FOOD.some(c => c[0] === x && c[1] === y) ? (turned >= 1 ? 0 : 'c') : 0;
+    tile(px, py, s, k);
+  }
+  [[2, 3], [2, 4]].forEach(c => { const [px, py] = at(...c); tile(px, py, s, 's'); });
+  const hx = turned >= 1 ? 3 : 2; { const [px, py] = at(hx, 2); tile(px, py, s, 'h'); if (turned >= 1) { const [qx, qy] = at(2, 2); tile(qx, qy, s, 's'); } }
+  const [cx, cy] = at(2, 2), mx = cx + s / 2, my = cy + s / 2;
+  const mv = [{ n: 'Sinistra', dx: -1, dy: 0, sc: [['cellula viva', -2]] },
+              { n: 'Dritto', dx: 0, dy: -1, sc: [['spazio libero', 1]] },
+              { n: 'Destra', dx: 1, dy: 0, sc: [['cibo', 3], ['spazio libero', 1]] }];
+  if (turned < 1) mv.forEach((m, i) => show(prog(u, .6 + i * .2, 1 + i * .2), () => arrow(mx + m.dx * 22, my + m.dy * 22, mx + m.dx * 58, my + m.dy * 58, C.acc, 4), 0));
+  T('ciò che vede', X0 + 2.5 * s, Y0 + 5 * s + 34, 22, C.text2);
+  // pesi
+  const RX = 560;
+  show(prog(u, 1.2, 1.8), () => {
+    T('I pesi (esempio)', RX, 168, 24, C.text2, { al: 'left', w: 500 });
+    [['cellula viva', '−2', C.live], ['cibo', '+3', C.food], ['spazio libero', '+1', C.good]].forEach(([a, b, c], i) => {
+      const x = RX + i * 230; rr(x, 190, 214, 52, 12); ctx.fillStyle = C.s2; ctx.fill();
+      T(a, x + 16, 216, 22, C.text, { al: 'left' }); T(b, x + 198, 216, 24, c, { al: 'right', f: MONO, w: 700 });
+    });
+  });
+  // somme
+  const tot = [-2, 1, 4];
+  mv.forEach((m, i) => {
+    const y = 290 + i * 84, t0 = 3 + i * 1.8;
+    show(prog(u, t0, t0 + .4), () => {
+      const best = i === 2 && u > 9;
+      rr(RX, y, 690, 70, 16); ctx.fillStyle = best ? C.accSoft : C.s2; ctx.fill();
+      if (best) { ctx.strokeStyle = C.acc; ctx.lineWidth = 3; ctx.stroke(); }
+      T(m.n, RX + 20, y + 36, 26, C.text, { al: 'left', w: 700 });
+      const parts = m.sc.map(([a, w]) => (w > 0 ? '+' : '−') + Math.abs(w) + ' ' + a).join('  ');
+      T(parts, RX + 170, y + 36, 22, C.text2, { al: 'left', f: MONO });
+      show(prog(u, t0 + .8, t0 + 1.2), () => T('= ' + (tot[i] > 0 ? '+' : tot[i] < 0 ? '−' : '') + Math.abs(tot[i]), RX + 670, y + 36, 30, best ? C.acc : C.text, { al: 'right', f: MONO, w: 700 }), 0);
+    }, 0);
+  });
+  show(prog(u, 9, 9.5), () => T('Sceglie la mossa con più punti: destra, e mangia.', RX, 560, 26, C.text, { al: 'left', w: 700 }), 0);
+  show(prog(u, 10.8, 11.4), () => {
+    T('All\'inizio i pesi sono a caso.', RX, 612, 24, C.text2, { al: 'left' });
+    T('Il vero serpente guarda 82 cose, non 3.', RX, 650, 24, C.text2, { al: 'left' });
+  });
+}
+
+/* ---------- evolve: 16 serpenti, i migliori fanno figli ---------- */
+const r2 = rng(21), VOTI = [3.1, 7.4, 1.2, 9.8, 4.6, 2.3, 11.5, 5.2, 0.8, 6.1, 8.7, 1.9, 3.8, 12.4, 2.7, 4.1];
+const GEN = VOTI.map(() => Array.from({ length: 6 }, () => r2() * 2 - 1));
+const ORD = VOTI.map((_, i) => i).sort((a, b) => VOTI[b] - VOTI[a]);
+const FIGLI = Array.from({ length: 12 }, (_, k) => {
+  const pa = ORD[(k * 3) % 4], pb = ORD[(k * 3 + 1 + (k % 3)) % 4], mut = (k * 5) % 6;
+  const w = GEN[pa].map((v, j) => (j + k) % 2 ? GEN[pb][j] : v); w[mut] = clamp(w[mut] + (r2() > .5 ? .7 : -.7), -1, 1);
+  return { w, src: GEN[pa].map((_, j) => (j + k) % 2 ? 'b' : 'a'), mut };
+});
+function pesi(x, y, w, ww, hh, mut) {
+  const bw = ww / w.length;
+  w.forEach((v, j) => {
+    const h = Math.abs(v) * hh / 2, bx = x + j * bw + 3;
+    ctx.fillStyle = v >= 0 ? C.good : C.bad; ctx.fillRect(bx, v >= 0 ? y - h : y, bw - 6, h);
+    if (j === mut) { ctx.strokeStyle = C.text; ctx.lineWidth = 2; ctx.strokeRect(bx - 2, y - hh / 2 - 2, bw - 2, hh + 4); }
+  });
+  ctx.strokeStyle = C.lineS; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + ww, y); ctx.stroke();
+}
+function sEvolve(u) {
+  const tw = 132, th = 92, g = 12, X0 = 90, Y0 = 150;
+  const pos = k => [X0 + (k % 4) * (tw + g), Y0 + Math.floor(k / 4) * (th + g)];
+  const sortP = eo(prog(u, 3, 4.6));
+  VOTI.forEach((v, i) => {
+    const rank = ORD.indexOf(i);
+    const [x0, y0] = pos(i), [x1, y1] = pos(rank), x = lerp(x0, x1, sortP), y = lerp(y0, y1, sortP);
+    const top = rank < 4 && u > 5.2, gone = rank >= 4 ? prog(u, 7, 7.6) : 0;
+    show(prog(u, .2 + i * .05, .6 + i * .05), () => {
+      A(1 - gone);
+      rr(x, y, tw, th, 14); ctx.fillStyle = top ? C.accSoft : C.s2; ctx.fill();
+      if (top) { ctx.strokeStyle = C.acc; ctx.lineWidth = 3; ctx.stroke(); }
+      pesi(x + 12, y + 36, GEN[i], 108, 40);
+      T(v.toFixed(1).replace('.', ','), x + tw - 12, y + th - 14, 20, top ? C.acc : C.text, { al: 'right', f: MONO, w: 700 });
+      A(1);
+    }, 0);
+  });
+  // figli al posto degli ultimi 12
+  FIGLI.forEach((f, k) => {
+    const [x, y] = pos(4 + k), p = prog(u, 7.6 + k * .12, 8 + k * .12);
+    show(p, () => {
+      rr(x, y, tw, th, 14); ctx.fillStyle = C.s2; ctx.fill(); ctx.strokeStyle = C.good; ctx.lineWidth = 2; ctx.setLineDash([6, 5]); ctx.stroke(); ctx.setLineDash([]);
+      pesi(x + 12, y + 36, f.w, 108, 40, f.mut);
+      T('figlio', x + tw - 12, y + th - 14, 20, C.good, { al: 'right', w: 500 });
+    }, 0);
+  });
+  // passi a destra
+  const RX = 720, steps = [['16 serpenti, 3 partite a testa', .4], ['si mettono in fila per voto', 3], ['i 4 migliori passano', 5.2], ['gli altri: figli dei migliori', 7.4], ['+ una piccola modifica a caso', 8.6]];
+  steps.forEach(([s_, t], i) => show(prog(u, t, t + .4), () => {
+    const on = u >= t && (i === steps.length - 1 || u < steps[i + 1][1]);
+    circ(RX + 16, 182 + i * 50, 15); ctx.fillStyle = on ? C.acc : C.s3; ctx.fill(); T(String(i + 1), RX + 16, 183 + i * 50, 18, on ? '#fff' : C.text2, { w: 700 });
+    T(s_, RX + 44, 182 + i * 50, 24, on ? C.text : C.text2, { al: 'left', w: on ? 700 : 400 });
+  }, 0));
+  // la media sale
+  show(prog(u, 10.2, 10.8), () => {
+    const GX = RX, GY = 620, GW = 470, GH = 150, MED = [2.1, 2.6, 2.4, 3.5, 4.1, 3.9, 5.2, 6.0, 6.6, 6.4, 7.3, 7.9];
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(GX, GY); ctx.lineTo(GX + GW, GY); ctx.stroke();
+    T('voto medio', GX, GY - GH - 16, 20, C.text2, { al: 'left' }); T('generazioni →', GX + GW, GY + 24, 20, C.text2, { al: 'right' });
+    const n = Math.max(2, Math.ceil(prog(u, 10.4, 13) * MED.length));
+    ctx.strokeStyle = C.acc; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.beginPath();
+    for (let k = 0; k < n; k++) { const x = GX + k / (MED.length - 1) * GW, y = GY - MED[k] / 8 * GH; ctx[k ? 'lineTo' : 'moveTo'](x, y); } ctx.stroke();
+  });
+}
+
+/* ---------- voto: cambi i premi, cambi chi vince ---------- */
+function sVoto(u) {
+  const reg2 = u > 5.4, pc = reg2 ? 0 : 1, pp = reg2 ? 2 : 1;
+  const sw = prog(u, 5, 5.6);
+  show(prog(u, 0, .5), () => {
+    T('Voto =', 120, 150, 34, C.text, { al: 'left', w: 700 });
+    const pill = (x, v, lab, c) => { rr(x, 124, 64, 52, 14); ctx.fillStyle = C.accSoft; ctx.fill(); if (sw > 0 && sw < 1) { ctx.strokeStyle = C.acc; ctx.lineWidth = 3; ctx.stroke(); } T(String(v), x + 32, 151, 30, C.onAccSoft, { f: MONO, w: 700 }); T(lab, x + 78, 151, 30, C.text, { al: 'left' }); };
+    pill(250, pc, '× cibi  +', C.food); pill(520, pp, '× (passi ÷ 100)', C.good);
+  });
+  const SN = [{ n: 'Serpente A', d: 'prudente: 6 cibi, 800 passi', cibi: 6, passi: 800, col: C.snake },
+              { n: 'Serpente B', d: 'rischia: 12 cibi, 300 passi, poi muore', cibi: 12, passi: 300, col: C.trail }];
+  const voti = SN.map(s => pc * s.cibi + pp * s.passi / 100), win = voti[0] > voti[1] ? 0 : 1;
+  SN.forEach((s, i) => show(prog(u, .8 + i * .4, 1.2 + i * .4), () => {
+    const y = 240 + i * 150, best = i === win && u > 2.6;
+    rr(120, y, 1040, 120, 20); ctx.fillStyle = best ? C.accSoft : C.s2; ctx.fill(); if (best) { ctx.strokeStyle = C.acc; ctx.lineWidth = 3; ctx.stroke(); }
+    for (let k = 0; k < 5; k++) { rr(148 + k * 26, y + 48, 24, 24, 5); ctx.fillStyle = k === 4 ? (s.col === C.snake ? C.head : s.col) : s.col; ctx.fill(); }
+    T(s.n, 300, y + 42, 28, C.text, { al: 'left', w: 700 }); T(s.d, 300, y + 82, 22, C.text2, { al: 'left' });
+    show(prog(u, 1.8 + i * .3, 2.2 + i * .3), () => {
+      T(`${pc}×${s.cibi} + ${pp}×${s.passi / 100} = `, 1010, y + 60, 26, C.text2, { al: 'right', f: MONO });
+      T(String(voti[i]), 1130, y + 60, 40, best ? C.acc : C.text, { al: 'right', f: MONO, w: 700 });
+    }, 0);
+  }, 0));
+  const msg = reg2 ? 'Premi solo i passi: ora vince il prudente.' : 'Un punto per cibo: vince chi rischia e mangia.';
+  show(prog(u, reg2 ? 6.4 : 2.8, reg2 ? 6.9 : 3.3), () => T(msg, 640, 580, 28, C.text, { w: 700 }), 0);
+  show(prog(u, 7.6, 8.2), () => T('Il serpente impara quello che premi, non quello che vorresti.', 640, 630, 24, C.text2), 0);
+}
+
+/* ---------- realtà ---------- */
+function sRealta(u) {
+  const cols = [
+    { x: 240, t: 'Vicini che si influenzano', l: ['mode, video virali,', 'incendi, epidemie'], c: C.live },
+    { x: 640, t: 'Prova e copia chi va meglio', l: ['selezione naturale,', 'intelligenza artificiale'], c: C.good },
+    { x: 1040, t: 'Conta cosa premi', l: ['voti a scuola, like,', 'regole di un gioco'], c: C.food }
+  ];
+  cols.forEach((k, i) => show(prog(u, .3 + i * .5, .9 + i * .5), () => {
+    card(k.x - 190, 130, 380, 480);
+    T(k.t, k.x, 470, 25, C.text, { w: 700 });
+    k.l.forEach((s, j) => T(s, k.x, 516 + j * 36, 22, C.text2));
+  }, 14));
+  // 1: un "contagio" che passa da vicino a vicino
+  show(prog(u, .5, 1), () => {
+    const cx = 240, cy = 290, s = 44, t = (u - 1) * 1.3;
+    for (let y = -3; y <= 3; y++) for (let x = -3; x <= 3; x++) {
+      const d = Math.abs(x) + Math.abs(y), on = t > d;
+      circ(cx + x * s, cy + y * s, 15); ctx.fillStyle = on ? C.live : C.s3; ctx.fill();
+    }
+  }, 0);
+  // 2: generazioni: i migliori hanno figli
+  show(prog(u, 1, 1.5), () => {
+    const cx = 640, t = u - 1.5, rows = [[-120, -40, 40, 120], [-80, 0, 80], [-40, 40]];
+    const good = [[1, 2], [1], []];
+    rows.forEach((r, ri) => r.forEach((dx, k) => {
+      const y = 200 + ri * 100, p = prog(t, ri * 1.6, ri * 1.6 + .5);
+      if (p <= 0) return;
+      A(p);
+      if (ri > 0) { ctx.strokeStyle = C.lineS; ctx.lineWidth = 2; good[ri - 1].forEach(g => { ctx.beginPath(); ctx.moveTo(cx + rows[ri - 1][g], y - 74); ctx.lineTo(cx + dx, y - 26); ctx.stroke(); }); }
+      circ(cx + dx, y, 22); ctx.fillStyle = good[ri].includes(k) ? C.good : C.s3; ctx.fill();
+      A(1);
+    }));
+  }, 0);
+  // 3: barre che crescono dove c'è il premio
+  show(prog(u, 1.5, 2), () => {
+    const cx = 1040, t = prog(u, 2.2, 7), base = 400;
+    [['studiare per capire', .35, C.s3], ['studiare per il voto', .9, C.food]].forEach(([s, h, c], i) => {
+      const x = cx - 120 + i * 140, hh = 200 * h * eo(t);
+      rr(x, base - hh, 100, hh, 10); ctx.fillStyle = c; ctx.fill();
+      T(s.split(' per ')[1] ? 'per ' + s.split(' per ')[1] : s, x + 50, base + 26, 20, C.text2);
+    });
+    T('se conta solo il voto…', cx, 180, 22, C.text2);
+  }, 0);
+}
+
+/* ---------- riepilogo ---------- */
+function sEnd(u) {
+  const items = [['regole semplici', C.live], ['tanti tentativi', C.good], ['un voto', C.food]];
+  items.forEach(([s, c], i) => show(prog(u, i * .4, .5 + i * .4), () => {
+    const x = 250 + i * 300; rr(x - 130, 200, 260, 90, 45); ctx.fillStyle = C.s2; ctx.fill();
+    circ(x - 92, 245, 9); ctx.fillStyle = c; ctx.fill(); T(s, x + 12, 246, 26, C.text, { w: 700 });
+    if (i < 2) T('+', x + 150, 246, 34, C.text2, { w: 700 });
+  }));
+  show(prog(u, 1.4, 2), () => { arrow(640, 320, 640, 380, C.acc, 4); T('comportamenti che sembrano intelligenti', 640, 425, 34, C.text, { w: 700 }); });
+  show(prog(u, 2.4, 3), () => T('Un modello non è la realtà: serve a farsi domande.', 640, 540, 26, C.text2));
+}
+
+const FN = { intro: sIntro, vita: sVita, pensa: sPensa, evolve: sEvolve, voto: sVoto, realta: sRealta, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta dal gioco; #vita #pensa #evolve #voto #realta → parte da quella scena e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.id !== 'intro' && sc.id !== 'end') chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map(sc => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = String(speed).replace('.', ',') + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+// il tema cambia nell'app (stessa chiave): ricolora
+window.addEventListener('storage', e => { if (e.key === 'orfini_theme' && e.newValue) { document.documentElement.dataset.theme = e.newValue; leggiColori(); } });
+})();
+</script>
+</body>
+</html>

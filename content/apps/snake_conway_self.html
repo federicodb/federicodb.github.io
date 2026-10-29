@@ -1,0 +1,3322 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Snake of Life: un serpente che impara da solo a sopravvivere nel Gioco della Vita di Conway. Nessuno gli spiega le regole: 16 serpenti per generazione, i migliori fanno figli e il cervello migliora. Per capire evoluzione, intelligenza artificiale e sistemi reali come epidemie, mode ed ecosistemi.">
+  <meta name="keywords" content="Matematica, Automi Cellulari, Gioco della Vita, Reti Neurali, Machine Learning, Evoluzione, Selezione Naturale, Algoritmi Genetici, Modelli, Simulazione, Pensiero Computazionale, Coding, Gamification, Mat:Modellizzazione, EU:STEM, EU:Digitale, CIT_4:COMPETENZA DIGITALE, IND_C2:Coding e simulazioni STEM, Lab, 3 MEC, 4 EL">
+  <meta name="date" content="2026-10-29">
+  <meta name="theme-color" content="#f4f6f8">
+  <title>Snake of Life</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231d4ed8'/%3E%3Cpath d='M8 22h7a3 3 0 0 0 0-6h-3a3 3 0 0 1 0-6h8' stroke='%23dbe6ff' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='22' cy='10' r='2.4' fill='%23f2a516'/%3E%3C/svg%3E">
+
+  <script>
+    try {
+      const saved = localStorage.getItem('orfini_theme') || localStorage.getItem('snakeM3.theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    } catch (err) { /* storage non disponibile */ }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+
+  <style>
+    html { font-size: clamp(14px, calc(8px + 0.5vmin + 0.25vmax), 22px); }
+
+    :root {
+      --pad: clamp(8px, 1.3vmin, 22px);
+      --bar: 3.5rem;
+      --r-s: .5rem;
+      --r-m: .75rem;
+      --r-l: 1rem;
+      --r-xl: 1.4rem;
+      --ease: cubic-bezier(.2, 0, 0, 1);
+      --shadow: 0 1px 2px rgba(15, 23, 42, .06), 0 2px 8px rgba(15, 23, 42, .06);
+      --shadow-3: 0 4px 16px rgba(15, 23, 42, .22);
+      --mono: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --sans: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+
+    /* Tema "Laboratorio": ogni colore ha un solo significato.
+       rosso = pericolo (cellula viva) · giallo = cibo · blu = serpente · viola = scia
+       verde/rosso nei pesi = attira/respinge */
+    [data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --surface-2: #f0f3f6;
+      --surface-3: #e3e8ee;
+      --text: #15191e;
+      --text-2: #4a5360;
+      --line: #dbe0e6;
+      --line-strong: #9aa4b1;
+      --accent: #1d4ed8;
+      --on-accent: #ffffff;
+      --accent-soft: #dbe6ff;
+      --on-accent-soft: #10307f;
+      --snake: #2563eb;
+      --snake-head: #0f2f8a;
+      --danger: #e5484d;
+      --food: #f2a516;
+      --trail: #8b5cf6;
+      --good: #1f9d55;
+      --bad: #e5484d;
+      --ref: #8b5cf6;
+      --board: #ffffff;
+      --board-grid: #cfd6de;
+      --dot-warn: #c27c00;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #1c232c;
+      --surface-3: #26303b;
+      --text: #e8edf2;
+      --text-2: #a5b0bd;
+      --line: #2c3641;
+      --line-strong: #56626f;
+      --accent: #5aa9ff;
+      --on-accent: #06203f;
+      --accent-soft: #1b3557;
+      --on-accent-soft: #cfe3ff;
+      --snake: #5aa9ff;
+      --snake-head: #c7e2ff;
+      --danger: #ff5f66;
+      --food: #ffc53d;
+      --trail: #b197fc;
+      --good: #3ddc84;
+      --bad: #ff5f66;
+      --ref: #b197fc;
+      --board: #0a0e13;
+      --board-grid: #26303b;
+      --dot-warn: #ffcb6b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    body {
+      min-height: 100dvh;
+      background-color: var(--bg);
+      color: var(--text);
+      font: 400 1rem/1.4 var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .material-symbols-rounded {
+      font-family: 'Material Symbols Rounded';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 1.3rem;
+      line-height: 1;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 1.4em;
+      user-select: none;
+      font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* ---------- Barra ---------- */
+
+    .bar {
+      height: var(--bar);
+      padding: 0 var(--pad);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: color-mix(in srgb, var(--bg) 90%, transparent);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+
+    .app-icon {
+      width: 2.3rem;
+      height: 2.3rem;
+      border-radius: var(--r-m);
+      background-color: var(--accent);
+      color: var(--on-accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+
+    h1 { font: 700 1.25rem/1.2 var(--sans); letter-spacing: -.01em; white-space: nowrap; }
+
+    .tag {
+      font: 500 .72rem/1.6 var(--mono);
+      padding: 0 .5rem;
+      border-radius: var(--r-s);
+      background-color: var(--accent-soft);
+      color: var(--on-accent-soft);
+      white-space: nowrap;
+    }
+
+    .bar-actions { display: flex; align-items: center; gap: .1rem; flex: none; }
+
+    /* ORFINI-BACK: stesso pulsante delle altre app, nello stile della barra */
+    .orfini-back-btn {
+      display: inline-flex; align-items: center; gap: .35rem; height: 2.3rem; padding: 0 .85rem 0 .6rem; flex: none;
+      border-radius: 999px; border: 1px solid var(--line); background-color: var(--surface);
+      color: var(--text-2) !important; font: 500 .8rem/1 var(--sans); text-decoration: none !important;
+      transition: background-color 150ms ease, color 150ms ease;
+    }
+    .orfini-back-btn:hover { background-color: var(--surface-3); color: var(--text) !important; }
+    .orfini-back-btn .material-symbols-rounded { font-size: 1.1rem; }
+    :fullscreen .orfini-back-btn { display: none !important; }
+
+    .bar-btn {
+      height: 2.5rem; display: inline-flex; align-items: center; gap: .4rem; padding: 0 1rem 0 .8rem; margin-right: .3rem;
+      border: none; border-radius: 999px; background-color: var(--accent-soft); color: var(--on-accent-soft);
+      font: 500 .85rem/1 var(--sans); cursor: pointer; white-space: nowrap;
+      transition: filter 150ms ease, box-shadow 150ms ease;
+    }
+    .bar-btn:hover { box-shadow: var(--shadow); filter: brightness(1.04); }
+    .bar-btn .material-symbols-rounded { font-size: 1.15rem; }
+
+    /* Foglio laterale "Nella realtà" */
+    .sheet {
+      position: fixed; inset: 0 0 0 auto; margin: 0; height: 100dvh; max-height: none;
+      width: min(34rem, 100vw); max-width: none; padding: 0; border: none; border-radius: var(--r-xl) 0 0 var(--r-xl);
+      background-color: var(--surface); color: var(--text); box-shadow: var(--shadow-3);
+      overflow: hidden;
+    }
+    .sheet[open] { display: flex; flex-direction: column; animation: sheet-in 320ms var(--ease); }
+    .sheet::backdrop { background: rgba(5, 10, 20, .45); }
+    @keyframes sheet-in { from { transform: translateX(2rem); opacity: 0; } }
+    .sheet-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: 1rem 1rem .5rem 1.4rem; }
+    .sheet-head h2 { font: 700 1.25rem/1.25 var(--sans); letter-spacing: -.01em; }
+    .sheet-body { overflow-y: auto; overscroll-behavior: contain; padding: 0 1.4rem 1.5rem; scrollbar-width: thin; }
+    .sheet-lead { font-size: .95rem; line-height: 1.55; color: var(--text-2); max-width: 60ch; }
+    .idea { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+    .idea h3 { display: flex; align-items: center; gap: .55rem; font: 700 1rem/1.3 var(--sans); }
+    .idea h3 .material-symbols-rounded { color: var(--accent); }
+    .idea > p { margin-top: .45rem; font-size: .92rem; line-height: 1.55; max-width: 62ch; }
+    .esempi { list-style: none; margin-top: .75rem; display: grid; gap: .5rem; }
+    .esempi li { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: .65rem; align-items: start; padding: .65rem .75rem; border-radius: var(--r-l); background-color: var(--surface-2); font-size: .88rem; line-height: 1.5; }
+    .esempi li .material-symbols-rounded { width: 2.2rem; height: 2.2rem; display: grid; place-items: center; border-radius: 999px; background-color: var(--surface); color: var(--text-2); font-size: 1.15rem; max-width: none; }
+    .esempi b { font-weight: 500; }
+    .prova { margin-top: .7rem; font-size: .88rem; color: var(--text-2); }
+    .prova b { color: var(--accent); font-weight: 500; }
+    .limite { margin-top: 1.4rem; padding: .9rem 1rem; border-radius: var(--r-l); border: 1px dashed var(--line-strong); font-size: .88rem; line-height: 1.55; color: var(--text-2); }
+    .sheet-foot { margin-top: 1.1rem; }
+    .link-btn { display: inline-flex; align-items: center; gap: .35rem; margin-top: .5rem; min-height: 2rem; padding: 0; border: none; background: none;
+      color: var(--accent); font: 500 .8rem/1.2 var(--sans); cursor: pointer; }
+    .link-btn .material-symbols-rounded { font-size: 1.05rem; }
+    .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+    html.fit .link-btn { display: none; }
+
+    /* Finestra della spiegazione animata */
+    .explain { position: fixed; inset: 0; z-index: 10005; display: grid; place-items: center;
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      background: rgba(5, 10, 20, .6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    .explain[hidden] { display: none; }
+    .explain-box { position: relative; width: min(1000px, 100%); height: min(88dvh, 820px); border-radius: var(--r-xl); overflow: hidden;
+      background-color: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-3); }
+    .explain-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .explain-close { position: absolute; top: 10px; right: 10px; z-index: 2; width: 44px; height: 44px; border-radius: 999px;
+      border: 1px solid var(--line); background-color: var(--surface); color: var(--text); display: grid; place-items: center; cursor: pointer; }
+    .explain-close:hover { background-color: var(--surface-3); }
+
+    .icon-btn {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--text-2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 150ms ease, color 150ms ease;
+    }
+
+    .icon-btn:hover:not(:disabled) { background-color: var(--surface-3); color: var(--text); }
+    .icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .icon-btn.small { width: 2.1rem; height: 2.1rem; }
+    .icon-btn.small .material-symbols-rounded { font-size: 1.1rem; }
+
+    /* ---------- Struttura elastica ---------- */
+
+    .app {
+      --board: min(calc(100vw - 2 * var(--pad)), max(18rem, calc(100dvh - var(--bar) - 10rem)));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--pad);
+      padding: 0 var(--pad) var(--pad);
+    }
+
+    .stage { display: flex; flex-direction: column; align-items: center; gap: var(--pad); }
+    .col { display: contents; }
+    .bar-slot { flex: 1; min-width: 0; display: flex; justify-content: center; }
+
+    .tools {
+      width: var(--board);
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      padding: .75rem 1rem;
+      border-radius: var(--r-xl);
+      background-color: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .tools .legend { margin-bottom: 0; }
+    .chips-label { align-self: center; margin-right: .2rem; }
+    .arch-seg { margin-bottom: .8rem; }
+
+    .panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+      grid-auto-rows: max-content;
+      gap: var(--pad);
+      align-content: start;
+      min-width: 0;
+    }
+
+    @media (min-aspect-ratio: 1/1) and (min-width: 700px) {
+      body { height: 100dvh; overflow: hidden; }
+      .app {
+        --board: min(calc(100dvh - var(--bar) - 1.5 * var(--pad)), calc(100vw - 22rem - 3 * var(--pad)));
+        grid-template-columns: var(--board) minmax(0, 1fr);
+        height: calc(100dvh - var(--bar));
+        align-items: start;
+      }
+      .panel {
+        height: calc(100dvh - var(--bar) - var(--pad));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-right: .25rem;
+        padding-bottom: var(--pad);
+        scrollbar-width: thin;
+      }
+    }
+
+    /* ---------- Tabellone ---------- */
+
+    .board-frame {
+      width: var(--board);
+      padding: clamp(4px, .8vmin, 10px);
+      border-radius: var(--r-xl);
+      background-color: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .board-frame.shake { animation: shake 420ms cubic-bezier(.36, .07, .19, .97); }
+
+    @keyframes shake {
+      20% { transform: translate(-4px, 2px); }
+      40% { transform: translate(4px, -2px); }
+      60% { transform: translate(-3px, -1px); }
+      80% { transform: translate(3px, 1px); }
+    }
+
+    .board-wrap {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--r-l);
+      overflow: hidden;
+      background-color: var(--board);
+      box-shadow: inset 0 0 0 1px var(--line);
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    #board { display: block; width: 100%; height: 100%; touch-action: none; }
+
+    .pause-badge {
+      position: absolute;
+      top: .6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      padding: .35rem .8rem;
+      border-radius: 999px;
+      background-color: var(--text);
+      color: var(--bg);
+      font: 500 .78rem/1.2 var(--sans);
+      letter-spacing: .04em;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .screen-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      padding: 1.5rem;
+      text-align: center;
+      background-color: color-mix(in srgb, var(--board) 88%, transparent);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+    }
+
+    .overlay-icon { font-size: 2.6rem; max-width: none; color: var(--danger); }
+    .overlay-title { font: 700 1.6rem/1.2 var(--sans); }
+    .overlay-text { font-size: .95rem; max-width: 20rem; color: var(--text-2); }
+
+    /* ---------- Schede ---------- */
+
+    .card {
+      padding: 1rem;
+      border-radius: var(--r-xl);
+      background-color: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .span { grid-column: 1 / -1; }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: .5rem;
+      margin-bottom: .7rem;
+    }
+
+    .card-title { font: 700 1rem/1.3 var(--sans); }
+    .card-sub { font-size: .8rem; color: var(--text-2); margin-top: .1rem; }
+    .card-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .05rem; flex: none; }
+
+    .label {
+      display: block;
+      font: 500 .68rem/1.4 var(--sans);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(5.4rem, 1fr));
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .stat { position: relative; padding: .6rem .9rem .7rem; min-width: 0; }
+    .stat + .stat { border-left: 1px solid var(--line); }
+
+    .stat-value {
+      display: block;
+      font: 500 1.5rem/1.2 var(--mono);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+      transform-origin: left center;
+    }
+
+    .stat-value.bump { animation: bump 240ms var(--ease); }
+    @keyframes bump { 35% { transform: scale(1.12); } }
+
+    .legend { display: flex; flex-wrap: wrap; gap: .45rem 1.1rem; margin-bottom: .9rem; }
+
+    .legend span { display: inline-flex; align-items: center; gap: .45rem; font-size: .88rem; font-weight: 500; }
+    .legend small { font-weight: 400; color: var(--text-2); font-size: .78rem; }
+    .sw { width: .95rem; height: .95rem; border-radius: .25rem; flex: none; }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+      gap: .75rem 1rem;
+    }
+
+    .field { display: flex; flex-direction: column; gap: .35rem; min-width: 0; }
+
+    .seg {
+      display: flex;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      overflow: hidden;
+      height: 2.6rem;
+    }
+
+    .seg.compact { height: 2.2rem; }
+
+    .seg button {
+      flex: 1 1 0;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font: 500 .85rem/1 var(--sans);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .3rem;
+      cursor: pointer;
+      padding: 0 .4rem;
+      white-space: nowrap;
+      transition: background-color 150ms ease;
+    }
+
+    .seg.compact button { font-size: .78rem; }
+    .seg button + button { border-left: 1px solid var(--line-strong); }
+    .seg button:hover:not(:disabled) { background-color: var(--surface-2); }
+    .seg button[aria-pressed="true"] { background-color: var(--accent-soft); color: var(--on-accent-soft); }
+    .seg button:disabled { opacity: .4; cursor: not-allowed; }
+    .seg .material-symbols-rounded { font-size: 1.1rem; }
+
+    .buttons { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: .6rem; margin-top: .85rem; }
+
+    .btn {
+      height: 2.9rem;
+      padding: 0 .8rem;
+      border-radius: 999px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      font: 500 .92rem/1 var(--sans);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: filter 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+    }
+
+    .btn:active:not(:disabled) { transform: scale(.98); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-filled { background-color: var(--accent); color: var(--on-accent); }
+    .btn-tonal { background-color: var(--accent-soft); color: var(--on-accent-soft); }
+    .btn-outlined { background: transparent; color: var(--accent); border: 1px solid var(--line-strong); }
+    .btn:hover:not(:disabled) { box-shadow: var(--shadow); filter: brightness(1.04); }
+
+    /* ---------- Pensiero ---------- */
+
+    .think { display: grid; grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr); gap: .9rem; align-items: start; }
+    .think-map { width: 100%; aspect-ratio: 1 / 1; display: block; border-radius: var(--r-m); transition: opacity 300ms ease; }
+    .think-body { transition: opacity 300ms ease; }
+    #think-card.frozen .think-body { opacity: .45; }
+    #think-note { min-height: 2.5rem; }
+    #think-card { container-type: inline-size; }
+    @container (max-width: 30rem) {
+      .think { grid-template-columns: minmax(0, 1fr); }
+      .think-map { max-width: 11rem; margin: 0 auto; }
+    }
+    .opts { display: grid; gap: .45rem; }
+
+    .opt {
+      display: grid;
+      grid-template-columns: 1.4rem minmax(0, 1fr) 3.9rem;
+      grid-template-rows: 1.5rem 2.1rem;
+      gap: .1rem .4rem;
+      align-items: center;
+      padding: .45rem .55rem;
+      border-radius: var(--r-m);
+      border: 1px solid var(--line);
+      background-color: var(--surface-2);
+      transition: background-color 350ms ease, border-color 350ms ease, box-shadow 350ms ease;
+    }
+
+    .opt.chosen { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background-color: var(--accent-soft); }
+    .opt-arrow { font: 700 1.15rem/1 var(--mono); text-align: center; }
+    .opt-name { font-weight: 500; font-size: .9rem; display: flex; align-items: center; gap: .4rem; min-width: 0; white-space: nowrap; overflow: hidden; }
+    .opt-score { font: 500 .95rem/1 var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+    .opt-why {
+      grid-column: 2 / -1;
+      align-self: start;
+      font-size: .76rem;
+      color: var(--text-2);
+      line-height: 1.05rem;
+      height: 2.1rem;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .opt-why b { font-family: var(--mono); font-weight: 500; }
+    .pos { color: var(--good); }
+    .neg { color: var(--bad); }
+    .pill { font: 500 .66rem/1.5 var(--sans); padding: 0 .4rem; border-radius: 999px; background-color: var(--danger); color: #fff; letter-spacing: .04em; }
+
+        @media (max-width: 480px) { .think { grid-template-columns: minmax(0, 1fr); } .think-map { max-width: 12rem; margin: 0 auto; } }
+
+    /* ---------- Grafico ---------- */
+
+    .chart { display: block; width: 100%; height: 10rem; }
+
+    .key { display: flex; flex-wrap: wrap; gap: .3rem 1rem; margin-top: .4rem; font-size: .78rem; color: var(--text-2); }
+    .key span { display: inline-flex; align-items: center; gap: .4rem; }
+    .key i { display: inline-block; width: 1rem; height: 3px; border-radius: 2px; }
+    .key i.dash { background: repeating-linear-gradient(90deg, var(--ref) 0 4px, transparent 4px 7px); }
+    .key i.box { width: .75rem; height: .75rem; border-radius: 3px; }
+
+    .note { margin-top: .6rem; font-size: .85rem; color: var(--text-2); line-height: 1.45; }
+    .note strong { color: var(--text); font-weight: 500; }
+    .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+    .rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .3rem .7rem; margin-top: .7rem; }
+    .rule { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .15rem .3rem; font-size: .74rem; color: var(--text-2); cursor: pointer; }
+    .rule span { grid-column: 1 / -1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rule input { width: 100%; min-width: 0; accent-color: var(--accent); height: 1.2rem; margin: 0; }
+    .rule b { font-weight: 500; color: var(--text); min-width: 1.6rem; text-align: right; }
+    .formula { margin-top: .4rem; font: 500 .78rem/1.35 var(--sans); color: var(--text); background-color: var(--surface-2); border-radius: var(--r-s); padding: .3rem .55rem; }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      margin-top: .8rem;
+      padding-top: .7rem;
+      border-top: 1px solid var(--line);
+      font-size: .85rem;
+    }
+
+    .switch-row .txt { flex: 1; min-width: 0; color: var(--text-2); }
+    .switch-row .txt strong { color: var(--text); font-weight: 500; }
+
+    .switch {
+      position: relative;
+      width: 2.6rem;
+      height: 1.5rem;
+      flex: none;
+      border-radius: 999px;
+      border: 2px solid var(--line-strong);
+      background-color: var(--surface-3);
+      cursor: pointer;
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: .15rem;
+      width: .9rem;
+      height: .9rem;
+      border-radius: 50%;
+      background-color: var(--line-strong);
+      transform: translateY(-50%);
+      transition: left 150ms var(--ease), background-color 150ms ease;
+    }
+
+    .switch[aria-checked="true"] { background-color: var(--accent); border-color: var(--accent); }
+    .switch[aria-checked="true"]::after { left: 1.25rem; background-color: var(--on-accent); }
+    .switch.mini { width: 2.1rem; height: 1.25rem; }
+    .switch.mini::after { width: .7rem; height: .7rem; }
+    .switch.mini[aria-checked="true"]::after { left: 1rem; }
+
+    /* ---------- Cervello ---------- */
+
+    .fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+    .field-map { display: flex; flex-direction: column; align-items: center; gap: .35rem; min-width: 0; }
+    .field-map canvas { width: 100%; max-width: 8rem; aspect-ratio: 1 / 1; display: block; border-radius: var(--r-s); }
+    .field-map.off canvas { opacity: .25; }
+    .field-toggle { display: flex; align-items: center; gap: .4rem; font-size: .76rem; color: var(--text-2); }
+
+    .scalars { display: grid; gap: .3rem; margin-top: .8rem; }
+
+    .scalar { display: grid; grid-template-columns: auto 9.5rem minmax(0, 1fr); align-items: center; gap: .55rem; font-size: .8rem; }
+    .scalar > span { color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .scalar.off > span { text-decoration: line-through; opacity: .55; }
+    .scalar.off .track { opacity: .3; }
+
+    .track { position: relative; height: .75rem; border-radius: 999px; background-color: var(--surface-3); overflow: hidden; }
+    .track::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background-color: var(--line-strong); }
+    .fill { position: absolute; top: 0; bottom: 0; transition: left 200ms var(--ease), width 200ms var(--ease); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+    .chip {
+      height: 2.2rem;
+      padding: 0 .85rem;
+      border-radius: var(--r-s);
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--text);
+      font: 500 .82rem/1 var(--sans);
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .chip .material-symbols-rounded { font-size: 1.05rem; }
+    .chip:hover { background-color: var(--surface-2); }
+    .chip[aria-pressed="true"] { background-color: var(--accent-soft); color: var(--on-accent-soft); border-color: transparent; }
+
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 3.4rem);
+      grid-template-rows: repeat(2, 3.4rem);
+      gap: .4rem;
+      justify-content: center;
+    }
+
+    .dpad button {
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background-color: var(--surface-2);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .dpad button:active { transform: scale(.94); }
+    .dpad [data-dir="up"] { grid-column: 2; grid-row: 1; }
+    .dpad [data-dir="left"] { grid-column: 1; grid-row: 2; }
+    .dpad [data-dir="down"] { grid-column: 2; grid-row: 2; }
+    .dpad [data-dir="right"] { grid-column: 3; grid-row: 2; }
+
+    kbd {
+      display: inline-block;
+      min-width: 1.3rem;
+      padding: 0 .3rem;
+      border-radius: .35rem;
+      border: 1px solid var(--line-strong);
+      border-bottom-width: 2px;
+      background-color: var(--surface);
+      font: 500 .72rem/1.4 var(--mono);
+      color: var(--text);
+      text-align: center;
+    }
+
+    .help { font-size: .8rem; color: var(--text-2); line-height: 1.9; text-align: center; padding: .25rem 0 .5rem; }
+
+    .snackbar {
+      position: fixed;
+      left: 50%;
+      bottom: 1.5rem;
+      z-index: 100;
+      max-width: calc(100vw - 2rem);
+      padding: .8rem 1.2rem;
+      border-radius: var(--r-s);
+      background-color: var(--text);
+      color: var(--bg);
+      font-size: .9rem;
+      box-shadow: var(--shadow-3);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 120px);
+      transition: transform 250ms var(--ease), opacity 250ms var(--ease);
+    }
+
+    .snackbar.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+    :focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
+
+
+    /* ======== Dashboard a proporzioni bloccate (PC, LIM, tablet orizzontale) ========
+       Tutto è disegnato su una tavola fissa 1600×900 (16:9) che viene scalata in blocco
+       per riempire lo schermo: le finestre mantengono sempre le stesse proporzioni. */
+    html.fit { font-size: 16px; }
+    html.fit body { height: 100vh; overflow: hidden; }
+
+    html.fit .shell {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 1600px;
+      height: 900px;
+      transform-origin: 0 0;
+      transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--k, 1));
+    }
+
+    html.fit .bar { position: relative; height: 60px; padding: 0 12px; background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+    html.fit .tag { display: none; }
+    html.fit .bar-slot .stats { display: flex; padding: 0; background: transparent; border: none; box-shadow: none; overflow: visible; }
+    html.fit .bar-slot .stat { padding: 0 1.1rem; }
+    html.fit .bar-slot .stat-value { font-size: 1.35rem; }
+
+    html.fit .app {
+      --board: 744px;
+      height: 840px;
+      padding: 0 12px 12px;
+      gap: 12px;
+      grid-template-columns: 744px minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    html.fit .stage { align-items: stretch; gap: 10px; height: 828px; }
+    html.fit .tools { width: 744px; flex: 1; justify-content: center; padding: .5rem .9rem; gap: .45rem; }
+    html.fit .tools .legend span { font-size: .82rem; }
+    html.fit .chip { height: 1.9rem; }
+
+    html.fit .panel {
+      height: 828px;
+      overflow: hidden;
+      padding: 0;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: 100%;
+      gap: 12px;
+    }
+
+    html.fit .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+    html.fit .col > .card { flex: none; }
+    html.fit .col > .card:last-child { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+    html.fit .help { display: none; }
+    html.fit .card { padding: .85rem .95rem; }
+    html.fit .card-head { margin-bottom: .5rem; }
+    html.fit .control-grid { gap: .55rem; }
+    html.fit .buttons { margin-top: .7rem; }
+    html.fit .btn { height: 2.6rem; }
+    html.fit .think-map { max-width: 9.5rem; }
+    html.fit .chart { height: 6.8rem; }
+    html.fit #learn-note { margin-top: .45rem; font-size: .8rem; line-height: 1.4; }
+    html.fit .rules { margin-top: .5rem; }
+    html.fit .switch-row { margin-top: .55rem; padding-top: .55rem; }
+    html.fit .arch-seg { margin-bottom: .6rem; }
+    html.fit .fields { gap: .5rem; }
+    html.fit .field-map canvas { max-width: 5.4rem; }
+    html.fit .brain-key { margin-top: .35rem; flex-wrap: nowrap; gap: .8rem; font-size: .72rem; white-space: nowrap; justify-content: center; }
+    html.fit .scalars { margin-top: .55rem; gap: .22rem; }
+    html.fit .scalar { font-size: .78rem; }
+    html.fit #brain-note { display: none; }
+
+    @media (max-width: 900px) {
+      .bar-btn { width: 2.5rem; padding: 0; justify-content: center; margin-right: 0; }
+      .bar-btn .bar-btn-t, .orfini-back-btn .orfini-back-text { display: none; }
+      .orfini-back-btn { width: 2.3rem; padding: 0; justify-content: center; }
+      .bar { gap: .4rem; }
+    }
+
+    @media (max-width: 480px) {
+      .tag { display: none; }
+      .app-icon, #help-btn { display: none; }
+      .sheet { width: 100vw; border-radius: 0; }
+      .stat { padding: .5rem .55rem; }
+      .stat-value { font-size: 1.05rem; }
+      .scalar { grid-template-columns: auto 7rem minmax(0, 1fr); }
+      .card { padding: .85rem; }
+      .buttons { grid-template-columns: 1fr 1fr; }
+      .buttons .btn:first-child { grid-column: 1 / -1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shell" id="shell">
+  <header class="bar">
+    <div class="brand">
+      <!-- ORFINI-BACK START -->
+      <a href="../../index.html" class="orfini-back-btn" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab"><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span><span class="orfini-back-text">Orfini Math Lab</span></a>
+      <!-- ORFINI-BACK END -->
+      <div class="app-icon" aria-hidden="true"><span class="material-symbols-rounded">psychology</span></div>
+      <h1>Snake of Life</h1>
+      <span class="tag">il serpente che impara da solo</span>
+    </div>
+    <div class="bar-slot" id="bar-slot"></div>
+    <div class="bar-actions">
+      <button class="bar-btn" id="real-btn" type="button" aria-haspopup="dialog" title="Cosa c'entra con il mondo vero"><span class="material-symbols-rounded" aria-hidden="true">nature_people</span><span class="bar-btn-t">Nella realtà</span></button>
+      <button class="bar-btn" type="button" data-explain="" title="Spiegazione animata di un minuto"><span class="material-symbols-rounded" aria-hidden="true">play_circle</span><span class="bar-btn-t">Spiegami</span></button>
+      <button class="icon-btn" id="help-btn" type="button" aria-label="Scorciatoie da tastiera"
+        title="Tastiera: frecce = guidi tu · Spazio = pausa · N = passo · 1–4 = velocità · R = nuovo mondo · C = svuota · F = schermo intero · M = audio">
+        <span class="material-symbols-rounded" aria-hidden="true">keyboard</span>
+      </button>
+      <button class="icon-btn" id="sound-toggle" type="button" aria-label="Attiva audio" title="Audio (M)">
+        <span class="material-symbols-rounded" id="sound-icon" aria-hidden="true">volume_off</span>
+      </button>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Passa al tema scuro" title="Tema chiaro/scuro">
+        <span class="material-symbols-rounded" id="theme-icon" aria-hidden="true">dark_mode</span>
+      </button>
+      <button class="icon-btn" id="fs-toggle" type="button" aria-label="Schermo intero" title="Schermo intero (F)">
+        <span class="material-symbols-rounded" id="fs-icon" aria-hidden="true">fullscreen</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app">
+    <section class="stage" aria-label="Tabellone">
+      <div class="board-frame" id="board-frame">
+        <div class="board-wrap" id="board-wrap">
+          <canvas id="board" role="img" aria-label="Tabellone 100 per 100: serpente blu, cellule vive rosse da evitare, cibo giallo. Clicca per creare cellule."></canvas>
+          <div class="pause-badge" id="pause-badge" hidden>In pausa · «Passo» avanza di una mossa</div>
+          <div class="screen-overlay" id="overlay" hidden>
+            <span class="material-symbols-rounded overlay-icon" id="overlay-icon" aria-hidden="true">dangerous</span>
+            <h2 class="overlay-title">Game over</h2>
+            <p class="overlay-text" id="overlay-text"></p>
+            <button class="btn btn-filled" id="overlay-action" type="button" style="margin-top:.6rem">Rigioca</button>
+          </div>
+        </div>
+      </div>
+      <div class="tools">
+        <div class="legend" aria-label="Legenda del tabellone">
+          <span><i class="sw" style="background: var(--snake)"></i>Serpente</span>
+          <span><i class="sw" style="background: var(--danger)"></i>Cellula viva <small>da evitare</small></span>
+          <span><i class="sw" style="background: var(--food)"></i>Cibo <small>cellula appena morta</small></span>
+          <span><i class="sw" style="background: var(--trail); opacity: .6"></i>Scia <small>risveglia le cellule</small></span>
+        </div>
+        <div class="chips" role="group" aria-label="Pennello: clicca o trascina sul tabellone per creare cellule">
+          <span class="label chips-label">Pennello</span>
+          <button class="chip brush" type="button" data-brush="chaos" aria-pressed="true" title="Macchia casuale 6×6">Caos</button>
+          <button class="chip brush" type="button" data-brush="rpent" aria-pressed="false" title="R-pentomino: 5 celle che si agitano per più di mille generazioni">R-pento</button>
+          <button class="chip brush" type="button" data-brush="glider" aria-pressed="false" title="Glider (aliante): 5 celle che camminano in diagonale">Glider</button>
+          <button class="chip brush" type="button" data-brush="acorn" aria-pressed="false" title="Acorn (ghianda): 7 celle che crescono per migliaia di generazioni">Acorn</button>
+          <button class="chip brush" type="button" data-brush="cell" aria-pressed="false" title="Una cella (trascina per disegnare)">Cella</button>
+          <button class="chip" type="button" id="btn-clear" title="Svuota (C)"><span class="material-symbols-rounded" aria-hidden="true">delete_sweep</span>Svuota</button>
+          <button class="chip" type="button" data-explain="vita" title="Spiegami le regole delle cellule"><span class="material-symbols-rounded" aria-hidden="true">play_circle</span>Regole</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel" id="panel" aria-label="Controlli e apprendimento">
+
+      <div class="card stats span" id="stats">
+        <div class="stat"><span class="label">Mangiate</span><span class="stat-value" id="score">000</span></div>
+        <div class="stat"><span class="label" id="best-label">Record · impara</span><span class="stat-value" id="best">000</span></div>
+        <div class="stat"><span class="label">Generazione</span><span class="stat-value" id="gen">000</span></div>
+        <div class="stat"><span class="label">Livello</span><span class="stat-value" id="level">1</span></div>
+        <div class="stat"><span class="label">Cellule vive</span><span class="stat-value" id="pop">0000</span></div>
+      </div>
+
+      <div class="col">
+        <div class="card" id="ctrl-card">
+          <div class="control-grid">
+            <div class="field">
+              <span class="label">Chi guida</span>
+              <div class="seg" role="group" aria-label="Modalità">
+                <button type="button" data-mode="learn" aria-pressed="true" title="16 serpenti diversi si mettono alla prova: i migliori fanno figli"><span class="material-symbols-rounded" aria-hidden="true">school</span>Impara</button>
+                <button type="button" data-mode="champion" aria-pressed="false" title="Gioca il serpente migliore trovato finora, senza imparare"><span class="material-symbols-rounded" aria-hidden="true">emoji_events</span>Campione</button>
+                <button type="button" data-mode="manual" aria-pressed="false" title="Guidi tu con le frecce"><span class="material-symbols-rounded" aria-hidden="true">sports_esports</span>Tu</button>
+              </div>
+            </div>
+            <div class="field">
+              <span class="label">Velocità</span>
+              <div class="seg" role="group" aria-label="Velocità">
+                <button type="button" data-speed="1" aria-pressed="true">1×</button>
+                <button type="button" data-speed="4" aria-pressed="false">4×</button>
+                <button type="button" data-speed="16" aria-pressed="false">16×</button>
+                <button type="button" data-speed="64" aria-pressed="false">64×</button>
+              </div>
+            </div>
+          </div>
+          <div class="buttons">
+            <button class="btn btn-filled" id="btn-play" type="button" title="Pausa / riprendi (Spazio)">
+              <span class="material-symbols-rounded" id="play-icon" aria-hidden="true">pause</span><span id="play-label">Pausa</span>
+            </button>
+            <button class="btn btn-tonal" id="btn-step" type="button" title="Avanza di una sola mossa (N)">
+              <span class="material-symbols-rounded" aria-hidden="true">step</span><span>Passo</span>
+            </button>
+            <button class="btn btn-outlined" id="btn-reset" type="button" title="Nuovo mondo, il cervello resta (R)">
+              <span class="material-symbols-rounded" aria-hidden="true">public</span><span>Mondo</span>
+            </button>
+          </div>
+          <div class="switch-row">
+            <button class="switch" id="sw-curriculum" type="button" role="switch" aria-checked="true" aria-label="Difficoltà crescente"></button>
+            <div class="txt" id="curriculum-txt"><strong>Difficoltà crescente</strong></div>
+          </div>
+        </div>
+
+        <div class="card" id="think-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Cosa sta pensando</div>
+              <div class="card-sub">Per ogni mossa fa una somma: ogni cosa che vede vale dei punti, il suo «peso». Sceglie la mossa con più punti.</div>
+            </div>
+            <div class="card-actions"><button class="icon-btn small" type="button" data-explain="pensa" title="Spiegami come sceglie la mossa" aria-label="Spiegami come sceglie la mossa"><span class="material-symbols-rounded" aria-hidden="true">play_circle</span></button></div>
+          </div>
+          <div class="think think-body">
+            <canvas class="think-map" id="think-map" role="img" aria-label="Vista dal serpente: la sua testa al centro, davanti in alto"></canvas>
+            <div class="opts" id="opts"></div>
+          </div>
+          <p class="note" id="think-note"></p>
+        </div>
+
+        <div class="card" id="manual-card" hidden>
+          <div class="card-head">
+            <div>
+              <div class="card-title">Guida manuale</div>
+              <div class="card-sub">Frecce della tastiera o pulsanti. Riesci a battere il campione?</div>
+            </div>
+          </div>
+          <div class="dpad" aria-label="Controlli direzionali">
+            <button data-dir="up" type="button" aria-label="Su"><span class="material-symbols-rounded" aria-hidden="true">keyboard_arrow_up</span></button>
+            <button data-dir="left" type="button" aria-label="Sinistra"><span class="material-symbols-rounded" aria-hidden="true">keyboard_arrow_left</span></button>
+            <button data-dir="down" type="button" aria-label="Giù"><span class="material-symbols-rounded" aria-hidden="true">keyboard_arrow_down</span></button>
+            <button data-dir="right" type="button" aria-label="Destra"><span class="material-symbols-rounded" aria-hidden="true">keyboard_arrow_right</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card" id="learn-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Come sta imparando</div>
+              <div class="card-sub" id="learn-sub">Generazione 0</div>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn small" id="btn-ref" type="button" title="Fissa la curva attuale come riferimento per un confronto" aria-label="Fissa come riferimento"><span class="material-symbols-rounded" aria-hidden="true">push_pin</span></button>
+              <button class="icon-btn small" id="btn-csv" type="button" title="Esporta i dati per il foglio di calcolo (CSV)" aria-label="Esporta CSV"><span class="material-symbols-rounded" aria-hidden="true">table_view</span></button>
+              <button class="icon-btn small" id="btn-export" type="button" title="Salva il cervello su file" aria-label="Salva il cervello su file"><span class="material-symbols-rounded" aria-hidden="true">download</span></button>
+              <button class="icon-btn small" id="btn-import" type="button" title="Carica un cervello da file" aria-label="Carica un cervello da file"><span class="material-symbols-rounded" aria-hidden="true">upload</span></button>
+              <button class="icon-btn small" id="btn-forget" type="button" title="Ricomincia da zero (la curva resta come riferimento)" aria-label="Ricomincia da zero"><span class="material-symbols-rounded" aria-hidden="true">restart_alt</span></button>
+              <input type="file" id="file-in" accept="application/json,.json" hidden>
+            </div>
+          </div>
+          <canvas class="chart" id="chart" role="img" aria-label="Grafico del voto per generazione"></canvas>
+          <div class="key" id="chart-key" aria-hidden="true"></div>
+          <p class="note" id="learn-note"></p>
+          <button class="link-btn" type="button" data-explain="evolve"><span class="material-symbols-rounded" aria-hidden="true">play_circle</span>Come nascono i figli? Guarda la spiegazione</button>
+          <div class="rules" role="group" aria-label="Regole del voto (fitness)">
+            <label class="rule"><span>Punti per ogni cibo</span><input type="range" id="r-food" min="0" max="3" step="0.5" value="1"><b class="mono" id="v-food">1</b></label>
+            <label class="rule"><span>Punti ogni 100 passi da vivo</span><input type="range" id="r-surv" min="0" max="10" step="0.5" value="1"><b class="mono" id="v-surv">1</b></label>
+            <label class="rule"><span>Punti tolti se muore</span><input type="range" id="r-death" min="0" max="50" step="5" value="0"><b class="mono" id="v-death">0</b></label>
+          </div>
+          <p class="formula" id="formula"></p>
+          <button class="link-btn" type="button" data-explain="voto"><span class="material-symbols-rounded" aria-hidden="true">play_circle</span>Perché il voto cambia quello che impara?</button>
+        </div>
+
+        <div class="card" id="brain-card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Cosa ha imparato a vedere</div>
+              <div class="card-sub" id="brain-sub">Individuo 1</div>
+            </div>
+          </div>
+          <div class="seg compact arch-seg" role="group" aria-label="Tipo di cervello">
+            <button type="button" data-arch="linear" aria-pressed="true" title="Cervello semplice: un peso per ogni cosa che vede">Semplice · 82 pesi</button>
+            <button type="button" data-arch="net" aria-pressed="false" title="Cervello profondo: 8 neuroni intermedi combinano quello che vede">Profondo · 672 pesi</button>
+          </div>
+          <div class="fields" id="fields"></div>
+          <div class="key brain-key" aria-hidden="true">
+            <span><i class="box" style="background: var(--good)"></i>attira +</span>
+            <span><i class="box" style="background: var(--bad)"></i>respinge −</span>
+            <span>↑ davanti · ○ casella valutata · ● testa</span>
+          </div>
+          <div class="scalars" id="scalars"></div>
+          <p class="note" id="brain-note"></p>
+        </div>
+      </div>
+
+      <p class="help span">
+        <kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> guidi tu ·
+        <kbd>Spazio</kbd> pausa ·
+        <kbd>N</kbd> passo ·
+        <kbd>1</kbd>–<kbd>4</kbd> velocità ·
+        <kbd>R</kbd> nuovo mondo ·
+        <kbd>C</kbd> svuota ·
+        <kbd>F</kbd> schermo intero
+      </p>
+    </aside>
+  </main>
+  </div>
+
+  <dialog class="sheet" id="real" aria-labelledby="real-title">
+    <div class="sheet-head">
+      <h2 id="real-title">Cosa c'entra con la realtà?</h2>
+      <button class="icon-btn" type="button" id="real-close" aria-label="Chiudi"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
+    </div>
+    <div class="sheet-body">
+      <p class="sheet-lead">Qui dentro ci sono due idee che gli scienziati usano davvero per studiare il mondo. Il gioco è semplificato, ma il modo di ragionare è lo stesso.</p>
+
+      <section class="idea">
+        <h3><span class="material-symbols-rounded" aria-hidden="true">grid_view</span>Le cellule: ognuna guarda solo chi ha accanto</h3>
+        <p>Ogni cellula conta le 8 vicine. Con 2 o 3 vicine resta viva, con esattamente 3 nasce, se è sola o troppo affollata muore. Nessuno comanda, eppure nascono forme che crescono, si spostano, si spengono.</p>
+        <ul class="esempi">
+          <li><span class="material-symbols-rounded" aria-hidden="true">forest</span><span><b>In natura:</b> un incendio nel bosco, una colonia di batteri, una macchia di muffa. Ogni pezzo dipende da quello che succede intorno.</span></li>
+          <li><span class="material-symbols-rounded" aria-hidden="true">groups</span><span><b>Tra le persone:</b> una moda che passa da un amico all'altro, un video che diventa virale, un'influenza che gira in classe. Basta che qualcuno vicino a te lo faccia.</span></li>
+        </ul>
+        <p class="prova"><b>Prova:</b> svuota il tabellone e disegna un Glider. Cinque celle, regole semplicissime: e si mette a camminare.</p>
+      </section>
+
+      <section class="idea">
+        <h3><span class="material-symbols-rounded" aria-hidden="true">psychology</span>Il serpente: imparare senza istruzioni</h3>
+        <p>Nessuno spiega le regole al serpente. Sedici serpenti provano, sbagliano, e quelli andati meglio diventano genitori della generazione dopo. Dopo un po' sembra furbo, ma nessuno gliel'ha insegnato.</p>
+        <ul class="esempi">
+          <li><span class="material-symbols-rounded" aria-hidden="true">pets</span><span><b>In natura:</b> è la selezione naturale. Gli animali più adatti al loro ambiente fanno più figli, e i figli somigliano ai genitori con piccole differenze.</span></li>
+          <li><span class="material-symbols-rounded" aria-hidden="true">smart_toy</span><span><b>Nella tecnologia:</b> molte intelligenze artificiali imparano così: tanti tentativi, un voto per ognuno, e si tiene quello che funziona.</span></li>
+        </ul>
+      </section>
+
+      <section class="idea">
+        <h3><span class="material-symbols-rounded" aria-hidden="true">military_tech</span>Il voto decide cosa si impara</h3>
+        <p>Il serpente diventa bravo in quello che premi, non in quello che vorresti. Se conta solo il cibo, conviene rischiare? Se conta solo restare vivo, conviene evitare tutto e non mangiare mai?</p>
+        <ul class="esempi">
+          <li><span class="material-symbols-rounded" aria-hidden="true">school</span><span><b>Succede anche a noi:</b> se conta solo il voto, si studia per il voto e non per capire. Se un social premia i like, si pubblica quello che fa like.</span></li>
+        </ul>
+        <p class="prova"><b>Prova:</b> in «Come sta imparando» fissa la curva con la puntina, cambia i punti e ricomincia da zero. Poi confronta le due curve.</p>
+      </section>
+
+      <section class="idea">
+        <h3><span class="material-symbols-rounded" aria-hidden="true">sync_alt</span>Il mondo cambia mentre impari</h3>
+        <p>Le cellule si muovono, e la scia del serpente risveglia quelle vicine: le sue scelte cambiano il mondo in cui poi deve vivere.</p>
+        <ul class="esempi">
+          <li><span class="material-symbols-rounded" aria-hidden="true">directions_car</span><span><b>Nella vita reale:</b> se tutti prendono la strada più veloce, quella strada diventa la più lenta. Se tutti pescano nello stesso posto, i pesci finiscono.</span></li>
+        </ul>
+      </section>
+
+      <p class="limite">Un modello non è la realtà: il mondo vero ha molte più regole. Serve a farsi domande e a provare idee che nella vita vera sarebbero lente, costose o pericolose.</p>
+      <div class="sheet-foot"><button class="btn btn-tonal" type="button" data-explain="realta"><span class="material-symbols-rounded" aria-hidden="true">play_circle</span><span>Guarda la spiegazione animata</span></button></div>
+    </div>
+  </dialog>
+
+  <div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
+    <div class="explain-box">
+      <button class="explain-close" id="explainClose" type="button" aria-label="Chiudi spiegazione"><span class="material-symbols-rounded" aria-hidden="true">close</span></button>
+      <iframe id="explainFrame" title="Spiegazione animata di Snake of Life" allow="fullscreen"></iframe>
+    </div>
+  </div>
+
+  <div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+  <div class="sr-only" id="sr-status" aria-live="polite"></div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      /* ======================= Parametri ======================= */
+
+      const COLS = 100;
+      const ROWS = 100;
+      const N = COLS * ROWS;
+      const LIFE_MS = 220;
+      const TRAIL_DELAY = 900;
+      const TRAIL_WINDOW = 900;
+      const MAX_LIFE = 2600;
+      const START_LEN = 6;
+      const MAX_LEN = 160;
+      const RESPAWN_MS = 600;
+      const HOLD_MS = 15000;
+      const START_TICK = 80;
+      const MIN_TICK = 42;
+      const AI_TICK = 70;
+      const NONE = -1e12;
+
+      const POP = 16;
+      const ELITE = 4;
+      const PARENTS = 8;
+      const TRIALS = 3;
+      const HIDDEN = 8;
+      const MAX_LEVEL = 6;
+      const LEVEL_SURV = 0.25;     // il livello sale se almeno 1 vita su 4 arriva a fine prova
+      const WIN = 5;
+      const HALF = 2;
+      const CELLS = WIN * WIN;
+      const NF = CELLS * 3;
+      const CHANNELS = ['Cellule vive', 'Cibo', 'Il suo corpo'];
+      const SENSES = ['Casella mortale', 'Sta per nascere', 'Spazio libero', 'Verso il cibo', 'Cibo qui', 'Andare dritto', 'Coda raggiungibile'];
+      const NS = SENSES.length;
+      const NW = NF + NS;
+      const ARCH = {
+        linear: { name: 'Semplice', len: NW },
+        net: { name: 'Profondo', len: NW * HIDDEN + 2 * HIDDEN }
+      };
+      const GROUPS = CHANNELS.map((n, i) => ({ id: 'c' + i, name: n }))
+        .concat(SENSES.map((n, i) => ({ id: 's' + i, name: n })));
+
+      function levelParams(L) {
+        return {
+          corpse: Math.max(2500, 7000 - (L - 1) * 900),
+          steps: Math.min(4000, 1500 + (L - 1) * 500),
+          minLife: 180 + (L - 1) * 70
+        };
+      }
+
+      const MODE_NAMES = { learn: 'impara', champion: 'campione', manual: 'tu' };
+      const LS = {
+        rec: { learn: 'snakeLife100.rec.learn', champion: 'snakeLife100.rec.champion', manual: 'snakeLife100.rec.manual' },
+        brain: 'snakeLife100.brain.v1',
+        theme: 'orfini_theme',
+        sound: 'snakeM3.sound',
+        speed: 'snakeLife100.speed',
+        mode: 'snakeLife100.mode'
+      };
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const $ = (id) => document.getElementById(id);
+
+      const canvas = $('board');
+      const screenCtx = canvas.getContext('2d');
+      // Si disegna su una tela nascosta e la si "sfuma" su quella visibile:
+      // alle velocità alte le celle non possono lampeggiare (filtro passa-basso sulla luminosità).
+      const buf = document.createElement('canvas');
+      const ctx = buf.getContext('2d');
+      const SMOOTH_TAU = { 1: 45, 4: 120, 16: 200, 64: 260 };
+      const wrap = $('board-wrap');
+      const shell = $('shell');
+      let uiScale = 1;
+      const frame = $('board-frame');
+      const overlay = $('overlay');
+      const snackbar = $('snackbar');
+      const srStatus = $('sr-status');
+      const el = {
+        score: $('score'), best: $('best'), bestLabel: $('best-label'), gen: $('gen'), level: $('level'), pop: $('pop'),
+        learnSub: $('learn-sub'), learnNote: $('learn-note'), brainSub: $('brain-sub'), brainNote: $('brain-note'),
+        playIcon: $('play-icon'), playLabel: $('play-label'), pauseBadge: $('pause-badge'),
+        chart: $('chart'), chartKey: $('chart-key'), scalars: $('scalars'), fields: $('fields'),
+        manualCard: $('manual-card'), thinkMap: $('think-map'), opts: $('opts'), thinkNote: $('think-note'),
+        curSwitch: $('sw-curriculum'), curTxt: $('curriculum-txt'), stepBtn: $('btn-step')
+      };
+      const modeBtns = Array.from(document.querySelectorAll('[data-mode]'));
+      const speedBtns = Array.from(document.querySelectorAll('[data-speed]'));
+      const archBtns = Array.from(document.querySelectorAll('[data-arch]'));
+      const brushBtns = Array.from(document.querySelectorAll('.brush'));
+
+      const store = {
+        get(key, fallback) {
+          try { const v = localStorage.getItem(key); return v === null ? fallback : v; } catch (err) { return fallback; }
+        },
+        set(key, value) {
+          try { localStorage.setItem(key, String(value)); } catch (err) { /* non disponibile */ }
+        }
+      };
+      try { localStorage.removeItem('snakeLife100.best'); } catch (err) { /* vecchio record misto */ }
+
+      /* ======================= Griglia toroidale ======================= */
+
+      const DIRS = [{ x: 0, y: -1 }, { x: 1, y: 0 }, { x: 0, y: 1 }, { x: -1, y: 0 }];
+      const dirIndex = (d) => DIRS.findIndex((v) => v.x === d.x && v.y === d.y);
+
+      function wrapIdx(x, y) {
+        return (((y % ROWS) + ROWS) % ROWS) * COLS + (((x % COLS) + COLS) % COLS);
+      }
+
+      const NB8 = new Int32Array(N * 8);
+      const NB4 = new Int32Array(N * 4);
+      for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+          const i = y * COLS + x;
+          let k = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (dx || dy) NB8[i * 8 + k++] = wrapIdx(x + dx, y + dy);
+            }
+          }
+          for (let d = 0; d < 4; d++) NB4[i * 4 + d] = wrapIdx(x + DIRS[d].x, y + DIRS[d].y);
+        }
+      }
+
+      let life = new Uint8Array(N);
+      let lifeBuf = new Uint8Array(N);
+      const age = new Uint16Array(N);
+      const corpseAt = new Float64Array(N).fill(NONE);
+      const trailAt = new Float64Array(N).fill(NONE);
+      const predBirth = new Uint8Array(N);
+      const snakeOcc = new Uint8Array(N);
+      const blocked = new Uint8Array(N);
+      const visit = new Uint32Array(N);
+      const firstDir = new Int8Array(N);
+      const dist = new Uint16Array(N);
+      const bfsQueue = new Int32Array(N);
+      let stamp = 0;
+
+      const state = {
+        running: true,
+        alive: false,
+        over: false,
+        mode: 'learn',
+        speed: 1,
+        dir: { x: 1, y: 0 },
+        queue: [],
+        snake: [],
+        score: 0,
+        steps: 0,
+        moves: 0,
+        records: {
+          learn: Math.max(0, Number(store.get(LS.rec.learn, 0)) || 0),
+          champion: Math.max(0, Number(store.get(LS.rec.champion, 0)) || 0),
+          manual: Math.max(0, Number(store.get(LS.rec.manual, 0)) || 0)
+        },
+        acc: 0,
+        lifeAcc: 0,
+        clock: 0,
+        deathAt: NONE,
+        deathCause: '',
+        respawnAt: 0,
+        particles: [],
+        trail: [],
+        pop: 0,
+        holdUntil: 0,
+        hover: null,
+        painting: null,
+        brush: 'chaos',
+        hudDirty: true
+      };
+
+      // parametri del mondo che dipendono dal livello
+      let corpseMs = 7000;
+      let maxSteps = 1500;
+      let minLife = 180;
+
+      let cell = 0;
+      let viewSize = 0;
+      let colors = null;
+      let snackbarTimer = 0;
+      let audioCtx = null;
+      let soundOn = store.get(LS.sound, '0') === '1';
+      let brain = null;
+      let brainEff = null;
+      const MASK = new Uint8Array(NW).fill(1);
+
+      const rand = (n) => (Math.random() * n) | 0;
+      const pad = (v, n) => String(v).padStart(n, '0');
+      const fmt = (v, d) => v.toFixed(d === undefined ? 1 : d).replace('.', ',');
+
+      function randn() {
+        let u = 0;
+        let v = 0;
+        while (!u) u = Math.random();
+        while (!v) v = Math.random();
+        return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+      }
+
+      /* ======================= UI di base ======================= */
+
+      function showSnackbar(text) {
+        snackbar.textContent = text;
+        snackbar.classList.add('show');
+        clearTimeout(snackbarTimer);
+        snackbarTimer = setTimeout(() => snackbar.classList.remove('show'), 3600);
+      }
+
+      const announce = (t) => { srStatus.textContent = t; };
+
+      function bump(node) {
+        node.classList.remove('bump');
+        void node.offsetWidth;
+        node.classList.add('bump');
+      }
+
+      function setText(node, text) {
+        if (node.textContent !== text) node.textContent = text;
+      }
+
+      function setStatus() {
+        el.playIcon.textContent = state.running ? 'pause' : 'play_arrow';
+        el.playLabel.textContent = state.running ? 'Pausa' : (state.over ? 'Rigioca' : 'Riprendi');
+        el.pauseBadge.hidden = state.running || state.over;
+        el.stepBtn.disabled = state.mode === 'manual';
+      }
+
+      function updateHud() {
+        setText(el.score, pad(state.score, 3));
+        setText(el.best, pad(state.records[state.mode], 3));
+        setText(el.bestLabel, 'Record · ' + MODE_NAMES[state.mode]);
+        setText(el.gen, pad(evo.gen, 3));
+        setText(el.level, String(evo.level));
+        setText(el.pop, pad(state.pop, 4));
+        state.hudDirty = false;
+      }
+
+      /* ======================= Suono ======================= */
+
+      function ensureAudio() {
+        if (!audioCtx) {
+          const A = window.AudioContext || window.webkitAudioContext;
+          if (!A) return null;
+          try { audioCtx = new A(); } catch (err) { return null; }
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        return audioCtx;
+      }
+
+      function tone(freq, dur, type, gain, delay) {
+        if (!soundOn) return;
+        const ac = ensureAudio();
+        if (!ac) return;
+        const t = ac.currentTime + (delay || 0);
+        const osc = ac.createOscillator();
+        const vol = ac.createGain();
+        osc.type = type || 'square';
+        osc.frequency.setValueAtTime(freq, t);
+        vol.gain.setValueAtTime(0.0001, t);
+        vol.gain.exponentialRampToValueAtTime(gain || 0.04, t + 0.008);
+        vol.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        osc.connect(vol);
+        vol.connect(ac.destination);
+        osc.start(t);
+        osc.stop(t + dur + 0.03);
+      }
+
+      function playTone(kind) {
+        if (!soundOn || effSpeed() > 4) return;
+        if (kind === 'eat') tone(620 + (state.score % 8) * 55, 0.05, 'square', 0.025);
+        else if (kind === 'place') tone(330, 0.05, 'triangle', 0.035);
+        else if (kind === 'gen') { tone(520, 0.07, 'triangle', 0.04); tone(780, 0.1, 'triangle', 0.035, 0.07); }
+        else if (kind === 'over') { tone(300, 0.14, 'sawtooth', 0.02); tone(190, 0.2, 'sawtooth', 0.02, 0.14); }
+      }
+
+      function updateSoundIcon() {
+        $('sound-icon').textContent = soundOn ? 'volume_up' : 'volume_off';
+        $('sound-toggle').setAttribute('aria-label', soundOn ? 'Disattiva audio' : 'Attiva audio');
+      }
+
+      /* ======================= Tema ======================= */
+
+      function refreshColors() {
+        const cs = getComputedStyle(document.documentElement);
+        const g = (n, f) => cs.getPropertyValue(n).trim() || f;
+        colors = {
+          board: g('--board', '#ffffff'),
+          grid: g('--board-grid', '#cfd6de'),
+          snake: g('--snake', '#2563eb'),
+          head: g('--snake-head', '#0f2f8a'),
+          danger: g('--danger', '#e5484d'),
+          food: g('--food', '#f2a516'),
+          trail: g('--trail', '#8b5cf6'),
+          good: g('--good', '#1f9d55'),
+          bad: g('--bad', '#e5484d'),
+          ref: g('--ref', '#8b5cf6'),
+          accent: g('--accent', '#1d4ed8'),
+          text: g('--text', '#15191e'),
+          text2: g('--text-2', '#4a5360'),
+          line: g('--line', '#dbe0e6'),
+          lineStrong: g('--line-strong', '#9aa4b1'),
+          s2: g('--surface-2', '#f0f3f6'),
+          s3: g('--surface-3', '#e3e8ee'),
+          mono: g('--mono', 'monospace')
+        };
+      }
+
+      function setTheme(theme, notify) {
+        document.documentElement.dataset.theme = theme;
+        $('theme-icon').textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        $('theme-toggle').setAttribute('aria-label', theme === 'dark' ? 'Passa al tema chiaro' : 'Passa al tema scuro');
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0d1117' : '#f4f6f8');
+        store.set(LS.theme, theme);
+        refreshColors();
+        drawChart();
+        drawBrain();
+        renderThink(true);
+        if (notify) showSnackbar(theme === 'dark' ? 'Tema scuro' : 'Tema chiaro');
+      }
+
+      /* ======================= Pattern ======================= */
+
+      const GLIDER = [[1, 0], [2, 1], [0, 2], [1, 2], [2, 2]];
+      const PATTERNS = {
+        chaos() {
+          const out = [];
+          for (let y = 0; y < 6; y++) for (let x = 0; x < 6; x++) if (Math.random() < 0.42) out.push([x, y]);
+          return out.length > 3 ? out : [[1, 0], [2, 0], [0, 1], [1, 1], [1, 2]];
+        },
+        rpent: () => [[1, 0], [2, 0], [0, 1], [1, 1], [1, 2]],
+        glider() {
+          const fx = Math.random() < 0.5;
+          const fy = Math.random() < 0.5;
+          return GLIDER.map((c) => [fx ? 2 - c[0] : c[0], fy ? 2 - c[1] : c[1]]);
+        },
+        acorn: () => [[1, 0], [3, 1], [0, 2], [1, 2], [4, 2], [5, 2], [6, 2]],
+        cell: () => [[0, 0]]
+      };
+
+      const CHAOS_BOX = [];
+      for (let y = 0; y < 6; y++) for (let x = 0; x < 6; x++) CHAOS_BOX.push([x, y]);
+      const PREVIEW = { chaos: CHAOS_BOX, rpent: PATTERNS.rpent(), glider: GLIDER, acorn: PATTERNS.acorn(), cell: [[0, 0]] };
+
+      function patternOrigin(cells, cx, cy) {
+        let w = 1;
+        let h = 1;
+        for (const c of cells) { w = Math.max(w, c[0] + 1); h = Math.max(h, c[1] + 1); }
+        return { x: cx - (w >> 1), y: cy - (h >> 1) };
+      }
+
+      function torusDist(ax, ay, bx, by) {
+        const dx = Math.abs(ax - bx);
+        const dy = Math.abs(ay - by);
+        return { dx: Math.min(dx, COLS - dx), dy: Math.min(dy, ROWS - dy) };
+      }
+
+      function nearHead(i) {
+        if (!state.alive || !state.snake.length) return false;
+        const h = state.snake[0];
+        const d = torusDist(i % COLS, (i / COLS) | 0, h.x, h.y);
+        return d.dx <= 1 && d.dy <= 1;
+      }
+
+      function setCell(x, y) {
+        const i = wrapIdx(x, y);
+        if (life[i] || snakeOcc[i] || nearHead(i) || state.pop >= MAX_LIFE) return false;
+        life[i] = 1;
+        age[i] = 0;
+        corpseAt[i] = NONE;
+        state.pop++;
+        return true;
+      }
+
+      function stampPattern(cells, cx, cy) {
+        const o = patternOrigin(cells, cx, cy);
+        let n = 0;
+        for (const c of cells) if (setCell(o.x + c[0], o.y + c[1])) n++;
+        return n;
+      }
+
+      /* ======================= Game of Life ======================= */
+
+      function computePrediction() {
+        for (let i = 0; i < N; i++) {
+          if (life[i]) { predBirth[i] = 0; continue; }
+          const b = i * 8;
+          const n = life[NB8[b]] + life[NB8[b + 1]] + life[NB8[b + 2]] + life[NB8[b + 3]] +
+                    life[NB8[b + 4]] + life[NB8[b + 5]] + life[NB8[b + 6]] + life[NB8[b + 7]];
+          predBirth[i] = n === 3 ? 1 : 0;
+        }
+      }
+
+      // La scia del serpente, dopo TRAIL_DELAY ms, vale un vicino "fantasma" in più
+      // per le cellule che hanno già almeno un vicino vivo: le colonie reagiscono in ritardo.
+      function evolveLife() {
+        const now = state.clock;
+        const next = lifeBuf;
+        const wakeTo = TRAIL_DELAY + TRAIL_WINDOW;
+        let pop = 0;
+        for (let i = 0; i < N; i++) {
+          const b = i * 8;
+          const n = life[NB8[b]] + life[NB8[b + 1]] + life[NB8[b + 2]] + life[NB8[b + 3]] +
+                    life[NB8[b + 4]] + life[NB8[b + 5]] + life[NB8[b + 6]] + life[NB8[b + 7]];
+          let eff = n;
+          if (n > 0 && n < 4) {
+            for (let k = 0; k < 8; k++) {
+              const t = now - trailAt[NB8[b + k]];
+              if (t >= TRAIL_DELAY && t < wakeTo) { eff++; break; }
+            }
+          }
+          const alive = life[i];
+          let v = 0;
+          if (alive) {
+            v = (eff === 2 || eff === 3) ? 1 : 0;
+            if (!v) corpseAt[i] = now;
+          } else if (eff === 3 && !snakeOcc[i] && pop < MAX_LIFE) {
+            v = 1;
+            corpseAt[i] = NONE;
+          }
+          next[i] = v;
+          age[i] = v ? (alive ? Math.min(age[i] + 1, 999) : 0) : 0;
+          pop += v;
+        }
+        lifeBuf = life;
+        life = next;
+        state.pop = pop;
+        ensureLife();
+        computePrediction();
+        state.hudDirty = true;
+      }
+
+      function ensureLife() {
+        if (state.pop >= minLife || state.clock < state.holdUntil) return;
+        const kinds = ['rpent', 'acorn', 'chaos', 'glider', 'chaos'];
+        for (let a = 0; a < 30; a++) {
+          const x = rand(COLS);
+          const y = rand(ROWS);
+          if (state.snake.length) {
+            const d = torusDist(x, y, state.snake[0].x, state.snake[0].y);
+            if (d.dx + d.dy < 20) continue;
+          }
+          stampPattern(PATTERNS[kinds[rand(kinds.length)]](), x, y);
+          return;
+        }
+      }
+
+      function seedWorld() {
+        life.fill(0);
+        lifeBuf.fill(0);
+        age.fill(0);
+        corpseAt.fill(NONE);
+        trailAt.fill(NONE);
+        predBirth.fill(0);
+        snakeOcc.fill(0);
+        state.trail = [];
+        state.pop = 0;
+        state.snake = [];
+        const kinds = ['rpent', 'acorn', 'chaos', 'chaos', 'chaos', 'glider', 'glider', 'glider'];
+        for (let i = 0; i < 14; i++) stampPattern(PATTERNS[kinds[rand(kinds.length)]](), rand(COLS), rand(ROWS));
+        computePrediction();
+        state.hudDirty = true;
+      }
+
+      function clearWorld() {
+        life.fill(0);
+        age.fill(0);
+        corpseAt.fill(NONE);
+        predBirth.fill(0);
+        state.pop = 0;
+        state.holdUntil = state.clock + HOLD_MS;
+        state.hudDirty = true;
+        showSnackbar('Tabellone svuotato: disegna le tue cellule');
+      }
+
+      const corpseActive = (i) => !life[i] && state.clock - corpseAt[i] < corpseMs;
+
+      /* ======================= Neuroevoluzione ======================= */
+      /*
+        Per ognuna delle 3 mosse (sinistra, dritto, destra) il serpente "guarda"
+        una finestra 5×5 centrata sulla casella d'arrivo, ruotata nel suo verso di marcia,
+        su tre canali (cellule vive, cibo, proprio corpo), più 7 sensi semplici: 82 ingressi.
+        - Cervello semplice: punteggio = somma(peso × ingresso).
+        - Cervello profondo: 8 neuroni nascosti; punteggio = somma(v_h × tanh(somma(W_hi × ingresso_i) + b_h)).
+        Vince la mossa col punteggio più alto. Nessuna regola è scritta a mano:
+        i pesi vengono selezionati, generazione dopo generazione, in base alla fitness.
+      */
+
+      const evo = {
+        arch: 'linear',
+        gen: 0,
+        pop: [],
+        fit: new Float32Array(POP),
+        idx: 0,
+        trial: 0,
+        hist: [],
+        champion: null,
+        championFit: 0,
+        championGen: 0,
+        deaths: { life: 0, self: 0, time: 0 },
+        lastCause: '',
+        marks: [],
+        ref: null,
+        off: [],
+        level: 1,
+        curriculum: true,
+        rules: { food: 1, surv: 1, death: 0 }
+      };
+
+      function newGenome(arch) {
+        const w = new Float32Array(ARCH[arch].len);
+        if (arch === 'linear') {
+          for (let i = 0; i < NF; i++) w[i] = randn() * 0.15;
+          for (let i = NF; i < NW; i++) w[i] = randn() * 0.8;
+        } else {
+          for (let h = 0; h < HIDDEN; h++) {
+            for (let i = 0; i < NW; i++) w[h * NW + i] = randn() * (i < NF ? 0.1 : 0.5);
+            w[NW * HIDDEN + h] = randn() * 0.1;
+            w[NW * HIDDEN + HIDDEN + h] = randn() * 0.6;
+          }
+        }
+        return w;
+      }
+
+      function mutate(w) {
+        const c = Float32Array.from(w);
+        if (w.length === NW) {
+          for (let i = 0; i < NW; i++) if (Math.random() < 0.12) c[i] += randn() * (i < NF ? 0.15 : 0.4);
+        } else {
+          for (let i = 0; i < c.length; i++) {
+            if (Math.random() < 0.03) {
+              const sigma = i < NW * HIDDEN ? ((i % NW) < NF ? 0.12 : 0.3) : 0.25;
+              c[i] += randn() * sigma;
+            }
+          }
+        }
+        return c;
+      }
+
+      // Semplice: ogni peso da uno dei due genitori. Profondo: ogni neurone intero da un genitore.
+      function crossover(a, b) {
+        const c = new Float32Array(a.length);
+        if (a.length === NW) {
+          for (let i = 0; i < NW; i++) c[i] = Math.random() < 0.5 ? a[i] : b[i];
+        } else {
+          for (let h = 0; h < HIDDEN; h++) {
+            const src = Math.random() < 0.5 ? a : b;
+            for (let i = 0; i < NW; i++) c[h * NW + i] = src[h * NW + i];
+            c[NW * HIDDEN + h] = src[NW * HIDDEN + h];
+            c[NW * HIDDEN + HIDDEN + h] = src[NW * HIDDEN + HIDDEN + h];
+          }
+        }
+        return c;
+      }
+
+      function brainScore(w, x) {
+        if (w.length === NW) {
+          let s = 0;
+          for (let i = 0; i < NW; i++) s += w[i] * x[i];
+          return s;
+        }
+        let s = 0;
+        const bo = NW * HIDDEN;
+        const vo = bo + HIDDEN;
+        for (let h = 0; h < HIDDEN; h++) {
+          let a = w[bo + h];
+          const o = h * NW;
+          for (let i = 0; i < NW; i++) a += w[o + i] * x[i];
+          s += w[vo + h] * Math.tanh(a);
+        }
+        return s;
+      }
+
+      // Peso "efficace" di ogni ingresso: per la rete profonda è la somma dei percorsi
+      // ingresso → neurone nascosto → uscita (approssimazione lineare attorno a zero).
+      function effectiveWeights(w) {
+        if (!w) return null;
+        if (w.length === NW) return w;
+        const e = new Float32Array(NW);
+        const vo = NW * HIDDEN + HIDDEN;
+        for (let h = 0; h < HIDDEN; h++) {
+          const v = w[vo + h];
+          for (let i = 0; i < NW; i++) e[i] += v * w[h * NW + i];
+        }
+        return e;
+      }
+
+      function rebuildMask() {
+        MASK.fill(1);
+        for (const id of evo.off) {
+          if (id[0] === 'c') {
+            const ch = Number(id.slice(1));
+            for (let k = 0; k < CELLS; k++) MASK[ch * CELLS + k] = 0;
+          } else {
+            MASK[NF + Number(id.slice(1))] = 0;
+          }
+        }
+      }
+
+      function applyLevel() {
+        const p = levelParams(evo.level);
+        corpseMs = p.corpse;
+        maxSteps = p.steps;
+        minLife = p.minLife;
+      }
+
+      function configLabel() {
+        const off = evo.off.map((id) => GROUPS.find((g) => g.id === id).name.toLowerCase());
+        const r = evo.rules;
+        const custom = r.food !== 1 || r.surv !== 1 || r.death !== 0;
+        return ARCH[evo.arch].name + (off.length ? ' · senza ' + off.join(', ') : '') + (evo.curriculum ? '' : ' · difficoltà fissa') + (custom ? ' · fitness ' + rulesLabel(r) : '');
+      }
+
+      function initEvo(arch) {
+        evo.arch = arch || evo.arch || 'linear';
+        evo.gen = 0;
+        evo.pop = [];
+        for (let i = 0; i < POP; i++) evo.pop.push(newGenome(evo.arch));
+        evo.fit = new Float32Array(POP);
+        evo.idx = 0;
+        evo.trial = 0;
+        evo.hist = [];
+        evo.champion = null;
+        evo.championFit = 0;
+        evo.championGen = 0;
+        evo.deaths = { life: 0, self: 0, time: 0 };
+        evo.lastCause = '';
+        evo.marks = [];
+        evo.level = 1;
+        applyLevel();
+        rebuildMask();
+      }
+
+      const round4 = (w) => Array.from(w).map((x) => +x.toFixed(4));
+
+      function serializeEvo() {
+        return {
+          v: 2,
+          nw: NW,
+          arch: evo.arch,
+          gen: evo.gen,
+          idx: evo.idx,
+          trial: evo.trial,
+          fit: Array.from(evo.fit).map((f) => +f.toFixed(3)),
+          pop: evo.pop.map(round4),
+          hist: evo.hist,
+          champion: evo.champion ? round4(evo.champion) : null,
+          championFit: evo.championFit,
+          championGen: evo.championGen,
+          deaths: evo.deaths,
+          marks: evo.marks,
+          ref: evo.ref,
+          off: evo.off,
+          level: evo.level,
+          curriculum: evo.curriculum,
+          rules: evo.rules
+        };
+      }
+
+      function loadEvoData(d) {
+        if (!d || !Array.isArray(d.pop) || d.pop.length !== POP) return false;
+        const arch = d.arch === 'net' ? 'net' : 'linear';
+        const len = ARCH[arch].len;
+        let pop = d.pop;
+        let champ = d.champion;
+        let migrated = false;
+        if (arch === 'linear' && d.nw === NW - 1) {
+          pop = pop.map((w) => (Array.isArray(w) ? w.concat([0]) : w));
+          if (Array.isArray(champ) && champ.length === NW - 1) champ = champ.concat([0]);
+          migrated = true;
+        }
+        if (pop.some((w) => !Array.isArray(w) || w.length !== len)) return false;
+
+        evo.arch = arch;
+        evo.gen = d.gen | 0;
+        evo.pop = pop.map((w) => Float32Array.from(w, Number));
+        evo.champion = Array.isArray(champ) && champ.length === len ? Float32Array.from(champ, Number) : null;
+        evo.championFit = +d.championFit || 0;
+        evo.championGen = d.championGen | 0;
+        evo.hist = Array.isArray(d.hist) ? d.hist.slice(-300) : [];
+        evo.marks = Array.isArray(d.marks) ? d.marks.filter((m) => m && Number.isFinite(m.g)).slice(-30) : [];
+        if (!Array.isArray(d.marks) && Number.isFinite(d.markGen)) evo.marks.push({ g: d.markGen, label: 'media su 3 vite' });
+        evo.ref = d.ref && Array.isArray(d.ref.pts) ? { label: String(d.ref.label || 'riferimento'), pts: d.ref.pts.slice(-300) } : null;
+        evo.off = Array.isArray(d.off) ? d.off.filter((id) => GROUPS.some((g) => g.id === id)) : [];
+        evo.level = Math.min(MAX_LEVEL, Math.max(1, d.level | 0 || 1));
+        evo.curriculum = d.curriculum !== false;
+        const r = d.rules && typeof d.rules === 'object' ? d.rules : {};
+        const num = (v, def, lo, hi) => (Number.isFinite(+v) ? Math.min(hi, Math.max(lo, +v)) : def);
+        evo.rules = { food: num(r.food, 1, 0, 3), surv: num(r.surv, 1, 0, 10), death: num(r.death, 0, 0, 50) };
+
+        if (migrated) {
+          evo.fit = new Float32Array(POP);
+          evo.idx = 0;
+          evo.trial = 0;
+          evo.deaths = { life: 0, self: 0, time: 0 };
+          evo.marks.push({ g: evo.gen, label: 'nuovo senso' });
+        } else {
+          evo.fit = Float32Array.from(Array.isArray(d.fit) && d.fit.length === POP ? d.fit : new Array(POP).fill(0));
+          evo.idx = Math.min(POP - 1, Math.max(0, d.idx | 0));
+          evo.trial = Math.min(TRIALS - 1, Math.max(0, d.trial | 0));
+          evo.deaths = d.deaths && typeof d.deaths === 'object'
+            ? { life: d.deaths.life | 0, self: d.deaths.self | 0, time: d.deaths.time | 0 }
+            : { life: 0, self: 0, time: 0 };
+        }
+        applyLevel();
+        rebuildMask();
+        return true;
+      }
+
+      function saveEvo() {
+        store.set(LS.brain, JSON.stringify(serializeEvo()));
+      }
+
+      function loadEvo() {
+        try {
+          const raw = store.get(LS.brain, null);
+          if (raw && loadEvoData(JSON.parse(raw))) return true;
+        } catch (err) { /* dati corrotti: si riparte */ }
+        initEvo('linear');
+        return false;
+      }
+
+      // Fitness = premio_cibo × cellule mangiate + premio_sopravvivenza × (passi / 100) − penalità (se muore)
+      function fitnessNow(cause) {
+        const r = evo.rules;
+        return r.food * state.score + r.surv * (state.steps / 100) - (cause === 'time' ? 0 : r.death);
+      }
+
+      const rulesLabel = (r) => fmt(r.food, 1) + '/' + fmt(r.surv, 1) + '/' + fmt(r.death, 0);
+
+      function finishTrial(cause) {
+        evo.lastCause = cause;
+        if (state.mode !== 'learn') return;
+        evo.fit[evo.idx] += fitnessNow(cause);
+        evo.deaths[cause]++;
+        evo.trial++;
+        if (evo.trial >= TRIALS) {
+          evo.fit[evo.idx] /= TRIALS;
+          evo.trial = 0;
+          evo.idx++;
+          if (evo.idx >= POP) nextGeneration();
+        }
+        saveEvo();
+      }
+
+      function nextGeneration() {
+        const order = Array.from({ length: POP }, (_, i) => i).sort((a, b) => evo.fit[b] - evo.fit[a]);
+        let sum = 0;
+        for (let i = 0; i < POP; i++) sum += evo.fit[i];
+        const best = evo.fit[order[0]];
+        const mean = sum / POP;
+        const total = POP * TRIALS;
+        evo.hist.push({
+          g: evo.gen,
+          best: +best.toFixed(2),
+          mean: +mean.toFixed(2),
+          life: evo.deaths.life,
+          self: evo.deaths.self,
+          time: evo.deaths.time,
+          lvl: evo.level,
+          arch: evo.arch,
+          off: evo.off.join('+'),
+          rules: rulesLabel(evo.rules)
+        });
+        if (evo.hist.length > 300) evo.hist.shift();
+
+        evo.championFit *= 0.97;
+        if (!evo.champion || best >= evo.championFit) {
+          evo.champion = Float32Array.from(evo.pop[order[0]]);
+          evo.championFit = best;
+          evo.championGen = evo.gen;
+        }
+
+        const next = [];
+        for (let k = 0; k < ELITE; k++) next.push(evo.pop[order[k]]);
+        while (next.length < POP) {
+          const a = evo.pop[order[rand(PARENTS)]];
+          const b = evo.pop[order[rand(PARENTS)]];
+          next.push(mutate(Math.random() < 0.6 ? crossover(a, b) : a));
+        }
+        if (Math.random() < 0.25) next[POP - 1] = newGenome(evo.arch);
+
+        const survivors = evo.deaths.time / total;
+        evo.pop = next;
+        evo.fit = new Float32Array(POP);
+        evo.idx = 0;
+        evo.trial = 0;
+        evo.deaths = { life: 0, self: 0, time: 0 };
+        evo.gen++;
+
+        // Difficoltà crescente: se almeno una vita su quattro arriva a fine prova, il mondo si fa più duro
+        if (evo.curriculum && evo.level < MAX_LEVEL && survivors >= LEVEL_SURV) {
+          evo.level++;
+          applyLevel();
+          evo.marks.push({ g: evo.gen, label: 'livello ' + evo.level });
+          showSnackbar('Livello ' + evo.level + ': il cibo resta ' + fmt(corpseMs / 1000) + ' s, una partita dura fino a ' + maxSteps + ' passi');
+        }
+
+        state.hudDirty = true;
+        playTone('gen');
+        drawChart();
+        updateLearnNote();
+        updateCurriculumText();
+        announce('Generazione ' + evo.gen + '. Miglior voto ' + fmt(best) + '.');
+      }
+
+      function pickBrain() {
+        if (state.mode === 'learn') return evo.pop[evo.idx];
+        return evo.champion || evo.pop[0];
+      }
+
+      function setBrain(w) {
+        brain = w;
+        brainEff = effectiveWeights(w);
+      }
+
+      /* ---------- Percezione ---------- */
+
+      const FEAT = new Float32Array(NW);
+      const think = {
+        valid: false,
+        heading: 0,
+        scores: new Float32Array(3),
+        feats: [new Float32Array(NW), new Float32Array(NW), new Float32Array(NW)],
+        chosen: -1,
+        snap: new Uint8Array(81)
+      };
+
+      function buildBlocked() {
+        blocked.set(life);
+        const s = state.snake;
+        for (let k = 0; k < s.length - 1; k++) blocked[s[k].y * COLS + s[k].x] = 1;
+      }
+
+      function floodSpace(start, limit) {
+        stamp++;
+        if (blocked[start]) return 0;
+        let qh = 0;
+        let qt = 0;
+        bfsQueue[qt++] = start;
+        visit[start] = stamp;
+        while (qh < qt && qt < limit) {
+          const cur = bfsQueue[qh++];
+          const b = cur * 4;
+          for (let d = 0; d < 4; d++) {
+            const ni = NB4[b + d];
+            if (visit[ni] === stamp || blocked[ni]) continue;
+            visit[ni] = stamp;
+            bfsQueue[qt++] = ni;
+          }
+        }
+        return qt;
+      }
+
+      // "Olfatto": in quale direzione parte il percorso più breve verso cibo raggiungibile in tempo
+      function bfsFoodDir(hIdx, tick) {
+        stamp++;
+        let qh = 0;
+        let qt = 0;
+        bfsQueue[qt++] = hIdx;
+        visit[hIdx] = stamp;
+        dist[hIdx] = 0;
+        while (qh < qt && qt < 6000) {
+          const cur = bfsQueue[qh++];
+          if (cur !== hIdx && corpseActive(cur) && corpseMs - (state.clock - corpseAt[cur]) > dist[cur] * tick) {
+            return firstDir[cur];
+          }
+          const b = cur * 4;
+          for (let d = 0; d < 4; d++) {
+            const ni = NB4[b + d];
+            if (visit[ni] === stamp || blocked[ni]) continue;
+            visit[ni] = stamp;
+            dist[ni] = dist[cur] + 1;
+            firstDir[ni] = cur === hIdx ? d : firstDir[cur];
+            bfsQueue[qt++] = ni;
+          }
+        }
+        return -1;
+      }
+
+      function sense(hx, hy, d, foodDir, straight, tailIdx, out) {
+        const f = DIRS[d];
+        const r = DIRS[(d + 1) & 3];
+        const cx = hx + f.x;
+        const cy = hy + f.y;
+        const ci = wrapIdx(cx, cy);
+        let k = 0;
+        for (let j = 0; j < WIN; j++) {
+          const fw = HALF - j;
+          for (let i = 0; i < WIN; i++) {
+            const lat = i - HALF;
+            const idx = wrapIdx(cx + f.x * fw + r.x * lat, cy + f.y * fw + r.y * lat);
+            const ca = state.clock - corpseAt[idx];
+            out[k] = life[idx];
+            out[CELLS + k] = (!life[idx] && ca < corpseMs) ? 1 - 0.5 * ca / corpseMs : 0;
+            out[2 * CELLS + k] = snakeOcc[idx] > 0 ? 1 : 0;
+            k++;
+          }
+        }
+        const lethal = life[ci] === 1 || (snakeOcc[ci] > 0 && !(ci === tailIdx && snakeOcc[ci] === 1));
+        const need = Math.min(state.snake.length + 20, 250);
+        const reach = lethal ? 0 : floodSpace(ci, 3000);
+        out[NF] = lethal ? 1 : 0;
+        out[NF + 1] = predBirth[ci];
+        out[NF + 2] = Math.min(1, reach / need);
+        out[NF + 3] = d === foodDir ? 1 : 0;
+        out[NF + 4] = corpseActive(ci) ? 1 : 0;
+        out[NF + 5] = straight ? 1 : 0;
+        out[NF + 6] = lethal ? 0 : (reach >= 3000 || visit[tailIdx] === stamp ? 1 : 0);
+        for (let i = 0; i < NW; i++) if (!MASK[i]) out[i] = 0;
+        return lethal;
+      }
+
+      function snapshotView(hx, hy, heading) {
+        const f = DIRS[heading];
+        const r = DIRS[(heading + 1) & 3];
+        let k = 0;
+        for (let j = 0; j < 9; j++) {
+          const fw = 4 - j;
+          for (let i = 0; i < 9; i++) {
+            const lat = i - 4;
+            const idx = wrapIdx(hx + f.x * fw + r.x * lat, hy + f.y * fw + r.y * lat);
+            let code = 0;
+            if (life[idx]) code = 1;
+            else if (snakeOcc[idx]) code = 3;
+            else if (corpseActive(idx)) code = 2;
+            else if (predBirth[idx]) code = 4;
+            think.snap[k++] = code;
+          }
+        }
+      }
+
+      function decide(w) {
+        const s = state.snake;
+        const head = s[0];
+        const tail = s[s.length - 1];
+        const tailIdx = tail.y * COLS + tail.x;
+        buildBlocked();
+        const foodDir = MASK[NF + 3] ? bfsFoodDir(head.y * COLS + head.x, AI_TICK) : -1;
+        const cur = dirIndex(state.dir);
+        let best = cur;
+        let bestScore = -Infinity;
+        let bestK = 1;
+        for (let k = 0; k < 3; k++) {
+          const d = (cur + k - 1 + 4) & 3;
+          sense(head.x, head.y, d, foodDir, k === 1, tailIdx, FEAT);
+          const sc = brainScore(w, FEAT) + Math.random() * 1e-6;
+          think.scores[k] = sc;
+          think.feats[k].set(FEAT);
+          if (sc > bestScore) { bestScore = sc; best = d; bestK = k; }
+        }
+        think.heading = cur;
+        think.chosen = bestK;
+        think.valid = true;
+        snapshotView(head.x, head.y, cur);
+        return best;
+      }
+
+      /* ======================= Serpente ======================= */
+
+      function spawnSnake() {
+        snakeOcc.fill(0);
+        let hx = -1;
+        let hy = -1;
+        for (let t = 0; t < 400 && hx < 0; t++) {
+          const x = rand(COLS);
+          const y = rand(ROWS);
+          let ok = true;
+          for (let dy = -3; dy <= 3 && ok; dy++) {
+            for (let dx = -(START_LEN + 2); dx <= 8; dx++) {
+              const i = wrapIdx(x + dx, y + dy);
+              if (life[i] || predBirth[i]) { ok = false; break; }
+            }
+          }
+          if (ok) { hx = x; hy = y; }
+        }
+        if (hx < 0) {
+          hx = COLS >> 1;
+          hy = ROWS >> 1;
+          for (let dy = -3; dy <= 3; dy++) {
+            for (let dx = -(START_LEN + 2); dx <= 8; dx++) {
+              const i = wrapIdx(hx + dx, hy + dy);
+              if (life[i]) { life[i] = 0; state.pop--; }
+            }
+          }
+          computePrediction();
+        }
+        state.snake = [];
+        for (let k = 0; k < START_LEN; k++) {
+          const x = (hx - k + COLS) % COLS;
+          state.snake.push({ x: x, y: hy });
+          snakeOcc[hy * COLS + x]++;
+        }
+        state.dir = { x: 1, y: 0 };
+        state.queue = [];
+      }
+
+      function respawn() {
+        spawnSnake();
+        state.alive = true;
+        state.over = false;
+        state.score = 0;
+        state.steps = 0;
+        state.acc = 0;
+        state.deathAt = NONE;
+        state.deathCause = '';
+        setBrain(pickBrain());
+        think.valid = false;
+        state.hudDirty = true;
+        drawBrain();
+        updateLearnSub();
+      }
+
+      const effSpeed = () => (state.mode === 'manual' ? 1 : state.speed);
+
+      function getTick() {
+        if (state.mode !== 'manual') return AI_TICK;
+        return Math.max(MIN_TICK, START_TICK - Math.floor(state.score * 0.6));
+      }
+
+      function spawnParticles(gx, gy) {
+        if (reduceMotion || effSpeed() > 4) return;
+        const cx = (gx + 0.5) * cell;
+        const cy = (gy + 0.5) * cell;
+        for (let i = 0; i < 7; i++) {
+          const a = (Math.PI * 2 * i) / 7 + Math.random() * 0.4;
+          const sp = 0.02 + Math.random() * 0.05;
+          state.particles.push({ x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 380, max: 380 });
+        }
+      }
+
+      function step() {
+        state.moves++;
+        if (state.mode !== 'manual') {
+          state.queue.length = 0;
+          state.dir = DIRS[decide(brain)];
+        } else if (state.queue.length) {
+          state.dir = state.queue.shift();
+        }
+
+        const h = state.snake[0];
+        const nx = (h.x + state.dir.x + COLS) % COLS;
+        const ny = (h.y + state.dir.y + ROWS) % ROWS;
+        const idx = ny * COLS + nx;
+        const eat = corpseActive(idx);
+        const grow = eat && state.snake.length < MAX_LEN;
+        const tail = state.snake[state.snake.length - 1];
+        const tailIdx = tail.y * COLS + tail.x;
+        const hitSelf = snakeOcc[idx] > 0 && !(!grow && idx === tailIdx && snakeOcc[idx] === 1);
+        const hitLife = life[idx] === 1;
+
+        if (hitLife || hitSelf) {
+          die(hitLife ? 'life' : 'self');
+          return;
+        }
+
+        state.snake.unshift({ x: nx, y: ny });
+        snakeOcc[idx]++;
+        trailAt[idx] = state.clock;
+        state.trail.push({ idx: idx, at: state.clock });
+        state.steps++;
+
+        if (eat) {
+          corpseAt[idx] = NONE;
+          state.score++;
+          spawnParticles(nx, ny);
+          playTone('eat');
+          if (effSpeed() <= 4) bump(el.score);
+          if (state.score > state.records[state.mode]) {
+            state.records[state.mode] = state.score;
+            store.set(LS.rec[state.mode], state.score);
+          }
+          state.hudDirty = true;
+        }
+
+        if (!grow) {
+          const t = state.snake.pop();
+          snakeOcc[t.y * COLS + t.x]--;
+        }
+
+        if (state.mode === 'learn' && state.steps >= maxSteps) retire();
+      }
+
+      function retire() {
+        state.alive = false;
+        state.deathCause = 'time';
+        state.deathAt = state.clock;
+        state.respawnAt = state.clock + 250;
+        snakeOcc.fill(0);
+        finishTrial('time');
+      }
+
+      function die(cause) {
+        state.alive = false;
+        state.deathCause = cause;
+        state.deathAt = state.clock;
+        state.acc = 0;
+        snakeOcc.fill(0);
+        playTone('over');
+        if (effSpeed() === 1 && !reduceMotion) {
+          frame.classList.add('shake');
+          setTimeout(() => frame.classList.remove('shake'), 460);
+        }
+        if (state.mode === 'manual') {
+          state.over = true;
+          state.running = false;
+          setStatus();
+          setTimeout(() => { if (state.over) showOver(); }, 500);
+          announce('Game over. Hai mangiato ' + state.score + ' cellule.');
+        } else {
+          state.respawnAt = state.clock + RESPAWN_MS;
+          finishTrial(cause);
+        }
+        updateLearnNote();
+      }
+
+      /* ======================= Controlli ======================= */
+
+      function showOver() {
+        $('overlay-icon').textContent = state.deathCause === 'life' ? 'dangerous' : 'sync_problem';
+        $('overlay-text').textContent = (state.deathCause === 'life' ? 'Hai toccato una cellula viva. ' : 'Ti sei morso la coda. ') +
+          'Mangiate: ' + state.score + ' (record del campione: ' + state.records.champion + ').';
+        overlay.hidden = false;
+      }
+
+      function togglePlay() {
+        if (state.over) {
+          overlay.hidden = true;
+          respawn();
+          state.running = true;
+        } else {
+          state.running = !state.running;
+        }
+        setStatus();
+      }
+
+      // Avanza la simulazione fino alla prossima mossa del serpente, poi si ferma
+      function stepOnce() {
+        if (state.mode === 'manual' || state.over) return;
+        state.running = false;
+        setStatus();
+        const m0 = state.moves;
+        for (let guard = 0; guard < 400 && state.moves === m0; guard++) simulate(10, true);
+        renderThink(true);
+      }
+
+      function setMode(mode, quiet) {
+        if (mode === state.mode) return;
+        state.mode = mode;
+        store.set(LS.mode, mode);
+        modeBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'));
+        speedBtns.forEach((b) => { b.disabled = mode === 'manual'; });
+        el.manualCard.hidden = mode !== 'manual';
+        $('think-card').hidden = mode === 'manual';
+        if (mode === 'manual') {
+          setBrain(pickBrain());
+          state.queue = [];
+          if (!state.alive && !state.over) respawn();
+          if (!quiet) showSnackbar('Guidi tu: frecce o D-pad');
+        } else {
+          overlay.hidden = true;
+          state.over = false;
+          state.running = true;
+          respawn();
+          if (!quiet) showSnackbar(mode === 'learn' ? 'Ripresa dell’allenamento' : 'Gioca il campione (generazione ' + evo.championGen + ')');
+        }
+        state.hudDirty = true;
+        setStatus();
+        updateLearnSub();
+        drawBrain();
+        renderThink(true);
+      }
+
+      function setSpeed(s) {
+        state.speed = s;
+        store.set(LS.speed, s);
+        speedBtns.forEach((b) => b.setAttribute('aria-pressed', Number(b.dataset.speed) === s ? 'true' : 'false'));
+        renderThink(true);
+      }
+
+      function setDir(x, y) {
+        if (state.mode !== 'manual') setMode('manual');
+        if (state.over) return;
+        if (!state.running) togglePlay();
+        const ref = state.queue.length ? state.queue[state.queue.length - 1] : state.dir;
+        if ((ref.x === -x && ref.y === -y) || (ref.x === x && ref.y === y)) return;
+        if (state.queue.length < 2) state.queue.push({ x: x, y: y });
+      }
+
+      function resetWorld() {
+        seedWorld();
+        respawn();
+        showSnackbar('Nuovo mondo: il cervello resta quello allenato');
+      }
+
+      // Ricomincia da zero tenendo la curva attuale come riferimento
+      function restartLearning(arch) {
+        if (evo.hist.length >= 3) {
+          evo.ref = { label: configLabel(), pts: evo.hist.map((h) => ({ g: h.g, mean: h.mean })) };
+        }
+        initEvo(arch || evo.arch);
+        saveEvo();
+        state.mode = 'champion';
+        setMode('learn', true);
+        archBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.arch === evo.arch ? 'true' : 'false'));
+        drawChart();
+        updateLearnNote();
+        updateCurriculumText();
+        renderSenseToggles();
+      }
+
+      function pinReference() {
+        if (evo.hist.length < 2) {
+          showSnackbar('Servono almeno 2 generazioni per fissare un riferimento');
+          return;
+        }
+        evo.ref = { label: configLabel(), pts: evo.hist.map((h) => ({ g: h.g, mean: h.mean })) };
+        saveEvo();
+        drawChart();
+        showSnackbar('Curva fissata come riferimento: ora cambia qualcosa e ricomincia da zero');
+      }
+
+      function download(name, text, type) {
+        const blob = new Blob([text], { type: type });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+
+      function exportBrain() {
+        download('snake-of-life-cervello-gen' + evo.gen + '.json', JSON.stringify(serializeEvo()), 'application/json');
+        showSnackbar('Cervello salvato (generazione ' + evo.gen + ')');
+      }
+
+      // CSV in formato italiano: separatore ";" e virgola decimale (si apre direttamente in Excel/LibreOffice)
+      function exportCsv() {
+        if (!evo.hist.length) {
+          showSnackbar('Nessuna generazione completata da esportare');
+          return;
+        }
+        const head = ['generazione', 'livello', 'cervello', 'sensi_spenti', 'fitness_migliore', 'fitness_media',
+          'morti_cellule_vive', 'morti_coda', 'fine_prova', 'percentuale_sopravvissuti', 'regole_fitness_cibo/100passi/morte'];
+        const rows = evo.hist.map((h) => {
+          const tot = (h.life || 0) + (h.self || 0) + (h.time || 0);
+          const offNames = (h.off || '').split('+').filter(Boolean)
+            .map((id) => (GROUPS.find((g) => g.id === id) || { name: id }).name).join(' + ');
+          return [h.g, h.lvl || 1, ARCH[h.arch || 'linear'].name, offNames || 'nessuno', fmt(h.best, 2), fmt(h.mean, 2),
+            h.life, h.self, h.time, tot ? fmt((h.time / tot) * 100, 1) : '', h.rules || '1/1/0'].join(';');
+        });
+        download('snake-of-life-dati-gen' + evo.gen + '.csv', '﻿' + [head.join(';')].concat(rows).join('\r\n'), 'text/csv');
+        showSnackbar('Dati esportati: ' + evo.hist.length + ' generazioni');
+      }
+
+      function importBrain(file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            if (!loadEvoData(JSON.parse(reader.result))) throw new Error('formato');
+            saveEvo();
+            archBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.arch === evo.arch ? 'true' : 'false'));
+            respawn();
+            drawChart();
+            updateLearnNote();
+            updateCurriculumText();
+            renderSenseToggles();
+            showSnackbar('Cervello caricato: generazione ' + evo.gen);
+          } catch (err) {
+            showSnackbar('File non valido');
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function toggleSense(id) {
+        const on = !evo.off.includes(id);
+        evo.off = on ? evo.off.concat([id]) : evo.off.filter((x) => x !== id);
+        rebuildMask();
+        const name = GROUPS.find((g) => g.id === id).name;
+        if (evo.gen > 0 || evo.idx > 0) evo.marks.push({ g: evo.gen, label: (on ? 'senza ' : 'con ') + name.toLowerCase() });
+        saveEvo();
+        renderSenseToggles();
+        drawBrain();
+        drawChart();
+        showSnackbar((on ? 'Spento: ' : 'Riacceso: ') + name + '. Per un confronto pulito: fissa il riferimento e ricomincia da zero.');
+      }
+
+      function toggleFullscreen() {
+        const d = document;
+        if (d.fullscreenElement || d.webkitFullscreenElement) {
+          (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+        } else {
+          const r = d.documentElement;
+          const fn = r.requestFullscreen || r.webkitRequestFullscreen;
+          if (fn) fn.call(r);
+        }
+      }
+
+      /* ======================= Testi ======================= */
+
+      function updateLearnSub() {
+        let t;
+        if (state.mode === 'learn') {
+          t = 'Generazione ' + evo.gen + ' · serpente ' + (evo.idx + 1) + ' di ' + POP + ' · partita ' + (evo.trial + 1) + ' di ' + TRIALS +
+              ' · passo ' + state.steps;
+        } else if (state.mode === 'champion') {
+          t = 'Gioca il campione, nato alla generazione ' + evo.championGen;
+        } else {
+          t = 'Allenamento in pausa: guidi tu';
+        }
+        setText(el.learnSub, t);
+        const who = state.mode === 'learn'
+          ? 'Serpente ' + (evo.idx + 1) + ' della generazione ' + evo.gen
+          : evo.champion ? 'Campione della generazione ' + evo.championGen : 'Nessun campione ancora';
+        setText(el.brainSub, who + ' · cervello ' + ARCH[evo.arch].name.toLowerCase());
+      }
+
+      function updateLearnNote() {
+        const h = evo.hist[evo.hist.length - 1];
+        const causes = { life: 'ha toccato una cellula viva', self: 'si è morso la coda', time: 'è arrivato alla fine' };
+        let html = '';
+        if (!h) {
+          html = '<strong>' + POP + ' serpenti</strong> per generazione, <strong>' + TRIALS +
+                 ' partite</strong> a testa (conta la media). I ' + ELITE + ' migliori passano alla generazione dopo; gli altri sono figli dei migliori: ' +
+                 'un po\' di un genitore, un po\' dell\'altro, più qualche piccola modifica a caso.';
+        } else {
+          const first = evo.hist[0];
+          const tot = h.life + h.self + h.time;
+          html = 'Generazione ' + h.g + ': il migliore ha preso <strong class="mono">' + fmt(h.best) + '</strong>, la media <strong class="mono">' +
+                 fmt(h.mean) + '</strong>' + (evo.hist.length > 1 ? ' (all\'inizio ' + fmt(first.mean) + ')' : '') +
+                 '. Su ' + tot + ' partite: <strong class="mono">' + h.life + '</strong> finite contro una cellula viva, <strong class="mono">' +
+                 h.self + '</strong> mordendosi la coda, <strong class="mono">' + h.time + '</strong> arrivate alla fine.';
+        }
+        el.learnNote.innerHTML = html;
+        el.learnNote.title = evo.lastCause ? 'Ultima partita: ' + causes[evo.lastCause] + '.' : '';
+        updateRulesUi();
+      }
+
+      function updateRulesUi() {
+        const r = evo.rules;
+        $('r-food').value = r.food;
+        $('r-surv').value = r.surv;
+        $('r-death').value = r.death;
+        $('v-food').textContent = fmt(r.food, 1);
+        $('v-surv').textContent = fmt(r.surv, 1);
+        $('v-death').textContent = fmt(r.death, 0);
+        const f = 'Voto = ' + fmt(r.food, 1) + '×cibo + ' + fmt(r.surv, 1) + '×(passi/100)' + (r.death ? ' − ' + fmt(r.death, 0) + ' se muore' : '');
+        $('formula').textContent = f;
+        $('formula').title = f + ', media su ' + TRIALS + ' partite. Se cambi i premi, cambia quello che il serpente impara.';
+      }
+
+      function changeRule(key, value) {
+        evo.rules = Object.assign({}, evo.rules, { [key]: value });
+        const last = evo.marks[evo.marks.length - 1];
+        const label = 'fitness ' + rulesLabel(evo.rules);
+        if (last && last.g === evo.gen && last.label.startsWith('fitness ')) last.label = label;
+        else evo.marks.push({ g: evo.gen, label: label });
+        if (evo.marks.length > 30) evo.marks.shift();
+        saveEvo();
+        updateRulesUi();
+        drawChart();
+        showSnackbar('Nuove regole: ' + $('formula').textContent + '. Per un confronto onesto: fissa la curva con la puntina e ricomincia da zero.');
+      }
+
+      function updateCurriculumText() {
+        el.curSwitch.setAttribute('aria-checked', evo.curriculum ? 'true' : 'false');
+        el.curTxt.innerHTML = '<strong>Sempre più difficile</strong> · livello <strong class="mono">' + evo.level + '</strong>: il cibo resta ' +
+          fmt(corpseMs / 1000) + ' s, una partita dura al massimo ' + maxSteps + ' passi. ' +
+          (evo.curriculum ? (evo.level < MAX_LEVEL ? 'Si sale quando 1 partita su 4 arriva alla fine.' : 'Livello massimo.') : 'Livello bloccato.');
+        el.curTxt.title = 'Quando almeno una partita su quattro di una generazione arriva alla fine, il mondo si fa più duro: il cibo sparisce prima, le partite durano di più, le cellule vive sono di più.';
+      }
+
+      /* ======================= Disegno: utilità ======================= */
+
+      function fitCanvas(cv) {
+        const r = cv.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 3);
+        const w = Math.max(1, Math.round(r.width * dpr));
+        const h = Math.max(1, Math.round(r.height * dpr));
+        if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+        const c = cv.getContext('2d');
+        c.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { c: c, w: r.width, h: r.height };
+      }
+
+      const remPx = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+
+      function niceMax(v) {
+        if (v <= 5) return 5;
+        const p = Math.pow(10, Math.floor(Math.log10(v)));
+        const m = v / p;
+        return (m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
+      }
+
+      /* ======================= Disegno: grafico ======================= */
+
+      function drawChart() {
+        if (!colors) return;
+        const { c, w, h } = fitCanvas(el.chart);
+        c.clearRect(0, 0, w, h);
+        const fs = Math.max(9, remPx() * 0.68 * uiScale);
+        c.font = '500 ' + fs + 'px ' + colors.mono;
+        const data = evo.hist.slice(-150);
+        const refPts = evo.ref ? evo.ref.pts : [];
+        const left = fs * 2.8;
+        const right = 6;
+        const top = fs * 1.6;
+        const bottom = fs * 1.8;
+        const pw = w - left - right;
+        const ph = h - top - bottom;
+
+        // legenda
+        let key = '<span><i style="background: var(--accent)"></i>migliore</span><span><i style="background: var(--line-strong)"></i>media</span>';
+        if (evo.ref) key += '<span><i class="dash"></i>media di riferimento: ' + evo.ref.label.replace(/</g, '&lt;') + '</span>';
+        el.chartKey.innerHTML = key;
+
+        if (pw < 20 || ph < 20) return;
+
+        const g0 = data.length ? data[0].g : 0;
+        let g1 = data.length ? data[data.length - 1].g : 1;
+        const refIn = refPts.filter((p) => p.g >= g0);
+        if (refIn.length) g1 = Math.max(g1, refIn[refIn.length - 1].g);
+        if (g1 <= g0) g1 = g0 + 1;
+
+        let maxV = 0;
+        let minV = 0;
+        for (const d of data) { maxV = Math.max(maxV, d.best); minV = Math.min(minV, d.mean); }
+        for (const p of refIn) { maxV = Math.max(maxV, p.mean); minV = Math.min(minV, p.mean); }
+        const ymax = niceMax(maxV * 1.08);
+        const ymin = minV < 0 ? -niceMax(-minV * 1.08) : 0;
+        const X = (g) => left + ((g - g0) / (g1 - g0)) * pw;
+        const Y = (v) => top + ph - ((v - ymin) / (ymax - ymin)) * ph;
+
+        c.strokeStyle = colors.line;
+        c.fillStyle = colors.text2;
+        c.lineWidth = 1;
+        c.textAlign = 'right';
+        c.textBaseline = 'middle';
+        for (let k = 0; k <= 2; k++) {
+          const v = ymin + ((ymax - ymin) * k) / 2;
+          const y = Math.round(Y(v)) + 0.5;
+          c.beginPath();
+          c.moveTo(left, y);
+          c.lineTo(left + pw, y);
+          c.stroke();
+          c.fillText(String(Math.round(v * 10) / 10), left - 6, y);
+        }
+
+        if (!data.length && !refIn.length) {
+          c.textAlign = 'center';
+          c.fillText('il grafico parte dopo la prima generazione', left + pw / 2, top + ph / 2);
+          return;
+        }
+
+        c.textAlign = 'left';
+        c.textBaseline = 'top';
+        c.fillText('gen ' + g0, left, top + ph + 5);
+        c.textAlign = 'right';
+        c.fillText('gen ' + g1, left + pw, top + ph + 5);
+
+        // segni sul grafico (livelli, sensi spenti, cambi di regola)
+        let lane = 0;
+        for (const m of evo.marks) {
+          if (m.g <= g0 || m.g > g1) continue;
+          const mx = Math.round(X(m.g)) + 0.5;
+          c.save();
+          c.strokeStyle = colors.lineStrong;
+          c.setLineDash([3, 3]);
+          c.beginPath();
+          c.moveTo(mx, top);
+          c.lineTo(mx, top + ph);
+          c.stroke();
+          c.restore();
+          c.fillStyle = colors.text2;
+          c.textAlign = mx > left + pw * 0.65 ? 'right' : 'left';
+          c.textBaseline = 'bottom';
+          c.fillText(' ' + m.label + ' ', mx, top - 2 + (lane % 2) * 0);
+          lane++;
+        }
+
+        const path = (pts, key) => {
+          c.beginPath();
+          pts.forEach((d, i) => (i ? c.lineTo(X(d.g), Y(d[key])) : c.moveTo(X(d.g), Y(d[key]))));
+        };
+
+        if (refIn.length > 1) {
+          c.save();
+          c.strokeStyle = colors.ref;
+          c.lineWidth = 2;
+          c.setLineDash([6, 4]);
+          path(refIn, 'mean');
+          c.stroke();
+          c.restore();
+        }
+
+        if (data.length) {
+          path(data, 'best');
+          c.lineTo(X(data[data.length - 1].g), Y(0));
+          c.lineTo(X(data[0].g), Y(0));
+          c.closePath();
+          c.fillStyle = colors.accent;
+          c.globalAlpha = 0.08;
+          c.fill();
+          c.globalAlpha = 1;
+
+          c.lineJoin = 'round';
+          c.strokeStyle = colors.lineStrong;
+          c.lineWidth = 2;
+          path(data, 'mean');
+          c.stroke();
+          c.strokeStyle = colors.accent;
+          c.lineWidth = 2.25;
+          path(data, 'best');
+          c.stroke();
+
+          const last = data[data.length - 1];
+          c.fillStyle = colors.accent;
+          c.beginPath();
+          c.arc(X(last.g), Y(last.best), 3.5, 0, Math.PI * 2);
+          c.fill();
+        }
+      }
+
+      /* ======================= Disegno: cervello ======================= */
+
+      const fieldEls = CHANNELS.map((name, ch) => {
+        const box = document.createElement('div');
+        box.className = 'field-map';
+        const cv = document.createElement('canvas');
+        cv.setAttribute('aria-label', 'Pesi per ' + name.toLowerCase());
+        const row = document.createElement('div');
+        row.className = 'field-toggle';
+        const sw = document.createElement('button');
+        sw.type = 'button';
+        sw.className = 'switch mini';
+        sw.setAttribute('role', 'switch');
+        sw.setAttribute('aria-label', 'Senso: ' + name);
+        sw.addEventListener('click', () => toggleSense('c' + ch));
+        const lab = document.createElement('span');
+        lab.textContent = name;
+        row.append(sw, lab);
+        box.append(cv, row);
+        el.fields.appendChild(box);
+        return { box: box, cv: cv, sw: sw };
+      });
+
+      const scalarEls = SENSES.map((name, k) => {
+        const row = document.createElement('div');
+        row.className = 'scalar';
+        const sw = document.createElement('button');
+        sw.type = 'button';
+        sw.className = 'switch mini';
+        sw.setAttribute('role', 'switch');
+        sw.setAttribute('aria-label', 'Senso: ' + name);
+        sw.addEventListener('click', () => toggleSense('s' + k));
+        const label = document.createElement('span');
+        label.textContent = name;
+        const track = document.createElement('div');
+        track.className = 'track';
+        const fill = document.createElement('div');
+        fill.className = 'fill';
+        track.appendChild(fill);
+        row.append(sw, label, track);
+        el.scalars.appendChild(row);
+        return { row: row, sw: sw, fill: fill };
+      });
+
+      function renderSenseToggles() {
+        fieldEls.forEach((f, ch) => {
+          const off = evo.off.includes('c' + ch);
+          f.sw.setAttribute('aria-checked', off ? 'false' : 'true');
+          f.box.classList.toggle('off', off);
+        });
+        scalarEls.forEach((s, k) => {
+          const off = evo.off.includes('s' + k);
+          s.sw.setAttribute('aria-checked', off ? 'false' : 'true');
+          s.row.classList.toggle('off', off);
+        });
+      }
+
+      function drawBrain() {
+        if (!colors) return;
+        const w = brainEff || effectiveWeights(pickBrain());
+        if (!w) return;
+
+        let maxF = 0.05;
+        for (let i = 0; i < NF; i++) if (MASK[i]) maxF = Math.max(maxF, Math.abs(w[i]));
+
+        fieldEls.forEach((f, ch) => {
+          const { c, w: cw } = fitCanvas(f.cv);
+          const s = cw / WIN;
+          c.clearRect(0, 0, cw, cw);
+          const fsz = Math.max(8, s * 0.42);
+          c.font = '700 ' + fsz + 'px ' + colors.mono;
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+          for (let j = 0; j < WIN; j++) {
+            for (let i = 0; i < WIN; i++) {
+              const v = w[ch * CELLS + j * WIN + i] / maxF;
+              c.globalAlpha = 1;
+              c.fillStyle = colors.s3;
+              c.fillRect(i * s + 1, j * s + 1, s - 2, s - 2);
+              c.globalAlpha = Math.min(1, Math.abs(v)) * 0.9;
+              c.fillStyle = v >= 0 ? colors.good : colors.bad;
+              c.fillRect(i * s + 1, j * s + 1, s - 2, s - 2);
+              // segno + / − per chi non distingue i colori
+              if (Math.abs(v) > 0.45 && s > 14) {
+                c.globalAlpha = 1;
+                c.fillStyle = '#fff';
+                c.fillText(v >= 0 ? '+' : '−', (i + 0.5) * s, (j + 0.52) * s);
+              }
+            }
+          }
+          c.globalAlpha = 1;
+          c.strokeStyle = colors.text;
+          c.lineWidth = 1.5;
+          c.beginPath();
+          c.arc(2.5 * s, 2.5 * s, s * 0.3, 0, Math.PI * 2);
+          c.stroke();
+          c.fillStyle = colors.snake;
+          c.beginPath();
+          c.arc(2.5 * s, 3.5 * s, s * 0.22, 0, Math.PI * 2);
+          c.fill();
+        });
+
+        let maxS = 0.1;
+        for (let i = NF; i < NW; i++) if (MASK[i]) maxS = Math.max(maxS, Math.abs(w[i]));
+        scalarEls.forEach((r, k) => {
+          const v = Math.max(-1, Math.min(1, w[NF + k] / maxS));
+          const width = Math.abs(v) * 50;
+          r.fill.style.width = width + '%';
+          r.fill.style.left = (v >= 0 ? 50 : 50 - width) + '%';
+          r.fill.style.backgroundColor = v >= 0 ? 'var(--good)' : 'var(--bad)';
+          r.row.title = SENSES[k] + ': peso ' + fmt(w[NF + k], 2);
+        });
+
+        el.brainNote.textContent = evo.arch === 'net'
+          ? 'Cervello profondo: le 82 cose che vede passano da 8 neuroni intermedi prima della scelta. Le mappe mostrano l’effetto complessivo stimato di ognuna. Gli interruttori spengono un senso.'
+          : 'Ogni casella è un peso: verde = quella cosa lì lo spinge verso la mossa, rosso = lo fa scappare. Gli interruttori spengono un senso: poi confronta le curve.';
+      }
+
+      /* ======================= Disegno: pensiero ======================= */
+
+      const OPT_META = [
+        { arrow: '←', name: 'Sinistra' },
+        { arrow: '↑', name: 'Dritto' },
+        { arrow: '→', name: 'Destra' }
+      ];
+      const optEls = OPT_META.map((m) => {
+        const row = document.createElement('div');
+        row.className = 'opt';
+        row.innerHTML = '<span class="opt-arrow">' + m.arrow + '</span><span class="opt-name">' + m.name +
+          ' <span class="pill" hidden>letale</span></span><span class="opt-score mono">–</span><span class="opt-why"></span>';
+        el.opts.appendChild(row);
+        return {
+          row: row,
+          pill: row.querySelector('.pill'),
+          score: row.querySelector('.opt-score'),
+          why: row.querySelector('.opt-why')
+        };
+      });
+
+      const GROUP_LABELS = ['cellule vive vicine', 'cibo vicino', 'corpo vicino'].concat(SENSES.map((s) => s.toLowerCase()));
+
+      // Il riquadro si aggiorna al massimo ~1,4 volte al secondo (sotto la soglia di 3 Hz
+      // indicata per la fotosensibilità) e resta fermo quando la velocità è sopra 1×.
+      const THINK_MS = 700;
+      let lastThinkRender = 0;
+      function renderThink(force) {
+        if (!colors) return;
+        const now = performance.now();
+        const live = state.running && state.mode !== 'manual';
+        const frozen = live && effSpeed() > 1;
+        if (!force) {
+          if (frozen) return;
+          if (now - lastThinkRender < THINK_MS) return;
+        }
+        lastThinkRender = now;
+        $('think-card').classList.toggle('frozen', frozen);
+
+        let note;
+        if (state.mode === 'manual') note = 'Guidi tu: qui vedresti il ragionamento del cervello.';
+        else if (frozen) note = 'A ' + state.speed + '× il riquadro resta fermo per non stancare gli occhi: metti 1× o premi «Passo».';
+        else if (state.running) note = 'A 1× il riquadro mostra una mossa ogni mezzo secondo circa. Con «Passo» le vedi tutte, una alla volta.';
+        else note = evo.arch === 'net'
+          ? 'Motivi stimati: nel cervello profondo quello che vede si mescola prima di arrivare alla scelta. Verde spinge verso la mossa, rosso la sconsiglia.'
+          : 'Sotto ogni mossa ci sono i due motivi che pesano di più. Verde spinge verso la mossa, rosso la sconsiglia.';
+        setText(el.thinkNote, note);
+
+        if (frozen) return;
+        drawThinkMap();
+        if (!think.valid || state.mode === 'manual') {
+          optEls.forEach((o) => { o.score.textContent = '–'; o.why.textContent = ''; o.pill.hidden = true; o.row.classList.remove('chosen'); });
+          return;
+        }
+
+        const e = brainEff;
+        for (let k = 0; k < 3; k++) {
+          const x = think.feats[k];
+          const parts = new Float32Array(3 + NS);
+          for (let ch = 0; ch < 3; ch++) {
+            let sum = 0;
+            for (let i = 0; i < CELLS; i++) sum += e[ch * CELLS + i] * x[ch * CELLS + i];
+            parts[ch] = sum;
+          }
+          for (let q = 0; q < NS; q++) parts[3 + q] = e[NF + q] * x[NF + q];
+          const order = Array.from(parts.keys()).filter((i) => Math.abs(parts[i]) > 0.02)
+            .sort((a, b) => Math.abs(parts[b]) - Math.abs(parts[a])).slice(0, 2);
+          const o = optEls[k];
+          o.row.classList.toggle('chosen', k === think.chosen);
+          o.score.textContent = (think.scores[k] >= 0 ? '+' : '−') + fmt(Math.abs(think.scores[k]), 2);
+          const lethal = x[NF] > 0 || (MASK[NF] === 0 && think.snap[k === 0 ? 39 : k === 1 ? 31 : 41] % 2 === 1);
+          o.pill.hidden = !lethal;
+          o.why.innerHTML = order.length
+            ? order.map((i) => '<b class="' + (parts[i] >= 0 ? 'pos' : 'neg') + '">' + (parts[i] >= 0 ? '+' : '−') +
+                fmt(Math.abs(parts[i]), 2) + '</b> ' + GROUP_LABELS[i]).join(' · ')
+            : 'nessun ingresso rilevante';
+        }
+      }
+
+      function drawThinkMap() {
+        const { c, w } = fitCanvas(el.thinkMap);
+        const s = w / 9;
+        c.clearRect(0, 0, w, w);
+        c.fillStyle = colors.board;
+        c.fillRect(0, 0, w, w);
+        if (!think.valid || state.mode === 'manual') {
+          c.strokeStyle = colors.line;
+          c.strokeRect(0.5, 0.5, w - 1, w - 1);
+          return;
+        }
+        for (let j = 0; j < 9; j++) {
+          for (let i = 0; i < 9; i++) {
+            const code = think.snap[j * 9 + i];
+            const x = i * s + 1;
+            const y = j * s + 1;
+            c.globalAlpha = 1;
+            if (code === 1) { c.fillStyle = colors.danger; c.fillRect(x, y, s - 2, s - 2); }
+            else if (code === 2) { c.fillStyle = colors.food; c.fillRect(x, y, s - 2, s - 2); }
+            else if (code === 3) { c.fillStyle = colors.snake; c.fillRect(x, y, s - 2, s - 2); }
+            else {
+              c.fillStyle = colors.s2;
+              c.fillRect(x, y, s - 2, s - 2);
+              if (code === 4) {
+                c.strokeStyle = colors.danger;
+                c.setLineDash([2, 2]);
+                c.strokeRect(x + 1.5, y + 1.5, s - 5, s - 5);
+                c.setLineDash([]);
+              }
+            }
+          }
+        }
+        // testa al centro (4,4)
+        c.fillStyle = colors.head;
+        c.fillRect(4 * s + 1, 4 * s + 1, s - 2, s - 2);
+        // le 3 caselle candidate: sinistra (3,4), dritto (4,3), destra (5,4)
+        const cand = [[3, 4], [4, 3], [5, 4]];
+        c.font = '700 ' + Math.max(9, s * 0.55) + 'px ' + colors.mono;
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        cand.forEach((p, k) => {
+          const chosen = k === think.chosen;
+          c.strokeStyle = chosen ? colors.accent : colors.text2;
+          c.lineWidth = chosen ? 3 : 1.25;
+          c.strokeRect(p[0] * s + 1.5, p[1] * s + 1.5, s - 3, s - 3);
+          c.fillStyle = chosen ? colors.accent : colors.text2;
+          c.fillText(OPT_META[k].arrow, (p[0] + 0.5) * s, (p[1] + 0.52) * s);
+        });
+      }
+
+      /* ======================= Disegno: tabellone ======================= */
+
+      function resizeBoard() {
+        const size = Math.max(1, Math.floor(wrap.getBoundingClientRect().width));
+        const dpr = Math.min(window.devicePixelRatio || 1, 3);
+        const px = Math.round(size * dpr);
+        if (canvas.width !== px) { canvas.width = px; canvas.height = px; }
+        if (buf.width !== px) { buf.width = px; buf.height = px; }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        boardPrimed = false;
+        viewSize = size;
+        cell = size / COLS;
+      }
+
+      let boardPrimed = false;
+      function composite(dt) {
+        const tau = SMOOTH_TAU[effSpeed()] || 0;
+        const a = !boardPrimed || !tau ? 1 : 1 - Math.exp(-dt / tau);
+        screenCtx.globalAlpha = a;
+        screenCtx.drawImage(buf, 0, 0);
+        screenCtx.globalAlpha = 1;
+        boardPrimed = true;
+      }
+
+      function draw() {
+        if (!colors || !cell) return;
+        const now = state.clock;
+        const gap = cell >= 5 ? 1 : 0.5;
+        const sz = cell - gap;
+
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = colors.board;
+        ctx.fillRect(0, 0, viewSize, viewSize);
+
+        ctx.fillStyle = colors.grid;
+        for (let y = 0; y <= ROWS; y += 10) {
+          for (let x = 0; x <= COLS; x += 10) ctx.fillRect(x * cell - 1, y * cell - 1, 2, 2);
+        }
+
+        ctx.fillStyle = colors.trail;
+        for (const t of state.trail) {
+          const a = now - t.at;
+          const x = (t.idx % COLS) * cell;
+          const y = ((t.idx / COLS) | 0) * cell;
+          if (a < TRAIL_DELAY) {
+            ctx.globalAlpha = 0.08 + 0.2 * (a / TRAIL_DELAY);
+            const s = cell * 0.4;
+            ctx.fillRect(x + (cell - s) / 2, y + (cell - s) / 2, s, s);
+          } else if (a < TRAIL_DELAY + TRAIL_WINDOW) {
+            const k = (a - TRAIL_DELAY) / TRAIL_WINDOW;
+            ctx.globalAlpha = 0.4 * (1 - k);
+            const s = cell * (1 + k * 1.6);
+            ctx.fillRect(x + (cell - s) / 2, y + (cell - s) / 2, s, s);
+          }
+        }
+
+        const young = new Path2D();
+        const old = new Path2D();
+        ctx.fillStyle = colors.food;
+        for (let i = 0; i < N; i++) {
+          const x = (i % COLS) * cell + gap / 2;
+          const y = ((i / COLS) | 0) * cell + gap / 2;
+          if (life[i]) {
+            (age[i] < 2 ? young : old).rect(x, y, sz, sz);
+          } else {
+            const a = now - corpseAt[i];
+            if (a < corpseMs) {
+              ctx.globalAlpha = a < 200 ? 0.6 + 0.4 * (a / 200) : 1 - 0.65 * ((a - 200) / (corpseMs - 200));
+              ctx.fillRect(x, y, sz, sz);
+            }
+          }
+        }
+        ctx.fillStyle = colors.danger;
+        ctx.globalAlpha = 1;
+        ctx.fill(old);
+        ctx.globalAlpha = 0.55;
+        ctx.fill(young);
+        ctx.globalAlpha = 1;
+
+        drawSnake();
+
+        ctx.fillStyle = colors.food;
+        for (const p of state.particles) {
+          ctx.globalAlpha = Math.max(0, p.life / p.max);
+          ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3);
+        }
+        ctx.globalAlpha = 1;
+
+        if (state.hover && !state.painting) {
+          const cells = PREVIEW[state.brush];
+          const o = patternOrigin(cells, state.hover.x, state.hover.y);
+          ctx.globalAlpha = 0.6;
+          ctx.strokeStyle = colors.danger;
+          ctx.lineWidth = 1;
+          for (const c of cells) {
+            const x = (((o.x + c[0]) % COLS) + COLS) % COLS;
+            const y = (((o.y + c[1]) % ROWS) + ROWS) % ROWS;
+            ctx.strokeRect(x * cell + 0.5, y * cell + 0.5, cell - 1, cell - 1);
+          }
+          ctx.globalAlpha = 1;
+        }
+      }
+
+      function drawSnake() {
+        const s = state.snake;
+        if (!s.length) return;
+        let alpha = 1;
+        let body = colors.snake;
+        let headC = colors.head;
+        if (!state.alive) {
+          if (state.deathCause !== 'time') { body = colors.danger; headC = colors.danger; }
+          if (!state.over) {
+            const span = Math.max(1, state.respawnAt - state.deathAt);
+            alpha = Math.max(0, 1 - (state.clock - state.deathAt) / span);
+          }
+        }
+        const head = s[0];
+        const hx = (head.x + 0.5) * cell;
+        const hy = (head.y + 0.5) * cell;
+        ctx.fillStyle = body;
+        ctx.globalAlpha = 0.14 * alpha;
+        ctx.beginPath();
+        ctx.arc(hx, hy, cell * 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = alpha;
+        for (let i = s.length - 1; i >= 1; i--) {
+          ctx.fillRect(s[i].x * cell + 0.3, s[i].y * cell + 0.3, cell - 0.6, cell - 0.6);
+        }
+        const big = cell * 1.6;
+        ctx.fillStyle = headC;
+        ctx.fillRect(hx - big / 2, hy - big / 2, big, big);
+        if (big >= 7) {
+          // occhi: mostrano dove guarda
+          const d = state.dir;
+          const px = -d.y;
+          const py = d.x;
+          ctx.fillStyle = colors.board;
+          for (const side of [-1, 1]) {
+            ctx.beginPath();
+            ctx.arc(hx + d.x * big * 0.2 + px * side * big * 0.22, hy + d.y * big * 0.2 + py * side * big * 0.22, big * 0.13, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      /* ======================= Ciclo ======================= */
+
+      let lastFrame = performance.now();
+      let lastSub = 0;
+      let lastHud = 0;
+
+      function simulate(budget, single) {
+        const t0 = performance.now();
+        while (budget > 0) {
+          const sub = Math.min(budget, single ? budget : 20);
+          budget -= sub;
+          state.clock += sub;
+
+          state.lifeAcc += sub;
+          while (state.lifeAcc >= LIFE_MS) {
+            state.lifeAcc -= LIFE_MS;
+            evolveLife();
+          }
+
+          if (!state.alive && !state.over && state.clock >= state.respawnAt) respawn();
+
+          if (state.alive) {
+            state.acc += sub;
+            let tick = getTick();
+            while (state.acc >= tick && state.alive) {
+              state.acc -= tick;
+              step();
+              tick = getTick();
+              if (single) break;
+            }
+          }
+
+          const horizon = TRAIL_DELAY + TRAIL_WINDOW;
+          while (state.trail.length && state.clock - state.trail[0].at > horizon) state.trail.shift();
+
+          if (performance.now() - t0 > 28) break;
+        }
+      }
+
+      function loop(now) {
+        const dt = Math.min(100, Math.max(0, now - lastFrame));
+        lastFrame = now;
+        if (state.running && cell > 0) simulate(dt * effSpeed(), false);
+
+        if (state.particles.length) {
+          state.particles = state.particles.filter((p) => {
+            p.life -= dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            return p.life > 0;
+          });
+        }
+
+        // numeri del pannello aggiornati al massimo 4 volte al secondo
+        if (state.hudDirty && now - lastHud > 250) { updateHud(); lastHud = now; }
+        if (now - lastSub > 500) { updateLearnSub(); lastSub = now; }
+        if (state.running) renderThink(false);
+        draw();
+        composite(dt);
+        requestAnimationFrame(loop);
+      }
+
+      /* ======================= Input ======================= */
+
+      const KEY_DIRS = {
+        ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
+        w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0]
+      };
+
+      document.addEventListener('keydown', (e) => {
+        if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+        if ($('real').open || !$('explain').hidden) return;
+        if (e.target instanceof HTMLInputElement) return;
+        if (e.key === ' ' || e.key === 'Spacebar') {
+          const btn = e.target instanceof Element ? e.target.closest('button') : null;
+          if (btn) return;
+          e.preventDefault();
+          togglePlay();
+          return;
+        }
+        const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+        if (KEY_DIRS[key]) { e.preventDefault(); setDir(KEY_DIRS[key][0], KEY_DIRS[key][1]); return; }
+        if (key === 'r') resetWorld();
+        else if (key === 'c') clearWorld();
+        else if (key === 'f') toggleFullscreen();
+        else if (key === 'n' || key === '.') stepOnce();
+        else if (key === 'm') $('sound-toggle').click();
+        else if ('1234'.includes(key) && state.mode !== 'manual') setSpeed([1, 4, 16, 64][Number(key) - 1]);
+      });
+
+      function eventCell(e) {
+        const r = canvas.getBoundingClientRect();
+        return {
+          x: Math.min(COLS - 1, Math.max(0, Math.floor(((e.clientX - r.left) / r.width) * COLS))),
+          y: Math.min(ROWS - 1, Math.max(0, Math.floor(((e.clientY - r.top) / r.height) * ROWS)))
+        };
+      }
+
+      function paintLine(a, b) {
+        let x0 = a.x;
+        let y0 = a.y;
+        const dx = Math.abs(b.x - x0);
+        const dy = -Math.abs(b.y - y0);
+        const sx = x0 < b.x ? 1 : -1;
+        const sy = y0 < b.y ? 1 : -1;
+        let err = dx + dy;
+        for (let g = 0; g < 400; g++) {
+          setCell(x0, y0);
+          if (x0 === b.x && y0 === b.y) break;
+          const e2 = 2 * err;
+          if (e2 >= dy) { err += dy; x0 += sx; }
+          if (e2 <= dx) { err += dx; y0 += sy; }
+        }
+      }
+
+      function afterPaint() {
+        state.holdUntil = state.clock + HOLD_MS;
+        computePrediction();
+        state.hudDirty = true;
+      }
+
+      wrap.addEventListener('pointerdown', (e) => {
+        if (e.button > 0 || e.target.closest('.screen-overlay')) return;
+        const c = eventCell(e);
+        stampPattern(PATTERNS[state.brush](), c.x, c.y);
+        state.painting = c;
+        afterPaint();
+        playTone('place');
+        try { wrap.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
+      });
+
+      wrap.addEventListener('pointermove', (e) => {
+        const c = eventCell(e);
+        if (state.painting) {
+          if (c.x !== state.painting.x || c.y !== state.painting.y) {
+            paintLine(state.painting, c);
+            state.painting = c;
+            afterPaint();
+          }
+        } else if (e.pointerType === 'mouse') {
+          state.hover = c;
+        }
+      });
+
+      const endPaint = () => { state.painting = null; };
+      wrap.addEventListener('pointerup', endPaint);
+      wrap.addEventListener('pointercancel', endPaint);
+      wrap.addEventListener('pointerleave', () => { state.hover = null; });
+
+      $('btn-play').addEventListener('click', togglePlay);
+      $('btn-step').addEventListener('click', stepOnce);
+      $('overlay-action').addEventListener('click', togglePlay);
+      $('btn-reset').addEventListener('click', resetWorld);
+      $('btn-clear').addEventListener('click', clearWorld);
+      $('btn-ref').addEventListener('click', pinReference);
+      $('btn-csv').addEventListener('click', exportCsv);
+      $('btn-export').addEventListener('click', exportBrain);
+      $('btn-import').addEventListener('click', () => $('file-in').click());
+      $('file-in').addEventListener('change', (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (f) importBrain(f);
+        e.target.value = '';
+      });
+      $('btn-forget').addEventListener('click', () => {
+        if (window.confirm('Ricominciare da zero? La curva attuale resterà sul grafico come riferimento.')) {
+          restartLearning();
+          showSnackbar('Si riparte da cervelli casuali: confronta la nuova curva con quella tratteggiata');
+        }
+      });
+      [['r-food', 'food', 'v-food', 1], ['r-surv', 'surv', 'v-surv', 1], ['r-death', 'death', 'v-death', 0]].forEach(([id, key, out, dec]) => {
+        const input = $(id);
+        input.addEventListener('input', () => { $(out).textContent = fmt(Number(input.value), dec); });
+        input.addEventListener('change', () => changeRule(key, Number(input.value)));
+      });
+      el.curSwitch.addEventListener('click', () => {
+        evo.curriculum = !evo.curriculum;
+        saveEvo();
+        updateCurriculumText();
+      });
+      archBtns.forEach((b) => b.addEventListener('click', () => {
+        const arch = b.dataset.arch;
+        if (arch === evo.arch) return;
+        if (!window.confirm('Cambiare tipo di cervello significa ricominciare l’allenamento da zero. La curva attuale resterà come riferimento. Procedere?')) return;
+        restartLearning(arch);
+        showSnackbar('Cervello ' + ARCH[arch].name.toLowerCase() + ': si riparte da zero');
+      }));
+      $('theme-toggle').addEventListener('click', () => {
+        setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+      });
+      $('sound-toggle').addEventListener('click', () => {
+        soundOn = !soundOn;
+        store.set(LS.sound, soundOn ? '1' : '0');
+        updateSoundIcon();
+        if (soundOn) { ensureAudio(); tone(600, 0.07, 'triangle', 0.05); }
+      });
+
+      const fsBtn = $('fs-toggle');
+      if (!(document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen)) fsBtn.hidden = true;
+      fsBtn.addEventListener('click', toggleFullscreen);
+      const onFs = () => {
+        $('fs-icon').textContent = (document.fullscreenElement || document.webkitFullscreenElement) ? 'fullscreen_exit' : 'fullscreen';
+      };
+      document.addEventListener('fullscreenchange', onFs);
+      document.addEventListener('webkitfullscreenchange', onFs);
+
+      modeBtns.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+      speedBtns.forEach((b) => b.addEventListener('click', () => setSpeed(Number(b.dataset.speed))));
+      brushBtns.forEach((b) => b.addEventListener('click', () => {
+        state.brush = b.dataset.brush;
+        brushBtns.forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      }));
+
+      const dirMap = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+      document.querySelectorAll('.dpad button').forEach((b) => {
+        b.addEventListener('click', () => setDir(dirMap[b.dataset.dir][0], dirMap[b.dataset.dir][1]));
+      });
+
+      document.addEventListener('visibilitychange', () => { lastFrame = performance.now(); });
+
+      const onResize = () => { resizeBoard(); drawChart(); drawBrain(); renderThink(true); };
+
+      // Sceglie l'impaginazione: dashboard bloccata 1600×900 scalata (schermi orizzontali larghi)
+      // oppure pagina a scorrimento (telefono, tablet in verticale, finestre strette).
+      const DESIGN_W = 1600;
+      const DESIGN_H = 900;
+      function applyFit() {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const fit = vw >= 900 && vw / vh >= 1.2;
+        document.documentElement.classList.toggle('fit', fit);
+        const stats = $('stats');
+        if (fit && stats.parentElement !== $('bar-slot')) $('bar-slot').appendChild(stats);
+        if (!fit && stats.parentElement !== $('panel')) $('panel').insertBefore(stats, $('panel').firstChild);
+        if (fit) {
+          const k = Math.min(vw / DESIGN_W, vh / DESIGN_H);
+          uiScale = k;
+          shell.style.setProperty('--k', String(k));
+          shell.style.setProperty('--tx', ((vw - DESIGN_W * k) / 2) + 'px');
+          shell.style.setProperty('--ty', ((vh - DESIGN_H * k) / 2) + 'px');
+        } else {
+          uiScale = 1;
+          shell.style.removeProperty('--k');
+          shell.style.removeProperty('--tx');
+          shell.style.removeProperty('--ty');
+        }
+        onResize();
+      }
+      window.addEventListener('resize', applyFit);
+      if ('ResizeObserver' in window) {
+        const ro = new ResizeObserver(onResize);
+        ro.observe(wrap);
+        ro.observe(el.chart);
+        ro.observe(el.thinkMap);
+      }
+
+      /* ======================= Avvio ======================= */
+
+      const hadBrain = loadEvo();
+      seedWorld();
+      const savedTheme = store.get(LS.theme, null) || store.get('snakeM3.theme', null);
+      refreshColors();
+      setSpeed([1, 4, 16, 64].includes(Number(store.get(LS.speed, 1))) ? Number(store.get(LS.speed, 1)) : 1);
+      const savedMode = store.get(LS.mode, 'learn');
+      if (savedMode === 'champion' && evo.champion) {
+        state.mode = 'champion';
+        modeBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.mode === 'champion' ? 'true' : 'false'));
+      }
+      archBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.arch === evo.arch ? 'true' : 'false'));
+      renderSenseToggles();
+      updateSoundIcon();
+      applyFit();
+      respawn();
+      setTheme(savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'), false);
+      setStatus();
+      updateLearnNote();
+      updateCurriculumText();
+      updateHud();
+      setTimeout(() => showSnackbar(hadBrain
+        ? 'Bentornato: il serpente riparte dalla generazione ' + evo.gen
+        : 'Il serpente parte da zero e non sa niente: prova 16× o 64× per farlo allenare in fretta'), 500);
+      requestAnimationFrame(loop);
+
+      /* ======================= Nella realtà e Spiegami ======================= */
+
+      const real = $('real');
+      $('real-btn').addEventListener('click', () => real.showModal());
+      $('real-close').addEventListener('click', () => real.close());
+      real.addEventListener('click', (e) => { if (e.target === real) real.close(); });
+
+      function openExplainer(scena) {
+        if (real.open) real.close();
+        $('explainFrame').src = 'snake_conway_self_spiegazione.html?embed=1' + (scena ? '#' + scena : '');
+        $('explain').hidden = false;
+        $('explainClose').focus();
+      }
+      function closeExplainer() {
+        $('explain').hidden = true;
+        $('explainFrame').src = 'about:blank';   // ferma l'animazione
+      }
+      $('explainClose').addEventListener('click', closeExplainer);
+      $('explain').addEventListener('click', (e) => { if (e.target.id === 'explain') closeExplainer(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('explain').hidden) closeExplainer(); });
+      window.addEventListener('message', (e) => {
+        if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-finita') setTimeout(closeExplainer, 1500);
+      });
+      document.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-explain]');
+        if (b) openExplainer(b.dataset.explain);
+      });
+    })();
+  </script>
+</body>
+</html>
