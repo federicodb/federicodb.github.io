@@ -10,3 +10,9 @@ Ogni voce: data, decisione, motivo.
 - **Tag `pre-riorganizzazione-2026-10-30`** (annotato) su `b3a7835`, ultimo commit di `master` prima della riorganizzazione.
 - **Lavoro solo sul ramo `riorganizzazione`**, creato da `master` a `b3a7835`.
 - **I file in `docs/` vanno aggiunti con `git add -f`**: `.gitignore` esclude `*.md`.
+
+## 2026-10-30 — Correzioni prima della Fase 1
+
+- **`sqrt2_is_irrational.html`: i pulsanti Zoom In/Zoom Out davano errore** perché le funzioni venivano assegnate a `controls` prima che `init()` lo creasse. Le assegnazioni sono state spostate dentro `init()`, con la stessa logica di zoom.
+- **Rimosso `polyfill.io`** da `attrattori_001_dec25.html` e `math_underground003_4el.html`. Motivo: il dominio è stato compromesso nel 2024 (serviva codice malevolo) e oggi i browser lo bloccano. MathJax 3 non ne ha bisogno: dopo la rimozione si carica come prima.
+- **`.nojekyll` rimandato alla Fase 2.** Aggiungerlo cambierebbe la pubblicazione dei file `.md` e di quelli che iniziano con `_`, che sono già online.

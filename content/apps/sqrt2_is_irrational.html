@@ -283,6 +283,12 @@
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.target.set(0, 4, 0);
+            controls.zoomIn = function() {
+                camera.position.lerp(controls.target, 0.1);
+            };
+            controls.zoomOut = function() {
+                camera.position.add(camera.position.clone().sub(controls.target).multiplyScalar(0.1));
+            };
 
             window.addEventListener('resize', onResize);
         }
@@ -336,13 +342,6 @@
                 btn.classList.remove('active');
             }
         }
-
-        controls.zoomIn = function() {
-            camera.position.lerp(controls.target, 0.1);
-        };
-        controls.zoomOut = function() {
-            camera.position.add(camera.position.clone().sub(controls.target).multiplyScalar(0.1));
-        };
 
         function updateTree() {
             if(treeMesh) {
