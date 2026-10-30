@@ -37,3 +37,11 @@ Ogni voce: data, decisione, motivo.
 - **Le pagine d'argomento sono generate dai dati**, ordinate per formato (spiega → allena → sfida).
 - **Il Diario di bordo entra nell'architettura**: articoli Markdown in `content/diario/`, convertiti in HTML statico dal build; immagini ricompresse e ripulite dai metadati EXIF. Gli articoli puntano alle attività per `id` stabile, così non perdono senso quando l'attività cambia.
 - **Scheda minima per attività**: obbligatorio solo `url`; date, collegamenti alla Quest, spiegazioni e articoli sono calcolati.
+
+## 2026-10-30 — Fase 2, revisione 4 (nuovo brief: laboratorio artigianale)
+
+- **Non si parte più dai ruoli, ma da tag liberi e viste generate.** Le revisioni 1-3 sono superate.
+- **I tag delle viste sono solo quelli scritti dall'autore** (campo `tag`). Motivo: oggi `database.js` ha 295 tag diversi, 169 usati una volta, nati da keyword SEO e Gemini; generare viste da quelli produrrebbe centinaia di pagine quasi vuote. Le keyword restano per la SEO, i codici `MAT_*` per `competenze.html`.
+- **Metadati in testo semplice** (`dati/attivita.txt`, blocchi `campo: valore`) invece di JSON: niente virgolette e virgole da sbagliare, nessuna libreria. Le app nuove possono descriversi da sole nel `<head>`; se un dato è in entrambi i posti, vince il file.
+- **"Più usate" non si fa**: richiederebbe statistiche d'uso, che il sito non raccoglie (scelta di privacy).
+- **Raccomandata l'alternativa 2** (una pagina `attivita/` con HTML completo e filtri nel browser), perché riusa ciò che la home già fa (`UIManager.js`) e permette filtri combinati. È reversibile verso l'alternativa 1 senza toccare i dati.
