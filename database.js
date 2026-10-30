@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-29 21:57:07
+   Data: 2026-10-30 09:11:19
 */
 
 const db = [
@@ -792,70 +792,6 @@ const db = [
         ]
     },
     {
-        "title": "PixelGrid",
-        "excerpt": "Applicazione di Game Theory all'analisi delle radici nelle equazioni di secondo grado, esplorando l'ottimizzazione e le strategie dominanti.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "ALGEBRA",
-            "EQUAZIONI DI SECONDO GRADO",
-            "FATTORIZZAZIONE",
-            "G",
-            "ITA",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "MODELLIZZAZIONE",
-            "PARABOLA",
-            "POLINOMI",
-            "PRODOTTI NOTEVOLI",
-            "QUADRATICHE",
-            "SCOMPOSIZIONE"
-        ],
-        "date": "2026-08-26",
-        "url": "content/apps/eq_2_gr_teoria_giochi_01.html",
-        "type": "app",
-        "icon": "🧱",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/eq_2_gr_teoria_giochi_01.webp",
-        "allenamento": [
-            {
-                "id": "prodotti-notevoli",
-                "titolo": "Prodotti notevoli",
-                "url": "allenamento/#/lezione/prodotti-notevoli/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            }
-        ]
-    },
-    {
         "title": "Challenge: Scomposizione di Polinomi (PRO)",
         "excerpt": "Versione PRO della sfida 3D sui polinomi: Ghost Target, X-Ray mode e variabili dinamiche.",
         "tags": [
@@ -1331,63 +1267,6 @@ const db = [
                 "id": "aree-perimetri",
                 "titolo": "Aree e perimetri",
                 "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "Lissajous Curves 3D",
-        "excerpt": "Esplorazione interattiva delle curve di Lissajous in 2D e 3D. Simulatore matematico con morphing sferico e decadimento visivo.",
-        "tags": [
-            "3D",
-            "DIDATTICA",
-            "FISICA",
-            "GEOMETRIA",
-            "LABORATORIO",
-            "LISSAJOUS",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "ONDE",
-            "OSCILLAZIONI",
-            "WEBGL"
-        ],
-        "date": "2026-04-21",
-        "url": "content/apps/lissajous_curves_01.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/lissajous_curves_01.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
                 "mat": [
                     "MAT_K3"
                 ]
