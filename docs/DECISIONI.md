@@ -22,3 +22,10 @@ Ogni voce: data, decisione, motivo.
 - **Nessuno spostamento di file nella riorganizzazione.** La struttura Studenti/Docenti/Laboratorio vive nei metadati e nelle pagine indice, quindi non servono stub di redirect. Motivo: gli URL attuali sono in QR code, Classroom e materiali stampati.
 - **Niente `.nojekyll` (proposta D5).** `laboratoriomatematicoOrfini.html` e `tools/report_finale.html` esistono solo perché Jekyll trasforma i `.md`: con `.nojekyll` darebbero 404 (verificato con HTTP sul sito pubblico).
 - **`index.html?tag=` va conservato**: lo usano 9 link di `scuola.html` e la Mappa 3D. `UIManager.js` lo legge come ricerca testuale.
+
+## 2026-10-30 — Fase 2, revisione 2 (indicazioni del docente)
+
+- **Il sito è prima di tutto uno strumento operativo per gli studenti.** Niente sezione "Docenti": i colleghi, formati nelle sessioni di formazione, usano la pagina Attività con i filtri. Verifiche, Competenze e Scuola passano nel piè di pagina e in "Chi sono".
+- **Nessuna etichetta di classe o di livello visibile allo studente.** Motivo: con le quarte capita di proporre attività da prima o da seconda, e nessuno deve sentirsi mortificato. La classe resta nel campo `programma`, usato solo dal filtro docenti (chiuso per impostazione predefinita). Oggi le schede della home la mostrano (`UIManager.js:353`): nella nuova pagina non ci sarà.
+- **Percorsi per argomento, in tre momenti neutri** (Capire / Allenarsi / Mettersi alla prova) invece di livelli. "Algebra del biennio" diventa "Polinomi e scomposizioni".
+- **Codici classe**: GP = Grafica, MA = Manutenzione (da confermare).
