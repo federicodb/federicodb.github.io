@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Frazionarie e sistemi in un minuto</title>
+<meta name="description" content="Animazione di un minuto: disequazioni frazionarie e sistemi di disequazioni a confronto, regola dei segni contro intersezione, e il tutor che porta alla forma normale (Orfini Math Lab).">
+<script>
+  try { if (localStorage.getItem('orfini_theme') === 'light') document.documentElement.dataset.tema = 'chiaro'; } catch (err) { /* storage non disponibile */ }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Stessa grafica dell'app: nero AMOLED, ciano = soluzione, verde = positivo, rosa = negativo */
+:root{ --r-m:14px; --r-l:20px; --sans:'Inter',system-ui,-apple-system,sans-serif; --mono:'Space Mono',ui-monospace,monospace;
+  color-scheme:dark; --bg:#050507; --surface:hsl(240,6%,8%); --surface-2:hsl(240,6%,12%); --surface-3:hsl(240,6%,17%);
+  --line:hsl(240,5%,17%); --line-strong:hsl(240,5%,30%); --text:hsl(0,0%,92%); --text-2:hsl(0,0%,66%);
+  --accent:hsl(190,95%,55%); --on-accent:#050507; --accent-soft:hsla(190,95%,55%,.12); --sol:hsl(190,95%,55%);
+  --pos:hsl(155,85%,48%); --neg:hsl(330,85%,66%); --warn:hsl(45,100%,58%); --grid:hsl(240,5%,13%); --axis:hsl(240,4%,46%); }
+:root[data-tema="chiaro"]{ color-scheme:light; --bg:#f6f8fb; --surface:#ffffff; --surface-2:#eef2f7; --surface-3:#e2e8f0;
+  --line:#d8dee8; --line-strong:#a9b4c4; --text:#0f172a; --text-2:#475569; --accent:hsl(195,90%,30%); --on-accent:#ffffff;
+  --accent-soft:hsla(195,90%,30%,.1); --sol:hsl(195,90%,34%); --pos:hsl(155,75%,27%); --neg:hsl(335,70%,43%); --warn:hsl(38,95%,32%);
+  --grid:#e3e8ef; --axis:#64748b; }
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--on-accent)}
+.wrap{max-width:1080px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text-2);text-decoration:none;font:500 14px var(--sans)}
+.back:hover{color:var(--text);border-color:var(--line-strong)}
+header{display:flex;flex-direction:column;gap:8px}
+h1{font:700 clamp(28px,4.6vw,44px)/1.1 var(--sans);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--text-2);font-size:17px}
+.screen{border-radius:var(--r-l);padding:8px;background:var(--surface);border:1px solid var(--line)}
+canvas{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--r-m);background:var(--bg);cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:600 15px var(--sans);cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--accent)}
+.play{min-width:120px;background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.speed{min-width:64px;font-family:var(--mono);font-size:14px}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,.back:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:12px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:28px}
+.time{font:13px var(--mono);color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{min-height:40px;font:500 14px var(--sans);color:var(--text-2);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.chap::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chap:hover{color:var(--text);border-color:var(--line-strong)}
+.chap[aria-current="true"]{background:var(--accent-soft);color:var(--text);border-color:var(--accent)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.1vw,20px);line-height:1.5;max-width:70ch;text-wrap:pretty}
+.caption b{font-weight:700;color:var(--sol)}
+.hint{font-size:13px;color:var(--text-2);margin:0}
+section.tx{border-top:1px solid var(--line);padding-top:24px;margin-top:8px;display:flex;flex-direction:column;gap:16px}
+section.tx h2{font:700 22px/1.3 var(--sans);margin:0}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 28px}
+.txlist li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ts{align-self:flex-start;font:500 12px var(--mono);color:#050507;background:var(--c);border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.txlist strong{font-weight:700;font-size:17px}
+.txlist p{margin:0;color:var(--text-2);max-width:60ch}
+.txlist p b{color:var(--text)}
+.embed .back,.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:16px;padding-right:44px}
+@media (max-width:560px){.btn{padding:0 14px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="https://federicodb.github.io/index.html">← Orfini Math Lab</a>
+  <header>
+    <h1>Frazionarie e sistemi in un minuto</h1>
+    <p class="lead">Una frazione e un sistema costruiti con gli stessi polinomi danno spesso soluzioni diverse. Ecco perché: regola dei segni da una parte, intersezione dall'altra.</p>
+  </header>
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: disequazione frazionaria, sistema, confronto tra le due regole e tutor"></canvas>
+  </div>
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn speed" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="64" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:04</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare.</p>
+  <a class="btn cta" style="align-self:flex-start" href="https://federicodb.github.io/content/apps/disequazioni_frazionarie_vs_sistemi.html">Apri il laboratorio</a>
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 64;
+const SANS = "Inter,system-ui,sans-serif", MONO = "'Space Mono',ui-monospace,monospace";
+let C = {};
+function leggiColori() {
+  const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
+  C = { bg: g('--bg'), s1: g('--surface'), s2: g('--surface-2'), s3: g('--surface-3'), text: g('--text'), text2: g('--text-2'), line: g('--line'), lineS: g('--line-strong'),
+    acc: g('--accent'), accSoft: g('--accent-soft'), sol: g('--sol'), pos: g('--pos'), neg: g('--neg'), warn: g('--warn'), grid: g('--grid'), axis: g('--axis') };
+}
+leggiColori();
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: 'hsl(190,95%,55%)',
+    cap: 'Una disequazione frazionaria e un sistema con gli stessi pezzi <b>sembrano uguali, ma non lo sono</b>.' },
+  { id: 'fraz', label: 'Frazionaria', a: 5, b: 20, c: 'hsl(190,95%,55%)',
+    cap: '(x − 1)/(x + 2) &gt; 0. Si studia dove è positivo il numeratore (x &gt; 1) e dove il denominatore (x &gt; −2), poi la <b>regola dei segni</b>: concordi danno +, discordi −. Soluzione: <b>x &lt; −2 ∨ x &gt; 1</b>, con −2 escluso perché lì il denominatore vale zero.' },
+  { id: 'sist', label: 'Sistema', a: 20, b: 32, c: 'hsl(155,85%,48%)',
+    cap: 'Nel sistema x − 1 &gt; 0 e x + 2 &gt; 0 devono essere <b>vere tutte e due nello stesso punto</b>: si prende l\'intersezione. Soluzione: <b>x &gt; 1</b>.' },
+  { id: 'confronto', label: 'Confronto', a: 32, b: 46, c: 'hsl(45,100%,58%)',
+    cap: 'Stessi capisaldi, risultati diversi. Prova x = −3: N = −4 e D = −1, il quoziente vale 4 &gt; 0 e la frazione è vera; il sistema invece è falso, perché −4 non è positivo. <b>Due negativi danno un quoziente positivo</b>.' },
+  { id: 'tutor', label: 'Tutor', a: 46, b: 59, c: 'hsl(330,85%,66%)',
+    cap: 'Il Tutor ti guida verso la forma normale: scomponi, trova il m.c.m., calcola il numeratore. Occhio al <b>meno davanti alla parentesi</b>: 3 − (x − 1) fa 4 − x, non 2 − x.' },
+  { id: 'end', label: 'Riepilogo', a: 59, b: 64, c: 'hsl(190,95%,55%)',
+    cap: 'Frazione: <b>regola dei segni</b>. Sistema: <b>intersezione</b>. Stessi capisaldi, regole diverse.' }
+];
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 4);
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || 400} ${size}px ${o.f || SANS}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col; ctx.fillText(s, x, y);
+}
+function show(p, fn, dy = 10) {
+  if (p <= 0) return;
+  const keep = BASE; BASE = keep * p; A(1);
+  ctx.save(); ctx.translate(0, (1 - eo(p)) * dy); fn(); ctx.restore();
+  BASE = keep; A(1);
+}
+function arrow(x1, y1, x2, y2, col, w = 4) {
+  const d = Math.hypot(x2 - x1, y2 - y1); if (d < 2) return;
+  const ux = (x2 - x1) / d, uy = (y2 - y1) / d, h = Math.min(16, d * .6);
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux * h * .8, y2 - uy * h * .8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - ux * h - uy * h * .6, y2 - uy * h + ux * h * .6); ctx.lineTo(x2 - ux * h + uy * h * .6, y2 - uy * h - ux * h * .6); ctx.closePath(); ctx.fill();
+}
+function chip(sc) {
+  ctx.font = `600 22px ${SANS}`; const w = ctx.measureText(sc.label).width + 58;
+  rr(32, 28, w, 46, 12); ctx.fillStyle = C.s2; ctx.fill();
+  circ(56, 51, 6); ctx.fillStyle = sc.c; ctx.fill(); T(sc.label, 72, 52, 22, C.text, { al: 'left', w: 600 });
+}
+function card(x, y, w, h, fill, bordo) { rr(x, y, w, h, 18); ctx.fillStyle = fill || C.s1; ctx.fill(); if (bordo) { ctx.strokeStyle = bordo; ctx.lineWidth = 3; ctx.stroke(); } }
+
+/* Piano cartesiano: px,py,pw,ph in pixel; xr,yr intervalli del mondo */
+function piano(px, py, pw, ph, xr, yr) {
+  const X = x => px + (x - xr[0]) / (xr[1] - xr[0]) * pw;
+  const Y = y => py + ph - (y - yr[0]) / (yr[1] - yr[0]) * ph;
+  return { X, Y, px, py, pw, ph, xr, yr };
+}
+function assi(m, numeri = true, passo = 1) {
+  ctx.save(); rr(m.px, m.py, m.pw, m.ph, 14); ctx.clip();
+  ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.beginPath();
+  for (let x = Math.ceil(m.xr[0] / passo) * passo; x <= m.xr[1]; x += passo) { ctx.moveTo(m.X(x), m.py); ctx.lineTo(m.X(x), m.py + m.ph); }
+  for (let y = Math.ceil(m.yr[0] / passo) * passo; y <= m.yr[1]; y += passo) { ctx.moveTo(m.px, m.Y(y)); ctx.lineTo(m.px + m.pw, m.Y(y)); }
+  ctx.stroke();
+  ctx.strokeStyle = C.axis; ctx.lineWidth = 2; ctx.beginPath();
+  ctx.moveTo(m.px, m.Y(0)); ctx.lineTo(m.px + m.pw, m.Y(0));
+  if (m.xr[0] < 0 && m.xr[1] > 0) { ctx.moveTo(m.X(0), m.py); ctx.lineTo(m.X(0), m.py + m.ph); }
+  ctx.stroke();
+  ctx.restore();
+  if (numeri) for (let x = Math.ceil(m.xr[0]); x <= m.xr[1]; x++) if (x !== 0 && m.X(x) > m.px + 12 && m.X(x) < m.px + m.pw - 12) T(String(x).replace('-', '−'), m.X(x), m.Y(0) + 22, 20, C.text2, { f: MONO });
+}
+/* Curva disegnata fino alla frazione p; dove sol(x) è vera usa il colore della soluzione */
+function curva(m, f, p, sol, colBase) {
+  const N = 160, x0 = m.xr[0], x1 = x0 + (m.xr[1] - x0) * p;
+  ctx.save(); rr(m.px, m.py, m.pw, m.ph, 14); ctx.clip();
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  let prev = null;
+  for (let i = 0; i <= N; i++) {
+    const x = x0 + (x1 - x0) * i / N, pt = [m.X(x), m.Y(f(x))];
+    if (prev) {
+      const s = sol && sol((x + prev.x) / 2);
+      ctx.strokeStyle = s ? C.sol : (colBase || C.text); ctx.lineWidth = s ? 6 : 3.5; A(s || !sol ? 1 : .55);
+      ctx.beginPath(); ctx.moveTo(prev.pt[0], prev.pt[1]); ctx.lineTo(pt[0], pt[1]); ctx.stroke(); A(1);
+    }
+    prev = { x, pt };
+  }
+  ctx.restore();
+}
+/* Banda della soluzione sull'asse x tra a e b (±Infinity = fino al bordo, con freccia) */
+function banda(m, a, b, p = 1) {
+  const L = Math.max(m.px + 4, m.X(Math.max(a, m.xr[0]))), R0 = Math.min(m.px + m.pw - 4, m.X(Math.min(b, m.xr[1])));
+  const R = L + (R0 - L) * p, y = m.Y(0);
+  ctx.strokeStyle = C.sol; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(R, y); ctx.stroke();
+  ctx.fillStyle = C.sol;
+  if (a === -Infinity) { ctx.beginPath(); ctx.moveTo(m.px - 2, y); ctx.lineTo(m.px + 16, y - 11); ctx.lineTo(m.px + 16, y + 11); ctx.fill(); }
+  if (b === Infinity && p >= 1) { ctx.beginPath(); ctx.moveTo(m.px + m.pw + 2, y); ctx.lineTo(m.px + m.pw - 16, y - 11); ctx.lineTo(m.px + m.pw - 16, y + 11); ctx.fill(); }
+}
+function punto(m, x, pieno, col) {
+  circ(m.X(x), m.Y(0), 9); ctx.fillStyle = pieno ? col : C.bg; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 3.5; ctx.stroke();
+}
+/* Frazione disegnata a mano */
+function frazione(num, den, x, y, size, col, al = 'center') {
+  ctx.font = `600 ${size}px ${MONO}`;
+  const w = Math.max(ctx.measureText(num).width, ctx.measureText(den).width) + 16;
+  const cx = al === 'left' ? x + w / 2 : x;
+  T(num, cx, y - size * .62, size, col, { f: MONO, w: 600 }); T(den, cx, y + size * .68, size, col, { f: MONO, w: 600 });
+  ctx.fillStyle = col; ctx.fillRect(cx - w / 2, y - 1.5, w, 3);
+  return w;
+}
+
+/* ---------- tabella dei segni ---------- */
+function asseTab(xs, labs, X1, X2, y0, yFine) {
+  ctx.strokeStyle = C.axis; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X1 - 20, y0); ctx.lineTo(X2 + 6, y0); ctx.stroke();
+  arrow(X2, y0, X2 + 24, y0, C.axis, 3);
+  xs.forEach((x, i) => {
+    ctx.strokeStyle = C.lineS; ctx.lineWidth = 2; ctx.setLineDash([6, 8]); ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, yFine); ctx.stroke(); ctx.setLineDash([]);
+    T(labs[i], x, y0 - 30, 26, C.text, { f: MONO, w: 700 });
+  });
+}
+const tratti = (xs, X1, X2) => [X1, ...xs, X2].slice(0, -1).map((a, i) => [a, [...xs, X2][i]]);
+function rigaSegni(u, y, segni, bordi, ris, t0) {
+  segni.forEach((sg, k) => show(prog(u, t0 + k * .45, t0 + .4 + k * .45), () => {
+    const [a, b] = bordi[k], col = sg === '+' ? C.pos : C.neg;
+    ctx.strokeStyle = col; ctx.lineWidth = ris ? 6 : 4; if (sg === '−' && !ris) ctx.setLineDash([12, 9]);
+    ctx.beginPath(); ctx.moveTo(a + 6, y); ctx.lineTo(b - 6, y); ctx.stroke(); ctx.setLineDash([]);
+    T(sg, (a + b) / 2, y - 28, 34, col, { w: 700 });
+  }, 0));
+}
+function rigaVero(u, y, vals, bordi, col, w, t0) {
+  vals.forEach((v, k) => show(prog(u, t0 + k * .35, t0 + .35 + k * .35), () => {
+    const [a, b] = bordi[k];
+    ctx.strokeStyle = v ? col : C.line; ctx.lineWidth = v ? w : 2;
+    ctx.beginPath(); ctx.moveTo(a + 6, y); ctx.lineTo(b - 6, y); ctx.stroke();
+  }, 0));
+}
+function pallino(x, y, pieno, col) { circ(x, y, 9); ctx.fillStyle = pieno ? col : C.bg; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 3.5; ctx.stroke(); }
+function fascia(bordi, idx, y1, y2, col, a = 1) { idx.forEach(k => { const [x1, x2] = bordi[k]; A(a); rr(x1, y1, x2 - x1, y2 - y1, 12); ctx.fillStyle = col; ctx.fill(); A(1); }); }
+function graffa(x, y, righe, size, col) {
+  T('{', x, y + (righe.length - 1) * size * .7, size * 2.6, col, { w: 300 });
+  righe.forEach((r, i) => T(r, x + size * .9, y + i * size * 1.4, size, col, { al: 'left', f: MONO, w: 600 }));
+}
+function risultato(x, y, w, lab, testo, col) {
+  rr(x, y, w, 96, 18); ctx.fillStyle = C.accSoft; ctx.fill(); ctx.strokeStyle = col || C.sol; ctx.lineWidth = 2; ctx.stroke();
+  T(lab, x + 20, y + 30, 22, col || C.sol, { al: 'left', w: 700 });
+  T(testo, x + 20, y + 66, 32, col || C.sol, { al: 'left', f: MONO, w: 700 });
+}
+
+/* ---------- intro ---------- */
+function sIntro(u) {
+  show(prog(u, 0, .6), () => T('Frazionarie vs sistemi', 640, 150, 58, C.text, { w: 700 }));
+  show(prog(u, .8, 1.4), () => {
+    frazione('x − 1', 'x + 2', 370, 360, 40, C.text);
+    T('> 0', 500, 360, 40, C.text, { f: MONO, w: 700 });
+  });
+  show(prog(u, 1.6, 2.2), () => graffa(780, 320, ['x − 1 > 0', 'x + 2 > 0'], 34, C.text));
+  show(prog(u, 2.6, 3.2), () => T('≠', 640, 360, 80, C.warn, { w: 700 }));
+  show(prog(u, 3.4, 4), () => T('sembrano uguali, ma non lo sono', 640, 560, 30, C.text2));
+}
+
+/* ---------- frazionaria: regola dei segni ---------- */
+function sFraz(u) {
+  const LX = 90;
+  show(prog(u, 0, .5), () => { frazione('x − 1', 'x + 2', LX, 170, 36, C.text, 'left'); T('> 0', LX + 190, 170, 36, C.text, { al: 'left', f: MONO, w: 700 }); });
+  show(prog(u, 1.2, 1.7), () => T('N > 0  ⇔  x > 1', LX, 290, 28, C.text, { al: 'left', f: MONO }));
+  show(prog(u, 2, 2.5), () => T('D > 0  ⇔  x > −2', LX, 340, 28, C.text, { al: 'left', f: MONO }));
+  show(prog(u, 2.8, 3.3), () => T('D ≠ 0  ⇔  x ≠ −2', LX, 390, 28, C.text2, { al: 'left', f: MONO }));
+  show(prog(u, 12, 12.6), () => risultato(LX - 10, 470, 470, 'Soluzione', 'x < −2  ∨  x > 1'), 0);
+  const X1 = 690, X2 = 1200, xs = [850, 1030], bordi = tratti(xs, X1, X2);
+  show(prog(u, .4, 1), () => asseTab(xs, ['−2', '1'], X1, X2, 170, 520), 0);
+  const righe = [['N(x)', ['−', '−', '+'], 260, 3.5], ['D(x)', ['−', '+', '+'], 350, 5.5], ['N/D', ['+', '−', '+'], 450, 7.6]];
+  if (u > 9.6) show(prog(u, 9.6, 10.2), () => fascia(bordi, [0, 2], 410, 478, C.accSoft), 0);
+  righe.forEach(([lab, segni, y, t0], r) => {
+    const ris = r === 2;
+    show(prog(u, t0, t0 + .4), () => T(lab, X1 - 40, y, 28, ris ? C.sol : C.text2, { al: 'right', f: MONO, w: 700 }), 0);
+    rigaSegni(u, y, segni, bordi, ris, t0 + .2);
+  });
+  show(prog(u, 5, 5.4), () => pallino(xs[1], 260, false, C.text), 0);
+  show(prog(u, 7, 7.4), () => pallino(xs[0], 350, false, C.text), 0);
+  show(prog(u, 10.4, 10.8), () => xs.forEach(x => pallino(x, 450, false, C.sol)), 0);
+  show(prog(u, 6.8, 7.3), () => T('concordi → +   ·   discordi → −', 945, 560, 24, C.text2), 0);
+  show(prog(u, 11, 11.5), () => T('−2 escluso: il denominatore vale 0', 945, 610, 24, C.text2), 0);
+}
+
+/* ---------- sistema: intersezione ---------- */
+function sSist(u) {
+  const LX = 120;
+  show(prog(u, 0, .5), () => graffa(LX, 160, ['x − 1 > 0', 'x + 2 > 0'], 32, C.text));
+  show(prog(u, 1.2, 1.7), () => T('→  x > 1', LX + 260, 160, 28, C.text2, { al: 'left', f: MONO }));
+  show(prog(u, 1.8, 2.3), () => T('→  x > −2', LX + 260, 205, 28, C.text2, { al: 'left', f: MONO }));
+  show(prog(u, 7.6, 8.2), () => T('vere tutte e due', LX - 20, 330, 30, C.text, { al: 'left', w: 700 }), 0);
+  show(prog(u, 8, 8.6), () => T('nello stesso punto', LX - 20, 372, 30, C.text, { al: 'left', w: 700 }), 0);
+  show(prog(u, 9.4, 10), () => risultato(LX - 30, 470, 400, 'Soluzione', 'x > 1'), 0);
+  const X1 = 690, X2 = 1200, xs = [850, 1030], bordi = tratti(xs, X1, X2);
+  show(prog(u, .4, 1), () => asseTab(xs, ['−2', '1'], X1, X2, 170, 520), 0);
+  const righe = [['S₁', [false, false, true], 270, 2.6, C.pos], ['S₂', [false, true, true], 360, 4, C.pos], ['S₁ ∩ S₂', [false, false, true], 460, 5.6, C.sol]];
+  if (u > 6.6) show(prog(u, 6.6, 7.2), () => fascia(bordi, [2], 420, 500, C.accSoft), 0);
+  righe.forEach(([lab, vals, y, t0, col], r) => {
+    show(prog(u, t0, t0 + .4), () => T(lab, X1 - 40, y, 28, r === 2 ? C.sol : C.text2, { al: 'right', f: MONO, w: 700 }), 0);
+    rigaVero(u, y, vals, bordi, col, r === 2 ? 8 : 5, t0 + .2);
+  });
+  show(prog(u, 3.6, 4), () => pallino(xs[1], 270, false, C.pos), 0);
+  show(prog(u, 5, 5.4), () => pallino(xs[0], 360, false, C.pos), 0);
+  show(prog(u, 6.8, 7.2), () => pallino(xs[1], 460, false, C.sol), 0);
+}
+
+/* ---------- confronto: stessi capisaldi, due regole ---------- */
+function sConfronto(u) {
+  show(prog(u, 0, .5), () => {
+    rr(90, 110, 520, 120, 18); ctx.fillStyle = C.s1; ctx.fill();
+    T('Frazione', 116, 145, 24, C.text2, { al: 'left', w: 600 }); T('x < −2  ∨  x > 1', 116, 192, 32, C.sol, { al: 'left', f: MONO, w: 700 });
+  });
+  show(prog(u, .6, 1.1), () => {
+    rr(670, 110, 520, 120, 18); ctx.fillStyle = C.s1; ctx.fill();
+    T('Sistema', 696, 145, 24, C.text2, { al: 'left', w: 600 }); T('x > 1', 696, 192, 32, C.sol, { al: 'left', f: MONO, w: 700 });
+  });
+  const X1 = 300, X2 = 1180, xs = [560, 860], bordi = tratti(xs, X1, X2);
+  show(prog(u, 1.4, 2), () => asseTab(xs, ['−2', '1'], X1, X2, 300, 470), 0);
+  if (u > 4) show(prog(u, 4, 4.6), () => fascia(bordi, [0], 340, 460, C.warn, .22), 0);
+  const righe = [['frazione', [true, false, true], 370, 2.2], ['sistema', [false, false, true], 430, 3]];
+  righe.forEach(([lab, vals, y, t0]) => {
+    show(prog(u, t0, t0 + .4), () => T(lab, X1 - 40, y, 26, C.text2, { al: 'right', w: 600 }), 0);
+    rigaVero(u, y, vals, bordi, C.sol, 7, t0 + .2);
+  });
+  show(prog(u, 4.6, 5.1), () => T('qui non sono d\'accordo', (X1 + xs[0]) / 2, 490, 22, C.warn, { w: 700 }), 0);
+  // punto di prova x = −3
+  const XP = 400;
+  show(prog(u, 6, 6.5), () => {
+    ctx.strokeStyle = C.text; ctx.lineWidth = 2; ctx.setLineDash([4, 6]); ctx.beginPath(); ctx.moveTo(XP, 290); ctx.lineTo(XP, 450); ctx.stroke(); ctx.setLineDash([]);
+    circ(XP, 300, 8); ctx.fillStyle = C.text; ctx.fill(); T('−3', XP, 268, 22, C.text, { f: MONO, w: 700 });
+  }, 0);
+  show(prog(u, 6.6, 7.1), () => T('x = −3:   N = −4,   D = −1', 640, 560, 28, C.text, { f: MONO, w: 700 }), 0);
+  show(prog(u, 7.6, 8.1), () => T('N/D = 4 > 0   ✓ vera per la frazione', 640, 610, 26, C.pos, { f: MONO, w: 700 }), 0);
+  show(prog(u, 8.6, 9.1), () => T('N > 0?  −4 > 0   ✗ falsa per il sistema', 640, 655, 26, C.neg, { f: MONO, w: 700 }), 0);
+  show(prog(u, 10.4, 11), () => {
+    ctx.fillStyle = C.bg; rr(140, 510, 1000, 200, 22); ctx.fill();
+    T('Due negativi danno un quoziente positivo:', 640, 580, 30, C.warn, { w: 700 });
+    T('la frazione li conta, il sistema no.', 640, 628, 30, C.warn, { w: 700 });
+  });
+}
+
+/* ---------- tutor: tre passaggi fino alla forma normale ---------- */
+function sTutor(u) {
+  show(prog(u, 0, .5), () => {
+    frazione('3', 'x² − x', 400, 150, 32, C.text);
+    T('−', 520, 150, 34, C.text, { f: MONO, w: 700 });
+    frazione('1', 'x', 590, 150, 32, C.text);
+    T('> 0', 690, 150, 34, C.text, { f: MONO, w: 700 });
+  });
+  const passi = [
+    ['1. Scomponi x² − x', 'x(x − 1)', 1, 2],
+    ['2. m.c.m. dei denominatori', 'x(x − 1)', 3, 4],
+    ['3. Numeratore: 3 − (x − 1)', null, 5, 8.6]
+  ];
+  passi.forEach(([q, r, t, tr], i) => show(prog(u, t, t + .4), () => {
+    const y = 240 + i * 120, fatto = u > tr + .3;
+    rr(80, y, 640, i === 2 ? 170 : 100, 16); ctx.fillStyle = fatto ? C.s1 : C.accSoft; ctx.fill(); ctx.strokeStyle = fatto ? C.line : C.acc; ctx.lineWidth = 2; ctx.stroke();
+    T(q, 104, y + 32, 24, C.text2, { al: 'left', w: 600 });
+    if (r) show(prog(u, tr, tr + .4), () => { T(r, 104, y + 70, 28, C.text, { al: 'left', f: MONO, w: 700 }); T('✓', 690, y + 50, 30, C.pos, { w: 700 }); }, 0);
+    if (i === 2) {
+      const errato = u > 6 && u < 8.6, corretto = u >= 8.6;
+      if (errato) show(prog(u, 6, 6.4), () => { T('3 − x − 1 = 2 − x', 104, y + 70, 28, C.neg, { al: 'left', f: MONO, w: 700 }); T('✗', 690, y + 70, 30, C.neg, { w: 700 }); }, 0);
+      if (u > 7 && u < 8.6) show(prog(u, 7, 7.4), () => T('il meno cambia segno a tutta la parentesi!', 104, y + 128, 23, C.warn, { al: 'left', w: 600 }), 0);
+      if (corretto) show(prog(u, 8.6, 9), () => { T('3 − x + 1 = 4 − x', 104, y + 70, 28, C.text, { al: 'left', f: MONO, w: 700 }); T('✓', 690, y + 70, 30, C.pos, { w: 700 }); }, 0);
+    }
+  }, 0));
+  show(prog(u, 10, 10.6), () => {
+    rr(780, 300, 420, 260, 20); ctx.fillStyle = C.accSoft; ctx.fill(); ctx.strokeStyle = C.pos; ctx.lineWidth = 2; ctx.stroke();
+    T('forma normale', 990, 345, 24, C.pos, { w: 700 });
+    frazione('4 − x', 'x(x − 1)', 960, 440, 32, C.text);
+    T('> 0', 1105, 440, 32, C.text, { f: MONO, w: 700 });
+    T('pronta per i segni', 990, 520, 22, C.text2);
+  });
+}
+
+/* ---------- riepilogo ---------- */
+function sEnd(u) {
+  show(prog(u, 0, .5), () => {
+    rr(120, 180, 480, 200, 22); ctx.fillStyle = C.s1; ctx.fill(); ctx.strokeStyle = C.sol; ctx.lineWidth = 3; ctx.stroke();
+    T('Frazione', 360, 230, 30, C.sol, { w: 700 }); T('regola dei segni', 360, 290, 28, C.text); T('concordi → +, discordi → −', 360, 336, 22, C.text2);
+  });
+  show(prog(u, .5, 1), () => {
+    rr(680, 180, 480, 200, 22); ctx.fillStyle = C.s1; ctx.fill(); ctx.strokeStyle = C.pos; ctx.lineWidth = 3; ctx.stroke();
+    T('Sistema', 920, 230, 30, C.pos, { w: 700 }); T('intersezione', 920, 290, 28, C.text); T('tutte vere nello stesso punto', 920, 336, 22, C.text2);
+  });
+  show(prog(u, 1.6, 2.2), () => T('stessi capisaldi, regole diverse', 640, 480, 36, C.text, { w: 700 }));
+}
+
+const FN = { intro: sIntro, fraz: sFraz, sist: sSist, confronto: sConfronto, tutor: sTutor, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta dall'app; #fraz #sist #confronto #tutor → parte da quella scena e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.id !== 'intro' && sc.id !== 'end') chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map(sc => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = String(speed).replace('.', ',') + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+// il tema cambia nell'app (stessa chiave): ricolora
+window.addEventListener('storage', e => {
+  if (e.key !== 'orfini_theme') return;
+  if (e.newValue === 'light') document.documentElement.dataset.tema = 'chiaro'; else delete document.documentElement.dataset.tema;
+  leggiColori();
+});
+})();
+</script>
+</body>
+</html>
