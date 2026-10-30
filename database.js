@@ -1,9 +1,71 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-30 09:11:19
+   Data: 2026-10-30 10:42:09
 */
 
 const db = [
+    {
+        "title": "Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola",
+        "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
+        "tags": [
+            "3 MEC",
+            "4 EL",
+            "ALGEBRA",
+            "DIDATTICA INCLUSIVA",
+            "DISEQUAZIONI DI SECONDO GRADO",
+            "LABORATORIO METACOGNITIVO",
+            "MAT_A3:EQUAZIONI E DISEQUAZIONI",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K1:ALGEBRA",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "PARABOLA",
+            "SCOMPOSIZIONI"
+        ],
+        "date": "2026-10-30",
+        "url": "content/apps/parabola e disequazioni di secondo grado maggio 2026.html",
+        "type": "app",
+        "icon": "🧱",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp",
+        "allenamento": [
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ]
+    },
     {
         "title": "Math Pool: Biliardo Cartesiano e retta",
         "excerpt": "Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, usa pendenze e simmetrie per i tiri di sponda e la parabola (dal vertice o dagli zeri, come prodotto di due rette) per i tiri a effetto. Per smartphone, tablet, PC e LIM.",
@@ -980,68 +1042,6 @@ const db = [
                 "url": "allenamento/#/lezione/rette-parallele/1",
                 "mat": [
                     "MAT_K3"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola",
-        "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "ALGEBRA",
-            "DIDATTICA INCLUSIVA",
-            "DISEQUAZIONI DI SECONDO GRADO",
-            "LABORATORIO METACOGNITIVO",
-            "MAT_A3:EQUAZIONI E DISEQUAZIONI",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_K1:ALGEBRA",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "PARABOLA",
-            "SCOMPOSIZIONI"
-        ],
-        "date": "2026-05-16",
-        "url": "content/apps/parabola e disequazioni di secondo grado maggio 2026.html",
-        "type": "app",
-        "icon": "🧱",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp",
-        "allenamento": [
-            {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
                 ]
             }
         ]
