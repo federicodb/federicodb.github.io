@@ -1,277 +1,120 @@
 # Proposta di architettura — Orfini Math Lab
 
-Fase 2, revisione 4 (2026-10-30). **Solo documento: nessun file del sito è stato modificato.** Le revisioni precedenti, organizzate per ruoli, sono nella storia git del ramo `riorganizzazione` e sono superate.
+Fase 2, revisione 5 (2026-10-30): **ipotesi di minimo lavoro**. Solo documento, nessun file del sito modificato. Le revisioni 1-4 (riorganizzazione di menu, sezioni, tag e metadati) sono nella storia git del ramo `riorganizzazione` e restano disponibili per il futuro. **Per ora non si fanno.**
 
-## Da dove parte
+## Indicazione del docente
 
-Il sito è un **laboratorio artigianale**, non un catalogo né un corso. Docente e studenti usano lo stesso spazio e le stesse attività. Deve crescere seguendo l'istinto dell'autore: una nuova idea entra in pochi minuti, senza ristrutturare niente. Il **Journal** è il quaderno di lavoro pubblico: note brevi e cronologiche che attraversano le attività invece di stare in una sezione della gerarchia.
+> Proviamo a fare meno danni e meno lavoro possibile. Mi interessa avere un giornale-blog a cui collegare quello che c'è già. L'ipotesi di minimo lavoro è aggiungere solo quello, e collegarlo in maniera sensata con gli strumenti che ci sono già, come lo script di build. Niente visi di ragazzi: solo immagini di spalle o ritoccate.
 
-Le regole che ne discendono, applicate in tutto il documento:
-- **tag liberi**: si inventano scrivendoli;
-- **tre campi obbligatori**: titolo, data, una riga di descrizione;
-- **le viste si generano dai dati**;
-- **niente sezioni per ruolo**;
-- **niente framework**: un piccolo script Python (`build.py`, che esiste già) produce HTML statico leggibile e modificabile a mano.
+## Cosa si fa
 
-### Un dato che orienta la proposta
-Oggi le 55 voci del catalogo hanno **295 tag diversi**, in media 14 per attività, e 169 sono usati una sola volta. Vengono dalle keyword SEO e dai suggerimenti di Gemini ("MATEMATICA", "CIT_4:COMPETENZA DIGITALE", "WEBGL"…). Viste generate da questi tag sarebbero centinaia di pagine quasi vuote.
+**Si aggiunge il Journal e lo si collega al sito esistente. Nient'altro cambia.** Restano come sono:
+- menu e home (tranne due piccoli punti, sotto);
+- il catalogo e i suoi filtri;
+- le app;
+- la Quest;
+- `database.js`, prodotto da `build.py` come oggi;
+- gli URL.
 
-Quindi i **tag del nuovo sistema sono solo quelli scritti dall'autore**, in un campo a parte. Le keyword restano nel `<head>` delle app per i motori di ricerca. I codici della Riforma 2017 (`MAT_K1`…) restano per `competenze.html`. Nessuno dei due genera viste.
+### 1. Le note
+- Un file Markdown per nota, in `content/journal/` (cartella nuova, letta da `build.py`). Il nome è `AAAA-MM-GG-titolo-breve.md`.
+- Le immagini stanno accanto, in `content/journal/media/`.
+- Intestazione con 3 campi obbligatori e 2 facoltativi:
 
+```markdown
+---
+titolo: Math Pool in classe: la retta diventa un tiro di sponda
+data: 2026-11-12
+descrizione: Un'ora sul coefficiente angolare giocando a biliardo sulla LIM.
+attivita: math_pool_retta_pianocartesiano, arcade_challenge_scomposizioni_parabola
+video: https://youtu.be/…        # facoltativo
 ---
 
-## (a) Voci fisse di navigazione
+Testo libero, 200-300 parole: perché l'ho costruita, come è andata, cosa cambio.
 
-| Voce | Indirizzo | Cosa contiene |
-|---|---|---|
-| Home (il logo) | `index.html` | Parti da qui (curata) + novità e Journal (automatici) |
-| **Attività** | `attivita/` | tutte le attività, e da qui tutte le viste |
-| **Allenati** | `allenamento/` | la Quest, invariata |
-| **Journal** | `journal/` | le note, in ordine cronologico |
-| **Chi sono** | `chi-sono/` | autore, metodo, La scuola |
-
-**Allenati come quinta voce:** nel brief le voci sono "indicativamente" quattro, ma prima avevi chiesto che Allenati fosse una sezione a parte, la palestra del sito. Con cinque voci il menu sta ancora su una riga (LIM e PC) e resta a scomparsa sul telefono. Se preferisci quattro voci, Allenati diventa un riquadro fisso in home e un pulsante "Allenati su questo" su ogni attività (decisione D1).
-
-**Fuori dal menu**, nel piè di pagina di ogni pagina: Verifiche (`verifiche.html`), Competenze Riforma 2017 (`competenze.html`), Esplora in 3D (`galaxy.html`), Calcolo veloce (`calcolo-mentale.html`), La scuola (`scuola.html`), Privacy. Restano tutte all'indirizzo di oggi.
-
-## (b) Viste dinamiche generate dai dati
-
-Tutte nascono da tre sorgenti: le schede delle attività, le note del Journal e due file di curatela. Nessun elenco si scrive a mano.
-
-| Vista | Da dove nasce | Dove si vede |
-|---|---|---|
-| **Tutte le attività** | tutte le schede, dalla più recente | `attivita/` |
-| **Per tag** (argomento, classe, formato, tema, progetto, mood…) | ogni tag usato almeno una volta | filtro in `attivita/` e link sui tag delle schede |
-| **Novità** | data dell'ultima modifica (dalla storia git) | home, `attivita/?ordine=novita` |
-| **Percorsi** | file `dati/percorsi.txt`: sequenze ordinate scelte dall'autore | `attivita/percorsi/<nome>/` e banner "fa parte del percorso…" sulle attività |
-| **Journal** | le note, dalla più recente | `journal/`, home, scheda di ogni attività ("2 note") |
-| **Note per attività / attività per nota** | campo `attivita` delle note | in entrambe le direzioni, in automatico |
-| **Mappa 3D** | `database.js`, come oggi | `galaxy.html` |
-| **Parti da qui** | file `dati/parti-da-qui.txt` | home |
-
-**I tag non hanno liste chiuse, ma hanno un'unica convenzione facoltativa** per raggrupparli nel pannello dei filtri. Se scrivi `chiave:valore`, il tag finisce nel gruppo della chiave:
-- `formato:arcade`, `progetto:plotter`, `mood:relax`: la chiave è il gruppo;
-- un codice classe (`1EL`, `3MEC`…) va da solo nel gruppo **classe**;
-- un tag senza chiave (`frazioni`, `retta`) va nel gruppo **argomento**.
-
-Una chiave nuova crea da sola un gruppo nuovo. Maiuscole e accenti non contano per il confronto (`Frazioni` = `frazioni`). Lo script segnala, senza bloccare, i tag quasi uguali (`scomposizione` / `scomposizioni`).
-
-**Classe e "non mortificare":** la classe è un tag e una vista come le altre, utile a te e ai colleghi. Proposta: le schede **non mostrano** i tag di classe (oggi le schede della home li mostrano, `UIManager.js:353`); il filtro "classe" c'è, ma in fondo al pannello. Così una quarta che ripassa le frazioni non vede "1EL" sulle attività (D6).
-
-**Percorsi come suggerimenti, non binari:** un percorso è una pagina con l'elenco ordinato e una frase d'introduzione. Ogni attività resta raggiungibile anche da sola. Sulla sua scheda compare "fa parte del percorso Polinomi (passo 3 di 8) →", senza obbligo di seguirlo.
-
-**"Più usate": non si può fare senza statistiche.** Il sito oggi non ha tracciamento, ed è un pregio per la privacy. Alternative proposte per la zona automatica della home:
-- "aggiornate di recente";
-- "più citate nel Journal".
-
-Se un giorno vorrai dati d'uso, esiste un contatore open source che non usa cookie (GoatCounter), ma è un servizio esterno e richiede di aggiornare la privacy policy (D7).
-
-## (c) Schema minimo dei metadati
-
-### Dove stanno
-Due posti possibili, con una regola sola: **se un dato è scritto in entrambi, vince la scheda in `dati/attivita.txt`**.
-1. **Nel `<head>` dell'app**, per le app nuove: `<title>`, `<meta name="description">`, `<meta name="date">` e il nuovo `<meta name="tag">`. L'app si descrive da sola e non serve toccare altri file. `build.py` legge già titolo, descrizione e data.
-2. **In `dati/attivita.txt`**, per le 42 app esistenti (senza toccare i loro file), per i contenuti non HTML (PDF, video, immagini, link esterni) e per correggere qualcosa senza aprire l'app.
-
-### Formato di `dati/attivita.txt`
-Testo semplice: un blocco per attività, separati da una riga vuota, `#` per i commenti. Niente virgolette né parentesi da chiudere, e nessuna libreria da installare.
-
-```text
-# Una scheda per attività. La prima riga è il nome del file (o l'URL), poi i campi.
-
-math_pool_retta_pianocartesiano
-titolo: Math Pool: biliardo sul piano cartesiano
-data: 2026-10-29
-descrizione: Calcola pendenza ed equazione della retta per mandare la palla in buca, anche di sponda.
-tag: retta, parabola, formato:arcade, 2GP, 3MEC, lim
-spiegazione: math_pool_retta_pianocartesiano_spiegazione
-
-pen_plotter__23v2_8K
-titolo: Studio Plotter CNC
-data: 2026-07-15
-descrizione: Dal disegno generativo al G-code: tracciati per pen plotter e CNC, con anteprima 3D.
-tag: arte-e-codice, progetto:plotter, formato:strumento, solo-pc
-nota: Strumento per la Ender 3 V2.
+![La traiettoria proiettata sulla LIM](media/lim-tiro.jpg)
 ```
 
-### Campi dell'attività
+`attivita` contiene i **nomi dei file** delle app (senza `.html`), cioè gli stessi nomi che già esistono. Non serve inventare codici né compilare schede.
 
-| Campo | Obbligatorio | Se manca |
-|---|---|---|
-| prima riga: nome del file (senza `.html`) o URL | ✔ | — (è l'identità dell'attività; non cambia mai perché i file non si rinominano) |
-| `titolo` | ✔ | si usa il `<title>` dell'app, poi il nome del file |
-| `data` | ✔ | si usa `<meta name="date">`, poi il primo commit git del file |
-| `descrizione` (una riga) | ✔ | si usa la `meta description`; se manca anche quella, la scheda appare senza descrizione e lo script lo segnala |
-| `tag` | | l'attività compare solo in "Tutte" e in "Novità" |
-| `immagine` | | miniatura generata da `thumbnails.py`, come oggi |
-| `spiegazione` | | si cerca un file `<nome>_spiegazione.html` |
-| `stato` | | `attiva`; altri valori: `in-prova` (etichetta "in prova"), `archiviata` (esce dalle viste, resta raggiungibile) |
-| `nota` | | promemoria interni, mai pubblicati |
+### 2. Cosa aggiunge `build.py` (un blocco nuovo, il resto invariato)
+Dopo il catalogo, come già fa per sitemap e SEO della home:
+1. **Legge le note** e converte il Markdown in HTML con la libreria `markdown`, la stessa versione già presente nel sistema (3.10.3), da aggiungere al `.venv`.
+2. **Scrive le pagine statiche**, leggibili senza JavaScript, con canonical, anteprima social, autore e data:
+   - `journal/index.html`: elenco cronologico;
+   - `journal/<nome-nota>/index.html`: una pagina per nota.
+3. **Collega in automatico, nei due sensi:**
+   - nella nota, in fondo, le **attività collegate** con miniatura e titolo presi da `database.js`, il pulsante "Apri" e, se c'è, "Allenati su questo" (le lezioni della Quest che `build.py` già calcola);
+   - in `database.js`, ogni attività riceve l'elenco delle note che la citano. La sua scheda in home mostra un piccolo link "📓 2 note", che porta alla nota se è una sola e all'elenco filtrato se sono di più.
+4. **Immagini**: le ricomprime in WebP e cancella i metadati delle foto (tra cui la posizione GPS), con Pillow, già usato da `thumbnails.py`.
+5. **Sitemap**: aggiunge le note.
+6. **Controlli che segnalano senza bloccare**: un'attività citata che non esiste, un campo obbligatorio mancante, un'immagine troppo pesante.
 
-**Calcolati in automatico:** data dell'ultima modifica (git), lezioni della Quest collegate ("Allenati su questo", che `build.py` già calcola), note del Journal collegate, percorsi di cui fa parte, avviso "serve la connessione a …" per le app con servizi esterni. Un campo mancante non rompe mai una pagina: la parte corrispondente semplicemente non compare.
+### 3. Due ritocchi alle pagine esistenti
+- **Menu**: la voce **"Journal"** c'è già. Oggi punta alla home; diventa `journal/`. È un cambio di link nelle 6 pagine con quel menu: index, competenze, verifiche, scuola, calcolo-mentale, 404.
+- **Home**: una striscia **"Dal Journal"** con le ultime 3 note, scritta dal build tra due marcatori, come fa già per il catalogo SEO. Se non ci sono note, la striscia non compare.
 
-### Campi della nota del Journal
-Un file Markdown, in `content/journal/AAAA-MM-GG-titolo-breve.md`:
+### 4. Video
+- File brevi (mp4 fino a circa 20 MB) nella cartella `media/`, mostrati con il lettore del browser.
+- Video lunghi su YouTube, **solo come link con anteprima**, senza incorporarli. Così non si caricano contenuti di terzi e non serve toccare il cookie consent né la privacy policy.
 
-| Campo | Obbligatorio | Se manca |
-|---|---|---|
-| `titolo` | ✔ | dal nome del file |
-| `data` | ✔ | dal nome del file |
-| `descrizione` (una riga) | ✔ | la prima frase del testo |
-| `attivita` | | la nota è generale (sul metodo o sul sito stesso) |
-| `tag` | | — |
-| testo | 200-300 parole consigliate; nessun limite imposto | — |
+### 5. Privacy delle immagini (regola vincolante)
+- **Mai visi di studenti.** Solo foto **di spalle**, **ritoccate** (sfocate o coperte), oppure di LIM, quaderni senza nome, mani, schermi.
+- Niente nomi, voci, registri, compiti con il nome visibile.
+- Il modello della nota (`content/journal/_modello.md`) riporta la regola in cima, come promemoria da controllare prima di pubblicare.
+- Lo script non riconosce i visi: il controllo resta del docente. Lo script si limita a cancellare i metadati delle foto.
 
-### File di curatela (gli unici scritti a mano, e brevi)
+### 6. Pubblicazione dei sorgenti
+Senza precauzioni, GitHub Pages pubblicherebbe anche i file `.md` delle note e i documenti di lavoro in `docs/`. Si aggiunge un `_config.yml` di una riga:
 
-```text
-# dati/parti-da-qui.txt — una attività per riga, nell'ordine in cui compaiono in home
-arcade_challenge_scomposizioni_parabola
-math_pool_retta_pianocartesiano
-snake_conway_self
+```yaml
+exclude: [content/journal, docs]
 ```
 
-```text
-# dati/percorsi.txt — un blocco per percorso
-percorso: Polinomi e scomposizioni
-descrizione: Dal modello geometrico alla sfida: capire, allenarsi, mettersi alla prova.
-- operazioni_polinomi_graph
-- dimostrazione_geometrica_prodotti_notevoli
-- visualizzatore polinomi 2d 3d 001
-- scomp_3d_grafica_002
-- cards_polinomi_memory004
-- polinomi_challenge_v2_pro
-- arcade_challenge_scomposizioni_parabola
-```
+Effetto: si pubblicano solo le pagine generate e le immagini ricompresse. Le immagini restano visibili perché il build le copia in `journal/`. Le due pagine che oggi esistono grazie a Jekyll (`laboratoriomatematicoOrfini.html`, `tools/report_finale.html`) restano. `allenamento/vendor/` resta pubblicata. Dopo l'unione su `master` lo si verifica aprendo questi indirizzi.
 
-## (d) Aggiungere un'attività o una nota in meno di 5 minuti
+## Scrivere una nota (meno di 5 minuti oltre al testo)
+1. Copia `content/journal/_modello.md` con il nome `AAAA-MM-GG-titolo.md`.
+2. Compila titolo, data, una riga di descrizione e le app collegate; scrivi il testo; metti le foto (di spalle o ritoccate) in `media/`.
+3. Lancia il build offline: `.venv/bin/python3 -c "import build; build.GEMINI_API_KEY=''; build.main()"`. È lo stesso comando di oggi, descritto in `CLAUDE.md`; si può accorciare in uno script `./journal.sh`, se ti è comodo.
+4. Guarda l'anteprima: `python3 -m http.server 8080` e apri `http://localhost:8080/journal/`.
+5. Commit e push.
 
-### Una nuova attività
-1. **Salva l'app** in `content/apps/nome_nuovo.html`. Nel `<head>` scrivi titolo, descrizione, data e tag: c'è un modello di 6 righe da copiare in `modelli/head-app.html`. In alternativa aggiungi un blocco di 4 righe in `dati/attivita.txt`.
-2. **Lancia** `./aggiorna.sh`, un nuovo script breve che sostituisce l'uso manuale di `update.sh`. Fa tre cose:
-   - crea la miniatura **solo per i file nuovi**;
-   - esegue il build senza Gemini;
-   - controlla link e campi obbligatori, e segnala i tag quasi duplicati.
-   Non riscrive le altre app e non rinomina file, a differenza di `standardize_apps.py` e `auto_sidecar.py`.
-3. **Guarda l'anteprima**: lo script avvia il server locale e stampa il link a `attivita/`. Lo fermi con Ctrl+C.
-4. **Pubblica**: `git add`, `git commit -m "feat(app): …"`, `git push`.
+## Vecchi URL
+**Nessuno cambia.** Si aggiungono soltanto `journal/` e `journal/<nota>/`. Il link "Journal" del menu cambia destinazione: non apre più la home, che resta comunque raggiungibile dal logo.
 
-Facoltativo, una riga ciascuno: aggiungerla a `dati/parti-da-qui.txt` o a un percorso.
-**Tempo:** 2-3 minuti oltre alla scrittura dell'app. Menu, filtri, home, Novità, sitemap e Mappa 3D si aggiornano da soli.
+## File toccati
 
-### Una nuova nota del Journal
-1. **Copia il modello**: `cp content/journal/_modello.md content/journal/2026-11-12-math-pool-in-classe.md`.
-2. **Compila** titolo, una riga di descrizione e `attivita: math_pool_retta_pianocartesiano`. Scrivi 200-300 parole e metti le immagini nella stessa cartella.
-3. **Lancia** `./aggiorna.sh` e guarda la nota in anteprima. Lo script ricomprime le immagini e cancella i metadati delle foto, tra cui la posizione GPS.
-4. **Pubblica** con commit e push.
-
-**Tempo:** quello della scrittura, più un minuto. La nota compare in `journal/`, in home e sulla scheda di Math Pool ("1 nota").
-
-Più avanti, se ti è comodo: un comando `/nota` di Claude Code che crea il file dal modello e compila l'intestazione.
-
-**Privacy nelle note:** mai volti, nomi o voci di studenti. Il modello contiene un promemoria. Regole della scuola su foto e video in classe: **[DA VERIFICARE con la scuola]**.
-
-## (e) Vecchi URL
-
-**Nessun file cambia indirizzo.** Tutti gli URL di oggi restano validi; non servono stub di redirect.
-
-| Vecchio | Nuovo | Come resta funzionante |
-|---|---|---|
-| `content/**` (app, verifiche, video, infografiche, immagini), `rif_norm_2017/**` | identici | non si toccano |
-| `allenamento/`, `calcolo-mentale.html`, `verifiche.html`, `competenze.html` (anche `#<id>`), `galaxy.html`, `scuola.html`, `privacy-policy.html`, `404.html` | identici | cambiano solo menu e piè di pagina |
-| `laboratoriomatematicoOrfini.html`, `tools/report_finale.html` (pagine create da Jekyll dai `.md`) | identici | restano (D5); il primo è la base di `chi-sono/` |
-| `index.html` | identico | nuova home |
-| `index.html?tag=1%20EL` (9 link in `scuola.html`, link dalla Mappa 3D) | `attivita/?tag=1EL` | la home riconosce `?tag=` e porta alla vista; senza JS mostra un link |
-| `index.html#about` (4 link interni) | `chi-sono/` | la home riconosce `#about` |
-| filtro "Video" del menu (nessun URL) | `attivita/?tag=formato:video` | nuovo indirizzo condivisibile |
-| `/?q=` (dichiarato nei dati strutturati, oggi ignorato) | `attivita/?q=` | si corregge il `SearchAction` |
-
-**Nuovi indirizzi:** `attivita/`, `attivita/percorsi/<nome>/`, `journal/` e `journal/<nota>/`, `chi-sono/`, `archivio/`. Più `attivita/tag/<tag>/` solo nell'alternativa 1.
-
----
-
-## Due alternative
-
-Le due alternative condividono tutto quanto sopra: dati, flusso di lavoro, Journal, URL. Cambia solo **come si producono le viste per tag**.
-
-### Alternativa 1 — Indici statici generati dallo script
-
-`build.py` scrive **una pagina HTML per ogni vista**: `attivita/` (tutte), `attivita/tag/frazioni/`, `attivita/tag/1el/`, `attivita/tag/formato-arcade/`… I tag sulle schede sono link a queste pagine. Nessun JavaScript per navigare.
-
-| Pro | Contro |
+| File | Cosa |
 |---|---|
-| Funziona ovunque, anche su browser vecchi delle LIM e con JS bloccato | **Un tag alla volta**: "frazioni **e** 1EL" richiederebbe una pagina per ogni combinazione |
-| Ogni vista ha un indirizzo vero, perfetta per QR code e motori di ricerca | Molti file generati: con tag usati poco, molte pagine con 1-2 attività |
-| La logica sta tutta nello script: facile da capire e da correggere | Ogni build cambia decine di file, quindi i commit "rumorosi" sono difficili da leggere |
-| Nessun codice JS da mantenere | Niente ricerca testuale istantanea |
+| `content/journal/_modello.md`, `content/journal/media/` | **nuovi**: modello e cartella immagini |
+| `content/journal/AAAA-MM-GG-prova.md` | **nuovo**: una nota di prova con testo `[DA COMPILARE DAL DOCENTE]`, da cancellare o sostituire |
+| `journal/` | **generata** dal build |
+| `journal.css` | **nuovo**: stile delle pagine del Journal, con le stesse variabili e lo stesso tema chiaro/scuro del sito |
+| `_config.yml` | **nuovo**: una riga di `exclude` |
+| `build.py` | blocco nuovo per il Journal; aggiunta del campo `journal` alle voci di `database.js` e delle note alla sitemap |
+| `content/assets/js/modules/UIManager.js` | link "📓 n note" sulle schede (poche righe) |
+| `index.html` | marcatori della striscia "Dal Journal"; link del menu |
+| `competenze.html`, `verifiche.html`, `scuola.html`, `calcolo-mentale.html`, `404.html` | solo il link "Journal" del menu |
+| `database.js`, `sitemap.xml` | rigenerati dal build |
+| `.venv` | `markdown==3.10.3` |
+| `tests/journal.spec.js` | **nuovo**: pagina del Journal leggibile senza JS, collegamenti nota↔attività, nessun URL esistente rotto |
 
-### Alternativa 2 — Filtri nel browser con HTML di riserva
+**Non toccati:** app, Quest, catalogo e filtri della home, cookie consent, privacy policy, pagine dei contenuti.
 
-`build.py` scrive **una sola pagina** `attivita/` con **tutte** le attività in HTML statico, ognuna con i suoi tag come link e come attributi. Un piccolo script (`attivita.js`, senza framework) aggiunge:
-- i filtri combinabili (argomento **e** classe **e** formato);
-- la ricerca testuale;
-- l'indirizzo condivisibile (`attivita/?tag=frazioni&tag=1EL`).
+## Ordine di lavoro
+1. `_config.yml`, cartella `content/journal/` e modello.
+2. Blocco del Journal in `build.py` e nota di prova. *Ti mostro l'anteprima.*
+3. Collegamenti: link del menu, striscia in home, "📓 n note" sulle schede. *Cambia l'aspetto: mi fermo.*
+4. Test e controllo dei vecchi URL.
 
-Senza JavaScript si vede l'elenco completo, leggibile, ordinato per data, con i tag scritti. Le pagine statiche restano solo per percorsi e note del Journal.
-
-| Pro | Contro |
-|---|---|
-| **Filtri combinabili** e ricerca istantanea, utili alla LIM ("frazioni + arcade") | Senza JS il filtro non funziona: si vede tutto l'elenco (comunque completo e leggibile) |
-| Pochi file generati, commit leggibili | Le viste per tag non sono pagine distinte per i motori di ricerca (le attività sì, tramite la pagina unica e la sitemap) |
-| È ciò che la home fa già oggi (`UIManager.js` filtra nel browser e legge `?tag=`): meno cambiamento, si riusa codice esistente | Un po' di JS da mantenere (circa 150 righe) |
-| Una nuova chiave di tag compare da sola come nuovo gruppo di filtri | Con molte centinaia di attività la pagina unica diventerebbe pesante (oggi 55: nessun problema) |
-
-### Raccomandazione: alternativa 2
-
-Il sito ha 55 attività, si usa in classe con filtri combinati e già oggi filtra nel browser. L'HTML di riserva garantisce che motori di ricerca e browser senza JS vedano tutto. I percorsi e il Journal, che sono testi da leggere e da linkare, restano pagine statiche vere in entrambe le alternative.
-
-La scelta è **reversibile**: i dati sono gli stessi. Passare all'alternativa 1 vuol dire aggiungere a `build.py` la generazione delle pagine per tag, senza toccare né i dati né il resto.
-
----
-
-## File che verrebbero toccati (alternativa 2)
-
-**Nuovi:**
-- `dati/attivita.txt`, `dati/parti-da-qui.txt`, `dati/percorsi.txt`;
-- `content/journal/` (con `_modello.md`);
-- `modelli/head-app.html`, `aggiorna.sh`;
-- `attivita.js`, `attivita.css`;
-- pagine generate: `attivita/`, `attivita/percorsi/*/`, `journal/**`, `chi-sono/`, `archivio/`;
-- `tests/navigazione.spec.js`: viste, filtri, pagine senza JS, vecchi URL a 200, nessun tag di classe sulle schede;
-- `_config.yml`: solo `exclude:` per `docs/`, `dati/` e i sorgenti `.md` del Journal.
-
-**Modificati:**
-
-| File | Cosa cambia |
-|---|---|
-| `build.py` | legge `dati/*.txt`, `<meta name="tag">` e `content/journal/`; date da git; genera le pagine; non aggiunge tag inventati alle attività che hanno tag propri |
-| `index.html`, `index.css` | menu e nuova home |
-| `competenze.html`, `verifiche.html`, `scuola.html`, `calcolo-mentale.html`, `galaxy.html`, `404.html`, `privacy-policy.html` | solo menu e piè di pagina, scritti dal build tra marcatori `<!-- NAV_START -->…<!-- NAV_END -->` |
-| `database.js`, `sitemap.xml` | rigenerati |
-
-**Non toccati:** `content/apps/` (le app che fanno eccezione sono un lavoro a parte), la Quest, cookie consent, PDF.
-
-**Libreria da installare:** `markdown` (Python, open source, versione fissata) per convertire le note in HTML. Senza di essa le note dovrebbero essere scritte in HTML (D3).
-
-## Ordine di lavoro (Fase 3)
-
-1. **Dati**: `dati/attivita.txt` compilato dall'inventario con tag ripuliti; i dati incerti come `[DA VERIFICARE]`. Nessun cambiamento visibile.
-2. **`build.py` e `aggiorna.sh`**: lettura dei nuovi dati, pagine generate. *Ti mostro l'anteprima.*
-3. **Menu, home e `attivita/` con i filtri.** *Cambia l'aspetto: mi fermo.*
-4. **Parti da qui**: ti chiedo la selezione.
-5. **Journal**: modello, motore e una nota di prova con testo `[DA COMPILARE DAL DOCENTE]`. *Mi fermo.*
-6. **Primo percorso** (Polinomi e scomposizioni, ordine da confermare).
-7. **Tema chiaro** sulle pagine nuove; **controllo** dei vecchi URL e del contenuto senza JS.
+Poi, separatamente: le app che fanno eccezione (`AUDIT.md`), una alla volta.
 
 ## Decisioni da approvare
-
 | # | Decisione | Proposta |
 |---|---|---|
-| D1 | Voci fisse: Attività · Allenati · Journal · Chi sono (5 con il logo-Home), oppure 4 senza Allenati | 5, per la tua richiesta precedente |
-| D2 | Alternativa 1 (statica) o 2 (filtri nel browser con HTML di riserva) | **2** |
-| D3 | Note del Journal in Markdown, con la libreria `markdown` | ✅ consigliata |
-| D4 | Metadati nel `<head>` delle app nuove **e/o** in `dati/attivita.txt` (vince il file) | ✅ consigliata |
-| D5 | Niente `.nojekyll`; `_config.yml` con `exclude:`. Da decidere se `orfini-games/` e `orfini-math-quest.zip` restano pubblici | ✅ consigliata, il resto da decidere |
-| D6 | Tag di classe nascosti sulle schede, filtro "classe" disponibile in fondo al pannello | ✅ consigliata |
-| D7 | Niente "più usate" (richiederebbe statistiche); al suo posto "aggiornate di recente" e "più citate nel Journal" | ✅ consigliata |
-| D8 | Codici classe GP = Grafica, MA = Manutenzione | da confermare |
+| D1 | Solo il Journal, collegato all'esistente; il resto della riorganizzazione è rimandato | ✅ |
+| D2 | `markdown==3.10.3` nel `.venv` | ✅ |
+| D3 | YouTube solo come link, non incorporato | ✅ |
+| D4 | `_config.yml` con `exclude: [content/journal, docs]` | ✅ |
+| D5 | La voce "Journal" del menu punta a `journal/` | ✅ |

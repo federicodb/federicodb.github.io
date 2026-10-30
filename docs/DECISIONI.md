@@ -45,3 +45,11 @@ Ogni voce: data, decisione, motivo.
 - **Metadati in testo semplice** (`dati/attivita.txt`, blocchi `campo: valore`) invece di JSON: niente virgolette e virgole da sbagliare, nessuna libreria. Le app nuove possono descriversi da sole nel `<head>`; se un dato è in entrambi i posti, vince il file.
 - **"Più usate" non si fa**: richiederebbe statistiche d'uso, che il sito non raccoglie (scelta di privacy).
 - **Raccomandata l'alternativa 2** (una pagina `attivita/` con HTML completo e filtri nel browser), perché riusa ciò che la home già fa (`UIManager.js`) e permette filtri combinati. È reversibile verso l'alternativa 1 senza toccare i dati.
+
+## 2026-10-30 — Fase 2, revisione 5: minimo lavoro
+
+- **Si aggiunge solo il Journal**, collegato all'esistente tramite `build.py`. Menu, catalogo, app e metadati restano come sono; la riorganizzazione delle revisioni 1-4 è rimandata (resta nella storia git). Motivo, dal docente: "meno danni e meno lavoro possibile".
+- **Le note citano le app con il nome del file**: nessun codice nuovo da inventare né scheda da compilare.
+- **Immagini: mai visi di studenti**, solo foto di spalle o ritoccate. Lo script cancella i metadati (GPS) ma non riconosce i visi: il controllo resta del docente.
+- **YouTube solo come link**, non incorporato: nessun contenuto di terzi caricato, nessuna modifica a cookie consent e privacy policy.
+- **`markdown` 3.10.3** è già nel sistema (pacchetto Manjaro); va aggiunto al `.venv`, che non vede i pacchetti di sistema.
