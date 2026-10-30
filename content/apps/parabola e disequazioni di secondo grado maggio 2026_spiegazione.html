@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Parabola e disequazioni in un minuto</title>
+<meta name="description" content="Animazione di un minuto sulle disequazioni di secondo grado: scomposizione, studio del segno, metodo del Δ, i tre casi della parabola e la sfida in quattro passaggi (Orfini Math Lab).">
+<script>
+  try { if (localStorage.getItem('orfini_theme') === 'light') document.documentElement.dataset.tema = 'chiaro'; } catch (err) { /* storage non disponibile */ }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Stessa grafica dell'app: nero AMOLED, ciano = soluzione, verde = positivo, rosa = negativo */
+:root{ --r-m:14px; --r-l:20px; --sans:'Inter',system-ui,-apple-system,sans-serif; --mono:'Space Mono',ui-monospace,monospace;
+  color-scheme:dark; --bg:#050507; --surface:hsl(240,6%,8%); --surface-2:hsl(240,6%,12%); --surface-3:hsl(240,6%,17%);
+  --line:hsl(240,5%,17%); --line-strong:hsl(240,5%,30%); --text:hsl(0,0%,92%); --text-2:hsl(0,0%,66%);
+  --accent:hsl(190,95%,55%); --on-accent:#050507; --accent-soft:hsla(190,95%,55%,.12); --sol:hsl(190,95%,55%);
+  --pos:hsl(155,85%,48%); --neg:hsl(330,85%,66%); --warn:hsl(45,100%,58%); --grid:hsl(240,5%,13%); --axis:hsl(240,4%,46%); }
+:root[data-tema="chiaro"]{ color-scheme:light; --bg:#f6f8fb; --surface:#ffffff; --surface-2:#eef2f7; --surface-3:#e2e8f0;
+  --line:#d8dee8; --line-strong:#a9b4c4; --text:#0f172a; --text-2:#475569; --accent:hsl(195,90%,30%); --on-accent:#ffffff;
+  --accent-soft:hsla(195,90%,30%,.1); --sol:hsl(195,90%,34%); --pos:hsl(155,75%,27%); --neg:hsl(335,70%,43%); --warn:hsl(38,95%,32%);
+  --grid:#e3e8ef; --axis:#64748b; }
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--on-accent)}
+.wrap{max-width:1080px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text-2);text-decoration:none;font:500 14px var(--sans)}
+.back:hover{color:var(--text);border-color:var(--line-strong)}
+header{display:flex;flex-direction:column;gap:8px}
+h1{font:700 clamp(28px,4.6vw,44px)/1.1 var(--sans);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--text-2);font-size:17px}
+.screen{border-radius:var(--r-l);padding:8px;background:var(--surface);border:1px solid var(--line)}
+canvas{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--r-m);background:var(--bg);cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:600 15px var(--sans);cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--accent)}
+.play{min-width:120px;background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.speed{min-width:64px;font-family:var(--mono);font-size:14px}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,.back:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:12px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:28px}
+.time{font:13px var(--mono);color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{min-height:40px;font:500 14px var(--sans);color:var(--text-2);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.chap::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chap:hover{color:var(--text);border-color:var(--line-strong)}
+.chap[aria-current="true"]{background:var(--accent-soft);color:var(--text);border-color:var(--accent)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.1vw,20px);line-height:1.5;max-width:70ch;text-wrap:pretty}
+.caption b{font-weight:700;color:var(--sol)}
+.hint{font-size:13px;color:var(--text-2);margin:0}
+section.tx{border-top:1px solid var(--line);padding-top:24px;margin-top:8px;display:flex;flex-direction:column;gap:16px}
+section.tx h2{font:700 22px/1.3 var(--sans);margin:0}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 28px}
+.txlist li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ts{align-self:flex-start;font:500 12px var(--mono);color:#050507;background:var(--c);border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.txlist strong{font-weight:700;font-size:17px}
+.txlist p{margin:0;color:var(--text-2);max-width:60ch}
+.txlist p b{color:var(--text)}
+.embed .back,.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:16px;padding-right:44px}
+@media (max-width:560px){.btn{padding:0 14px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="https://federicodb.github.io/index.html">← Orfini Math Lab</a>
+  <header>
+    <h1>Parabola e disequazioni in un minuto</h1>
+    <p class="lead">Per risolvere una disequazione di secondo grado basta trovare dove la parabola sta sopra o sotto l'asse x. Ecco come ci si arriva: scomposizione, segno, discriminante.</p>
+  </header>
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: scomposizione, studio del segno, metodo del delta, i tre casi del discriminante e la sfida"></canvas>
+  </div>
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn speed" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="71" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:11</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare.</p>
+  <a class="btn cta" style="align-self:flex-start" href="https://federicodb.github.io/content/apps/parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026.html">Apri il laboratorio</a>
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 71;
+const SANS = "Inter,system-ui,sans-serif", MONO = "'Space Mono',ui-monospace,monospace";
+let C = {};
+function leggiColori() {
+  const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
+  C = { bg: g('--bg'), s1: g('--surface'), s2: g('--surface-2'), s3: g('--surface-3'), text: g('--text'), text2: g('--text-2'), line: g('--line'), lineS: g('--line-strong'),
+    acc: g('--accent'), accSoft: g('--accent-soft'), sol: g('--sol'), pos: g('--pos'), neg: g('--neg'), warn: g('--warn'), grid: g('--grid'), axis: g('--axis') };
+}
+leggiColori();
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: 'hsl(190,95%,55%)',
+    cap: 'Una disequazione di secondo grado chiede: <b>dove la parabola sta sopra (o sotto) l\'asse x?</b>' },
+  { id: 'lab', label: 'Laboratorio', a: 5, b: 19, c: 'hsl(190,95%,55%)',
+    cap: 'x² − 5x + 6 > 0. Si scompone: (x − 2)(x − 3). Le radici 2 e 3 sono i punti dove la parabola tocca l\'asse. Fuori dalle radici sta sopra: <b>x &lt; 2 ∨ x &gt; 3</b>. Con «&lt; 0» la soluzione diventa quella in mezzo: <b>2 &lt; x &lt; 3</b>.' },
+  { id: 'segno', label: 'Studio del segno', a: 19, b: 32, c: 'hsl(155,85%,48%)',
+    cap: 'Lo stesso risultato con il <b>diagramma dei segni</b>: x − 2 e x − 3 cambiano segno nelle radici, il prodotto è positivo dove i segni sono concordi. Verifica con x = 0: (0 − 2)(0 − 3) = 6 &gt; 0.' },
+  { id: 'delta', label: 'Metodo del Δ', a: 32, b: 45, c: 'hsl(45,100%,58%)',
+    cap: 'Quando la scomposizione non salta all\'occhio si usa il <b>discriminante</b>: per 2x² − 3x − 2 è Δ = 9 + 16 = 25, le radici sono (3 ± 5) / 4, cioè −½ e 2. Per «&lt; 0» la soluzione sta in mezzo.' },
+  { id: 'casi', label: 'I tre casi', a: 45, b: 56, c: 'hsl(330,85%,66%)',
+    cap: 'Δ &gt; 0: due radici. Δ = 0: la parabola tocca l\'asse in un punto solo. Δ &lt; 0: <b>non lo tocca mai</b>, e il segno è sempre lo stesso.' },
+  { id: 'sfida', label: 'Sfida', a: 56, b: 66, c: 'hsl(190,95%,55%)',
+    cap: 'Nella Sfida rispondi in quattro passaggi: concavità, Δ, radici, soluzione. Il grafico si svela <b>un pezzo alla volta</b>, solo dopo ogni risposta giusta.' },
+  { id: 'end', label: 'Riepilogo', a: 66, b: 71, c: 'hsl(190,95%,55%)',
+    cap: 'Trova le radici, guarda la parabola, scrivi la soluzione: <b>sopra l\'asse è «&gt; 0», sotto è «&lt; 0»</b>.' }
+];
+
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 4);
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || 400} ${size}px ${o.f || SANS}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col; ctx.fillText(s, x, y);
+}
+function show(p, fn, dy = 10) {
+  if (p <= 0) return;
+  const keep = BASE; BASE = keep * p; A(1);
+  ctx.save(); ctx.translate(0, (1 - eo(p)) * dy); fn(); ctx.restore();
+  BASE = keep; A(1);
+}
+function arrow(x1, y1, x2, y2, col, w = 4) {
+  const d = Math.hypot(x2 - x1, y2 - y1); if (d < 2) return;
+  const ux = (x2 - x1) / d, uy = (y2 - y1) / d, h = Math.min(16, d * .6);
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux * h * .8, y2 - uy * h * .8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - ux * h - uy * h * .6, y2 - uy * h + ux * h * .6); ctx.lineTo(x2 - ux * h + uy * h * .6, y2 - uy * h - ux * h * .6); ctx.closePath(); ctx.fill();
+}
+function chip(sc) {
+  ctx.font = `600 22px ${SANS}`; const w = ctx.measureText(sc.label).width + 58;
+  rr(32, 28, w, 46, 12); ctx.fillStyle = C.s2; ctx.fill();
+  circ(56, 51, 6); ctx.fillStyle = sc.c; ctx.fill(); T(sc.label, 72, 52, 22, C.text, { al: 'left', w: 600 });
+}
+function card(x, y, w, h, fill, bordo) { rr(x, y, w, h, 18); ctx.fillStyle = fill || C.s1; ctx.fill(); if (bordo) { ctx.strokeStyle = bordo; ctx.lineWidth = 3; ctx.stroke(); } }
+
+/* Piano cartesiano: px,py,pw,ph in pixel; xr,yr intervalli del mondo */
+function piano(px, py, pw, ph, xr, yr) {
+  const X = x => px + (x - xr[0]) / (xr[1] - xr[0]) * pw;
+  const Y = y => py + ph - (y - yr[0]) / (yr[1] - yr[0]) * ph;
+  return { X, Y, px, py, pw, ph, xr, yr };
+}
+function assi(m, numeri = true, passo = 1) {
+  ctx.save(); rr(m.px, m.py, m.pw, m.ph, 14); ctx.clip();
+  ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.beginPath();
+  for (let x = Math.ceil(m.xr[0] / passo) * passo; x <= m.xr[1]; x += passo) { ctx.moveTo(m.X(x), m.py); ctx.lineTo(m.X(x), m.py + m.ph); }
+  for (let y = Math.ceil(m.yr[0] / passo) * passo; y <= m.yr[1]; y += passo) { ctx.moveTo(m.px, m.Y(y)); ctx.lineTo(m.px + m.pw, m.Y(y)); }
+  ctx.stroke();
+  ctx.strokeStyle = C.axis; ctx.lineWidth = 2; ctx.beginPath();
+  ctx.moveTo(m.px, m.Y(0)); ctx.lineTo(m.px + m.pw, m.Y(0));
+  if (m.xr[0] < 0 && m.xr[1] > 0) { ctx.moveTo(m.X(0), m.py); ctx.lineTo(m.X(0), m.py + m.ph); }
+  ctx.stroke();
+  ctx.restore();
+  if (numeri) for (let x = Math.ceil(m.xr[0]); x <= m.xr[1]; x++) if (x !== 0 && m.X(x) > m.px + 12 && m.X(x) < m.px + m.pw - 12) T(String(x).replace('-', '−'), m.X(x), m.Y(0) + 22, 20, C.text2, { f: MONO });
+}
+/* Curva disegnata fino alla frazione p; dove sol(x) è vera usa il colore della soluzione */
+function curva(m, f, p, sol, colBase) {
+  const N = 160, x0 = m.xr[0], x1 = x0 + (m.xr[1] - x0) * p;
+  ctx.save(); rr(m.px, m.py, m.pw, m.ph, 14); ctx.clip();
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  let prev = null;
+  for (let i = 0; i <= N; i++) {
+    const x = x0 + (x1 - x0) * i / N, pt = [m.X(x), m.Y(f(x))];
+    if (prev) {
+      const s = sol && sol((x + prev.x) / 2);
+      ctx.strokeStyle = s ? C.sol : (colBase || C.text); ctx.lineWidth = s ? 6 : 3.5; A(s || !sol ? 1 : .55);
+      ctx.beginPath(); ctx.moveTo(prev.pt[0], prev.pt[1]); ctx.lineTo(pt[0], pt[1]); ctx.stroke(); A(1);
+    }
+    prev = { x, pt };
+  }
+  ctx.restore();
+}
+/* Banda della soluzione sull'asse x tra a e b (±Infinity = fino al bordo, con freccia) */
+function banda(m, a, b, p = 1) {
+  const L = Math.max(m.px + 4, m.X(Math.max(a, m.xr[0]))), R0 = Math.min(m.px + m.pw - 4, m.X(Math.min(b, m.xr[1])));
+  const R = L + (R0 - L) * p, y = m.Y(0);
+  ctx.strokeStyle = C.sol; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(R, y); ctx.stroke();
+  ctx.fillStyle = C.sol;
+  if (a === -Infinity) { ctx.beginPath(); ctx.moveTo(m.px - 2, y); ctx.lineTo(m.px + 16, y - 11); ctx.lineTo(m.px + 16, y + 11); ctx.fill(); }
+  if (b === Infinity && p >= 1) { ctx.beginPath(); ctx.moveTo(m.px + m.pw + 2, y); ctx.lineTo(m.px + m.pw - 16, y - 11); ctx.lineTo(m.px + m.pw - 16, y + 11); ctx.fill(); }
+}
+function punto(m, x, pieno, col) {
+  circ(m.X(x), m.Y(0), 9); ctx.fillStyle = pieno ? col : C.bg; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 3.5; ctx.stroke();
+}
+/* Frazione disegnata a mano */
+function frazione(num, den, x, y, size, col, al = 'center') {
+  ctx.font = `600 ${size}px ${MONO}`;
+  const w = Math.max(ctx.measureText(num).width, ctx.measureText(den).width) + 16;
+  const cx = al === 'left' ? x + w / 2 : x;
+  T(num, cx, y - size * .62, size, col, { f: MONO, w: 600 }); T(den, cx, y + size * .68, size, col, { f: MONO, w: 600 });
+  ctx.fillStyle = col; ctx.fillRect(cx - w / 2, y - 1.5, w, 3);
+  return w;
+}
+
+/* ---------- intro ---------- */
+function sIntro(u) {
+  const m = piano(200, 150, 880, 460, [-0.5, 5.5], [-1.2, 5]);
+  show(prog(u, 0, .6), () => assi(m, false), 0);
+  const f = x => x * x - 5 * x + 6;
+  if (u > .4) curva(m, f, eo(prog(u, .4, 2.2)), u > 2.6 ? (x => f(x) > 0) : null);
+  show(prog(u, 2.6, 3.2), () => { banda(m, -Infinity, 2); banda(m, 3, Infinity); punto(m, 2, false, C.sol); punto(m, 3, false, C.sol); }, 0);
+  show(prog(u, 1, 1.8), () => {
+    ctx.fillStyle = C.bg; A(.92); rr(300, 40, 680, 96, 22); ctx.fill(); A(1);
+    T('Parabola e disequazioni', 640, 88, 52, C.text, { w: 700 });
+  });
+  show(prog(u, 3.2, 3.8), () => T('dove è sopra l\'asse x?  ·  dove è sotto?', 640, 660, 28, C.text2), 0);
+}
+
+/* ---------- laboratorio: scomporre e guardare la parabola ---------- */
+function sLab(u) {
+  const f = x => x * x - 5 * x + 6, minore = u > 9.4;
+  const LX = 90;
+  show(prog(u, 0, .5), () => T(minore ? 'x² − 5x + 6 < 0' : 'x² − 5x + 6 > 0', LX, 170, 40, C.text, { al: 'left', f: MONO, w: 700 }));
+  show(prog(u, 9.2, 9.8), () => { rr(LX - 10, 140, 380, 60, 14); ctx.strokeStyle = C.warn; ctx.lineWidth = 3; ctx.stroke(); }, 0);
+  show(prog(u, 1.4, 2), () => {
+    T('scomponi:', LX, 245, 24, C.text2, { al: 'left' });
+    T('(x − 2)(x − 3)', LX, 290, 36, C.sol, { al: 'left', f: MONO, w: 700 });
+  });
+  show(prog(u, 3, 3.6), () => {
+    T('radici:', LX, 365, 24, C.text2, { al: 'left' });
+    T('x = 2   x = 3', LX, 408, 32, C.text, { al: 'left', f: MONO, w: 700 });
+  });
+  show(prog(u, minore ? 11 : 6.4, minore ? 11.6 : 7), () => {
+    rr(LX - 10, 470, 440, 130, 18); ctx.fillStyle = C.accSoft; ctx.fill(); ctx.strokeStyle = C.sol; ctx.lineWidth = 2; ctx.stroke();
+    T('Soluzione', LX + 10, 505, 22, C.sol, { al: 'left', w: 700 });
+    T(minore ? '2 < x < 3' : 'x < 2  ∨  x > 3', LX + 10, 555, 36, C.sol, { al: 'left', f: MONO, w: 700 });
+  }, 0);
+  // piano
+  const m = piano(600, 120, 600, 520, [-0.5, 5.5], [-1.5, 6.5]);
+  assi(m);
+  const sol = u > 5.6 ? (minore ? (x => f(x) < 0) : (x => f(x) > 0)) : null;
+  curva(m, f, eo(prog(u, .4, 2.6)), sol);
+  if (u > 5.6 && !minore) show(prog(u, 5.6, 6.2), () => { banda(m, -Infinity, 2); banda(m, 3, Infinity); }, 0);
+  if (minore) show(prog(u, 10, 10.6), () => banda(m, 2, 3, eo(prog(u, 10, 10.8))), 0);
+  show(prog(u, 3.4, 4), () => { punto(m, 2, false, u > 5.6 ? C.sol : C.text); punto(m, 3, false, u > 5.6 ? C.sol : C.text); }, 0);
+  show(prog(u, 6.6, 7.2), () => !minore && T('sopra l\'asse', m.X(4.9), m.Y(5.4), 24, C.sol, { w: 700 }), 0);
+  if (minore) show(prog(u, 10.8, 11.4), () => T('sotto l\'asse', m.X(2.5), m.Y(-1.05), 24, C.sol, { w: 700 }), 0);
+}
+
+/* ---------- studio del segno ---------- */
+function sSegno(u) {
+  const X1 = 300, X2 = 1180, xa = 600, xb = 880, Y0 = 170;
+  const righe = [['x − 2', ['−', '+', '+']], ['x − 3', ['−', '−', '+']], ['P(x)', ['+', '−', '+']]];
+  const bordi = [[X1, xa], [xa, xb], [xb, X2]];
+  show(prog(u, 0, .5), () => {
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X1 - 20, Y0); ctx.lineTo(X2 + 10, Y0); ctx.stroke();
+    arrow(X2, Y0, X2 + 24, Y0, C.axis, 3);
+    [[xa, '2'], [xb, '3']].forEach(([x, s]) => {
+      ctx.strokeStyle = C.lineS; ctx.lineWidth = 2; ctx.setLineDash([6, 8]); ctx.beginPath(); ctx.moveTo(x, Y0); ctx.lineTo(x, 560); ctx.stroke(); ctx.setLineDash([]);
+      T(s, x, Y0 - 32, 28, C.text, { f: MONO, w: 700 });
+    });
+  });
+  righe.forEach(([lab, segni], r) => {
+    const y = 270 + r * 110, ris = r === 2, t0 = .8 + r * 2.2;
+    if (ris) show(prog(u, 7.6, 8.2), () => [0, 2].forEach(k => { rr(bordi[k][0], y - 44, bordi[k][1] - bordi[k][0], 70, 12); ctx.fillStyle = C.accSoft; ctx.fill(); }), 0);
+    show(prog(u, t0, t0 + .4), () => T(lab, X1 - 40, y, 28, ris ? C.sol : C.text2, { al: 'right', f: MONO, w: 700 }), 0);
+    segni.forEach((sg, k) => show(prog(u, t0 + .3 + k * .5, t0 + .7 + k * .5), () => {
+      const [a, b] = bordi[k], col = sg === '+' ? C.pos : C.neg;
+      ctx.strokeStyle = col; ctx.lineWidth = ris ? 6 : 4; if (sg === '−' && !ris) ctx.setLineDash([12, 9]);
+      ctx.beginPath(); ctx.moveTo(a + 6, y); ctx.lineTo(b - 6, y); ctx.stroke(); ctx.setLineDash([]);
+      T(sg, (a + b) / 2, y - 28, 34, col, { w: 700 });
+    }, 0));
+    if (!ris) show(prog(u, t0 + 1.4, t0 + 1.8), () => { const x = r === 0 ? xa : xb; circ(x, y, 9); ctx.fillStyle = C.bg; ctx.fill(); ctx.strokeStyle = C.text; ctx.lineWidth = 3; ctx.stroke(); }, 0);
+  });
+  show(prog(u, 6.6, 7.2), () => T('segni concordi → +   ·   discordi → −', 640, 600, 26, C.text2), 0);
+  show(prog(u, 8.4, 9), () => [xa, xb].forEach(x => { circ(x, 490, 9); ctx.fillStyle = C.bg; ctx.fill(); ctx.strokeStyle = C.sol; ctx.lineWidth = 3.5; ctx.stroke(); }), 0);
+  show(prog(u, 9.4, 10), () => {
+    rr(250, 640, 780, 56, 14); ctx.fillStyle = C.s2; ctx.fill();
+    T('prova x = 0:  (0 − 2)(0 − 3) = 6 > 0  ✓', 640, 668, 26, C.text, { f: MONO, w: 700 });
+  }, 0);
+}
+
+/* ---------- metodo del delta ---------- */
+function sDelta(u) {
+  const LX = 90, f = x => 2 * x * x - 3 * x - 2;
+  show(prog(u, 0, .5), () => T('2x² − 3x − 2 < 0', LX, 160, 38, C.text, { al: 'left', f: MONO, w: 700 }));
+  [['a = 2', 1], ['b = −3', 1.4], ['c = −2', 1.8]].forEach(([s, t], i) => show(prog(u, t, t + .4), () => {
+    rr(LX + i * 150, 205, 136, 50, 12); ctx.fillStyle = C.s2; ctx.fill(); T(s, LX + 68 + i * 150, 231, 24, C.text, { f: MONO, w: 700 });
+  }, 0));
+  show(prog(u, 3, 3.5), () => T('Δ = b² − 4ac', LX, 310, 28, C.text2, { al: 'left', f: MONO }));
+  show(prog(u, 3.8, 4.3), () => T('= (−3)² − 4·2·(−2)', LX, 355, 28, C.text2, { al: 'left', f: MONO }));
+  show(prog(u, 4.8, 5.3), () => T('= 9 + 16 = 25', LX, 400, 32, C.warn, { al: 'left', f: MONO, w: 700 }));
+  show(prog(u, 6.2, 6.8), () => {
+    T('x =', LX, 485, 30, C.text2, { al: 'left', f: MONO });
+    frazione('3 ± 5', '4', LX + 70, 485, 30, C.text, 'left');
+  });
+  show(prog(u, 7.4, 8), () => T('x₁ = −½    x₂ = 2', LX, 580, 32, C.text, { al: 'left', f: MONO, w: 700 }));
+  show(prog(u, 10, 10.6), () => {
+    rr(LX - 10, 625, 420, 70, 16); ctx.fillStyle = C.accSoft; ctx.fill(); ctx.strokeStyle = C.sol; ctx.lineWidth = 2; ctx.stroke();
+    T('S:  −½ < x < 2', LX + 10, 660, 32, C.sol, { al: 'left', f: MONO, w: 700 });
+  }, 0);
+  const m = piano(640, 110, 560, 540, [-2, 3.5], [-4, 6]);
+  assi(m);
+  curva(m, f, eo(prog(u, .5, 2.5)), u > 8.6 ? (x => f(x) < 0) : null);
+  show(prog(u, 7.6, 8.2), () => {
+    punto(m, -.5, false, u > 8.6 ? C.sol : C.text); punto(m, 2, false, u > 8.6 ? C.sol : C.text);
+    T('−½', m.X(-.5), m.Y(0) - 28, 22, C.text, { f: MONO, w: 700 });
+  }, 0);
+  show(prog(u, 8.6, 9.4), () => banda(m, -.5, 2, eo(prog(u, 8.6, 9.6))), 0);
+}
+
+/* ---------- i tre casi del discriminante ---------- */
+function sCasi(u) {
+  const casi = [
+    { t: 'Δ > 0', d: 'due radici', f: x => x * x - 4, xr: [-3.5, 3.5], yr: [-5, 6], r: [-2, 2], es: 'x² − 4', col: C.pos },
+    { t: 'Δ = 0', d: 'una radice doppia', f: x => (x - 3) * (x - 3), xr: [-0.5, 6.5], yr: [-2, 9], r: [3], es: 'x² − 6x + 9', col: C.warn },
+    { t: 'Δ < 0', d: 'nessuna radice', f: x => x * x + 1, xr: [-3.5, 3.5], yr: [-2, 9], r: [], es: 'x² + 1', col: C.neg }
+  ];
+  casi.forEach((k, i) => show(prog(u, .2 + i * 1.2, .8 + i * 1.2), () => {
+    const x0 = 70 + i * 390;
+    rr(x0, 110, 360, 330, 18); ctx.fillStyle = C.s1; ctx.fill();
+    T(k.t, x0 + 24, 148, 30, k.col, { al: 'left', f: MONO, w: 700 }); T(k.d, x0 + 336, 148, 22, C.text2, { al: 'right' });
+    const m = piano(x0 + 20, 180, 320, 240, k.xr, k.yr);
+    assi(m, false);
+    curva(m, k.f, eo(prog(u, .6 + i * 1.2, 2 + i * 1.2)));
+    k.r.forEach(x => show(prog(u, 2 + i * 1.2, 2.4 + i * 1.2), () => { circ(m.X(x), m.Y(0), 8); ctx.fillStyle = k.col; ctx.fill(); }, 0));
+    T(k.es, x0 + 180, 470, 24, C.text2, { f: MONO });
+  }, 12));
+  const esempi = [['x² − 6x + 9 ≤ 0', 'S = {3}', 5.4], ['x² + 1 > 0', 'per ogni x', 6.6], ['x² + 1 < 0', 'nessuna x', 7.8]];
+  esempi.forEach(([q, s, t], i) => show(prog(u, t, t + .5), () => {
+    const y = 535 + i * 56;
+    T(q, 600, y, 28, C.text, { al: 'right', f: MONO, w: 700 }); T('→  ' + s, 630, y, 28, C.sol, { al: 'left', f: MONO, w: 700 });
+  }, 0));
+}
+
+/* ---------- sfida: quattro passaggi, il grafico si svela ---------- */
+function sSfida(u) {
+  const f = x => -x * x + 4;
+  show(prog(u, 0, .5), () => T('−x² + 4 ≥ 0', 90, 150, 38, C.text, { al: 'left', f: MONO, w: 700 }));
+  const passi = [['Concavità', '∩ verso il basso (a = −1)', 1], ['Discriminante', 'Δ = 0 − 4·(−1)·4 = 16', 3], ['Radici', 'x = −2   x = 2', 5], ['Soluzione', '−2 ≤ x ≤ 2', 7]];
+  passi.forEach(([n, r, t], i) => show(prog(u, t, t + .4), () => {
+    const y = 200 + i * 112, fatto = u > t + 1.2;
+    rr(80, y, 520, 96, 16); ctx.fillStyle = fatto ? C.s1 : C.accSoft; ctx.fill(); ctx.strokeStyle = fatto ? C.line : C.acc; ctx.lineWidth = 2; ctx.stroke();
+    T(`${i + 1}. ${n}`, 104, y + 30, 22, C.text2, { al: 'left', w: 600 });
+    show(prog(u, t + .6, t + 1), () => { T(r, 104, y + 66, 26, i === 3 ? C.sol : C.text, { al: 'left', f: MONO, w: 700 }); T('✓', 570, y + 48, 30, C.pos, { w: 700 }); }, 0);
+  }, 0));
+  const lv = u > 8 ? 4 : u > 6 ? 3 : u > 2 ? 1 : 0;
+  const m = piano(660, 130, 540, 520, [-3.5, 3.5], [-5, 5.5]);
+  assi(m, lv >= 3);
+  if (lv >= 1) curva(m, f, eo(prog(u, 2, 3.4)), lv >= 4 ? (x => f(x) >= 0) : null);
+  if (lv >= 4) banda(m, -2, 2, eo(prog(u, 8, 8.8)));
+  if (lv >= 3) [-2, 2].forEach(x => punto(m, x, true, lv >= 4 ? C.sol : C.text));
+  const msg = lv === 0 ? 'il grafico compare dopo la prima risposta' : lv < 3 ? 'i numeri compaiono con le radici' : lv < 4 ? 'la soluzione compare alla fine' : 'pallini pieni: −2 e 2 sono inclusi (≥)';
+  T(msg, m.px + m.pw / 2, 690, 22, C.text2);
+}
+
+/* ---------- riepilogo ---------- */
+function sEnd(u) {
+  const passi = [['trova le radici', C.warn], ['guarda la parabola', C.text], ['scrivi la soluzione', C.sol]];
+  passi.forEach(([s, c], i) => show(prog(u, i * .4, .5 + i * .4), () => {
+    const x = 250 + i * 390; rr(x - 170, 230, 340, 90, 45); ctx.fillStyle = C.s1; ctx.fill(); ctx.strokeStyle = c; ctx.lineWidth = 3; ctx.stroke();
+    T(s, x, 276, 28, C.text, { w: 700 });
+    if (i < 2) arrow(x + 180, 276, x + 212, 276, C.text2, 3);
+  }));
+  show(prog(u, 1.6, 2.2), () => {
+    T('sopra l\'asse  →  «> 0»', 640, 430, 34, C.sol, { f: MONO, w: 700 });
+    T('sotto l\'asse  →  «< 0»', 640, 490, 34, C.text2, { f: MONO, w: 700 });
+  });
+}
+
+const FN = { intro: sIntro, lab: sLab, segno: sSegno, delta: sDelta, casi: sCasi, sfida: sSfida, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta dall'app; #lab #segno #delta #casi #sfida → parte da quella scena e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.id !== 'intro' && sc.id !== 'end') chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map(sc => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = String(speed).replace('.', ',') + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+// il tema cambia nell'app (stessa chiave): ricolora
+window.addEventListener('storage', e => {
+  if (e.key !== 'orfini_theme') return;
+  if (e.newValue === 'light') document.documentElement.dataset.tema = 'chiaro'; else delete document.documentElement.dataset.tema;
+  leggiColori();
+});
+})();
+</script>
+</body>
+</html>

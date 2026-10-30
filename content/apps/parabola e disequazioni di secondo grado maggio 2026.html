@@ -641,6 +641,90 @@
             .g-reset span { display: none; }
         }
 
+        /* ---------- Spiegazione animata ---------- */
+
+        .btn-spiega {
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: 0 1rem 0 .8rem;
+            border-radius: 999px;
+            border: 1px solid var(--accent);
+            background: var(--accent-soft);
+            color: var(--text);
+            font-weight: 600;
+            font-size: .92rem;
+        }
+
+        .btn-spiega svg, .link-btn svg { width: 18px; height: 18px; color: var(--accent); }
+        .btn-spiega:hover { background: var(--accent); color: var(--on-accent); }
+        .btn-spiega:hover svg { color: var(--on-accent); }
+
+        .link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            min-height: 2.5rem;
+            padding: 0 .2rem;
+            border: 0;
+            background: none;
+            color: var(--accent);
+            font-size: .9rem;
+            font-weight: 600;
+        }
+
+        .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+        .blocco-testa { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 1rem; }
+        .blocco-testa h2 { margin: 0; }
+        .blocco-testa + * { margin-top: .4rem; }
+
+        .explain {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            display: grid;
+            place-items: center;
+            padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+            background: rgba(0, 0, 0, .78);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+        }
+
+        .explain-box {
+            position: relative;
+            width: min(1000px, 100%);
+            height: min(88dvh, 820px);
+            border-radius: var(--r-l);
+            overflow: hidden;
+            background: var(--bg);
+            border: 1px solid var(--line);
+        }
+
+        .explain-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+        .explain-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 999px;
+            border: 1px solid var(--line-strong);
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .explain-close svg { width: 20px; height: 20px; }
+
+        @media (max-width: 899px), (orientation: portrait) {
+            .btn-spiega { width: 44px; padding: 0; justify-content: center; }
+            .btn-spiega span { display: none; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             * { transition: none !important; }
         }
@@ -729,6 +813,10 @@
             </nav>
 
             <div class="azioni">
+                <button type="button" class="btn-spiega" data-explain="" title="Spiegazione animata di un minuto">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>
+                    <span>Spiegami</span>
+                </button>
                 <button type="button" class="icona solo-mobile" id="btn-grafico" aria-pressed="true" aria-label="Nascondi il grafico" title="Mostra o nascondi il grafico">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18" /><path d="M6 16c2.5-9 6.5-9 9 0" /></svg>
                 </button>
@@ -799,12 +887,18 @@
                     </section>
 
                     <section class="blocco" aria-labelledby="h-scomp">
-                        <h2 id="h-scomp">Scomposizione</h2>
+                        <div class="blocco-testa">
+                            <h2 id="h-scomp">Scomposizione</h2>
+                            <button type="button" class="link-btn" data-explain="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
+                        </div>
                         <div id="algebra-output"></div>
                     </section>
 
                     <section class="blocco" aria-labelledby="h-segni">
-                        <h2 id="h-segni">Studio del segno</h2>
+                        <div class="blocco-testa">
+                            <h2 id="h-segni">Studio del segno</h2>
+                            <button type="button" class="link-btn" data-explain="segno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
+                        </div>
                         <div class="segni">
                             <div id="factors-output"></div>
                             <div id="sign-chart-container"></div>
@@ -815,6 +909,7 @@
                 <!-- ==================== METODO DEL DELTA ==================== -->
                 <div id="tab-delta" role="tabpanel" aria-labelledby="btn-delta" hidden>
                     <div id="delta-output"></div>
+                    <p><button type="button" class="link-btn" data-explain="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona il metodo del Δ</button></p>
                 </div>
 
                 <!-- ==================== RICHIAMI ==================== -->
@@ -838,6 +933,7 @@
                             <p>Se $\Delta < 0$, la parabola non tocca mai l'asse x. È tutta sopra ($a > 0$) o tutta sotto ($a < 0$).</p>
                         </li>
                     </ol>
+                    <p><button type="button" class="link-btn" data-explain="casi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Guarda i tre casi del Δ</button></p>
 
                     <h2 class="sezione-titolo">Le scomposizioni da riconoscere</h2>
                     <div class="regole">
@@ -874,6 +970,7 @@
                         <h2>Sfida: cinque disequazioni</h2>
                         <p>Ogni esercizio si risolve in quattro passaggi: concavità, discriminante (o scomposizione), radici e soluzione. Il grafico non ti dà la risposta: compare un pezzo alla volta, dopo ogni passaggio giusto.</p>
                         <button type="button" class="btn primario" id="btn-inizia">Inizia la sfida</button>
+                        <button type="button" class="link-btn" data-explain="sfida" style="margin-left:.75rem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
                     </div>
 
                     <div id="challenge-game" hidden>
@@ -895,6 +992,15 @@
 
             </div>
         </main>
+    </div>
+
+    <div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
+        <div class="explain-box">
+            <button type="button" class="explain-close" id="explainClose" aria-label="Chiudi la spiegazione">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+            </button>
+            <iframe id="explainFrame" title="Spiegazione animata: parabola e disequazioni" allow="fullscreen"></iframe>
+        </div>
     </div>
 
     <script>
@@ -2300,6 +2406,28 @@
             sfidaGraph.data = null;
             graphSync();
         }
+
+        // --- SPIEGAZIONE ANIMATA ---
+        /* scena: '' = tutta l'animazione, oppure 'lab' | 'segno' | 'delta' | 'casi' | 'sfida' */
+        function openExplainer(scena = '') {
+            $('explainFrame').src = 'parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026_spiegazione.html?embed=1' + (scena ? '#' + scena : '');
+            $('explain').hidden = false;
+            $('explainClose').focus();
+        }
+        function closeExplainer() {
+            $('explain').hidden = true;
+            $('explainFrame').src = 'about:blank';   // ferma l'animazione
+        }
+        $('explainClose').addEventListener('click', closeExplainer);
+        $('explain').addEventListener('click', e => { if (e.target.id === 'explain') closeExplainer(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('explain').hidden) closeExplainer(); });
+        window.addEventListener('message', e => {
+            if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-finita') setTimeout(closeExplainer, 1500);
+        });
+        document.addEventListener('click', e => {
+            const b = e.target.closest('[data-explain]');
+            if (b) openExplainer(b.dataset.explain);
+        });
 
         $('btn-inizia').addEventListener('click', startChallenge);
         $('btn-nuova').addEventListener('click', resetChallenge);
