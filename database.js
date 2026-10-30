@@ -1,66 +1,9 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-30 11:36:20
+   Data: 2026-10-30 20:55:08
 */
 
 const db = [
-    {
-        "title": "φ è irrazionale: il rapporto aureo",
-        "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
-        "tags": [
-            "$\\PHI$",
-            "3D",
-            "FILLOTASSI",
-            "GEOMETRIA",
-            "INCOMMENSURABILITÀ",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "RAPPORTO AUREO",
-            "SEZIONE AUREA",
-            "SPIRALE",
-            "WEBGL"
-        ],
-        "date": "2026-10-30",
-        "url": "content/apps/phi_is_irrational_01.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            }
-        ]
-    },
     {
         "title": "Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola",
         "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
@@ -120,6 +63,70 @@ const db = [
                     "MAT_A3",
                     "MAT_K1"
                 ]
+            }
+        ]
+    },
+    {
+        "title": "φ è irrazionale: il rapporto aureo",
+        "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
+        "tags": [
+            "$\\PHI$",
+            "3D",
+            "FILLOTASSI",
+            "GEOMETRIA",
+            "INCOMMENSURABILITÀ",
+            "MATEMATICA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "RAPPORTO AUREO",
+            "SEZIONE AUREA",
+            "SPIRALE",
+            "WEBGL"
+        ],
+        "date": "2026-10-30",
+        "url": "content/apps/phi_is_irrational_01.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "φ e le frazioni di Fibonacci: vedere un numero che non si lascia scrivere",
+                "url": "journal/2026-10-30-phi-e-le-frazioni-di-fibonacci/",
+                "data": "2026-10-30"
             }
         ]
     },
@@ -243,6 +250,13 @@ const db = [
                     "MAT_K3"
                 ]
             }
+        ],
+        "journal": [
+            {
+                "titolo": "Math Pool: la retta diventa un tiro di sponda",
+                "url": "journal/2026-10-29-math-pool-la-retta-come-tiro-di-sponda/",
+                "data": "2026-10-29"
+            }
         ]
     },
     {
@@ -273,7 +287,14 @@ const db = [
         "type": "app",
         "icon": "⚡",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp"
+        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
+        "journal": [
+            {
+                "titolo": "Snake of Life: un serpente che impara da solo",
+                "url": "journal/2026-10-29-snake-of-life-un-serpente-che-impara/",
+                "data": "2026-10-29"
+            }
+        ]
     },
     {
         "title": "Snake of Life",
@@ -306,7 +327,14 @@ const db = [
         "type": "app",
         "icon": "💻",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/snake_conway_self.webp"
+        "thumbnail": "content/assets/thumbnails/snake_conway_self.webp",
+        "journal": [
+            {
+                "titolo": "Snake of Life: un serpente che impara da solo",
+                "url": "journal/2026-10-29-snake-of-life-un-serpente-che-impara/",
+                "data": "2026-10-29"
+            }
+        ]
     },
     {
         "title": "$\\pi$ is irrational: perché π non è una frazione",
@@ -425,7 +453,14 @@ const db = [
         "type": "app",
         "icon": "👾",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/arcade_challenge_unita_di_misura.webp"
+        "thumbnail": "content/assets/thumbnails/arcade_challenge_unita_di_misura.webp",
+        "journal": [
+            {
+                "titolo": "Arcade Challenge: le unità di misura in ascensore",
+                "url": "journal/2026-10-26-arcade-challenge-unita-di-misura/",
+                "data": "2026-10-26"
+            }
+        ]
     },
     {
         "title": "FuncLab AI: Esploratore di Funzioni",
@@ -519,7 +554,14 @@ const db = [
         "type": "app",
         "icon": "🔢",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp"
+        "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp",
+        "journal": [
+            {
+                "titolo": "Arcade Challenge: le unità di misura in ascensore",
+                "url": "journal/2026-10-26-arcade-challenge-unita-di-misura/",
+                "data": "2026-10-26"
+            }
+        ]
     },
     {
         "title": "Arcade Challenge: Scomposizioni & Parabola",
@@ -1084,6 +1126,13 @@ const db = [
                 "mat": [
                     "MAT_K3"
                 ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "φ e le frazioni di Fibonacci: vedere un numero che non si lascia scrivere",
+                "url": "journal/2026-10-30-phi-e-le-frazioni-di-fibonacci/",
+                "data": "2026-10-30"
             }
         ]
     },

@@ -633,8 +633,8 @@ def main():
         
         # Scansione ricorsiva
         for root, dirs, files in os.walk(target_dir):
-            # Modifica in-place della lista dirs per escludere cartelle nascoste e assets dal walk
-            dirs[:] = [d for d in dirs if not d.startswith('.') and d != 'assets']
+            # Modifica in-place della lista dirs per escludere cartelle nascoste, assets e journal (note: journal_build.py) dal walk
+            dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ('assets', 'journal')]
 
             # Determina la categoria basandosi sul percorso
             path_parts = root.split(os.sep)
@@ -1010,6 +1010,17 @@ def main():
         group['date'] = group['versions'][0]['date']
         db_verifiche.append(group)
 
+    # Journal: pagine delle note in journal/ e, per ogni attività citata, l'elenco delle sue note
+    journal_sitemap = []
+    try:
+        import journal_build
+        note_per_url, journal_sitemap, _ = journal_build.build_journal(db_main, BASE_URL)
+        for item in db_main:
+            if item.get('url') in note_per_url:
+                item['journal'] = note_per_url[item['url']]
+    except ImportError as e:
+        print(f"  ⚠️ Journal saltato ({e}): installare 'markdown' nel .venv")
+
     # Scrive il file JS (Main)
     js_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py \n   Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n*/\n\nconst {OUTPUT_VAR_NAME} = " + json.dumps(db_main, indent=4, ensure_ascii=False) + ";"
     with open(DB_FILE, 'w', encoding='utf-8') as f:
@@ -1021,15 +1032,15 @@ def main():
         f.write(js_verifiche_content)
         
     # Scrive la Sitemap XML
-    generate_sitemap(db_main)
+    generate_sitemap(db_main, journal_sitemap)
     
     # Iniezione SEO nell'index.html
     update_index_seo(db_main)
     
     print(f"\n✨ Successo! Salvati {len(db_main)} Laboratori e {len(db_verifiche)} Verifiche.")
 
-def generate_sitemap(items):
-    """ Genera la sitemap XML standard per i motori di ricerca """
+def generate_sitemap(items, extra_pages=()):
+    """ Genera la sitemap XML standard per i motori di ricerca (extra_pages: [(url, lastmod)], es. le note del Journal) """
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     
@@ -1069,6 +1080,14 @@ def generate_sitemap(items):
         xml += f'    <lastmod>{item.get("date", datetime.now().strftime("%Y-%m-%d"))}</lastmod>\n'
         xml += '    <changefreq>monthly</changefreq>\n'
         xml += f'    <priority>{priority}</priority>\n'
+        xml += '  </url>\n'
+
+    for page_url, lastmod in extra_pages:
+        xml += '  <url>\n'
+        xml += f'    <loc>{BASE_URL}{page_url}</loc>\n'
+        xml += f'    <lastmod>{lastmod}</lastmod>\n'
+        xml += '    <changefreq>monthly</changefreq>\n'
+        xml += '    <priority>0.6</priority>\n'
         xml += '  </url>\n'
 
     xml += '</urlset>'

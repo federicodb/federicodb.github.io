@@ -119,7 +119,7 @@ Tutte contengono link **assoluti** a `https://federicodb.github.io/...` (pulsant
 
 ## Altri file pubblicati (fuori catalogo)
 
-- `orfini-games/` (`SKILL.md`, `templates/game-2d.html`, `game-3d.html`, `references/`, `scripts/`): una skill di sviluppo per giochi, pubblicata sul sito anche se non è collegata da nessuna pagina.
+- `orfini-games/`: skill di sviluppo per giochi, solo locale (in `.gitignore`, non pubblicata).
 - `orfini-math-quest.zip` (532 KB): archivio tracciato da git e quindi scaricabile da chiunque all'indirizzo `/orfini-math-quest.zip`.
 - `database_verifiche.js`, `riforma2017.json`, `manifest.json`, `sitemap.xml`, `robots.txt`, `cookie-consent.*`.
 

@@ -53,3 +53,13 @@ Ogni voce: data, decisione, motivo.
 - **Immagini: mai visi di studenti**, solo foto di spalle o ritoccate. Lo script cancella i metadati (GPS) ma non riconosce i visi: il controllo resta del docente.
 - **YouTube solo come link**, non incorporato: nessun contenuto di terzi caricato, nessuna modifica a cookie consent e privacy policy.
 - **`markdown` 3.10.3** è già nel sistema (pacchetto Manjaro); va aggiunto al `.venv`, che non vede i pacchetti di sistema.
+
+## 2026-10-30 — Journal, passi 1-2 (implementazione)
+
+- **Modulo `journal_build.py`**, chiamato da `build.py` prima di scrivere `database.js`. Non si chiama `journal.py` per non confondersi con la cartella generata `journal/`. Se la libreria `markdown` manca, il build del catalogo continua e il Journal viene saltato con un avviso.
+- **`journal/` si rigenera solo se contiene il file `.generato-da-build`**: il build non cancella mai una cartella che non ha creato lui.
+- **Le note con `stato: esempio` o `bozza`** si vedono in anteprima, ma hanno `noindex` e non entrano nella sitemap. Le 4 note d'esempio descrivono solo fatti ricavati da app e commit; le parti "In classe" e "Cosa cambio" sono `[DA COMPILARE DAL DOCENTE]`.
+- **`.gitignore`**: aggiunte le eccezioni `!content/journal/*.md` e `!journal_build.py`. Senza, le note sarebbero state ignorate da git senza avviso.
+- **Difetto trovato dal test e corretto**: codificando gli URL, il `#` dei link alla Quest diventava `%23` (404).
+- **Correzione dell'audit**: `orfini-games/` non è pubblicata (è in `.gitignore`, il sito risponde 404). Lo zip invece è pubblico.
+- **Problema esistente reso visibile**: per φ e Fibonacci il build suggerisce come allenamento "Pendenza di una retta" e "Rette parallele" (collegamenti sbagliati di `link_allenamento`). Per ora non è stato corretto.

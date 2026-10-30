@@ -77,7 +77,7 @@ Quindi il passo 6 della Fase 3 non deve creare una modalità chiara da zero. Dev
 ## 5. Pagine orfane, duplicati, file in più
 
 - ℹ️ Le 11 `*_spiegazione.html` non compaiono nel catalogo né in link statici: si aprono in iframe dal pulsante "Spiegami" dell'app madre. Non sono orfane, ma senza JS sono irraggiungibili.
-- ⚠️ `orfini-games/` (skill di sviluppo: `SKILL.md`, `templates/game-2d.html`, `game-3d.html`, script) è pubblicata sul sito senza essere collegata da nessuna parte.
+- ℹ️ `orfini-games/` (skill di sviluppo) esiste solo in locale: è in `.gitignore`, non è tracciata e il sito risponde 404. *Correzione del 2026-10-30: la prima versione dell'audit la dava per pubblicata.*
 - ⚠️ `orfini-math-quest.zip` (532 KB) è tracciato da git, quindi chiunque può scaricarlo da `/orfini-math-quest.zip`. Va deciso se deve restare pubblico.
 - ⚠️ Sidecar duplicato con maiuscole diverse: `content/infografiche/guida_al_mondo_delle_funzioni_matematiche.json` e `Guida_al_Mondo_delle_Funzioni_Matematiche.json` (cambia solo la data, 12 contro 13 dicembre). Su sistemi che non distinguono le maiuscole (Windows, macOS) i due file collidono.
 - ⚠️ Manca `.nojekyll`: GitHub elabora il sito con Jekyll. Così i file `.md` (anche questi in `docs/`) diventano pagine pubblicate, mentre file e cartelle che iniziano con `_` non vengono pubblicati (es. `allenamento/activities/_modello.js`: oggi non è servito, ed è corretto perché è un modello). È un punto da decidere in Fase 2.
@@ -138,7 +138,7 @@ Questi elementi restano come sono in tutta la riorganizzazione. Si cambiano solo
 | Catalogo statico con link veri al posto del blocco nascosto; pagine indice leggibili senza JS | 2–4 |
 | Tabella dei codici classe (anno + indirizzo) e classi mancanti | 2 (schema), 3.1 |
 | Link assoluti delle spiegazioni → relativi, e correzione dello stampo `spiegami` | 3 / 4 |
-| `.nojekyll`, `orfini-games/`, `orfini-math-quest.zip`, sidecar duplicato | 2 (decisione) |
+| `.nojekyll`, `orfini-math-quest.zip`, sidecar duplicato | 2 (decisione) |
 | Tailwind/React senza versione: fissare le versioni senza riscrivere le app | da decidere, app per app |
 | Immagini pesanti: versioni WebP per il catalogo, mantenendo l'originale all'URL attuale | 4 |
 | Overflow su telefono di `math_underground003_4el` e `retta_fallout_002` | da decidere |

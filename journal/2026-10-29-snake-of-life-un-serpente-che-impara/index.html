@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="it">
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare la nota in content/journal/ -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Snake of Life: un serpente che impara da solo | Journal · Orfini Math Lab</title>
+    <meta name="description" content="Un esperimento del laboratorio: il Gioco della Vita di Conway incontra un algoritmo evolutivo.">
+    <meta name="author" content="Prof. Federico De Benedictis">
+    <link rel="canonical" href="https://federicodb.github.io/journal/2026-10-29-snake-of-life-un-serpente-che-impara/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://federicodb.github.io/journal/2026-10-29-snake-of-life-un-serpente-che-impara/">
+    <meta property="og:title" content="Snake of Life: un serpente che impara da solo">
+    <meta property="og:description" content="Un esperimento del laboratorio: il Gioco della Vita di Conway incontra un algoritmo evolutivo.">
+    <meta property="og:image" content="https://federicodb.github.io/content/assets/thumbnails/snake_conway_self.webp">
+    <meta property="article:published_time" content="2026-10-29">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet" href="../../cookie-consent.css">
+    <script>
+        if (localStorage.getItem('orfini_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+    <link rel="stylesheet" href="../../content/assets/style/theme-light.css">
+    <link rel="stylesheet" href="../../journal.css">
+    <script src="../../content/assets/js/theme-toggle.js" defer></script>
+</head>
+
+<body>
+
+    <nav id="main-nav">
+        <div class="container nav-container">
+            <div class="nav-row-1">
+                <a href="../../index.html" class="brand">
+                    <span class="brand-title">ORFINI</span>
+                    <span class="brand-sub">JOURNAL</span>
+                </a>
+                <div class="nav-links">
+                    <a href="../../journal/" class="nav-link active" aria-current="page">Journal</a>
+                    <a href="../../allenamento/" class="nav-link nav-link-cta">Allenati</a>
+                    <a href="../../calcolo-mentale.html" class="nav-link">Calcolo veloce</a>
+                    <a href="../../verifiche.html" class="nav-link">Archivio</a>
+                    <a href="../../galaxy.html" class="nav-link">Mappa</a>
+                    <a href="../../competenze.html" class="nav-link">Competenze</a>
+                    <a href="../../scuola.html" class="nav-link">La Scuola</a>
+                    <a href="../../index.html#about" class="nav-link">Chi Sono</a>
+                    <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+                        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container jr" id="contenuto">
+        <p class="jr-back"><a href="../">← Tutte le note</a></p>
+        <article class="jr-note">
+            <header>
+                <p class="jr-meta"><time datetime="2026-10-29">29 ottobre 2026</time> · Prof. Federico De Benedictis</p>
+                <h1>Snake of Life: un serpente che impara da solo</h1>
+                <p class="jr-lead">Un esperimento del laboratorio: il Gioco della Vita di Conway incontra un algoritmo evolutivo.</p>
+            </header>
+        <p class="jr-flag">Nota d'esempio, scritta per vedere come appare il Journal. Le parti sull'uso in classe sono da compilare.</p>
+            <div class="jr-body">
+<h2>Cosa è</h2>
+<p>Snake of Life è nato come esperimento di arte e codice. Il campo di gioco è il <strong>Gioco della Vita</strong> di Conway, una griglia in cui ogni cella vive o muore in base alle vicine:</p>
+<ul>
+<li>una cella viva con 2 o 3 vicine vive sopravvive;</li>
+<li>una cella vuota con esattamente 3 vicine vive nasce;</li>
+<li>in tutti gli altri casi la cella muore o resta vuota.</li>
+</ul>
+<p>Dentro questo mondo che cambia da solo si muove un serpente. Nessuno gli spiega le regole. In ogni generazione giocano 16 serpenti; quelli che sopravvivono più a lungo fanno figli, e generazione dopo generazione il loro "cervello" migliora.</p>
+<figure><img loading="lazy" alt="Snake of Life" src="../../content/assets/thumbnails/snake_conway_self.webp"><figcaption>Snake of Life</figcaption></figure>
+<h2>Perché sta nel laboratorio</h2>
+<p>È un modo concreto per parlare di <strong>evoluzione</strong> e di <strong>intelligenza artificiale</strong> senza formule: si vede una popolazione che migliora per selezione, non perché qualcuno l'ha programmata a mano. Ha la stessa famiglia di idee dell'app sugli automi cellulari a soglie: regole locali semplici, comportamenti globali complessi.</p>
+<h2>In classe</h2>
+<p>[DA COMPILARE DAL DOCENTE: se e dove l'ho usato, che domande hanno fatto gli studenti.]</p>
+<h2>Cosa cambio</h2>
+<p>[DA COMPILARE DAL DOCENTE]</p>
+
+            </div>
+        </article>
+        <section class="jr-acts" aria-labelledby="att">
+            <h2 id="att">Le attività di cui parla</h2>
+            <ul><li class="jr-act"><img src="../../content/assets/thumbnails/snake_conway_self.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/snake_conway_self.html">Snake of Life</a></h3><p>Snake of Life: un serpente che impara da solo a sopravvivere nel Gioco della Vita di Conway. Nessuno gli spiega le regole: 16 serpenti per generazione, i migliori fanno figli e il cervello migliora. Per capire evoluzione, intelligenza artificiale e sistemi reali come epidemie, mode ed ecosistemi.</p><p class="jr-act-more"><a href="../../content/apps/snake_conway_self_spiegazione.html">Spiegami come funziona</a></p></div></li><li class="jr-act"><img src="../../content/assets/thumbnails/soglie_particelle_automa_cellulare.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/soglie_particelle_automa_cellulare.html">Simulatore di Automi Cellulari e Particelle</a></h3><p>Laboratorio interattivo: migliaia di particelle che si attraggono e si respingono secondo una matrice di affinità, accoppiate a un automa cellulare (Vita di Conway e altre regole) da una soglia di accensione. Esplora emergenza e sistemi complessi, con palette personalizzabili e spiegazione animata. Per LIM, tablet e smartphone.</p><p class="jr-act-more"><a href="../../content/apps/soglie_particelle_automa_cellulare_spiegazione.html">Spiegami come funziona</a></p></div></li></ul>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio matematico digitale<br>Istituto Professionale "E. Orfini" · Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener" class="social-circle" aria-label="Instagram @meltingmath">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Laboratorio Matematico Orfini Foligno · Prof. Federico De Benedictis. Progetto Open Source.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../cookie-consent.js"></script>
+</body>
+
+</html>
