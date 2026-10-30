@@ -16,3 +16,9 @@ Ogni voce: data, decisione, motivo.
 - **`sqrt2_is_irrational.html`: i pulsanti Zoom In/Zoom Out davano errore** perché le funzioni venivano assegnate a `controls` prima che `init()` lo creasse. Le assegnazioni sono state spostate dentro `init()`, con la stessa logica di zoom.
 - **Rimosso `polyfill.io`** da `attrattori_001_dec25.html` e `math_underground003_4el.html`. Motivo: il dominio è stato compromesso nel 2024 (serviva codice malevolo) e oggi i browser lo bloccano. MathJax 3 non ne ha bisogno: dopo la rimozione si carica come prima.
 - **`.nojekyll` rimandato alla Fase 2.** Aggiungerlo cambierebbe la pubblicazione dei file `.md` e di quelli che iniziano con `_`, che sono già online.
+
+## 2026-10-30 — Fase 2 (proposte, in attesa di approvazione)
+
+- **Nessuno spostamento di file nella riorganizzazione.** La struttura Studenti/Docenti/Laboratorio vive nei metadati e nelle pagine indice, quindi non servono stub di redirect. Motivo: gli URL attuali sono in QR code, Classroom e materiali stampati.
+- **Niente `.nojekyll` (proposta D5).** `laboratoriomatematicoOrfini.html` e `tools/report_finale.html` esistono solo perché Jekyll trasforma i `.md`: con `.nojekyll` darebbero 404 (verificato con HTTP sul sito pubblico).
+- **`index.html?tag=` va conservato**: lo usano 9 link di `scuola.html` e la Mappa 3D. `UIManager.js` lo legge come ricerca testuale.
