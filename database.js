@@ -1,9 +1,74 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-30 09:11:19
+   Data: 2026-10-30 10:59:57
 */
 
 const db = [
+    {
+        "title": "Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie",
+        "excerpt": "Risolutore simbolico passo-passo con Tutor Socratico integrato: metti a confronto la regola dei segni nelle frazionarie con l'intersezione delle soluzioni nei sistemi, senza più fare confusione alla lavagna o sul quaderno.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "3 MEC",
+            "4 EL",
+            "ALGEBRA",
+            "DISEQUAZIONI",
+            "FRAZIONARIE",
+            "LOGICA",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "RISOLUTORE",
+            "SISTEMI",
+            "TUTOR"
+        ],
+        "date": "2026-10-30",
+        "url": "content/apps/disequazioni_frazionarie_vs_sistemi.html",
+        "type": "app",
+        "icon": "🧱",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp",
+        "allenamento": [
+            {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ]
+    },
     {
         "title": "Math Pool: Biliardo Cartesiano e retta",
         "excerpt": "Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, usa pendenze e simmetrie per i tiri di sponda e la parabola (dal vertice o dagli zeri, come prodotto di due rette) per i tiri a effetto. Per smartphone, tablet, PC e LIM.",
@@ -1885,71 +1950,6 @@ const db = [
                 "mat": [
                     "MAT_A2",
                     "MAT_K2"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie",
-        "excerpt": "Risolutore simbolico passo-passo con Tutor Socratico integrato: metti a confronto la regola dei segni nelle frazionarie con l'intersezione delle soluzioni nei sistemi, senza più fare confusione alla lavagna o sul quaderno.",
-        "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "3 MEC",
-            "4 EL",
-            "ALGEBRA",
-            "DISEQUAZIONI",
-            "FRAZIONARIE",
-            "LOGICA",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "RISOLUTORE",
-            "SISTEMI",
-            "TUTOR"
-        ],
-        "date": "2026-04-02",
-        "url": "content/apps/disequazioni_frazionarie_vs_sistemi.html",
-        "type": "app",
-        "icon": "🧱",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp",
-        "allenamento": [
-            {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
                 ]
             }
         ]
