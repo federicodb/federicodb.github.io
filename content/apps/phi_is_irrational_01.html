@@ -256,6 +256,8 @@
         /* Il CSS condiviso nasconde del tutto ogni ".panel.collapsed": qui "chiuso" vuol dire
            solo ridotto al titolo, quindi il pannello resta visibile e cliccabile */
         #settings-panel.collapsed {
+            /* per id: vale anche sopra il limite di altezza per telefono definito più sotto */
+            max-height: 66px;
             transform: none;
             opacity: 1;
             pointer-events: auto;
