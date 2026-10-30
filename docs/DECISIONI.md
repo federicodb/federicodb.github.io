@@ -29,3 +29,11 @@ Ogni voce: data, decisione, motivo.
 - **Nessuna etichetta di classe o di livello visibile allo studente.** Motivo: con le quarte capita di proporre attività da prima o da seconda, e nessuno deve sentirsi mortificato. La classe resta nel campo `programma`, usato solo dal filtro docenti (chiuso per impostazione predefinita). Oggi le schede della home la mostrano (`UIManager.js:353`): nella nuova pagina non ci sarà.
 - **Percorsi per argomento, in tre momenti neutri** (Capire / Allenarsi / Mettersi alla prova) invece di livelli. "Algebra del biennio" diventa "Polinomi e scomposizioni".
 - **Codici classe**: GP = Grafica, MA = Manutenzione (da confermare).
+
+## 2026-10-30 — Fase 2, revisione 3
+
+- **Basta scatole cinesi**: al massimo tre livelli. Tolti i percorsi composti a mano con passi numerati e le schede-pagina per attività. Motivo: il sito cambia spesso e la struttura non deve rompersi quando si aggiunge o si toglie un'attività.
+- **Allenati è una sezione a parte**: la Quest è la palestra di tutto il sito. Ogni attività mostra "Allenati su questo" con le lezioni collegate, che `build.py` già calcola, quindi la sezione cresce da sola.
+- **Le pagine d'argomento sono generate dai dati**, ordinate per formato (spiega → allena → sfida).
+- **Il Diario di bordo entra nell'architettura**: articoli Markdown in `content/diario/`, convertiti in HTML statico dal build; immagini ricompresse e ripulite dai metadati EXIF. Gli articoli puntano alle attività per `id` stabile, così non perdono senso quando l'attività cambia.
+- **Scheda minima per attività**: obbligatorio solo `url`; date, collegamenti alla Quest, spiegazioni e articoli sono calcolati.
