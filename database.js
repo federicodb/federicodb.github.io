@@ -1,9 +1,66 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-30 11:16:07
+   Data: 2026-10-30 11:36:20
 */
 
 const db = [
+    {
+        "title": "φ è irrazionale: il rapporto aureo",
+        "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
+        "tags": [
+            "$\\PHI$",
+            "3D",
+            "FILLOTASSI",
+            "GEOMETRIA",
+            "INCOMMENSURABILITÀ",
+            "MATEMATICA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "RAPPORTO AUREO",
+            "SEZIONE AUREA",
+            "SPIRALE",
+            "WEBGL"
+        ],
+        "date": "2026-10-30",
+        "url": "content/apps/phi_is_irrational_01.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "rette-parallele",
+                "titolo": "Rette parallele e perpendicolari",
+                "url": "allenamento/#/lezione/rette-parallele/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            }
+        ]
+    },
     {
         "title": "Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola",
         "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
@@ -1772,63 +1829,6 @@ const db = [
                 "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
                     "MAT_K1"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "$\\phi$ is irrational: il rapporto aureo",
-        "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
-        "tags": [
-            "$\\PHI$",
-            "3D",
-            "FILLOTASSI",
-            "GEOMETRIA",
-            "INCOMMENSURABILITÀ",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "RAPPORTO AUREO",
-            "SEZIONE AUREA",
-            "SPIRALE",
-            "WEBGL"
-        ],
-        "date": "2026-04-03",
-        "url": "content/apps/phi_is_irrational_01.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3"
                 ]
             }
         ]

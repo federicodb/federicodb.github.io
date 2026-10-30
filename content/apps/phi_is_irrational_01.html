@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>$\phi$ is irrational: il rapporto aureo</title>
+    <title>φ è irrazionale: il rapporto aureo</title>
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
 
     <meta name="description" content="Esplorazione visiva del numero aureo ($\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.">
     <meta name="keywords" content="matematica, $\phi$, geometria, WebGL, 3d, spirale, rapporto aureo, sezione aurea, incommensurabilità, fillotassi">
-    <meta name="date" content="2026-04-03">
+    <meta name="date" content="2026-10-30">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
@@ -248,11 +248,121 @@
             right: 20px;
             text-align: right;
             font-size: 0.75rem;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.55);
             pointer-events: none;
-            z-index: 10;
+            z-index: 5;
+        }
+
+        /* Il CSS condiviso nasconde del tutto ogni ".panel.collapsed": qui "chiuso" vuol dire
+           solo ridotto al titolo, quindi il pannello resta visibile e cliccabile */
+        #settings-panel.collapsed {
+            transform: none;
+            opacity: 1;
+            pointer-events: auto;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+
+        .panel-head { cursor: pointer; padding-right: 44px; }
+        .panel-head h1 { text-transform: none; letter-spacing: -0.01em; }
+        .toggle-ui { width: 40px; height: 40px; top: 12px; right: 12px; }
+
+        .rapporti { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+
+        .rapporti button {
+            flex: none;
+            padding: 8px 0;
+            min-height: 40px;
+            text-transform: none;
+            font-family: 'Space Mono', ui-monospace, monospace;
+            font-size: 0.9rem;
+        }
+
+        .info-rapporto {
+            margin: 4px 0 0;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.82rem;
+            line-height: 1.45;
+            color: #cfd6df;
+        }
+
+        .info-rapporto b { color: #fff; }
+        .info-rapporto .chiuso { color: #3ddc84; font-weight: 600; }
+        .giri { font-family: 'Space Mono', ui-monospace, monospace; font-size: 0.8rem; color: #9aa4b1; }
+
+        .azioni-panel { display: flex; gap: 8px; margin-bottom: 18px; }
+
+        .azioni-panel a, .azioni-panel button {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 40px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font: 600 0.8rem 'Inter', system-ui, sans-serif;
+            text-transform: none;
+            text-decoration: none;
+            background: transparent;
+        }
+
+        .azioni-panel .spiega { border-color: var(--accent); color: var(--accent); }
+        .azioni-panel a:hover, .azioni-panel button:hover { background: rgba(255, 255, 255, 0.1); }
+
+        .explain {
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            display: grid;
+            place-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, .8);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+        }
+
+        .explain[hidden] { display: none; }
+
+        .explain-box {
+            position: relative;
+            width: min(1000px, 100%);
+            height: min(88dvh, 820px);
+            border-radius: 18px;
+            overflow: hidden;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .explain-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+        .explain .explain-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+            flex: none;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 999px;
+            background: #111;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 600px) {
+            #ui-layer { left: 12px; right: 12px; width: auto; top: 64px; }
+            #settings-panel { max-height: calc(100dvh - 84px); }
+            #info-overlay { left: 12px; right: 12px; text-align: center; }
         }
     </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap">
 </head>
 <body>
 <!-- ORFINI-BACK START -->
@@ -328,15 +438,37 @@
 
     <div id="ui-layer">
         <div class="panel collapsed" id="settings-panel">
-            <div class="toggle-ui" id="btn-toggle-ui" onclick="toggleUI()" title="Espandi/Collassa parametri">
+            <div class="toggle-ui" id="btn-toggle-ui" role="button" tabindex="0" aria-expanded="false" aria-controls="settings-panel" title="Apri o chiudi i controlli">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
             </div>
-            <h1 style="font-size: 1.6rem; margin-bottom: 5px;">$\phi$ is irrational</h1>
-            <p class="subtitle">Dimostrazione d'incommensurabilità</p>
+            <div class="panel-head" id="panel-head">
+                <h1 style="font-size: 1.6rem; margin-bottom: 5px;">$\phi$ è irrazionale</h1>
+                <p class="subtitle">Due punti girano con velocità in rapporto $\phi$: il disegno non si chiude mai</p>
+            </div>
+
+            <div class="azioni-panel">
+                <button type="button" class="spiega" data-explain="">▶ Spiegami</button>
+                <a href="fibonacci_anim.html">Successione di Fibonacci →</a>
+            </div>
 
             <div class="control-group">
                 <div class="control-header">
-                    <span>Morfologia 2D &rarr; Sfera Completa</span>
+                    <span>Rapporto tra le velocità</span>
+                    <span class="giri" id="val-giri">giri: 0</span>
+                </div>
+                <div class="rapporti" role="radiogroup" aria-label="Rapporto tra le velocità dei due punti">
+                    <button type="button" role="radio" data-p="3" data-q="2" aria-checked="false">3/2</button>
+                    <button type="button" role="radio" data-p="5" data-q="3" aria-checked="false">5/3</button>
+                    <button type="button" role="radio" data-p="8" data-q="5" aria-checked="false">8/5</button>
+                    <button type="button" role="radio" data-p="13" data-q="8" aria-checked="false">13/8</button>
+                    <button type="button" role="radio" data-p="phi" aria-checked="true" class="active">φ</button>
+                </div>
+                <p class="info-rapporto" id="info-rapporto" aria-live="polite"></p>
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <span>Dal piano alla sfera</span>
                     <span id="val-sphere">0%</span>
                 </div>
                 <input type="range" id="slider-sphere" min="0" max="1" step="0.01" value="0">
@@ -344,7 +476,7 @@
 
             <div class="control-group">
                 <div class="control-header">
-                    <span style="color: var(--accent);">Freq. Latitudine (Meridiani)</span>
+                    <span style="color: var(--accent);">Oscillazione sulla sfera</span>
                     <span id="val-meridian" style="color: var(--accent);">0.0</span>
                 </div>
                 <input type="range" id="slider-meridian" min="0" max="2" step="0.01" value="0">
@@ -352,7 +484,7 @@
 
             <div class="control-group">
                 <div class="control-header">
-                    <span>Avanzamento Tempo</span>
+                    <span>Tempo</span>
                     <span id="val-time">0.0</span>
                 </div>
                 <input type="range" id="slider-time" min="0" max="1000" step="0.1" value="0">
@@ -360,7 +492,7 @@
 
             <div class="control-group">
                 <div class="control-header">
-                    <span>Velocità Animazione</span>
+                    <span>Velocità</span>
                     <span id="val-speed">1.0x</span>
                 </div>
                 <input type="range" id="slider-speed" min="0.1" max="4" step="0.1" value="1.0">
@@ -368,7 +500,7 @@
 
             <div class="control-group">
                 <div class="control-header">
-                    <span>Densità Traccia</span>
+                    <span>Linee per unità di tempo</span>
                     <span id="val-density">30</span>
                 </div>
                 <input type="range" id="slider-density" min="5" max="80" step="1" value="30">
@@ -381,7 +513,7 @@
 
             <div class="control-group">
                 <div class="control-header">
-                    <span>Decadimento (Fade-out)</span>
+                    <span>Dissolvenza delle linee</span>
                     <span id="val-fade">Off</span>
                 </div>
                 <input type="range" id="slider-fade" min="0" max="1" step="0.01" value="0">
@@ -389,7 +521,7 @@
 
             <div class="control-group">
                 <div class="control-header">
-                    <span>Ciclo Cromatico (Tonalità)</span>
+                    <span>Colori che cambiano nel tempo</span>
                     <span id="val-hue">Off</span>
                 </div>
                 <input type="range" id="slider-hue" min="0" max="3" step="0.05" value="0">
@@ -397,23 +529,30 @@
 
             <div class="control-group">
                 <div class="color-row">
-                    <span>Sistema Interno (r=1)</span>
+                    <span>Punto interno (raggio 1)</span>
                     <input type="color" id="col-inner" value="#00ffff">
                 </div>
                 <div class="color-row">
-                    <span>Sistema Esterno (R=&Phi;)</span>
+                    <span>Punto esterno (raggio &phi;)</span>
                     <input type="color" id="col-outer" value="#ff00ff">
                 </div>
                 <div class="color-row">
-                    <span>Traccia (Base)</span>
+                    <span>Linee</span>
                     <input type="color" id="col-trace" value="#ffffff">
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
+        <div class="explain-box">
+            <button type="button" class="explain-close" id="explainClose" aria-label="Chiudi la spiegazione">✕</button>
+            <iframe id="explainFrame" title="Spiegazione animata: perché φ è irrazionale" allow="fullscreen"></iframe>
+        </div>
+    </div>
+
     <div id="info-overlay">
-        Interazione: Orbita (Tasto SX) | Pan (Tasto DX) | Zoom (Rotellina)
+        Trascina per ruotare · tasto destro per spostare · rotella o due dita per lo zoom
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -438,6 +577,9 @@
         let hueSpeed = 0.0;
         let sphereMorph = 0.0; 
         let latFreq = 0.0; 
+        // Rapporto tra le velocità dei due punti: φ oppure una frazione di Fibonacci p/q
+        let ratio = PHI;
+        let ratioFrac = null; // { p, q } quando il rapporto è una frazione
         let lastComputedTime = 0;
         
         // Elementi Geometrici
@@ -723,6 +865,32 @@
 
             btnReset.addEventListener('click', resetSystem);
 
+            document.querySelectorAll('.rapporti button').forEach(b => b.addEventListener('click', () => scegliRapporto(b)));
+            document.getElementById('panel-head').addEventListener('click', toggleUI);
+            const tg = document.getElementById('btn-toggle-ui');
+            tg.addEventListener('click', toggleUI);
+            tg.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleUI(); } });
+            aggiornaInfoRapporto();
+
+            // --- SPIEGAZIONE ANIMATA ---
+            const box = document.getElementById('explain');
+            const apri = (scena) => {
+                document.getElementById('explainFrame').src = 'phi_is_irrational_01_spiegazione.html?embed=1' + (scena ? '#' + scena : '');
+                box.hidden = false;
+                document.getElementById('explainClose').focus();
+            };
+            const chiudi = () => { box.hidden = true; document.getElementById('explainFrame').src = 'about:blank'; };
+            document.getElementById('explainClose').addEventListener('click', chiudi);
+            box.addEventListener('click', (e) => { if (e.target === box) chiudi(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !box.hidden) chiudi(); });
+            window.addEventListener('message', (e) => {
+                if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-finita') setTimeout(chiudi, 1500);
+            });
+            document.addEventListener('click', (e) => {
+                const b = e.target.closest('[data-explain]');
+                if (b) apri(b.dataset.explain);
+            });
+
             sliderSpeed.addEventListener('input', (e) => {
                 speedMultiplier = parseFloat(e.target.value);
                 valSpeed.textContent = speedMultiplier.toFixed(1) + "x";
@@ -741,7 +909,38 @@
 
         function toggleUI() {
             const panel = document.getElementById('settings-panel');
-            panel.classList.toggle('collapsed');
+            const chiuso = panel.classList.toggle('collapsed');
+            document.getElementById('btn-toggle-ui').setAttribute('aria-expanded', String(!chiuso));
+        }
+
+        // Testo che spiega il rapporto scelto e dice se il disegno si è già chiuso
+        function aggiornaInfoRapporto() {
+            const giri = globalTime / (2 * Math.PI);
+            document.getElementById('val-giri').textContent = 'giri: ' + Math.floor(giri);
+            const info = document.getElementById('info-rapporto');
+            if (ratioFrac) {
+                const { p, q } = ratioFrac;
+                const chiuso = giri >= q;
+                info.innerHTML = `Il punto esterno fa <b>${p} giri</b> mentre quello interno ne fa <b>${q}</b>: ` +
+                    (chiuso ? `<span class="chiuso">il disegno si è chiuso</span> e ora ripassa sulle stesse linee.`
+                            : `dopo ${q} giri il disegno si chiuderà.`);
+            } else {
+                const n = Math.floor(giri);
+                info.innerHTML = `φ ≈ 1,618 non è una frazione: dopo <b>${n} ${n === 1 ? 'giro' : 'giri'}</b> il disegno <b>non si è ancora chiuso</b>, e non si chiuderà mai.`;
+            }
+        }
+
+        function scegliRapporto(btn) {
+            document.querySelectorAll('.rapporti button').forEach(b => {
+                const on = b === btn;
+                b.classList.toggle('active', on);
+                b.setAttribute('aria-checked', String(on));
+            });
+            if (btn.dataset.p === 'phi') { ratio = PHI; ratioFrac = null; }
+            else { ratioFrac = { p: +btn.dataset.p, q: +btn.dataset.q }; ratio = ratioFrac.p / ratioFrac.q; }
+            // si riparte da zero, così si vede se e quando il disegno si chiude
+            resetSystem();
+            if (!isPlaying) btnPlay.click();
         }
 
         function resetSystem() {
@@ -761,7 +960,7 @@
 
         function getPositionsAtTime(t) {
             const lonB2D = t;
-            const lonP2D = t * PHI; 
+            const lonP2D = t * ratio; 
             
             // 1. Coordinate nel Piano 2D Originale
             const B2D = new THREE.Vector3(R_INNER * Math.cos(lonB2D), R_INNER * Math.sin(lonB2D), 0);
@@ -769,7 +968,7 @@
 
             // 2. Coordinate sulla Sfera 3D Pura
             const latB = latFreq === 0 ? 0 : Math.sin(t * latFreq) * (Math.PI / 2);
-            const latP = latFreq === 0 ? 0 : Math.sin(t * PHI * latFreq) * (Math.PI / 2);
+            const latP = latFreq === 0 ? 0 : Math.sin(t * ratio * latFreq) * (Math.PI / 2);
 
             // Particella Base: Orbita equatoriale + deviazione latitudine
             const B3D = new THREE.Vector3(
@@ -884,6 +1083,7 @@
         function updateUIState() {
             sliderTime.value = globalTime;
             valTime.textContent = globalTime.toFixed(1);
+            aggiornaInfoRapporto();
         }
 
         function onWindowResize() {

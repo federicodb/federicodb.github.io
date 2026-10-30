@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>φ è irrazionale in un minuto</title>
+<meta name="description" content="Animazione di un minuto: due punti che girano con velocità in rapporto φ disegnano una figura che non si chiude mai, mentre con le frazioni di Fibonacci si chiude (Orfini Math Lab).">
+<script>
+  try { if (localStorage.getItem('orfini_theme') === 'light') document.documentElement.dataset.tema = 'chiaro'; } catch (err) { /* storage non disponibile */ }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Stessa grafica dell'app: nero AMOLED, ciano = soluzione, verde = positivo, rosa = negativo */
+:root{ --r-m:14px; --r-l:20px; --sans:'Inter',system-ui,-apple-system,sans-serif; --mono:'Space Mono',ui-monospace,monospace;
+  color-scheme:dark; --bg:#050507; --surface:hsl(240,6%,8%); --surface-2:hsl(240,6%,12%); --surface-3:hsl(240,6%,17%);
+  --line:hsl(240,5%,17%); --line-strong:hsl(240,5%,30%); --text:hsl(0,0%,92%); --text-2:hsl(0,0%,66%);
+  --accent:hsl(190,95%,55%); --on-accent:#050507; --accent-soft:hsla(190,95%,55%,.12); --sol:hsl(190,95%,55%);
+  --pos:hsl(155,85%,48%); --neg:hsl(330,85%,66%); --warn:hsl(45,100%,58%); --grid:hsl(240,5%,13%); --axis:hsl(240,4%,46%); --inner:#00e5ff; --outer:#ff4fd8; }
+:root[data-tema="chiaro"]{ color-scheme:light; --bg:#f6f8fb; --surface:#ffffff; --surface-2:#eef2f7; --surface-3:#e2e8f0;
+  --line:#d8dee8; --line-strong:#a9b4c4; --text:#0f172a; --text-2:#475569; --accent:hsl(195,90%,30%); --on-accent:#ffffff;
+  --accent-soft:hsla(195,90%,30%,.1); --sol:hsl(195,90%,34%); --pos:hsl(155,75%,27%); --neg:hsl(335,70%,43%); --warn:hsl(38,95%,32%);
+  --grid:#e3e8ef; --axis:#64748b; --inner:#0284c7; --outer:#c026d3; }
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--on-accent)}
+.wrap{max-width:1080px;margin:0 auto;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text-2);text-decoration:none;font:500 14px var(--sans)}
+.back:hover{color:var(--text);border-color:var(--line-strong)}
+header{display:flex;flex-direction:column;gap:8px}
+h1{font:700 clamp(28px,4.6vw,44px)/1.1 var(--sans);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lead{margin:0;max-width:62ch;color:var(--text-2);font-size:17px}
+.screen{border-radius:var(--r-l);padding:8px;background:var(--surface);border:1px solid var(--line)}
+canvas{display:block;width:100%;aspect-ratio:16/9;border-radius:var(--r-m);background:var(--bg);cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font:600 15px var(--sans);cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--accent)}
+.play{min-width:120px;background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.speed{min-width:64px;font-family:var(--mono);font-size:14px}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,.back:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:12px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:28px}
+.time{font:13px var(--mono);color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{min-height:40px;font:500 14px var(--sans);color:var(--text-2);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.chap::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chap:hover{color:var(--text);border-color:var(--line-strong)}
+.chap[aria-current="true"]{background:var(--accent-soft);color:var(--text);border-color:var(--accent)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.1vw,20px);line-height:1.5;max-width:70ch;text-wrap:pretty}
+.caption b{font-weight:700;color:var(--sol)}
+.hint{font-size:13px;color:var(--text-2);margin:0}
+section.tx{border-top:1px solid var(--line);padding-top:24px;margin-top:8px;display:flex;flex-direction:column;gap:16px}
+section.tx h2{font:700 22px/1.3 var(--sans);margin:0}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 28px}
+.txlist li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ts{align-self:flex-start;font:500 12px var(--mono);color:#050507;background:var(--c);border:0;border-radius:6px;padding:3px 8px;cursor:pointer}
+.txlist strong{font-weight:700;font-size:17px}
+.txlist p{margin:0;color:var(--text-2);max-width:60ch}
+.txlist p b{color:var(--text)}
+.embed .back,.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:16px;padding-right:44px}
+@media (max-width:560px){.btn{padding:0 14px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="https://federicodb.github.io/index.html">← Orfini Math Lab</a>
+  <header>
+    <h1>φ è irrazionale in un minuto</h1>
+    <p class="lead">Due punti girano su due cerchi: se le loro velocità stanno in un rapporto che è una frazione, il disegno prima o poi si chiude. Con φ no, mai. Ecco perché, e cosa c'entrano i numeri di Fibonacci.</p>
+  </header>
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: due punti che girano con rapporto 3/2, con le frazioni di Fibonacci e con φ"></canvas>
+  </div>
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn speed" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="59" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 0:59</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare.</p>
+  <div class="bar cta"><a class="btn" href="https://federicodb.github.io/content/apps/phi_is_irrational_01.html">Apri l'esperimento</a><a class="btn" href="https://federicodb.github.io/content/apps/fibonacci_anim.html">Successione di Fibonacci</a></div>
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 59;
+const SANS = "Inter,system-ui,sans-serif", MONO = "'Space Mono',ui-monospace,monospace";
+let C = {};
+function leggiColori() {
+  const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
+  C = { bg: g('--bg'), s1: g('--surface'), s2: g('--surface-2'), s3: g('--surface-3'), text: g('--text'), text2: g('--text-2'), line: g('--line'), lineS: g('--line-strong'),
+    acc: g('--accent'), accSoft: g('--accent-soft'), sol: g('--sol'), pos: g('--pos'), neg: g('--neg'), warn: g('--warn'), grid: g('--grid'), axis: g('--axis'), inner: g('--inner'), outer: g('--outer') };
+}
+leggiColori();
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: 'hsl(190,95%,55%)',
+    cap: 'Due punti che girano e un segmento che li unisce bastano per vedere che <b>φ non è una frazione</b>.' },
+  { id: 'giri', label: 'I due giri', a: 5, b: 17, c: 'hsl(190,95%,55%)',
+    cap: 'Il punto azzurro gira sul cerchio piccolo, quello viola sul cerchio grande, <b>φ ≈ 1,618 volte più veloce</b>. Di tanto in tanto si disegna il segmento che li unisce, e resta sullo schermo.' },
+  { id: 'frazione', label: 'Una frazione', a: 17, b: 30, c: 'hsl(155,85%,48%)',
+    cap: 'Se il rapporto è una frazione, per esempio 3/2, il viola fa 3 giri mentre l\'azzurro ne fa 2: i due punti tornano insieme alla partenza e <b>il disegno si chiude</b>. Da lì in poi ripassa sulle stesse linee.' },
+  { id: 'fibonacci', label: 'Fibonacci', a: 30, b: 42, c: 'hsl(45,100%,58%)',
+    cap: 'Le frazioni di Fibonacci 2/1, 3/2, 5/3, 8/5, 13/8… si avvicinano a φ, un po\' sopra e un po\' sotto. Ognuna chiude il disegno dopo un numero di giri che è <b>un numero di Fibonacci</b>.' },
+  { id: 'phi', label: 'Con φ', a: 42, b: 54, c: 'hsl(330,85%,66%)',
+    cap: 'Con φ il disegno <b>non si chiude mai</b>: se si chiudesse dopo q giri, φ sarebbe una frazione p/q. Nessuna frazione lo raggiunge, ed è per questo che anche i semi del girasole usano l\'angolo aureo.' },
+  { id: 'end', label: 'Riepilogo', a: 54, b: 59, c: 'hsl(190,95%,55%)',
+    cap: 'Frazione: il disegno si chiude. Fibonacci: frazioni sempre più vicine a φ. φ: <b>non si chiude mai, perché è irrazionale</b>.' }
+];
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 4);
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || 400} ${size}px ${o.f || SANS}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col; ctx.fillText(s, x, y);
+}
+function show(p, fn, dy = 10) {
+  if (p <= 0) return;
+  const keep = BASE; BASE = keep * p; A(1);
+  ctx.save(); ctx.translate(0, (1 - eo(p)) * dy); fn(); ctx.restore();
+  BASE = keep; A(1);
+}
+function arrow(x1, y1, x2, y2, col, w = 4) {
+  const d = Math.hypot(x2 - x1, y2 - y1); if (d < 2) return;
+  const ux = (x2 - x1) / d, uy = (y2 - y1) / d, h = Math.min(16, d * .6);
+  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux * h * .8, y2 - uy * h * .8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - ux * h - uy * h * .6, y2 - uy * h + ux * h * .6); ctx.lineTo(x2 - ux * h + uy * h * .6, y2 - uy * h - ux * h * .6); ctx.closePath(); ctx.fill();
+}
+function chip(sc) {
+  ctx.font = `600 22px ${SANS}`; const w = ctx.measureText(sc.label).width + 58;
+  rr(32, 28, w, 46, 12); ctx.fillStyle = C.s2; ctx.fill();
+  circ(56, 51, 6); ctx.fillStyle = sc.c; ctx.fill(); T(sc.label, 72, 52, 22, C.text, { al: 'left', w: 600 });
+}
+function card(x, y, w, h, fill, bordo) { rr(x, y, w, h, 18); ctx.fillStyle = fill || C.s1; ctx.fill(); if (bordo) { ctx.strokeStyle = bordo; ctx.lineWidth = 3; ctx.stroke(); } }
+
+/* Piano cartesiano: px,py,pw,ph in pixel; xr,yr intervalli del mondo */
+function piano(px, py, pw, ph, xr, yr) {
+  const X = x => px + (x - xr[0]) / (xr[1] - xr[0]) * pw;
+  const Y = y => py + ph - (y - yr[0]) / (yr[1] - yr[0]) * ph;
+  return { X, Y, px, py, pw, ph, xr, yr };
+}
+function assi(m, numeri = true, passo = 1) {
+  ctx.save(); rr(m.px, m.py, m.pw, m.ph, 14); ctx.clip();
+  ctx.strokeStyle = C.grid; ctx.lineWidth = 1; ctx.beginPath();
+  for (let x = Math.ceil(m.xr[0] / passo) * passo; x <= m.xr[1]; x += passo) { ctx.moveTo(m.X(x), m.py); ctx.lineTo(m.X(x), m.py + m.ph); }
+  for (let y = Math.ceil(m.yr[0] / passo) * passo; y <= m.yr[1]; y += passo) { ctx.moveTo(m.px, m.Y(y)); ctx.lineTo(m.px + m.pw, m.Y(y)); }
+  ctx.stroke();
+  ctx.strokeStyle = C.axis; ctx.lineWidth = 2; ctx.beginPath();
+  ctx.moveTo(m.px, m.Y(0)); ctx.lineTo(m.px + m.pw, m.Y(0));
+  if (m.xr[0] < 0 && m.xr[1] > 0) { ctx.moveTo(m.X(0), m.py); ctx.lineTo(m.X(0), m.py + m.ph); }
+  ctx.stroke();
+  ctx.restore();
+  if (numeri) for (let x = Math.ceil(m.xr[0]); x <= m.xr[1]; x++) if (x !== 0 && m.X(x) > m.px + 12 && m.X(x) < m.px + m.pw - 12) T(String(x).replace('-', '−'), m.X(x), m.Y(0) + 22, 20, C.text2, { f: MONO });
+}
+/* Curva disegnata fino alla frazione p; dove sol(x) è vera usa il colore della soluzione */
+function curva(m, f, p, sol, colBase) {
+  const N = 160, x0 = m.xr[0], x1 = x0 + (m.xr[1] - x0) * p;
+  ctx.save(); rr(m.px, m.py, m.pw, m.ph, 14); ctx.clip();
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  let prev = null;
+  for (let i = 0; i <= N; i++) {
+    const x = x0 + (x1 - x0) * i / N, pt = [m.X(x), m.Y(f(x))];
+    if (prev) {
+      const s = sol && sol((x + prev.x) / 2);
+      ctx.strokeStyle = s ? C.sol : (colBase || C.text); ctx.lineWidth = s ? 6 : 3.5; A(s || !sol ? 1 : .55);
+      ctx.beginPath(); ctx.moveTo(prev.pt[0], prev.pt[1]); ctx.lineTo(pt[0], pt[1]); ctx.stroke(); A(1);
+    }
+    prev = { x, pt };
+  }
+  ctx.restore();
+}
+/* Banda della soluzione sull'asse x tra a e b (±Infinity = fino al bordo, con freccia) */
+function banda(m, a, b, p = 1) {
+  const L = Math.max(m.px + 4, m.X(Math.max(a, m.xr[0]))), R0 = Math.min(m.px + m.pw - 4, m.X(Math.min(b, m.xr[1])));
+  const R = L + (R0 - L) * p, y = m.Y(0);
+  ctx.strokeStyle = C.sol; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(R, y); ctx.stroke();
+  ctx.fillStyle = C.sol;
+  if (a === -Infinity) { ctx.beginPath(); ctx.moveTo(m.px - 2, y); ctx.lineTo(m.px + 16, y - 11); ctx.lineTo(m.px + 16, y + 11); ctx.fill(); }
+  if (b === Infinity && p >= 1) { ctx.beginPath(); ctx.moveTo(m.px + m.pw + 2, y); ctx.lineTo(m.px + m.pw - 16, y - 11); ctx.lineTo(m.px + m.pw - 16, y + 11); ctx.fill(); }
+}
+function punto(m, x, pieno, col) {
+  circ(m.X(x), m.Y(0), 9); ctx.fillStyle = pieno ? col : C.bg; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = 3.5; ctx.stroke();
+}
+/* Frazione disegnata a mano */
+function frazione(num, den, x, y, size, col, al = 'center') {
+  ctx.font = `600 ${size}px ${MONO}`;
+  const w = Math.max(ctx.measureText(num).width, ctx.measureText(den).width) + 16;
+  const cx = al === 'left' ? x + w / 2 : x;
+  T(num, cx, y - size * .62, size, col, { f: MONO, w: 600 }); T(den, cx, y + size * .68, size, col, { f: MONO, w: 600 });
+  ctx.fillStyle = col; ctx.fillRect(cx - w / 2, y - 1.5, w, 3);
+  return w;
+}
+
+/* ---------- due punti che girano ---------- */
+const PHI = (1 + Math.sqrt(5)) / 2, GIRO = Math.PI * 2;
+/* Disegna i due cerchi, i segmenti tracciati da t = 0 a T e i due punti al tempo T.
+   k = rapporto tra le velocità (il punto esterno gira k volte più veloce) */
+function orbite(cx, cy, r, k, tt, o = {}) {
+  const R = r * PHI, passo = GIRO / (o.linee || 40);
+  ctx.lineWidth = 2;
+  circ(cx, cy, r); ctx.strokeStyle = C.inner; A(.35); ctx.stroke();
+  circ(cx, cy, R); ctx.strokeStyle = C.outer; ctx.stroke(); A(1);
+  ctx.strokeStyle = C.text; ctx.lineWidth = o.spess || 1.2; A(o.alfa || .22);
+  ctx.beginPath();
+  for (let t = 0; t <= tt + 1e-9; t += passo) {
+    ctx.moveTo(cx + r * Math.cos(t), cy - r * Math.sin(t));
+    ctx.lineTo(cx + R * Math.cos(k * t), cy - R * Math.sin(k * t));
+  }
+  ctx.stroke(); A(1);
+  if (o.punti === false) return;
+  const bx = cx + r * Math.cos(tt), by = cy - r * Math.sin(tt), px = cx + R * Math.cos(k * tt), py = cy - R * Math.sin(k * tt);
+  ctx.strokeStyle = C.text; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(px, py); ctx.stroke();
+  circ(bx, by, 9); ctx.fillStyle = C.inner; ctx.fill();
+  circ(px, py, 9); ctx.fillStyle = C.outer; ctx.fill();
+}
+const fmtN = (v, d = 3) => v.toFixed(d).replace('.', ',');
+function contatori(x, y, tt, k) {
+  T('punto azzurro: ' + fmtN(tt / GIRO, 2) + ' giri', x, y, 24, C.inner, { al: 'left', f: MONO, w: 700 });
+  T('punto viola:   ' + fmtN(k * tt / GIRO, 2) + ' giri', x, y + 40, 24, C.outer, { al: 'left', f: MONO, w: 700 });
+}
+
+/* ---------- intro ---------- */
+function sIntro(u) {
+  show(prog(u, 0, .8), () => orbite(640, 400, 120, PHI, prog(u, .3, 4.6) * GIRO * 3), 0);
+  show(prog(u, .6, 1.4), () => {
+    ctx.fillStyle = C.bg; A(.9); rr(330, 40, 620, 96, 22); ctx.fill(); A(1);
+    T('φ è irrazionale', 640, 88, 54, C.text, { w: 700 });
+  });
+}
+
+/* ---------- giri: velocità 1 e φ ---------- */
+function sGiri(u) {
+  const tt = prog(u, 1, 10.5) * GIRO * 4;
+  show(prog(u, 0, .6), () => orbite(400, 390, 120, PHI, tt), 0);
+  show(prog(u, .4, 1), () => {
+    T('Due punti girano insieme', 760, 170, 32, C.text, { al: 'left', w: 700 });
+    T('l\'azzurro fa 1 giro,', 760, 225, 26, C.text2, { al: 'left' });
+    T('il viola nello stesso tempo φ ≈ 1,618', 760, 262, 26, C.text2, { al: 'left' });
+  });
+  show(prog(u, 1.2, 1.8), () => contatori(760, 360, tt, PHI), 0);
+  show(prog(u, 3, 3.6), () => {
+    T('ogni tanto si disegna il segmento', 760, 470, 24, C.text, { al: 'left' });
+    T('che li unisce, e resta sullo schermo', 760, 506, 24, C.text, { al: 'left' });
+  });
+}
+
+/* ---------- frazione: 3/2 si chiude dopo 2 giri ---------- */
+function sFrazione(u) {
+  const k = 1.5, tt = Math.min(prog(u, 1, 8) * GIRO * 2, GIRO * 2) + prog(u, 9, 12.5) * GIRO * 2;
+  show(prog(u, 0, .6), () => orbite(400, 390, 120, k, tt), 0);
+  show(prog(u, .3, .9), () => {
+    T('Rapporto 3/2 = 1,5', 760, 170, 32, C.text, { al: 'left', w: 700 });
+    T('il viola fa 3 giri mentre l\'azzurro ne fa 2', 760, 222, 24, C.text2, { al: 'left' });
+  });
+  show(prog(u, 1, 1.6), () => contatori(760, 320, tt, k), 0);
+  show(prog(u, 8, 8.5), () => {
+    rr(750, 430, 450, 74, 16); ctx.fillStyle = C.accSoft; ctx.fill(); ctx.strokeStyle = C.pos; ctx.lineWidth = 2; ctx.stroke();
+    T('dopo 2 giri: si chiude ✓', 776, 468, 30, C.pos, { al: 'left', w: 700 });
+  }, 0);
+  show(prog(u, 9.4, 10), () => T('poi ripassa sempre sulle stesse linee', 760, 548, 24, C.text2, { al: 'left' }), 0);
+}
+
+/* ---------- fibonacci: frazioni sempre più vicine a φ ---------- */
+function sFibonacci(u) {
+  const FR = [[2, 1], [3, 2], [5, 3], [8, 5], [13, 8], [21, 13]];
+  FR.forEach(([p, q], i) => show(prog(u, .4 + i * .9, .9 + i * .9), () => {
+    const y = 160 + i * 52, v = p / q;
+    T(`${p}/${q}`, 150, y, 28, C.text, { al: 'right', f: MONO, w: 700 });
+    T('= ' + fmtN(v), 170, y, 28, C.text2, { al: 'left', f: MONO });
+    T(`si chiude dopo ${q} ${q === 1 ? 'giro' : 'giri'}`, 330, y, 22, C.pos, { al: 'left' });
+  }, 0));
+  show(prog(u, 6, 6.6), () => {
+    T('φ', 150, 480, 34, C.sol, { al: 'right', f: MONO, w: 700 });
+    T('= 1,618…', 170, 480, 28, C.sol, { al: 'left', f: MONO, w: 700 });
+    T('non si chiude mai', 330, 480, 22, C.neg, { al: 'left', w: 600 });
+  });
+  // retta dei numeri: le frazioni saltano a destra e a sinistra di φ
+  const X0 = 640, X1 = 1220, v0 = 1.45, v1 = 2.05, X = v => X0 + (v - v0) / (v1 - v0) * (X1 - X0), Y = 300;
+  show(prog(u, .2, .8), () => {
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X0, Y); ctx.lineTo(X1, Y); ctx.stroke();
+    [1.5, 1.6, 1.7, 1.8, 1.9, 2].forEach(v => { ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(v), Y - 8); ctx.lineTo(X(v), Y + 8); ctx.stroke(); T(fmtN(v, 1), X(v), Y + 30, 20, C.text2, { f: MONO }); });
+    ctx.strokeStyle = C.sol; ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(X(PHI), Y - 120); ctx.lineTo(X(PHI), Y + 12); ctx.stroke(); ctx.setLineDash([]);
+    T('φ', X(PHI), Y - 140, 28, C.sol, { w: 700 });
+  });
+  FR.forEach(([p, q], i) => show(prog(u, .4 + i * .9, .9 + i * .9), () => {
+    const x = X(p / q), h = 22 + i * 14;
+    circ(x, Y - h, 9); ctx.fillStyle = i % 2 ? C.outer : C.inner; ctx.fill();
+    ctx.strokeStyle = C.lineS; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, Y - h + 9); ctx.lineTo(x, Y); ctx.stroke();
+  }, 0));
+  // tre disegni chiusi in piccolo
+  [[3, 2], [5, 3], [8, 5]].forEach(([p, q], i) => show(prog(u, 7 + i * .7, 7.6 + i * .7), () => {
+    const cx = 740 + i * 200;
+    orbite(cx, 520, 34, p / q, GIRO * q, { linee: 30, alfa: .3, spess: 1, punti: false });
+    T(`${p}/${q}`, cx, 620, 22, C.text, { f: MONO, w: 700 });
+  }, 0));
+  show(prog(u, 10, 10.6), () => T('i giri per chiudersi sono i numeri di Fibonacci: 1, 2, 3, 5, 8, 13…', 640, 680, 24, C.text), 0);
+}
+
+/* ---------- phi: non si chiude mai ---------- */
+function sPhi(u) {
+  const g = Math.pow(prog(u, .6, 11), 1.6) * 34, tt = g * GIRO;
+  show(prog(u, 0, .6), () => orbite(400, 390, 120, PHI, tt, { alfa: .14, linee: 30 }), 0);
+  show(prog(u, .3, .9), () => {
+    T('Con φ il disegno non si chiude', 760, 170, 32, C.text, { al: 'left', w: 700 });
+    T('giri dell\'azzurro: ' + Math.floor(g), 760, 230, 26, C.inner, { al: 'left', f: MONO, w: 700 });
+  });
+  show(prog(u, 4, 4.6), () => {
+    T('se si chiudesse dopo q giri,', 760, 320, 24, C.text2, { al: 'left' });
+    T('φ sarebbe una frazione p/q', 760, 356, 24, C.text2, { al: 'left' });
+  });
+  show(prog(u, 6.4, 7), () => {
+    rr(750, 410, 460, 70, 16); ctx.fillStyle = C.s2; ctx.fill();
+    T('φ = 1 + 1/(1 + 1/(1 + …))', 776, 446, 26, C.sol, { al: 'left', f: MONO, w: 700 });
+  });
+  show(prog(u, 8.4, 9), () => {
+    T('nessuna frazione lo raggiunge:', 760, 530, 24, C.text, { al: 'left', w: 600 });
+    T('è il «più irrazionale» dei numeri', 760, 566, 24, C.text, { al: 'left', w: 600 });
+  });
+}
+
+/* ---------- riepilogo ---------- */
+function sEnd(u) {
+  const righe = [['frazione p/q', 'il disegno si chiude dopo q giri', C.pos], ['Fibonacci', 'frazioni sempre più vicine a φ', C.inner], ['φ', 'non si chiude mai: è irrazionale', C.outer]];
+  righe.forEach(([a, b, c], i) => show(prog(u, i * .5, .6 + i * .5), () => {
+    const y = 210 + i * 110;
+    rr(180, y - 40, 920, 80, 40); ctx.fillStyle = C.s1; ctx.fill(); ctx.strokeStyle = c; ctx.lineWidth = 3; ctx.stroke();
+    T(a, 230, y, 30, c, { al: 'left', f: MONO, w: 700 }); T(b, 520, y, 28, C.text, { al: 'left' });
+  }));
+}
+
+const FN = { intro: sIntro, giri: sGiri, frazione: sFrazione, fibonacci: sFibonacci, phi: sPhi, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta dall'app; #giri #frazione #fibonacci #phi → parte da quella scena e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, H);
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.id !== 'intro' && sc.id !== 'end') chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map(sc => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = String(speed).replace('.', ',') + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+// il tema cambia nell'app (stessa chiave): ricolora
+window.addEventListener('storage', e => {
+  if (e.key !== 'orfini_theme') return;
+  if (e.newValue === 'light') document.documentElement.dataset.tema = 'chiaro'; else delete document.documentElement.dataset.tema;
+  leggiColori();
+});
+})();
+</script>
+</body>
+</html>
