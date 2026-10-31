@@ -86,3 +86,18 @@ Ogni voce: data, decisione, motivo.
   - Il build crea `journal/<nota>/copertina.webp` (1200×630, senza EXIF) dal campo `copertina:`, poi dalla prima immagine della nota, poi dalla miniatura della prima attività.
   - Avvisi per immagini mancanti, senza testo alternativo, esterne, più strette di 600 px, HEIC, video oltre 20 MB, file in `media/` non usati, e copertina presa da una miniatura del catalogo.
   - Regola del docente nel modello: le immagini mostrano fasi interessanti dell'attività, mai la schermata d'avvio, l'inserimento del nome o i menu.
+
+## 2026-10-31 (3) — Nove note, copertine dalle attività, collegamenti incrociati, colophon
+
+- **Nove note d'esempio** per vedere la griglia 3×3 (`stato: esempio`, parti in classe da compilare).
+- **Copertine catturate dentro le attività**, non dalle miniature del catalogo, che mostrano l'app appena aperta. Criterio del docente: lo studente deve distinguere le attività a colpo d'occhio. Gli Arcade Challenge si somigliano nell'interfaccia, quindi la copertina è un momento del gioco (modello ad aree, ascensore). Parabola e frazionarie si distinguono per il grafico rispetto alle bande dei segni. Catture con Playwright e generatore casuale fissato solo nel browser di cattura; file in `content/journal/media/`, campo `copertina:`. Manca ancora Snake, che usa la miniatura (il build avvisa).
+- **Unire le due app sulle disequazioni**: scartato. Cambierebbe gli URL pubblici e rischia regressioni; le copertine bastano a distinguerle.
+- **Collegamenti calcolati dal build**, per ogni nota:
+  - tag principali sotto il titolo, che portano alla ricerca nel catalogo (`index.html?tag=`). Esclusi classi, codici, indirizzi ed etichette generiche (`TAG_GENERICI`);
+  - competenze dalla Riforma 2017 con link a `competenze.html#CODICE`;
+  - "Potrebbe interessarti anche": attività con almeno 2 temi in comune;
+  - "Altre note": stesse attività o almeno 2 temi in comune.
+- **Colophon nel footer del Journal**: diario di bordo, ultimo aggiornamento (data più recente tra attività e note), strumenti open source, sorgenti su GitHub, licenza MIT del codice (dal README; manca un file LICENSE).
+  - Logo Creative Commons non messo: dichiarerebbe una licenza per i contenuti che il docente non ha ancora scelto.
+  - Logo dell'Open Source Initiative non messo: è un marchio registrato con regole d'uso.
+- Segnalato, non toccato: `retta_fallout_002.html` ha `<title>PIP</title>`, quindi nel catalogo si chiama "PIP".

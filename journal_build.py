@@ -13,6 +13,7 @@ ricompresse in WebP senza metadati (niente posizione GPS) e copiate in journal/m
 """
 
 import html
+import json
 import unicodedata
 import os
 import re
@@ -31,6 +32,19 @@ IMG_WARN_KB = 400
 IMG_MIN_PX = 600          # sotto questa larghezza una foto appare sgranata a tutta colonna
 COVER_PX = (1200, 630)    # copertina della nota: scheda dell'elenco e anteprima quando si condivide il link
 VIDEO_WARN_MB = 20
+REPO_URL = "https://github.com/federicodb/federicodb.github.io"
+ULTIMO_AGGIORNAMENTO = ""  # data più recente tra attività e note, la imposta build_journal
+RIFORMA_JSON = "riforma2017.json"
+TAG_MAX = 6               # tag mostrati sotto il titolo della nota
+CORRELATE_MAX = 3         # attività suggerite e altre note
+# tag che non dicono di cosa parla un'attività: esclusi da tag principali e affinità
+TAG_GENERICI = {"MATEMATICA", "LAB", "BIENNIO", "TRIENNIO", "SIMULAZIONE", "ORFINI", "DIDATTICA LABORATORIALE",
+                "GAMIFICATION", "VIDEOGIOCO", "ARCADE", "ARCADE CHALLENGE", "3D", "WEBGL", "INTERATTIVO", "APP",
+                "IPIA ORFINI FOLIGNO", "ALGEBRA", "GEOMETRIA", "NUMERI", "TRASVERSALE",
+                # indirizzi e etichette pedagogiche: non sono temi (e nessuna etichetta di classe va mostrata)
+                "MECCANICO", "ELETTRICO", "ELETTRICO-ELETTRONICO", "MODA", "ODONTOTECNICO", "SOCIO-SANITARIO",
+                "GRAFICA", "GRAPHIC DESIGN", "MANUTENZIONE", "DIDATTICA INCLUSIVA", "LABORATORIO METACOGNITIVO",
+                "INCLUSIONE", "DSA", "BES"}
 THUMBS_DIR = "content/assets/thumbnails/"  # miniature del catalogo (thumbnails.py)
 AUTHOR = "Prof. Federico De Benedictis"
 MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
@@ -205,6 +219,117 @@ def _copertina(n, fonti, avvisi):
     return ""
 
 
+def _competenze_riforma():
+    """ {codice: etichetta} dalla mappatura della Riforma 2017, la stessa letta da competenze.html """
+    voci = {}
+
+    def cerca(x):
+        if isinstance(x, dict):
+            if "id" in x and "label" in x:
+                voci[x["id"]] = x["label"]
+            else:
+                for v in x.values():
+                    cerca(v)
+        elif isinstance(x, list):
+            for v in x:
+                cerca(v)
+    try:
+        with open(RIFORMA_JSON, encoding="utf-8") as f:
+            cerca(json.load(f))
+    except (OSError, ValueError):
+        pass
+    return voci
+
+
+def _tag_tematici(item):
+    """ I tag che dicono di cosa parla l'attività: niente classi (1 EL), codici (MAT_K1, EU:...), formule, generici """
+    out = []
+    for t in item.get("tags", []):
+        t = t.strip().upper()
+        if (not t or t in TAG_GENERICI or "$" in t or ":" in t or re.match(r"^[1-5] [A-Z]+$", t)
+                or re.match(r"^(MAT|CIT|EU|IND|SOFT)[_ ]", t)):
+            continue
+        out.append(t)
+    return out
+
+
+def _tag_principali(collegate):
+    """ Tag più frequenti tra le attività della nota, a parità nell'ordine in cui compaiono """
+    conta, ordine = {}, []
+    for it in collegate:
+        for t in _tag_tematici(it):
+            if t not in conta:
+                ordine.append(t)
+            conta[t] = conta.get(t, 0) + 1
+    return sorted(ordine, key=lambda t: (-conta[t], ordine.index(t)))[:TAG_MAX]
+
+
+def _codici(item, riforma):
+    """ Codici di competenza dell'attività presenti nella Riforma 2017 (MAT_K1, CIT_4, ...) """
+    return [c for c in dict.fromkeys(t.split(":")[0].strip().upper() for t in item.get("tags", [])) if c in riforma]
+
+
+def _correlate(collegate, catalogo):
+    """ Attività non citate con più tag tematici in comune (almeno 2), per "Potrebbe interessarti anche" """
+    citate = {it["url"] for it in collegate}
+    temi = {t for it in collegate for t in _tag_tematici(it)}
+    if not temi:
+        return []
+    punti = []
+    for it in catalogo:
+        if it.get("url") in citate or it.get("type") != "app":
+            continue
+        comuni = len(temi & set(_tag_tematici(it)))
+        if comuni >= 2:
+            punti.append((comuni, it.get("date", ""), it))
+    punti.sort(key=lambda x: (-x[0], x[1]), reverse=False)
+    return [it for _, _, it in punti[:CORRELATE_MAX]]
+
+
+def _testo_tag(t):
+    return t[:1] + t[1:].lower()
+
+
+def _blocco_competenze(codici, riforma, root):
+    if not codici:
+        return ""
+    ordine = ["MAT_K", "MAT_A", "MAT_C", "CIT_", "IND_", "SOFT_"]
+    codici = sorted(codici, key=lambda c: (next((i for i, p in enumerate(ordine) if c.startswith(p)), 9), c))
+    voci = "".join(f'<li><a href="{_href(root, "competenze.html#" + c)}"><span class="jr-code">{c}</span> '
+                   f'{html.escape(riforma[c])}</a></li>' for c in codici)
+    return ('            <h2 class="jr-side-title">Competenze in gioco</h2>\n'
+            f'            <ul class="jr-skills">{voci}</ul>\n')
+
+
+def _blocco_correlate(correlate, root):
+    if not correlate:
+        return ""
+    voci = "".join(
+        f'<li><a href="{_href(root, it["url"])}">'
+        + (f'<img src="{_href(root, it["thumbnail"])}" alt="" loading="lazy">' if it.get("thumbnail") else "")
+        + f'<span>{html.escape(it.get("title", ""))}</span></a></li>' for it in correlate)
+    return ('            <h2 class="jr-side-title">Potrebbe interessarti anche</h2>\n'
+            f'            <ul class="jr-related">{voci}</ul>\n')
+
+
+def _blocco_altre_note(n, note):
+    """ Note sulle stesse attività, poi note con almeno due temi in comune; mai la nota stessa """
+    altre = []
+    for m in note:
+        if m is n:
+            continue
+        punti = 10 * len(n["chiavi"] & m["chiavi"]) + len(set(n["tag"]) & set(m["tag"]))
+        if punti >= 2:
+            altre.append((punti, m["data"], m))
+    altre.sort(key=lambda x: (-x[0], x[1]), reverse=False)
+    if not altre:
+        return ""
+    voci = "".join(f'<li><a href="../{m["slug"]}/">{html.escape(m["titolo"])}</a>'
+                   f' <time datetime="{m["data"]}">{_data_it(m["data"])}</time></li>' for _, _, m in altre[:CORRELATE_MAX])
+    return ('        <nav class="jr-more" aria-labelledby="altre">\n            <h2 id="altre">Altre note</h2>\n'
+            f'            <ul>{voci}</ul>\n        </nav>')
+
+
 def _chiave(url):
     """ Nome dell'attività nei filtri (?attivita=): il nome del file, senza spazi """
     return _stem(url).replace(" ", "_")
@@ -342,8 +467,17 @@ def _pagina(root, titolo, descrizione, canonical, immagine, corpo, extra_head=""
                     </a>
                 </div>
             </div>
+            <div class="jr-colophon">
+                <p><strong>Un diario di bordo.</strong> Orfini Math Lab raccoglie una sperimentazione didattica di matematica
+                    all'Istituto Professionale "E. Orfini" di Foligno: attività costruite, provate in classe, corrette.</p>
+                <p>Fatto con strumenti open source, ed è a sua volta un progetto open source: il codice è pubblico su GitHub.</p>
+                <ul class="jr-badges" aria-label="Progetto aperto">
+                    <li><a href="{REPO_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Sorgenti su GitHub</a></li>
+                    <li><a href="{REPO_URL}#readme" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>Codice con licenza MIT</a></li>
+                </ul>
+            </div>
             <div class="footer-bottom">
-                <p>&copy; {datetime.now().year} Laboratorio Matematico Orfini Foligno · {AUTHOR}. Progetto Open Source.</p>
+                <p>&copy; {datetime.now().year} Laboratorio Matematico Orfini Foligno · {AUTHOR}{f" · Ultimo aggiornamento: <time datetime='{ULTIMO_AGGIORNAMENTO}'>{_data_it(ULTIMO_AGGIORNAMENTO)}</time>" if ULTIMO_AGGIORNAMENTO else ""}</p>
             </div>
         </div>
     </footer>
@@ -394,6 +528,16 @@ def build_journal(items, base_url):
     citate = {_chiave(it["url"]): it.get("title", "") for n in note for a in n["attivita"]
               for it in [per_stem.get(_stem(a))] if it}
     filtro = sorted(citate.items(), key=lambda x: x[1].lower())
+    global ULTIMO_AGGIORNAMENTO
+    date = [str(it.get("date", ""))[:10] for it in items] + [n["data"] for n in note]
+    ULTIMO_AGGIORNAMENTO = max((d for d in date if re.match(r"^\d{4}-\d{2}-\d{2}$", d)), default="")
+    riforma = _competenze_riforma()
+    for n in note:
+        att = [per_stem[_stem(a)] for a in n["attivita"] if _stem(a) in per_stem]
+        n["tag"] = _tag_principali(att)
+        n["competenze"] = list(dict.fromkeys(c for it in att for c in _codici(it, riforma)))
+        n["correlate"] = _correlate(att, items)
+        n["chiavi"] = {_chiave(it["url"]) for it in att}
     cover_default = base_url + "content/assets/social_share_cover.webp"
 
     for n in note:
@@ -440,11 +584,19 @@ def build_journal(items, base_url):
                       'Le parti sull\'uso in classe sono da compilare.</p>\n')
         elif n["stato"] == "bozza":
             avviso = '        <p class="jr-flag">Bozza: non ancora pubblicata.</p>\n'
+        tag_html = ""
+        if n["tag"]:
+            tag_html = ('                <ul class="jr-tags" aria-label="Temi">' + "".join(
+                f'<li><a href="{root}index.html?tag={urllib.parse.quote(t.lower())}">{html.escape(_testo_tag(t))}</a></li>'
+                for t in n["tag"]) + "</ul>\n")
         sezione_att = ""
         if collegate:
             sezione_att = ('        <aside class="jr-acts" aria-labelledby="att">\n'
                            '            <h2 id="att">Le attività di cui parla</h2>\n            <ul>'
-                           + "".join(_scheda_attivita(it, root) for it in collegate) + "</ul>\n        </aside>\n")
+                           + "".join(_scheda_attivita(it, root) for it in collegate) + "</ul>\n"
+                           + _blocco_competenze(n["competenze"], riforma, root)
+                           + _blocco_correlate(n["correlate"], root)
+                           + "        </aside>\n")
         corpo_pagina = f"""        <p class="jr-back"><a href="../">← Tutte le note</a></p>
         <div class="jr-layout">
         <article class="jr-note">
@@ -452,13 +604,14 @@ def build_journal(items, base_url):
                 <p class="jr-meta"><time datetime="{n['data']}">{_data_it(n['data'])}</time> · {AUTHOR}</p>
                 <h1>{html.escape(n['titolo'])}</h1>
                 <p class="jr-lead">{html.escape(n['descrizione'])}</p>
-            </header>
+{tag_html}            </header>
 {avviso}            <div class="jr-body">
 {corpo}
 {video}
             </div>
         </article>
-{sezione_att}        </div>"""
+{sezione_att}        </div>
+{_blocco_altre_note(n, note)}"""
         extra_head = f'    <meta property="article:published_time" content="{n["data"]}">\n'
         if not pubblica:
             extra_head += '    <meta name="robots" content="noindex">\n'

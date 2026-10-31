@@ -99,3 +99,34 @@ html.theme-light .jr { --jr-soft: rgba(15, 23, 42, 0.04); }
 
 /* ricerca e filtro nel menu: i filtri sono link (funzionano da ogni pagina del Journal) */
 #main-nav a.filter-chip { text-decoration: none; }
+
+/* ------------------------------------------------------------ temi, competenze, correlate, altre note */
+.jr-tags { list-style: none; padding: 0; margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+.jr-tags a {
+    display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 0.85rem; text-decoration: none;
+    color: var(--text-main); background: var(--jr-soft); border: 1px solid var(--jr-line); transition: border-color 0.2s, color 0.2s;
+}
+.jr-tags a:hover { border-color: var(--primary); color: var(--primary); }
+.jr-side-title { font-family: var(--font-heading); font-size: 1.1rem; margin: 32px 0 12px; }
+.jr-skills, .jr-related, .jr-more ul { list-style: none; padding: 0; display: grid; gap: 8px; }
+.jr-skills a { display: block; color: var(--text-main); text-decoration: none; font-size: 0.92rem; line-height: 1.45; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--jr-line); }
+.jr-skills a:hover { border-color: var(--primary); }
+.jr-code { font-family: var(--font-code); font-size: 0.78rem; color: var(--primary); margin-right: 6px; }
+.jr-related a { display: grid; grid-template-columns: 72px 1fr; gap: 12px; align-items: center; color: var(--text-main); text-decoration: none; font-size: 0.92rem; line-height: 1.35; }
+.jr-related img { width: 72px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; border: 1px solid var(--jr-line); }
+.jr-related a:hover span { color: var(--primary); }
+.jr-more { max-width: var(--jr-measure); margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--jr-line); }
+.jr-more h2 { font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 14px; }
+.jr-more time { color: var(--text-muted); font-size: 0.85rem; margin-left: 8px; font-family: var(--font-code); }
+
+/* ------------------------------------------------------------ colophon del footer: sobrio, solo testo e due segni */
+.jr-colophon { max-width: 70ch; padding: 8px 0 28px; color: var(--text-muted); font-size: 0.92rem; line-height: 1.65; }
+.jr-colophon p + p { margin-top: 6px; }
+.jr-colophon strong { color: var(--text-main); font-weight: 600; }
+.jr-badges { list-style: none; padding: 0; margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+.jr-badges a {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-size: 0.82rem;
+    color: var(--text-muted); text-decoration: none; border: 1px solid var(--glass-border); transition: color 0.2s, border-color 0.2s;
+}
+.jr-badges a:hover { color: var(--text-main); border-color: var(--text-muted); }
+.jr-badges svg { width: 16px; height: 16px; flex: none; }

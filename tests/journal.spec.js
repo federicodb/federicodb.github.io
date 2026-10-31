@@ -71,6 +71,28 @@ test.describe('Journal', () => {
   });
 });
 
+test.describe('Journal: collegamenti generati dal build', () => {
+  for (const nota of NOTE) {
+    test(`nota ${nota}: temi senza etichette di classe, competenze e note collegate`, async ({ page }) => {
+      await page.goto(`/journal/${nota}/`);
+      for (const t of await page.locator('.jr-tags a').allTextContents()) {
+        expect(t, 'nessuna etichetta di classe o codice tra i temi').not.toMatch(/^[1-5] ?[A-Z]{2,}$|MAT_|CIT_|\$/);
+      }
+      for (const href of await page.locator('.jr-tags a').evaluateAll((els) => els.map((e) => e.getAttribute('href')))) {
+        expect(href).toMatch(/index\.html\?tag=[^%]*(%[0-9A-F]{2}[^%]*)*$/);
+        expect(href).not.toContain('%25');
+      }
+      for (const href of await page.locator('.jr-skills a').evaluateAll((els) => els.map((e) => e.getAttribute('href')))) {
+        expect(href).toMatch(/competenze\.html#(MAT|CIT|IND|SOFT)_[A-Z]?\d$/);
+      }
+      for (const href of await page.locator('.jr-more a').evaluateAll((els) => els.map((e) => e.getAttribute('href')))) {
+        expect(href).not.toBe(`../${nota}/`);
+      }
+      await expect(page.locator('.jr-colophon a[href^="https://github.com/"]').first()).toBeVisible();
+    });
+  }
+});
+
 test.describe('Journal: ricerca e filtro nel menu', () => {
   test('la ricerca filtra mentre si scrive, senza badare agli accenti, e resta nell\'indirizzo', async ({ page }) => {
     test.skip(NOTE.length < 2, 'servono almeno due note');
