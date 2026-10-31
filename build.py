@@ -41,6 +41,8 @@ ALLENAMENTO_CATALOGO_PATH = "allenamento/catalogo.json"
 # "invalsi" copre tutti i codici MAT_C e comparirebbe ovunque
 ALLENAMENTO_AREE_ESCLUSE = {"lavoro", "invalsi"}
 ALLENAMENTO_MAX = 4
+# Lezioni della Quest troppo specifiche per essere suggerite in base al solo codice MAT (es. φ e Fibonacci)
+ALLENAMENTO_SOLO_ARGOMENTO = {"fibonacci"}
 
 
 def load_allenamento_catalogo():
@@ -80,6 +82,10 @@ def link_allenamento(meta, catalogo):
             argomento = len(_radici(a["titolo"] + " " + a["id"].replace("-", " ")) & argomenti)
             scelte.append((argomento, len(comuni), len(anni & set(a.get("anni", []))), a, comuni))
     scelte.sort(key=lambda x: (-x[0], -x[1], -x[2]))
+    # lezioni su un argomento preciso: solo dove l'argomento coincide, e allora sono l'unico allenamento proposto
+    scelte = [x for x in scelte if x[0] or x[3]["id"] not in ALLENAMENTO_SOLO_ARGOMENTO]
+    if any(x[3]["id"] in ALLENAMENTO_SOLO_ARGOMENTO for x in scelte):
+        scelte = [x for x in scelte if x[3]["id"] in ALLENAMENTO_SOLO_ARGOMENTO]
     return [{
         "id": a["id"],
         "titolo": a["titolo"],

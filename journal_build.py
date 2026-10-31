@@ -173,8 +173,9 @@ def _nav(root):
                     <span class="brand-sub">JOURNAL</span>
                 </a>
                 <div class="nav-links">
-                    <a href="{root}journal/" class="nav-link active" aria-current="page">Journal</a>
+                    <a href="{root}index.html" class="nav-link">Attività</a>
                     <a href="{root}allenamento/" class="nav-link nav-link-cta">Allenati</a>
+                    <a href="{root}journal/" class="nav-link active" aria-current="page">Journal</a>
                     <a href="{root}calcolo-mentale.html" class="nav-link">Calcolo veloce</a>
                     <a href="{root}verifiche.html" class="nav-link">Archivio</a>
                     <a href="{root}galaxy.html" class="nav-link">Mappa</a>

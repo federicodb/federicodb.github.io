@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-30 20:55:08
+   Data: 2026-10-31 08:58:02
 */
 
 const db = [
@@ -90,33 +90,9 @@ const db = [
         "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
         "allenamento": [
             {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
+                "id": "fibonacci",
+                "titolo": "Successione di Fibonacci e rapporto aureo",
+                "url": "allenamento/#/lezione/fibonacci/1",
                 "mat": [
                     "MAT_K3"
                 ]
@@ -1096,33 +1072,9 @@ const db = [
         "thumbnail": "content/assets/thumbnails/fibonacci_anim.webp",
         "allenamento": [
             {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
+                "id": "fibonacci",
+                "titolo": "Successione di Fibonacci e rapporto aureo",
+                "url": "allenamento/#/lezione/fibonacci/1",
                 "mat": [
                     "MAT_K3"
                 ]
