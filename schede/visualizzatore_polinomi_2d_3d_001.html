@@ -50,8 +50,9 @@
         <footer class="sc-piede">https://federicodb.github.io/content/apps/visualizzatore%20polinomi%202d%203d%20001.html · Contenuti CC BY-NC-SA 4.0 · Prof. Federico De Benedictis</footer>
     </main>
     <script>
-        var q = document.getElementById('qr');
-        if (window.QRCode) new QRCode(q, { text: q.dataset.url, width: 104, height: 104, correctLevel: QRCode.CorrectLevel.M });
+        if (window.QRCode) document.querySelectorAll('#qr, .qr').forEach(function (q) {
+            new QRCode(q, { text: q.dataset.url, width: q.id ? 104 : 78, height: q.id ? 104 : 78, correctLevel: QRCode.CorrectLevel.M });
+        });
     </script>
     <script src="../content/assets/js/offline.js" defer></script>
 </body>

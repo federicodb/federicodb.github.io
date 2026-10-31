@@ -41,7 +41,7 @@
 </ul></section>
             <section><h2>Competenze (Riforma 2017)</h2><ul class="sc-list"><li><b>MAT_A1</b> Eseguire calcoli operando con diversi insiemi numerici<small>Operare correntemente con numeri naturali, interi, razionali e reali.</small></li><li><b>MAT_K1</b> Insiemi numerici e calcolo letterale<small>Proprietà delle operazioni.</small></li></ul></section>
             <section><h2>Allenati</h2><p>Su federicodb.github.io/allenamento:</p><ul class="sc-list"><li>Frazioni</li><li>Proprietà delle potenze</li></ul><div class="sc-percorso"><p><b>Prima:</b> Numeri relativi</p><p><b>Poi:</b> Percentuali, Proporzioni, Notazione scientifica, Radicali, Successione di Fibonacci, Equazioni di primo grado: oltre gli interi, Il teorema di Pitagora, Probabilità, Esponenziali</p><p><b>Calcolo veloce:</b> Per 5, per 25, per 50</p></div><h2>Temi</h2><p>Aritmetica, Frazioni, Numeri razionali</p></section>
-            <section class="sc-largo"><h2>Collegamenti</h2><ul>
+            <section class="sc-largo sc-collegamenti"><h2>Collegamenti</h2><ul>
 <li><strong>Arcade Challenge: MCM &amp; MCD</strong>: il mcm è il denominatore comune delle somme.</li>
 <li><strong>Percent Lab</strong>: una percentuale è una frazione con denominatore 100.</li>
 <li><strong>Il filo di Dedalo</strong>: sigilli su frazioni, percentuali e proporzioni da fare a mente.</li>
@@ -61,8 +61,9 @@
         <footer class="sc-piede">https://federicodb.github.io/content/apps/fractions_lab_001.html · Contenuti CC BY-NC-SA 4.0 · Prof. Federico De Benedictis</footer>
     </main>
     <script>
-        var q = document.getElementById('qr');
-        if (window.QRCode) new QRCode(q, { text: q.dataset.url, width: 104, height: 104, correctLevel: QRCode.CorrectLevel.M });
+        if (window.QRCode) document.querySelectorAll('#qr, .qr').forEach(function (q) {
+            new QRCode(q, { text: q.dataset.url, width: q.id ? 104 : 78, height: q.id ? 104 : 78, correctLevel: QRCode.CorrectLevel.M });
+        });
     </script>
     <script src="../content/assets/js/offline.js" defer></script>
 </body>

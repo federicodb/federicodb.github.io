@@ -56,3 +56,6 @@ h2 { font: 700 11.5pt Syne, sans-serif; color: var(--accent); margin-bottom: 2mm
 .sc-percorso { margin-top: 2mm; font-size: 9pt; }
 .sc-percorso p + p { margin-top: 1mm; }
 .sc-percorso b { color: var(--accent); }
+.sc-collegamenti .sc-qr2 { float: right; margin: 0 0 2mm 5mm; width: 30mm; }
+.sc-collegamenti .sc-qr2 .qr { display: flex; justify-content: center; }
+.sc-collegamenti::after { content: ""; display: block; clear: both; }

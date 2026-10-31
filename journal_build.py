@@ -658,6 +658,11 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
         percorso = "".join(f'<p><b>{nome}:</b> {html.escape(", ".join(v))}</p>' for nome, v in
                            (("Prima", prima), ("Poi", dopo), ("Calcolo veloce", veloce)) if v)
         collegamenti = sez.get("collegamenti", "")
+        vedi = next((x for x in items if sc.get("vedi_anche") and _chiave(x.get("url", "")) == sc["vedi_anche"].lower()), None)
+        if sc.get("vedi_anche") and not vedi:
+            print(f"  ⚠️ Schede: {chiave}: vedi_anche '{sc['vedi_anche']}' non trovata nel catalogo")
+        qr_vedi = (f'<figure class="sc-qr sc-qr2"><div class="qr" data-url="{html.escape(base_url + urllib.parse.quote(vedi["url"], safe="/"))}"></div>'
+                   f'<figcaption>{html.escape(vedi.get("title", ""))}</figcaption></figure>') if vedi else ""
         temi = ", ".join(_testo_tag(t) for t in _tag_tematici(it)[:6])
         verif_lista = _verifiche_scelte(sc["verifiche"], verifiche) if sc.get("verifiche") else _verifiche_collegate([it], verifiche)
         verif = "".join(f'<li>{html.escape(_nome_verifica(v))}</li>' for v in verif_lista)
@@ -708,7 +713,7 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
             <section><h2>Regole</h2>{sez.get("regole", "")}</section>
             {f'<section><h2>Competenze (Riforma 2017)</h2><ul class="sc-list">{comp}</ul></section>' if comp else ''}
             <section>{f'<h2>Allenati</h2><p>Su federicodb.github.io/allenamento:</p><ul class="sc-list">{allen}</ul>' if allen else ''}{f'<div class="sc-percorso">{percorso}</div>' if percorso else ''}{f'<h2>Temi</h2><p>{html.escape(temi)}</p>' if temi else ''}</section>
-            {f'<section class="sc-largo"><h2>Collegamenti</h2>{collegamenti}</section>' if collegamenti else ''}
+            {f'<section class="sc-largo sc-collegamenti"><h2>Collegamenti</h2>{qr_vedi}{collegamenti}</section>' if collegamenti else ''}
             <section class="sc-esercizi"><h2>Esercizi</h2>{esercizi}{righe_scrittura}</section>
             {f'<section class="sc-largo"><h2>Mettiti alla prova su carta</h2><p>Verifiche nell&#39;Archivio sugli stessi temi:</p><ul class="sc-list">{verif}</ul></section>' if verif else ''}
         </div>
@@ -716,8 +721,9 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
         <footer class="sc-piede">{html.escape(url_app)} · Contenuti CC BY-NC-SA 4.0 · Prof. Federico De Benedictis</footer>
     </main>
     <script>
-        var q = document.getElementById('qr');
-        if (window.QRCode) new QRCode(q, {{ text: q.dataset.url, width: 104, height: 104, correctLevel: QRCode.CorrectLevel.M }});
+        if (window.QRCode) document.querySelectorAll('#qr, .qr').forEach(function (q) {{
+            new QRCode(q, {{ text: q.dataset.url, width: q.id ? 104 : 78, height: q.id ? 104 : 78, correctLevel: QRCode.CorrectLevel.M }});
+        }});
     </script>
     <script src="{root}content/assets/js/offline.js" defer></script>
 </body>

@@ -656,5 +656,58 @@ def frazioni_razionali():
     return _svg(640, 250, "".join(out), "Frazioni equivalenti, retta dei numeri razionali e insiemi numerici")
 
 
+def studio_funzione():
+    """ y = x² − 4x + 3: zeri, intersezione con l'asse y, vertice, segno; la retta y = x − 1 sovrapposta """
+    ax = _Assi(40, 12, 330, 250, (-1.5, 5.5), (-2.5, 5.5))
+    f = lambda x: x * x - 4 * x + 3
+    out = [ax.griglia(1, False)]
+    for v in (-1, 1, 2, 3, 4, 5):
+        out.append(_t(ax.p(v, 0)[0], ax.p(v, 0)[1] + 15, str(v).replace("-", "−"), 11))
+    for v in (-2, 2, 4):
+        out.append(_t(ax.p(0, v)[0] - 8, ax.p(0, v)[1] + 4, str(v).replace("-", "−"), 11, "end"))
+    # segno sull'asse x: positiva fuori dalle radici, negativa tra 1 e 3
+    out += [_line(*ax.p(-1.5, 0), *ax.p(1, 0), ACC, 4), _line(*ax.p(3, 0), *ax.p(5.5, 0), ACC, 4),
+            _line(*ax.p(1, 0), *ax.p(3, 0), ACC2, 4, "6 4")]
+    out += [ax.curva(f, -1.2, 5.2, color=ACC), ax.curva(lambda x: x - 1, -1.5, 5.5, color=INK, w=1.6)]
+    out += [_dot(*ax.p(1, 0), 4.5, ACC2, "#fff"), _dot(*ax.p(3, 0), 4.5, ACC2, "#fff"), _dot(*ax.p(0, 3), 4, ACC),
+            _dot(*ax.p(2, -1), 4.5, ACC), _t(ax.p(2, -1)[0], ax.p(2, -1)[1] + 18, "minimo (2; −1)", 12, color=ACC, weight=600),
+            _dot(*ax.p(4, 3), 4, INK), _t(ax.p(0, 3)[0] + 8, ax.p(0, 3)[1] - 6, "(0; 3)", 11.5, "start", ACC),
+            _t(ax.p(5.2, 4.2)[0], ax.p(5.2, 4.2)[1] - 8, "y = x − 1", 12, "end", INK, 600)]
+    box = [_t(400, 50, "y = x² − 4x + 3", 16, "start", ACC, 700),
+           _t(400, 80, "asse y: x = 0  →  y = 3", 12.5, "start"),
+           _t(400, 102, "zeri: x = 1 e x = 3", 12.5, "start", ACC2, 600),
+           _t(400, 124, "segno: + fuori, − tra gli zeri", 12.5, "start"),
+           _t(400, 146, "decresce fino a x = 2, poi cresce", 12.5, "start"),
+           _t(400, 186, "due grafici si incontrano", 12.5, "start", weight=700),
+           _t(400, 206, "dove f(x) = g(x)", 12.5, "start")]
+    return _svg(620, 280, "".join(out + box), "Studio del grafico di una parabola con zeri, minimo e segno, e una retta sovrapposta")
+
+
+def pitagora_teorema():
+    """ Triangolo 3-4-5 con i quadrati sui tre lati (anche quello obliquo sull'ipotenusa) e distanza tra due punti """
+    u = 16
+    ox, oy = 20 + 3 * u, 12 + 7 * u
+    P = lambda x, y: (ox + x * u, oy - y * u)
+    out = [_path([P(0, 0), P(4, 0), P(4, -4), P(0, -4)], INK, 1.4, "rgba(194,65,12,0.12)", True),
+           _path([P(0, 0), P(0, 3), P(-3, 3), P(-3, 0)], INK, 1.4, "rgba(194,65,12,0.12)", True),
+           _path([P(4, 0), P(0, 3), P(3, 7), P(7, 4)], ACC, 1.6, FILL, True),
+           _path([P(0, 0), P(4, 0), P(0, 3)], INK, 2.2, "#fff", True),
+           _t(*P(2, -2.2), "16", 15, weight=700), _t(*P(-1.5, 1.3), "9", 15, weight=700), _t(*P(3.5, 3.8), "25", 17, color=ACC, weight=700),
+           _t(*P(2, 0.35), "4", 12), _t(*P(0.35, 1.3), "3", 12, "start"), _t(*P(2.3, 1.9), "5", 12, color=ACC2, weight=700),
+           _t(*P(2, -5.3), "9 + 16 = 25", 14, weight=700)]
+    ax = _Assi(280, 22, 150, 180, (0, 6), (0, 7))
+    out += [ax.griglia(1, False)]
+    a, b = ax.p(1, 1), ax.p(4, 5)
+    c = ax.p(4, 1)
+    out += [_line(*a, *c, ACC2, 1.8, "5 4"), _line(*c, *b, ACC2, 1.8, "5 4"), _line(*a, *b, ACC, 2.4),
+            _dot(*a, 4.5), _dot(*b, 4.5), _t(a[0] - 6, a[1] + 14, "A(1; 1)", 11.5, "end"), _t(b[0] + 6, b[1] - 6, "B(4; 5)", 11.5, "start"),
+            _t((a[0] + c[0]) / 2, c[1] + 15, "Δx = 3", 11.5, color=ACC2), _t(c[0] + 6, (c[1] + b[1]) / 2, "Δy = 4", 11.5, "start", ACC2),
+            _t(355, 228, "AB = √(3² + 4²) = 5", 13, weight=700)]
+    out += [_t(462, 60, "c² = a² + b²", 18, "start", weight=700), _t(462, 92, "c = √(a² + b²)", 13.5, "start", ACC),
+            _t(462, 114, "a = √(c² − b²)", 13.5, "start", ACC), _t(462, 150, "vale anche al contrario:", 12.5, "start"),
+            _t(462, 168, "se c² = a² + b²,", 12.5, "start"), _t(462, 186, "il triangolo è rettangolo", 12.5, "start")]
+    return _svg(640, 245, "".join(out), "Teorema di Pitagora con i quadrati sui lati e distanza tra due punti")
+
+
 FIGURE = {name: fn for name, fn in globals().items() if callable(fn) and not name.startswith("_") and name.islower()
           and name not in ("FIGURE",)}
