@@ -20,7 +20,6 @@
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone@8.0.10/babel.min.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -173,7 +172,7 @@
 
 <div id="root"></div>
 
-    <script type="text/babel">
+    <script type="text/x-jsx-sorgente" id="jsx-sorgente">
         const { useState, useEffect, useMemo, useRef } = React;
 
         // --- ICONS ---
@@ -662,6 +661,894 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
+    <script data-jsx-compilato="007e30d31237">
+// Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
+document.addEventListener('DOMContentLoaded', function () {
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(r) { for (var t = 1; t < arguments.length; t++) { var o = null != arguments[t] ? arguments[t] : {}; t % 2 ? ownKeys(Object(o), !0).forEach(function (t) { _defineProperty(r, t, o[t]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(r, Object.getOwnPropertyDescriptors(o)) : ownKeys(Object(o)).forEach(function (e) { Object.defineProperty(r, e, Object.getOwnPropertyDescriptor(o, e)); }); } return r; }
+function _defineProperty(r, t, o) { return (t = _toPropertyKey(t)) in r ? Object.defineProperty(r, t, { value: o, enumerable: !0, configurable: !0, writable: !0 }) : r[t] = o, r; }
+function _toPropertyKey(r) { var o = _toPrimitive(r, "string"); return "symbol" == _typeof(o) ? o : o + ""; }
+function _toPrimitive(t, e) { if ("object" != _typeof(t) || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); }
+function _slicedToArray(e, i) { return _iterableToArrayLimit(e, i) || _unsupportedIterableToArray(e, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(t, e) { if (t) { if ("string" == typeof t) return _arrayLikeToArray(t, e); var o = {}.toString.call(t).slice(8, -1); return "Object" === o && t.constructor && (o = t.constructor.name), "Map" === o || "Set" === o ? Array.from(t) : "Arguments" === o || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(o) ? _arrayLikeToArray(t, e) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, t) { var e = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (Array.isArray(r) && (null == e || e === ("undefined" != typeof Symbol && [][Symbol.iterator]) || e === []["@@iterator"])) return r; if (null != e) { var l, n, i, a, u = [], o = !0, f = !1; try { if (i = (e = e.call(r)).next, 0 === t) { if (Object(e) !== e) return; o = !1; } else for (; !(o = (l = i.call(e)).done) && (u.push(l.value), u.length !== t); o = !0); } catch (r) { f = !0, n = r; } finally { try { if (!o && null != e["return"] && (a = e["return"](), Object(a) !== a)) return; } finally { if (f) throw n; } } return u; } }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useMemo = _React.useMemo,
+  useRef = _React.useRef;
+
+// --- ICONS ---
+var Icons = {
+  Info: function Info() {
+    return /*#__PURE__*/React.createElement("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("circle", {
+      cx: "12",
+      cy: "12",
+      r: "10"
+    }), /*#__PURE__*/React.createElement("line", {
+      x1: "12",
+      y1: "16",
+      x2: "12",
+      y2: "12"
+    }), /*#__PURE__*/React.createElement("line", {
+      x1: "12",
+      y1: "8",
+      x2: "12.01",
+      y2: "8"
+    }));
+  },
+  ChevronRight: function ChevronRight() {
+    return /*#__PURE__*/React.createElement("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "24",
+      height: "24",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("polyline", {
+      points: "9 18 15 12 9 6"
+    }));
+  },
+  PieChart: function PieChart() {
+    return /*#__PURE__*/React.createElement("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "24",
+      height: "24",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M21.21 15.89A10 10 0 1 1 8 2.83"
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M22 12A10 10 0 0 0 12 2v10z"
+    }));
+  },
+  Activity: function Activity() {
+    return /*#__PURE__*/React.createElement("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "24",
+      height: "24",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("polyline", {
+      points: "22 12 18 12 15 21 9 3 6 12 2 12"
+    }));
+  },
+  X: function X() {
+    return /*#__PURE__*/React.createElement("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "18",
+      height: "18",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: "18",
+      y1: "6",
+      x2: "6",
+      y2: "18"
+    }), /*#__PURE__*/React.createElement("line", {
+      x1: "6",
+      y1: "6",
+      x2: "18",
+      y2: "18"
+    }));
+  },
+  Plus: function Plus() {
+    return /*#__PURE__*/React.createElement("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "3",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: "12",
+      y1: "5",
+      x2: "12",
+      y2: "19"
+    }), /*#__PURE__*/React.createElement("line", {
+      x1: "5",
+      y1: "12",
+      x2: "19",
+      y2: "12"
+    }));
+  },
+  Minus: function Minus() {
+    return /*#__PURE__*/React.createElement("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "16",
+      height: "16",
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "currentColor",
+      strokeWidth: "3",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: "5",
+      y1: "12",
+      x2: "19",
+      y2: "12"
+    }));
+  }
+};
+
+// --- Utility Functions ---
+var _gcd = function gcd(a, b) {
+  return !b ? a : _gcd(b, a % b);
+};
+var lcm = function lcm(a, b) {
+  return a * b / _gcd(a, b);
+};
+var simplify = function simplify(n, d) {
+  if (d === 0) return {
+    n: 0,
+    d: 1,
+    err: "Divisione per zero"
+  };
+  var divisor = _gcd(Math.abs(n), Math.abs(d));
+  return {
+    n: n / divisor,
+    d: d / divisor
+  };
+};
+
+// --- Components ---
+
+var LaTeX = function LaTeX(_ref) {
+  var formula = _ref.formula,
+    _ref$block = _ref.block,
+    block = _ref$block === void 0 ? false : _ref$block;
+  var containerRef = useRef(null);
+  useEffect(function () {
+    if (containerRef.current && window.katex) {
+      try {
+        window.katex.render(formula, containerRef.current, {
+          throwOnError: false,
+          displayMode: block
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [formula, block]);
+  return /*#__PURE__*/React.createElement("span", {
+    ref: containerRef,
+    className: block ? "block my-2" : ""
+  });
+};
+var NumberLine = function NumberLine(_ref2) {
+  var valA = _ref2.valA,
+    valB = _ref2.valB,
+    valRes = _ref2.valRes;
+  var values = [valA, valRes];
+  if (valB !== null) values.push(valB);
+  var minVal = Math.min.apply(Math, values);
+  var maxVal = Math.max.apply(Math, values);
+  var start = Math.floor(minVal) - 1;
+  var end = Math.ceil(maxVal) + 1;
+  var totalRange = end - start;
+  var width = 600;
+  var height = 100;
+  var padding = 40;
+  var scale = function scale(val) {
+    var effectiveWidth = width - padding * 2;
+    var percent = (val - start) / totalRange;
+    return padding + percent * effectiveWidth;
+  };
+  var ticks = [];
+  for (var i = start; i <= end; i++) {
+    ticks.push(i);
+  }
+  var Marker = function Marker(_ref3) {
+    var val = _ref3.val,
+      color = _ref3.color,
+      label = _ref3.label,
+      yPos = _ref3.yPos,
+      showLabel = _ref3.showLabel;
+    if (val < start || val > end) return null;
+    var x = scale(val);
+    return /*#__PURE__*/React.createElement("g", {
+      className: "marker-transition",
+      transform: "translate(".concat(x, ", 0)")
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: "0",
+      y1: "50",
+      x2: "0",
+      y2: yPos,
+      stroke: color,
+      strokeWidth: "2",
+      strokeDasharray: "4"
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "0",
+      cy: yPos,
+      r: "6",
+      fill: color,
+      stroke: "#000000",
+      strokeWidth: "2"
+    }), showLabel && /*#__PURE__*/React.createElement("text", {
+      x: "0",
+      y: yPos - 12,
+      textAnchor: "middle",
+      fill: color,
+      fontSize: "10",
+      fontWeight: "bold",
+      fontFamily: "monospace"
+    }, label));
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-surface-container rounded-xl border border-outline-variant p-4 mt-6 overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-2 text-sm font-bold text-on-surface-variant"
+  }, /*#__PURE__*/React.createElement(Icons.Activity, null), " Retta Numerica"), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-[400px]"
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 ".concat(width, " ").concat(height),
+    className: "w-full h-auto"
+  }, /*#__PURE__*/React.createElement("line", {
+    x1: padding,
+    y1: "50",
+    x2: width - padding,
+    y2: "50",
+    stroke: "#525252",
+    strokeWidth: "2"
+  }), /*#__PURE__*/React.createElement("polygon", {
+    points: "".concat(width - padding + 5, ",50 ").concat(width - padding - 5, ",45 ").concat(width - padding - 5, ",55"),
+    fill: "#525252"
+  }), /*#__PURE__*/React.createElement("polygon", {
+    points: "".concat(padding - 5, ",50 ").concat(padding + 5, ",45 ").concat(padding + 5, ",55"),
+    fill: "#525252"
+  }), ticks.map(function (t) {
+    return /*#__PURE__*/React.createElement("g", {
+      key: t,
+      transform: "translate(".concat(scale(t), ", 50)")
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: "0",
+      y1: "-5",
+      x2: "0",
+      y2: "5",
+      stroke: "#737373",
+      strokeWidth: "2"
+    }), /*#__PURE__*/React.createElement("text", {
+      x: "0",
+      y: "20",
+      textAnchor: "middle",
+      fill: "#737373",
+      fontSize: "10"
+    }, t));
+  }), /*#__PURE__*/React.createElement(Marker, {
+    val: valA,
+    color: "#3b82f6",
+    label: "A",
+    yPos: 30,
+    showLabel: true
+  }), valB !== null && /*#__PURE__*/React.createElement(Marker, {
+    val: valB,
+    color: "#10b981",
+    label: "B",
+    yPos: 30,
+    showLabel: true
+  }), /*#__PURE__*/React.createElement(Marker, {
+    val: valRes,
+    color: "#f59e0b",
+    label: "Risultato",
+    yPos: 70,
+    showLabel: true
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "text-xs text-center text-on-surface-variant mt-1"
+  }, "Scala visualizzata: da ", start, " a ", end));
+};
+var FractionVisualizer = function FractionVisualizer(_ref4) {
+  var num = _ref4.num,
+    den = _ref4.den,
+    _ref4$color = _ref4.color,
+    color = _ref4$color === void 0 ? "text-blue-500" : _ref4$color,
+    _ref4$bg = _ref4.bg,
+    bg = _ref4$bg === void 0 ? "bg-blue-500" : _ref4$bg,
+    label = _ref4.label,
+    _ref4$parts = _ref4.parts,
+    parts = _ref4$parts === void 0 ? null : _ref4$parts;
+  var safeDen = den === 0 ? 1 : den;
+  var value = num / safeDen;
+  var absValue = Math.abs(value);
+  var wholeParts = Math.floor(absValue);
+  var remainder = absValue - wholeParts;
+  var totalCircles = wholeParts + (remainder > 0.0001 ? 1 : 0);
+  var displayCircles = totalCircles > 0 ? Array.from({
+    length: totalCircles
+  }, function (_, i) {
+    return i;
+  }) : [0];
+  var effectiveParts = parts || [{
+    n: num,
+    color: color,
+    bg: bg
+  }];
+  var getCoordinatesForPercent = function getCoordinatesForPercent(percent) {
+    var x = Math.cos(2 * Math.PI * percent);
+    var y = Math.sin(2 * Math.PI * percent);
+    return [x, y];
+  };
+  var DrawWedge = function DrawWedge(_ref5) {
+    var startIdx = _ref5.startIdx,
+      count = _ref5.count,
+      colorClass = _ref5.colorClass;
+    var startPercent = startIdx / safeDen;
+    var endPercent = (startIdx + count) / safeDen;
+    if (count >= safeDen && Math.abs(count - safeDen) < 0.1) {
+      return /*#__PURE__*/React.createElement("circle", {
+        cx: "0",
+        cy: "0",
+        r: "1",
+        className: "".concat(colorClass, " fill-current opacity-90"),
+        stroke: "white",
+        strokeWidth: "0.05"
+      });
+    }
+    var _getCoordinatesForPer = getCoordinatesForPercent(startPercent),
+      _getCoordinatesForPer2 = _slicedToArray(_getCoordinatesForPer, 2),
+      startX = _getCoordinatesForPer2[0],
+      startY = _getCoordinatesForPer2[1];
+    var _getCoordinatesForPer3 = getCoordinatesForPercent(endPercent),
+      _getCoordinatesForPer4 = _slicedToArray(_getCoordinatesForPer3, 2),
+      endX = _getCoordinatesForPer4[0],
+      endY = _getCoordinatesForPer4[1];
+    var largeArcFlag = endPercent - startPercent > 0.5 ? 1 : 0;
+    var d = "M 0 0 L ".concat(startX, " ").concat(startY, " A 1 1 0 ").concat(largeArcFlag, " 1 ").concat(endX, " ").concat(endY, " Z");
+    return /*#__PURE__*/React.createElement("path", {
+      d: d,
+      className: "".concat(colorClass, " fill-current opacity-90"),
+      stroke: "white",
+      strokeWidth: "0.05"
+    });
+  };
+  var RenderCircle = function RenderCircle(_ref6) {
+    var circleIndex = _ref6.circleIndex;
+    var startUnit = circleIndex * safeDen;
+    var endUnit = (circleIndex + 1) * safeDen;
+    var slices = [];
+    var currentUnit = 0;
+    effectiveParts.forEach(function (part) {
+      var partStart = currentUnit;
+      var partEnd = currentUnit + part.n;
+      var overlapStart = Math.max(startUnit, partStart);
+      var overlapEnd = Math.min(endUnit, partEnd);
+      if (overlapEnd > overlapStart) {
+        var localStart = overlapStart - startUnit;
+        var localCount = overlapEnd - overlapStart;
+        slices.push(/*#__PURE__*/React.createElement(DrawWedge, {
+          key: "".concat(circleIndex, "-").concat(part.color),
+          startIdx: localStart,
+          count: localCount,
+          colorClass: part.color
+        }));
+      }
+      currentUnit += part.n;
+    });
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col items-center mx-1 transition-all duration-500 transform hover:scale-110"
+    }, /*#__PURE__*/React.createElement("svg", {
+      viewBox: "-1.2 -1.2 2.4 2.4",
+      className: "w-16 h-16 transform -rotate-90"
+    }, /*#__PURE__*/React.createElement("circle", {
+      cx: "0",
+      cy: "0",
+      r: "1",
+      fill: "transparent",
+      stroke: "#404040",
+      strokeWidth: "0.1"
+    }), safeDen <= 24 && Array.from({
+      length: safeDen
+    }).map(function (_, i) {
+      var angle = i / safeDen * 360;
+      return /*#__PURE__*/React.createElement("line", {
+        key: "g-".concat(i),
+        x1: "0",
+        y1: "0",
+        x2: "1",
+        y2: "0",
+        transform: "rotate(".concat(angle, ")"),
+        stroke: "#404040",
+        strokeWidth: "0.02",
+        opacity: "0.3"
+      });
+    }), slices));
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col items-center p-4 bg-surface-container rounded-xl border border-outline-variant shadow-lg relative overflow-hidden"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-on-surface-variant text-xs uppercase font-bold mb-2 tracking-wider flex items-center gap-2"
+  }, label), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2 text-xl font-bold h-10 flex items-center text-on-background"
+  }, /*#__PURE__*/React.createElement(LaTeX, {
+    formula: "\\frac{".concat(num, "}{").concat(den, "}")
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap justify-center mb-4 gap-2 min-h-[4rem]"
+  }, displayCircles.map(function (c) {
+    return /*#__PURE__*/React.createElement(RenderCircle, {
+      key: c,
+      circleIndex: c
+    });
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "text-xs font-mono text-on-surface-variant mt-2"
+  }, "Valore: ", (value * 100).toFixed(1), "%"), value < 0 && /*#__PURE__*/React.createElement("div", {
+    className: "absolute top-2 right-2 text-xs bg-red-900/30 text-red-400 border border-red-800/50 px-2 py-1 rounded"
+  }, "Negativo"));
+};
+var FractionInput = function FractionInput(_ref7) {
+  var val = _ref7.val,
+    setVal = _ref7.setVal;
+  var updateN = function updateN(delta) {
+    return setVal(_objectSpread(_objectSpread({}, val), {}, {
+      n: val.n + delta
+    }));
+  };
+  var updateD = function updateD(delta) {
+    var nextD = val.d + delta;
+    if (nextD === 0) return;
+    setVal(_objectSpread(_objectSpread({}, val), {}, {
+      d: nextD
+    }));
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center w-32 h-24 bg-surface-container rounded-xl border border-outline-variant shadow-inner p-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col w-full h-full"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between flex-1"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return updateN(-1);
+    },
+    className: "p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95",
+    "aria-label": "Diminuisci numeratore"
+  }, /*#__PURE__*/React.createElement(Icons.Minus, null)), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: val.n,
+    onChange: function onChange(e) {
+      return setVal(_objectSpread(_objectSpread({}, val), {}, {
+        n: parseInt(e.target.value) || 0
+      }));
+    },
+    className: "w-full text-center bg-transparent text-on-background text-xl font-bold p-0 leading-none focus:outline-none focus:text-blue-400 transition-colors"
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return updateN(1);
+    },
+    className: "p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95",
+    "aria-label": "Aumenta numeratore"
+  }, /*#__PURE__*/React.createElement(Icons.Plus, null))), /*#__PURE__*/React.createElement("div", {
+    className: "w-full h-0.5 bg-neutral-600 my-0.5 rounded-full opacity-50"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between flex-1"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return updateD(-1);
+    },
+    className: "p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95",
+    "aria-label": "Diminuisci denominatore"
+  }, /*#__PURE__*/React.createElement(Icons.Minus, null)), /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: val.d,
+    onChange: function onChange(e) {
+      return setVal(_objectSpread(_objectSpread({}, val), {}, {
+        d: parseInt(e.target.value) || 1
+      }));
+    },
+    className: "w-full text-center bg-transparent text-on-background text-xl font-bold p-0 leading-none focus:outline-none focus:text-blue-400 transition-colors"
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return updateD(1);
+    },
+    className: "p-2 text-on-surface-variant hover:text-white hover:bg-neutral-800 rounded transition-colors active:scale-95",
+    "aria-label": "Aumenta denominatore"
+  }, /*#__PURE__*/React.createElement(Icons.Plus, null)))));
+};
+var ControlPanel = function ControlPanel(_ref8) {
+  var f1 = _ref8.f1,
+    setF1 = _ref8.setF1,
+    f2 = _ref8.f2,
+    setF2 = _ref8.setF2,
+    op = _ref8.op,
+    setOp = _ref8.setOp,
+    exp = _ref8.exp,
+    setExp = _ref8.setExp;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-surface p-6 rounded-2xl shadow-xl border border-outline-variant"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "col-span-12 md:col-span-3 flex flex-col items-center gap-3"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-blue-400 font-bold text-sm tracking-wide"
+  }, "FRAZIONE A"), /*#__PURE__*/React.createElement(FractionInput, {
+    val: f1,
+    setVal: setF1
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "col-span-12 md:col-span-2 flex justify-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-2 w-full max-w-[100px]"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-on-surface-variant text-[10px] text-center uppercase font-bold tracking-widest"
+  }, "Operazione"), /*#__PURE__*/React.createElement("div", {
+    className: "relative group"
+  }, /*#__PURE__*/React.createElement("select", {
+    value: op,
+    onChange: function onChange(e) {
+      return setOp(e.target.value);
+    },
+    className: "w-full bg-surface-container text-on-background py-3 px-2 rounded-lg text-2xl font-bold text-center appearance-none border border-outline-variant group-hover:border-neutral-500 focus:border-blue-500 outline-none transition-all cursor-pointer shadow-lg"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "sum"
+  }, "+"), /*#__PURE__*/React.createElement("option", {
+    value: "sub"
+  }, "\u2212"), /*#__PURE__*/React.createElement("option", {
+    value: "mul"
+  }, "\xD7"), /*#__PURE__*/React.createElement("option", {
+    value: "div"
+  }, "\xF7"), /*#__PURE__*/React.createElement("option", {
+    value: "pow"
+  }, "x\u207F")), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-y-0 right-1 flex items-center pointer-events-none text-on-surface-variant"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "10",
+    height: "10",
+    viewBox: "0 0 24 24",
+    fill: "currentColor"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M7 10l5 5 5-5z"
+  })))))), /*#__PURE__*/React.createElement("div", {
+    className: "col-span-12 md:col-span-3 flex flex-col items-center gap-3"
+  }, op === 'pow' ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
+    className: "text-purple-400 font-bold text-sm tracking-wide"
+  }, "ESPONENTE (n)"), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col items-center justify-center w-full h-24 px-4 bg-surface-container rounded-xl border border-outline-variant shadow-inner"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    min: "-3",
+    max: "3",
+    step: "1",
+    value: exp,
+    onChange: function onChange(e) {
+      return setExp(parseInt(e.target.value));
+    },
+    className: "w-full accent-purple-500 cursor-pointer h-1 bg-neutral-700 rounded-lg appearance-none"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between w-full text-xs text-on-surface-variant font-mono mt-4"
+  }, /*#__PURE__*/React.createElement("span", null, "-3"), /*#__PURE__*/React.createElement("span", {
+    className: "text-on-background text-2xl font-bold -mt-3"
+  }, exp), /*#__PURE__*/React.createElement("span", null, "3")))) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
+    className: "text-green-400 font-bold text-sm tracking-wide"
+  }, "FRAZIONE B"), /*#__PURE__*/React.createElement(FractionInput, {
+    val: f2,
+    setVal: setF2
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "col-span-12 md:col-span-4 bg-surface-container p-4 rounded-lg text-sm text-on-surface-variant border border-outline-variant h-24 flex items-center justify-center text-center italic leading-tight"
+  }, op === 'sum' && "Trova un denominatore comune per sommare le parti.", op === 'sub' && "Trova un denominatore comune per sottrarre le parti.", op === 'mul' && "Moltiplica i numeratori e i denominatori. È come calcolare un'area.", op === 'div' && "Moltiplicare per l'inverso. Quante volte B sta in A?", op === 'pow' && "Moltiplica la frazione per se stessa n volte. Negativo = Inverti."));
+};
+var SolutionStep = function SolutionStep(_ref9) {
+  var title = _ref9.title,
+    latex = _ref9.latex,
+    description = _ref9.description;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "mb-6 last:mb-0 border-l-2 border-indigo-500 pl-4 py-1 animate-in fade-in slide-in-from-left-4 duration-500"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-indigo-400 font-bold text-sm uppercase mb-1"
+  }, title), /*#__PURE__*/React.createElement("p", {
+    className: "text-neutral-300 text-sm mb-2"
+  }, description), /*#__PURE__*/React.createElement("div", {
+    className: "bg-surface-container p-3 rounded border border-outline-variant overflow-x-auto shadow-inner text-on-surface-variant"
+  }, /*#__PURE__*/React.createElement(LaTeX, {
+    formula: latex,
+    block: true
+  })));
+};
+var App = function App() {
+  var _useState = useState({
+      n: 1,
+      d: 2
+    }),
+    _useState2 = _slicedToArray(_useState, 2),
+    f1 = _useState2[0],
+    setF1 = _useState2[1];
+  var _useState3 = useState({
+      n: 1,
+      d: 3
+    }),
+    _useState4 = _slicedToArray(_useState3, 2),
+    f2 = _useState4[0],
+    setF2 = _useState4[1];
+  var _useState5 = useState('sum'),
+    _useState6 = _slicedToArray(_useState5, 2),
+    op = _useState6[0],
+    setOp = _useState6[1];
+  var _useState7 = useState(2),
+    _useState8 = _slicedToArray(_useState7, 2),
+    exp = _useState8[0],
+    setExp = _useState8[1];
+  var result = useMemo(function () {
+    var resN,
+      resD,
+      steps = [];
+    var parts = null;
+    if (f1.d === 0 || op !== 'pow' && f2.d === 0) {
+      return {
+        n: 0,
+        d: 1,
+        error: "Impossibile dividere per zero",
+        steps: [],
+        parts: null
+      };
+    }
+    switch (op) {
+      case 'sum':
+        var l = lcm(f1.d, f2.d);
+        var m1 = l / f1.d;
+        var m2 = l / f2.d;
+        var partA = f1.n * m1;
+        var partB = f2.n * m2;
+        resN = partA + partB;
+        resD = l;
+        parts = [{
+          n: partA,
+          color: 'text-blue-500',
+          bg: 'bg-blue-500'
+        }, {
+          n: partB,
+          color: 'text-emerald-500',
+          bg: 'bg-emerald-500'
+        }];
+        steps.push({
+          title: "Minimo Comune Multiplo (mcm)",
+          desc: "Il denominatore comune tra ".concat(f1.d, " e ").concat(f2.d, " \xE8 ").concat(l, "."),
+          latex: "\\text{mcm}(".concat(f1.d, ", ").concat(f2.d, ") = ").concat(l)
+        });
+        steps.push({
+          title: "Equivalenza",
+          desc: "Portiamo entrambe le frazioni allo stesso denominatore.",
+          latex: "\\frac{".concat(f1.n, "\\cdot").concat(m1, "}{").concat(f1.d, "\\cdot").concat(m1, "} + \\frac{").concat(f2.n, "\\cdot").concat(m2, "}{").concat(f2.d, "\\cdot").concat(m2, "} = \\frac{").concat(f1.n * m1, "}{").concat(l, "} + \\frac{").concat(f2.n * m2, "}{").concat(l, "}")
+        });
+        steps.push({
+          title: "Somma",
+          desc: "Ora sommiamo i numeratori.",
+          latex: "\\frac{".concat(f1.n * m1, " + ").concat(f2.n * m2, "}{").concat(l, "} = \\frac{").concat(resN, "}{").concat(resD, "}")
+        });
+        break;
+      case 'sub':
+        var ls = lcm(f1.d, f2.d);
+        var ms1 = ls / f1.d;
+        var ms2 = ls / f2.d;
+        resN = f1.n * ms1 - f2.n * ms2;
+        resD = ls;
+        steps.push({
+          title: "MCM",
+          desc: "Il denominatore comune \xE8 ".concat(ls, "."),
+          latex: "\\text{mcm}(".concat(f1.d, ", ").concat(f2.d, ") = ").concat(ls)
+        });
+        steps.push({
+          title: "Sottrazione",
+          desc: "Sottraiamo i numeratori convertiti.",
+          latex: "\\frac{".concat(f1.n * ms1, " - ").concat(f2.n * ms2, "}{").concat(ls, "} = \\frac{").concat(resN, "}{").concat(resD, "}")
+        });
+        break;
+      case 'mul':
+        resN = f1.n * f2.n;
+        resD = f1.d * f2.d;
+        steps.push({
+          title: "Moltiplicazione",
+          desc: "Numeratore × Numeratore, Denominatore × Denominatore.",
+          latex: "\\frac{".concat(f1.n, "}{").concat(f1.d, "} \\cdot \\frac{").concat(f2.n, "}{").concat(f2.d, "} = \\frac{").concat(resN, "}{").concat(resD, "}")
+        });
+        break;
+      case 'div':
+        if (f2.n === 0) return {
+          n: 0,
+          d: 1,
+          error: "Impossibile dividere per zero",
+          steps: []
+        };
+        resN = f1.n * f2.d;
+        resD = f1.d * f2.n;
+        steps.push({
+          title: "Reciproco",
+          desc: "Moltiplichiamo per l'inverso della seconda frazione.",
+          latex: "\\frac{".concat(f1.n, "}{").concat(f1.d, "} \\cdot \\frac{").concat(f2.d, "}{").concat(f2.n, "} = \\frac{").concat(resN, "}{").concat(resD, "}")
+        });
+        break;
+      case 'pow':
+        if (exp === 0) {
+          resN = 1;
+          resD = 1;
+          steps.push({
+            title: "Esponente Zero",
+            desc: "Qualsiasi numero elevato a 0 fa 1.",
+            latex: "\\left(\\frac{".concat(f1.n, "}{").concat(f1.d, "}\\right)^{\\scriptscriptstyle 0} = 1")
+          });
+        } else if (exp > 0) {
+          resN = Math.pow(f1.n, exp);
+          resD = Math.pow(f1.d, exp);
+          steps.push({
+            title: "Potenza Positiva",
+            desc: "Moltiplichiamo la frazione per se stessa ".concat(exp, " volte."),
+            latex: "\\left(\\frac{".concat(f1.n, "}{").concat(f1.d, "}\\right)^{\\scriptscriptstyle ").concat(exp, "} = \\frac{").concat(f1.n, "^").concat(exp, "}{").concat(f1.d, "^").concat(exp, "} = \\frac{").concat(resN, "}{").concat(resD, "}")
+          });
+        } else {
+          var absExp = Math.abs(exp);
+          if (f1.n === 0) return {
+            n: 0,
+            d: 1,
+            error: "Err: 0^-n",
+            steps: []
+          };
+          resN = Math.pow(f1.d, absExp);
+          resD = Math.pow(f1.n, absExp);
+          steps.push({
+            title: "Esponente Negativo",
+            desc: "Invertiamo la base e usiamo l'esponente positivo.",
+            latex: "\\left(\\frac{".concat(f1.n, "}{").concat(f1.d, "}\\right)^{\\scriptscriptstyle ").concat(exp, "} = \\left(\\frac{").concat(f1.d, "}{").concat(f1.n, "}\\right)^{\\scriptscriptstyle ").concat(absExp, "} = \\frac{").concat(resN, "}{").concat(resD, "}")
+          });
+        }
+        break;
+    }
+    var simp = simplify(resN, resD);
+    if (simp.n !== resN || simp.d !== resD) {
+      steps.push({
+        title: "Semplificazione",
+        desc: "Riduciamo ai minimi termini.",
+        latex: "\\frac{".concat(resN, "}{").concat(resD, "} = \\frac{").concat(simp.n, "}{").concat(simp.d, "}")
+      });
+    }
+    return {
+      n: simp.n,
+      d: simp.d,
+      rawN: resN,
+      rawD: resD,
+      steps: steps,
+      error: null,
+      parts: parts
+    };
+  }, [f1, f2, op, exp]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "min-h-[100dvh] bg-background text-on-background p-4 md:p-8 font-sans"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-6xl mx-auto space-y-8 pb-10"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "text-center space-y-2 mb-8"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-4xl md:text-5xl font-black text-on-background tracking-tight"
+  }, "Fractions Lab"), /*#__PURE__*/React.createElement("p", {
+    className: "text-on-surface-variant max-w-lg mx-auto"
+  }, "Esplora la matematica visiva: cambia i valori e osserva come le operazioni trasformano le quantit\xE0.")), /*#__PURE__*/React.createElement(ControlPanel, {
+    f1: f1,
+    setF1: setF1,
+    f2: f2,
+    setF2: setF2,
+    op: op,
+    setOp: setOp,
+    exp: exp,
+    setExp: setExp
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 lg:grid-cols-2 gap-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-surface rounded-2xl p-6 border border-outline-variant shadow-xl"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl font-bold mb-6 flex items-center gap-2 text-on-background"
+  }, /*#__PURE__*/React.createElement(Icons.PieChart, null), " Modello Visivo"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-6 relative"
+  }, /*#__PURE__*/React.createElement(FractionVisualizer, {
+    num: f1.n,
+    den: f1.d,
+    color: "text-blue-500",
+    bg: "bg-blue-500",
+    label: "A"
+  }), op !== 'pow' && /*#__PURE__*/React.createElement(FractionVisualizer, {
+    num: f2.n,
+    den: f2.d,
+    color: "text-emerald-500",
+    bg: "bg-emerald-500",
+    label: "B"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hidden md:block absolute top-1/2 -left-4 transform -translate-y-1/2 text-neutral-600"
+  }, /*#__PURE__*/React.createElement(Icons.ChevronRight, null)), /*#__PURE__*/React.createElement(FractionVisualizer, {
+    num: result.parts ? result.rawN : result.n,
+    den: result.parts ? result.rawD : result.d,
+    color: "text-amber-500",
+    bg: "bg-amber-500",
+    label: "Risultato",
+    parts: result.parts
+  }))), /*#__PURE__*/React.createElement(NumberLine, {
+    valA: f1.n / f1.d,
+    valB: op !== 'pow' ? f2.n / f2.d : null,
+    valRes: result.n / result.d
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "mt-8 pt-6 border-t border-outline-variant text-center"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-on-surface-variant uppercase tracking-widest mb-3 font-bold"
+  }, "Equazione Completa"), /*#__PURE__*/React.createElement("div", {
+    className: "text-2xl md:text-3xl font-bold text-on-background bg-surface-container inline-block px-8 py-4 rounded-xl shadow-inner border border-outline-variant min-w-[200px]"
+  }, result.error ? /*#__PURE__*/React.createElement("span", {
+    className: "text-red-400 text-base flex items-center gap-2 justify-center"
+  }, /*#__PURE__*/React.createElement(Icons.X, null), " ", result.error) : /*#__PURE__*/React.createElement(LaTeX, {
+    formula: op === 'pow' ? "\\left(\\frac{".concat(f1.n, "}{").concat(f1.d, "}\\right)^{\\scriptscriptstyle ").concat(exp, "} = \\frac{").concat(result.n, "}{").concat(result.d, "}") : "\\frac{".concat(f1.n, "}{").concat(f1.d, "} ").concat(op === 'sum' ? '+' : op === 'sub' ? '-' : op === 'mul' ? '\\cdot' : '\\div', " \\frac{").concat(f2.n, "}{").concat(f2.d, "} = \\frac{").concat(result.n, "}{").concat(result.d, "}")
+  }))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-surface rounded-2xl p-6 border border-outline-variant shadow-xl h-full flex flex-col"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl font-bold mb-6 flex items-center gap-2 text-on-background"
+  }, "Procedimento & Logica"), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 flex-grow"
+  }, result.steps.length === 0 && !result.error && /*#__PURE__*/React.createElement("p", {
+    className: "text-on-surface-variant italic text-center py-10"
+  }, "Modifica i valori per vedere i passaggi di calcolo."), result.steps.map(function (step, idx) {
+    return /*#__PURE__*/React.createElement(SolutionStep, {
+      key: idx,
+      title: step.title,
+      description: step.desc,
+      latex: step.latex
+    });
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mt-8 bg-indigo-900/10 border border-indigo-500/20 p-4 rounded-lg"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-indigo-400 font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wide"
+  }, /*#__PURE__*/React.createElement(Icons.Info, null), " Concetto Chiave"), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-on-surface-variant leading-relaxed"
+  }, op === 'sum' || op === 'sub' ? "Per sommare o sottrarre, dobbiamo trovare una 'taglia' di fetta comune (MCM). Solo quando le fette sono uguali possiamo contarle." : op === 'mul' ? "Moltiplicare è come calcolare l'area di un rettangolo con lati dati dalle due frazioni." : op === 'div' ? "Dividere significa 'quante volte il secondo numero sta nel primo?'. Dividere per 1/2 è come raddoppiare." : "L'esponente negativo inverte numeratore e denominatore, come una retromarcia."))))));
+};
+var root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+});
+</script>
 </body>
 
 </html>

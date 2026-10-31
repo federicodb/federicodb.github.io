@@ -23,7 +23,6 @@
     <!-- React & Tailwind -->
     <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone@8.0.10/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 
     <style>
@@ -249,7 +248,7 @@
 
 <div id="root"></div>
 
-    <script type="text/babel">
+    <script type="text/x-jsx-sorgente" id="jsx-sorgente">
         const { useState, useEffect, useRef, useMemo } = React;
 
         // --- COMPONENTI UI ATOMICI ---
@@ -624,6 +623,539 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
+    <script data-jsx-compilato="b8c90ddda888">
+// Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
+document.addEventListener('DOMContentLoaded', function () {
+function _toConsumableArray(a) { return _arrayWithoutHoles(a) || _iterableToArray(a) || _unsupportedIterableToArray(a) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { var e = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (Array.isArray(r) && (null == e || e === ("undefined" != typeof Symbol && [][Symbol.iterator]) || e === []["@@iterator"])) return r; if (null != e) { for (var t, o = [], a = e.call(r); !(t = a.next()).done;) o.push(t.value); return o; } }
+function _arrayWithoutHoles(a) { if (Array.isArray(a)) return _arrayLikeToArray(a); }
+function _slicedToArray(e, i) { return _iterableToArrayLimit(e, i) || _unsupportedIterableToArray(e, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(t, e) { if (t) { if ("string" == typeof t) return _arrayLikeToArray(t, e); var o = {}.toString.call(t).slice(8, -1); return "Object" === o && t.constructor && (o = t.constructor.name), "Map" === o || "Set" === o ? Array.from(t) : "Arguments" === o || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(o) ? _arrayLikeToArray(t, e) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, t) { var e = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (Array.isArray(r) && (null == e || e === ("undefined" != typeof Symbol && [][Symbol.iterator]) || e === []["@@iterator"])) return r; if (null != e) { var l, n, i, a, u = [], o = !0, f = !1; try { if (i = (e = e.call(r)).next, 0 === t) { if (Object(e) !== e) return; o = !1; } else for (; !(o = (l = i.call(e)).done) && (u.push(l.value), u.length !== t); o = !0); } catch (r) { f = !0, n = r; } finally { try { if (!o && null != e["return"] && (a = e["return"](), Object(a) !== a)) return; } finally { if (f) throw n; } } return u; } }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useRef = _React.useRef,
+  useMemo = _React.useMemo;
+
+// --- COMPONENTI UI ATOMICI ---
+
+var Icon = function Icon(_ref) {
+  var path = _ref.path,
+    _ref$className = _ref.className,
+    className = _ref$className === void 0 ? "w-5 h-5" : _ref$className;
+  return /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: className
+  }, /*#__PURE__*/React.createElement("path", {
+    d: path
+  }));
+};
+var icons = {
+  chart: "M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z",
+  brain: "M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z",
+  swap: "M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4",
+  check: "M20 6L9 17l-5-5",
+  trophy: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6m0 0V3h12v1m0 0h1.5a2.5 2.5 0 0 1 0 5H18m-5 6v3a2 2 0 0 1-2 2h-1m4-5h3a2 2 0 0 1 2 2v1m-5-3a6 6 0 0 0-6-6M9 20h6",
+  home: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+};
+var formatNum = function formatNum(n) {
+  return Number.isInteger(n) ? n : n.toFixed(1).replace('.', ',');
+};
+
+// --- COMPONENTE: SLIDER VISIVO ---
+var SmartSlider = function SmartSlider(_ref2) {
+  var value = _ref2.value,
+    _onChange = _ref2.onChange,
+    _ref2$min = _ref2.min,
+    min = _ref2$min === void 0 ? 0 : _ref2$min,
+    _ref2$max = _ref2.max,
+    max = _ref2$max === void 0 ? 100 : _ref2$max,
+    _ref2$step = _ref2.step,
+    step = _ref2$step === void 0 ? 1 : _ref2$step;
+  // Calcolo percentuale per la larghezza della barra colorata
+  var percentage = Math.min(100, Math.max(0, (value - min) / (max - min) * 100));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "relative w-full h-12 flex items-center select-none group"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "absolute w-full h-3 bg-surface-variant dark:bg-slate-700 rounded-full overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "h-full bg-indigo-500 transition-all duration-75 ease-out",
+    style: {
+      width: "".concat(percentage, "%")
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 w-full h-full flex justify-between px-1 opacity-20 pointer-events-none"
+  }, [0, 25, 50, 75, 100].map(function (t) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: t,
+      className: "h-full w-px bg-current",
+      style: {
+        left: "".concat(t, "%"),
+        position: 'absolute'
+      }
+    });
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "absolute h-7 w-7 bg-surface rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-2 border-indigo-500 pointer-events-none transition-all duration-75 ease-out transform group-active:scale-110",
+    style: {
+      left: "calc(".concat(percentage, "% - 14px)")
+    }
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "range",
+    min: min,
+    max: max,
+    step: step,
+    value: value,
+    onChange: function onChange(e) {
+      return _onChange(parseFloat(e.target.value));
+    },
+    className: "absolute inset-0 w-full h-full z-10 opacity-0 touch-none"
+  }));
+};
+
+// --- VISTA 1: ESPLORATORE ---
+var Visualizer = function Visualizer(_ref3) {
+  var base = _ref3.base,
+    setBase = _ref3.setBase,
+    perc = _ref3.perc,
+    setPerc = _ref3.setPerc,
+    isSwapped = _ref3.isSwapped,
+    setIsSwapped = _ref3.setIsSwapped;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    showTips = _useState2[0],
+    setShowTips = _useState2[1];
+  var result = base * perc / 100;
+
+  // Dati per Pie Chart SVG
+  var r = 40;
+  var circ = 2 * Math.PI * r;
+  var offset = circ - Math.min(100, perc) / 100 * circ;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col min-h-full gap-6 pb-20 md:pb-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "glass p-5 md:p-8 flex flex-col gap-6 relative overflow-hidden animate-enter"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "absolute top-0 right-0 p-4 opacity-5 pointer-events-none"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    path: icons.chart,
+    className: "w-32 h-32"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between items-start z-10"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-sm font-bold uppercase tracking-wider text-outline-variant dark:text-slate-400 mb-1"
+  }, "Laboratorio"), /*#__PURE__*/React.createElement("div", {
+    className: "text-3xl md:text-4xl font-black tracking-tight text-indigo-500"
+  }, formatNum(result)), /*#__PURE__*/React.createElement("div", {
+    className: "text-xs md:text-sm font-medium opacity-70 mt-1"
+  }, isSwapped ? /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("strong", {
+    className: "text-on-background"
+  }, base, "%"), " di ", perc) : /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("strong", {
+    className: "text-on-background"
+  }, perc, "%"), " di ", base))), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setIsSwapped(!isSwapped);
+    },
+    className: "p-3 rounded-xl border transition-all active:scale-95 flex flex-col items-center gap-1\n                                    ".concat(isSwapped ? 'bg-indigo-600 border-indigo-500 text-on-background shadow-lg shadow-indigo-500/20' : 'bg-slate-800 border-outline-variant text-outline-variant hover:text-white')
+  }, /*#__PURE__*/React.createElement(Icon, {
+    path: icons.swap,
+    className: "w-5 h-5"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[9px] font-bold uppercase"
+  }, "Inverti"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-6 mt-2 z-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative w-20 h-20 md:w-24 md:h-24 shrink-0 transition-all"
+  }, /*#__PURE__*/React.createElement("svg", {
+    className: "w-full h-full transform -rotate-90"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "50%",
+    cy: "50%",
+    r: r,
+    stroke: "currentColor",
+    strokeWidth: "8",
+    fill: "transparent",
+    className: "text-on-surface-variant dark:text-slate-800"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "50%",
+    cy: "50%",
+    r: r,
+    stroke: "currentColor",
+    strokeWidth: "8",
+    fill: "transparent",
+    className: "text-indigo-500 transition-all duration-300 ease-out",
+    strokeDasharray: circ,
+    strokeDashoffset: offset,
+    strokeLinecap: "round"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 flex items-center justify-center font-mono font-bold text-xs md:text-sm opacity-50"
+  }, perc.toFixed(0), "%")), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-bold uppercase opacity-60"
+  }, "Percentuale"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-mono font-bold text-indigo-400"
+  }, perc.toFixed(1), "%")), /*#__PURE__*/React.createElement(SmartSlider, {
+    value: perc,
+    onChange: setPerc,
+    step: 0.5
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between mt-1 px-1"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setPerc(Math.max(0, perc - 1));
+    },
+    className: "p-2 -m-2 text-outline-variant hover:text-white transition text-xl font-bold active:scale-90"
+  }, "-"), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setPerc(Math.min(100, perc + 1));
+    },
+    className: "p-2 -m-2 text-outline-variant hover:text-white transition text-xl font-bold active:scale-90"
+  }, "+")))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 pt-4 border-t border-dashed border-outline-variant"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-bold uppercase opacity-60 block"
+  }, "Valore Base (Totale)"), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-4 items-center"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    inputMode: "decimal",
+    value: base,
+    onChange: function onChange(e) {
+      return setBase(Number(e.target.value));
+    },
+    className: "bg-slate-900/50 border border-outline-variant rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-indigo-500 transition-colors"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1 shrink-0"
+  }, [100, 200, 500].map(function (v) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: v,
+      onClick: function onClick() {
+        return setBase(v);
+      },
+      className: "px-3 py-2 text-xs font-bold bg-surface-container-high rounded-md hover:bg-slate-700 transition border border-outline-variant"
+    }, v);
+  })))))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-4 md:mt-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: function onClick() {
+      return setShowTips(!showTips);
+    },
+    className: "flex items-center justify-between cursor-pointer group py-3 px-4 glass border-l-4 border-indigo-500/50 hover:border-indigo-500 transition-all mb-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-1.5 rounded-lg transition-colors ".concat(showTips ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 group-hover:text-indigo-400')
+  }, /*#__PURE__*/React.createElement(Icon, {
+    path: icons.brain,
+    className: "w-4 h-4"
+  })), /*#__PURE__*/React.createElement("h3", {
+    className: "text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-200 transition-colors"
+  }, "Trucchi per il calcolo mentale")), /*#__PURE__*/React.createElement("div", {
+    className: "text-slate-500 transition-all duration-300 ".concat(showTips ? 'rotate-180 text-indigo-400' : '')
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "16",
+    height: "16",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "3",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("polyline", {
+    points: "6 9 12 15 18 9"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-3 transition-all duration-500 ease-in-out overflow-hidden ".concat(showTips ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0')
+  }, [{
+    t: "10%",
+    d: "Sposta virgola ←",
+    f: "10% di 450 = 45",
+    c: "border-emerald-500"
+  }, {
+    t: "50%",
+    d: "Dimezza il numero",
+    f: "50% di 80 = 40",
+    c: "border-blue-500"
+  }, {
+    t: "25%",
+    d: "Metà della metà",
+    f: "Metà 40 è 20",
+    c: "border-purple-500"
+  }, {
+    t: "5%",
+    d: "Metà del 10%",
+    f: "10% è 8 → 5% è 4",
+    c: "border-amber-500"
+  }, {
+    t: "1%",
+    d: "Sposta virgola ←←",
+    f: "1% di 300 = 3",
+    c: "border-pink-500"
+  }, {
+    t: "Swap",
+    d: "Inverti i numeri",
+    f: "8% di 25 → 25% di 8",
+    c: "border-indigo-500"
+  }].map(function (trick, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "glass p-4 border-l-4 ".concat(trick.c, " bg-opacity-40 hover:bg-opacity-100 transition-all cursor-default")
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "font-bold text-xs uppercase mb-1 opacity-80"
+    }, trick.t), /*#__PURE__*/React.createElement("div", {
+      className: "text-[11px] leading-tight opacity-60 mb-2"
+    }, trick.d), /*#__PURE__*/React.createElement("div", {
+      className: "bg-black/20 p-1.5 rounded text-[10px] font-mono text-center opacity-90"
+    }, trick.f));
+  }))));
+};
+
+// --- VISTA 2: QUIZ GAME ---
+var QuizGame = function QuizGame(_ref4) {
+  var onBack = _ref4.onBack;
+  var _useState3 = useState('playing'),
+    _useState4 = _slicedToArray(_useState3, 2),
+    gameState = _useState4[0],
+    setGameState = _useState4[1]; // playing, feedback, end
+  var _useState5 = useState(0),
+    _useState6 = _slicedToArray(_useState5, 2),
+    qIndex = _useState6[0],
+    setQIndex = _useState6[1];
+  var _useState7 = useState(0),
+    _useState8 = _slicedToArray(_useState7, 2),
+    score = _useState8[0],
+    setScore = _useState8[1];
+  var _useState9 = useState(''),
+    _useState0 = _slicedToArray(_useState9, 2),
+    input = _useState0[0],
+    setInput = _useState0[1];
+  var _useState1 = useState(null),
+    _useState10 = _slicedToArray(_useState1, 2),
+    question = _useState10[0],
+    setQuestion = _useState10[1];
+  var TOTAL_Q = 5;
+
+  // Generatore domande sicuro
+  var nextQuestion = function nextQuestion() {
+    var types = [{
+      txt: function txt(b, p) {
+        return "Il telefono ha ".concat(b, "mAh. \xC8 carico al ").concat(p, "%. Quanto rimane?");
+      },
+      calc: function calc(b, p) {
+        return b * p / 100;
+      }
+    }, {
+      txt: function txt(b, p) {
+        return "Scarpe da ".concat(b, "\u20AC. Sconto del ").concat(p, "%. Quanto risparmi?");
+      },
+      calc: function calc(b, p) {
+        return b * p / 100;
+      }
+    }, {
+      txt: function txt(b, p) {
+        return "".concat(p, "% di ").concat(b, " follower hanno messo like. Quanti like?");
+      },
+      calc: function calc(b, p) {
+        return b * p / 100;
+      }
+    }, {
+      txt: function txt(b, p) {
+        return "Quanto fa il ".concat(p, "% di ").concat(b, "?");
+      },
+      calc: function calc(b, p) {
+        return b * p / 100;
+      }
+    } // Puro calcolo
+    ];
+
+    // Logica per numeri "belli"
+    var b = Math.floor(Math.random() * 20 + 1) * 10; // 10, 20... 200
+    var p = [10, 20, 25, 50, 5, 1][Math.floor(Math.random() * 6)];
+
+    // Ogni tanto un calcolo "invertito" facile (es. 4% di 50)
+    if (Math.random() > 0.7) {
+      b = [25, 50][Math.floor(Math.random() * 2)];
+      p = Math.floor(Math.random() * 10) * 2;
+    }
+    var t = types[Math.floor(Math.random() * types.length)];
+    setQuestion({
+      text: t.txt(b, p),
+      ans: t.calc(b, p),
+      base: b,
+      perc: p
+    });
+    setInput('');
+    setGameState('playing');
+  };
+  useEffect(function () {
+    nextQuestion();
+  }, []);
+  var checkAnswer = function checkAnswer(e) {
+    e.preventDefault();
+    var userVal = parseFloat(input.replace(',', '.'));
+    if (isNaN(userVal)) return;
+    var isCorrect = Math.abs(userVal - question.ans) < 0.1;
+    if (isCorrect) setScore(function (s) {
+      return s + 1;
+    });
+    setGameState(isCorrect ? 'correct' : 'wrong');
+    setTimeout(function () {
+      if (qIndex < TOTAL_Q - 1) {
+        setQIndex(function (i) {
+          return i + 1;
+        });
+        nextQuestion();
+      } else {
+        setGameState('end');
+      }
+    }, 1500);
+  };
+  if (gameState === 'end') {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col items-center justify-center h-full text-center animate-pop p-6"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-6xl mb-6"
+    }, "\uD83C\uDFC6"), /*#__PURE__*/React.createElement("h2", {
+      className: "text-3xl font-black mb-2 text-on-background"
+    }, "Quiz Terminato"), /*#__PURE__*/React.createElement("p", {
+      className: "text-outline-variant mb-8"
+    }, "Punteggio finale: ", /*#__PURE__*/React.createElement("strong", {
+      className: "text-indigo-400 text-xl"
+    }, score, "/", TOTAL_Q)), /*#__PURE__*/React.createElement("button", {
+      onClick: onBack,
+      className: "w-full max-w-xs py-4 bg-indigo-600 rounded-xl font-bold text-on-background shadow-lg shadow-indigo-500/30 active:scale-95 transition"
+    }, "Torna alla Dashboard"));
+  }
+  if (!question) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full max-w-md mx-auto p-4 justify-center animate-enter"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1 mb-8"
+  }, _toConsumableArray(Array(TOTAL_Q)).map(function (_, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "h-1 flex-1 rounded-full transition-colors ".concat(i < qIndex ? 'bg-indigo-500' : i === qIndex ? 'bg-white' : 'bg-slate-700')
+    });
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "glass p-8 md:p-10 text-center border-t-4 border-indigo-500 relative bg-opacity-90 backdrop-blur-md"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-xs font-bold uppercase tracking-widest text-outline-variant mb-4"
+  }, "Domanda ", qIndex + 1), /*#__PURE__*/React.createElement("h3", {
+    className: "text-xl md:text-2xl font-bold mb-8 leading-snug min-h-[4rem] flex items-center justify-center"
+  }, question.text), /*#__PURE__*/React.createElement("form", {
+    onSubmit: checkAnswer,
+    className: "relative"
+  }, /*#__PURE__*/React.createElement("input", {
+    autoFocus: true,
+    type: "number",
+    step: "0.01",
+    inputMode: "decimal",
+    value: input,
+    onChange: function onChange(e) {
+      return setInput(e.target.value);
+    },
+    placeholder: "?",
+    disabled: gameState !== 'playing',
+    className: "w-full bg-surface border-2 rounded-2xl py-4 text-center text-3xl font-bold outline-none transition-all\n                                    ".concat(gameState === 'correct' ? 'border-emerald-500 text-emerald-500' : gameState === 'wrong' ? 'border-red-500 text-red-500' : 'border-slate-700 focus:border-indigo-500')
+  }), gameState === 'playing' && input && /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "absolute right-3 top-3 bottom-3 aspect-square bg-indigo-600 rounded-xl flex items-center justify-center text-on-background animate-pop"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    path: icons.check
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "h-8 mt-4 flex items-center justify-center text-sm font-bold"
+  }, gameState === 'correct' && /*#__PURE__*/React.createElement("span", {
+    className: "text-emerald-400 animate-bounce"
+  }, "Grande! +1 Punto"), gameState === 'wrong' && /*#__PURE__*/React.createElement("span", {
+    className: "text-red-400"
+  }, "No! Era ", formatNum(question.ans)))));
+};
+
+// --- APP CONTAINER ---
+var App = function App() {
+  var _useState11 = useState('lab'),
+    _useState12 = _slicedToArray(_useState11, 2),
+    view = _useState12[0],
+    setView = _useState12[1]; // lab, quiz
+  var _useState13 = useState(200),
+    _useState14 = _slicedToArray(_useState13, 2),
+    base = _useState14[0],
+    setBase = _useState14[1];
+  var _useState15 = useState(25),
+    _useState16 = _slicedToArray(_useState15, 2),
+    perc = _useState16[0],
+    setPerc = _useState16[1];
+  var _useState17 = useState(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    isSwapped = _useState18[0],
+    setIsSwapped = _useState18[1];
+  var _useState19 = useState('dark'),
+    _useState20 = _slicedToArray(_useState19, 2),
+    theme = _useState20[0],
+    setTheme = _useState20[1];
+
+  // Toggle Tema
+  useEffect(function () {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full overflow-hidden bg-body transition-colors duration-300"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "shrink-0 h-16 px-4 flex items-center justify-between border-b border-slate-700/50 backdrop-blur-md sticky top-0 z-50 bg-body/80"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-on-background font-black shadow-lg shadow-indigo-500/20"
+  }, "%"), /*#__PURE__*/React.createElement("h1", {
+    className: "font-bold text-lg tracking-tight hidden md:block"
+  }, "Percent Lab")), /*#__PURE__*/React.createElement("div", {
+    className: "flex bg-slate-800/50 p-1 rounded-lg"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setView('lab');
+    },
+    className: "px-4 py-1.5 rounded-md text-xs font-bold transition-all ".concat(view === 'lab' ? 'bg-white text-on-background shadow-sm' : 'text-slate-400')
+  }, "Lab"), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setView('quiz');
+    },
+    className: "px-4 py-1.5 rounded-md text-xs font-bold transition-all ".concat(view === 'quiz' ? 'bg-indigo-500 text-on-background shadow-sm' : 'text-slate-400')
+  }, "Quiz"))), /*#__PURE__*/React.createElement("main", {
+    className: "flex-1 overflow-y-auto overflow-x-hidden p-4 no-scrollbar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-4xl mx-auto min-h-full"
+  }, view === 'lab' ? /*#__PURE__*/React.createElement(Visualizer, {
+    base: base,
+    setBase: setBase,
+    perc: perc,
+    setPerc: setPerc,
+    isSwapped: isSwapped,
+    setIsSwapped: setIsSwapped
+  }) : /*#__PURE__*/React.createElement(QuizGame, {
+    onBack: function onBack() {
+      return setView('lab');
+    }
+  }))), /*#__PURE__*/React.createElement("footer", {
+    className: "text-center py-4 text-[10px] uppercase font-bold text-slate-600 shrink-0 safe-area-bottom"
+  }, "Open Source Education \u2022 ", new Date().getFullYear()));
+};
+var root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+});
+</script>
 </body>
 
 </html>

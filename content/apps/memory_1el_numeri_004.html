@@ -62,7 +62,6 @@
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@8.0.10/babel.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Serif:wght@700&display=swap');
@@ -230,7 +229,7 @@
 
 <div id="root" class="h-full w-full"></div>
 
-    <script type="text/babel">
+    <script type="text/x-jsx-sorgente" id="jsx-sorgente">
         const React = window.React;
         const ReactDOM = window.ReactDOM;
         const { useState, useEffect, useRef, useMemo, useCallback } = React;
@@ -774,6 +773,1169 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
+    <script data-jsx-compilato="b9086829676b">
+// Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
+document.addEventListener('DOMContentLoaded', function () {
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(e, i) { return _iterableToArrayLimit(e, i) || _unsupportedIterableToArray(e, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, t) { var e = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (Array.isArray(r) && (null == e || e === ("undefined" != typeof Symbol && [][Symbol.iterator]) || e === []["@@iterator"])) return r; if (null != e) { var l, n, i, a, u = [], o = !0, f = !1; try { if (i = (e = e.call(r)).next, 0 === t) { if (Object(e) !== e) return; o = !1; } else for (; !(o = (l = i.call(e)).done) && (u.push(l.value), u.length !== t); o = !0); } catch (r) { f = !0, n = r; } finally { try { if (!o && null != e["return"] && (a = e["return"](), Object(a) !== a)) return; } finally { if (f) throw n; } } return u; } }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(r) { for (var t = 1; t < arguments.length; t++) { var o = null != arguments[t] ? arguments[t] : {}; t % 2 ? ownKeys(Object(o), !0).forEach(function (t) { _defineProperty(r, t, o[t]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(r, Object.getOwnPropertyDescriptors(o)) : ownKeys(Object(o)).forEach(function (e) { Object.defineProperty(r, e, Object.getOwnPropertyDescriptor(o, e)); }); } return r; }
+function _defineProperty(r, t, o) { return (t = _toPropertyKey(t)) in r ? Object.defineProperty(r, t, { value: o, enumerable: !0, configurable: !0, writable: !0 }) : r[t] = o, r; }
+function _toPropertyKey(r) { var o = _toPrimitive(r, "string"); return "symbol" == _typeof(o) ? o : o + ""; }
+function _toPrimitive(t, e) { if ("object" != _typeof(t) || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); }
+function _toConsumableArray(a) { return _arrayWithoutHoles(a) || _iterableToArray(a) || _unsupportedIterableToArray(a) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(t, e) { if (t) { if ("string" == typeof t) return _arrayLikeToArray(t, e); var o = {}.toString.call(t).slice(8, -1); return "Object" === o && t.constructor && (o = t.constructor.name), "Map" === o || "Set" === o ? Array.from(t) : "Arguments" === o || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(o) ? _arrayLikeToArray(t, e) : void 0; } }
+function _iterableToArray(r) { var e = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (Array.isArray(r) && (null == e || e === ("undefined" != typeof Symbol && [][Symbol.iterator]) || e === []["@@iterator"])) return r; if (null != e) { for (var t, o = [], a = e.call(r); !(t = a.next()).done;) o.push(t.value); return o; } }
+function _arrayWithoutHoles(a) { if (Array.isArray(a)) return _arrayLikeToArray(a); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+var React = window.React;
+var ReactDOM = window.ReactDOM;
+var useState = React.useState,
+  useEffect = React.useEffect,
+  useRef = React.useRef,
+  useMemo = React.useMemo,
+  useCallback = React.useCallback;
+
+// --- AUDIO ENGINE ---
+var AudioEngine = {
+  ctx: null,
+  init: function init() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  },
+  playTone: function playTone(freq, type, duration) {
+    var vol = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0.1;
+    if (!this.ctx) return;
+    var osc = this.ctx.createOscillator();
+    var gain = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + duration);
+  },
+  playFlip: function playFlip() {
+    this.playTone(400, 'sine', 0.1, 0.05);
+  },
+  playMatch: function playMatch() {
+    var _this = this;
+    this.playTone(523.25, 'triangle', 0.2, 0.1);
+    setTimeout(function () {
+      return _this.playTone(659.25, 'triangle', 0.2, 0.1);
+    }, 100);
+    setTimeout(function () {
+      return _this.playTone(783.99, 'triangle', 0.4, 0.1);
+    }, 200);
+  },
+  playError: function playError() {
+    var _this2 = this;
+    this.playTone(150, 'sawtooth', 0.3, 0.05);
+    setTimeout(function () {
+      return _this2.playTone(100, 'sawtooth', 0.3, 0.05);
+    }, 100);
+  },
+  playWin: function playWin() {
+    var _this3 = this;
+    var notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach(function (n, i) {
+      return setTimeout(function () {
+        return _this3.playTone(n, 'square', 0.4, 0.05);
+      }, i * 100);
+    });
+  }
+};
+
+// --- CONFIGURAZIONE ---
+var RUSH_MEM_TIME = 30;
+var RUSH_PLAY_TIME = 45;
+var AVATARS = ['👨‍🚀', '👩‍🔬', '🥷', '🧙‍♂️', '🧛‍♀️', '🧜‍♂️', '🧚‍♀️', '🧞‍♂️', '🦸‍♀️', '🦹‍♂️', '🕵️‍♀️', '🧑‍🎨', '🦊', '🦉'];
+var EMOJI_POOL = ['🚀', '💎', '🌶️', '🍄', '🎱', '🎸', '🌵', '🔥', '⚡', '🌈', '🪐', '🧩', '🎲', '🎯', '🎨', '🎭', '🎪', '🎡', '🎢', '🎃', '🎄', '🎈', '🎁', '🏆', '🥇', '⚽', '🏀', '🎾', '🍩', '🍕', '🍟', '🍔', '🦄', '🤖', '👾', '👻'];
+
+// Colori vividi per il testo
+var PAIR_COLORS = ['bg-rose-50 text-rose-950 border-rose-300', 'bg-orange-50 text-orange-950 border-orange-300', 'bg-amber-50 text-amber-950 border-amber-300', 'bg-emerald-50 text-emerald-950 border-emerald-300', 'bg-cyan-50 text-cyan-950 border-cyan-300', 'bg-blue-50 text-blue-950 border-blue-300', 'bg-violet-50 text-violet-950 border-violet-300', 'bg-fuchsia-50 text-fuchsia-950 border-fuchsia-300'];
+var LEVELS = [{
+  id: 0,
+  label: "Training",
+  desc: "6 Carte",
+  pairs: 3,
+  points: 1000
+}, {
+  id: 1,
+  label: "Base",
+  desc: "12 Carte",
+  pairs: 6,
+  points: 2000
+}, {
+  id: 2,
+  label: "Intermedio",
+  desc: "16 Carte",
+  pairs: 8,
+  points: 3000
+}, {
+  id: 3,
+  label: "Avanzato",
+  desc: "20 Carte",
+  pairs: 10,
+  points: 5000
+}];
+var GENERATORS_DEF = {
+  pemdas: {
+    label: "PEMDAS",
+    active: true,
+    desc: "\\text{Es: } 2 + 3 \\cdot 4 = 14"
+  },
+  trap: {
+    label: "Trappole",
+    active: true,
+    desc: "\\text{Es: } 5 : 0 \\to \\text{Impossibile}"
+  },
+  integers: {
+    label: "Interi Relativi",
+    active: true,
+    desc: "\\text{Es: } -5 - 3 = -8"
+  },
+  powers_prop: {
+    label: "Proprietà Potenze",
+    active: true,
+    desc: "\\text{Es: } 2^3 \\cdot 2^2 = 2^5"
+  },
+  exp_zero: {
+    label: "Esponente Nullo",
+    active: true,
+    desc: "\\text{Es: } 125^0 = 1"
+  },
+  exp_neg: {
+    label: "Esponente Negativo",
+    active: true,
+    desc: "\\text{Es: } 2^{-3} = 1/8"
+  },
+  opp_sum: {
+    label: "Numeri Opposti",
+    active: true,
+    desc: "\\text{Es: } 5 + (-5) = 0"
+  },
+  inverse_prod: {
+    label: "Numeri Inversi",
+    active: true,
+    desc: "\\text{Es: } 5 \\cdot \\frac{1}{5} = 1"
+  },
+  square5: {
+    label: "Quadrati (Fine 5)",
+    active: false,
+    desc: "\\text{Es: } 35^2 = 1225"
+  },
+  square50: {
+    label: "Quadrati (Vicino 50)",
+    active: false,
+    desc: "\\text{Es: } 48^2, 52^2"
+  },
+  square100: {
+    label: "Quadrati (Vicino 100)",
+    active: false,
+    desc: "\\text{Es: } 98^2, 102^2"
+  },
+  mcd_mcm: {
+    label: "M.C.D. e m.c.m.",
+    active: false,
+    desc: "\\text{Teoria dei numeri}"
+  }
+};
+var EXPLANATIONS = {
+  "pemdas": "Attenzione all'ordine! (X e :) prima di (+ e -)",
+  "trap": "Operazione Impossibile o Non Definita",
+  "integers": "Calcolo algebrico con numeri relativi",
+  "powers_prop": "Proprietà delle potenze (stessa base)",
+  "exp_zero": "Qualsiasi numero (≠0) elevato a 0 vale 1",
+  "exp_neg": "L'esponente negativo inverte la base",
+  "opp_sum": "La somma di due numeri opposti è 0",
+  "inverse_prod": "Il prodotto di due inversi è 1",
+  "square5": "Regola del 5: n5² → n(n+1)...25",
+  "square50": "Vicino a 50: (50±d)² → (25±d)...d²",
+  "square100": "Vicino a 100: (100±d)² → (100±2d)...d²",
+  "mcd_mcm": "Teoria dei Numeri (M.C.D. / m.c.m.)"
+};
+var getRandomInt = function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+// --- LOGICA MATEMATICA (Mantenuta identica alla 3.0/3.3) ---
+var generateMathItem = function generateMathItem(type) {
+  switch (type) {
+    case 'pemdas':
+      var pSub = getRandomInt(0, 5);
+      if (pSub === 0) {
+        var _a = getRandomInt(2, 6),
+          _b = getRandomInt(2, 5),
+          c = getRandomInt(2, 4);
+        return {
+          poly: "".concat(_a, " + ").concat(_b, " \\cdot ").concat(c),
+          fact: "".concat(_a + _b * c),
+          type: "pemdas"
+        };
+      } else if (pSub === 1) {
+        var _c = getRandomInt(2, 4),
+          _b2 = _c * getRandomInt(2, 5),
+          _a2 = getRandomInt(2, 10);
+        return {
+          poly: "".concat(_a2, " + ").concat(_b2, " : ").concat(_c),
+          fact: "".concat(_a2 + _b2 / _c),
+          type: "pemdas"
+        };
+      } else if (pSub === 2) {
+        var _a3 = getRandomInt(10, 20),
+          _b3 = getRandomInt(2, 5),
+          _c2 = getRandomInt(2, 4);
+        return {
+          poly: "".concat(_a3, " - ").concat(_b3, " + ").concat(_c2),
+          fact: "".concat(_a3 - _b3 + _c2),
+          type: "pemdas"
+        };
+      } else if (pSub === 3) {
+        var _b4 = getRandomInt(2, 4),
+          _a4 = _b4 * getRandomInt(2, 4) * getRandomInt(2, 3),
+          _c3 = getRandomInt(2, 3);
+        return {
+          poly: "".concat(_a4, " : ").concat(_b4, " \\cdot ").concat(_c3),
+          fact: "".concat(_a4 / _b4 * _c3),
+          type: "pemdas"
+        };
+      } else if (pSub === 4) {
+        var _a5 = getRandomInt(2, 5),
+          _b5 = getRandomInt(2, 5),
+          _c4 = getRandomInt(2, 4);
+        return {
+          poly: "(".concat(_a5, " + ").concat(_b5, ") \\cdot ").concat(_c4),
+          fact: "".concat((_a5 + _b5) * _c4),
+          type: "pemdas"
+        };
+      } else {
+        var _b6 = getRandomInt(2, 5);
+        return {
+          poly: "-".concat(_b6, "^2"),
+          fact: "".concat(-1 * _b6 * _b6),
+          type: "pemdas"
+        };
+      }
+    case 'trap':
+      return Math.random() > 0.5 ? {
+        poly: "".concat(getRandomInt(1, 9), " : 0"),
+        fact: "\\text{Impossibile}",
+        type: "trap"
+      } : {
+        poly: "\\sqrt{-".concat(Math.pow(getRandomInt(2, 9), 2), "}"),
+        fact: "\\text{Non Reale}",
+        type: "trap"
+      };
+    case 'integers':
+      var a = getRandomInt(2, 12),
+        b = getRandomInt(2, 12),
+        s1 = Math.random() > 0.5 ? -1 : 1,
+        s2 = Math.random() > 0.5 ? -1 : 1;
+      var valA = a * s1,
+        valB = b * s2,
+        termB = valB > 0 ? "+ ".concat(valB) : "- ".concat(Math.abs(valB));
+      return {
+        poly: "".concat(valA, " ").concat(termB),
+        fact: "".concat(valA + valB),
+        type: "integers"
+      };
+    case 'powers_prop':
+      var ppType = getRandomInt(0, 2),
+        base = getRandomInt(2, 5);
+      if (ppType === 0) {
+        var e1 = getRandomInt(2, 4),
+          e2 = getRandomInt(2, 4);
+        return {
+          poly: "".concat(base, "^").concat(e1, " \\cdot ").concat(base, "^").concat(e2),
+          fact: "".concat(base, "^").concat(e1 + e2),
+          type: "powers_prop"
+        };
+      } else if (ppType === 1) {
+        var _e = getRandomInt(2, 3),
+          _e2 = _e + getRandomInt(1, 3);
+        return {
+          poly: "".concat(base, "^").concat(_e2, " : ").concat(base, "^").concat(_e),
+          fact: "".concat(base, "^").concat(_e2 - _e),
+          type: "powers_prop"
+        };
+      } else {
+        var _e3 = getRandomInt(2, 3),
+          _e4 = getRandomInt(2, 3);
+        return {
+          poly: "(".concat(base, "^").concat(_e3, ")^").concat(_e4),
+          fact: "".concat(base, "^").concat(_e3 * _e4),
+          type: "powers_prop"
+        };
+      }
+    case 'exp_zero':
+      return {
+        poly: "".concat(getRandomInt(2, 99), "^0"),
+        fact: "1",
+        type: "exp_zero"
+      };
+    case 'exp_neg':
+      {
+        var nBase = getRandomInt(2, 4),
+          nExp = getRandomInt(1, 3);
+        return {
+          poly: "".concat(nBase, "^{-").concat(nExp, "}"),
+          fact: "\\frac{1}{".concat(Math.pow(nBase, nExp), "}"),
+          type: "exp_neg"
+        };
+      }
+    case 'opp_sum':
+      {
+        var oNum = getRandomInt(2, 20);
+        return {
+          poly: "".concat(oNum, " + (-").concat(oNum, ")"),
+          fact: "0",
+          type: "opp_sum"
+        };
+      }
+    case 'inverse_prod':
+      {
+        var iNum = getRandomInt(2, 9);
+        return {
+          poly: "".concat(iNum, " \\cdot \\frac{1}{").concat(iNum, "}"),
+          fact: "1",
+          type: "inverse_prod"
+        };
+      }
+    case 'square5':
+      {
+        var n = getRandomInt(1, 9);
+        return {
+          poly: "".concat(n, "5^2"),
+          fact: "".concat(n * (n + 1) * 100 + 25),
+          type: "square5"
+        };
+      }
+    case 'square50':
+      {
+        var d = getRandomInt(1, 4),
+          s = Math.random() > 0.5 ? 1 : -1,
+          num = 50 + d * s;
+        return {
+          poly: "".concat(num, "^2"),
+          fact: "".concat(num * num),
+          type: "square50"
+        };
+      }
+    case 'square100':
+      {
+        var _d = getRandomInt(1, 4),
+          _s = Math.random() > 0.5 ? 1 : -1,
+          _num = 100 + _d * _s;
+        return {
+          poly: "".concat(_num, "^2"),
+          fact: "".concat(_num * _num),
+          type: "square100"
+        };
+      }
+    case 'mcd_mcm':
+      if (Math.random() > 0.5) {
+        var k = getRandomInt(2, 6),
+          _a6 = k * getRandomInt(2, 3),
+          _b7 = k * getRandomInt(4, 5),
+          _gcd = function gcd(x, y) {
+            return !y ? x : _gcd(y, x % y);
+          };
+        return {
+          poly: "\\text{M.C.D.}(".concat(_a6, ", ").concat(_b7, ")"),
+          fact: "".concat(_gcd(_a6, _b7)),
+          type: "mcd_mcm"
+        };
+      } else {
+        var _a7 = getRandomInt(2, 5),
+          _b8 = getRandomInt(2, 5),
+          _gcd2 = function gcd(x, y) {
+            return !y ? x : _gcd2(y, x % y);
+          };
+        return {
+          poly: "\\text{m.c.m.}(".concat(_a7, ", ").concat(_b8, ")"),
+          fact: "".concat(_a7 * _b8 / _gcd2(_a7, _b8)),
+          type: "mcd_mcm"
+        };
+      }
+    default:
+      return {
+        poly: "1+1",
+        fact: "2",
+        type: "error"
+      };
+  }
+};
+var generateCards = function generateCards(levelId, activeGenerators) {
+  var _activeGenerators$tra;
+  var levelConfig = LEVELS.find(function (l) {
+    return l.id === levelId;
+  });
+  var pairsCount = levelConfig.pairs;
+  var pairs = [];
+  var usedResults = new Set();
+  var availableTypes = Object.keys(activeGenerators).filter(function (k) {
+    return activeGenerators[k].active;
+  });
+  if (availableTypes.length === 0) availableTypes.push('pemdas');
+  var typePool = [];
+  while (typePool.length < pairsCount) typePool = [].concat(_toConsumableArray(typePool), _toConsumableArray(availableTypes));
+  typePool = typePool.slice(0, pairsCount).sort(function () {
+    return Math.random() - 0.5;
+  });
+
+  // Gestione Trappola Unica
+  if ((_activeGenerators$tra = activeGenerators['trap']) !== null && _activeGenerators$tra !== void 0 && _activeGenerators$tra.active) {
+    var idx = typePool.findIndex(function (t) {
+      return t !== 'trap';
+    });
+    if (idx >= 0) typePool[idx] = 'trap';
+    var trapCount = 0;
+    typePool = typePool.map(function (t) {
+      if (t === 'trap') return ++trapCount > 1 ? availableTypes[0] : t;
+      return t;
+    });
+  }
+  for (var i = 0; i < pairsCount; i++) {
+    var success = false,
+      subAttempts = 0;
+    while (!success && subAttempts < 100) {
+      subAttempts++;
+      var item = generateMathItem(typePool[i]);
+      var isUnique = false;
+      if (item.type === 'trap') {
+        if (!usedResults.has('TRAP')) {
+          usedResults.add('TRAP');
+          isUnique = true;
+        }
+      } else {
+        if (!usedResults.has(item.fact)) {
+          usedResults.add(item.fact);
+          isUnique = true;
+        }
+      }
+      if (isUnique) {
+        pairs.push(item);
+        success = true;
+      }
+    }
+    if (!success) pairs.push(generateMathItem('integers'));
+  }
+  var deck = [];
+  var shuffledEmojis = [].concat(EMOJI_POOL).sort(function () {
+    return Math.random() - 0.5;
+  });
+  pairs.forEach(function (p, i) {
+    var color = PAIR_COLORS[i % PAIR_COLORS.length];
+    deck.push(_objectSpread({
+      id: "p".concat(i, "a"),
+      pairId: i,
+      content: p.poly,
+      cardType: 'question',
+      emoji: shuffledEmojis[i * 2],
+      color: color
+    }, p));
+    deck.push(_objectSpread({
+      id: "p".concat(i, "b"),
+      pairId: i,
+      content: p.fact,
+      cardType: 'answer',
+      emoji: shuffledEmojis[i * 2 + 1],
+      color: color
+    }, p));
+  });
+  return deck.sort(function () {
+    return Math.random() - 0.5;
+  }).map(function (c) {
+    return _objectSpread(_objectSpread({}, c), {}, {
+      isFlipped: false,
+      isMatched: false,
+      seen: false
+    });
+  });
+};
+var Icon = function Icon(_ref) {
+  var d = _ref.d,
+    _ref$size = _ref.size,
+    size = _ref$size === void 0 ? 20 : _ref$size,
+    _ref$className = _ref.className,
+    className = _ref$className === void 0 ? "" : _ref$className;
+  return /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: className
+  }, /*#__PURE__*/React.createElement("path", {
+    d: d
+  }));
+};
+var Icons = {
+  Trophy: function Trophy(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6 M18 9h1.5a2.5 2.5 0 0 0 0-5H18 M4 22h16 M10 14.66V17 M14 14.66V17 M12 2v10 M12 17a5 5 0 0 0-5 4 M12 17a5 5 0 0 1 5 4"
+    }, p));
+  },
+  Play: function Play(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M5 3l14 9-14 9V3z"
+    }, p));
+  },
+  Timer: function Timer(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M10 2h4 M12 14l3-3 M12 14v-4 M12 22a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"
+    }, p));
+  },
+  Settings: function Settings(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+    }, p));
+  },
+  Check: function Check(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01 9 11.01"
+    }, p));
+  },
+  SoundOn: function SoundOn(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M11 5L6 9H2v6h4l5 4V5z M19.07 4.93a10 10 0 0 1 0 14.14 M15.54 8.46a5 5 0 0 1 0 7.07"
+    }, p));
+  },
+  SoundOff: function SoundOff(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M11 5L6 9H2v6h4l5 4V5z M23 9l-6 6 M17 9l6 6"
+    }, p));
+  },
+  Sun: function Sun(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+    }, p));
+  },
+  Moon: function Moon(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+    }, p));
+  },
+  Users: function Users(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8 M23 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75"
+    }, p));
+  },
+  User: function User(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8"
+    }, p));
+  },
+  Ghost: function Ghost(p) {
+    return /*#__PURE__*/React.createElement(Icon, _objectSpread({
+      d: "M9 22l1-4h4l1 4 M4 22h16 M12 2a8 8 0 0 0-8 8v12h16V10a8 8 0 0 0-8-8z M10 10h.01 M14 10h.01"
+    }, p));
+  }
+};
+var MathText = function MathText(_ref2) {
+  var txt = _ref2.txt,
+    _ref2$className = _ref2.className,
+    className = _ref2$className === void 0 ? "" : _ref2$className,
+    _ref2$inline = _ref2.inline,
+    inline = _ref2$inline === void 0 ? false : _ref2$inline;
+  var html = useMemo(function () {
+    try {
+      return window.katex ? window.katex.renderToString(txt, {
+        throwOnError: false,
+        displayMode: !inline
+      }) : txt;
+    } catch (e) {
+      return txt;
+    }
+  }, [txt, inline]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "font-math select-none pointer-events-none ".concat(className, " ").concat(inline ? 'inline-block' : ''),
+    dangerouslySetInnerHTML: {
+      __html: html
+    }
+  });
+};
+var Confetti = function Confetti(_ref3) {
+  var active = _ref3.active;
+  var canvasRef = useRef(null);
+  useEffect(function () {
+    if (!active) return;
+    var ctx = canvasRef.current.getContext('2d');
+    var particles = [];
+    var resize = function resize() {
+      canvasRef.current.width = window.innerWidth;
+      canvasRef.current.height = window.innerHeight;
+    };
+    window.addEventListener('resize', resize);
+    resize();
+    for (var i = 0; i < 150; i++) particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight - window.innerHeight,
+      vx: Math.random() * 4 - 2,
+      vy: Math.random() * 5 + 2,
+      color: ['#f43f5e', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'][Math.floor(Math.random() * 5)],
+      size: Math.random() * 8 + 4
+    });
+    var _loop = function loop() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      particles.forEach(function (p) {
+        p.y += p.vy;
+        p.x += p.vx;
+        if (p.y > window.innerHeight) p.y = -20;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      });
+      requestAnimationFrame(_loop);
+    };
+    var id = requestAnimationFrame(_loop);
+    return function () {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(id);
+    };
+  }, [active]);
+  if (!active) return null;
+  return /*#__PURE__*/React.createElement("canvas", {
+    id: "confetti-canvas",
+    ref: canvasRef
+  });
+};
+function App() {
+  // Theme managed globally by orfini-shared.js
+  var _useState = useState('menu'),
+    _useState2 = _slicedToArray(_useState, 2),
+    view = _useState2[0],
+    setView = _useState2[1];
+  var _useState3 = useState('single'),
+    _useState4 = _slicedToArray(_useState3, 2),
+    gameMode = _useState4[0],
+    setGameMode = _useState4[1];
+  var _useState5 = useState(localStorage.getItem('mm_nick') || ''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    nick = _useState6[0],
+    setNick = _useState6[1];
+  var _useState7 = useState(''),
+    _useState8 = _slicedToArray(_useState7, 2),
+    nick2 = _useState8[0],
+    setNick2 = _useState8[1];
+  var _useState9 = useState(localStorage.getItem('mm_avatar') || AVATARS[0]),
+    _useState0 = _slicedToArray(_useState9, 2),
+    userAvatar = _useState0[0],
+    setUserAvatar = _useState0[1];
+  var _useState1 = useState(AVATARS[1]),
+    _useState10 = _slicedToArray(_useState1, 2),
+    userAvatar2 = _useState10[0],
+    setUserAvatar2 = _useState10[1];
+  var _useState11 = useState(localStorage.getItem('mm_sound') !== 'false'),
+    _useState12 = _slicedToArray(_useState11, 2),
+    soundEnabled = _useState12[0],
+    setSoundEnabled = _useState12[1];
+  var _useState13 = useState(1),
+    _useState14 = _slicedToArray(_useState13, 2),
+    lvl = _useState14[0],
+    setLvl = _useState14[1];
+  var _useState15 = useState(false),
+    _useState16 = _slicedToArray(_useState15, 2),
+    scaffoldMode = _useState16[0],
+    setScaffoldMode = _useState16[1];
+  var _useState17 = useState(GENERATORS_DEF),
+    _useState18 = _slicedToArray(_useState17, 2),
+    genConfig = _useState18[0],
+    setGenConfig = _useState18[1];
+  var _useState19 = useState(JSON.parse(localStorage.getItem('mm_lb') || '[]')),
+    _useState20 = _slicedToArray(_useState19, 2),
+    lb = _useState20[0],
+    setLb = _useState20[1];
+  var _useState21 = useState([]),
+    _useState22 = _slicedToArray(_useState21, 2),
+    cards = _useState22[0],
+    setCards = _useState22[1];
+  var _useState23 = useState([]),
+    _useState24 = _slicedToArray(_useState23, 2),
+    flipped = _useState24[0],
+    setFlipped = _useState24[1];
+  var _useState25 = useState(false),
+    _useState26 = _slicedToArray(_useState25, 2),
+    lock = _useState26[0],
+    setLock = _useState26[1];
+  var _useState27 = useState(0),
+    _useState28 = _slicedToArray(_useState27, 2),
+    score = _useState28[0],
+    setScore = _useState28[1];
+  var _useState29 = useState(0),
+    _useState30 = _slicedToArray(_useState29, 2),
+    moves = _useState30[0],
+    setMoves = _useState30[1];
+  var _useState31 = useState(null),
+    _useState32 = _slicedToArray(_useState31, 2),
+    matchMsg = _useState32[0],
+    setMatchMsg = _useState32[1];
+  var _useState33 = useState(0),
+    _useState34 = _slicedToArray(_useState33, 2),
+    timeLeft = _useState34[0],
+    setTimeLeft = _useState34[1];
+  var _useState35 = useState(null),
+    _useState36 = _slicedToArray(_useState35, 2),
+    rushPhase = _useState36[0],
+    setRushPhase = _useState36[1];
+  var _useState37 = useState(0),
+    _useState38 = _slicedToArray(_useState37, 2),
+    multiTurn = _useState38[0],
+    setMultiTurn = _useState38[1];
+  var _useState39 = useState([0, 0]),
+    _useState40 = _slicedToArray(_useState39, 2),
+    multiScores = _useState40[0],
+    setMultiScores = _useState40[1];
+  var initAudio = function initAudio() {
+    if (soundEnabled) AudioEngine.init();
+  };
+  var startGame = function startGame() {
+    initAudio();
+    if (!nick.trim()) setNick("Giocatore 1");
+    if (gameMode === 'multi' && !nick2.trim()) setNick2("Giocatore 2");
+    setScore(0);
+    setMoves(0);
+    setMultiScores([0, 0]);
+    setMultiTurn(0);
+    var newCards = generateCards(lvl, genConfig);
+    if (gameMode === 'rush') {
+      setRushPhase('mem');
+      setTimeLeft(RUSH_MEM_TIME);
+      newCards = newCards.map(function (c) {
+        return _objectSpread(_objectSpread({}, c), {}, {
+          isFlipped: true,
+          seen: true
+        });
+      }); // Se Rush, sono viste
+    } else {
+      setRushPhase(null);
+    }
+    setCards(newCards);
+    setFlipped([]);
+    setLock(false);
+    setMatchMsg(null);
+    setView('game');
+  };
+  useEffect(function () {
+    var timer;
+    if (gameMode === 'rush' && view === 'game') {
+      if (timeLeft > 0) timer = setInterval(function () {
+        return setTimeLeft(function (t) {
+          return t - 1;
+        });
+      }, 1000);else {
+        if (rushPhase === 'mem') {
+          setRushPhase('play');
+          setTimeLeft(RUSH_PLAY_TIME);
+          setCards(function (c) {
+            return c.map(function (card) {
+              return _objectSpread(_objectSpread({}, card), {}, {
+                isFlipped: false
+              });
+            });
+          });
+        } else handleGameOver(false);
+      }
+    }
+    return function () {
+      return clearInterval(timer);
+    };
+  }, [timeLeft, gameMode, view, rushPhase]);
+  var handleCardClick = function handleCardClick(id) {
+    if (lock || gameMode === 'rush' && rushPhase === 'mem') return;
+    var card = cards.find(function (c) {
+      return c.id === id;
+    });
+    if (card.isFlipped || card.isMatched) return;
+    initAudio();
+    if (soundEnabled) AudioEngine.playFlip();
+
+    // Segna come "seen" quando viene girata
+    setCards(function (prev) {
+      return prev.map(function (c) {
+        return c.id === id ? _objectSpread(_objectSpread({}, c), {}, {
+          isFlipped: true,
+          seen: true
+        }) : c;
+      });
+    });
+    var newFlipped = [].concat(_toConsumableArray(flipped), [id]);
+    setFlipped(newFlipped);
+    if (newFlipped.length === 2) {
+      setLock(true);
+      if (gameMode !== 'multi') setMoves(function (m) {
+        return m + 1;
+      });
+      checkForMatch(newFlipped);
+    }
+  };
+  var checkForMatch = function checkForMatch(_ref4) {
+    var _ref5 = _slicedToArray(_ref4, 2),
+      id1 = _ref5[0],
+      id2 = _ref5[1];
+    var c1 = cards.find(function (c) {
+      return c.id === id1;
+    });
+    var c2 = cards.find(function (c) {
+      return c.id === id2;
+    });
+    var isMatch = c1.pairId === c2.pairId;
+    setTimeout(function () {
+      if (isMatch) {
+        if (soundEnabled) AudioEngine.playMatch();
+        setCards(function (prev) {
+          return prev.map(function (c) {
+            return c.id === id1 || c.id === id2 ? _objectSpread(_objectSpread({}, c), {}, {
+              isMatched: true,
+              isFlipped: true
+            }) : c;
+          });
+        });
+        setMatchMsg({
+          text: "Corretto!",
+          sub: EXPLANATIONS[c1.type],
+          color: c1.color
+        });
+        if (gameMode === 'multi') {
+          setMultiScores(function (s) {
+            var n = _toConsumableArray(s);
+            n[multiTurn] += 100;
+            return n;
+          });
+        }
+        var remaining = cards.filter(function (c) {
+          return !c.isMatched && c.id !== id1 && c.id !== id2;
+        }).length;
+        if (remaining === 0) handleGameOver(true);
+      } else {
+        if (soundEnabled) AudioEngine.playError();
+        setCards(function (prev) {
+          return prev.map(function (c) {
+            return c.id === id1 || c.id === id2 ? _objectSpread(_objectSpread({}, c), {}, {
+              isFlipped: false
+            }) : c;
+          });
+        });
+        if (gameMode === 'multi') setMultiTurn(function (t) {
+          return t === 0 ? 1 : 0;
+        });
+      }
+      setLock(false);
+      setFlipped([]);
+      setTimeout(function () {
+        return setMatchMsg(null);
+      }, 2000);
+    }, isMatch ? 500 : 1200);
+  };
+  var handleGameOver = function handleGameOver(won) {
+    if (won && soundEnabled) AudioEngine.playWin();
+    if (gameMode !== 'multi' && won) {
+      var lData = LEVELS.find(function (l) {
+        return l.id === lvl;
+      });
+      var efficiency = lData.pairs / Math.max(lData.pairs, moves);
+      var finalScore = Math.floor(lData.points * efficiency);
+      if (scaffoldMode) finalScore = Math.floor(finalScore * 0.66);
+      setScore(finalScore);
+      var entry = {
+        name: nick,
+        avatar: userAvatar,
+        score: finalScore,
+        lvl: lData.label,
+        date: new Date().toLocaleDateString()
+      };
+      var newLb = [].concat(_toConsumableArray(lb), [entry]).sort(function (a, b) {
+        return b.score - a.score;
+      }).slice(0, 50);
+      localStorage.setItem('mm_lb', JSON.stringify(newLb));
+      setLb(newLb);
+    }
+    setTimeout(function () {
+      return setView(won ? 'win' : 'final');
+    }, 1000);
+  };
+
+  // RENDER
+  if (view === 'menu') return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col md:flex-row h-screen bg-background text-on-background"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full md:w-1/3 p-6 bg-surface border-r border-outline-variant overflow-y-auto scroller"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between items-center mb-6"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "text-2xl font-black"
+  }, "MathMatch ", /*#__PURE__*/React.createElement("span", {
+    className: "text-primary"
+  }, "4.1"))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-3 gap-2"
+  }, [{
+    id: 'single',
+    l: 'Solo',
+    i: Icons.User
+  }, {
+    id: 'rush',
+    l: 'Rush',
+    i: Icons.Timer
+  }, {
+    id: 'multi',
+    l: '1vs1',
+    i: Icons.Users
+  }].map(function (m) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: m.id,
+      onClick: function onClick() {
+        return setGameMode(m.id);
+      },
+      className: "p-2 rounded-xl border-2 flex flex-col items-center ".concat(gameMode === m.id ? 'border-primary bg-surface-container' : 'border-outline-variant bg-surface')
+    }, /*#__PURE__*/React.createElement(m.i, {
+      className: gameMode === m.id ? 'text-primary' : ''
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs font-bold mt-1"
+    }, m.l));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-bold uppercase text-on-surface-variant opacity-70"
+  }, "Giocatori"), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setUserAvatar(AVATARS[(AVATARS.indexOf(userAvatar) + 1) % AVATARS.length]);
+    },
+    className: "w-10 h-10 text-xl bg-surface-container rounded-lg flex items-center justify-center"
+  }, userAvatar), /*#__PURE__*/React.createElement("input", {
+    value: nick,
+    onChange: function onChange(e) {
+      return setNick(e.target.value);
+    },
+    placeholder: "Giocatore 1",
+    className: "flex-1 bg-surface-container rounded-lg px-3 font-bold text-sm outline-none focus:ring-2 ring-primary"
+  })), gameMode === 'multi' && /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setUserAvatar2(AVATARS[(AVATARS.indexOf(userAvatar2) + 1) % AVATARS.length]);
+    },
+    className: "w-10 h-10 text-xl bg-surface-container rounded-lg flex items-center justify-center"
+  }, userAvatar2), /*#__PURE__*/React.createElement("input", {
+    value: nick2,
+    onChange: function onChange(e) {
+      return setNick2(e.target.value);
+    },
+    placeholder: "Giocatore 2",
+    className: "flex-1 bg-surface-container rounded-lg px-3 font-bold text-sm outline-none focus:ring-2 ring-primary"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-bold uppercase text-on-surface-variant opacity-70"
+  }, "Difficolt\xE0"), LEVELS.map(function (l) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: l.id,
+      onClick: function onClick() {
+        return setLvl(l.id);
+      },
+      className: "w-full text-left p-3 rounded-xl border-2 flex justify-between ".concat(lvl === l.id ? 'border-primary bg-surface-container' : 'border-outline-variant')
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "font-bold text-sm"
+    }, l.label), /*#__PURE__*/React.createElement("span", {
+      className: "text-xs opacity-60"
+    }, l.desc));
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: function onClick() {
+      return setScaffoldMode(!scaffoldMode);
+    },
+    className: "w-full flex items-center justify-between p-3 rounded-xl border-2 ".concat(scaffoldMode ? 'border-teal-500 bg-teal-500/10' : 'border-outline-variant')
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Icons.Ghost, {
+    className: scaffoldMode ? 'text-teal-600' : 'text-on-surface-variant'
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "text-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-bold text-xs uppercase"
+  }, "Scaffolding"), /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px]"
+  }, "Permanenza Testo (-33%)"))), /*#__PURE__*/React.createElement("div", {
+    className: "w-4 h-4 rounded-full border ".concat(scaffoldMode ? 'bg-teal-500 border-teal-500' : 'border-slate-300')
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: startGame,
+    className: "w-full py-4 bg-primary text-on-primary rounded-xl font-bold shadow-lg hover:opacity-90 transition-all flex justify-center gap-2"
+  }, "GIOCA ", /*#__PURE__*/React.createElement(Icons.Play, null)))), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 p-6 bg-surface-container overflow-y-auto scroller"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-xl font-black mb-4 flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Icons.Settings, null), " CONFIGURAZIONE DIDATTICA"), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-2 gap-4 mb-8"
+  }, Object.entries(genConfig).map(function (_ref6) {
+    var _ref7 = _slicedToArray(_ref6, 2),
+      k = _ref7[0],
+      c = _ref7[1];
+    return /*#__PURE__*/React.createElement("div", {
+      key: k,
+      onClick: function onClick() {
+        return setGenConfig(function (p) {
+          return _objectSpread(_objectSpread({}, p), {}, _defineProperty({}, k, _objectSpread(_objectSpread({}, p[k]), {}, {
+            active: !p[k].active
+          })));
+        });
+      },
+      className: "cursor-pointer p-4 rounded-xl border-2 flex gap-3 ".concat(c.active ? 'border-primary bg-surface' : 'border-outline-variant opacity-60')
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "w-5 h-5 rounded border flex items-center justify-center ".concat(c.active ? 'bg-primary border-primary text-on-primary' : 'bg-surface border-outline-variant')
+    }, c.active && /*#__PURE__*/React.createElement(Icon, {
+      d: "M20 6L9 17l-5-5"
+    })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      className: "font-bold"
+    }, c.label), /*#__PURE__*/React.createElement(MathText, {
+      txt: c.desc,
+      className: "text-xs opacity-70",
+      inline: true
+    })));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "bg-surface p-4 rounded-xl border border-outline-variant"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-2 text-primary font-bold"
+  }, /*#__PURE__*/React.createElement(Icons.Trophy, null), " CLASSIFICA"), lb.slice(0, 3).map(function (r, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "flex justify-between text-xs py-1 border-b border-outline-variant last:border-0"
+    }, /*#__PURE__*/React.createElement("span", null, i + 1, ". ", r.avatar, " ", r.name), /*#__PURE__*/React.createElement("span", {
+      className: "font-mono font-bold"
+    }, r.score));
+  }))));
+
+  // RENDER GIOCO
+  if (view === 'game' || view === 'win' || view === 'final') {
+    var n = cards.length;
+    var gridClass = n === 6 ? "grid-cols-3" : n === 12 ? "grid-cols-4" : n === 16 ? "grid-cols-4" : "grid-cols-5";
+    return /*#__PURE__*/React.createElement("div", {
+      className: "h-screen flex flex-col bg-background"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "h-16 bg-surface shadow-sm flex items-center justify-between px-4 shrink-0 z-10"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setView('menu');
+      },
+      className: "text-xs font-bold text-on-surface-variant hover:text-red-500 uppercase"
+    }, "ESCI"), /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-4"
+    }, gameMode === 'rush' && /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2 font-mono font-bold text-xl ".concat(rushPhase === 'mem' ? 'text-yellow-600' : 'text-red-600')
+    }, /*#__PURE__*/React.createElement(Icons.Timer, null), " ", timeLeft, "s"), gameMode === 'multi' ? /*#__PURE__*/React.createElement("div", {
+      className: "flex gap-4 items-center font-bold"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "px-2 py-1 rounded ".concat(multiTurn === 0 ? 'bg-primary text-on-primary' : '')
+    }, userAvatar, " ", multiScores[0]), /*#__PURE__*/React.createElement("div", {
+      className: "text-xs text-on-surface-variant"
+    }, "VS"), /*#__PURE__*/React.createElement("div", {
+      className: "px-2 py-1 rounded ".concat(multiTurn === 1 ? 'bg-primary text-on-primary' : '')
+    }, userAvatar2, " ", multiScores[1])) : /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col items-end"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] text-on-surface-variant font-bold uppercase"
+    }, "Punti"), /*#__PURE__*/React.createElement("span", {
+      className: "font-mono font-bold text-primary text-xl"
+    }, score)))), matchMsg && /*#__PURE__*/React.createElement("div", {
+      className: "absolute top-20 left-1/2 -translate-x-1/2 z-50 animate-bounce-short bg-surface border-2 rounded-xl px-6 py-3 shadow-xl flex items-center gap-3 ".concat(matchMsg.color)
+    }, /*#__PURE__*/React.createElement(Icons.Check, {
+      className: "text-green-500"
+    }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+      className: "font-black text-sm"
+    }, matchMsg.text), /*#__PURE__*/React.createElement("div", {
+      className: "text-xs opacity-75"
+    }, matchMsg.sub))), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1 p-4 flex items-center justify-center overflow-hidden"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "grid gap-3 w-full h-full max-h-[85vh] ".concat(gridClass)
+    }, cards.map(function (c) {
+      // STILE "SOLIDO" v2.5 per evitare salti
+      // Bordo sempre presente sul flipper
+      var borderColor = "border-outline-variant";
+      var borderStyle = c.cardType === 'question' ? 'border-dashed' : 'border-solid';
+      var bgClass = "bg-surface";
+      if (c.isMatched) {
+        borderColor = c.color.split(' ')[2].replace('border-', 'border-'); // Estrarre colore bordo dal preset
+        bgClass = c.color.split(' ')[0]; // Estrarre bg
+        borderStyle = 'border-solid';
+      } else if (c.isFlipped) {
+        if (c.cardType === 'question') {
+          borderColor = "border-sky-400";
+          bgClass = "bg-sky-50 dark:bg-sky-900/20";
+        } else {
+          borderColor = "border-amber-400";
+          bgClass = "bg-amber-50 dark:bg-amber-900/20";
+        }
+      }
+      return /*#__PURE__*/React.createElement("div", {
+        key: c.id,
+        onClick: function onClick() {
+          return handleCardClick(c.id);
+        },
+        className: "perspective-1000 relative w-full h-full cursor-pointer group"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "flipper w-full h-full shadow-sm transition-all duration-500 border-2 ".concat(borderColor, " ").concat(borderStyle, " ").concat(bgClass, " ").concat(c.isFlipped || c.isMatched ? 'flipped' : 'hover:-translate-y-1')
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "face face-front flex flex-col items-center justify-center"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "opacity-".concat(scaffoldMode && c.seen && !c.isMatched ? '100' : '0', " transition-opacity duration-300 absolute")
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "scale-75 pointer-events-none opacity-50 blur-[0.5px]"
+      }, /*#__PURE__*/React.createElement(MathText, {
+        txt: c.content,
+        className: "text-xs text-on-background"
+      }))), /*#__PURE__*/React.createElement("span", {
+        className: "text-4xl transition-opacity duration-200 ".concat(c.isFlipped || c.isMatched || scaffoldMode && c.seen ? 'opacity-0' : 'opacity-100')
+      }, c.emoji)), /*#__PURE__*/React.createElement("div", {
+        className: "face face-back flex items-center justify-center p-1"
+      }, /*#__PURE__*/React.createElement(MathText, {
+        txt: c.content,
+        className: "text-on-background font-bold text-lg md:text-2xl"
+      }))));
+    }))), view !== 'game' && /*#__PURE__*/React.createElement("div", {
+      className: "absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "bg-surface p-8 rounded-3xl shadow-2xl text-center max-w-sm w-full animate-bounce-short"
+    }, /*#__PURE__*/React.createElement(Confetti, {
+      active: true
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "text-6xl mb-4"
+    }, view === 'win' ? '🏆' : '☠️'), /*#__PURE__*/React.createElement("h2", {
+      className: "text-3xl font-black mb-2 text-on-background"
+    }, view === 'win' ? 'VITTORIA!' : 'FINE GIOCO'), /*#__PURE__*/React.createElement("p", {
+      className: "text-on-surface-variant mb-6 font-bold"
+    }, score, " Punti"), /*#__PURE__*/React.createElement("div", {
+      className: "grid gap-2"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: startGame,
+      className: "py-3 bg-primary text-on-primary rounded-xl font-bold shadow-lg hover:scale-105 transition-transform"
+    }, "RIGIOCA"), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setView('menu');
+      },
+      className: "py-3 bg-surface-container text-on-surface-variant rounded-xl font-bold hover:bg-outline-variant transition-colors"
+    }, "MENU")))));
+  }
+  return null;
+}
+var root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+});
+</script>
 </body>
 
 </html>

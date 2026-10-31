@@ -1,5 +1,6 @@
 import os
 import json
+import hashlib
 import re
 from datetime import datetime
 import html
@@ -235,6 +236,11 @@ def extract_html_meta(file_path):
             fragile.append("React in modalità sviluppo")
         if "babel" in content.lower() and re.search(r'@babel/standalone|babel\.min\.js', content):
             fragile.append("Babel nel browser")
+        # JSX tradotto in anticipo (tools/compila_jsx.mjs): il sorgente deve corrispondere alla traduzione
+        sorg = re.search(r'<script type="text/x-jsx-sorgente" id="jsx-sorgente">\n?(.*?)</script>', content, re.S)
+        comp = re.search(r'data-jsx-compilato="([0-9a-f]+)"', content)
+        if sorg and (not comp or hashlib.sha1(sorg.group(1).encode("utf-8")).hexdigest()[:12] != comp.group(1)):
+            fragile.append("sorgente JSX modificato ma non tradotto: node tools/compila_jsx.mjs")
 
         meta = {
             "title": title,

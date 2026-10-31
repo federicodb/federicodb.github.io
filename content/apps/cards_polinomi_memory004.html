@@ -48,7 +48,6 @@
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@8.0.10/babel.min.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Fira+Code:wght@400&family=Noto+Serif:wght@700&display=swap');
@@ -205,7 +204,7 @@
 
 <div id="root" class="h-full w-full"></div>
 
-    <script type="text/babel">
+    <script type="text/x-jsx-sorgente" id="jsx-sorgente">
         const { useState, useEffect, useRef, useMemo } = React;
 
         // --- CONFIGURAZIONE ---
@@ -766,5 +765,866 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
+    <script data-jsx-compilato="2d3434e6c64e">
+// Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
+document.addEventListener('DOMContentLoaded', function () {
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _toConsumableArray(a) { return _arrayWithoutHoles(a) || _iterableToArray(a) || _unsupportedIterableToArray(a) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { var e = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (Array.isArray(r) && (null == e || e === ("undefined" != typeof Symbol && [][Symbol.iterator]) || e === []["@@iterator"])) return r; if (null != e) { for (var t, o = [], a = e.call(r); !(t = a.next()).done;) o.push(t.value); return o; } }
+function _arrayWithoutHoles(a) { if (Array.isArray(a)) return _arrayLikeToArray(a); }
+function _slicedToArray(e, i) { return _iterableToArrayLimit(e, i) || _unsupportedIterableToArray(e, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(t, e) { if (t) { if ("string" == typeof t) return _arrayLikeToArray(t, e); var o = {}.toString.call(t).slice(8, -1); return "Object" === o && t.constructor && (o = t.constructor.name), "Map" === o || "Set" === o ? Array.from(t) : "Arguments" === o || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(o) ? _arrayLikeToArray(t, e) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, t) { var e = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (Array.isArray(r) && (null == e || e === ("undefined" != typeof Symbol && [][Symbol.iterator]) || e === []["@@iterator"])) return r; if (null != e) { var l, n, i, a, u = [], o = !0, f = !1; try { if (i = (e = e.call(r)).next, 0 === t) { if (Object(e) !== e) return; o = !1; } else for (; !(o = (l = i.call(e)).done) && (u.push(l.value), u.length !== t); o = !0); } catch (r) { f = !0, n = r; } finally { try { if (!o && null != e["return"] && (a = e["return"](), Object(a) !== a)) return; } finally { if (f) throw n; } } return u; } }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(r) { for (var t = 1; t < arguments.length; t++) { var o = null != arguments[t] ? arguments[t] : {}; t % 2 ? ownKeys(Object(o), !0).forEach(function (t) { _defineProperty(r, t, o[t]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(r, Object.getOwnPropertyDescriptors(o)) : ownKeys(Object(o)).forEach(function (e) { Object.defineProperty(r, e, Object.getOwnPropertyDescriptor(o, e)); }); } return r; }
+function _defineProperty(r, t, o) { return (t = _toPropertyKey(t)) in r ? Object.defineProperty(r, t, { value: o, enumerable: !0, configurable: !0, writable: !0 }) : r[t] = o, r; }
+function _toPropertyKey(r) { var o = _toPrimitive(r, "string"); return "symbol" == _typeof(o) ? o : o + ""; }
+function _toPrimitive(t, e) { if ("object" != _typeof(t) || !t) return t; var r; if ("undefined" != typeof Symbol && void 0 !== (r = t[Symbol.toPrimitive])) { var i = r.call(t, e || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === e ? String : Number)(t); }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useRef = _React.useRef,
+  useMemo = _React.useMemo;
+
+// --- CONFIGURAZIONE ---
+var RUSH_MEM_TIME = 15;
+var RUSH_PLAY_TIME = 90;
+var AVATARS = ['👨‍🚀', '👩‍🔬', '🥷', '🧙‍♂️', '🧛‍♀️', '🧜‍♂️', '🧚‍♀️', '🧞‍♂️', '🦸‍♀️', '🦹‍♂️', '🕵️‍♀️', '🧑‍🎨'];
+var EMOJI_POOL = ['🚀', '💎', '🌶️', '🍄', '🎱', '🎸', '🌵', '🔥', '⚡', '🌈', '🪐', '🧩', '🎲', '🎯', '🎨', '🎭', '🎪', '🎡', '🎢', '🎃', '🎄', '🎈', '🎁', '🏆', '🥇', '⚽', '🏀', '🎾', '🍩', '🍕', '🍟', '🍔', '🦄', '🤖', '👾', '👻'];
+var PAIR_COLORS = ['bg-rose-50 text-rose-950 border-rose-300 dark:bg-rose-900/40 dark:text-rose-100 dark:border-rose-500', 'bg-orange-50 text-orange-950 border-orange-300 dark:bg-orange-900/40 dark:text-orange-100 dark:border-orange-500', 'bg-amber-50 text-amber-950 border-amber-300 dark:bg-amber-900/40 dark:text-amber-100 dark:border-amber-500', 'bg-emerald-50 text-emerald-950 border-emerald-300 dark:bg-emerald-900/40 dark:text-emerald-100 dark:border-emerald-500', 'bg-cyan-50 text-cyan-950 border-cyan-300 dark:bg-cyan-900/40 dark:text-cyan-100 dark:border-cyan-500', 'bg-blue-50 text-blue-950 border-blue-300 dark:bg-blue-900/40 dark:text-blue-100 dark:border-blue-500', 'bg-violet-50 text-violet-950 border-violet-300 dark:bg-violet-900/40 dark:text-violet-100 dark:border-violet-500', 'bg-fuchsia-50 text-fuchsia-950 border-fuchsia-300 dark:bg-fuchsia-900/40 dark:text-fuchsia-100 dark:border-fuchsia-500'];
+var LEVELS = [{
+  id: 0,
+  label: "Training",
+  desc: "6 Carte (3 Coppie)",
+  pairs: 3,
+  points: 300,
+  ghost: true
+}, {
+  id: 1,
+  label: "Base",
+  desc: "12 Carte (6 Coppie)",
+  pairs: 6,
+  points: 600,
+  ghost: false
+}, {
+  id: 2,
+  label: "Intermedio",
+  desc: "16 Carte (8 Coppie)",
+  pairs: 8,
+  points: 1200,
+  ghost: false
+}, {
+  id: 3,
+  label: "Avanzato",
+  desc: "20 Carte (10 Coppie)",
+  pairs: 10,
+  points: 2000,
+  ghost: false
+}];
+var EXPLANATIONS = {
+  "trap": "Polinomio Irriducibile (Somma di quadrati)",
+  "common": "Raccoglimento Totale a fattor comune",
+  "diffSq": "Differenza di Quadrati: A²-B²=(A-B)(A+B)",
+  "sqBin": "Quadrato di Binomio: A²±2AB+B²=(A±B)²",
+  "trinom": "Trinomio Speciale: Somma/Prodotto"
+};
+var BRIEFING_ITEMS = [{
+  title: "Raccoglimento Totale",
+  tex: "\\begin{gathered} nx + n^2 \\\\ \\downarrow \\\\ n(x+n) \\end{gathered}",
+  color: "border-outline-variant bg-surface dark:bg-white/5"
+}, {
+  title: "Differenza di Quadrati",
+  tex: "\\begin{gathered} x^2 - a^2 \\\\ \\downarrow \\\\ (x-a)(x+a) \\end{gathered}",
+  color: "border-outline-variant bg-surface dark:bg-white/5"
+}, {
+  title: "Quadrato di Binomio",
+  tex: "\\begin{gathered} x^2 + 2ax + a^2 \\\\ \\downarrow \\\\ (x+a)^2 \\end{gathered}",
+  color: "border-outline-variant bg-surface dark:bg-white/5"
+}, {
+  title: "Trinomio Speciale",
+  tex: "\\begin{gathered} x^2 + Sx + P \\\\ \\downarrow \\\\ (x+a)(x+b) \\end{gathered}",
+  color: "border-outline-variant bg-surface dark:bg-white/5"
+}, {
+  title: "Somma di Quadrati",
+  tex: "\\begin{gathered} x^2 + a^2 \\\\ \\downarrow \\\\ \\text{Irriducibile} \\end{gathered}",
+  color: "border-red-200 bg-red-50 text-red-900 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800"
+}];
+var Icon = function Icon(_ref) {
+  var d = _ref.d,
+    _ref$size = _ref.size,
+    size = _ref$size === void 0 ? 20 : _ref$size,
+    _ref$className = _ref.className,
+    className = _ref$className === void 0 ? "" : _ref$className;
+  return /*#__PURE__*/React.createElement("svg", {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    className: className
+  }, /*#__PURE__*/React.createElement("path", {
+    d: d
+  }));
+};
+var Icons = {
+  Trophy: /*#__PURE__*/React.createElement(Icon, {
+    d: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6 M18 9h1.5a2.5 2.5 0 0 0 0-5H18 M4 22h16 M10 14.66V17 M14 14.66V17 M12 2v10 M12 17a5 5 0 0 0-5 4 M12 17a5 5 0 0 1 5 4"
+  }),
+  Check: /*#__PURE__*/React.createElement(Icon, {
+    d: "M22 11.08V12a10 10 0 1 1-5.93-9.14 M22 4 12 14.01 9 11.01"
+  }),
+  Play: /*#__PURE__*/React.createElement(Icon, {
+    d: "M5 3l14 9-14 9V3z"
+  }),
+  Zap: /*#__PURE__*/React.createElement(Icon, {
+    d: "M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+  }),
+  Timer: /*#__PURE__*/React.createElement(Icon, {
+    d: "M10 2h4 M12 14l3-3 M12 14v-4 M12 22a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"
+  }),
+  Target: /*#__PURE__*/React.createElement(Icon, {
+    d: "M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 16a6 6 0 1 1 6-6 6 6 0 0 1-6 6z M12 8a4 4 0 1 0 4 4 4 4 0 0 0-4-4z"
+  }),
+  Book: /*#__PURE__*/React.createElement(Icon, {
+    d: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"
+  }),
+  Sun: /*#__PURE__*/React.createElement(Icon, {
+    d: "M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+  }),
+  Moon: /*#__PURE__*/React.createElement(Icon, {
+    d: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+  })
+};
+var getRandomInt = function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+var generators = {
+  trap: function trap() {
+    var k = getRandomInt(2, 6);
+    return {
+      poly: "x^2 + ".concat(k * k),
+      fact: "\\text{Irriducibile}",
+      type: "trap"
+    };
+  },
+  common: function common() {
+    var n = getRandomInt(2, 6);
+    return {
+      poly: "".concat(n, "x + ").concat(n * n),
+      fact: "".concat(n, "(x + ").concat(n, ")"),
+      type: "common"
+    };
+  },
+  diffSq: function diffSq() {
+    var a = getRandomInt(2, 9);
+    return {
+      poly: "x^2 - ".concat(a * a),
+      fact: "(x - ".concat(a, ")(x + ").concat(a, ")"),
+      type: "diffSq"
+    };
+  },
+  sqBin: function sqBin() {
+    var a = getRandomInt(2, 7);
+    var s = Math.random() > 0.5 ? '+' : '-';
+    return {
+      poly: "x^2 ".concat(s, " ").concat(2 * a, "x + ").concat(a * a),
+      fact: "(x ".concat(s, " ").concat(a, ")^2"),
+      type: "sqBin"
+    };
+  },
+  trinom: function trinom() {
+    var a = getRandomInt(1, 5),
+      b = getRandomInt(1, 5);
+    if (a === b) b++;
+    var sA = Math.random() > 0.5 ? 1 : -1;
+    var sB = Math.random() > 0.5 ? 1 : -1;
+    var sum = a * sA + b * sB;
+    var prod = a * sA * (b * sB);
+    var termX = sum === 0 ? "" : sum > 0 ? sum === 1 ? "+x" : "+".concat(sum, "x") : sum === -1 ? "-x" : "".concat(sum, "x");
+    var termKnown = prod > 0 ? "+".concat(prod) : "".concat(prod);
+    var signA = sA > 0 ? "+" : "-";
+    var signB = sB > 0 ? "+" : "-";
+    return {
+      poly: "x^2 ".concat(termX, " ").concat(termKnown),
+      fact: "(x ".concat(signA, " ").concat(a, ")(x ").concat(signB, " ").concat(b, ")"),
+      type: "trinom"
+    };
+  }
+};
+var generateCards = function generateCards(levelId) {
+  var levelConfig = LEVELS.find(function (l) {
+    return l.id === levelId;
+  });
+  var pairsCount = levelConfig.pairs;
+  var pairs = [];
+  var usedSignatures = new Set();
+  var trapItem = generators.trap();
+  pairs.push(trapItem);
+  usedSignatures.add(trapItem.poly);
+  var otherTypes = Object.keys(generators).filter(function (k) {
+    return k !== 'trap';
+  });
+  var attempts = 0;
+  while (pairs.length < pairsCount && attempts < 500) {
+    attempts++;
+    var rndType = otherTypes[Math.floor(Math.random() * otherTypes.length)];
+    var item = generators[rndType]();
+    if (!usedSignatures.has(item.poly)) {
+      usedSignatures.add(item.poly);
+      pairs.push(item);
+    }
+  }
+  while (pairs.length < pairsCount) {
+    var n = pairs.length + 2;
+    var filler = {
+      poly: "".concat(n, "x - ").concat(n * n),
+      fact: "".concat(n, "(x - ").concat(n, ")"),
+      type: "common"
+    };
+    if (!usedSignatures.has(filler.poly)) {
+      usedSignatures.add(filler.poly);
+      pairs.push(filler);
+    }
+  }
+  var deck = [];
+  var shuffledEmojis = [].concat(EMOJI_POOL).sort(function () {
+    return Math.random() - 0.5;
+  });
+  pairs.forEach(function (p, i) {
+    var color = PAIR_COLORS[i % PAIR_COLORS.length];
+    deck.push(_objectSpread({
+      id: "p".concat(i, "a"),
+      pairId: i,
+      content: p.poly,
+      cardType: 'poly',
+      emoji: shuffledEmojis[i * 2],
+      color: color
+    }, p));
+    deck.push(_objectSpread({
+      id: "p".concat(i, "b"),
+      pairId: i,
+      content: p.fact,
+      cardType: 'fact',
+      emoji: shuffledEmojis[i * 2 + 1],
+      color: color
+    }, p));
+  });
+  return deck.sort(function () {
+    return Math.random() - 0.5;
+  }).map(function (c) {
+    return _objectSpread(_objectSpread({}, c), {}, {
+      isFlipped: false,
+      isMatched: false,
+      seen: false
+    });
+  });
+};
+
+// --- MATH TEXT COMPONENT (Flessibile: Altezza/Scroll gestiti dal genitore/props) ---
+var MathText = function MathText(_ref2) {
+  var txt = _ref2.txt,
+    _ref2$className = _ref2.className,
+    className = _ref2$className === void 0 ? "" : _ref2$className;
+  var defaultCardSize = "text-base md:text-xl lg:text-2xl";
+  var appliedClass = className || defaultCardSize;
+  var html = useMemo(function () {
+    try {
+      return window.katex ? window.katex.renderToString(txt, {
+        throwOnError: false,
+        displayMode: true
+      }) : txt;
+    } catch (e) {
+      return txt;
+    }
+  }, [txt]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "font-math w-full flex flex-col justify-center items-center p-2 leading-relaxed break-words ".concat(appliedClass),
+    dangerouslySetInnerHTML: {
+      __html: html
+    }
+  });
+};
+var saveScore = function saveScore(entry) {
+  var lb = JSON.parse(localStorage.getItem('fm_lb') || '[]');
+  lb.push(entry);
+  lb.sort(function (a, b) {
+    return b.score - a.score || a.moves - b.moves;
+  });
+  localStorage.setItem('fm_lb', JSON.stringify(lb.slice(0, 50)));
+  return lb.slice(0, 50);
+};
+function App() {
+  var _useState = useState(localStorage.getItem('ce_theme') || 'light'),
+    _useState2 = _slicedToArray(_useState, 2),
+    theme = _useState2[0],
+    setTheme = _useState2[1];
+  var _useState3 = useState('menu'),
+    _useState4 = _slicedToArray(_useState3, 2),
+    view = _useState4[0],
+    setView = _useState4[1];
+  var _useState5 = useState(localStorage.getItem('fm_nick') || ''),
+    _useState6 = _slicedToArray(_useState5, 2),
+    nick = _useState6[0],
+    setNick = _useState6[1];
+  var _useState7 = useState(localStorage.getItem('fm_avatar') || AVATARS[0]),
+    _useState8 = _slicedToArray(_useState7, 2),
+    userAvatar = _useState8[0],
+    setUserAvatar = _useState8[1];
+  var _useState9 = useState(1),
+    _useState0 = _slicedToArray(_useState9, 2),
+    lvl = _useState0[0],
+    setLvl = _useState0[1];
+  var _useState1 = useState([]),
+    _useState10 = _slicedToArray(_useState1, 2),
+    lb = _useState10[0],
+    setLb = _useState10[1];
+  // Scaffolding State
+  var _useState11 = useState(localStorage.getItem('ce_scaffolding') === 'true'),
+    _useState12 = _slicedToArray(_useState11, 2),
+    scaffolding = _useState12[0],
+    setScaffolding = _useState12[1];
+  var _useState13 = useState([]),
+    _useState14 = _slicedToArray(_useState13, 2),
+    cards = _useState14[0],
+    setCards = _useState14[1];
+  var _useState15 = useState(0),
+    _useState16 = _slicedToArray(_useState15, 2),
+    moves = _useState16[0],
+    setMoves = _useState16[1];
+  var _useState17 = useState(0),
+    _useState18 = _slicedToArray(_useState17, 2),
+    score = _useState18[0],
+    setScore = _useState18[1];
+  var _useState19 = useState(0),
+    _useState20 = _slicedToArray(_useState19, 2),
+    accumulatedScore = _useState20[0],
+    setAccumulatedScore = _useState20[1];
+  var _useState21 = useState([]),
+    _useState22 = _slicedToArray(_useState21, 2),
+    flipped = _useState22[0],
+    setFlipped = _useState22[1];
+  var _useState23 = useState(false),
+    _useState24 = _slicedToArray(_useState23, 2),
+    lock = _useState24[0],
+    setLock = _useState24[1];
+  var _useState25 = useState(null),
+    _useState26 = _slicedToArray(_useState25, 2),
+    matchMsg = _useState26[0],
+    setMatchMsg = _useState26[1];
+  var _useState27 = useState(false),
+    _useState28 = _slicedToArray(_useState27, 2),
+    isRush = _useState28[0],
+    setIsRush = _useState28[1];
+  var _useState29 = useState(null),
+    _useState30 = _slicedToArray(_useState29, 2),
+    rushPhase = _useState30[0],
+    setRushPhase = _useState30[1];
+  var _useState31 = useState(0),
+    _useState32 = _slicedToArray(_useState31, 2),
+    timeLeft = _useState32[0],
+    setTimeLeft = _useState32[1];
+  useEffect(function () {
+    var root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
+    localStorage.setItem('ce_theme', theme);
+  }, [theme]);
+  useEffect(function () {
+    setLb(JSON.parse(localStorage.getItem('fm_lb') || '[]'));
+    if (!localStorage.getItem('fm_avatar')) {
+      var rnd = AVATARS[Math.floor(Math.random() * AVATARS.length)];
+      setUserAvatar(rnd);
+      localStorage.setItem('fm_avatar', rnd);
+    }
+  }, [view]);
+
+  // Persist Scaffolding
+  useEffect(function () {
+    localStorage.setItem('ce_scaffolding', scaffolding);
+  }, [scaffolding]);
+  useEffect(function () {
+    if (view !== 'game') return;
+    var levelData = LEVELS.find(function (l) {
+      return l.id === lvl;
+    });
+    var minMoves = levelData.pairs;
+    var maxPoints = levelData.points;
+    var matchesFound = cards.filter(function (c) {
+      return c.isMatched;
+    }).length / 2;
+    var effectiveMoves = Math.max(minMoves, moves);
+    var efficiencyFactor = minMoves / Math.max(minMoves, effectiveMoves || 1);
+    var completionRatio = matchesFound / minMoves;
+    setScore(accumulatedScore + Math.floor(maxPoints * completionRatio * efficiencyFactor));
+  }, [moves, cards, view, accumulatedScore, lvl]);
+  useEffect(function () {
+    var timer;
+    if (isRush && rushPhase) {
+      if (timeLeft > 0) timer = setInterval(function () {
+        return setTimeLeft(function (t) {
+          return t - 1;
+        });
+      }, 1000);else {
+        if (rushPhase === 'mem') {
+          setRushPhase('play');
+          setTimeLeft(RUSH_PLAY_TIME);
+          setCards(function (c) {
+            return c.map(function (card) {
+              return _objectSpread(_objectSpread({}, card), {}, {
+                isFlipped: false
+              });
+            });
+          });
+        } else handleRushEnd(false);
+      }
+    }
+    return function () {
+      return clearInterval(timer);
+    };
+  }, [isRush, rushPhase, timeLeft]);
+  var toggleTheme = function toggleTheme() {
+    return setTheme(function (t) {
+      return t === 'light' ? 'dark' : 'light';
+    });
+  };
+  var handleCardClick = function handleCardClick(id) {
+    if (lock || isRush && rushPhase === 'mem') return;
+    var card = cards.find(function (c) {
+      return c.id === id;
+    });
+    if (card.isFlipped || card.isMatched) return;
+    setCards(function (prev) {
+      return prev.map(function (c) {
+        return c.id === id ? _objectSpread(_objectSpread({}, c), {}, {
+          isFlipped: true,
+          seen: true
+        }) : c;
+      });
+    });
+    var newFlipped = [].concat(_toConsumableArray(flipped), [id]);
+    setFlipped(newFlipped);
+    if (newFlipped.length === 2) {
+      setLock(true);
+      if (!isRush) setMoves(function (m) {
+        return m + 1;
+      });
+      setTimeout(function () {
+        return checkForMatch(newFlipped);
+      }, 500);
+    }
+  };
+  var checkForMatch = function checkForMatch(_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+      id1 = _ref4[0],
+      id2 = _ref4[1];
+    setCards(function (currentCards) {
+      var c1 = currentCards.find(function (c) {
+        return c.id === id1;
+      });
+      var c2 = currentCards.find(function (c) {
+        return c.id === id2;
+      });
+      var nextCards = _toConsumableArray(currentCards);
+      if (c1.pairId === c2.pairId) {
+        nextCards = nextCards.map(function (c) {
+          return c.id === id1 || c.id === id2 ? _objectSpread(_objectSpread({}, c), {}, {
+            isMatched: true,
+            isFlipped: true
+          }) : c;
+        });
+        setMatchMsg({
+          text: "Fattorizzazione Corretta!",
+          sub: EXPLANATIONS[c1.type] || "Ben fatto.",
+          color: c1.color
+        });
+        setTimeout(function () {
+          return setMatchMsg(null);
+        }, 3000);
+        setLock(false);
+        if (nextCards.filter(function (c) {
+          return !c.isMatched;
+        }).length === 0) {
+          if (isRush) handleRushEnd(true);else setTimeout(function () {
+            return setView('win');
+          }, 1000);
+        }
+      } else {
+        setTimeout(function () {
+          setCards(function (prev) {
+            return prev.map(function (c) {
+              return c.id === id1 || c.id === id2 ? _objectSpread(_objectSpread({}, c), {}, {
+                isFlipped: false
+              }) : c;
+            });
+          });
+          setLock(false);
+        }, 1200);
+      }
+      setFlipped([]);
+      return nextCards;
+    });
+  };
+  var handleRushEnd = function handleRushEnd(won) {
+    setIsRush(false);
+    setRushPhase(null);
+    if (won) {
+      setScore(function (s) {
+        return s * 2;
+      });
+      setMatchMsg({
+        text: "RADDOPPIO RIUSCITO!",
+        sub: "Punteggio duplicato.",
+        color: "bg-yellow-100 text-yellow-900 dark:text-yellow-100 dark:bg-yellow-900"
+      });
+    } else {
+      setScore(function (s) {
+        return Math.floor(s / 2);
+      });
+      setMatchMsg({
+        text: "TEMPO SCADUTO",
+        sub: "Punteggio dimezzato.",
+        color: "bg-red-100 text-red-900 dark:text-red-100 dark:bg-red-900"
+      });
+    }
+    setTimeout(function () {
+      return setView('final');
+    }, 2000);
+  };
+  var startGame = function startGame() {
+    var rush = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+    if (!rush) {
+      if (!nick.trim()) return alert("Inserisci un nome!");
+      localStorage.setItem('fm_nick', nick);
+      setAccumulatedScore(0);
+      setMoves(0);
+      setScore(0);
+    } else {
+      setAccumulatedScore(score);
+      setMoves(0);
+    }
+    var newCards = generateCards(lvl);
+    setCards(newCards);
+    setFlipped([]);
+    setLock(false);
+    if (rush) {
+      setIsRush(true);
+      setRushPhase('mem');
+      setTimeLeft(RUSH_MEM_TIME);
+      setCards(function (prev) {
+        return prev.map(function (c) {
+          return _objectSpread(_objectSpread({}, c), {}, {
+            isFlipped: true
+          });
+        });
+      });
+      setView('game');
+    } else {
+      setIsRush(false);
+      setView('game');
+    }
+  };
+  var saveAndExit = function saveAndExit() {
+    var currentLvl = LEVELS.find(function (l) {
+      return l.id === lvl;
+    });
+    saveScore({
+      name: nick,
+      avatar: userAvatar,
+      score: score,
+      moves: moves,
+      minMoves: currentLvl.pairs,
+      lvl: currentLvl.label,
+      date: new Date().toLocaleDateString()
+    });
+    setView('menu');
+  };
+
+  // RENDER
+  if (view === 'menu') {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex h-screen w-screen bg-background text-on-background"
+    }, /*#__PURE__*/React.createElement("aside", {
+      className: "w-full md:w-1/3 max-w-md bg-surface border-r border-outline-variant flex flex-col shadow-xl z-20 h-full"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "p-6 border-b border-outline-variant flex justify-between items-center"
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+      className: "text-3xl font-black text-on-background tracking-tight"
+    }, "FactorMatch ", /*#__PURE__*/React.createElement("span", {
+      className: "text-primary text-lg"
+    }, "Pro")), /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-outline-variant uppercase font-bold tracking-widest mt-1"
+    }, "Scomposizioni Polinomiali")), /*#__PURE__*/React.createElement("button", {
+      onClick: toggleTheme,
+      className: "p-2 rounded-full bg-surface-container text-primary hover:bg-outline-variant transition-colors"
+    }, theme === 'light' ? Icons.Moon : Icons.Sun)), /*#__PURE__*/React.createElement("div", {
+      className: "flex-1 overflow-y-auto p-6 space-y-8 scroller"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "space-y-2"
+    }, /*#__PURE__*/React.createElement("label", {
+      className: "text-xs font-bold uppercase text-outline-variant"
+    }, "Identit\xE0 Studente"), /*#__PURE__*/React.createElement("div", {
+      className: "flex gap-2"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        var nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length;
+        setUserAvatar(AVATARS[nextIdx]);
+        localStorage.setItem('fm_avatar', AVATARS[nextIdx]);
+      },
+      className: "bg-surface-container hover:bg-outline-variant cursor-pointer text-2xl w-12 h-12 flex items-center justify-center rounded-xl select-none transition-colors border border-outline-variant"
+    }, userAvatar), /*#__PURE__*/React.createElement("input", {
+      value: nick,
+      onChange: function onChange(e) {
+        return setNick(e.target.value);
+      },
+      placeholder: "Il tuo nome...",
+      className: "w-full bg-surface-container rounded-xl px-4 font-bold text-on-background focus:ring-2 ring-primary outline-none transition-all border border-outline-variant"
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "space-y-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex justify-between items-end"
+    }, /*#__PURE__*/React.createElement("label", {
+      className: "text-xs font-bold uppercase text-outline-variant"
+    }, "Configurazione"), /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setScaffolding(!scaffolding);
+      },
+      className: "text-[10px] px-2 py-0.5 rounded-full border transition-all ".concat(scaffolding ? 'bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800' : 'bg-surface-container text-outline-variant border-transparent')
+    }, "SCAFFOLDING ", scaffolding ? 'ON' : 'OFF')), /*#__PURE__*/React.createElement("div", {
+      className: "grid gap-2"
+    }, LEVELS.map(function (l) {
+      return /*#__PURE__*/React.createElement("button", {
+        key: l.id,
+        onClick: function onClick() {
+          return setLvl(l.id);
+        },
+        className: "text-left p-3 rounded-xl border-2 transition-all flex justify-between items-center ".concat(lvl === l.id ? 'border-primary bg-surface-container' : 'border-outline-variant hover:border-primary hover:bg-surface-container')
+      }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+        className: "font-bold text-sm text-on-background"
+      }, l.label), /*#__PURE__*/React.createElement("div", {
+        className: "text-[10px] opacity-60 text-on-background"
+      }, l.desc)), lvl === l.id && /*#__PURE__*/React.createElement("div", {
+        className: "text-primary"
+      }, Icons.Check));
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "bg-background rounded-2xl border border-outline-variant p-4"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-yellow-500"
+    }, Icons.Trophy), /*#__PURE__*/React.createElement("span", {
+      className: "font-bold text-xs uppercase tracking-wide text-outline-variant"
+    }, "Hall of Fame")), /*#__PURE__*/React.createElement("div", {
+      className: "max-h-40 overflow-y-auto scroller space-y-2"
+    }, lb.length === 0 && /*#__PURE__*/React.createElement("div", {
+      className: "text-xs text-center py-4 opacity-40 text-on-background"
+    }, "Nessun dato"), lb.map(function (row, i) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: i,
+        className: "flex justify-between items-center text-xs p-2 bg-surface rounded-lg shadow-sm border border-outline-variant"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "flex gap-2 items-center"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "w-4 h-4 rounded-full flex items-center justify-center font-mono font-bold ".concat(i < 3 ? 'bg-yellow-100 text-yellow-700' : 'bg-surface-container text-outline-variant')
+      }, i + 1), /*#__PURE__*/React.createElement("span", {
+        className: "text-lg leading-none"
+      }, row.avatar || '👤'), /*#__PURE__*/React.createElement("span", {
+        className: "font-bold text-on-background truncate max-w-[80px]"
+      }, row.name)), /*#__PURE__*/React.createElement("div", {
+        className: "flex flex-col items-end"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "text-primary font-bold"
+      }, row.score, "pt"), /*#__PURE__*/React.createElement("div", {
+        className: "text-[9px] text-outline-variant font-mono"
+      }, row.moves, " / ", row.minMoves || '-')));
+    })))), /*#__PURE__*/React.createElement("div", {
+      className: "p-6 border-t border-outline-variant"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return startGame(false);
+      },
+      className: "w-full py-4 bg-primary hover:opacity-90 text-on-background rounded-xl font-bold shadow-xl active:scale-95 transition-all flex justify-center gap-2"
+    }, "INIZIA ", Icons.Play))), /*#__PURE__*/React.createElement("main", {
+      className: "hidden md:flex flex-1 bg-background items-center justify-center relative overflow-hidden"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/graphy.png')] dark:opacity-[0.05] dark:invert"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "w-full max-w-7xl p-4 md:p-8"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "bg-surface p-6 md:p-10 rounded-3xl shadow-2xl border border-outline-variant h-full flex flex-col"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-4 mb-6 md:mb-8 shrink-0"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "p-4 bg-surface-container text-primary rounded-2xl"
+    }, Icons.Book), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+      className: "text-2xl md:text-3xl font-black text-on-background"
+    }, "BRIEFING OPERATIVO"), /*#__PURE__*/React.createElement("p", {
+      className: "text-outline-variant font-medium"
+    }, "Metodi di Scomposizione"))), /*#__PURE__*/React.createElement("div", {
+      className: "space-y-6 flex-1 overflow-y-auto scroller pr-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "p-5 bg-amber-50 rounded-xl border border-amber-100 flex gap-4 items-start dark:bg-amber-900/20 dark:border-amber-800"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-amber-600 mt-1 shrink-0 dark:text-amber-400"
+    }, Icons.Target), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "font-bold text-amber-900 text-sm mb-1 uppercase tracking-widest dark:text-amber-200"
+    }, "Obiettivo Primario"), /*#__PURE__*/React.createElement("p", {
+      className: "text-amber-800 text-sm leading-relaxed font-medium dark:text-amber-300"
+    }, "Associa ogni ", /*#__PURE__*/React.createElement("strong", null, "Polinomio"), " alla sua corretta ", /*#__PURE__*/React.createElement("strong", null, "Fattorizzazione"), "."))), /*#__PURE__*/React.createElement("div", {
+      className: "space-y-4"
+    }, /*#__PURE__*/React.createElement("h3", {
+      className: "font-bold text-outline-variant text-xs uppercase tracking-widest border-b border-outline-variant pb-2"
+    }, "Database Pattern"), /*#__PURE__*/React.createElement("div", {
+      className: "grid grid-cols-2 md:grid-cols-3 gap-4"
+    }, BRIEFING_ITEMS.map(function (item, idx) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: idx,
+        className: "p-3 rounded-xl border-2 transition-colors flex flex-col justify-center min-h-[120px] w-full ".concat(item.color)
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "text-[10px] font-bold opacity-50 mb-1 uppercase tracking-wider text-center text-on-background"
+      }, item.title), /*#__PURE__*/React.createElement("div", {
+        className: "w-full flex justify-center flex-wrap"
+      }, /*#__PURE__*/React.createElement(MathText, {
+        txt: item.tex,
+        className: "text-base text-on-background"
+      })));
+    }))))))));
+  }
+
+  // RENDER GAME
+  var isGameView = view === 'game' || view === 'win' || view === 'final';
+  if (isGameView) {
+    var n = cards.length;
+    var gridClass = "";
+    if (n === 6) gridClass = "grid-cols-3 grid-rows-2";else if (n === 12) gridClass = "grid-cols-4 grid-rows-3";else if (n === 16) gridClass = "grid-cols-4 grid-rows-4";else if (n === 20) gridClass = "grid-cols-5 grid-rows-4";else gridClass = "grid-cols-4";
+    return /*#__PURE__*/React.createElement("div", {
+      className: "h-screen w-screen flex flex-col bg-background overflow-hidden"
+    }, /*#__PURE__*/React.createElement("header", {
+      className: "h-16 bg-surface shadow-sm flex items-center justify-between px-4 z-20 shrink-0 border-b border-outline-variant"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-4"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return setView('menu');
+      },
+      className: "text-xs font-bold text-outline-variant hover:text-red-500 uppercase tracking-wider transition-colors"
+    }, "ESCI"), isRush && /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2 px-3 py-1 rounded-lg font-mono font-bold ".concat(rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-100' : 'bg-red-100 text-red-700 animate-pulse dark:bg-red-900 dark:text-red-100')
+    }, Icons.Timer, " ", timeLeft, "s"), !isRush && /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] font-bold text-outline-variant uppercase leading-none"
+    }, "Punti"), /*#__PURE__*/React.createElement("span", {
+      className: "text-xl font-mono font-bold text-primary leading-none"
+    }, score))), matchMsg && /*#__PURE__*/React.createElement("div", {
+      className: "absolute top-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl border-2 flex items-center gap-3 animate-bounce z-50 bg-surface ".concat(matchMsg.color || 'border-indigo-100', " dark:bg-slate-800 dark:border-slate-600")
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "bg-green-100 text-green-600 rounded-full p-1 dark:bg-green-900 dark:text-green-300"
+    }, Icons.Check), /*#__PURE__*/React.createElement("div", {
+      className: "text-left"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "font-black text-on-background text-sm"
+    }, matchMsg.text), /*#__PURE__*/React.createElement("div", {
+      className: "text-xs font-bold text-outline-variant uppercase"
+    }, matchMsg.sub)))), /*#__PURE__*/React.createElement("main", {
+      className: "flex-1 p-2 md:p-6 overflow-hidden flex items-center justify-center bg-background"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "grid gap-3 w-full max-w-6xl h-full max-h-full ".concat(gridClass)
+    }, cards.map(function (card) {
+      // LOGICA SCAFFOLDING
+      // Se scaffolding è attivo, O se il livello ha ghost mode (Training)
+      // E se la carta è stata vista.
+      var isTrainingGhost = LEVELS.find(function (l) {
+        return l.id === lvl;
+      }).ghost;
+      var showGhostContent = (isTrainingGhost || scaffolding) && card.seen;
+      var isFaceUp = card.isFlipped || card.isMatched;
+      var flipperStyle = "bg-surface border-outline-variant";
+      if (card.isMatched) {
+        flipperStyle = "".concat(card.color, " border-solid");
+      } else if (card.cardType === 'poly') {
+        flipperStyle = "bg-surface border-slate-300 border-solid dark:border-slate-500";
+      } else {
+        flipperStyle = "bg-background border-slate-400 border-dashed dark:border-slate-500";
+      }
+      return /*#__PURE__*/React.createElement("div", {
+        key: card.id,
+        onClick: function onClick() {
+          return handleCardClick(card.id);
+        },
+        className: "perspective-1000 relative cursor-pointer w-full h-full min-h-0 group"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "flipper w-full h-full shadow-sm rounded-xl border-2 transition-all duration-500\n                                                ".concat(flipperStyle, "\n                                                ").concat(isFaceUp ? 'flipped' : 'hover:border-primary hover:-translate-y-1', "\n                                            ")
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "face face-front rounded-xl overflow-hidden flex items-center justify-center bg-transparent"
+      }, showGhostContent ? /*#__PURE__*/React.createElement("div", {
+        className: "opacity-60 w-full h-full flex items-center justify-center p-2 text-on-background"
+      }, /*#__PURE__*/React.createElement(MathText, {
+        txt: card.content,
+        className: "text-xs h-full overflow-y-auto hide-scrollbar"
+      })) : /*#__PURE__*/React.createElement("span", {
+        className: "text-4xl md:text-5xl select-none transform transition-transform duration-300 group-hover:scale-110"
+      }, card.emoji)), /*#__PURE__*/React.createElement("div", {
+        className: "face face-back p-1 rounded-xl flex items-center justify-center bg-transparent"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "w-full h-full flex items-center justify-center text-center text-on-background"
+      }, /*#__PURE__*/React.createElement(MathText, {
+        txt: card.content,
+        className: "font-black tracking-tight break-words w-full h-full overflow-y-auto hide-scrollbar"
+      })))));
+    }))), view === 'win' && /*#__PURE__*/React.createElement("div", {
+      className: "fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "bg-surface p-8 rounded-3xl shadow-2xl text-center max-w-md w-full relative overflow-hidden border border-outline-variant"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary to-secondary"
+    }), /*#__PURE__*/React.createElement("h2", {
+      className: "text-4xl font-black text-on-background mb-2"
+    }, "OTTIMO!"), /*#__PURE__*/React.createElement("p", {
+      className: "text-outline-variant mb-8"
+    }, "Punti: ", /*#__PURE__*/React.createElement("strong", {
+      className: "text-primary"
+    }, score)), /*#__PURE__*/React.createElement("div", {
+      className: "space-y-3"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return startGame(true);
+      },
+      className: "w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-2xl font-black shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+    }, Icons.Zap, " RADDOPPIA"), /*#__PURE__*/React.createElement("button", {
+      onClick: saveAndExit,
+      className: "w-full py-3 bg-surface border-2 border-outline-variant text-on-background rounded-2xl font-bold hover:bg-surface-container transition-colors"
+    }, "SALVA E ESCI")))), view === 'final' && /*#__PURE__*/React.createElement("div", {
+      className: "fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-center text-on-background"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-6xl mb-4"
+    }, score > 100 ? '🚀' : '📉'), /*#__PURE__*/React.createElement("h2", {
+      className: "text-5xl font-black mb-2"
+    }, score, " PT"), /*#__PURE__*/React.createElement("p", {
+      className: "text-xl opacity-70 mb-8 font-medium"
+    }, "RISULTATO FINALE"), /*#__PURE__*/React.createElement("button", {
+      onClick: saveAndExit,
+      className: "px-8 py-3 bg-surface text-on-background rounded-full font-bold hover:scale-105 transition-transform"
+    }, "TORNA AL MENU"))));
+  }
+  return null;
+}
+var root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(/*#__PURE__*/React.createElement(App, null));
+});
+</script>
 </body>
 </html>
