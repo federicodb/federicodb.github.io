@@ -228,6 +228,39 @@
             color: var(--primary);
         }
 
+        /* attività e verifiche collegate al codice (stessi chip degli allenamenti) */
+        .skill-links { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--glass-border); }
+        .skill-links ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .skill-links a {
+            display: inline-block; font-size: 0.85rem; color: var(--text-main); text-decoration: none;
+            padding: 0.3rem 0.75rem; border: 1px solid var(--glass-border); border-radius: 999px; transition: var(--transition);
+        }
+        .skill-links a:hover, .skill-links a:focus-visible { border-color: var(--primary); color: var(--primary); }
+        .skill-links .more { border-style: dashed; color: var(--text-muted); }
+
+        /* Quadro d'insieme: quanto il laboratorio copre la rubrica della Riforma */
+        .quadro-numeri { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0 2rem; }
+        .quadro-numeri div { padding: 1rem 1.2rem; border: 1px solid var(--glass-border); border-radius: var(--radius-md, 16px); background: var(--bg-card); }
+        .quadro-numeri b { display: block; font-family: var(--font-heading); font-size: 2.2rem; line-height: 1; color: var(--primary); }
+        .quadro-numeri span { color: var(--text-muted); font-size: 0.9rem; }
+        .quadro-gruppo { margin-bottom: 2rem; }
+        .quadro-gruppo h3 { font-family: var(--font-heading); font-size: 1.1rem; margin-bottom: 0.75rem; }
+        .quadro-riga {
+            display: grid; grid-template-columns: 6rem minmax(0, 1fr) minmax(80px, 26%) 10.5rem; gap: 0.75rem; align-items: center;
+            padding: 0.55rem 0; border-bottom: 1px solid var(--glass-border); text-decoration: none; color: var(--text-main);
+        }
+        .quadro-riga:hover .quadro-label { color: var(--primary); }
+        .quadro-riga code { font-family: var(--font-code); font-size: 0.8rem; color: var(--primary); }
+        .quadro-label { font-size: 0.9rem; line-height: 1.35; }
+        .quadro-barra { height: 10px; border-radius: 99px; background: var(--glass-border); overflow: hidden; }
+        .quadro-barra i { display: block; height: 100%; border-radius: 99px; background: var(--primary); }
+        .quadro-conti { font-family: var(--font-code); font-size: 0.78rem; color: var(--text-muted); text-align: right; white-space: nowrap; }
+        .quadro-riga.scoperta .quadro-label::after { content: " · ancora scoperta"; color: var(--text-muted); font-style: italic; }
+        @media (max-width: 640px) {
+            .quadro-riga { grid-template-columns: 5rem minmax(0, 1fr); }
+            .quadro-barra, .quadro-conti { grid-column: 2; text-align: left; }
+        }
+
         .skill-card.highlight-target {
             border-color: var(--accent-color, var(--primary));
             box-shadow: 0 0 30px var(--accent-bg, hsla(190, 100%, 45%, 0.2));
@@ -375,6 +408,10 @@
         <div class="competenze-container">
             <aside class="sidebar">
                 <div class="category-menu" id="cat-menu">
+                    <button class="cat-btn" data-target="quadro">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+                        Quadro d'insieme
+                    </button>
                     <button class="cat-btn active" data-target="area_generale_matematica">
                         <svg class="icon" viewBox="0 0 24 24">
                             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
@@ -458,8 +495,17 @@
         </div>
     </footer>
 
+    <script src="database.js"></script>
+    <script src="database_verifiche.js"></script>
     <script>
         let schemaData = null;
+        // attività e verifiche del catalogo (database.js, database_verifiche.js, generati da build.py), per codice
+        const codiciDi = (it) => [...new Set((it.tags || []).map((t) => String(t).split(':')[0].trim().toUpperCase()))];
+        const attivitaPerCodice = {}, verifichePerCodice = {};
+        (typeof db !== 'undefined' ? db : []).filter((it) => it.type === 'app')
+            .forEach((it) => codiciDi(it).forEach((c) => (attivitaPerCodice[c] ||= []).push(it)));
+        (typeof db_verifiche !== 'undefined' ? db_verifiche : [])
+            .forEach((it) => codiciDi(it).forEach((c) => (verifichePerCodice[c] ||= []).push(it)));
         let activeCategory = 'area_generale_matematica';
         // Attività di Orfini Math Quest (allenamento/catalogo.json), raggruppate per codice MAT
         let allenamentoPerCodice = {};
@@ -552,12 +598,75 @@
             `;
         }
 
+        // titoli con formule ($\pi$, $\sqrt{2}$): KaTeX, come nel catalogo
+        const titoloHtml = (t) => escHtml(t).replace(/\$([^$]+)\$/g, (m, f) => {
+            try { return katex.renderToString(f.replace(/&amp;/g, '&'), { throwOnError: false }); } catch { return f; }
+        });
+
+        function createLinks(id) {
+            const apps = attivitaPerCodice[id] || [], ver = verifichePerCodice[id] || [];
+            if (!apps.length && !ver.length) return '';
+            const href = (u) => u.split('/').map(encodeURIComponent).join('/');
+            const prime = apps.slice(0, 6).map((a) => `<li><a href="${href(a.url)}">${titoloHtml(a.title)}</a></li>`).join('');
+            const altre = apps.length > 6 ? `<li><a class="more" href="index.html?tag=${encodeURIComponent(id)}">e altre ${apps.length - 6} nel catalogo</a></li>` : '';
+            const verif = ver.length ? `<li><a class="more" href="verifiche.html">${ver.length} ${ver.length === 1 ? 'verifica' : 'verifiche'} nell'Archivio</a></li>` : '';
+            return `
+                <div class="skill-links">
+                    <div class="skill-training-title">Attività${ver.length ? ' e verifiche' : ''}</div>
+                    <ul>${prime}${altre}${verif}</ul>
+                </div>`;
+        }
+
+        /** Quadro d'insieme: per ogni voce della rubrica quante attività, lezioni e verifiche la coprono */
+        function renderQuadro(container, filter) {
+            const gruppi = [];
+            const tutte = [];
+            // la rubrica ha livelli diversi per area: si raccolgono gli elenchi di voci (oggetti con id e label) a ogni profondità
+            const raccogli = (nome, data) => {
+                if (Array.isArray(data)) { const voci = data.filter((x) => x && x.id && x.label); if (voci.length) gruppi.push([nome, voci]); }
+                else if (data && typeof data === 'object') for (const [sub, v] of Object.entries(data)) raccogli(`${nome}: ${sub}`, v);
+            };
+            for (const [cat, data] of Object.entries(schemaData || {})) raccogli(cat, data);
+            const nomi = (k) => k.replace('area_generale_matematica: ', 'Matematica · ').replace(/: /g, ' · ').replace(/_/g, ' ')
+                .replace(/^competenze cittadinanza$/, 'Competenze chiave di cittadinanza').replace(/^area indirizzo tecnico$/, 'Competenze di indirizzo')
+                .replace(/^competenze trasversali soft skills$/, 'Competenze trasversali (soft skills)');
+            const max = Math.max(1, ...Object.values(attivitaPerCodice).map((a) => a.length));
+            let coperte = 0, totale = 0;
+            const html = gruppi.map(([nome, items]) => {
+                const righe = items.filter((it) => !filter || (it.id + ' ' + it.label).toLowerCase().includes(filter)).map((it) => {
+                    const a = (attivitaPerCodice[it.id] || []).length, l = (allenamentoPerCodice[it.id] || []).length, v = (verifichePerCodice[it.id] || []).length;
+                    totale++; if (a + l + v) coperte++;
+                    return `<a class="quadro-riga${a + l + v ? '' : ' scoperta'}" href="#${it.id}">
+                        <code>${it.id}</code><span class="quadro-label">${escHtml(it.label)}</span>
+                        <span class="quadro-barra" aria-hidden="true"><i style="width:${Math.round(100 * a / max)}%"></i></span>
+                        <span class="quadro-conti">${a} att · ${l} lez · ${v} ver</span></a>`;
+                }).join('');
+                return righe ? `<div class="quadro-gruppo"><h3>${escHtml(nomi(nome))}</h3>${righe}</div>` : '';
+            }).join('');
+            const nApp = (typeof db !== 'undefined' ? db : []).filter((it) => it.type === 'app').length;
+            const nLez = new Set(Object.values(allenamentoPerCodice).flat().map((a) => a.id)).size;
+            const nVer = (typeof db_verifiche !== 'undefined' ? db_verifiche : []).length;
+            container.innerHTML = `
+                <div class="section-header">
+                    <h2>QUADRO D'INSIEME</h2>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Quanto il laboratorio copre la rubrica della Riforma 2017. Ogni voce mostra le attività (barra), le lezioni di allenamento e le verifiche che la richiamano; un clic apre la voce.</p>
+                </div>
+                <div class="quadro-numeri">
+                    <div><b>${nApp}</b><span>attività interattive</span></div>
+                    <div><b>${nLez}</b><span>lezioni di allenamento</span></div>
+                    <div><b>${nVer}</b><span>verifiche nell'Archivio</span></div>
+                    <div><b>${coperte}/${totale}</b><span>voci della rubrica coperte</span></div>
+                </div>
+                ${html}`;
+        }
+
         function createSkillCard(item, type) {
             return `
                 <div class="skill-card animate-in" id="${item.id}">
                     <span class="skill-id">${item.id}</span>
                     <div class="skill-label">${item.label}</div>
                     ${item.description ? `<div class="skill-desc">${item.description}</div>` : ''}
+                    ${createLinks(item.id)}
                     ${createTrainingList(item.id)}
                 </div>
             `;
@@ -616,6 +725,8 @@
             const theme = categoryThemes[activeCategory] || { color: 'var(--primary)', bg: 'hsla(190, 100%, 45%, 0.1)' };
             container.style.setProperty('--accent-color', theme.color);
             container.style.setProperty('--accent-bg', theme.bg);
+
+            if (activeCategory === 'quadro') { renderQuadro(container, filter); return; }
 
             if (activeCategory === 'documenti_normativa_61') {
                 const filteredDocs = normativeDocs.filter(d =>
