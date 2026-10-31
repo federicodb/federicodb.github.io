@@ -500,6 +500,115 @@ def _blocco_storia(item, root):
             f'            <ul class="jr-storia">{righe}</ul>\n')
 
 
+SCHEDE_DIR = "schede"
+
+
+def _sezione_studenti(corpo_md):
+    """ (punti e prova in HTML, soluzione in HTML) dalla sezione "Per prepararti alla verifica" di una nota """
+    m = re.search(r"## Per prepararti alla verifica\s*\n(.*?)(?=\n## |\Z)", corpo_md, re.S)
+    if not m:
+        return "", ""
+    testo = m.group(1)
+    sol = re.search(r'<details[^>]*>\s*<summary>[^<]*</summary>(.*?)</details>', testo, re.S)
+    testo = re.sub(r'<details[^>]*>.*?</details>', "", testo, flags=re.S)
+    return _markdown_con_formule(testo), (_markdown_con_formule(sol.group(1)) if sol else "")
+
+
+def _scrivi_schede(items, note, verifiche, riforma, base_url):
+    """ schede/<app>.html: una pagina A4 da stampare o salvare in PDF per ogni attività (QR, temi, competenze,
+        allenamenti, studio per la verifica, verifiche collegate, spazio per gli appunti) """
+    if os.path.exists(SCHEDE_DIR):
+        if not os.path.exists(os.path.join(SCHEDE_DIR, MARKER)):
+            print(f"  ⚠️ Schede: '{SCHEDE_DIR}/' esiste ma non è stata generata dal build, non la tocco.")
+            return 0
+        shutil.rmtree(SCHEDE_DIR)
+    os.makedirs(SCHEDE_DIR)
+    open(os.path.join(SCHEDE_DIR, MARKER), "w").close()
+    nota_di = {}
+    for n in note:
+        if n.get("collegate"):
+            nota_di.setdefault(n["collegate"][0]["url"], n)
+    root = "../"
+    conta = 0
+    for it in items:
+        if it.get("type") != "app":
+            continue
+        titolo = html.escape(it.get("title", ""))
+        temi = "".join(f"<li>{html.escape(_testo_tag(t))}</li>" for t in _tag_tematici(it)[:8])
+        codici = [c for c in dict.fromkeys(t.split(":")[0].strip().upper() for t in it.get("tags", [])) if c in riforma]
+        comp = "".join(f'<li><b>{c}</b> {html.escape(riforma[c])}</li>' for c in codici)
+        allen = "".join(f'<li>{html.escape(a["titolo"])}</li>' for a in it.get("allenamento", []))
+        n = nota_di.get(it["url"])
+        studio, soluzione = _sezione_studenti(n["corpo"]) if n else ("", "")
+        verif = "".join(f'<li>{html.escape(_nome_verifica(v))}</li>' for v in _verifiche_collegate([it], verifiche))
+        url_app = base_url + urllib.parse.quote(it["url"], safe="/")
+        # immagine: la copertina della nota (un momento di gioco scelto), altrimenti la miniatura del catalogo
+        img = (n.get("img_rel") if n else "") or it.get("thumbnail")
+        thumb = f'<img class="sc-thumb" src="{_href(root, img)}" alt="">' if img else ""
+        blocchi = []
+        if temi:
+            blocchi.append(f'<section><h2>Temi</h2><ul class="sc-chips">{temi}</ul></section>')
+        if comp:
+            blocchi.append(f'<section><h2>Competenze (Riforma 2017)</h2><ul class="sc-list">{comp}</ul></section>')
+        if allen:
+            blocchi.append(f'<section><h2>Allenati</h2><p>Su federicodb.github.io/allenamento:</p><ul class="sc-list">{allen}</ul></section>')
+        if verif:
+            blocchi.append(f'<section><h2>Mettiti alla prova su carta</h2><p>Nell\'Archivio delle verifiche:</p><ul class="sc-list">{verif}</ul></section>')
+        if studio:
+            blocchi.append(f'<section class="sc-studio"><h2>Per prepararti alla verifica</h2>{studio}</section>')
+        blocchi.append('<section class="sc-appunti"><h2>Appunti</h2><div></div></section>')
+        sol = f'<p class="sc-soluzione"><b>Soluzione.</b> {re.sub(r"</?p>", " ", soluzione).strip()}</p>' if soluzione else ""
+        pagina = f"""<!DOCTYPE html>
+<html lang="it">
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare l'attività o la nota, non questo file -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda: {titolo} | Orfini Math Lab</title>
+    <meta name="description" content="Scheda da stampare: {html.escape(it.get('excerpt', ''))[:150]}">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {{delimiters: [{{left: '$$', right: '$$', display: true}}, {{left: '$', right: '$', display: false}}]}});"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="{root}schede.css">
+</head>
+<body>
+    <nav class="sc-bar"><a href="{root}index.html">← Orfini Math Lab</a><button type="button" onclick="window.print()">Stampa o salva in PDF</button></nav>
+    <main class="sc-foglio">
+        <header class="sc-testa">
+            <div>
+                <p class="sc-kicker">Orfini Math Lab · scheda dell'attività</p>
+                <h1>{titolo}</h1>
+                <p class="sc-desc">{html.escape(it.get('excerpt', ''))}</p>
+            </div>
+            <figure class="sc-qr"><div id="qr" data-url="{html.escape(url_app)}"></div><figcaption>Inquadra per aprire l'attività</figcaption></figure>
+        </header>
+        {thumb}
+        <div class="sc-griglia">
+            {''.join(blocchi)}
+        </div>
+        {sol}
+        <footer class="sc-piede">{html.escape(url_app)} · Contenuti CC BY-SA 4.0 · Prof. Federico De Benedictis</footer>
+    </main>
+    <script>
+        var q = document.getElementById('qr');
+        if (window.QRCode) new QRCode(q, {{ text: q.dataset.url, width: 112, height: 112, correctLevel: QRCode.CorrectLevel.M }});
+    </script>
+    <script src="{root}content/assets/js/offline.js" defer></script>
+</body>
+</html>
+"""
+        with open(os.path.join(SCHEDE_DIR, _chiave(it["url"]) + ".html"), "w", encoding="utf-8") as f:
+            f.write(pagina)
+        conta += 1
+    return conta
+
+
 def _chiave(url):
     """ Nome dell'attività nei filtri (?attivita=): il nome del file, senza spazi """
     return _stem(url).replace(" ", "_")
@@ -522,6 +631,8 @@ def _scheda_attivita(item, root):
         extra.append(f'<a href="{_href(root, spieg)}">Spiegami come funziona</a>')
     for a in item.get("allenamento", [])[:3]:
         extra.append(f'<a href="{_href(root, a["url"])}">Allenati: {html.escape(a["titolo"])}</a>')
+    if item.get("type") == "app":
+        extra.append(f'<a href="{_href(root, SCHEDE_DIR + "/" + _chiave(item["url"]) + ".html")}">Scheda da stampare</a>')
     extra_html = f'<p class="jr-act-more">{" · ".join(extra)}</p>' if extra else ""
     return (f'<li class="jr-act" style="--jr-accent: {_colore(item.get("title", ""))}">{img}<div><h3><a href="{_href(root, item["url"])}">{titolo}</a></h3>'
             f'<p>{desc}</p>{extra_html}</div></li>')
@@ -867,6 +978,8 @@ def build_journal(items, base_url, verifiche=()):
         for f in sorted(os.listdir(media_dir)):
             if not f.startswith(".") and f"media/{f}" not in citati:
                 avvisi.append(f"media/{f} non è usata da nessuna nota: non viene pubblicata")
+    schede = _scrivi_schede(items, note, verifiche, riforma, base_url)
+    print(f"  🖨️  Schede da stampare: {schede}")
     pubblicabili = len(sitemap)
     if sitemap:
         sitemap.insert(0, (OUT_DIR + "/", sitemap[0][1]))
