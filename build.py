@@ -1088,6 +1088,11 @@ def main():
     # Scrive la Sitemap XML
     generate_sitemap(db_main, journal_sitemap)
     inject_colophon(db_main)
+    try:
+        import mappa_build
+        mappa_build.build_mappa(db_main)
+    except ImportError as e:
+        print(f"  ⚠️ Mappa saltata ({e})")
     
     # Iniezione SEO nell'index.html
     update_index_seo(db_main)
@@ -1096,7 +1101,7 @@ def main():
 
 # Pagine fisse con il colophon del sito (diario di bordo, open source, licenze) tra due marcatori
 COLOPHON_PAGES = ["index.html", "competenze.html", "verifiche.html", "scuola.html", "calcolo-mentale.html",
-                  "privacy-policy.html", "404.html"]
+                  "privacy-policy.html", "404.html", "galaxy.html"]
 
 
 def inject_colophon(items):

@@ -101,3 +101,30 @@ Ogni voce: data, decisione, motivo.
   - Logo Creative Commons non messo: dichiarerebbe una licenza per i contenuti che il docente non ha ancora scelto.
   - Logo dell'Open Source Initiative non messo: è un marchio registrato con regole d'uso.
 - Segnalato, non toccato: `retta_fallout_002.html` ha `<title>PIP</title>`, quindi nel catalogo si chiama "PIP".
+
+## 2026-10-31 (4) — Licenze, PIP, metadati, Mappa
+
+- **Licenze**: `LICENSE` (MIT) per il codice, `LICENSE-CONTENUTI` (CC BY-SA 4.0) per i contenuti. Il colophon (diario di bordo, ultimo aggiornamento, GitHub, MIT, CC BY-SA) lo scrive il build in tutte le pagine, tra `<!-- COLOPHON_START -->` e `<!-- COLOPHON_END -->` (`build.COLOPHON_PAGES`). Nella Mappa sta nel pannello "Informazioni"; la Quest è esclusa (app a schermo intero).
+- **Journal**: le schede prendono il colore dal titolo con la stessa tavolozza e lo stesso calcolo del catalogo; un'attività ha lo stesso colore in tutte e due le pagine.
+- **PIP eliminata** su richiesta del docente (`retta_fallout_002.html` e la sua miniatura). Tolto il link da Math Bubble; il vecchio indirizzo dà la pagina 404.
+- **Metadati**:
+  - codici MAT aggiunti a 10 app; titoli puliti (Math Bubble, Parabola, Random Walk);
+  - `<meta name="allenamento">` ha la precedenza sulla scelta automatica (usato per φ, Fibonacci, Arcade scomposizioni);
+  - a ogni build un controllo avvisa per codici mancanti, titoli da rivedere, Tailwind senza versione, React di sviluppo;
+  - `docs/ALLENAMENTI.md`: proposta di allenamenti per tutte le 41 app, **da approvare** prima di scriverla nelle app.
+- **Mappa (galaxy.html) riscritta**:
+  - Diagnosi del motore precedente:
+    - un tetto di 12 linee per tema faceva sparire i legami di Matematica, quindi gruppi apparentemente isolati;
+    - legami pesati a conteggio, colori senza significato, disposizione casuale;
+    - il clic portava via dalla pagina.
+  - Ora i dati li calcola il build (`mappa_build.py` → `galaxy_data.js`):
+    - temi con le regole del Journal; singolare e plurale uniti;
+    - legami pesati con l'indice di Jaccard; colori per famiglia (propagazione delle etichette);
+    - albero dei legami più forti, più ponti e raggi verso Matematica: nessun tema isolato, verificato dal test.
+  - Scena (`GalaxyScene.js`):
+    - fisica viva con molle sottosmorzate (trascinando un tema i vicini seguono e rimbalzano);
+    - impulsi luminosi lungo i legami e aloni pulsanti (effetto rete neurale/costellazione);
+    - filtro visivo a intersezione con pannello delle attività e link al catalogo filtrato;
+    - zoom indietro fino a vedere solo "Matematica"; la rotella funziona anche sopra le etichette;
+    - forma identica a ogni apertura (generatore con seme); rispetto di `prefers-reduced-motion`.
+  - Test: `tests/mappa.spec.js`.

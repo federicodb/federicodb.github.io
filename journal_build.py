@@ -44,7 +44,9 @@ TAG_GENERICI = {"MATEMATICA", "LAB", "BIENNIO", "TRIENNIO", "SIMULAZIONE", "ORFI
                 # indirizzi e etichette pedagogiche: non sono temi (e nessuna etichetta di classe va mostrata)
                 "MECCANICO", "ELETTRICO", "ELETTRICO-ELETTRONICO", "MODA", "ODONTOTECNICO", "SOCIO-SANITARIO",
                 "GRAFICA", "GRAPHIC DESIGN", "MANUTENZIONE", "DIDATTICA INCLUSIVA", "LABORATORIO METACOGNITIVO",
-                "INCLUSIONE", "DSA", "BES"}
+                "INCLUSIONE", "DSA", "BES",
+                # strumenti e contesto, non temi matematici
+                "LIM", "AI", "GEMINI", "EDUCATION", "LABORATORIO", "TUTOR", "TUTOR SOCRATICO", "RISOLUTORE"}
 THUMBS_DIR = "content/assets/thumbnails/"  # miniature del catalogo (thumbnails.py)
 AUTHOR = "Prof. Federico De Benedictis"
 MESI = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio",
