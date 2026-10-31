@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 10:13:12
+   Data: 2026-10-31 10:13:40
 */
 
 const db = [
@@ -2225,62 +2225,6 @@ const db = [
                 "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
                     "MAT_K1"
-                ]
-            }
-        ]
-    },
-    {
-        "title": "PIP",
-        "excerpt": "Terminale didattico Orfini Industries. Simulatore open source per lo studio della retta (y=mx+q).",
-        "tags": [
-            "2 PUNTI",
-            "3 MEC",
-            "4 EL",
-            "FALLOUT",
-            "GAMIFICATION",
-            "GEOMETRIA ANALITICA",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "PENDENZA",
-            "RETTA"
-        ],
-        "date": "2025-12-12",
-        "url": "content/apps/retta_fallout_002.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/retta_fallout_002.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "trigonometria",
-                "titolo": "Trigonometria del triangolo rettangolo",
-                "url": "allenamento/#/lezione/trigonometria/1",
-                "mat": [
-                    "MAT_K3"
                 ]
             }
         ]
