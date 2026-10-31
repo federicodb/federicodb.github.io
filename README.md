@@ -78,17 +78,22 @@ la si mette alla prova. A ogni partenza i numeri cambiano ma la difficoltà rest
   invarianti) e il rapporto aureo (con un "vero o leggenda" su natura e architettura).
 - **Controlli**: ogni lezione è verificata da test automatici che generano migliaia di esercizi e ne ricalcolano le
   risposte con programmi di calcolo simbolico.
-- **Privacy**: i progressi restano sul dispositivo dello studente.
+- **Privacy**: i progressi restano sul dispositivo dello studente. A fine lezione compare solo un codice
+  anonimo (per esempio `fibonacci·2·80`) da mostrare al docente se lo chiede.
 
 ### Journal: il diario di bordo
 
 Note brevi (200-300 parole) su come un'attività è stata usata in classe: perché è nata, cosa è successo, cosa cambia.
 Ogni nota ha:
 
-- immagini catturate dentro l'attività, in un momento interessante (mai la schermata d'avvio);
+- una parte **per gli studenti**: come usare l'attività per prepararsi a una verifica scritta, a cosa fare
+  attenzione, un esercizio con la soluzione a scomparsa e le verifiche vere sugli stessi temi;
+- immagini catturate dentro l'attività, in un momento interessante e in tema scuro (mai la schermata d'avvio);
 - i temi principali, che portano alla ricerca nel catalogo;
 - le competenze richiamate, con il link alla rubrica;
-- le attività di cui parla, con "Spiegami" e "Allenati", più altre attività e altre note collegate.
+- le attività di cui parla, con "Spiegami", "Allenati" e la scheda da stampare, più altre attività e altre note;
+- come è cambiata l'attività nel tempo, in parole semplici;
+- quando il docente li raccoglie, gli esiti anonimi delle lezioni di allenamento collegate.
 
 Si scrive in Markdown: un file in `content/journal/`, e il resto lo fa il build.
 
@@ -119,6 +124,40 @@ allenamenti li usano tutti.
 
 ---
 
+## Come si tengono insieme
+
+Le parti del sito non sono pagine separate: il build le collega tra loro, a partire dai metadati di ogni attività
+(temi, codici di competenza, allenamenti scelti dal docente).
+
+```mermaid
+flowchart LR
+    A["Attività<br/>(41 app)"] -- "Allenati" --> Q["Quest<br/>58 lezioni"]
+    J["Journal<br/>note del diario"] -- "le attività di cui parla" --> A
+    J -- "Mettiti alla prova su carta" --> V["Archivio<br/>verifiche in PDF"]
+    J -- "competenze richiamate" --> C["Competenze<br/>rubrica Riforma 2017"]
+    C -- "attività, lezioni, verifiche per voce" --> A
+    C --> Q
+    C --> V
+    M["Mappa dei temi"] -- "filtro visivo" --> A
+    A -- "Scheda da stampare" --> S["Scheda A4<br/>con QR"]
+    Q -. "codici anonimi di fine lezione" .-> J
+```
+
+- **Dall'attività alla Quest**: ogni app propone le lezioni di allenamento scelte dal docente (o nessuna, se
+  nessuna c'entra davvero).
+- **Dal gioco alla scrittura**: ogni nota del Journal, nella parte per gli studenti, porta alle **verifiche
+  dell'Archivio** con esercizi sugli stessi temi: si gioca, poi ci si mette alla prova con carta e penna.
+- **Dalla nota alla legge**: le competenze richiamate dall'attività portano alla voce della rubrica; la rubrica,
+  a sua volta, mostra per ogni voce le attività, le lezioni e le verifiche che la allenano.
+- **Dal tema al catalogo**: nella Mappa un tema accende i temi vicini e le attività che ne parlano; i temi sotto
+  il titolo di una nota portano alla ricerca nel catalogo.
+- **Dallo schermo alla carta**: ogni attività ha una **scheda A4** da stampare o salvare in PDF, con il QR per
+  aprirla, temi, competenze, allenamenti, la parte di studio e uno spazio per gli appunti.
+- **Dalla classe al diario**: a fine lezione la Quest mostra un codice anonimo (lezione·livello·percentuale);
+  il docente li raccoglie e il Journal ne fa una tabella, senza un solo nome.
+
+---
+
 ## Come è costruito
 
 Sito statico su GitHub Pages, senza framework né server. Le app restano file singoli; tutto ciò che collega le parti lo
@@ -128,13 +167,14 @@ genera uno script Python, `build.py`:
   sitemap e il blocco SEO della home;
 - **collega** ogni attività alle lezioni di allenamento scelte dal docente (`<meta name="allenamento">`);
 - **genera il Journal** (`journal_build.py`): pagine delle note, copertine controllate e ripulite dai metadati,
-  temi, competenze e collegamenti;
+  temi, competenze, verifiche collegate, storia delle attività, esiti anonimi; e le **schede da stampare**;
 - **genera la Mappa** (`mappa_build.py`): temi, legami, famiglie;
 - **scrive il colophon** di tutte le pagine (licenze, ultimo aggiornamento);
 - **controlla e avvisa**: metadati mancanti, immagini chiare o senza descrizione, librerie senza versione.
 
 Il sito funziona anche **senza rete** per ciò che si è già aperto: lo gestisce un service worker. Le librerie esterne
-sono caricate da CDN con la versione fissa.
+sono caricate da CDN con la versione fissa; il JSX delle app React è tradotto in anticipo (`tools/compila_jsx.mjs`),
+così il browser non deve scaricare un compilatore.
 
 **Test**: Playwright per le pagine del sito (`tests/`), test della Quest con verifica simbolica delle risposte
 (`allenamento/`, `npm test`).
