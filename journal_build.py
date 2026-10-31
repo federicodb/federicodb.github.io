@@ -18,6 +18,7 @@ import unicodedata
 import os
 import re
 import shutil
+import subprocess
 import urllib.parse
 from datetime import datetime
 
@@ -462,6 +463,43 @@ def _blocco_verifiche(verifiche, root):
             f'<ul>{"".join(voci)}</ul></div>\n')
 
 
+# storia di un'attività dai commit: solo modifiche didattiche, in italiano, dell'app stessa (non del sito)
+AMBITI_DI_SITO = {"allenamento", "build", "journal", "mappa", "catalogo", "offline", "readme", "app", "riorganizzazione"}
+PAROLE_TECNICHE = re.compile(r"\b(meta|metadati|database|sitemap|build|catalogo|refactor|test|tailwind|react|babel|jsx|cdn)\b", re.I)
+ITALIANO = re.compile(r"\b(il|la|le|lo|gli|di|del|della|dei|delle|e|per|con|che|più|una|un|nel|nella|nei|al|alla|ai|sul|sulla|sui|a|in|da)\b", re.I)
+INGLESE = re.compile(r"\b(the|and|add|adds|added|with|to|for|of|update|improve)\b", re.I)
+STORIA_MAX = 6
+
+
+def _storia(url):
+    """ [(data, frase)] delle modifiche didattiche dell'app, dalla più recente; [] se git non c'è """
+    try:
+        out = subprocess.run(["git", "log", "--follow", "--format=%ad|%s", "--date=short", "--", url],
+                             capture_output=True, text=True, timeout=20).stdout
+    except (OSError, subprocess.SubprocessError):
+        return []
+    voci = []
+    for riga in out.splitlines():
+        data, _, msg = riga.partition("|")
+        m = re.match(r"^(feat|fix|style)(?:\(([^)]*)\))?!?:\s*(.+)$", msg)
+        if not m or (m.group(2) or "").lower() in AMBITI_DI_SITO:
+            continue
+        frase = m.group(3).strip()
+        if PAROLE_TECNICHE.search(frase) or INGLESE.search(frase) or not ITALIANO.search(frase):
+            continue
+        voci.append((data, frase[:1].upper() + frase[1:]))
+    return voci[:STORIA_MAX]
+
+
+def _blocco_storia(item, root):
+    voci = _storia(item["url"])
+    if not voci:
+        return ""
+    righe = "".join(f'<li><time datetime="{d}">{_data_it(d)}</time> {html.escape(f)}</li>' for d, f in voci)
+    return (f'            <h2 class="jr-side-title">Come è cambiata: {html.escape(item.get("title", ""))}</h2>\n'
+            f'            <ul class="jr-storia">{righe}</ul>\n')
+
+
 def _chiave(url):
     """ Nome dell'attività nei filtri (?attivita=): il nome del file, senza spazi """
     return _stem(url).replace(" ", "_")
@@ -723,6 +761,7 @@ def build_journal(items, base_url, verifiche=()):
                            '            <h2 id="att">Le attività di cui parla</h2>\n            <ul>'
                            + "".join(_scheda_attivita(it, root) for it in collegate) + "</ul>\n"
                            + _blocco_competenze(n["competenze"], riforma, root)
+                           + _blocco_storia(collegate[0], root)
                            + _blocco_correlate(n["correlate"], root)
                            + "        </aside>\n")
         corpo_pagina = f"""        <p class="jr-back"><a href="../">← Tutte le note</a></p>
