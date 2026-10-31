@@ -4,8 +4,7 @@
 
 🌐 **[federicodb.github.io](https://federicodb.github.io/)** · Prof. Federico De Benedictis
 
-![Codice: MIT](https://img.shields.io/badge/codice-MIT-purple.svg)
-![Contenuti: CC BY-SA 4.0](https://img.shields.io/badge/contenuti-CC%20BY--SA%204.0-lightgrey.svg)
+![Licenza: CC BY-NC-SA 4.0](https://img.shields.io/badge/licenza-CC%20BY--NC--SA%204.0-lightgrey.svg)
 ![Open source](https://img.shields.io/badge/strumenti-open%20source-green.svg)
 
 Orfini Math Lab è un laboratorio artigianale. Le attività nascono in classe, si provano con gli studenti, si correggono e
@@ -29,7 +28,8 @@ a volte si buttano. Il sito raccoglie quello che resta: **41 attività interatti
   usarla: chi risponde a mente prende un bonus, chi la usa non perde niente. Nessun cronometro.
 - **Rispetto per chi impara.** Nessun dato personale degli studenti lascia il loro dispositivo. Nelle foto del diario
   non compaiono volti.
-- **Aperto.** Solo strumenti open source, codice e contenuti liberi di essere ripresi e migliorati.
+- **Aperto, non commerciale.** Solo strumenti open source; codice e contenuti si possono riprendere e migliorare,
+  ma nessuno può guadagnarci senza il permesso dell'autore.
 
 ---
 
@@ -198,13 +198,18 @@ python3 -m http.server 8080   # anteprima su http://localhost:8080/
 
 ---
 
-## Licenze
+## Licenza
 
-- **Codice** (app, script, build): [MIT](LICENSE).
-- **Contenuti** (testi, note, spiegazioni, schede, verifiche, immagini):
-  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.it), vedi [LICENSE-CONTENUTI](LICENSE-CONTENUTI).
-  Si possono riusare anche in classe, citando l'autore e condividendo alle stesse condizioni.
-- Le librerie di terzi restano sotto le loro licenze.
+Tutto il progetto, **codice e contenuti**, è distribuito con licenza
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it) (vedi [LICENSE](LICENSE)):
+
+- si può copiare, modificare e usare liberamente in classe e nella formazione, **citando l'autore**;
+- **non si può usare a scopo di lucro** (vendita, pubblicazioni e corsi a pagamento, prodotti editoriali) senza
+  il permesso scritto dell'autore, che si può chiedere e concedere caso per caso;
+- chi trasforma il materiale lo condivide con la stessa licenza.
+
+Le librerie di terzi restano sotto le loro licenze. Le versioni pubblicate prima del 31 ottobre 2026 erano dichiarate
+con licenza MIT.
 
 ---
 

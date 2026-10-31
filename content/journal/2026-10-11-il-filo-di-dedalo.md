@@ -21,21 +21,21 @@ Si può guardare la mappa dall'alto, in assonometria, oppure entrare **in prima 
 
 I sigilli chiedono calcoli che si fanno a mente, se si conoscono le scorciatoie:
 
-$$15\\% \\text{ di } 80 = 10\\% + 5\\% = 8 + 4 = 12 \\qquad 3 : 4 = x : 20 \\Rightarrow x = 15$$
+$$15\% \text{ di } 80 = 10\% + 5\% = 8 + 4 = 12 \qquad 3 : 4 = x : 20 \Rightarrow x = 15$$
 
 E c'è una regola aurea: **il filo più corto vale di più**. Per vincere non basta uscire dal labirinto: bisogna scegliere la strada migliore.
 
 ## Per prepararti alla verifica
 
 - Prima di aprire un sigillo, prova a stimare il risultato: "più o meno di metà?", "più o meno di 10?".
-- Da sapere: percentuali come frazioni ($25\\% = \\dfrac{1}{4}$), proporzioni con il prodotto dei medi e degli estremi, frazioni equivalenti.
+- Da sapere: percentuali come frazioni ($25\% = \dfrac{1}{4}$), proporzioni con il prodotto dei medi e degli estremi, frazioni equivalenti.
 - **Attenzione**: nella caccia all'errore leggi tutto il passaggio, non solo il risultato. Spesso l'errore sta in un segno o in una precedenza delle operazioni.
 
-**Prova tu.** Quanto fa il $20\\%$ di $45$? E se $2 : 5 = 6 : x$, quanto vale $x$?
+**Prova tu.** Quanto fa il $20\%$ di $45$? E se $2 : 5 = 6 : x$, quanto vale $x$?
 
 <details markdown="1"><summary>Soluzione</summary>
 
-$10\\%$ di $45$ è $4{,}5$, quindi il $20\\%$ è $9$. Nella proporzione $2\\cdot x = 5 \\cdot 6 = 30$, quindi $x = 15$.
+$10\%$ di $45$ è $4{,}5$, quindi il $20\%$ è $9$. Nella proporzione $2\cdot x = 5 \cdot 6 = 30$, quindi $x = 15$.
 
 </details>
 

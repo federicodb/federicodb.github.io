@@ -45,6 +45,10 @@ test.describe('Journal', () => {
       await expect(page.locator('.jr-meta time')).toHaveAttribute('datetime', /^\d{4}-\d{2}-\d{2}$/);
       // nessuna formula lasciata come testo grezzo: ogni $...$ diventa KaTeX
       await page.waitForFunction(() => document.querySelectorAll('.jr-body .katex').length > 0 || !/\$/.test(document.querySelector('.jr-body').textContent));
+      // nessun backslash raddoppiato (KaTeX lo leggerebbe come "a capo": \\text diventa a capo + "text")
+      const tex = await page.locator('.jr annotation[encoding="application/x-tex"]').allTextContents();
+      for (const t of tex) expect(t, 'formula con backslash doppio').not.toMatch(/\\\\[a-zA-Z%]/);
+      expect(await page.locator('.katex-error').count(), 'formule che KaTeX non riesce a leggere').toBe(0);
       // ogni link interno (app, spiegazione, Quest, miniature) risponde
       const link = await page.locator('.jr a[href], .jr img[src]').evaluateAll(els => els
         .map(e => e.getAttribute('href') || e.getAttribute('src'))
@@ -90,6 +94,24 @@ test.describe('Journal: collegamenti generati dal build', () => {
       }
       await expect(page.locator('.jr-colophon a[href^="https://github.com/"]').first()).toBeVisible();
     });
+  }
+});
+
+test('schede da stampare: formule lette da KaTeX, figura vettoriale, al massimo due pagine', async ({ page }) => {
+  test.setTimeout(300000);
+  const schede = fs.readdirSync(path.join(ROOT, 'schede')).filter((f) => f.endsWith('.html'));
+  expect(schede.length).toBeGreaterThan(30);
+  for (const f of schede) {
+    await page.goto(`/schede/${f}`);
+    await page.waitForFunction(() => window.renderMathInElement !== undefined); // auto-render caricato
+    await page.waitForTimeout(150);
+    for (const t of await page.locator('annotation[encoding="application/x-tex"]').allTextContents()) {
+      expect(t, `${f}: formula con backslash doppio`).not.toMatch(/\\\\[a-zA-Z%]/);
+    }
+    expect(await page.locator('.katex-error').count(), `${f}: formule illeggibili`).toBe(0);
+    await expect(page.locator('.sc-figura > svg.sc-fig'), `${f}: figura`).toHaveCount(1);
+    const pdf = await page.pdf({ format: 'A4', printBackground: true });
+    expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length, `${f}: pagine`).toBeLessThanOrEqual(2);
   }
 });
 

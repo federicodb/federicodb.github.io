@@ -20,9 +20,9 @@ Si può esportare in SVG e in G-code, e i solidi anche per OpenSCAD.
 
 ## L'idea matematica
 
-Ogni tratto è una sequenza di punti nel **piano cartesiano**, in millimetri. `G1 X40 Y25` vuol dire: porta la penna nel punto $(40;\\ 25)$. Il disegno viene ingrandito o rimpicciolito per stare nell'area utile: è una **proporzione**.
+Ogni tratto è una sequenza di punti nel **piano cartesiano**, in millimetri. `G1 X40 Y25` vuol dire: porta la penna nel punto $(40;\ 25)$. Il disegno viene ingrandito o rimpicciolito per stare nell'area utile: è una **proporzione**.
 
-La spirale della copertina è costruita su quadrati di lato $1, 1, 2, 3, 5, 8$, con un quarto di cerchio in ognuno: la stessa idea della nota su $\\varphi$, ma tracciata davvero con la penna. E prima di stampare l'app riordina i tratti per fare meno strada a penna alzata: un problema di ottimizzazione.
+La spirale della copertina è costruita su quadrati di lato $1, 1, 2, 3, 5, 8$, con un quarto di cerchio in ognuno: la stessa idea della nota su $\varphi$, ma tracciata davvero con la penna. E prima di stampare l'app riordina i tratti per fare meno strada a penna alzata: un problema di ottimizzazione.
 
 ## Per prepararti alla verifica
 
@@ -34,7 +34,7 @@ La spirale della copertina è costruita su quadrati di lato $1, 1, 2, 3, 5, 8$, 
 
 <details markdown="1"><summary>Soluzione</summary>
 
-$120 : 50 = 2{,}4$. Il punto va a $10 \\cdot 2{,}4 = 24$ mm.
+$120 : 50 = 2{,}4$. Il punto va a $10 \cdot 2{,}4 = 24$ mm.
 
 </details>
 

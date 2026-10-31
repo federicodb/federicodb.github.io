@@ -140,3 +140,20 @@ Ogni voce: data, decisione, motivo.
 - **Offline**: `sw.js` per il sito (prima la rete, cache per le librerie con versione), registrato dal colophon e da `orfini-shared.js`. La Quest tiene il suo service worker.
 - **Babel tradotto in anticipo: sospeso.** Eseguire Babel scaricato dalla rete richiede un permesso del docente (installazione di `@babel/standalone@8.0.10` come dipendenza di sviluppo).
 - **README** riscritto: approccio, sezioni del sito, attività per area, Quest, Journal, Mappa, rubrica delle competenze, come è costruito, licenze.
+
+## 2026-10-31 (6) — Note complete, verifiche, schede vettoriali, licenza non commerciale
+
+- **Journal**:
+  - 12 note pubblicabili. Per i docenti, "Come usarla in classe" e "A cosa fare attenzione", senza risultati di classe inventati. Per gli studenti, "Per prepararti alla verifica" con esercizio e soluzione a scomparsa, e "Mettiti alla prova su carta" con le verifiche dell'Archivio sugli stessi temi (titoli senza la classe).
+  - Storia dell'attività dai commit didattici in italiano. Tabella degli esiti anonimi della Quest (`content/journal/esiti/`, non pubblicata).
+  - Il build avvisa per le formule con backslash raddoppiato (KaTeX le legge come "a capo": errore trovato dal docente in tre note).
+- **Quest**: a fine lezione un codice anonimo `lezione·livello·percentuale`. Test della Quest passati, compresi quelli di impaginazione.
+- **Competenze**: attività e verifiche per ogni voce; "Quadro d'insieme" della copertura della Riforma (22 voci su 29).
+- **Schede da stampare** (`schede/`, 41), al massimo due pagine:
+  - niente screenshot: figura vettoriale coerente con spiegazione ed esercizi (`schede_figure.py`), con didascalia che la lega al ripasso;
+  - ripasso, regole, competenze, allenamenti, due esercizi con righe per scrivere, verifiche collegate, soluzioni capovolte;
+  - contenuti modificabili in `content/schede/<app>.md`.
+  - Le figure non devono svelare le soluzioni: corretti sei casi (Fibonacci, Tartaglia, scala logaritmica, frazioni, Pitagora, plotter) e un esercizio di Math Bubble.
+- **JSX tradotto in anticipo** nelle 6 app React (`tools/compila_jsx.mjs`, Babel 8.0.10 come dipendenza di sviluppo): schermate identiche, il codice parte a pagina caricata come prima.
+- **Licenza**: tutto il progetto, codice e contenuti, CC BY-NC-SA 4.0 (`LICENSE` con il testo legale ufficiale). Volontà del docente: nessuno, editori compresi, guadagna dal suo lavoro senza permesso. Le versioni pubblicate prima del 31 ottobre erano dichiarate MIT. Il colophon dice "progetto aperto, uso non commerciale".
+- **Skill `nota-journal`** (livello utente) per la bozza di nota a fine sessione.

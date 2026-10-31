@@ -16,7 +16,7 @@ h1 { font: 800 21pt/1.12 Syne, sans-serif; margin: 2mm 0 3mm; }
 .sc-thumb { display: block; width: 100%; height: 42mm; object-fit: cover; border-radius: 3mm; margin: 6mm 0 2mm; border: 1px solid var(--line); }
 .sc-griglia { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 8mm; margin-top: 4mm; }
 .sc-griglia section { break-inside: avoid; }
-.sc-studio, .sc-appunti { grid-column: 1 / -1; }
+.sc-esercizi, .sc-largo { grid-column: 1 / -1; }
 h2 { font: 700 11.5pt Syne, sans-serif; color: var(--accent); margin-bottom: 2mm; border-bottom: 1px solid var(--line); padding-bottom: 1mm; }
 .sc-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 2mm; }
 .sc-chips li { border: 1px solid var(--line); border-radius: 99px; padding: 0.5mm 3mm; font-size: 9pt; }
@@ -31,13 +31,24 @@ h2 { font: 700 11.5pt Syne, sans-serif; color: var(--accent); margin-bottom: 2mm
 .sc-piede { margin-top: 6mm; padding-top: 2mm; border-top: 1px solid var(--line); font-size: 7.5pt; color: var(--muted); word-break: break-all; }
 @media print {
     body { background: #fff; }
-    /* con la parte di studio la pagina è piena: l'immagine resta solo a schermo */
-    .sc-foglio:has(.sc-studio) .sc-thumb { display: none; }
-    .sc-foglio:has(.sc-studio) .sc-appunti div { height: 18mm; }
+
     .sc-bar { display: none; }
     .sc-foglio { box-shadow: none; margin: 0; padding: 0; min-height: 0; max-width: none; }
 }
 @media (max-width: 640px) {
     .sc-foglio { padding: 16px; min-height: 0; }
     .sc-testa, .sc-griglia { grid-template-columns: 1fr; }
+}
+
+.sc-figura { margin: 5mm 0 2mm; break-inside: avoid; }
+.sc-fig { display: block; width: 100%; max-height: 72mm; }
+.sc-figura figcaption { font-size: 9pt; color: var(--muted); margin-top: 2mm; }
+.sc-griglia section ul { padding-left: 4.5mm; }
+.sc-griglia section li + li { margin-top: 1mm; }
+.sc-griglia section p + p, .sc-griglia section p + h2 { margin-top: 2mm; }
+.sc-esercizi ol { padding-left: 5mm; }
+.sc-esercizi li { margin-top: 2mm; }
+.sc-righe { height: 30mm; margin-top: 3mm; background: repeating-linear-gradient(transparent 0 7.4mm, var(--line) 7.4mm 7.6mm); }
+@media print {
+    .sc-foglio:has(.sc-esercizi) .sc-righe { height: 36mm; }
 }

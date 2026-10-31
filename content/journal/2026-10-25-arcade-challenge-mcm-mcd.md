@@ -19,11 +19,11 @@ Si risponde con un tastierino sempre in vista, anche sul telefono, e il pulsante
 
 ## L'idea matematica
 
-Due luci lampeggiano ogni $6$ e ogni $8$ secondi: si riaccendono insieme dopo $\\text{mcm}(6, 8) = 24$ secondi. Una teglia di $40 \\times 20$ cm si taglia in quadrati di lato $\\text{MCD}(40, 20) = 20$ cm.
+Due luci lampeggiano ogni $6$ e ogni $8$ secondi: si riaccendono insieme dopo $\text{mcm}(6, 8) = 24$ secondi. Una teglia di $40 \times 20$ cm si taglia in quadrati di lato $\text{MCD}(40, 20) = 20$ cm.
 
 Entrambi nascono dai fattori primi:
 
-$$360 = 2^3 \\cdot 3^2 \\cdot 5$$
+$$360 = 2^3 \cdot 3^2 \cdot 5$$
 
 ## Per prepararti alla verifica
 
@@ -31,11 +31,11 @@ $$360 = 2^3 \\cdot 3^2 \\cdot 5$$
 - Da sapere: scomporre in fattori primi, poi MCD = fattori comuni con l'esponente più piccolo, mcm = tutti i fattori con l'esponente più grande.
 - **Attenzione**: il mcm non è mai più piccolo del numero più grande; il MCD non è mai più grande del più piccolo. È un controllo veloce sul risultato.
 
-**Prova tu.** Calcola $\\text{MCD}(12, 18)$ e $\\text{mcm}(12, 18)$.
+**Prova tu.** Calcola $\text{MCD}(12, 18)$ e $\text{mcm}(12, 18)$.
 
 <details markdown="1"><summary>Soluzione</summary>
 
-$12 = 2^2 \\cdot 3$ e $18 = 2 \\cdot 3^2$. $\\text{MCD} = 2 \\cdot 3 = 6$, $\\text{mcm} = 2^2 \\cdot 3^2 = 36$. Controllo: $6 \\cdot 36 = 216 = 12 \\cdot 18$.
+$12 = 2^2 \cdot 3$ e $18 = 2 \cdot 3^2$. $\text{MCD} = 2 \cdot 3 = 6$, $\text{mcm} = 2^2 \cdot 3^2 = 36$. Controllo: $6 \cdot 36 = 216 = 12 \cdot 18$.
 
 </details>
 

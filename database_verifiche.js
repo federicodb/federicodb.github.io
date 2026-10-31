@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 11:17:48
+   Data: 2026-10-31 15:55:12
 */
 
 const db_verifiche = [

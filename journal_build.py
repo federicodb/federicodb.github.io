@@ -101,11 +101,17 @@ def _leggi_nota(path):
     return meta
 
 
+AVVISI_FORMULE = []  # formule sospette trovate durante il build (vedi _markdown_con_formule)
+
+
 def _markdown_con_formule(corpo):
     """ Protegge $...$ e $$...$$ dal Markdown; KaTeX li rende nel browser come nel resto del sito """
     formule = []
 
     def tieni(m):
+        # "\\text", "\\frac"... è quasi sempre un backslash raddoppiato per errore: KaTeX lo legge come "a capo"
+        if re.search(r"\\\\[a-zA-Z%]", m.group(0)):
+            AVVISI_FORMULE.append(m.group(0)[:60])
         formule.append(m.group(0))
         return f"\x00{len(formule) - 1}\x00"
 
@@ -234,13 +240,12 @@ def _copertina(n, fonti, avvisi):
 
 
 GITHUB_SVG = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
-CODICE_SVG = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" '
-              'stroke-linecap="round" stroke-linejoin="round" d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>')
-# segni CC, BY e SA disegnati a tratto (cerchio con due "c", persona, freccia circolare): sobri e monocromi
-CC_SVG = ('<svg viewBox="0 0 64 22" aria-hidden="true" class="jr-cc"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">'
+# segni CC, BY, NC e SA disegnati a tratto (due "c", persona, euro barrato, freccia circolare): sobri e monocromi
+CC_SVG = ('<svg viewBox="0 0 86 22" aria-hidden="true" class="jr-cc"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">'
           '<circle cx="11" cy="11" r="9.2"/><path d="M9.6 8.4a3.2 3.2 0 1 0 0 5.2M15.4 8.4a3.2 3.2 0 1 0 0 5.2"/>'
           '<circle cx="32" cy="11" r="9.2"/><circle cx="32" cy="6.2" r="1.4" fill="currentColor" stroke="none"/><path d="M29.4 9.2h5.2v4.6h-1.6v4.2h-2v-4.2h-1.6z" fill="currentColor" stroke="none"/>'
-          '<circle cx="53" cy="11" r="9.2"/><path d="M57.2 11a4.2 4.2 0 1 1-1.3-3"/><path d="M56.3 5.4l-.3 2.8-2.8-.3"/></g></svg>')
+          '<circle cx="53" cy="11" r="9.2"/><path d="M56.4 7.6a3.6 3.6 0 1 0 0 6.8M48.8 10h5.4M48.8 12.4h5.4M46.6 4.6l12.8 12.8"/>'
+          '<circle cx="74" cy="11" r="9.2"/><path d="M78.2 11a4.2 4.2 0 1 1-1.3-3"/><path d="M77.3 5.4l-.3 2.8-2.8-.3"/></g></svg>')
 
 
 def colophon(root):
@@ -252,11 +257,11 @@ def colophon(root):
     return f"""            <div class="jr-colophon">
                 <p><strong>Un diario di bordo.</strong> Orfini Math Lab raccoglie una sperimentazione didattica di matematica
                     all'Istituto Professionale "E. Orfini" di Foligno: attività costruite, provate in classe, corrette.{agg}</p>
-                <p>Fatto con strumenti open source, ed è a sua volta un progetto open source: il codice è pubblico su GitHub.</p>
+                <p>Fatto con strumenti open source, ed è a sua volta un progetto aperto: il codice è pubblico su GitHub.
+                    Si può riusare e adattare citando l'autore, mai a scopo di lucro senza il suo permesso.</p>
                 <ul class="jr-badges" aria-label="Progetto aperto e licenze">
                     <li><a href="{REPO_URL}" target="_blank" rel="noopener">{GITHUB_SVG}Sorgenti su GitHub</a></li>
-                    <li><a href="{REPO_URL}/blob/master/LICENSE" target="_blank" rel="noopener" title="Il codice delle app e del sito">{CODICE_SVG}Codice: licenza MIT</a></li>
-                    <li><a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" target="_blank" rel="license noopener" title="Testi, note, schede e immagini">{CC_SVG}Contenuti: CC BY-SA 4.0</a></li>
+                    <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it" target="_blank" rel="license noopener" title="Codice e contenuti: attribuzione, non commerciale, condividi allo stesso modo">{CC_SVG}CC BY-NC-SA 4.0 · uso non commerciale</a></li>
                 </ul>
             </div>
             <script src="{root}content/assets/js/offline.js" defer></script>"""
@@ -503,7 +508,7 @@ def _blocco_storia(item, root):
 SCHEDE_DIR = "schede"
 
 
-def _sezione_studenti(corpo_md):
+def _sezione_studenti(corpo_md):  # (non più usata dalle schede, che hanno content/schede/)
     """ (punti e prova in HTML, soluzione in HTML) dalla sezione "Per prepararti alla verifica" di una nota """
     m = re.search(r"## Per prepararti alla verifica\s*\n(.*?)(?=\n## |\Z)", corpo_md, re.S)
     if not m:
@@ -514,9 +519,39 @@ def _sezione_studenti(corpo_md):
     return _markdown_con_formule(testo), (_markdown_con_formule(sol.group(1)) if sol else "")
 
 
+SCHEDE_SRC = os.path.join("content", "schede")
+
+
+def _leggi_scheda(chiave):
+    """ content/schede/<chiave>.md: figura, didascalia e sezioni (Ripasso, Regole, Esercizi, Soluzioni) in HTML """
+    path = os.path.join(SCHEDE_SRC, chiave + ".md")
+    if not os.path.exists(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        testo = f.read()
+    meta, corpo = {}, testo
+    m = re.match(r"^---\s*\n(.*?)\n---\s*\n?(.*)$", testo, re.S)
+    if m:
+        corpo = m.group(2)
+        for riga in m.group(1).splitlines():
+            if ":" in riga:
+                k, v = riga.split(":", 1)
+                meta[k.strip().lower()] = v.strip()
+    sezioni = {}
+    for titolo, contenuto in re.findall(r"^## (.+?)\n(.*?)(?=^## |\Z)", corpo, re.S | re.M):
+        sezioni[titolo.strip().lower()] = _markdown_con_formule(contenuto.strip())
+    meta["sezioni"] = sezioni
+    return meta
+
+
 def _scrivi_schede(items, note, verifiche, riforma, base_url):
-    """ schede/<app>.html: una pagina A4 da stampare o salvare in PDF per ogni attività (QR, temi, competenze,
-        allenamenti, studio per la verifica, verifiche collegate, spazio per gli appunti) """
+    """ schede/<app>.html: una o due pagine A4 da stampare o salvare in PDF per ogni attività. Il contenuto (ripasso,
+        regole, esercizi, soluzioni, figura) sta in content/schede/<app>.md; la figura vettoriale la disegna
+        schede_figure.py. In più: QR verso l'app, competenze, allenamenti, verifiche collegate. """
+    try:
+        import schede_figure
+    except ImportError:
+        schede_figure = None
     if os.path.exists(SCHEDE_DIR):
         if not os.path.exists(os.path.join(SCHEDE_DIR, MARKER)):
             print(f"  ⚠️ Schede: '{SCHEDE_DIR}/' esiste ma non è stata generata dal build, non la tocco.")
@@ -524,43 +559,37 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
         shutil.rmtree(SCHEDE_DIR)
     os.makedirs(SCHEDE_DIR)
     open(os.path.join(SCHEDE_DIR, MARKER), "w").close()
-    nota_di = {}
-    for n in note:
-        if n.get("collegate"):
-            nota_di.setdefault(n["collegate"][0]["url"], n)
     root = "../"
-    conta = 0
+    conta, senza = 0, []
     for it in items:
         if it.get("type") != "app":
             continue
+        chiave = _chiave(it["url"])
+        sc = _leggi_scheda(chiave)
+        if not sc:
+            senza.append(chiave)
+            continue
+        sez = sc["sezioni"]
         titolo = html.escape(it.get("title", ""))
-        temi = "".join(f"<li>{html.escape(_testo_tag(t))}</li>" for t in _tag_tematici(it)[:8])
         codici = [c for c in dict.fromkeys(t.split(":")[0].strip().upper() for t in it.get("tags", [])) if c in riforma]
         comp = "".join(f'<li><b>{c}</b> {html.escape(riforma[c])}</li>' for c in codici)
         allen = "".join(f'<li>{html.escape(a["titolo"])}</li>' for a in it.get("allenamento", []))
-        n = nota_di.get(it["url"])
-        studio, soluzione = _sezione_studenti(n["corpo"]) if n else ("", "")
+        temi = ", ".join(_testo_tag(t) for t in _tag_tematici(it)[:6])
         verif = "".join(f'<li>{html.escape(_nome_verifica(v))}</li>' for v in _verifiche_collegate([it], verifiche))
         url_app = base_url + urllib.parse.quote(it["url"], safe="/")
-        # immagine: la copertina della nota (un momento di gioco scelto), altrimenti la miniatura del catalogo
-        img = (n.get("img_rel") if n else "") or it.get("thumbnail")
-        thumb = f'<img class="sc-thumb" src="{_href(root, img)}" alt="">' if img else ""
-        blocchi = []
-        if temi:
-            blocchi.append(f'<section><h2>Temi</h2><ul class="sc-chips">{temi}</ul></section>')
-        if comp:
-            blocchi.append(f'<section><h2>Competenze (Riforma 2017)</h2><ul class="sc-list">{comp}</ul></section>')
-        if allen:
-            blocchi.append(f'<section><h2>Allenati</h2><p>Su federicodb.github.io/allenamento:</p><ul class="sc-list">{allen}</ul></section>')
-        if verif:
-            blocchi.append(f'<section><h2>Mettiti alla prova su carta</h2><p>Nell\'Archivio delle verifiche:</p><ul class="sc-list">{verif}</ul></section>')
-        if studio:
-            blocchi.append(f'<section class="sc-studio"><h2>Per prepararti alla verifica</h2>{studio}</section>')
-        blocchi.append('<section class="sc-appunti"><h2>Appunti</h2><div></div></section>')
-        sol = f'<p class="sc-soluzione"><b>Soluzione.</b> {re.sub(r"</?p>", " ", soluzione).strip()}</p>' if soluzione else ""
+        fig = ""
+        fn = schede_figure.FIGURE.get(sc.get("figura", "")) if schede_figure else None
+        if fn:
+            didasc = _markdown_con_formule(sc.get("didascalia", "")).replace("<p>", "").replace("</p>", "")
+            fig = f'<figure class="sc-figura">{fn()}<figcaption>{didasc}</figcaption></figure>'
+        else:
+            print(f"  ⚠️ Schede: {chiave}: figura '{sc.get('figura', '')}' sconosciuta")
+        esercizi = sez.get("esercizi", "")
+        righe_scrittura = '<div class="sc-righe"></div>'
+        soluzioni = re.sub(r"</?(ol|li|p)>", " ", sez.get("soluzioni", "")).strip()
         pagina = f"""<!DOCTYPE html>
 <html lang="it">
-<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare l'attività o la nota, non questo file -->
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare content/schede/{chiave}.md, non questo file -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -588,24 +617,31 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
             </div>
             <figure class="sc-qr"><div id="qr" data-url="{html.escape(url_app)}"></div><figcaption>Inquadra per aprire l'attività</figcaption></figure>
         </header>
-        {thumb}
+        {fig}
         <div class="sc-griglia">
-            {''.join(blocchi)}
+            <section><h2>Ripasso</h2>{sez.get("ripasso", "")}</section>
+            <section><h2>Regole</h2>{sez.get("regole", "")}</section>
+            {f'<section><h2>Competenze (Riforma 2017)</h2><ul class="sc-list">{comp}</ul></section>' if comp else ''}
+            <section>{f'<h2>Allenati</h2><p>Su federicodb.github.io/allenamento:</p><ul class="sc-list">{allen}</ul>' if allen else ''}{f'<h2>Temi</h2><p>{html.escape(temi)}</p>' if temi else ''}</section>
+            <section class="sc-esercizi"><h2>Esercizi</h2>{esercizi}{righe_scrittura}</section>
+            {f'<section class="sc-largo"><h2>Mettiti alla prova su carta</h2><p>Verifiche nell&#39;Archivio sugli stessi temi:</p><ul class="sc-list">{verif}</ul></section>' if verif else ''}
         </div>
-        {sol}
-        <footer class="sc-piede">{html.escape(url_app)} · Contenuti CC BY-SA 4.0 · Prof. Federico De Benedictis</footer>
+        {f'<p class="sc-soluzione"><b>Soluzioni.</b> {soluzioni}</p>' if soluzioni else ''}
+        <footer class="sc-piede">{html.escape(url_app)} · Contenuti CC BY-NC-SA 4.0 · Prof. Federico De Benedictis</footer>
     </main>
     <script>
         var q = document.getElementById('qr');
-        if (window.QRCode) new QRCode(q, {{ text: q.dataset.url, width: 112, height: 112, correctLevel: QRCode.CorrectLevel.M }});
+        if (window.QRCode) new QRCode(q, {{ text: q.dataset.url, width: 104, height: 104, correctLevel: QRCode.CorrectLevel.M }});
     </script>
     <script src="{root}content/assets/js/offline.js" defer></script>
 </body>
 </html>
 """
-        with open(os.path.join(SCHEDE_DIR, _chiave(it["url"]) + ".html"), "w", encoding="utf-8") as f:
+        with open(os.path.join(SCHEDE_DIR, chiave + ".html"), "w", encoding="utf-8") as f:
             f.write(pagina)
         conta += 1
+    if senza:
+        print(f"  ⚠️ Schede: manca il contenuto (content/schede/<app>.md) per {len(senza)} attività: {', '.join(senza[:5])}")
     return conta
 
 
@@ -1033,4 +1069,6 @@ def build_journal(items, base_url, verifiche=()):
           f"{sum(len(v) for v in note_per_url.values())} collegamenti ad attività")
     for a in avvisi:
         print(f"  ⚠️ Journal: {a}")
+    for f in dict.fromkeys(AVVISI_FORMULE):
+        print(f"  ⚠️ Formula con backslash doppio (KaTeX lo legge come 'a capo'): {f}")
     return note_per_url, sitemap, ultime
