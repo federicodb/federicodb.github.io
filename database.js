@@ -1,11 +1,11 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 10:13:40
+   Data: 2026-10-31 10:15:30
 */
 
 const db = [
     {
-        "title": "Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola",
+        "title": "Parabola e disequazioni di secondo grado",
         "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
         "tags": [
             "3 MEC",
@@ -25,7 +25,7 @@ const db = [
         "url": "content/apps/parabola e disequazioni di secondo grado maggio 2026.html",
         "type": "app",
         "icon": "🧱",
-        "game_type": "sim",
+        "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp",
         "allenamento": [
             {
@@ -101,6 +101,16 @@ const db = [
                 "titolo": "Rapporto aureo e sezione aurea",
                 "url": "allenamento/#/lezione/rapporto-aureo/1",
                 "mat": [
+                    "MAT_K3",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "fibonacci",
+                "titolo": "Successione di Fibonacci",
+                "url": "allenamento/#/lezione/fibonacci/1",
+                "mat": [
+                    "MAT_K1",
                     "MAT_K3"
                 ]
             }
@@ -268,6 +278,8 @@ const db = [
             "LAB",
             "MAT:MODELLIZZAZIONE",
             "MATEMATICA",
+            "MAT_C1:LINGUAGGIO E METODI DELLA MATEMATICA",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
             "PARTICELLE",
             "PENSIERO COMPUTAZIONALE",
             "SIMULAZIONE"
@@ -278,6 +290,40 @@ const db = [
         "icon": "⚡",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
+        "allenamento": [
+            {
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "calcolo-cosa-resta-costante",
+                "titolo": "Cosa resta costante",
+                "url": "allenamento/#/lezione/calcolo-cosa-resta-costante/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "esponenziali",
+                "titolo": "Esponenziali",
+                "url": "allenamento/#/lezione/esponenziali/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "calcolo-ricarico-e-margine",
+                "titolo": "Guadagni e perdite in percentuale",
+                "url": "allenamento/#/lezione/calcolo-ricarico-e-margine/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            }
+        ],
         "journal": [
             {
                 "titolo": "Snake of Life: un serpente che impara da solo",
@@ -306,6 +352,8 @@ const db = [
             "MACHINE LEARNING",
             "MAT:MODELLIZZAZIONE",
             "MATEMATICA",
+            "MAT_C1:LINGUAGGIO E METODI DELLA MATEMATICA",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
             "MODELLI",
             "PENSIERO COMPUTAZIONALE",
             "RETI NEURALI",
@@ -318,6 +366,40 @@ const db = [
         "icon": "💻",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/snake_conway_self.webp",
+        "allenamento": [
+            {
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "calcolo-cosa-resta-costante",
+                "titolo": "Cosa resta costante",
+                "url": "allenamento/#/lezione/calcolo-cosa-resta-costante/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "esponenziali",
+                "titolo": "Esponenziali",
+                "url": "allenamento/#/lezione/esponenziali/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "calcolo-ricarico-e-margine",
+                "titolo": "Guadagni e perdite in percentuale",
+                "url": "allenamento/#/lezione/calcolo-ricarico-e-margine/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            }
+        ],
         "journal": [
             {
                 "titolo": "Snake of Life: un serpente che impara da solo",
@@ -436,6 +518,10 @@ const db = [
             "MAT:MODELLIZZAZIONE",
             "MAT:PROBLEMSOLVING",
             "MATEMATICA",
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_A4:PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "MISURA",
             "MULTIPLI E SOTTOMULTIPLI",
             "SISTEMA INTERNAZIONALE",
@@ -451,6 +537,42 @@ const db = [
         "icon": "👾",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/arcade_challenge_unita_di_misura.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_A4"
+                ]
+            }
+        ],
         "journal": [
             {
                 "titolo": "Arcade Challenge: le unità di misura in ascensore",
@@ -542,6 +664,9 @@ const db = [
             "MAT:MODELLIZZAZIONE",
             "MAT:PROBLEMSOLVING",
             "MATEMATICA",
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "MCD",
             "MCM",
             "VIDEOGIOCO"
@@ -552,6 +677,42 @@ const db = [
         "icon": "🔢",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "problemi-scelta",
+                "titolo": "Problemi di scelta",
+                "url": "allenamento/#/lezione/problemi-scelta/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "calcolo-lavorare-insieme",
+                "titolo": "Lavorare insieme",
+                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "mat": [
+                    "MAT_C2"
+                ]
+            }
+        ],
         "journal": [
             {
                 "titolo": "Arcade Challenge: le unità di misura in ascensore",
@@ -618,7 +779,17 @@ const db = [
                 "titolo": "Prodotti notevoli",
                 "url": "allenamento/#/lezione/prodotti-notevoli/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A3"
                 ]
             },
             {
@@ -628,22 +799,6 @@ const db = [
                 "mat": [
                     "MAT_K2",
                     "MAT_K3"
-                ]
-            },
-            {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
-                "mat": [
-                    "MAT_K2"
                 ]
             }
         ],
@@ -805,13 +960,18 @@ const db = [
         ]
     },
     {
-        "title": "Math Bubble: La Retta Esplicita | Orfini Math Lab",
+        "title": "Math Bubble: la retta esplicita",
         "excerpt": "Laboratorio interattivo di Geometria Analitica: impara l'equazione della retta y = mx + q calcolando pendenza e quota per colpire ed eliminare tutte le bolle sul piano cartesiano.",
         "tags": [
             "DIDATTICA LABORATORIALE",
             "EQUAZIONE ESPLICITA",
             "GAMIFICATION",
             "MATEMATICA",
+            "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
+            "MAT_K2:FUNZIONI ELEMENTARI",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
             "ORFINI",
             "PENDENZA",
             "PIANO CARTESIANO",
@@ -823,6 +983,44 @@ const db = [
         "icon": "📐",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.webp",
+        "allenamento": [
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            }
+        ],
         "journal": [
             {
                 "titolo": "Math Bubble: la retta che fa scoppiare le bolle",
@@ -1112,19 +1310,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/fibonacci_anim.webp",
         "allenamento": [
             {
-                "id": "rapporto-aureo",
-                "titolo": "Rapporto aureo e sezione aurea",
-                "url": "allenamento/#/lezione/rapporto-aureo/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
                 "id": "fibonacci",
                 "titolo": "Successione di Fibonacci",
                 "url": "allenamento/#/lezione/fibonacci/1",
                 "mat": [
+                    "MAT_K1",
                     "MAT_K3"
+                ]
+            },
+            {
+                "id": "rapporto-aureo",
+                "titolo": "Rapporto aureo e sezione aurea",
+                "url": "allenamento/#/lezione/rapporto-aureo/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_C4"
                 ]
             }
         ],
@@ -1149,6 +1349,11 @@ const db = [
             "LEGGE DI KLEIBER",
             "LEGGE DI MOORE",
             "MATEMATICA",
+            "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
+            "MAT_C3:DATI E STRUMENTI STATISTICI",
+            "MAT_K2:FUNZIONI ELEMENTARI",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "SCALE LOGARITMICHE"
         ],
         "date": "2026-05-22",
@@ -1156,10 +1361,47 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/scale_logaritmiche.webp"
+        "thumbnail": "content/assets/thumbnails/scale_logaritmiche.webp",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            }
+        ]
     },
     {
-        "title": "Random Walk 3D | Hypercaos & Chromatic Memory",
+        "title": "Random Walk 3D: Hypercaos & Chromatic Memory",
         "excerpt": "Simulatore interattivo di passeggiate aleatorie in 3D. Esplora il caos deterministico e la geometria frattale (Koch, Hilbert, Peano) attraverso algoritmi generativi e morphing cromatico in tempo reale.",
         "tags": [
             "3D",
@@ -2238,6 +2480,9 @@ const db = [
             "CALCOLO MENTALE",
             "GAMIFICATION",
             "MATEMATICA",
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "PERCENTUALI"
         ],
         "date": "2025-12-10",
@@ -2245,7 +2490,45 @@ const db = [
         "type": "app",
         "icon": "🍰",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/percentuali_001.webp"
+        "thumbnail": "content/assets/thumbnails/percentuali_001.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_C2",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-percentuali-scambiate",
+                "titolo": "Percentuali che si scambiano",
+                "url": "allenamento/#/lezione/calcolo-percentuali-scambiate/1",
+                "mat": [
+                    "MAT_C2",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
@@ -2744,6 +3027,11 @@ const db = [
             "LAB",
             "MAT:ANALISI",
             "MAT:MODELLIZZAZIONE",
+            "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
+            "MAT_K2:FUNZIONI ELEMENTARI",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "ONDE"
         ],
         "date": "2025-12-08",
@@ -2751,7 +3039,44 @@ const db = [
         "type": "app",
         "icon": "⚡",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.webp"
+        "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.webp",
+        "allenamento": [
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_C3"
+                ]
+            }
+        ]
     },
     {
         "title": "Parabola Challenge: Disequazioni",
@@ -2828,6 +3153,8 @@ const db = [
             "MAT:CALCOLO",
             "MAT:MODELLIZZAZIONE",
             "MATEMATICA",
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "NUMERI RAZIONALI"
         ],
         "date": "2025-12-08",
@@ -2835,7 +3162,45 @@ const db = [
         "type": "app",
         "icon": "🍰",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/fractions_lab_001.webp"
+        "thumbnail": "content/assets/thumbnails/fractions_lab_001.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "notazione-scientifica",
+                "titolo": "Notazione scientifica",
+                "url": "allenamento/#/lezione/notazione-scientifica/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            }
+        ]
     },
     {
         "title": "Math Underground: Mappa per la classificazione di Funzioni",
@@ -2971,6 +3336,8 @@ const db = [
             "MAT:CALCOLO",
             "MAT:PROBLEMSOLVING",
             "MATEMATICA",
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "NUMERI INTERI",
             "POTENZE",
             "Z"
@@ -2980,6 +3347,43 @@ const db = [
         "type": "app",
         "icon": "🔢",
         "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/memory_1el_numeri_004.webp"
+        "thumbnail": "content/assets/thumbnails/memory_1el_numeri_004.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "potenze",
+                "titolo": "Proprietà delle potenze",
+                "url": "allenamento/#/lezione/potenze/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ]
     }
 ];

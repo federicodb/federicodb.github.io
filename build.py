@@ -66,6 +66,20 @@ def _radici(testo):
 
 
 def link_allenamento(meta, catalogo):
+    """ Se l'app dichiara <meta name="allenamento">, valgono le scelte del docente (nell'ordine dato).
+        Altrimenti: """
+    scelti = meta.pop("allenamento_scelto", None)
+    if scelti:
+        per_id = {a["id"]: a for a in catalogo}
+        for x in scelti:
+            if x not in per_id:
+                print(f"  ⚠️ Allenamento '{x}' non esiste nella Quest ({meta.get('title', '')})")
+        return [{"id": a["id"], "titolo": a["titolo"], "url": f"allenamento/#/lezione/{a['id']}/1",
+                 "mat": [c for c in a.get("mat", [])]} for a in (per_id.get(x) for x in scelti) if a]
+    return _link_allenamento_auto(meta, catalogo)
+
+
+def _link_allenamento_auto(meta, catalogo):
     """ Attività della Quest con codici MAT in comune con il contenuto, ordinate per: argomento in comune
         (titolo dell'attività nei tag/titolo del contenuto), numero di codici condivisi, anni delle classi
         del contenuto (tag "1 EL", "2 MA"...). """
@@ -207,12 +221,30 @@ def extract_html_meta(file_path):
             if ai_topics: tags = list(set(tags + ai_topics))
             if ai_class: tags.append(ai_class)
 
-        return {
+        # 5. Allenamenti scelti dal docente: <meta name="allenamento" content="fibonacci, rapporto-aureo">
+        all_match = re.search(r'<meta\s+name=["\']allenamento["\']\s+content=(["\'])(.*?)\1', content, re.IGNORECASE)
+        scelti = [a.strip() for a in all_match.group(2).split(",") if a.strip()] if all_match else []
+
+        # 6. Fragilità da segnalare (non si correggono qui: vedi docs/AUDIT.md)
+        fragile = []
+        if re.search(r'src=["\']https://cdn\.tailwindcss\.com/?["\']', content):
+            fragile.append("Tailwind dalla rete senza versione")
+        if re.search(r'react(-dom)?(@[\d.]+)?/umd/react(-dom)?\.development\.js', content):
+            fragile.append("React in modalità sviluppo")
+        if "babel" in content.lower() and re.search(r'@babel/standalone|babel\.min\.js', content):
+            fragile.append("Babel nel browser")
+
+        meta = {
             "title": title,
             "excerpt": description,
             "tags": tags,
             "date": date_str
         }
+        if scelti:
+            meta["allenamento_scelto"] = scelti
+        if fragile:
+            meta["_fragile"] = fragile
+        return meta
     except Exception as e:
         print(f"  ⚠️ Errore parsing HTML {file_path}: {e}")
         return None
@@ -627,6 +659,7 @@ def map_topics_to_riforma(topics):
 def main():
     items = []
     allenamento_catalogo = load_allenamento_catalogo()
+    avvisi_metadati = []
     print(f"🔄 Scansione '{CONTENT_DIR}' e altre cartelle in corso...")
 
     # Cartelle da scansionare
@@ -944,8 +977,23 @@ def main():
                     else:
                         meta.pop("allenamento", None)
 
+                    fragile = meta.pop("_fragile", [])
+                    if content_type == "app":
+                        problemi = list(fragile)
+                        if not any(re.match(r"^MAT_[KAC]\d", t) for t in meta.get("tags", [])):
+                            problemi.append("nessun codice MAT nelle keywords")
+                        if "|" in meta.get("title", "") or len(meta.get("title", "")) < 8:
+                            problemi.append(f"titolo da rivedere: \"{meta.get('title', '')}\"")
+                        if problemi:
+                            avvisi_metadati.append(f"{filename}: " + "; ".join(problemi))
+
                     items.append(meta)
                     print(f"  ✅ Indicizzato [{content_type}]: {meta['title']}")
+
+    if avvisi_metadati:
+        print(f"\n🔎 Metadati da rivedere ({len(avvisi_metadati)} app):")
+        for a in avvisi_metadati:
+            print(f"  ⚠️ {a}")
 
     # Ordina per data (dal più recente)
     items.sort(key=lambda x: x.get('date', ''), reverse=True)
