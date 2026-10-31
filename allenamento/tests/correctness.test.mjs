@@ -30,6 +30,7 @@ function numberVariants(step) {
   const b = itNum(step.answer, step.decimals);
   const v = [b, `x = ${b}`, b.replace(',', '.'), ` ${b} `];
   if (step.unit) v.push(`${b} ${step.unit}`, `${b}${step.unit}`);
+  if (step.powerBase != null) v.push(`${step.powerBase}^${step.answer < 0 ? `(${b})` : b}`);
   if (step.decimals != null) v.push(itNum(step.answer, step.decimals + 2));
   if (Number.isInteger(step.answer) && Math.abs(step.answer) >= 1000) v.push(step.answer.toLocaleString('it-IT'));
   const f = toFraction(step.answer);

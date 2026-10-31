@@ -100,6 +100,12 @@ function checkNumberOnce(input, spec) {
   } catch (e) {
     return { ok: false, invalid: true, message: e.message };
   }
+  // domanda sull'esponente (powerBase: la base): chi scrive la potenza intera, come 10^17, ha risposto 17
+  let wholePower = false;
+  if (spec.powerBase != null && parsed.tree.k === 'pow' && close(evaluate(parsed.tree.a), spec.powerBase, 1e-9)) {
+    parsed = { ...parsed, value: evaluate(parsed.tree.b) };
+    wholePower = true;
+  }
   const { strict, loose } = tolerances(spec);
   const answers = [spec.answer, ...(spec.alts || [])];
   const exact = answers.some((ans) => Math.abs(parsed.value - ans) <= strict || close(parsed.value, ans, 1e-9));
@@ -113,7 +119,7 @@ function checkNumberOnce(input, spec) {
     }
     return {
       ok: true, value: parsed.value, tree: parsed.tree,
-      message: nearly ? `Accettata. Il valore preciso è circa ${String(+spec.answer.toFixed(spec.decimals + 1)).replace('.', ',')}: attenzione agli arrotondamenti intermedi.` : undefined,
+      message: wholePower ? `Giusto: bastava scrivere l'esponente, ${String(spec.answer).replace('.', ',')}.` : nearly ? `Accettata. Il valore preciso è circa ${String(+spec.answer.toFixed(spec.decimals + 1)).replace('.', ',')}: attenzione agli arrotondamenti intermedi.` : undefined,
     };
   }
   for (const trap of spec.traps || []) {

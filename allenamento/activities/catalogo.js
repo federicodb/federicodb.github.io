@@ -31,6 +31,7 @@ import pitagora from './geometria/pitagora.js';
 import similitudine from './geometria/similitudine.js';
 import solidi from './geometria/solidi.js';
 import trigonometria from './geometria/trigonometria.js';
+import aureo from './geometria/rapporto-aureo.js';
 import statistica from './dati/statistica.js';
 import probabilita from './dati/probabilita.js';
 import combinatoria from './dati/combinatoria.js';
@@ -60,7 +61,7 @@ export const areas = [
   { id: 'equazioni', title: 'Equazioni e disequazioni', summary: 'Primo e secondo grado.', hue: 285, mat: 'MAT_A3', activities: [eq1, eq1s, dis1, eq2, dis2] },
   { id: 'rette', title: 'Funzioni lineari e rette', summary: 'Grafici, pendenze, rette nel piano.', hue: 160, mat: 'MAT_K2', activities: [lineari, pendenza, parallele] },
   { id: 'sistemi', title: 'Sistemi lineari', summary: 'Due equazioni, due incognite.', hue: 130, mat: 'MAT_A3', activities: [sistemi] },
-  { id: 'geometria', title: 'Geometria', summary: 'Aree, solidi, Pitagora, trigonometria.', hue: 28, mat: 'MAT_K3', activities: [aree, pitagora, similitudine, solidi, trigonometria] },
+  { id: 'geometria', title: 'Geometria', summary: 'Aree, solidi, Pitagora, trigonometria, rapporto aureo.', hue: 28, mat: 'MAT_K3', activities: [aree, pitagora, similitudine, solidi, trigonometria, aureo] },
   { id: 'dati', title: 'Dati e previsioni', summary: 'Statistica, probabilità, combinatoria.', hue: 335, mat: 'MAT_K4', activities: [statistica, probabilita, combinatoria] },
   { id: 'funzioni', title: 'Funzioni e modelli', summary: 'Parabola, esponenziali, logaritmi, goniometria, scelte.', hue: 210, mat: 'MAT_K2', activities: [parabola, esponenziali, logaritmi, goniometria, studio, scelta] },
   { id: 'invalsi', title: 'Allenamento INVALSI', summary: 'Quesiti nello stile delle prove di seconda e quinta.', hue: 48, mat: 'MAT_C1–C4', activities: [invalsi10, invalsi13] },
@@ -100,6 +101,7 @@ export const PREREQ = {
   'notazione-scientifica': ['potenze'],
   radicali: ['potenze'],
   fibonacci: ['frazioni'],
+  'rapporto-aureo': ['fibonacci'],
   'prodotti-notevoli': ['monomi'],
   scomposizioni: ['prodotti-notevoli'],
   'equazioni-1': ['monomi'],

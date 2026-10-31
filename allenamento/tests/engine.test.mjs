@@ -21,6 +21,12 @@ assert.equal(ev('2·3×4'), 24);
 assert.equal(ev('[2+(3)]*2'), 10);
 
 assert.ok(checkNumber('3/4', {answer:0.75}).ok);
+// domande sull'esponente: la potenza scritta per intero vale come l'esponente, ma solo con la base giusta
+assert.ok(checkNumber('10^17', {answer:17, powerBase:10}).ok);
+assert.ok(checkNumber('2^-2', {answer:-2, powerBase:2}).ok);
+assert.ok(!checkNumber('3^5', {answer:5, powerBase:2}).ok);
+assert.ok(!checkNumber('8', {answer:3, powerBase:2}).ok);
+assert.equal(checkNumber('2^12', {answer:7, powerBase:2, traps:[{value:12, msg:'somma'}]}).message, 'somma');
 assert.ok(checkNumber('0,75', {answer:0.75}).ok);
 assert.ok(checkNumber('12,35', {answer:12.3456, decimals:2}).ok);
 assert.ok(!checkNumber('12,4', {answer:12.3456, decimals:2}).ok);

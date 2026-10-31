@@ -22,8 +22,17 @@ test.describe('Journal', () => {
     await page.goto('/journal/');
     await expect(page.getByRole('heading', { level: 1, name: 'Journal' })).toBeVisible();
     await expect(page.locator('.jr-item')).toHaveCount(Math.max(NOTE.length, 1));
-    for (const nota of NOTE) await expect(page.locator(`.jr-item a[href="${nota}/"]`)).toHaveCount(1);
+    for (const nota of NOTE) await expect(page.locator(`.jr-item h2 a[href="${nota}/"]`)).toHaveCount(1);
     expect(errori).toEqual([]);
+  });
+
+  test('ogni copertina dell\'elenco è generata dal build e si carica', async ({ page, request }) => {
+    await page.goto('/journal/');
+    for (const src of await page.locator('.jr-cover img').evaluateAll((els) => els.map((e) => new URL(e.getAttribute('src'), location.href).pathname))) {
+      expect(src).toMatch(/\/journal\/[^/]+\/copertina\.webp$/);
+      expect((await request.get(src)).status(), src).toBe(200);
+    }
+    await expect(page.locator('.jr-cover img')).toHaveCount(NOTE.length);
   });
 
   for (const nota of NOTE) {
@@ -55,6 +64,40 @@ test.describe('Journal', () => {
     test.skip(!prima, 'la nota più recente non cita attività');
     const att = prima.split(' ')[0];
     await page.goto(`/journal/?attivita=${att}`);
+    await expect(page.locator('.jr-filter')).toBeVisible();
+    for (const li of await page.locator('.jr-item:visible').all()) {
+      expect(` ${await li.getAttribute('data-attivita')} `).toContain(` ${att} `);
+    }
+  });
+});
+
+test.describe('Journal: ricerca e filtro nel menu', () => {
+  test('la ricerca filtra mentre si scrive, senza badare agli accenti, e resta nell\'indirizzo', async ({ page }) => {
+    test.skip(NOTE.length < 2, 'servono almeno due note');
+    await page.goto('/journal/');
+    const prima = page.locator('.jr-item').first();
+    const titolo = (await prima.locator('h2').textContent()).trim();
+    const parola = titolo.split(/\s+/).find((w) => w.length > 5) || titolo.split(/\s+/)[0];
+    await page.locator('#search-input').fill(parola.toUpperCase());
+    await expect(prima).toBeVisible();
+    for (const li of await page.locator('.jr-item:visible').all()) {
+      expect(await li.getAttribute('data-testo')).toContain(parola.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+    }
+    await expect(page).toHaveURL(/[?&]q=/);
+    await page.locator('#search-input').fill('zzqqnessunanota');
+    await expect(page.locator('.jr-item:visible')).toHaveCount(0);
+    await expect(page.locator('.jr-none')).toBeVisible();
+  });
+
+  test('il filtro per attività si apre dal pulsante e funziona anche da una nota', async ({ page }) => {
+    test.skip(NOTE.length === 0, 'nessuna nota');
+    await page.goto(`/journal/${NOTE[0]}/`);
+    await page.locator('#filter-burger-btn').click();
+    const chip = page.locator('#filter-dropdown .filter-chip[data-attivita]:not([data-attivita=""])').first();
+    await expect(chip).toBeVisible();
+    const att = await chip.getAttribute('data-attivita');
+    await chip.click();
+    await expect(page).toHaveURL(new RegExp(`/journal/\\?attivita=${att}`));
     await expect(page.locator('.jr-filter')).toBeVisible();
     for (const li of await page.locator('.jr-item:visible').all()) {
       expect(` ${await li.getAttribute('data-attivita')} `).toContain(` ${att} `);

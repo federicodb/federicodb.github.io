@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 08:58:02
+   Data: 2026-10-31 09:23:54
 */
 
 const db = [
@@ -90,9 +90,9 @@ const db = [
         "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
         "allenamento": [
             {
-                "id": "fibonacci",
-                "titolo": "Successione di Fibonacci e rapporto aureo",
-                "url": "allenamento/#/lezione/fibonacci/1",
+                "id": "rapporto-aureo",
+                "titolo": "Rapporto aureo e sezione aurea",
+                "url": "allenamento/#/lezione/rapporto-aureo/1",
                 "mat": [
                     "MAT_K3"
                 ]
@@ -1072,8 +1072,16 @@ const db = [
         "thumbnail": "content/assets/thumbnails/fibonacci_anim.webp",
         "allenamento": [
             {
+                "id": "rapporto-aureo",
+                "titolo": "Rapporto aureo e sezione aurea",
+                "url": "allenamento/#/lezione/rapporto-aureo/1",
+                "mat": [
+                    "MAT_K3"
+                ]
+            },
+            {
                 "id": "fibonacci",
-                "titolo": "Successione di Fibonacci e rapporto aureo",
+                "titolo": "Successione di Fibonacci",
                 "url": "allenamento/#/lezione/fibonacci/1",
                 "mat": [
                     "MAT_K3"

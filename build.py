@@ -42,7 +42,7 @@ ALLENAMENTO_CATALOGO_PATH = "allenamento/catalogo.json"
 ALLENAMENTO_AREE_ESCLUSE = {"lavoro", "invalsi"}
 ALLENAMENTO_MAX = 4
 # Lezioni della Quest troppo specifiche per essere suggerite in base al solo codice MAT (es. φ e Fibonacci)
-ALLENAMENTO_SOLO_ARGOMENTO = {"fibonacci"}
+ALLENAMENTO_SOLO_ARGOMENTO = {"fibonacci", "rapporto-aureo"}
 
 
 def load_allenamento_catalogo():

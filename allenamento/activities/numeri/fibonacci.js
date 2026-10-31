@@ -1,16 +1,15 @@
 import { perClasse } from '../contesti.js';
-import { tx } from '../../js/engine/helpers.js';
-import { polygon, table } from '../../js/gfx/svg.js';
+import { polygon } from '../../js/gfx/svg.js';
 
 // Successione "alla Fibonacci" che parte da a, b: ogni termine è la somma dei due precedenti
-function seq(a, b, n) {
+export function seq(a, b, n) {
   const s = [a, b];
   while (s.length < n) s.push(s[s.length - 1] + s[s.length - 2]);
   return s;
 }
-const FIB = seq(1, 1, 12); // 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144
+export const FIB = seq(1, 1, 15); // 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610
 const isFib = (s) => s.every((v, i) => i < 2 || v === s[i - 1] + s[i - 2]);
-const list = (s) => s.join(',\\ ');
+export const list = (s) => s.join(',\\ ');
 
 /** Quadrati di lato 1, 1, 2, 3, 5… accostati a spirale: formano un rettangolo F(n) × F(n+1) */
 function squaresFig(n) {
@@ -23,10 +22,13 @@ function squaresFig(n) {
   return polygon({ pts: [[0, 0], [w, 0], [w, h], [0, h]], extra, sides: [String(w), String(h), '', ''], alt: `Quadrati di lato ${FIB.slice(0, n).join(', ')} che formano un rettangolo ${Math.min(w, h)} per ${Math.max(w, h)}` });
 }
 
-function start(rng) {
+/** Due numeri di partenza: piccoli in prima, qualunque (ma sempre da calcolo a mente) dalla terza */
+export function start(rng) {
   const [lo, hi] = perClasse({ 1: [1, 5], 3: [2, 9] });
   return [rng.int(lo, hi), rng.int(lo, hi)];
 }
+
+// ---------------------------------------------------------------- livello 1: la regola
 
 function nextTerm(rng) {
   const [a, b] = start(rng);
@@ -41,7 +43,7 @@ function nextTerm(rng) {
       ? `Ogni numero è la somma dei due precedenti. Qual è il prossimo? $$${list(shown)},\\ ?$$`
       : `Ogni numero è la somma dei due precedenti. Quale numero viene <b>due posti</b> dopo l'ultimo? $$${list(shown)},\\ \\_\\_,\\ ?$$`,
     answer: ans,
-    traps: passi === 1 ? [{ value: 2 * l - p, msg: `Non si aggiunge sempre ${l - p}: si sommano gli ultimi due numeri.` }] : [{ value: l + p, msg: `Questo è il numero subito dopo: ne manca ancora uno.` }],
+    traps: passi === 1 ? [{ value: 2 * l - p, msg: `Non si aggiunge sempre ${l - p}: si sommano gli ultimi due numeri.` }] : [{ value: l + p, msg: 'Questo è il numero subito dopo: ne manca ancora uno.' }],
     hint: passi === 1 ? `Somma gli ultimi due: $${p} + ${l}$.` : `Prima trova il numero subito dopo ($${p} + ${l}$), poi quello successivo.`,
     explain: passi === 1 ? `$$${p} + ${l} = ${ans}$$` : `$$${p} + ${l} = ${p + l}, \\qquad ${l} + ${p + l} = ${ans}$$`,
     cas: { eval: passi === 1 ? `${p}+${l}` : `${l}+(${p}+${l})` },
@@ -110,6 +112,8 @@ function tfFib(rng) {
   };
 }
 
+// ---------------------------------------------------------------- livello 2: quadrati e somme
+
 function backwards(rng) {
   // prima: due numeri della vera successione, uno indietro; dalla terza: successione qualunque, due indietro
   const indietro = perClasse({ 1: 1, 3: 2 });
@@ -168,86 +172,76 @@ function sumTerms(rng) {
   };
 }
 
-/** I rapporti tra numeri consecutivi si avvicinano a φ, saltando sopra e sotto */
-function ratioChoice(rng) {
-  // dalla terza: anche partendo da due numeri qualunque si arriva allo stesso valore
-  const s = perClasse({ 1: () => FIB.slice(0, 8), 3: () => seq(...start(rng), 8) })();
-  const righe = s.slice(1).map((v, i) => [`$${v} : ${s[i]}$`, `$${tx(v / s[i], 3)}$`]).slice(1);
+/** La successione dei quadrati: due quadrati vicini sommati danno ancora un numero di Fibonacci */
+function squaresPair(rng) {
+  const i = rng.pick(perClasse({ 1: [2, 3], 3: [4, 5] }));
+  const p = FIB[i], q = FIB[i + 1], ans = FIB[2 * i + 2];
   return {
-    type: 'choice',
-    fig: table(['Rapporto', 'Valore'], righe),
-    prompt: `Divido ogni numero di $${list(s)}$ per quello prima. Come si comportano i rapporti?`,
-    options: [
-      { label: 'Si avvicinano a un numero vicino a 1,62, saltando un po\' sopra e un po\' sotto', correct: true },
-      { label: 'Crescono sempre', why: 'Guarda la colonna dei valori: salgono e scendono.' },
-      { label: 'Diminuiscono sempre', why: 'Guarda la colonna dei valori: salgono e scendono.' },
-      { label: 'Si avvicinano a 2', why: 'Gli ultimi valori restano vicini a 1,62, lontani da 2.' },
-    ],
-    explain: 'I rapporti si avvicinano sempre di più a $\\varphi = \\dfrac{1+\\sqrt5}{2} \\approx 1{,}618$, il <b>rapporto aureo</b>, una volta per eccesso e una per difetto. Succede qualunque siano i due numeri di partenza.',
-    twin: () => ratioChoice(rng),
+    type: 'number',
+    prompt: `La successione dei quadrati: $$${list(FIB.slice(0, 8).map((x) => x * x))},\\ \\dots$$ Quanto fa la somma di due quadrati vicini, $${p}^2 + ${q}^2$?`,
+    answer: ans,
+    traps: [{ value: (p + q) ** 2, msg: `Questo è $(${p} + ${q})^2$: qui si sommano i due quadrati.` }],
+    hint: `$${p}^2 = ${p * p}$ e $${q}^2 = ${q * q}$.`,
+    explain: `$$${p}^2 + ${q}^2 = ${p * p} + ${q * q} = ${ans}$$ E $${ans}$ è di nuovo un numero di Fibonacci: la somma dei quadrati di due vicini cade sempre nella successione, più avanti.`,
+    cas: { eval: `${p}^2+${q}^2` },
+    twin: () => squaresPair(rng),
   };
 }
 
-function ratioNumber(rng) {
-  const [num, den] = rng.pick([[3, 2], [8, 5], [13, 8]]);
+// ---------------------------------------------------------------- livello 3: invarianti
+
+/** Identità di Cassini: (precedente × successivo) − quadrato vale sempre +1 o −1, a segni alterni */
+function cassini(rng) {
+  // prima: la vera successione, fino a numeri da calcolare a mente; dalla terza: anche lontano, solo per schema,
+  //        oppure una successione qualunque (il valore non è più 1, ma resta lo stesso a segni alterni)
+  const tipo = perClasse({ 1: 'vicino', 3: rng.pick(['lontano', 'qualunque']) });
+  const s = tipo === 'qualunque' ? seq(...start(rng), 9) : FIB;
+  const val = (j) => s[j - 1] * s[j + 1] - s[j] * s[j];
+  const j0 = tipo === 'vicino' ? rng.int(1, 3) : 1;
+  const j = tipo === 'vicino' ? j0 + 2 : rng.int(5, 7);
+  const ex = [j0, j0 + 1].map((k) => `$$${s[k - 1]}\\cdot ${s[k + 1]} - ${s[k]}^2 = ${val(k)}$$`).join('');
+  const ans = val(j);
   return {
-    type: 'number', decimals: 3,
-    prompt: `Quanto fa $${num} : ${den}$? Scrivi il risultato con la virgola.`,
-    answer: num / den,
-    hint: den === 8 ? `$${num} : 8$: metà di metà di metà. Oppure $1/8 = 0{,}125$.` : `$${num} : ${den}$: $1/${den} = ${tx(1 / den, 3)}$.`,
-    explain: `$$${num} : ${den} = ${tx(num / den, 3)}$$ È già vicino a $\\varphi \\approx 1{,}618$: più avanti si va nella successione, più ci si avvicina.`,
-    cas: { eval: `${num}/${den}` },
-    twin: () => ratioNumber(rng),
+    type: 'number',
+    prompt: `${tipo === 'qualunque' ? `Nella successione $${list(s.slice(0, 6))},\\ \\dots$` : 'Nella successione di Fibonacci'} moltiplico i due vicini di un numero e tolgo il suo quadrato: ${ex}${tipo === 'vicino' ? 'Quanto fa' : 'Senza fare i conti: quanto fa'} $$${s[j - 1]}\\cdot ${s[j + 1]} - ${s[j]}^2\\ ?$$`,
+    answer: ans,
+    traps: ans ? [{ value: -ans, msg: 'Il numero è giusto ma il segno no: a ogni passo il segno si inverte.' }] : [],
+    hint: tipo === 'vicino' ? `$${s[j - 1]}\\cdot ${s[j + 1]} = ${s[j - 1] * s[j + 1]}$ e $${s[j]}^2 = ${s[j] * s[j]}$.` : 'Il valore non cambia, cambia solo il segno a ogni passo: conta i passi dal primo esempio.',
+    explain: `$$${s[j - 1]}\\cdot ${s[j + 1]} - ${s[j]}^2 = ${s[j - 1] * s[j + 1]} - ${s[j] * s[j]} = ${ans}$$ È un <b>invariante</b>: andando avanti nella successione il risultato resta ${Math.abs(ans)}, con il segno che si alterna (identità di Cassini, 1680).`,
+    cas: { eval: `${s[j - 1]}*${s[j + 1]}-${s[j]}^2` },
+    twin: () => cassini(rng),
   };
 }
 
-function placeRatio(rng) {
-  const [label, tex, v] = rng.pick([['φ', '\\varphi', (1 + Math.sqrt(5)) / 2], ['5/3', '\\dfrac{5}{3}', 5 / 3], ['8/5', '\\dfrac{8}{5}', 1.6], ['13/8', '\\dfrac{13}{8}', 13 / 8]]);
+/** Il trucco del mago: la somma di 10 numeri consecutivi è 11 volte il settimo */
+function trick11(rng) {
+  const [a, b] = start(rng);
+  const s = seq(a, b, 10), ans = 11 * s[6];
   return {
-    type: 'place',
-    prompt: `Dove si trova $${tex}$ sulla retta?`,
-    min: 1, max: 2, snap: 0.01, tol: 0.06,
-    ticks: [{ v: 1, label: '1' }, { v: 1.5, major: false }, { v: 2, label: '2' }],
-    answer: v, answerLabel: `${label} ≈ ${tx(v, 3).replace('{,}', ',')}`,
-    label: `Posizione di ${label}`,
-    hint: 'Il segno piccolo è 1,5. Il valore è un po\' più grande.',
-    explain: `$${tex} \\approx ${tx(v, 3)}$: poco oltre la metà tra 1 e 2.`,
-    twin: () => placeRatio(rng),
+    type: 'number',
+    prompt: `Ogni numero è la somma dei due precedenti. Quanto fa la somma di tutti e dieci? $$${list(s)}$$`,
+    answer: ans,
+    traps: [{ value: ans - s[9], msg: 'Manca l\'ultimo numero.' }],
+    hint: 'C\'è un trucco da mago: guarda il settimo numero e moltiplicalo per 11.',
+    explain: `Il settimo numero è $${s[6]}$: $$${s[6]}\\cdot 11 = ${ans}$$ Funziona sempre. Se i primi due sono $a$ e $b$, i dieci numeri sommati fanno $55a + 88b = 11\\,(5a + 8b)$, e $5a + 8b$ è proprio il settimo.`,
+    cas: { eval: s.join('+') },
+    twin: () => trick11(rng),
   };
 }
 
-/** Rettangolo aureo: lato lungo ≈ 1,6 × lato corto */
-function goldenRect(rng) {
-  const corto = rng.pick([5, 10, 15, 20, 25, 30]), lungo = corto * 1.6;
-  const inverso = perClasse({ 1: false, 3: rng.chance(0.5) });
+/** Divisibilità a posti fissi: per 3 un numero ogni 4, per 5 un numero ogni 5 */
+function binsDivisible(rng) {
+  const d = rng.pick([3, 5]);
+  const candidati = FIB.slice(2);
+  const si = candidati.filter((v) => v % d === 0), no = rng.shuffle(candidati.filter((v) => v % d)).slice(0, 3);
   return {
-    type: 'number', unit: 'cm',
-    prompt: inverso
-      ? `Un grafico disegna un riquadro con le proporzioni del rettangolo aureo. Il lato lungo misura ${lungo} cm. Quanto misura il lato corto? (Usa $\\varphi \\approx 1{,}6$.)`
-      : `Un grafico disegna un riquadro con le proporzioni del rettangolo aureo. Il lato corto misura ${corto} cm. Quanto misura il lato lungo? (Usa $\\varphi \\approx 1{,}6$.)`,
-    answer: inverso ? corto : lungo,
-    traps: inverso ? [{ value: lungo / 2, msg: 'Non è la metà: si divide per 1,6.' }] : [{ value: corto * 2, msg: 'Non è il doppio: si moltiplica per 1,6.' }],
-    hint: inverso ? `Quale numero, per 1,6, fa ${lungo}? Prova con i multipli di 5.` : `${corto} per 1,6: ${corto} più ${corto} per 0,6.`,
-    explain: inverso ? `$$${lungo} : 1{,}6 = ${corto}\\ \\text{cm}$$` : `$$${corto}\\cdot 1{,}6 = ${corto} + ${tx(corto * 0.6)} = ${lungo}\\ \\text{cm}$$`,
-    cas: { eval: inverso ? `${lungo}/1.6` : `${corto}*1.6` },
-    twin: () => goldenRect(rng),
-  };
-}
-
-function tfPhi(rng) {
-  const tutte = [
-    { text: '$\\varphi^2 = \\varphi + 1$', value: true },
-    { text: '$\\dfrac{1}{\\varphi} = \\varphi - 1$', value: true },
-    { text: '$\\varphi$ si può scrivere come frazione di due numeri interi', value: false },
-    { text: '$\\dfrac{13}{8}$ è esattamente uguale a $\\varphi$', value: false },
-    { text: '$\\varphi$ è compreso tra $1{,}6$ e $1{,}7$', value: true },
-  ];
-  return {
-    type: 'truefalse',
-    prompt: 'Il rapporto aureo $\\varphi = \\dfrac{1+\\sqrt5}{2} \\approx 1{,}618$:',
-    statements: rng.shuffle(tutte).slice(0, 4),
-    explain: '$\\varphi$ è la soluzione positiva di $x^2 = x + 1$; dividendo per $\\varphi$ si ottiene $\\varphi = 1 + \\dfrac{1}{\\varphi}$. Contiene $\\sqrt5$, quindi è irrazionale: $\\dfrac{13}{8} = 1{,}625$ ci va vicino, ma nessuna frazione lo raggiunge.',
-    twin: () => tfPhi(rng),
+    type: 'bins',
+    prompt: `Questi numeri di Fibonacci sono divisibili per ${d}?`,
+    bins: [{ id: 'si', label: `Divisibile per ${d}` }, { id: 'no', label: 'No' }],
+    items: rng.shuffle([...si.map((v) => ({ label: `$${v}$`, bin: 'si' })), ...no.map((v) => ({ label: `$${v}$`, bin: 'no' }))]),
+    hint: d === 3 ? 'Somma le cifre: se la somma è divisibile per 3, lo è anche il numero.' : 'Divisibile per 5 se finisce con 0 o 5.',
+    explain: `Divisibili per ${d}: $${si.join(',\\ ')}$. Nella successione cadono a posti fissi: ${d === 3 ? 'uno ogni 4 numeri (il 4°, l\'8°, il 12°)' : 'uno ogni 5 numeri (il 5°, il 10°, il 15°)'}.`,
+    twin: () => binsDivisible(rng),
   };
 }
 
@@ -257,17 +251,17 @@ export default {
   years: [1, 2],
   mat: ['MAT_K1', 'MAT_K3'],
   ambito: 'Numeri',
-  title: 'Successione di Fibonacci e rapporto aureo',
-  summary: 'Somme che si ripetono, quadrati a spirale e il numero φ.',
-  glyph: 'φ',
+  title: 'Successione di Fibonacci',
+  summary: 'La regola, i quadrati a spirale e i numeri che non cambiano mai.',
+  glyph: '1·1·2',
   levels: [
     { name: 'La regola', desc: 'Ogni numero è la somma dei due precedenti' },
-    { name: 'Schemi nascosti', desc: 'Andare all\'indietro, quadrati e somme' },
-    { name: 'Il rapporto aureo', desc: 'Rapporti, φ e rettangoli aurei' },
+    { name: 'Quadrati e somme', desc: 'Andare all\'indietro, quadrati a spirale, somme' },
+    { name: 'Invarianti', desc: 'Quello che resta uguale mentre tutto cresce' },
   ],
   generate(rng, level) {
-    if (level === 1) return [{ type: 'learn', title: 'Somma gli ultimi due', body: `$$${list(FIB.slice(0, 10))},\\ \\dots$$ Dal terzo in poi, ogni numero è la somma dei due precedenti: $5 + 8 = 13$. Leonardo Fibonacci la descrisse nel 1202 contando coppie di conigli.` }, nextTerm(rng), missingMiddle(rng), binsFib(rng), nextTerm(rng), tfFib(rng)];
-    if (level === 2) return [{ type: 'learn', title: 'Quadrati a spirale', body: 'Accostando quadrati di lato $1, 1, 2, 3, 5, 8$ si forma sempre un rettangolo: i suoi lati sono due numeri consecutivi della successione.', fig: squaresFig(6) }, backwards(rng), squaresArea(rng), sumTerms(rng), backwards(rng), squaresArea(rng)];
-    return [{ type: 'learn', title: 'Il numero aureo', body: 'Dividendo un numero della successione per quello prima: $8 : 5 = 1{,}6$, $13 : 8 = 1{,}625$, $21 : 13 \\approx 1{,}615$… I rapporti si avvicinano a $$\\varphi = \\frac{1+\\sqrt5}{2} \\approx 1{,}618$$' }, ratioChoice(rng), ratioNumber(rng), placeRatio(rng), goldenRect(rng), tfPhi(rng)];
+    if (level === 1) return [{ type: 'learn', title: 'Somma gli ultimi due', body: `$$${list(FIB.slice(0, 10))},\\ \\dots$$ Dal terzo in poi, ogni numero è la somma dei due precedenti: $5 + 8 = 13$. Leonardo Fibonacci la descrisse nel 1202, nel <i>Liber abaci</i>, contando coppie di conigli.` }, nextTerm(rng), missingMiddle(rng), binsFib(rng), nextTerm(rng), tfFib(rng)];
+    if (level === 2) return [{ type: 'learn', title: 'Quadrati a spirale', body: 'Accostando quadrati di lato $1, 1, 2, 3, 5, 8$ si forma sempre un rettangolo: i suoi lati sono due numeri consecutivi della successione. Anche i quadrati $1, 1, 4, 9, 25, 64\\dots$ nascondono schemi.', fig: squaresFig(6) }, backwards(rng), squaresArea(rng), sumTerms(rng), squaresPair(rng), squaresArea(rng)];
+    return [{ type: 'learn', title: 'Quello che non cambia', body: 'Un quadrato $8 \\times 8$ (area $64$) si può tagliare in quattro pezzi e ricomporre in un rettangolo $5 \\times 13$ (area $65$). Da dove viene il quadretto in più? $$5\\cdot 13 - 8^2 = 1$$ I pezzi non combaciano davvero: resta una fessura sottilissima lungo la diagonale. Un <b>invariante</b> è un valore che resta uguale mentre la successione cresce.' }, cassini(rng), trick11(rng), binsDivisible(rng), cassini(rng), trick11(rng)];
   },
 };

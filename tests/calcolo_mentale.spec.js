@@ -61,8 +61,9 @@ test.describe('Calcolo veloce', () => {
 
   test('link alla Quest e voce di menu dalla home', async ({ page }) => {
     await page.goto('/index.html');
-    await expect(page.locator('#main-nav .nav-links .nav-link').nth(2)).toHaveText('Calcolo veloce');
-    await page.locator('#main-nav .nav-links .nav-link').nth(2).click();
+    const voce = page.locator('#main-nav .nav-links .nav-link', { hasText: 'Calcolo veloce' });
+    await expect(voce).toHaveCount(1);
+    await voce.click();
     await expect(page).toHaveURL(/calcolo-mentale\.html/);
     await page.goto('/calcolo-mentale.html#per-11');
     await expect(page.locator('.cm-quest')).toHaveAttribute('href', 'allenamento/#/lezione/calcolo-per-11/1');

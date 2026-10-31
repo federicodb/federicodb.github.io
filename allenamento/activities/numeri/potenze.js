@@ -68,6 +68,7 @@ function numericExponent(rng) {
     type: 'number',
     prompt: `Completa con l'esponente giusto: $$${left} = ${b}^{\\,?}$$`,
     answer: exp,
+    powerBase: b,
     traps: op === 'mul' ? [{ value: m * n, msg: 'Gli esponenti si sommano, non si moltiplicano.' }] : [{ value: m + 2 * n, msg: 'Nel quoziente gli esponenti si sottraggono.' }],
     hint: op === 'mul' ? 'Stessa base, prodotto: somma gli esponenti.' : 'Stessa base, quoziente: sottrai gli esponenti.',
     explain: `$$${left} = ${b}^{${exp}}$$`,

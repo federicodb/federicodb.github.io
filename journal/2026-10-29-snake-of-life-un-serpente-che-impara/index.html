@@ -12,7 +12,7 @@
     <meta property="og:url" content="https://federicodb.github.io/journal/2026-10-29-snake-of-life-un-serpente-che-impara/">
     <meta property="og:title" content="Snake of Life: un serpente che impara da solo">
     <meta property="og:description" content="Un esperimento del laboratorio: il Gioco della Vita di Conway incontra un algoritmo evolutivo.">
-    <meta property="og:image" content="https://federicodb.github.io/content/assets/thumbnails/snake_conway_self.webp">
+    <meta property="og:image" content="https://federicodb.github.io/journal/2026-10-29-snake-of-life-un-serpente-che-impara/copertina.webp">
     <meta property="article:published_time" content="2026-10-29">
     <meta name="robots" content="noindex">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -60,11 +60,36 @@
                     </button>
                 </div>
             </div>
+            <div class="nav-row-2">
+                <form class="search-filter-wrapper" action="../../journal/" method="get" role="search">
+                    <button type="button" id="filter-burger-btn" class="burger-btn" aria-label="Filtra per attività" aria-expanded="false" aria-controls="filter-dropdown">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="search-container">
+                        <input type="search" id="search-input" name="q" class="search-input" placeholder="Cerca nelle note..." aria-label="Cerca nelle note">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    </div>
+                </form>
+                <div id="filter-dropdown" class="filter-dropdown">
+                    <div class="filter-group">
+                        <span class="filter-group-title">Filtra per attività</span>
+                        <a class="filter-chip" href="../../journal/" data-attivita="">Tutte le note</a>
+                        <a class="filter-chip" href="../../journal/?attivita=mcd_mcm_1el_001" data-attivita="mcd_mcm_1el_001">Arcade Challenge: MCM &amp; MCD</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_unita_di_misura" data-attivita="arcade_challenge_unita_di_misura">Arcade Challenge: Unità di misura</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fibonacci_anim" data-attivita="fibonacci_anim">Experience Fibonacci</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_pool_retta_pianocartesiano" data-attivita="math_pool_retta_pianocartesiano">Math Pool: Biliardo Cartesiano e retta</a>
+                        <a class="filter-chip" href="../../journal/?attivita=soglie_particelle_automa_cellulare" data-attivita="soglie_particelle_automa_cellulare">Simulatore di Automi Cellulari e Particelle</a>
+                        <a class="filter-chip" href="../../journal/?attivita=snake_conway_self" data-attivita="snake_conway_self">Snake of Life</a>
+                        <a class="filter-chip" href="../../journal/?attivita=phi_is_irrational_01" data-attivita="phi_is_irrational_01">φ è irrazionale: il rapporto aureo</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 
     <main class="container jr" id="contenuto">
         <p class="jr-back"><a href="../">← Tutte le note</a></p>
+        <div class="jr-layout">
         <article class="jr-note">
             <header>
                 <p class="jr-meta"><time datetime="2026-10-29">29 ottobre 2026</time> · Prof. Federico De Benedictis</p>
@@ -91,11 +116,11 @@
 
             </div>
         </article>
-        <section class="jr-acts" aria-labelledby="att">
+        <aside class="jr-acts" aria-labelledby="att">
             <h2 id="att">Le attività di cui parla</h2>
             <ul><li class="jr-act"><img src="../../content/assets/thumbnails/snake_conway_self.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/snake_conway_self.html">Snake of Life</a></h3><p>Snake of Life: un serpente che impara da solo a sopravvivere nel Gioco della Vita di Conway. Nessuno gli spiega le regole: 16 serpenti per generazione, i migliori fanno figli e il cervello migliora. Per capire evoluzione, intelligenza artificiale e sistemi reali come epidemie, mode ed ecosistemi.</p><p class="jr-act-more"><a href="../../content/apps/snake_conway_self_spiegazione.html">Spiegami come funziona</a></p></div></li><li class="jr-act"><img src="../../content/assets/thumbnails/soglie_particelle_automa_cellulare.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/soglie_particelle_automa_cellulare.html">Simulatore di Automi Cellulari e Particelle</a></h3><p>Laboratorio interattivo: migliaia di particelle che si attraggono e si respingono secondo una matrice di affinità, accoppiate a un automa cellulare (Vita di Conway e altre regole) da una soglia di accensione. Esplora emergenza e sistemi complessi, con palette personalizzabili e spiegazione animata. Per LIM, tablet e smartphone.</p><p class="jr-act-more"><a href="../../content/apps/soglie_particelle_automa_cellulare_spiegazione.html">Spiegami come funziona</a></p></div></li></ul>
-        </section>
-
+        </aside>
+        </div>
     </main>
 
     <footer class="site-footer">
@@ -117,6 +142,18 @@
         </div>
     </footer>
 
+    <script>
+        (function () {
+            var btn = document.getElementById('filter-burger-btn'), menu = document.getElementById('filter-dropdown');
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                btn.setAttribute('aria-expanded', menu.classList.toggle('active'));
+            });
+            document.addEventListener('click', function (e) {
+                if (!menu.contains(e.target)) { menu.classList.remove('active'); btn.setAttribute('aria-expanded', 'false'); }
+            });
+        })();
+    </script>
     <script src="../../cookie-consent.js"></script>
 </body>
 

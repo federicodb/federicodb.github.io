@@ -12,6 +12,7 @@ function definition(rng) {
     cas: { eval: `log(${arg}, ${b})` },
     prompt: `Quanto vale $\\log_{${b}} ${argTex}$?`,
     answer: n,
+    powerBase: b,
     traps: [{ value: arg / b, msg: 'Il logaritmo è un esponente: a quale potenza va elevato ' + b + '?' }],
     hint: `Cerca l'esponente: $${b}^{\\,?} = ${argTex}$`,
     explain: `$$${b}^{${n}} = ${argTex} \\Rightarrow \\log_{${b}} ${argTex} = ${n}$$`,
