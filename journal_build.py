@@ -624,6 +624,9 @@ def build_journal(items, base_url):
         n["collegate"] = collegate
 
         corpo = _sistema_immagini(_markdown_con_formule(n["corpo"]), root, avvisi, n["slug"])
+        # la parte per gli studenti ("Per prepararti alla verifica") si riconosce a colpo d'occhio: un riquadro
+        corpo = re.sub(r'(<h2>Per prepararti alla verifica</h2>.*?)(?=<h2>|\Z)',
+                       r'<section class="jr-studenti">\1</section>\n', corpo, flags=re.S)
         video = _video(n.get("video", ""), root, avvisi, n["slug"])
         # copertina: il campo "copertina:", poi le immagini della nota, poi la miniatura della prima attività;
         # sempre in tema scuro (COVER_MAX_LUMA)

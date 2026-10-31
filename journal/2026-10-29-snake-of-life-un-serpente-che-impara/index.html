@@ -14,7 +14,6 @@
     <meta property="og:description" content="Un esperimento del laboratorio: il Gioco della Vita di Conway incontra un algoritmo evolutivo.">
     <meta property="og:image" content="https://federicodb.github.io/journal/2026-10-29-snake-of-life-un-serpente-che-impara/copertina.webp">
     <meta property="article:published_time" content="2026-10-29">
-    <meta name="robots" content="noindex">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
@@ -103,7 +102,6 @@
                 <p class="jr-lead">Un esperimento del laboratorio: il Gioco della Vita di Conway incontra un algoritmo evolutivo.</p>
                 <ul class="jr-tags" aria-label="Temi"><li><a href="../../index.html?tag=automi%20cellulari">Automi cellulari</a></li><li><a href="../../index.html?tag=coding">Coding</a></li><li><a href="../../index.html?tag=gioco%20della%20vita">Gioco della vita</a></li><li><a href="../../index.html?tag=pensiero%20computazionale">Pensiero computazionale</a></li><li><a href="../../index.html?tag=algoritmi%20genetici">Algoritmi genetici</a></li><li><a href="../../index.html?tag=evoluzione">Evoluzione</a></li></ul>
             </header>
-        <p class="jr-flag">Nota d'esempio, scritta per vedere come appare il Journal. Le parti sull'uso in classe sono da compilare.</p>
             <div class="jr-body">
 <h2>Cosa è</h2>
 <p>Snake of Life è nato come esperimento di arte e codice. Il campo di gioco è il <strong>Gioco della Vita</strong> di Conway, una griglia in cui ogni cella vive o muore in base alle vicine:</p>
@@ -116,10 +114,27 @@
 <figure><img loading="lazy" alt="Snake of Life" src="../../content/assets/thumbnails/snake_conway_self.webp"><figcaption>Snake of Life</figcaption></figure>
 <h2>Perché sta nel laboratorio</h2>
 <p>È un modo concreto per parlare di <strong>evoluzione</strong> e di <strong>intelligenza artificiale</strong> senza formule: si vede una popolazione che migliora per selezione, non perché qualcuno l'ha programmata a mano. Ha la stessa famiglia di idee dell'app sugli automi cellulari a soglie: regole locali semplici, comportamenti globali complessi.</p>
-<h2>In classe</h2>
-<p>[DA COMPILARE DAL DOCENTE: se e dove l'ho usato, che domande hanno fatto gli studenti.]</p>
-<h2>Cosa cambio</h2>
-<p>[DA COMPILARE DAL DOCENTE]</p>
+<section class="jr-studenti"><h2>Per prepararti alla verifica</h2>
+<ul>
+<li>Snake non è un argomento di verifica, ma allena una cosa che in verifica serve sempre: <strong>leggere un grafico</strong>.</li>
+<li>Nel grafico <strong>Come sta imparando</strong> chiediti: cosa c'è sugli assi? Perché la linea del migliore sta sopra quella della media?</li>
+<li><strong>Attenzione</strong>: la media e il valore più alto raccontano cose diverse. Il campione può migliorare anche se la media resta bassa.</li>
+</ul>
+<p><strong>Prova tu.</strong> In cinque generazioni il serpente migliore mangia $2,\ 4,\ 4,\ 7,\ 8$ volte. Qual è la media?</p>
+<details>
+<summary>Soluzione</summary>
+<p>$\dfrac{2+4+4+7+8}{5} = \dfrac{25}{5} = 5$.</p>
+</details>
+</section>
+<h2>Come usarla in classe</h2>
+<p>Non è un esercizio di calcolo: è un'osservazione guidata. Lo si proietta e si chiede di prevedere cosa farà il serpente. Poi si apre <strong>Cosa sta pensando</strong>: ogni mossa è una somma di pesi, e si vede quale vince.</p>
+<p>Il grafico <strong>Come sta imparando</strong> (il migliore e la media di ogni generazione) è un piccolo esercizio di lettura di dati. Il simulatore di automi cellulari, nella stessa nota, mostra da dove viene il "mondo" in cui il serpente vive. È anche un'occasione per parlare di intelligenza artificiale senza miti, utile per l'educazione civica e digitale.</p>
+<h2>A cosa fare attenzione</h2>
+<ul>
+<li><strong>Il serpente non "capisce"</strong>: ottimizza un punteggio. Cambiando i punti del voto (cibo, passi, morte) cambia il comportamento. È il modo più concreto per discutere di che cosa si chiede a una macchina.</li>
+<li><strong>Su computer lenti</strong> meglio usarlo alla LIM che sui telefoni, e a velocità bassa.</li>
+<li><strong>Non c'è un allenamento della Quest collegato</strong>: il lavoro sta nel discutere e nel leggere i dati.</li>
+</ul>
 
             </div>
         </article>

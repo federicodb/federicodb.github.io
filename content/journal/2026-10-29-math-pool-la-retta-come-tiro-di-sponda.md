@@ -4,7 +4,6 @@ data: 2026-10-29
 descrizione: Il biliardo cartesiano passa al 3D con fisica vera, e la parabola entra in gioco con i tiri a effetto.
 attivita: math_pool_retta_pianocartesiano
 copertina: media/math-pool-pendenza.png
-stato: esempio
 ---
 
 ## Cosa è cambiato
@@ -24,10 +23,35 @@ Per mandare la palla in buca bisogna scrivere la retta giusta: pendenza e interc
 
 Con l'effetto la traiettoria diventa una parabola, che si può scrivere dal vertice oppure dagli zeri, come prodotto di due rette.
 
-## In classe
+## Per prepararti alla verifica
 
-[DA COMPILARE DAL DOCENTE: classe, durata, se si è giocato alla LIM a squadre o sui telefoni, quali errori sono venuti fuori.]
+- Gioca il primo livello con il quaderno aperto e scrivi i sei passi per ogni tavolo: sono gli stessi dell'esercizio in verifica.
+- Da sapere: l'equazione della retta per due punti, come si controlla se un punto sta sulla retta, che le rette parallele hanno la stessa pendenza.
+- **Attenzione**: con le coordinate negative usa sempre le parentesi, per esempio $1 - (-1) = 2$.
 
-## Cosa cambio
+**Prova tu.** Scrivi la retta per $P(-1,\ 1)$ e $Q(1,\ 5)$. Il punto $(2,\ 7)$ sta sulla retta?
 
-[DA COMPILARE DAL DOCENTE]
+<details markdown="1"><summary>Soluzione</summary>
+
+$m = \dfrac{5-1}{1-(-1)} = 2$; $1 = 2\cdot(-1) + q$, quindi $q = 3$: $y = 2x + 3$. Per $x = 2$: $2\cdot 2 + 3 = 7$, quindi sì, il punto sta sulla retta.
+
+</details>
+
+## Come usarla in classe
+
+Si gioca bene a coppie: uno calcola, l'altro controlla, poi ci si scambia. I sei passi del tiro ripercorrono il metodo per scrivere la retta per due punti, uno alla volta:
+
+1. pendenza;
+2. sostituzione;
+3. $q$;
+4. equazione;
+5. "la buca è sulla retta?";
+6. tiro.
+
+**Sponde** porta la simmetria. **Effetto**, con la traiettoria a parabola, è per chi è pronto ad andare oltre la retta. Per allenarsi: **Pendenza di una retta**, **Rette parallele e perpendicolari**, **La parabola**.
+
+## A cosa fare attenzione
+
+- **I segni nella pendenza** quando le coordinate sono negative: $\dfrac{2-(-2)}{7-3}$ si sbaglia facilmente.
+- **La verifica della buca** viene spesso saltata. È invece il passo che dà senso a tutto: un punto sta sulla retta se le sue coordinate rendono vera l'equazione.
+- **Il 3D è affascinante, ma il conto viene prima del tiro.**

@@ -4,7 +4,6 @@ data: 2026-10-26
 descrizione: Il nuovo gioco della serie Arcade Challenge porta le equivalenze tra unità di misura in cantiere.
 attivita: arcade_challenge_unita_di_misura, MCD_mcm_1el_001
 copertina: media/arcade-unita-ascensore.png
-stato: esempio
 ---
 
 ## Cosa è
@@ -33,10 +32,28 @@ L'ascensore rende visibile una cosa che sul quaderno si dimentica: il "gradino" 
 
 E il ponte tra volume e capacità: $1\ \text{dm}^3 = 1\ \text{L}$.
 
-## In classe
+## Per prepararti alla verifica
 
-[DA COMPILARE DAL DOCENTE]
+- Usa l'ascensore finché riesci a dire il risultato **prima** di premere.
+- Scrivi sul quaderno la scala delle unità e conta i gradini: $\times 10$ per le lunghezze, $\times 100$ per le superfici, $\times 1000$ per i volumi.
+- **Attenzione**: una misura senza unità è mezza risposta. E ricorda il ponte $1\ \text{dm}^3 = 1\ \text{L}$.
 
-## Cosa cambio
+**Prova tu.** Trasforma: $3{,}5$ m in cm; $2\ \text{m}^2$ in $\text{dm}^2$; $1500\ \text{cm}^3$ in litri.
 
-[DA COMPILARE DAL DOCENTE]
+<details markdown="1"><summary>Soluzione</summary>
+
+$3{,}5$ m $= 350$ cm. $2\ \text{m}^2 = 200\ \text{dm}^2$. $1500\ \text{cm}^3 = 1{,}5\ \text{dm}^3 = 1{,}5$ L.
+
+</details>
+
+## Come usarla in classe
+
+L'ascensore alla LIM è una buona routine di inizio ora: cinque minuti, una domanda a testa, la classe che dice "sali" o "scendi" prima di premere. Si comincia dalle lunghezze. Poi si passa a superfici e volumi e si lascia che siano gli studenti ad accorgersi che il "gradino" cambia.
+
+I **problemi del cantiere** riportano le equivalenze a misure vere, da leggere con attenzione. Gli allenamenti collegati sono **Notazione scientifica**, **Solidi e volumi** e **Proporzioni**.
+
+## A cosa fare attenzione
+
+- **Per le superfici** ogni gradino vale $\times 100$, non $\times 10$; **per i volumi** $\times 1000$.
+- **Il ponte tra volume e capacità**: $1\ \text{dm}^3 = 1\ \text{L}$ è da ripetere più di una volta.
+- **Dire a voce cosa succede alla virgola** ("salgo di un piano, divido per 10") aiuta più che imparare una tabella.

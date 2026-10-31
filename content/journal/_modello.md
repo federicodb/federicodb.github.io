@@ -34,4 +34,18 @@ COME SI USA
   e anteprima con python3 -m http.server 8080 → http://localhost:8080/journal/
 -->
 
+## Per prepararti alla verifica
+
+- Come usare l'attività per studiare, cosa sapere, a cosa fare attenzione (dando del tu allo studente).
+
+**Prova tu.** Un esercizio breve, con numeri da fare a mente.
+
+<details markdown="1"><summary>Soluzione</summary>
+
+La soluzione, passo per passo.
+
+</details>
+
+## Come usarla in classe
+
 Perché l'ho costruita, in che classe l'ho provata, cosa è successo, cosa cambio (200-300 parole).
