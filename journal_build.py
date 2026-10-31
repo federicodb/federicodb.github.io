@@ -241,7 +241,8 @@ CC_SVG = ('<svg viewBox="0 0 64 22" aria-hidden="true" class="jr-cc"><g fill="no
 
 
 def colophon(root):
-    """ Colophon del sito: diario di bordo, ultimo aggiornamento, open source, licenze. Lo stesso in tutte le pagine
+    """ Colophon del sito: diario di bordo, ultimo aggiornamento, open source, licenze (e la registrazione del service
+        worker per l'uso offline, così arriva a tutte le pagine del sito). Lo stesso in tutte le pagine
         (le pagine fisse lo ricevono da build.py tra <!-- COLOPHON_START --> e <!-- COLOPHON_END -->). """
     agg = (f' Ultimo aggiornamento: <time datetime="{ULTIMO_AGGIORNAMENTO}">{_data_it(ULTIMO_AGGIORNAMENTO)}</time>.'
            if ULTIMO_AGGIORNAMENTO else "")
@@ -254,7 +255,8 @@ def colophon(root):
                     <li><a href="{REPO_URL}/blob/master/LICENSE" target="_blank" rel="noopener" title="Il codice delle app e del sito">{CODICE_SVG}Codice: licenza MIT</a></li>
                     <li><a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" target="_blank" rel="license noopener" title="Testi, note, schede e immagini">{CC_SVG}Contenuti: CC BY-SA 4.0</a></li>
                 </ul>
-            </div>"""
+            </div>
+            <script src="{root}content/assets/js/offline.js" defer></script>"""
 
 
 def ultimo_aggiornamento(items, extra=()):
