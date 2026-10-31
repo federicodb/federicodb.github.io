@@ -1281,3 +1281,16 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .search-input::placeholder { color: hsl(0, 0%, 60%); opacity: 1; }
 html.theme-light .search-input::placeholder { color: #5b6474; }
 .card .main-cta-btn { text-shadow: none; }
+
+/* Colophon del footer (generato da build.py in tutte le pagine): sobrio, testo e segni monocromi */
+.jr-colophon { max-width: 70ch; padding: 8px 0 28px; color: var(--text-muted); font-size: 0.92rem; line-height: 1.65; }
+.jr-colophon p + p { margin-top: 6px; }
+.jr-colophon strong { color: var(--text-main); font-weight: 600; }
+.jr-badges { list-style: none; padding: 0; margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+.jr-badges a {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; font-size: 0.82rem;
+    color: var(--text-muted); text-decoration: none; border: 1px solid var(--glass-border); transition: color 0.2s, border-color 0.2s;
+}
+.jr-badges a:hover { color: var(--text-main); border-color: var(--text-muted); }
+.jr-badges svg { width: 16px; height: 16px; flex: none; }
+.jr-badges svg.jr-cc { width: 44px; }

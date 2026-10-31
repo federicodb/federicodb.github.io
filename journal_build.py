@@ -219,6 +219,49 @@ def _copertina(n, fonti, avvisi):
     return ""
 
 
+GITHUB_SVG = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
+CODICE_SVG = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" '
+              'stroke-linecap="round" stroke-linejoin="round" d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>')
+# segni CC, BY e SA disegnati a tratto (cerchio con due "c", persona, freccia circolare): sobri e monocromi
+CC_SVG = ('<svg viewBox="0 0 64 22" aria-hidden="true" class="jr-cc"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">'
+          '<circle cx="11" cy="11" r="9.2"/><path d="M9.6 8.4a3.2 3.2 0 1 0 0 5.2M15.4 8.4a3.2 3.2 0 1 0 0 5.2"/>'
+          '<circle cx="32" cy="11" r="9.2"/><circle cx="32" cy="6.2" r="1.4" fill="currentColor" stroke="none"/><path d="M29.4 9.2h5.2v4.6h-1.6v4.2h-2v-4.2h-1.6z" fill="currentColor" stroke="none"/>'
+          '<circle cx="53" cy="11" r="9.2"/><path d="M57.2 11a4.2 4.2 0 1 1-1.3-3"/><path d="M56.3 5.4l-.3 2.8-2.8-.3"/></g></svg>')
+
+
+def colophon(root):
+    """ Colophon del sito: diario di bordo, ultimo aggiornamento, open source, licenze. Lo stesso in tutte le pagine
+        (le pagine fisse lo ricevono da build.py tra <!-- COLOPHON_START --> e <!-- COLOPHON_END -->). """
+    agg = (f' Ultimo aggiornamento: <time datetime="{ULTIMO_AGGIORNAMENTO}">{_data_it(ULTIMO_AGGIORNAMENTO)}</time>.'
+           if ULTIMO_AGGIORNAMENTO else "")
+    return f"""            <div class="jr-colophon">
+                <p><strong>Un diario di bordo.</strong> Orfini Math Lab raccoglie una sperimentazione didattica di matematica
+                    all'Istituto Professionale "E. Orfini" di Foligno: attività costruite, provate in classe, corrette.{agg}</p>
+                <p>Fatto con strumenti open source, ed è a sua volta un progetto open source: il codice è pubblico su GitHub.</p>
+                <ul class="jr-badges" aria-label="Progetto aperto e licenze">
+                    <li><a href="{REPO_URL}" target="_blank" rel="noopener">{GITHUB_SVG}Sorgenti su GitHub</a></li>
+                    <li><a href="{REPO_URL}/blob/master/LICENSE" target="_blank" rel="noopener" title="Il codice delle app e del sito">{CODICE_SVG}Codice: licenza MIT</a></li>
+                    <li><a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" target="_blank" rel="license noopener" title="Testi, note, schede e immagini">{CC_SVG}Contenuti: CC BY-SA 4.0</a></li>
+                </ul>
+            </div>"""
+
+
+def ultimo_aggiornamento(items, extra=()):
+    """ Data più recente tra attività e note (AAAA-MM-GG), per il colophon """
+    global ULTIMO_AGGIORNAMENTO
+    date = [str(it.get("date", ""))[:10] for it in items] + list(extra)
+    ULTIMO_AGGIORNAMENTO = max((d for d in date if re.match(r"^\d{4}-\d{2}-\d{2}$", d)), default="")
+    return ULTIMO_AGGIORNAMENTO
+
+
+def date_note():
+    """ Date delle note pubblicabili, senza ricostruire il Journal """
+    if not os.path.isdir(SRC_DIR):
+        return []
+    note = [_leggi_nota(os.path.join(SRC_DIR, f)) for f in os.listdir(SRC_DIR) if f.endswith(".md") and not f.startswith("_")]
+    return [n["data"] for n in note if n["stato"] not in STATI_NON_PUBBLICI]
+
+
 def _competenze_riforma():
     """ {codice: etichetta} dalla mappatura della Riforma 2017, la stessa letta da competenze.html """
     voci = {}
@@ -330,6 +373,22 @@ def _blocco_altre_note(n, note):
             f'            <ul>{voci}</ul>\n        </nav>')
 
 
+# stessa tavolozza e stesso calcolo di createCardDOM in content/assets/js/modules/UIManager.js:
+# il colore dipende dal titolo, quindi un'attività ha lo stesso colore nel catalogo e nel Journal
+PALETTE = ["hsl(330, 80%, 65%)", "hsl(280, 85%, 65%)", "hsl(190, 100%, 55%)", "hsl(155, 80%, 50%)",
+           "hsl(38, 100%, 60%)", "hsl(10, 90%, 65%)", "hsl(220, 90%, 70%)"]
+
+
+def _colore(titolo):
+    def int32(x):
+        x &= 0xFFFFFFFF
+        return x - (1 << 32) if x >= (1 << 31) else x
+    h = 0
+    for c in titolo or "":
+        h = ord(c) + (int32(int32(h) << 5) - h)  # come charCodeAt + ((hash << 5) - hash) in JavaScript
+    return PALETTE[abs(h) % len(PALETTE)]
+
+
 def _chiave(url):
     """ Nome dell'attività nei filtri (?attivita=): il nome del file, senza spazi """
     return _stem(url).replace(" ", "_")
@@ -353,7 +412,7 @@ def _scheda_attivita(item, root):
     for a in item.get("allenamento", [])[:3]:
         extra.append(f'<a href="{_href(root, a["url"])}">Allenati: {html.escape(a["titolo"])}</a>')
     extra_html = f'<p class="jr-act-more">{" · ".join(extra)}</p>' if extra else ""
-    return (f'<li class="jr-act">{img}<div><h3><a href="{_href(root, item["url"])}">{titolo}</a></h3>'
+    return (f'<li class="jr-act" style="--jr-accent: {_colore(item.get("title", ""))}">{img}<div><h3><a href="{_href(root, item["url"])}">{titolo}</a></h3>'
             f'<p>{desc}</p>{extra_html}</div></li>')
 
 
@@ -467,17 +526,9 @@ def _pagina(root, titolo, descrizione, canonical, immagine, corpo, extra_head=""
                     </a>
                 </div>
             </div>
-            <div class="jr-colophon">
-                <p><strong>Un diario di bordo.</strong> Orfini Math Lab raccoglie una sperimentazione didattica di matematica
-                    all'Istituto Professionale "E. Orfini" di Foligno: attività costruite, provate in classe, corrette.</p>
-                <p>Fatto con strumenti open source, ed è a sua volta un progetto open source: il codice è pubblico su GitHub.</p>
-                <ul class="jr-badges" aria-label="Progetto aperto">
-                    <li><a href="{REPO_URL}" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Sorgenti su GitHub</a></li>
-                    <li><a href="{REPO_URL}#readme" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>Codice con licenza MIT</a></li>
-                </ul>
-            </div>
+{colophon(root)}
             <div class="footer-bottom">
-                <p>&copy; {datetime.now().year} Laboratorio Matematico Orfini Foligno · {AUTHOR}{f" · Ultimo aggiornamento: <time datetime='{ULTIMO_AGGIORNAMENTO}'>{_data_it(ULTIMO_AGGIORNAMENTO)}</time>" if ULTIMO_AGGIORNAMENTO else ""}</p>
+                <p>&copy; {datetime.now().year} Laboratorio Matematico Orfini Foligno · {AUTHOR} · <a href="{root}privacy-policy.html">Privacy e cookie</a></p>
             </div>
         </div>
     </footer>
@@ -528,9 +579,7 @@ def build_journal(items, base_url):
     citate = {_chiave(it["url"]): it.get("title", "") for n in note for a in n["attivita"]
               for it in [per_stem.get(_stem(a))] if it}
     filtro = sorted(citate.items(), key=lambda x: x[1].lower())
-    global ULTIMO_AGGIORNAMENTO
-    date = [str(it.get("date", ""))[:10] for it in items] + [n["data"] for n in note]
-    ULTIMO_AGGIORNAMENTO = max((d for d in date if re.match(r"^\d{4}-\d{2}-\d{2}$", d)), default="")
+    ultimo_aggiornamento(items, [n["data"] for n in note if n["stato"] not in STATI_NON_PUBBLICI])
     riforma = _competenze_riforma()
     for n in note:
         att = [per_stem[_stem(a)] for a in n["attivita"] if _stem(a) in per_stem]
@@ -629,7 +678,7 @@ def build_journal(items, base_url):
         flag = ' <span class="jr-tag">esempio</span>' if n["stato"] == "esempio" else (
             ' <span class="jr-tag">bozza</span>' if n["stato"] == "bozza" else "")
         img = (f'<img src="../{_href("", n["img_rel"])}" alt="" loading="lazy">' if n["img_rel"] else "")
-        righe.append(f"""            <li class="jr-item" data-attivita="{html.escape(stems)}" data-testo="{html.escape(n['testo'])}">
+        righe.append(f"""            <li class="jr-item" style="--jr-accent: {_colore(n['titolo'])}" data-attivita="{html.escape(stems)}" data-testo="{html.escape(n['testo'])}">
                 <a class="jr-cover" href="{n['slug']}/" tabindex="-1" aria-hidden="true">{img}</a>
                 <div class="jr-item-text">
                     <p class="jr-meta"><time datetime="{n['data']}">{_data_it(n['data'])}</time>{flag}</p>

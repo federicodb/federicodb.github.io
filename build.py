@@ -1039,11 +1039,40 @@ def main():
         
     # Scrive la Sitemap XML
     generate_sitemap(db_main, journal_sitemap)
+    inject_colophon(db_main)
     
     # Iniezione SEO nell'index.html
     update_index_seo(db_main)
     
     print(f"\n✨ Successo! Salvati {len(db_main)} Laboratori e {len(db_verifiche)} Verifiche.")
+
+# Pagine fisse con il colophon del sito (diario di bordo, open source, licenze) tra due marcatori
+COLOPHON_PAGES = ["index.html", "competenze.html", "verifiche.html", "scuola.html", "calcolo-mentale.html",
+                  "privacy-policy.html", "404.html"]
+
+
+def inject_colophon(items):
+    """ Riscrive il blocco tra <!-- COLOPHON_START --> e <!-- COLOPHON_END --> con lo stesso colophon del Journal """
+    try:
+        import journal_build
+    except ImportError:
+        return
+    journal_build.ultimo_aggiornamento(items, journal_build.date_note())
+    pattern = re.compile(r'([ \t]*)<!-- COLOPHON_START -->.*?<!-- COLOPHON_END -->', re.DOTALL)
+    for page in COLOPHON_PAGES:
+        if not os.path.exists(page):
+            continue
+        with open(page, encoding="utf-8") as f:
+            content = f.read()
+        root = "/" if page == "404.html" else ""  # la 404 si apre da qualunque percorso
+        nuovo = pattern.sub(lambda m: f"{m.group(1)}<!-- COLOPHON_START -->\n{journal_build.colophon(root)}\n{m.group(1)}<!-- COLOPHON_END -->", content)
+        if nuovo == content and "<!-- COLOPHON_START -->" not in content:
+            print(f"  ⚠️ Colophon: mancano i marcatori in {page}")
+            continue
+        if nuovo != content:
+            with open(page, "w", encoding="utf-8") as f:
+                f.write(nuovo)
+
 
 def generate_sitemap(items, extra_pages=()):
     """ Genera la sitemap XML standard per i motori di ricerca (extra_pages: [(url, lastmod)], es. le note del Journal) """
