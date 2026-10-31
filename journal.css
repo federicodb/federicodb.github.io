@@ -47,6 +47,8 @@ html.theme-light .jr { --jr-soft: rgba(15, 23, 42, 0.04); }
 .jr-body figure { margin: 1.6em 0; }
 .jr-body figcaption { margin-top: 8px; font-size: 0.9rem; color: var(--text-muted); }
 .jr-body .katex { font-size: 1.08em; }
+/* frazioni in riga (sempre \dfrac, vedi journal_build): più spazio tra le righe solo dove ci sono */
+.jr-body :is(p, li):has(.mfrac) { line-height: 2.15; }
 .jr-body table { border-collapse: collapse; font-variant-numeric: tabular-nums; display: block; overflow-x: auto; }
 .jr-body th, .jr-body td { padding: 8px 16px 8px 0; border-bottom: 1px solid var(--jr-line); text-align: left; }
 .jr-body th { font-weight: 600; color: var(--text-muted); font-size: 0.9rem; }

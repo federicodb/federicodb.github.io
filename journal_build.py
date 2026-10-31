@@ -110,7 +110,9 @@ def _markdown_con_formule(corpo):
 
     protetto = re.sub(r"\$\$.+?\$\$|(?<!\\)\$[^$\n]+?\$", tieni, corpo, flags=re.S)
     out = markdown.markdown(protetto, extensions=["extra", "sane_lists"], output_format="html")
-    return re.sub(r"\x00(\d+)\x00", lambda m: html.escape(formule[int(m.group(1))], quote=False), out)
+    # leggibilità alla LIM: frazioni sempre a grandezza piena (\frac -> \dfrac); \tfrac resta piccola di proposito
+    return re.sub(r"\x00(\d+)\x00",
+                  lambda m: html.escape(re.sub(r"\\frac(?![a-zA-Z])", r"\\dfrac", formule[int(m.group(1))]), quote=False), out)
 
 
 def _prepara_media(rel, avvisi, nota):

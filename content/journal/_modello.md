@@ -28,7 +28,8 @@ COME SI USA
 - Il build controlla e avvisa: immagini mancanti, senza didascalia, prese da altri siti, troppo piccole,
   foto HEIC dell'iPhone (salvale come JPG), video troppo pesanti, file in media/ non usati da nessuna nota.
 - video: media/clip.mp4 (breve, al massimo circa 20 MB) oppure un link YouTube (mostrato solo come link).
-- Formule come nel resto del sito: $m = \frac{\Delta y}{\Delta x}$
+- Formule come nel resto del sito: $m = \frac{\Delta y}{\Delta x}$. Il build scrive le frazioni sempre grandi
+  (\frac diventa \dfrac, leggibile alla LIM); per una frazione piccola di proposito, es. in un esponente, usa \tfrac.
 - Poi: .venv/bin/python3 -c "import build; build.GEMINI_API_KEY=''; build.main()"
   e anteprima con python3 -m http.server 8080 → http://localhost:8080/journal/
 -->
