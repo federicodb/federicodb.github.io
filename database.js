@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 10:40:03
+   Data: 2026-10-31 10:40:52
 */
 
 const db = [
@@ -29,39 +29,30 @@ const db = [
         "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp",
         "allenamento": [
             {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K1"
+                    "MAT_K2"
                 ]
             },
             {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K1"
+                    "MAT_K2"
                 ]
             },
             {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "id": "parabola",
+                "titolo": "La parabola",
+                "url": "allenamento/#/lezione/parabola/1",
                 "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
+                    "MAT_K2",
+                    "MAT_K3"
                 ]
             }
         ],
@@ -151,15 +142,6 @@ const db = [
         "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp",
         "allenamento": [
             {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
                 "id": "disequazioni-1",
                 "titolo": "Disequazioni di primo grado",
                 "url": "allenamento/#/lezione/disequazioni-1/1",
@@ -169,21 +151,21 @@ const db = [
                 ]
             },
             {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_C2"
+                    "MAT_K2"
                 ]
             },
             {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K1"
+                    "MAT_C2"
                 ]
             }
         ],
@@ -223,15 +205,8 @@ const db = [
                 "titolo": "Pendenza di una retta",
                 "url": "allenamento/#/lezione/retta-pendenza/1",
                 "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "parabola",
-                "titolo": "La parabola",
-                "url": "allenamento/#/lezione/parabola/1",
-                "mat": [
-                    "MAT_K3"
+                    "MAT_K3",
+                    "MAT_K2"
                 ]
             },
             {
@@ -239,14 +214,16 @@ const db = [
                 "titolo": "Rette parallele e perpendicolari",
                 "url": "allenamento/#/lezione/rette-parallele/1",
                 "mat": [
-                    "MAT_K3"
+                    "MAT_K3",
+                    "MAT_A2"
                 ]
             },
             {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
+                "id": "parabola",
+                "titolo": "La parabola",
+                "url": "allenamento/#/lezione/parabola/1",
                 "mat": [
+                    "MAT_K2",
                     "MAT_K3"
                 ]
             }
@@ -290,40 +267,6 @@ const db = [
         "icon": "⚡",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
-        "allenamento": [
-            {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "calcolo-cosa-resta-costante",
-                "titolo": "Cosa resta costante",
-                "url": "allenamento/#/lezione/calcolo-cosa-resta-costante/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "esponenziali",
-                "titolo": "Esponenziali",
-                "url": "allenamento/#/lezione/esponenziali/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "calcolo-ricarico-e-margine",
-                "titolo": "Guadagni e perdite in percentuale",
-                "url": "allenamento/#/lezione/calcolo-ricarico-e-margine/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            }
-        ],
         "journal": [
             {
                 "titolo": "Snake of Life: un serpente che impara da solo",
@@ -366,40 +309,6 @@ const db = [
         "icon": "💻",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/snake_conway_self.webp",
-        "allenamento": [
-            {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "calcolo-cosa-resta-costante",
-                "titolo": "Cosa resta costante",
-                "url": "allenamento/#/lezione/calcolo-cosa-resta-costante/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "esponenziali",
-                "titolo": "Esponenziali",
-                "url": "allenamento/#/lezione/esponenziali/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "calcolo-ricarico-e-margine",
-                "titolo": "Guadagni e perdite in percentuale",
-                "url": "allenamento/#/lezione/calcolo-ricarico-e-margine/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            }
-        ],
         "journal": [
             {
                 "titolo": "Snake of Life: un serpente che impara da solo",
@@ -451,12 +360,12 @@ const db = [
         "thumbnail": "content/assets/thumbnails/pi_is_irrational.webp",
         "allenamento": [
             {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "id": "radicali",
+                "titolo": "Radicali",
+                "url": "allenamento/#/lezione/radicali/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
@@ -464,26 +373,8 @@ const db = [
                 "titolo": "Frazioni",
                 "url": "allenamento/#/lezione/frazioni/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "notazione-scientifica",
-                "titolo": "Notazione scientifica",
-                "url": "allenamento/#/lezione/notazione-scientifica/1",
-                "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ],
@@ -539,29 +430,12 @@ const db = [
         "thumbnail": "content/assets/thumbnails/arcade_challenge_unita_di_misura.webp",
         "allenamento": [
             {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "id": "notazione-scientifica",
+                "titolo": "Notazione scientifica",
+                "url": "allenamento/#/lezione/notazione-scientifica/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "sistemi-lineari",
-                "titolo": "Sistemi lineari",
-                "url": "allenamento/#/lezione/sistemi-lineari/1",
-                "mat": [
-                    "MAT_C2"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
@@ -569,7 +443,18 @@ const db = [
                 "titolo": "Solidi e volumi",
                 "url": "allenamento/#/lezione/solidi/1",
                 "mat": [
-                    "MAT_A4"
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_C2"
                 ]
             }
         ],
@@ -607,35 +492,30 @@ const db = [
         "thumbnail": "content/assets/thumbnails/functions_lab_008.webp",
         "allenamento": [
             {
-                "id": "studio-funzione",
-                "titolo": "Studio di funzione",
-                "url": "allenamento/#/lezione/studio-funzione/1",
-                "mat": [
-                    "MAT_K2"
-                ]
-            },
-            {
                 "id": "funzioni-lineari",
                 "titolo": "Funzioni lineari",
                 "url": "allenamento/#/lezione/funzioni-lineari/1",
                 "mat": [
-                    "MAT_K2"
+                    "MAT_K2",
+                    "MAT_A2"
                 ]
             },
             {
-                "id": "proporzioni",
-                "titolo": "Proporzioni",
-                "url": "allenamento/#/lezione/proporzioni/1",
+                "id": "parabola",
+                "titolo": "La parabola",
+                "url": "allenamento/#/lezione/parabola/1",
                 "mat": [
-                    "MAT_K2"
+                    "MAT_K2",
+                    "MAT_K3"
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "studio-funzione",
+                "titolo": "Studio di funzione",
+                "url": "allenamento/#/lezione/studio-funzione/1",
                 "mat": [
-                    "MAT_K2"
+                    "MAT_K2",
+                    "MAT_A2"
                 ]
             }
         ]
@@ -679,37 +559,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/MCD_mcm_1el_001.webp",
         "allenamento": [
             {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "id": "calcolo-dividi-e-sposta",
+                "titolo": "Dividi e sposta",
+                "url": "allenamento/#/lezione/calcolo-dividi-e-sposta/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "problemi-scelta",
-                "titolo": "Problemi di scelta",
-                "url": "allenamento/#/lezione/problemi-scelta/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
-                "mat": [
-                    "MAT_C2"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ],
@@ -856,31 +720,18 @@ const db = [
                 "titolo": "Prodotti notevoli",
                 "url": "allenamento/#/lezione/prodotti-notevoli/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
-                "id": "calcolo-quadrato-del-5",
-                "titolo": "Quadrati che finiscono per 5",
-                "url": "allenamento/#/lezione/calcolo-quadrato-del-5/1",
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
                 "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-somma-per-differenza",
-                "titolo": "Simmetrici attorno a un numero tondo",
-                "url": "allenamento/#/lezione/calcolo-somma-per-differenza/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
-                "mat": [
-                    "MAT_K1"
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
                 ]
             }
         ]
@@ -923,41 +774,7 @@ const db = [
         "type": "app",
         "icon": "🏛️",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp",
-        "allenamento": [
-            {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "proporzioni",
-                "titolo": "Proporzioni",
-                "url": "allenamento/#/lezione/proporzioni/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "calcolo-percentuali-scambiate",
-                "titolo": "Percentuali che si scambiano",
-                "url": "allenamento/#/lezione/calcolo-percentuali-scambiate/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "calcolo-ricarico-e-margine",
-                "titolo": "Guadagni e perdite in percentuale",
-                "url": "allenamento/#/lezione/calcolo-ricarico-e-margine/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            }
-        ]
+        "thumbnail": "content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp"
     },
     {
         "title": "Math Bubble: la retta esplicita",
@@ -985,38 +802,20 @@ const db = [
         "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.webp",
         "allenamento": [
             {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K2",
-                    "MAT_K3"
-                ]
-            },
-            {
                 "id": "funzioni-lineari",
                 "titolo": "Funzioni lineari",
                 "url": "allenamento/#/lezione/funzioni-lineari/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
+                    "MAT_K2",
+                    "MAT_A2"
                 ]
             },
             {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_C3"
-                ]
-            },
-            {
-                "id": "studio-funzione",
-                "titolo": "Studio di funzione",
-                "url": "allenamento/#/lezione/studio-funzione/1",
-                "mat": [
-                    "MAT_A2",
+                    "MAT_K3",
                     "MAT_K2"
                 ]
             }
@@ -1063,45 +862,7 @@ const db = [
         "type": "app",
         "icon": "🌕",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.webp",
-        "allenamento": [
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_C4",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_C4",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "similitudine",
-                "titolo": "Similitudine e Talete",
-                "url": "allenamento/#/lezione/similitudine/1",
-                "mat": [
-                    "MAT_C4",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
-                "mat": [
-                    "MAT_C4",
-                    "MAT_K3"
-                ]
-            }
-        ]
+        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.webp"
     },
     {
         "title": "Studio Plotter CNC",
@@ -1137,41 +898,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp",
-        "allenamento": [
-            {
-                "id": "trigonometria",
-                "titolo": "Trigonometria del triangolo rettangolo",
-                "url": "allenamento/#/lezione/trigonometria/1",
-                "mat": [
-                    "MAT_C4"
-                ]
-            },
-            {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
-                "mat": [
-                    "MAT_C4"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_C4"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_C4"
-                ]
-            }
-        ]
+        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp"
     },
     {
         "title": "Teoria dei giochi e valutazione consapevole",
@@ -1202,7 +929,9 @@ const db = [
                 "titolo": "Statistica",
                 "url": "allenamento/#/lezione/statistica/1",
                 "mat": [
-                    "MAT_C3"
+                    "MAT_K4",
+                    "MAT_C3",
+                    "MAT_A2"
                 ]
             },
             {
@@ -1210,23 +939,17 @@ const db = [
                 "titolo": "Probabilità",
                 "url": "allenamento/#/lezione/probabilita/1",
                 "mat": [
+                    "MAT_K4",
                     "MAT_C3"
                 ]
             },
             {
-                "id": "combinatoria",
-                "titolo": "Calcolo combinatorio",
-                "url": "allenamento/#/lezione/combinatoria/1",
+                "id": "problemi-scelta",
+                "titolo": "Problemi di scelta",
+                "url": "allenamento/#/lezione/problemi-scelta/1",
                 "mat": [
-                    "MAT_C3"
-                ]
-            },
-            {
-                "id": "calcolo-triangolo-dei-coefficienti",
-                "titolo": "Il triangolo dei coefficienti",
-                "url": "allenamento/#/lezione/calcolo-triangolo-dei-coefficienti/1",
-                "mat": [
-                    "MAT_C3"
+                    "MAT_K2",
+                    "MAT_C2"
                 ]
             }
         ]
@@ -1253,11 +976,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/polinomi_challenge_v2_pro.webp",
         "allenamento": [
             {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
@@ -1265,23 +998,8 @@ const db = [
                 "titolo": "Monomi e polinomi",
                 "url": "allenamento/#/lezione/monomi/1",
                 "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_C1"
                 ]
             }
         ]
@@ -1364,38 +1082,30 @@ const db = [
         "thumbnail": "content/assets/thumbnails/scale_logaritmiche.webp",
         "allenamento": [
             {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
+                "id": "logaritmi",
+                "titolo": "Logaritmi",
+                "url": "allenamento/#/lezione/logaritmi/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_C3"
+                    "MAT_K2",
+                    "MAT_A3"
                 ]
             },
             {
-                "id": "studio-funzione",
-                "titolo": "Studio di funzione",
-                "url": "allenamento/#/lezione/studio-funzione/1",
+                "id": "esponenziali",
+                "titolo": "Esponenziali",
+                "url": "allenamento/#/lezione/esponenziali/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
+                    "MAT_K2",
+                    "MAT_C2"
                 ]
             },
             {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "id": "notazione-scientifica",
+                "titolo": "Notazione scientifica",
+                "url": "allenamento/#/lezione/notazione-scientifica/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "probabilita",
-                "titolo": "Probabilità",
-                "url": "allenamento/#/lezione/probabilita/1",
-                "mat": [
-                    "MAT_C3"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -1426,35 +1136,12 @@ const db = [
         "thumbnail": "content/assets/thumbnails/random_walk.webp",
         "allenamento": [
             {
-                "id": "trigonometria",
-                "titolo": "Trigonometria del triangolo rettangolo",
-                "url": "allenamento/#/lezione/trigonometria/1",
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
                 "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "goniometria",
-                "titolo": "Goniometria",
-                "url": "allenamento/#/lezione/goniometria/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
+                    "MAT_K4",
+                    "MAT_C3"
                 ]
             }
         ]
@@ -1537,35 +1224,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/cards_polinomi_memory004.webp",
         "allenamento": [
             {
-                "id": "prodotti-notevoli",
-                "titolo": "Prodotti notevoli",
-                "url": "allenamento/#/lezione/prodotti-notevoli/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "monomi",
-                "titolo": "Monomi e polinomi",
-                "url": "allenamento/#/lezione/monomi/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
                 "id": "scomposizioni",
                 "titolo": "Scomposizioni",
                 "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -1596,35 +1269,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/card_frazioni_algebriche_005.webp",
         "allenamento": [
             {
-                "id": "prodotti-notevoli",
-                "titolo": "Prodotti notevoli",
-                "url": "allenamento/#/lezione/prodotti-notevoli/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "monomi",
-                "titolo": "Monomi e polinomi",
-                "url": "allenamento/#/lezione/monomi/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
                 "id": "scomposizioni",
                 "titolo": "Scomposizioni",
                 "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -1657,31 +1316,18 @@ const db = [
                 "titolo": "Il teorema di Pitagora",
                 "url": "allenamento/#/lezione/pitagora/1",
                 "mat": [
-                    "MAT_K3"
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
                 ]
             },
             {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "id": "radicali",
+                "titolo": "Radicali",
+                "url": "allenamento/#/lezione/radicali/1",
                 "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ],
@@ -2154,35 +1800,22 @@ const db = [
         "thumbnail": "content/assets/thumbnails/esaustione_01.webp",
         "allenamento": [
             {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
                 "id": "aree-perimetri",
                 "titolo": "Aree e perimetri",
                 "url": "allenamento/#/lezione/aree-perimetri/1",
                 "mat": [
-                    "MAT_K3"
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
                 ]
             },
             {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
+                "id": "radicali",
+                "titolo": "Radicali",
+                "url": "allenamento/#/lezione/radicali/1",
                 "mat": [
-                    "MAT_K3"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -2215,39 +1848,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/operazioni_polinomi_graph.webp",
         "allenamento": [
             {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
                 "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_C1"
                 ]
             },
             {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
                 "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
-                "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -2493,21 +2108,12 @@ const db = [
         "thumbnail": "content/assets/thumbnails/percentuali_001.webp",
         "allenamento": [
             {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
-                "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
                 "id": "percentuali",
                 "titolo": "Percentuali",
                 "url": "allenamento/#/lezione/percentuali/1",
                 "mat": [
-                    "MAT_C2",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_C2"
                 ]
             },
             {
@@ -2515,17 +2121,17 @@ const db = [
                 "titolo": "Percentuali che si scambiano",
                 "url": "allenamento/#/lezione/calcolo-percentuali-scambiate/1",
                 "mat": [
-                    "MAT_C2",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_C2"
                 ]
             },
             {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "id": "calcolo-ricarico-e-margine",
+                "titolo": "Guadagni e perdite in percentuale",
+                "url": "allenamento/#/lezione/calcolo-ricarico-e-margine/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_C2"
                 ]
             }
         ]
@@ -2558,31 +2164,17 @@ const db = [
                 "titolo": "Goniometria",
                 "url": "allenamento/#/lezione/goniometria/1",
                 "mat": [
-                    "MAT_K2"
+                    "MAT_K2",
+                    "MAT_K3"
                 ]
             },
             {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
                 "mat": [
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "studio-funzione",
-                "titolo": "Studio di funzione",
-                "url": "allenamento/#/lezione/studio-funzione/1",
-                "mat": [
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "calcolo-cosa-resta-costante",
-                "titolo": "Cosa resta costante",
-                "url": "allenamento/#/lezione/calcolo-cosa-resta-costante/1",
-                "mat": [
-                    "MAT_K2"
+                    "MAT_K3",
+                    "MAT_C4"
                 ]
             }
         ]
@@ -2614,35 +2206,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.webp",
         "allenamento": [
             {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
                 "mat": [
-                    "MAT_K3"
+                    "MAT_K2",
+                    "MAT_C2"
                 ]
             },
             {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
                 "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
+                    "MAT_K3",
+                    "MAT_C4"
                 ]
             }
         ]
@@ -2679,31 +2257,17 @@ const db = [
                 "titolo": "Prodotti notevoli",
                 "url": "allenamento/#/lezione/prodotti-notevoli/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
-                "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A3"
                 ]
             }
         ]
@@ -2730,41 +2294,7 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp",
-        "allenamento": [
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "rette-parallele",
-                "titolo": "Rette parallele e perpendicolari",
-                "url": "allenamento/#/lezione/rette-parallele/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3"
-                ]
-            }
-        ]
+        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp"
     },
     {
         "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
@@ -2794,35 +2324,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.webp",
         "allenamento": [
             {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "monomi",
-                "titolo": "Monomi e polinomi",
-                "url": "allenamento/#/lezione/monomi/1",
-                "mat": [
-                    "MAT_K1"
-                ]
-            },
-            {
                 "id": "scomposizioni",
                 "titolo": "Scomposizioni",
                 "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A3"
                 ]
             },
             {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
                 "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -2852,35 +2368,22 @@ const db = [
         "thumbnail": "content/assets/thumbnails/insiemi004.webp",
         "allenamento": [
             {
-                "id": "problemi-scelta",
-                "titolo": "Problemi di scelta",
-                "url": "allenamento/#/lezione/problemi-scelta/1",
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
                 "mat": [
-                    "MAT_C2"
+                    "MAT_K4",
+                    "MAT_C3"
                 ]
             },
             {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
                 "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "percentuali",
-                "titolo": "Percentuali",
-                "url": "allenamento/#/lezione/percentuali/1",
-                "mat": [
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "proporzioni",
-                "titolo": "Proporzioni",
-                "url": "allenamento/#/lezione/proporzioni/1",
-                "mat": [
-                    "MAT_C2"
+                    "MAT_K4",
+                    "MAT_C3",
+                    "MAT_A2"
                 ]
             }
         ]
@@ -2914,10 +2417,11 @@ const db = [
         "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.webp",
         "allenamento": [
             {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
+                "id": "calcolo-triangolo-dei-coefficienti",
+                "titolo": "Il triangolo dei coefficienti",
+                "url": "allenamento/#/lezione/calcolo-triangolo-dei-coefficienti/1",
                 "mat": [
+                    "MAT_K4",
                     "MAT_C3"
                 ]
             },
@@ -2926,23 +2430,18 @@ const db = [
                 "titolo": "Il teorema di Pitagora",
                 "url": "allenamento/#/lezione/pitagora/1",
                 "mat": [
-                    "MAT_A4"
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
                 ]
             },
             {
-                "id": "probabilita",
-                "titolo": "Probabilità",
-                "url": "allenamento/#/lezione/probabilita/1",
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
                 "mat": [
-                    "MAT_C3"
-                ]
-            },
-            {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
-                "mat": [
-                    "MAT_A4"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -2982,17 +2481,9 @@ const db = [
                 "titolo": "Il teorema di Pitagora",
                 "url": "allenamento/#/lezione/pitagora/1",
                 "mat": [
+                    "MAT_K3",
                     "MAT_A4",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
-                "mat": [
-                    "MAT_A4",
-                    "MAT_K3"
+                    "MAT_C4"
                 ]
             },
             {
@@ -3000,16 +2491,9 @@ const db = [
                 "titolo": "Aree e perimetri",
                 "url": "allenamento/#/lezione/aree-perimetri/1",
                 "mat": [
+                    "MAT_K3",
                     "MAT_A4",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "retta-pendenza",
-                "titolo": "Pendenza di una retta",
-                "url": "allenamento/#/lezione/retta-pendenza/1",
-                "mat": [
-                    "MAT_K3"
+                    "MAT_C4"
                 ]
             }
         ]
@@ -3042,38 +2526,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.webp",
         "allenamento": [
             {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_C3"
+                    "MAT_K2",
+                    "MAT_K3"
                 ]
             },
             {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "studio-funzione",
-                "titolo": "Studio di funzione",
-                "url": "allenamento/#/lezione/studio-funzione/1",
-                "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "probabilita",
-                "titolo": "Probabilità",
-                "url": "allenamento/#/lezione/probabilita/1",
-                "mat": [
-                    "MAT_C3"
+                    "MAT_K3",
+                    "MAT_C4"
                 ]
             }
         ]
@@ -3103,38 +2570,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.webp",
         "allenamento": [
             {
-                "id": "equazioni-1",
-                "titolo": "Equazioni di primo grado",
-                "url": "allenamento/#/lezione/equazioni-1/1",
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K1"
+                    "MAT_K2"
                 ]
             },
             {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "id": "parabola",
+                "titolo": "La parabola",
+                "url": "allenamento/#/lezione/parabola/1",
                 "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-lavorare-insieme",
-                "titolo": "Lavorare insieme",
-                "url": "allenamento/#/lezione/calcolo-lavorare-insieme/1",
-                "mat": [
-                    "MAT_A3"
+                    "MAT_K2",
+                    "MAT_K3"
                 ]
             }
         ]
@@ -3165,39 +2615,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/fractions_lab_001.webp",
         "allenamento": [
             {
-                "id": "numeri-relativi",
-                "titolo": "Numeri relativi",
-                "url": "allenamento/#/lezione/numeri-relativi/1",
-                "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
                 "id": "frazioni",
                 "titolo": "Frazioni",
                 "url": "allenamento/#/lezione/frazioni/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "id": "potenze",
+                "titolo": "Proprietà delle potenze",
+                "url": "allenamento/#/lezione/potenze/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "notazione-scientifica",
-                "titolo": "Notazione scientifica",
-                "url": "allenamento/#/lezione/notazione-scientifica/1",
-                "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]
@@ -3227,28 +2659,11 @@ const db = [
         "thumbnail": "content/assets/thumbnails/math_underground003_4el.webp",
         "allenamento": [
             {
-                "id": "funzioni-lineari",
-                "titolo": "Funzioni lineari",
-                "url": "allenamento/#/lezione/funzioni-lineari/1",
-                "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
-                ]
-            },
-            {
                 "id": "studio-funzione",
                 "titolo": "Studio di funzione",
                 "url": "allenamento/#/lezione/studio-funzione/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
-                "mat": [
+                    "MAT_K2",
                     "MAT_A2"
                 ]
             },
@@ -3257,7 +2672,17 @@ const db = [
                 "titolo": "Esponenziali",
                 "url": "allenamento/#/lezione/esponenziali/1",
                 "mat": [
-                    "MAT_K2"
+                    "MAT_K2",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "logaritmi",
+                "titolo": "Logaritmi",
+                "url": "allenamento/#/lezione/logaritmi/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_A3"
                 ]
             }
         ]
@@ -3288,41 +2713,7 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp",
-        "allenamento": [
-            {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            },
-            {
-                "id": "sistemi-lineari",
-                "titolo": "Sistemi lineari",
-                "url": "allenamento/#/lezione/sistemi-lineari/1",
-                "mat": [
-                    "MAT_A3"
-                ]
-            }
-        ]
+        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp"
     },
     {
         "title": "Caccia all'Errore: Memory su Operazioni in Z",
@@ -3354,8 +2745,8 @@ const db = [
                 "titolo": "Numeri relativi",
                 "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
@@ -3363,25 +2754,8 @@ const db = [
                 "titolo": "Proprietà delle potenze",
                 "url": "allenamento/#/lezione/potenze/1",
                 "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "calcolo-vicino-a-100",
-                "titolo": "Numeri vicini a 100",
-                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
-                "mat": [
-                    "MAT_A1",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "equazioni-1-speciali",
-                "titolo": "Equazioni di primo grado: oltre gli interi",
-                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
-                "mat": [
-                    "MAT_K1"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]

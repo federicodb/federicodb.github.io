@@ -69,6 +69,8 @@ def link_allenamento(meta, catalogo):
     """ Se l'app dichiara <meta name="allenamento">, valgono le scelte del docente (nell'ordine dato).
         Altrimenti: """
     scelti = meta.pop("allenamento_scelto", None)
+    if scelti == ["nessuno"]:
+        return []  # il docente ha deciso: nessuna lezione della Quest c'entra
     if scelti:
         per_id = {a["id"]: a for a in catalogo}
         for x in scelti:
@@ -242,6 +244,7 @@ def extract_html_meta(file_path):
         }
         if scelti:
             meta["allenamento_scelto"] = scelti
+            meta["_allenamento_dichiarato"] = True
         if fragile:
             meta["_fragile"] = fragile
         return meta
@@ -978,8 +981,11 @@ def main():
                         meta.pop("allenamento", None)
 
                     fragile = meta.pop("_fragile", [])
+                    dichiarato = meta.pop("_allenamento_dichiarato", False)
                     if content_type == "app":
                         problemi = list(fragile)
+                        if not dichiarato:
+                            problemi.append("allenamenti non scelti (manca <meta name=\"allenamento\">)")
                         if not any(re.match(r"^MAT_[KAC]\d", t) for t in meta.get("tags", [])):
                             problemi.append("nessun codice MAT nelle keywords")
                         if "|" in meta.get("title", "") or len(meta.get("title", "")) < 8:
