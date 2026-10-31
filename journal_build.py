@@ -404,6 +404,64 @@ def _colore(titolo):
     return PALETTE[abs(h) % len(PALETTE)]
 
 
+# radici troppo generiche per collegare una nota a una verifica (comparirebbero ovunque)
+RADICI_GENERICHE = {"numeri", "modell", "geomet", "sistem", "fattor", "matema", "calcol", "analis", "intern"}
+VERIFICHE_MAX = 3
+
+
+def _radici(testo):
+    """ Radici di 6 lettere delle parole lunghe, come build._radici ("scomposizioni" e "SCOMPOSIZIONE" -> "scompo") """
+    testo = testo.lower().replace("à", "a").replace("è", "e").replace("ù", "u")
+    return {w[:6] for w in re.findall(r"[a-z]{5,}", testo)}
+
+
+def _verifiche_collegate(attivita, verifiche):
+    """ Verifiche dell'Archivio sugli stessi temi dell'attività principale della nota: almeno due temi in comune,
+        oppure un tema e una competenza MAT in comune. Collega il gioco alla matematica scritta. """
+    if not attivita:
+        return []
+    principale = attivita[0]
+    temi = _radici(" ".join(_tag_tematici(principale))) - RADICI_GENERICHE
+    codici = {t.split(":")[0] for t in principale.get("tags", []) if re.match(r"^MAT_[KAC]\d", t)}
+    punti = []
+    for v in verifiche:
+        comuni = temi & (_radici(" ".join(_tag_tematici(v))) - RADICI_GENERICHE)
+        cod = codici & {t.split(":")[0] for t in v.get("tags", []) if re.match(r"^MAT_[KAC]\d", t)}
+        if len(comuni) >= 2 or (comuni and cod):
+            punti.append((3 * len(comuni) + len(cod), v.get("date", ""), v))
+    punti.sort(key=lambda x: (-x[0], x[1]), reverse=False)
+    return [v for _, _, v in punti[:VERIFICHE_MAX]]
+
+
+def _nome_verifica(v):
+    """ "Verifica di maggio 2026: potenze, frazioni…" senza la classe (nessuna etichetta di classe per gli studenti) """
+    try:
+        d = datetime.strptime(v.get("date", "")[:10], "%Y-%m-%d")
+        quando = f"{MESI[d.month - 1]} {d.year}"
+    except ValueError:
+        quando = ""
+    temi = re.search(r"\bsu ([^.]+)", v.get("excerpt", ""))
+    temi = re.sub(r"(?i)\s*\b[1-5]\s?(el|gp|mec|ma|gr|od|ss)\b", "", temi.group(1)).strip(" ,") if temi else ""
+    if len(temi) > 110:
+        temi = temi[:110].rsplit(",", 1)[0] + "…"
+    return f"Verifica di {quando}" + (f": {temi}" if temi else "")
+
+
+def _blocco_verifiche(verifiche, root):
+    if not verifiche:
+        return ""
+    voci = []
+    for v in verifiche:
+        file = [f'<a href="{_href(root, x["url"])}" target="_blank" rel="noopener">'
+                f'{html.escape(x.get("label", "PDF").replace("Versione Unica", "Apri il PDF"))}</a>'
+                for x in v.get("versions") or [{"url": v["url"], "label": "Apri il PDF"}]]
+        voci.append(f'<li><span>{html.escape(_nome_verifica(v))}</span> {" · ".join(file)}</li>')
+    return ('<div class="jr-carta"><h3>Mettiti alla prova su carta</h3>'
+            '<p>Verifiche dell\'Archivio con esercizi sugli stessi temi. Prova a farle con carta e penna, senza l\'app: '
+            'è lì che si vede se hai capito.</p>'
+            f'<ul>{"".join(voci)}</ul></div>\n')
+
+
 def _chiave(url):
     """ Nome dell'attività nei filtri (?attivita=): il nome del file, senza spazi """
     return _stem(url).replace(" ", "_")
@@ -567,7 +625,7 @@ def _pagina(root, titolo, descrizione, canonical, immagine, corpo, extra_head=""
 """
 
 
-def build_journal(items, base_url):
+def build_journal(items, base_url, verifiche=()):
     """
     Genera journal/ dalle note. Restituisce:
       note_per_url: {url attività: [{titolo, url, data}]}  (per il campo 'journal' di database.js)
@@ -625,8 +683,9 @@ def build_journal(items, base_url):
 
         corpo = _sistema_immagini(_markdown_con_formule(n["corpo"]), root, avvisi, n["slug"])
         # la parte per gli studenti ("Per prepararti alla verifica") si riconosce a colpo d'occhio: un riquadro
+        carta = _blocco_verifiche(_verifiche_collegate(collegate, verifiche), root)
         corpo = re.sub(r'(<h2>Per prepararti alla verifica</h2>.*?)(?=<h2>|\Z)',
-                       r'<section class="jr-studenti">\1</section>\n', corpo, flags=re.S)
+                       lambda m: f'<section class="jr-studenti">{m.group(1)}{carta}</section>\n', corpo, flags=re.S)
         video = _video(n.get("video", ""), root, avvisi, n["slug"])
         # copertina: il campo "copertina:", poi le immagini della nota, poi la miniatura della prima attività;
         # sempre in tema scuro (COVER_MAX_LUMA)

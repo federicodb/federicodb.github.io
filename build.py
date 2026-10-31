@@ -1080,7 +1080,7 @@ def main():
     journal_sitemap = []
     try:
         import journal_build
-        note_per_url, journal_sitemap, _ = journal_build.build_journal(db_main, BASE_URL)
+        note_per_url, journal_sitemap, _ = journal_build.build_journal(db_main, BASE_URL, db_verifiche)
         for item in db_main:
             if item.get('url') in note_per_url:
                 item['journal'] = note_per_url[item['url']]
