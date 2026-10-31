@@ -3,6 +3,7 @@ titolo: Math Pool: la retta diventa un tiro di sponda
 data: 2026-10-29
 descrizione: Il biliardo cartesiano passa al 3D con fisica vera, e la parabola entra in gioco con i tiri a effetto.
 attivita: math_pool_retta_pianocartesiano
+copertina: media/math-pool-pendenza.png
 stato: esempio
 ---
 

@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 09:23:54
+   Data: 2026-10-31 09:42:27
 */
 
 const db = [
@@ -63,6 +63,13 @@ const db = [
                     "MAT_A3",
                     "MAT_K1"
                 ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "Disequazioni di secondo grado: la risposta si legge sulla parabola",
+                "url": "journal/2026-10-30-disequazioni-di-secondo-grado-sulla-parabola/",
+                "data": "2026-10-30"
             }
         ]
     },
@@ -168,6 +175,13 @@ const db = [
                     "MAT_A3",
                     "MAT_K1"
                 ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "Frazionaria o sistema? Due regole che si somigliano troppo",
+                "url": "journal/2026-10-30-frazionaria-o-sistema/",
+                "data": "2026-10-30"
             }
         ]
     },
@@ -390,6 +404,13 @@ const db = [
                     "MAT_K1"
                 ]
             }
+        ],
+        "journal": [
+            {
+                "titolo": "π non è una frazione (e nemmeno √2)",
+                "url": "journal/2026-10-28-pi-greco-non-e-una-frazione/",
+                "data": "2026-10-28"
+            }
         ]
     },
     {
@@ -536,6 +557,11 @@ const db = [
                 "titolo": "Arcade Challenge: le unità di misura in ascensore",
                 "url": "journal/2026-10-26-arcade-challenge-unita-di-misura/",
                 "data": "2026-10-26"
+            },
+            {
+                "titolo": "Arcade Challenge: scomporre a colpi di aree",
+                "url": "journal/2026-10-22-arcade-challenge-scomposizioni-parabola/",
+                "data": "2026-10-22"
             }
         ]
     },
@@ -619,6 +645,13 @@ const db = [
                 "mat": [
                     "MAT_K2"
                 ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "Arcade Challenge: scomporre a colpi di aree",
+                "url": "journal/2026-10-22-arcade-challenge-scomposizioni-parabola/",
+                "data": "2026-10-22"
             }
         ]
     },
@@ -789,7 +822,14 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.webp"
+        "thumbnail": "content/assets/thumbnails/math_bubble_equazione_della_retta.webp",
+        "journal": [
+            {
+                "titolo": "Math Bubble: la retta che fa scoppiare le bolle",
+                "url": "journal/2026-10-07-math-bubble-la-retta-che-scoppia-le-bolle/",
+                "data": "2026-10-07"
+            }
+        ]
     },
     {
         "title": "Le fasi della Luna",
@@ -1401,6 +1441,13 @@ const db = [
                 "mat": [
                     "MAT_K3"
                 ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "π non è una frazione (e nemmeno √2)",
+                "url": "journal/2026-10-28-pi-greco-non-e-una-frazione/",
+                "data": "2026-10-28"
             }
         ]
     },

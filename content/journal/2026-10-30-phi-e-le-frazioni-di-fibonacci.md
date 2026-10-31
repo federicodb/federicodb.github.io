@@ -3,6 +3,7 @@ titolo: φ e le frazioni di Fibonacci: vedere un numero che non si lascia scrive
 data: 2026-10-30
 descrizione: Nell'app sul rapporto aureo ora le frazioni di Fibonacci si avvicinano a φ sotto gli occhi, una dopo l'altra.
 attivita: phi_is_irrational_01, fibonacci_anim
+copertina: media/phi-disegno-che-non-si-chiude.png
 stato: esempio
 ---
 

@@ -3,6 +3,7 @@ titolo: Arcade Challenge: le unità di misura in ascensore
 data: 2026-10-26
 descrizione: Il nuovo gioco della serie Arcade Challenge porta le equivalenze tra unità di misura in cantiere.
 attivita: arcade_challenge_unita_di_misura, MCD_mcm_1el_001
+copertina: media/arcade-unita-ascensore.png
 stato: esempio
 ---
 

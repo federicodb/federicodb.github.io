@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare la nota in content/journal/ -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>π non è una frazione (e nemmeno √2) | Journal · Orfini Math Lab</title>
+    <meta name="description" content="Un percorso in quattro tappe per capire perché diametro e circonferenza non hanno un&#x27;unità di misura comune.">
+    <meta name="author" content="Prof. Federico De Benedictis">
+    <link rel="canonical" href="https://federicodb.github.io/journal/2026-10-28-pi-greco-non-e-una-frazione/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://federicodb.github.io/journal/2026-10-28-pi-greco-non-e-una-frazione/">
+    <meta property="og:title" content="π non è una frazione (e nemmeno √2)">
+    <meta property="og:description" content="Un percorso in quattro tappe per capire perché diametro e circonferenza non hanno un&#x27;unità di misura comune.">
+    <meta property="og:image" content="https://federicodb.github.io/journal/2026-10-28-pi-greco-non-e-una-frazione/copertina.webp">
+    <meta property="article:published_time" content="2026-10-28">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet" href="../../cookie-consent.css">
+    <script>
+        if (localStorage.getItem('orfini_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+    <link rel="stylesheet" href="../../content/assets/style/theme-light.css">
+    <link rel="stylesheet" href="../../journal.css">
+    <script src="../../content/assets/js/theme-toggle.js" defer></script>
+</head>
+
+<body>
+
+    <nav id="main-nav">
+        <div class="container nav-container">
+            <div class="nav-row-1">
+                <a href="../../index.html" class="brand">
+                    <span class="brand-title">ORFINI</span>
+                    <span class="brand-sub">JOURNAL</span>
+                </a>
+                <div class="nav-links">
+                    <a href="../../index.html" class="nav-link">Attività</a>
+                    <a href="../../allenamento/" class="nav-link nav-link-cta">Allenati</a>
+                    <a href="../../journal/" class="nav-link active" aria-current="page">Journal</a>
+                    <a href="../../calcolo-mentale.html" class="nav-link">Calcolo veloce</a>
+                    <a href="../../verifiche.html" class="nav-link">Archivio</a>
+                    <a href="../../galaxy.html" class="nav-link">Mappa</a>
+                    <a href="../../competenze.html" class="nav-link">Competenze</a>
+                    <a href="../../scuola.html" class="nav-link">La Scuola</a>
+                    <a href="../../index.html#about" class="nav-link">Chi Sono</a>
+                    <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+                        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="nav-row-2">
+                <form class="search-filter-wrapper" action="../../journal/" method="get" role="search">
+                    <button type="button" id="filter-burger-btn" class="burger-btn" aria-label="Filtra per attività" aria-expanded="false" aria-controls="filter-dropdown">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="search-container">
+                        <input type="search" id="search-input" name="q" class="search-input" placeholder="Cerca nelle note..." aria-label="Cerca nelle note">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    </div>
+                </form>
+                <div id="filter-dropdown" class="filter-dropdown">
+                    <div class="filter-group">
+                        <span class="filter-group-title">Filtra per attività</span>
+                        <a class="filter-chip" href="../../journal/" data-attivita="">Tutte le note</a>
+                        <a class="filter-chip" href="../../journal/?attivita=pi_is_irrational" data-attivita="pi_is_irrational">$\pi$ is irrational: perché π non è una frazione</a>
+                        <a class="filter-chip" href="../../journal/?attivita=sqrt2_is_irrational" data-attivita="sqrt2_is_irrational">$\sqrt{2}$ is irrational: la diagonale incommensurabile</a>
+                        <a class="filter-chip" href="../../journal/?attivita=mcd_mcm_1el_001" data-attivita="mcd_mcm_1el_001">Arcade Challenge: MCM &amp; MCD</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_scomposizioni_parabola" data-attivita="arcade_challenge_scomposizioni_parabola">Arcade Challenge: Scomposizioni &amp; Parabola</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_unita_di_misura" data-attivita="arcade_challenge_unita_di_misura">Arcade Challenge: Unità di misura</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fibonacci_anim" data-attivita="fibonacci_anim">Experience Fibonacci</a>
+                        <a class="filter-chip" href="../../journal/?attivita=disequazioni_frazionarie_vs_sistemi" data-attivita="disequazioni_frazionarie_vs_sistemi">Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie</a>
+                        <a class="filter-chip" href="../../journal/?attivita=parabola_e_disequazioni_di_secondo_grado_maggio_2026" data-attivita="parabola_e_disequazioni_di_secondo_grado_maggio_2026">Laboratorio Scomposizioni e Disequazioni di secondo grado | Parabola</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_bubble_equazione_della_retta" data-attivita="math_bubble_equazione_della_retta">Math Bubble: La Retta Esplicita | Orfini Math Lab</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_pool_retta_pianocartesiano" data-attivita="math_pool_retta_pianocartesiano">Math Pool: Biliardo Cartesiano e retta</a>
+                        <a class="filter-chip" href="../../journal/?attivita=soglie_particelle_automa_cellulare" data-attivita="soglie_particelle_automa_cellulare">Simulatore di Automi Cellulari e Particelle</a>
+                        <a class="filter-chip" href="../../journal/?attivita=snake_conway_self" data-attivita="snake_conway_self">Snake of Life</a>
+                        <a class="filter-chip" href="../../journal/?attivita=phi_is_irrational_01" data-attivita="phi_is_irrational_01">φ è irrazionale: il rapporto aureo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container jr" id="contenuto">
+        <p class="jr-back"><a href="../">← Tutte le note</a></p>
+        <div class="jr-layout">
+        <article class="jr-note">
+            <header>
+                <p class="jr-meta"><time datetime="2026-10-28">28 ottobre 2026</time> · Prof. Federico De Benedictis</p>
+                <h1>π non è una frazione (e nemmeno √2)</h1>
+                <p class="jr-lead">Un percorso in quattro tappe per capire perché diametro e circonferenza non hanno un&#x27;unità di misura comune.</p>
+            </header>
+        <p class="jr-flag">Nota d'esempio, scritta per vedere come appare il Journal. Le parti sull'uso in classe sono da compilare.</p>
+            <div class="jr-body">
+<h2>Le quattro tappe</h2>
+<ol>
+<li><strong>Srotola la ruota</strong>: una ruota di diametro 1 fa un giro completo e lascia una traccia lunga $\pi$.</li>
+<li><strong>L'unità comune</strong>: si cerca un pezzetto che stia un numero intero di volte sia nel diametro sia nella circonferenza. Non si trova.</li>
+<li><strong>Le due lancette</strong>: la lancetta corta, attaccata alla punta della lunga, gira $r$ volte più veloce. Con $r = \frac{22}{7}$ la figura si chiude dopo 7 giri; con $r = \pi$ la punta non torna mai al punto di partenza.</li>
+<li><strong>Le cifre</strong>: i decimali di $\pi$ non diventano mai periodici.</li>
+</ol>
+<p>Lungo il percorso ci sono domande di previsione, una tappa alla volta; alla fine un quiz e una spiegazione animata.</p>
+<h2>Una frazione che inganna</h2>
+<p>$$\frac{22}{7} = 3{,}142857\,142857\ldots \qquad \pi = 3{,}141592\ldots$$</p>
+<p>$\frac{22}{7}$ è vicinissima, ma il suo periodo $142857$ si ripete per sempre; $\pi$ non ha periodo.</p>
+<h2>E √2</h2>
+<p>Lo stesso discorso vale per lato e diagonale di un quadrato: nell'app sull'<strong>albero di Pitagora</strong> la diagonale è $\sqrt2$ volte il lato e nessuna unità li misura tutti e due. Lo zoom di quell'app ora funziona di nuovo.</p>
+<h2>In classe</h2>
+<p>[DA COMPILARE DAL DOCENTE]</p>
+<h2>Cosa cambio</h2>
+<p>[DA COMPILARE DAL DOCENTE]</p>
+
+            </div>
+        </article>
+        <aside class="jr-acts" aria-labelledby="att">
+            <h2 id="att">Le attività di cui parla</h2>
+            <ul><li class="jr-act"><img src="../../content/assets/thumbnails/pi_is_irrational.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/pi_is_irrational.html">$\pi$ is irrational: perché π non è una frazione</a></h3><p>Percorso guidato in quattro tappe sul numero $\pi$: srotolare una ruota, cercare un&#x27;unità comune tra diametro e circonferenza, due lancette il cui disegno non si chiude mai e cifre decimali che non si ripetono. Con domande di previsione, quiz finale e spiegazione animata.</p><p class="jr-act-more"><a href="../../content/apps/pi_is_irrational_spiegazione.html">Spiegami come funziona</a> · <a href="../../allenamento/#/lezione/numeri-relativi/1">Allenati: Numeri relativi</a> · <a href="../../allenamento/#/lezione/frazioni/1">Allenati: Frazioni</a> · <a href="../../allenamento/#/lezione/calcolo-vicino-a-100/1">Allenati: Numeri vicini a 100</a></p></div></li><li class="jr-act"><img src="../../content/assets/thumbnails/sqrt2_is_irrational.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/sqrt2_is_irrational.html">$\sqrt{2}$ is irrational: la diagonale incommensurabile</a></h3><p>Esplorazione visiva dell&#x27;Albero di Pitagora e della spirale dei triangoli rettangoli. Scopri perché lato e diagonale di un quadrato non possono essere misurati con la stessa unità, illustrando l&#x27;irrazionalità di $\sqrt{2}$.</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/pitagora/1">Allenati: Il teorema di Pitagora</a> · <a href="../../allenamento/#/lezione/retta-pendenza/1">Allenati: Pendenza di una retta</a> · <a href="../../allenamento/#/lezione/rette-parallele/1">Allenati: Rette parallele e perpendicolari</a></p></div></li></ul>
+        </aside>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio matematico digitale<br>Istituto Professionale "E. Orfini" · Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener" class="social-circle" aria-label="Instagram @meltingmath">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Laboratorio Matematico Orfini Foligno · Prof. Federico De Benedictis. Progetto Open Source.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('filter-burger-btn'), menu = document.getElementById('filter-dropdown');
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                btn.setAttribute('aria-expanded', menu.classList.toggle('active'));
+            });
+            document.addEventListener('click', function (e) {
+                if (!menu.contains(e.target)) { menu.classList.remove('active'); btn.setAttribute('aria-expanded', 'false'); }
+            });
+        })();
+    </script>
+    <script src="../../cookie-consent.js"></script>
+</body>
+
+</html>
