@@ -93,7 +93,9 @@ def generate_app_thumbnail(file_path, thumb_path):
         with sync_playwright() as p:
             # Lancia browser headless con viewport HD
             browser = p.chromium.launch(headless=True)
-            page = browser.new_page(viewport={'width': 1280, 'height': 800})
+            # tema scuro, come il resto del sito: preferenza di sistema e chiave condivisa orfini_theme
+            page = browser.new_page(viewport={'width': 1280, 'height': 800}, color_scheme='dark')
+            page.add_init_script("try { localStorage.setItem('orfini_theme', 'dark'); } catch (e) {}")
             
             page.goto(url)
             try:

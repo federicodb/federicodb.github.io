@@ -22,7 +22,7 @@ import urllib.parse
 from datetime import datetime
 
 import markdown
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageStat
 
 SRC_DIR = os.path.join("content", "journal")
 OUT_DIR = "journal"
@@ -32,6 +32,7 @@ IMG_WARN_KB = 400
 IMG_MIN_PX = 600          # sotto questa larghezza una foto appare sgranata a tutta colonna
 COVER_PX = (1200, 630)    # copertina della nota: scheda dell'elenco e anteprima quando si condivide il link
 VIDEO_WARN_MB = 20
+COVER_MAX_LUMA = 110       # luminosità media massima (0-255): le copertine sono in tema scuro, come il sito
 REPO_URL = "https://github.com/federicodb/federicodb.github.io"
 ULTIMO_AGGIORNAMENTO = ""  # data più recente tra attività e note, la imposta build_journal
 RIFORMA_JSON = "riforma2017.json"
@@ -200,17 +201,23 @@ def _immagini_della_nota(n, avvisi):
 
 
 def _copertina(n, fonti, avvisi):
-    """ journal/<nota>/copertina.webp, ritagliata a COVER_PX dalla prima fonte che si apre. Restituisce il percorso
-        dalla radice del sito, oppure "" se non c'è nessuna immagine (la scheda resta senza copertina). """
+    """ journal/<nota>/copertina.webp, ritagliata a COVER_PX dalla prima fonte che si apre ed è in tema scuro.
+        Restituisce il percorso dalla radice del sito, oppure "" se non c'è nessuna immagine scura (la scheda resta
+        senza copertina: meglio niente che una schermata chiara in mezzo alle altre). """
     for src in fonti:
         try:
             with Image.open(src) as im:
                 im = ImageOps.exif_transpose(im).convert("RGB")
+                # il centro un po' in alto: nelle foto di classe e nelle schermate la parte utile sta lì
+                cop = ImageOps.fit(im, COVER_PX, Image.LANCZOS, centering=(0.5, 0.4))
+                luma = ImageStat.Stat(cop.convert("L")).mean[0]
+                if luma > COVER_MAX_LUMA:
+                    avvisi.append(f"{n['slug']}: '{src}' è chiara (luminosità {luma:.0f} su 255): le copertine sono in tema "
+                                  "scuro, la salto. Cattura l'attività con il tema scuro")
+                    continue
                 if im.width < COVER_PX[0] // 2:
                     avvisi.append(f"{n['slug']}: la copertina viene da '{src}', larga solo {im.width} px")
-                # il centro un po' in alto: nelle foto di classe e nelle schermate la parte utile sta lì
-                ImageOps.fit(im, COVER_PX, Image.LANCZOS, centering=(0.5, 0.4)).save(
-                    os.path.join(OUT_DIR, n["slug"], "copertina.webp"), "WEBP", quality=78, method=6)
+                cop.save(os.path.join(OUT_DIR, n["slug"], "copertina.webp"), "WEBP", quality=78, method=6)
             if src.replace(os.sep, "/").startswith(THUMBS_DIR):
                 # le miniature del catalogo sono catturate all'apertura dell'app: spesso schermata iniziale o menu
                 avvisi.append(f"{n['slug']}: la copertina è la miniatura del catalogo ({os.path.basename(src)}), cioè l'app appena "
@@ -218,6 +225,8 @@ def _copertina(n, fonti, avvisi):
             return f"{OUT_DIR}/{n['slug']}/copertina.webp"
         except OSError:
             continue
+    if fonti:
+        avvisi.append(f"{n['slug']}: nessuna immagine in tema scuro per la copertina: la scheda resta senza")
     return ""
 
 
@@ -612,7 +621,8 @@ def build_journal(items, base_url):
 
         corpo = _sistema_immagini(_markdown_con_formule(n["corpo"]), root, avvisi, n["slug"])
         video = _video(n.get("video", ""), root, avvisi, n["slug"])
-        # copertina: il campo "copertina:", poi la prima immagine della nota, poi la miniatura della prima attività
+        # copertina: il campo "copertina:", poi le immagini della nota, poi la miniatura della prima attività;
+        # sempre in tema scuro (COVER_MAX_LUMA)
         os.makedirs(os.path.join(OUT_DIR, n["slug"]), exist_ok=True)
         fonti = []
         if n.get("copertina"):
@@ -622,8 +632,9 @@ def build_journal(items, base_url):
                 fonti.append(c)
             else:
                 avvisi.append(f"{n['slug']}: copertina non trovata '{n['copertina']}'")
-        fonti += _immagini_della_nota(n, avvisi) + [it["thumbnail"] for it in collegate if it.get("thumbnail")]
-        n["img_rel"] = _copertina(n, fonti, avvisi)
+        # ripiego: solo la miniatura dell'attività principale (la prima citata), mai quella di un'altra app
+        fonti += _immagini_della_nota(n, avvisi) + [it["thumbnail"] for it in collegate[:1] if it.get("thumbnail")]
+        n["img_rel"] = _copertina(n, list(dict.fromkeys(fonti)), avvisi)
         immagine = base_url + n["img_rel"] if n["img_rel"] else cover_default
         n["immagine"] = immagine
         n["testo"] = _per_ricerca(" ".join([n["titolo"], n["descrizione"], re.sub(r"<[^>]+>", " ", corpo)]

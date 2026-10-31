@@ -3,6 +3,7 @@ titolo: Snake of Life: un serpente che impara da solo
 data: 2026-10-29
 descrizione: Un esperimento del laboratorio: il Gioco della Vita di Conway incontra un algoritmo evolutivo.
 attivita: snake_conway_self, soglie_particelle_automa_cellulare
+copertina: media/snake-of-life-il-serpente-pensa.png
 stato: esempio
 ---
 
