@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 15:55:12
+   Data: 2026-10-31 18:58:12
 */
 
 const db = [
@@ -60,56 +60,6 @@ const db = [
             {
                 "titolo": "Disequazioni di secondo grado: la risposta si legge sulla parabola",
                 "url": "journal/2026-10-30-disequazioni-di-secondo-grado-sulla-parabola/",
-                "data": "2026-10-30"
-            }
-        ]
-    },
-    {
-        "title": "φ è irrazionale: il rapporto aureo",
-        "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
-        "tags": [
-            "$\\PHI$",
-            "3D",
-            "FILLOTASSI",
-            "GEOMETRIA",
-            "INCOMMENSURABILITÀ",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "RAPPORTO AUREO",
-            "SEZIONE AUREA",
-            "SPIRALE",
-            "WEBGL"
-        ],
-        "date": "2026-10-30",
-        "url": "content/apps/phi_is_irrational_01.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
-        "allenamento": [
-            {
-                "id": "rapporto-aureo",
-                "titolo": "Rapporto aureo e sezione aurea",
-                "url": "allenamento/#/lezione/rapporto-aureo/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_C4"
-                ]
-            },
-            {
-                "id": "fibonacci",
-                "titolo": "Successione di Fibonacci",
-                "url": "allenamento/#/lezione/fibonacci/1",
-                "mat": [
-                    "MAT_K1",
-                    "MAT_K3"
-                ]
-            }
-        ],
-        "journal": [
-            {
-                "titolo": "φ e le frazioni di Fibonacci: vedere un numero che non si lascia scrivere",
-                "url": "journal/2026-10-30-phi-e-le-frazioni-di-fibonacci/",
                 "data": "2026-10-30"
             }
         ]
@@ -178,6 +128,137 @@ const db = [
         ]
     },
     {
+        "title": "φ è irrazionale: il rapporto aureo",
+        "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
+        "tags": [
+            "$\\PHI$",
+            "3D",
+            "FILLOTASSI",
+            "GEOMETRIA",
+            "INCOMMENSURABILITÀ",
+            "MATEMATICA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "RAPPORTO AUREO",
+            "SEZIONE AUREA",
+            "SPIRALE",
+            "WEBGL"
+        ],
+        "date": "2026-10-30",
+        "url": "content/apps/phi_is_irrational_01.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/phi_is_irrational_01.webp",
+        "allenamento": [
+            {
+                "id": "rapporto-aureo",
+                "titolo": "Rapporto aureo e sezione aurea",
+                "url": "allenamento/#/lezione/rapporto-aureo/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "fibonacci",
+                "titolo": "Successione di Fibonacci",
+                "url": "allenamento/#/lezione/fibonacci/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_K3"
+                ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "φ e le frazioni di Fibonacci: vedere un numero che non si lascia scrivere",
+                "url": "journal/2026-10-30-phi-e-le-frazioni-di-fibonacci/",
+                "data": "2026-10-30"
+            }
+        ]
+    },
+    {
+        "title": "Snake of Life",
+        "excerpt": "Snake of Life: un serpente che impara da solo a sopravvivere nel Gioco della Vita di Conway. Nessuno gli spiega le regole: 16 serpenti per generazione, i migliori fanno figli e il cervello migliora. Per capire evoluzione, intelligenza artificiale e sistemi reali come epidemie, mode ed ecosistemi.",
+        "tags": [
+            "3 MEC",
+            "4 EL",
+            "ALGORITMI GENETICI",
+            "AUTOMI CELLULARI",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CODING",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "EVOLUZIONE",
+            "GAMIFICATION",
+            "GIOCO DELLA VITA",
+            "IND_C2:CODING E SIMULAZIONI STEM",
+            "LAB",
+            "MACHINE LEARNING",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_C1:LINGUAGGIO E METODI DELLA MATEMATICA",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MODELLI",
+            "PENSIERO COMPUTAZIONALE",
+            "RETI NEURALI",
+            "SELEZIONE NATURALE",
+            "SIMULAZIONE"
+        ],
+        "date": "2026-10-29",
+        "url": "content/apps/snake_conway_self.html",
+        "type": "app",
+        "icon": "💻",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/snake_conway_self.webp",
+        "journal": [
+            {
+                "titolo": "Snake of Life: un serpente che impara da solo",
+                "url": "journal/2026-10-29-snake-of-life-un-serpente-che-impara/",
+                "data": "2026-10-29"
+            }
+        ]
+    },
+    {
+        "title": "Simulatore di Automi Cellulari e Particelle",
+        "excerpt": "Laboratorio interattivo: migliaia di particelle che si attraggono e si respingono secondo una matrice di affinità, accoppiate a un automa cellulare (Vita di Conway e altre regole) da una soglia di accensione. Esplora emergenza e sistemi complessi, con palette personalizzabili e spiegazione animata. Per LIM, tablet e smartphone.",
+        "tags": [
+            "3 MEC",
+            "4 EL",
+            "AUTOMI CELLULARI",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CODING",
+            "COMPLESSITÀ",
+            "EMERGENZA",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "FISICA",
+            "GIOCO DELLA VITA",
+            "IND_C2:CODING E SIMULAZIONI STEM",
+            "LAB",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_C1:LINGUAGGIO E METODI DELLA MATEMATICA",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "PARTICELLE",
+            "PENSIERO COMPUTAZIONALE",
+            "SIMULAZIONE"
+        ],
+        "date": "2026-10-29",
+        "url": "content/apps/soglie_particelle_automa_cellulare.html",
+        "type": "app",
+        "icon": "⚡",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
+        "journal": [
+            {
+                "titolo": "Snake of Life: un serpente che impara da solo",
+                "url": "journal/2026-10-29-snake-of-life-un-serpente-che-impara/",
+                "data": "2026-10-29"
+            }
+        ]
+    },
+    {
         "title": "Math Pool: Biliardo Cartesiano e retta",
         "excerpt": "Biliardo 3D sul piano cartesiano con fisica vera: calcola pendenza, intercetta ed equazione della retta per mandare la palla in buca, usa pendenze e simmetrie per i tiri di sponda e la parabola (dal vertice o dagli zeri, come prodotto di due rette) per i tiri a effetto. Per smartphone, tablet, PC e LIM.",
         "tags": [
@@ -232,87 +313,6 @@ const db = [
             {
                 "titolo": "Math Pool: la retta diventa un tiro di sponda",
                 "url": "journal/2026-10-29-math-pool-la-retta-come-tiro-di-sponda/",
-                "data": "2026-10-29"
-            }
-        ]
-    },
-    {
-        "title": "Simulatore di Automi Cellulari e Particelle",
-        "excerpt": "Laboratorio interattivo: migliaia di particelle che si attraggono e si respingono secondo una matrice di affinità, accoppiate a un automa cellulare (Vita di Conway e altre regole) da una soglia di accensione. Esplora emergenza e sistemi complessi, con palette personalizzabili e spiegazione animata. Per LIM, tablet e smartphone.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "AUTOMI CELLULARI",
-            "CIT_4:COMPETENZA DIGITALE",
-            "CODING",
-            "COMPLESSITÀ",
-            "EMERGENZA",
-            "EU:DIGITALE",
-            "EU:STEM",
-            "FISICA",
-            "GIOCO DELLA VITA",
-            "IND_C2:CODING E SIMULAZIONI STEM",
-            "LAB",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_C1:LINGUAGGIO E METODI DELLA MATEMATICA",
-            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
-            "PARTICELLE",
-            "PENSIERO COMPUTAZIONALE",
-            "SIMULAZIONE"
-        ],
-        "date": "2026-10-29",
-        "url": "content/apps/soglie_particelle_automa_cellulare.html",
-        "type": "app",
-        "icon": "⚡",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
-        "journal": [
-            {
-                "titolo": "Snake of Life: un serpente che impara da solo",
-                "url": "journal/2026-10-29-snake-of-life-un-serpente-che-impara/",
-                "data": "2026-10-29"
-            }
-        ]
-    },
-    {
-        "title": "Snake of Life",
-        "excerpt": "Snake of Life: un serpente che impara da solo a sopravvivere nel Gioco della Vita di Conway. Nessuno gli spiega le regole: 16 serpenti per generazione, i migliori fanno figli e il cervello migliora. Per capire evoluzione, intelligenza artificiale e sistemi reali come epidemie, mode ed ecosistemi.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "ALGORITMI GENETICI",
-            "AUTOMI CELLULARI",
-            "CIT_4:COMPETENZA DIGITALE",
-            "CODING",
-            "EU:DIGITALE",
-            "EU:STEM",
-            "EVOLUZIONE",
-            "GAMIFICATION",
-            "GIOCO DELLA VITA",
-            "IND_C2:CODING E SIMULAZIONI STEM",
-            "LAB",
-            "MACHINE LEARNING",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_C1:LINGUAGGIO E METODI DELLA MATEMATICA",
-            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
-            "MODELLI",
-            "PENSIERO COMPUTAZIONALE",
-            "RETI NEURALI",
-            "SELEZIONE NATURALE",
-            "SIMULAZIONE"
-        ],
-        "date": "2026-10-29",
-        "url": "content/apps/snake_conway_self.html",
-        "type": "app",
-        "icon": "💻",
-        "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/snake_conway_self.webp",
-        "journal": [
-            {
-                "titolo": "Snake of Life: un serpente che impara da solo",
-                "url": "journal/2026-10-29-snake-of-life-un-serpente-che-impara/",
                 "data": "2026-10-29"
             }
         ]
@@ -596,6 +596,68 @@ const db = [
         ]
     },
     {
+        "title": "Prodotti Notevoli: dimostrazioni geometriche 2D e 3D",
+        "excerpt": "Laboratorio interattivo di geometria dinamica: i prodotti notevoli dimostrati con aree e volumi. Differenza di quadrati, quadrato e cubo del binomio in 2D e 3D, con la dimostrazione passo passo del cubo della differenza.",
+        "tags": [
+            "1 EL",
+            "1 GP",
+            "1 MA",
+            "2 EL",
+            "2 GP",
+            "2 MA",
+            "ALGEBRA",
+            "AREE",
+            "BIENNIO",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CUBO DEL BINOMIO",
+            "DIFFERENZA DI QUADRATI",
+            "DIMOSTRAZIONE GEOMETRICA",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "GEOMETRIA",
+            "LAB",
+            "MAT:CALCOLO",
+            "MAT:GEOMETRIA",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "PRODOTTI NOTEVOLI",
+            "QUADRATO DEL BINOMIO",
+            "SCOMPOSIZIONE",
+            "SIMULAZIONE",
+            "VISUALIZZAZIONE 3D",
+            "VOLUMI"
+        ],
+        "date": "2026-10-16",
+        "url": "content/apps/dimostrazione_geometrica_prodotti_notevoli.html",
+        "type": "app",
+        "icon": "🧱",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/dimostrazione_geometrica_prodotti_notevoli.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            }
+        ]
+    },
+    {
         "title": "Arcade Challenge: Scomposizioni & Parabola",
         "excerpt": "Arcade Challenge: gioco arcade a sfida, inclusivo, per allenare la scomposizione con prodotti notevoli, trinomio speciale e associazione equazione-grafico della parabola. Contestualizzato sugli indirizzi PTOF dell'IPIA Orfini di Foligno.",
         "tags": [
@@ -676,68 +738,6 @@ const db = [
                 "titolo": "Arcade Challenge: scomporre a colpi di aree",
                 "url": "journal/2026-10-22-arcade-challenge-scomposizioni-parabola/",
                 "data": "2026-10-22"
-            }
-        ]
-    },
-    {
-        "title": "Prodotti Notevoli: dimostrazioni geometriche 2D e 3D",
-        "excerpt": "Laboratorio interattivo di geometria dinamica: i prodotti notevoli dimostrati con aree e volumi. Differenza di quadrati, quadrato e cubo del binomio in 2D e 3D, con la dimostrazione passo passo del cubo della differenza.",
-        "tags": [
-            "1 EL",
-            "1 GP",
-            "1 MA",
-            "2 EL",
-            "2 GP",
-            "2 MA",
-            "ALGEBRA",
-            "AREE",
-            "BIENNIO",
-            "CIT_4:COMPETENZA DIGITALE",
-            "CUBO DEL BINOMIO",
-            "DIFFERENZA DI QUADRATI",
-            "DIMOSTRAZIONE GEOMETRICA",
-            "EU:DIGITALE",
-            "EU:STEM",
-            "GEOMETRIA",
-            "LAB",
-            "MAT:CALCOLO",
-            "MAT:GEOMETRIA",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "PRODOTTI NOTEVOLI",
-            "QUADRATO DEL BINOMIO",
-            "SCOMPOSIZIONE",
-            "SIMULAZIONE",
-            "VISUALIZZAZIONE 3D",
-            "VOLUMI"
-        ],
-        "date": "2026-10-16",
-        "url": "content/apps/dimostrazione_geometrica_prodotti_notevoli.html",
-        "type": "app",
-        "icon": "🧱",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/dimostrazione_geometrica_prodotti_notevoli.webp",
-        "allenamento": [
-            {
-                "id": "prodotti-notevoli",
-                "titolo": "Prodotti notevoli",
-                "url": "allenamento/#/lezione/prodotti-notevoli/1",
-                "mat": [
-                    "MAT_K1",
-                    "MAT_A1"
-                ]
-            },
-            {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_A4",
-                    "MAT_C4"
-                ]
             }
         ]
     },
@@ -2156,49 +2156,6 @@ const db = [
         ]
     },
     {
-        "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
-        "excerpt": "Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "ANGOLI",
-            "FUNZIONI",
-            "GAMIFICATION",
-            "GONIOMETRIA",
-            "LAB",
-            "MAT:ANALISI",
-            "MATEMATICA",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "TRIGONOMETRIA"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/gioco_sin_cos_01.html",
-        "type": "app",
-        "icon": "📈",
-        "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.webp",
-        "allenamento": [
-            {
-                "id": "goniometria",
-                "titolo": "Goniometria",
-                "url": "allenamento/#/lezione/goniometria/1",
-                "mat": [
-                    "MAT_K2",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "trigonometria",
-                "titolo": "Trigonometria del triangolo rettangolo",
-                "url": "allenamento/#/lezione/trigonometria/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_C4"
-                ]
-            }
-        ]
-    },
-    {
         "title": "Mappe & Distorsioni: Mercatore",
         "excerpt": "Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le aree reali dei paesi.",
         "tags": [
@@ -2316,48 +2273,44 @@ const db = [
         "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp"
     },
     {
-        "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
-        "excerpt": "Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include esportazione STL per la stampa 3D dei kit didattici.",
+        "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
+        "excerpt": "Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.",
         "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "ALGEBRA",
-            "EU:STEM",
-            "GEOMETRIA",
-            "IND:STRUMENTAZIONE",
+            "3 MEC",
+            "4 EL",
+            "ANGOLI",
+            "FUNZIONI",
+            "GAMIFICATION",
+            "GONIOMETRIA",
             "LAB",
-            "MAT:GEOMETRIA",
-            "MAT:MODELLIZZAZIONE",
+            "MAT:ANALISI",
             "MATEMATICA",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "POLINOMI",
-            "STAMPA 3D"
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "TRIGONOMETRIA"
         ],
         "date": "2025-12-08",
-        "url": "content/apps/visualizzatore polinomi 2d 3d 001.html",
+        "url": "content/apps/gioco_sin_cos_01.html",
         "type": "app",
-        "icon": "🧱",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.webp",
+        "icon": "📈",
+        "game_type": "memory",
+        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.webp",
         "allenamento": [
             {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
                 "mat": [
-                    "MAT_K1",
-                    "MAT_A3"
+                    "MAT_K2",
+                    "MAT_K3"
                 ]
             },
             {
-                "id": "prodotti-notevoli",
-                "titolo": "Prodotti notevoli",
-                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
                 "mat": [
-                    "MAT_K1",
-                    "MAT_A1"
+                    "MAT_K3",
+                    "MAT_C4"
                 ]
             }
         ]
@@ -2408,50 +2361,39 @@ const db = [
         ]
     },
     {
-        "title": "Esploratore Numerico: Pitagora & Tartaglia",
-        "excerpt": "Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo di Tartaglia (Combinatoria) e regole di divisibilità.",
+        "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
+        "excerpt": "Laboratorio interattivo 2D/3D per visualizzare la fattorizzazione di polinomi come aree e volumi. Include esportazione STL per la stampa 3D dei kit didattici.",
         "tags": [
             "1 EL",
             "2 EL",
             "2 GP",
-            "4 EL",
-            "ARITMETICA",
-            "DIVISIBILITÀ",
+            "ALGEBRA",
+            "EU:STEM",
+            "GEOMETRIA",
+            "IND:STRUMENTAZIONE",
             "LAB",
-            "MAT:CALCOLO",
-            "MAT:DATI",
+            "MAT:GEOMETRIA",
             "MAT:MODELLIZZAZIONE",
             "MATEMATICA",
-            "MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
-            "NUMERI",
-            "PITAGORA",
-            "TARTAGLIA"
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "POLINOMI",
+            "STAMPA 3D"
         ],
         "date": "2025-12-08",
-        "url": "content/apps/tavola_tart_canva0003.html",
+        "url": "content/apps/visualizzatore polinomi 2d 3d 001.html",
         "type": "app",
-        "icon": "📐",
+        "icon": "🧱",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.webp",
+        "thumbnail": "content/assets/thumbnails/visualizzatore polinomi 2d 3d 001.webp",
         "allenamento": [
             {
-                "id": "calcolo-triangolo-dei-coefficienti",
-                "titolo": "Il triangolo dei coefficienti",
-                "url": "allenamento/#/lezione/calcolo-triangolo-dei-coefficienti/1",
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
-                    "MAT_K4",
-                    "MAT_C3"
-                ]
-            },
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_A4",
-                    "MAT_C4"
+                    "MAT_K1",
+                    "MAT_A3"
                 ]
             },
             {
@@ -2513,6 +2455,64 @@ const db = [
                     "MAT_K3",
                     "MAT_A4",
                     "MAT_C4"
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Esploratore Numerico: Pitagora & Tartaglia",
+        "excerpt": "Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo di Tartaglia (Combinatoria) e regole di divisibilità.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "4 EL",
+            "ARITMETICA",
+            "DIVISIBILITÀ",
+            "LAB",
+            "MAT:CALCOLO",
+            "MAT:DATI",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
+            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
+            "NUMERI",
+            "PITAGORA",
+            "TARTAGLIA"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/tavola_tart_canva0003.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.webp",
+        "allenamento": [
+            {
+                "id": "calcolo-triangolo-dei-coefficienti",
+                "titolo": "Il triangolo dei coefficienti",
+                "url": "allenamento/#/lezione/calcolo-triangolo-dei-coefficienti/1",
+                "mat": [
+                    "MAT_K4",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ]

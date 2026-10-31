@@ -624,5 +624,37 @@ def pattern_tassellazione():
     return _svg(560, 180, "".join(out), "Pattern generativo con rotazioni")
 
 
+def frazioni_razionali():
+    """ Frazioni equivalenti (strisce), retta dei razionali, insiemi N ⊂ Z ⊂ Q ⊂ R: le tre idee del ripasso """
+    out = [_t(20, 18, "stessa quantità, nomi diversi", 12.5, "start", ACC, 700)]
+    x0, L = 20, 240
+    for r, n in enumerate((2, 4, 6, 8)):
+        y = 30 + r * 26
+        for k in range(n):
+            out.append(_rect(x0 + k * L / n, y, L / n, 18, FILL if k < n // 2 else "none", INK, 1.1))
+        out.append(_t(x0 + L + 10, y + 14, f"{n // 2}/{n}", 13, "start", weight=700))
+    out.append(_line(x0 + L / 2, 26, x0 + L / 2, 136, ACC2, 1.4, "4 3"))
+    # retta dei numeri
+    y, a, b = 178, -1, 2
+    X = lambda v: 30 + (v - a) / (b - a) * 290
+    out += [_t(20, 158, "sulla retta: anche negativi e maggiori di 1", 12.5, "start", ACC, 700), _line(X(a), y, X(b), y, INK, 1.5)]
+    for v, lab in ((-1, "−1"), (0, "0"), (1, "1"), (2, "2")):
+        out += [_line(X(v), y - 5, X(v), y + 5), _t(X(v), y + 20, lab, 11)]
+    for v, lab in ((-0.5, "−1/2"), (0.75, "3/4"), (1.5, "3/2")):
+        out += [_dot(X(v), y, 4), _t(X(v), y - 10, lab, 12, color=ACC2, weight=600)]
+    # insiemi annidati
+    cx, cy = 480, 112
+    for (rx, ry, nome, esempi, col) in ((150, 92, "ℝ", "√2   π", INK), (118, 70, "ℚ", "3/4   −1/2   0,3̅", ACC),
+                                         (78, 46, "ℤ", "−3", INK), (42, 24, "ℕ", "0  1  2", INK)):
+        out.append(f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" fill="{FILL if nome == "ℚ" else "none"}" stroke="{col}" stroke-width="1.5"/>')
+        out.append(_t(cx - rx + 14, cy + 5, nome, 15, "start", col, 700))
+    # esempi dentro la propria fascia (tra un'ellisse e la successiva), in alto
+    out += [_t(cx, cy - 77, "√2     π", 12.5, color=ACC2, weight=600), _t(cx, cy - 54, "3/4    −1/2    0,33…", 12, color=ACC, weight=600),
+            _t(cx, cy - 31, "−3    −7", 12), _t(cx + 8, cy + 5, "0  1  2", 12),
+            _t(cx, cy + 112, "ℚ: tutte le frazioni (decimale finito o periodico)", 12, color="#333"),
+            _t(cx, cy + 128, "fuori da ℚ, in ℝ: gli irrazionali", 12, color=ACC2)]
+    return _svg(640, 250, "".join(out), "Frazioni equivalenti, retta dei numeri razionali e insiemi numerici")
+
+
 FIGURE = {name: fn for name, fn in globals().items() if callable(fn) and not name.startswith("_") and name.islower()
           and name not in ("FIGURE",)}

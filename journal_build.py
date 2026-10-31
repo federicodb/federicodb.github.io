@@ -305,6 +305,45 @@ def _competenze_riforma():
     return voci
 
 
+def _descrizioni_riforma():
+    """ {codice: prima frase della descrizione} dalla rubrica della Riforma 2017 (per le schede) """
+    voci = {}
+
+    def cerca(x):
+        if isinstance(x, dict):
+            if "id" in x and "description" in x:
+                voci[x["id"]] = re.split(r"(?<=\.)\s", x["description"].strip(), maxsplit=1)[0]
+            else:
+                for v in x.values():
+                    cerca(v)
+        elif isinstance(x, list):
+            for v in x:
+                cerca(v)
+    try:
+        with open(RIFORMA_JSON, encoding="utf-8") as f:
+            cerca(json.load(f))
+    except (OSError, ValueError):
+        pass
+    return voci
+
+
+def _percorso_quest(lezioni):
+    """ (prima, dopo, calcolo veloce) dalla Quest: prerequisiti delle lezioni collegate, lezioni che le richiedono,
+        tecniche di calcolo veloce che le richiedono. Liste di titoli, dal catalogo allenamento/catalogo.json. """
+    try:
+        with open(os.path.join("allenamento", "catalogo.json"), encoding="utf-8") as f:
+            cat = {a["id"]: a for a in json.load(f)}
+    except (OSError, ValueError):
+        return [], [], []
+    lez = [x for x in lezioni if x in cat]
+    prima = [p for x in lez for p in cat[x].get("prereq", []) if p not in lez]
+    dopo = [a["id"] for a in cat.values() if a["id"] not in lez and set(a.get("prereq", [])) & set(lez)]
+    titolo = lambda i: cat[i]["titolo"]
+    return ([titolo(i) for i in dict.fromkeys(prima)],
+            [titolo(i) for i in dopo if not i.startswith("calcolo-")],
+            [titolo(i) for i in dopo if i.startswith("calcolo-")])
+
+
 def _tag_tematici(item):
     """ I tag che dicono di cosa parla l'attività: niente classi (1 EL), codici (MAT_K1, EU:...), formule, generici """
     out = []
@@ -421,17 +460,55 @@ def _radici(testo):
     return {w[:6] for w in re.findall(r"[a-z]{5,}", testo)}
 
 
+# parole che cambiano l'argomento di un tema: "frazioni algebriche" non è "frazioni"
+QUALIFICATORI = ("algebric",)
+
+
+def _radici_temi(item):
+    """ Un insieme di radici di 8 lettere per ogni tema ("frazioni" e "frazionarie" restano diverse, "razionali" e
+        "razionale" uguali), senza parole generiche """
+    out = []
+    for t in _tag_tematici(item):
+        parole = re.findall(r"[a-z]{5,}", t.lower().replace("à", "a").replace("è", "e").replace("ù", "u"))
+        radici = {w[:8] for w in parole if not any(w.startswith(g) for g in RADICI_GENERICHE)}
+        if radici:
+            out.append(radici)
+    return out
+
+
+def _verifiche_scelte(scelte, verifiche):
+    """ Verifiche indicate a mano ("verifiche: nome_file_pdf, ..." nella scheda o nella nota), nell'ordine dato.
+        Il nome è quello di uno dei PDF della verifica, senza ".pdf". """
+    voluti = [x.strip().lower().removesuffix(".pdf") for x in scelte.split(",") if x.strip()]
+    trovate = []
+    for nome in voluti:
+        v = next((v for v in verifiche if any(os.path.basename(x["url"]).lower().removesuffix(".pdf") == nome
+                                              for x in v.get("versions") or [{"url": v["url"]}])), None)
+        if v:
+            trovate.append(v)
+        else:
+            print(f"  ⚠️ Verifica non trovata nell'Archivio: '{nome}'")
+    return trovate
+
+
 def _verifiche_collegate(attivita, verifiche):
     """ Verifiche dell'Archivio sugli stessi temi dell'attività principale della nota: almeno due temi in comune,
-        oppure un tema e una competenza MAT in comune. Collega il gioco alla matematica scritta. """
+        oppure un tema e una competenza MAT in comune. Collega il gioco alla matematica scritta.
+        Un tema della verifica conta se contiene tutte le parole di un tema dell'attività e non aggiunge un
+        qualificatore che cambia argomento (es. "algebriche"), a meno che l'attività non lo abbia già. """
     if not attivita:
         return []
     principale = attivita[0]
-    temi = _radici(" ".join(_tag_tematici(principale))) - RADICI_GENERICHE
+    temi = _radici_temi(principale)
+    tutte = set().union(*temi) if temi else set()
     codici = {t.split(":")[0] for t in principale.get("tags", []) if re.match(r"^MAT_[KAC]\d", t)}
     punti = []
     for v in verifiche:
-        comuni = temi & (_radici(" ".join(_tag_tematici(v))) - RADICI_GENERICHE)
+        comuni = set()
+        for tv in _radici_temi(v):
+            if any(r.startswith(QUALIFICATORI) for r in tv - tutte):
+                continue
+            comuni |= {r for t in temi if t <= tv for r in t}
         cod = codici & {t.split(":")[0] for t in v.get("tags", []) if re.match(r"^MAT_[KAC]\d", t)}
         if len(comuni) >= 2 or (comuni and cod):
             punti.append((3 * len(comuni) + len(cod), v.get("date", ""), v))
@@ -561,6 +638,7 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
     open(os.path.join(SCHEDE_DIR, MARKER), "w").close()
     root = "../"
     conta, senza = 0, []
+    descr = _descrizioni_riforma()
     for it in items:
         if it.get("type") != "app":
             continue
@@ -570,12 +648,19 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
             senza.append(chiave)
             continue
         sez = sc["sezioni"]
-        titolo = html.escape(it.get("title", ""))
+        titolo_app = html.escape(it.get("title", ""))
+        titolo = html.escape(sc.get("titolo") or it.get("title", ""))
         codici = [c for c in dict.fromkeys(t.split(":")[0].strip().upper() for t in it.get("tags", [])) if c in riforma]
-        comp = "".join(f'<li><b>{c}</b> {html.escape(riforma[c])}</li>' for c in codici)
+        comp = "".join(f'<li><b>{c}</b> {html.escape(riforma[c])}'
+                       + (f'<small>{html.escape(descr[c])}</small>' if c in descr else "") + '</li>' for c in codici)
         allen = "".join(f'<li>{html.escape(a["titolo"])}</li>' for a in it.get("allenamento", []))
+        prima, dopo, veloce = _percorso_quest([a["id"] for a in it.get("allenamento", [])])
+        percorso = "".join(f'<p><b>{nome}:</b> {html.escape(", ".join(v))}</p>' for nome, v in
+                           (("Prima", prima), ("Poi", dopo), ("Calcolo veloce", veloce)) if v)
+        collegamenti = sez.get("collegamenti", "")
         temi = ", ".join(_testo_tag(t) for t in _tag_tematici(it)[:6])
-        verif = "".join(f'<li>{html.escape(_nome_verifica(v))}</li>' for v in _verifiche_collegate([it], verifiche))
+        verif_lista = _verifiche_scelte(sc["verifiche"], verifiche) if sc.get("verifiche") else _verifiche_collegate([it], verifiche)
+        verif = "".join(f'<li>{html.escape(_nome_verifica(v))}</li>' for v in verif_lista)
         url_app = base_url + urllib.parse.quote(it["url"], safe="/")
         fig = ""
         fn = schede_figure.FIGURE.get(sc.get("figura", "")) if schede_figure else None
@@ -611,7 +696,7 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
     <main class="sc-foglio">
         <header class="sc-testa">
             <div>
-                <p class="sc-kicker">Orfini Math Lab · scheda dell'attività</p>
+                <p class="sc-kicker">Orfini Math Lab · scheda{'' if titolo == titolo_app else f' · attività: {titolo_app}'}</p>
                 <h1>{titolo}</h1>
                 <p class="sc-desc">{html.escape(it.get('excerpt', ''))}</p>
             </div>
@@ -622,7 +707,8 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
             <section><h2>Ripasso</h2>{sez.get("ripasso", "")}</section>
             <section><h2>Regole</h2>{sez.get("regole", "")}</section>
             {f'<section><h2>Competenze (Riforma 2017)</h2><ul class="sc-list">{comp}</ul></section>' if comp else ''}
-            <section>{f'<h2>Allenati</h2><p>Su federicodb.github.io/allenamento:</p><ul class="sc-list">{allen}</ul>' if allen else ''}{f'<h2>Temi</h2><p>{html.escape(temi)}</p>' if temi else ''}</section>
+            <section>{f'<h2>Allenati</h2><p>Su federicodb.github.io/allenamento:</p><ul class="sc-list">{allen}</ul>' if allen else ''}{f'<div class="sc-percorso">{percorso}</div>' if percorso else ''}{f'<h2>Temi</h2><p>{html.escape(temi)}</p>' if temi else ''}</section>
+            {f'<section class="sc-largo"><h2>Collegamenti</h2>{collegamenti}</section>' if collegamenti else ''}
             <section class="sc-esercizi"><h2>Esercizi</h2>{esercizi}{righe_scrittura}</section>
             {f'<section class="sc-largo"><h2>Mettiti alla prova su carta</h2><p>Verifiche nell&#39;Archivio sugli stessi temi:</p><ul class="sc-list">{verif}</ul></section>' if verif else ''}
         </div>
@@ -908,7 +994,8 @@ def build_journal(items, base_url, verifiche=()):
 
         corpo = _sistema_immagini(_markdown_con_formule(n["corpo"]), root, avvisi, n["slug"])
         # la parte per gli studenti ("Per prepararti alla verifica") si riconosce a colpo d'occhio: un riquadro
-        carta = _blocco_verifiche(_verifiche_collegate(collegate, verifiche), root)
+        scelte = _verifiche_scelte(n["verifiche"], verifiche) if n.get("verifiche") else _verifiche_collegate(collegate, verifiche)
+        carta = _blocco_verifiche(scelte, root)
         tabella_esiti = _blocco_esiti(collegate, esiti)
         if tabella_esiti:
             corpo = corpo.replace("<h2>Come usarla in classe</h2>", tabella_esiti + "<h2>Come usarla in classe</h2>", 1) \

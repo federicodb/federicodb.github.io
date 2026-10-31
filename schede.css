@@ -52,3 +52,7 @@ h2 { font: 700 11.5pt Syne, sans-serif; color: var(--accent); margin-bottom: 2mm
 @media print {
     .sc-foglio:has(.sc-esercizi) .sc-righe { height: 36mm; }
 }
+.sc-list small { display: block; color: var(--muted); font-size: 8.5pt; line-height: 1.35; }
+.sc-percorso { margin-top: 2mm; font-size: 9pt; }
+.sc-percorso p + p { margin-top: 1mm; }
+.sc-percorso b { color: var(--accent); }

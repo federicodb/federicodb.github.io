@@ -1,7 +1,7 @@
 // Genera catalogo.json da activities/catalogo.js: lo leggono build.py e le pagine del sito.
 // Uso: node tools/genera-catalogo.mjs (dalla cartella della Quest)
 import { writeFileSync } from 'node:fs';
-import { allActivities } from '../activities/catalogo.js';
+import { allActivities, PREREQ } from '../activities/catalogo.js';
 
 const catalogo = allActivities.map((a) => ({
   id: a.id,
@@ -9,6 +9,7 @@ const catalogo = allActivities.map((a) => ({
   area: a.area,
   mat: Array.isArray(a.mat) ? a.mat : [a.mat],
   anni: a.years,
+  ...(PREREQ[a.id]?.length ? { prereq: PREREQ[a.id] } : {}), // per il percorso "prima / dopo" delle schede del sito
   ...(a.area === 'lavoro' ? { indirizzo: a.indirizzo ?? null } : {}),
 }));
 
