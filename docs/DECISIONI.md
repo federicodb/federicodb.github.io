@@ -128,3 +128,15 @@ Ogni voce: data, decisione, motivo.
     - zoom indietro fino a vedere solo "Matematica"; la rotella funziona anche sopra le etichette;
     - forma identica a ogni apertura (generatore con seme); rispetto di `prefers-reduced-motion`.
   - Test: `tests/mappa.spec.js`.
+
+## 2026-10-31 (5) — Copertine scure, allenamenti, alleggerimento, offline, README
+
+- **Copertine del Journal solo in tema scuro** (`COVER_MAX_LUMA` = 110). Il ripiego usa solo la miniatura dell'attività principale (prima la copertina di Snake era finita sul simulatore di automi cellulari). `thumbnails.py` cattura in tema scuro.
+- **Allenamenti approvati** scritti nei meta di tutte le 41 app (`nessuno` dove nessuna lezione c'entra). Il build avvisa se un'app non li dichiara.
+- **Alleggerimento senza smontare**:
+  - Tailwind fissato a 3.4.17 (identico al file servito senza versione);
+  - React 18.3.1 in versione di produzione; Babel fissato a 8.0.10;
+  - schermate prima/dopo delle 6 app React identiche.
+- **Offline**: `sw.js` per il sito (prima la rete, cache per le librerie con versione), registrato dal colophon e da `orfini-shared.js`. La Quest tiene il suo service worker.
+- **Babel tradotto in anticipo: sospeso.** Eseguire Babel scaricato dalla rete richiede un permesso del docente (installazione di `@babel/standalone@8.0.10` come dipendenza di sviluppo).
+- **README** riscritto: approccio, sezioni del sito, attività per area, Quest, Journal, Mappa, rubrica delle competenze, come è costruito, licenze.
