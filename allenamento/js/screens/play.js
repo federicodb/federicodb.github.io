@@ -178,6 +178,7 @@ function finish(app, { res, kind, act, level, ids }) {
         const bets = res.bets.right + res.bets.wrong;
         return sk.length ? `<section class="panel skills"><h3>Le abilità di questa lezione</h3>${skillChart(sk)}${bets ? `<p class="muted">Quando hai detto «sono sicuro» avevi ragione ${res.bets.right} ${res.bets.right === 1 ? 'volta' : 'volte'} su ${bets}.</p>` : ''}</section>` : '';
       })()}
+      ${kind === 'lesson' ? `<p class="class-code">Se il prof te lo chiede, mostragli questo codice: <code>${esc(act.id)}·${level}·${pct}</code><span>Lezione, livello e percentuale: non contiene il tuo nome.</span></p>` : ''}
       ${kind === 'lesson' && (s.activities[act.id]?.lowRuns || 0) >= 2 ? `<section class="panel remedial">${prereqBlock(app, act.id, 'Prima di riprovare, ripassa le basi')}<p class="muted">Due lezioni di fila sotto l'80%: spesso il nodo sta in un argomento precedente. Una lezione di ripasso e poi si torna qui.</p></section>` : ''}
       ${today.lessons >= 3 ? `<p class="pause-note">Ottimo lavoro: ${today.lessons} lezioni oggi. Una pausa adesso aiuta a ricordare quello che hai imparato.</p>` : ''}
       ${res.misses.length ? `<div class="panel review-list"><h3>Da rivedere</h3><ol>${res.misses.map((m) => `<li><div>${m.prompt}</div><details><summary>Soluzione</summary>${m.explain || ''}</details></li>`).join('')}</ol></div>` : ''}

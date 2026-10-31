@@ -609,6 +609,45 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
     return conta
 
 
+ESITI_DIR = os.path.join(SRC_DIR, "esiti")
+CODICE_ESITO = re.compile(r"\b([a-z0-9][a-z0-9-]*)\s*[·.\-_ ]\s*([1-9])\s*[·.\-_ ]\s*(\d{1,3})\b")
+
+
+def _leggi_esiti():
+    """ Codici anonimi delle lezioni della Quest (lezione·livello·percentuale), scritti dal docente in file di testo
+        in content/journal/esiti/ (non pubblicati). Restituisce {(lezione, livello): [percentuali]}. """
+    esiti = {}
+    if not os.path.isdir(ESITI_DIR):
+        return esiti
+    for f in sorted(os.listdir(ESITI_DIR)):
+        if f.startswith((".", "_")):
+            continue
+        with open(os.path.join(ESITI_DIR, f), encoding="utf-8", errors="ignore") as fh:
+            for lezione, livello, pct in CODICE_ESITO.findall(fh.read().lower()):
+                if int(pct) <= 100:
+                    esiti.setdefault((lezione, int(livello)), []).append(int(pct))
+    return esiti
+
+
+def _blocco_esiti(attivita, esiti):
+    """ Tabella anonima degli esiti delle lezioni collegate all'attività principale della nota """
+    if not attivita or not esiti:
+        return ""
+    lezioni = {a["id"]: a["titolo"] for a in attivita[0].get("allenamento", [])}
+    righe = []
+    for (lez, liv), pcts in sorted(esiti.items()):
+        if lez in lezioni:
+            media = round(sum(pcts) / len(pcts))
+            superato = sum(1 for p in pcts if p >= 80)
+            righe.append(f"<tr><td>{html.escape(lezioni[lez])}, livello {liv}</td><td>{len(pcts)}</td>"
+                         f"<td>{media}%</td><td>{superato} su {len(pcts)}</td></tr>")
+    if not righe:
+        return ""
+    return ('<h2>Com\'è andata (dati anonimi)</h2>\n<p>Dai codici di fine lezione della Quest, senza nomi: '
+            'lezioni dell\'allenamento collegato a questa attività.</p>\n<table><thead><tr><th>Lezione</th><th>Studenti</th>'
+            '<th>Media</th><th>Livello superato (80%)</th></tr></thead><tbody>' + "".join(righe) + '</tbody></table>\n')
+
+
 def _chiave(url):
     """ Nome dell'attività nei filtri (?attivita=): il nome del file, senza spazi """
     return _stem(url).replace(" ", "_")
@@ -803,6 +842,7 @@ def build_journal(items, base_url, verifiche=()):
     filtro = sorted(citate.items(), key=lambda x: x[1].lower())
     ultimo_aggiornamento(items, [n["data"] for n in note if n["stato"] not in STATI_NON_PUBBLICI])
     riforma = _competenze_riforma()
+    esiti = _leggi_esiti()
     for n in note:
         att = [per_stem[_stem(a)] for a in n["attivita"] if _stem(a) in per_stem]
         n["tag"] = _tag_principali(att)
@@ -833,6 +873,10 @@ def build_journal(items, base_url, verifiche=()):
         corpo = _sistema_immagini(_markdown_con_formule(n["corpo"]), root, avvisi, n["slug"])
         # la parte per gli studenti ("Per prepararti alla verifica") si riconosce a colpo d'occhio: un riquadro
         carta = _blocco_verifiche(_verifiche_collegate(collegate, verifiche), root)
+        tabella_esiti = _blocco_esiti(collegate, esiti)
+        if tabella_esiti:
+            corpo = corpo.replace("<h2>Come usarla in classe</h2>", tabella_esiti + "<h2>Come usarla in classe</h2>", 1) \
+                if "<h2>Come usarla in classe</h2>" in corpo else corpo + tabella_esiti
         corpo = re.sub(r'(<h2>Per prepararti alla verifica</h2>.*?)(?=<h2>|\Z)',
                        lambda m: f'<section class="jr-studenti">{m.group(1)}{carta}</section>\n', corpo, flags=re.S)
         video = _video(n.get("video", ""), root, avvisi, n["slug"])

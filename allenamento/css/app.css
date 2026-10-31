@@ -577,6 +577,10 @@ html.theme-light .w-slider:not(.c1):not(.c2):not(.c3) { --knob: hsl(var(--hue), 
 .tally > div { border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s3) var(--s4); background: var(--surface); display: grid; align-content: start; gap: 2px; }
 .tally b { display: block; font-family: var(--font-num); font-size: 1.45rem; }
 .tally > div > span { color: var(--muted); font-size: 0.9375rem; line-height: 1.35; display: block; }
+/* codice anonimo dell'esito (lezione·livello·percentuale): il docente lo raccoglie per il Journal */
+.class-code { margin: var(--s3) auto 0; max-width: 34rem; color: var(--muted); font-size: 0.9375rem; text-align: center; }
+.class-code code { display: inline-block; margin: 0 4px; padding: 2px 10px; border-radius: var(--r-sm, 8px); border: 1px dashed var(--line); color: var(--text); font-family: var(--font-num); font-size: 1rem; letter-spacing: 0.02em; }
+.class-code span { display: block; font-size: 0.8125rem; margin-top: 2px; }
 .review-list { text-align: left; }
 .review-list li { margin-bottom: 12px; }
 .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }

@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 11:03:36
+   Data: 2026-10-31 11:17:48
 */
 
 const db = [
@@ -584,6 +584,11 @@ const db = [
                 "data": "2026-10-26"
             },
             {
+                "titolo": "Arcade Challenge: quando serve il mcm e quando il MCD",
+                "url": "journal/2026-10-25-arcade-challenge-mcm-mcd/",
+                "data": "2026-10-25"
+            },
+            {
                 "titolo": "Arcade Challenge: scomporre a colpi di aree",
                 "url": "journal/2026-10-22-arcade-challenge-scomposizioni-parabola/",
                 "data": "2026-10-22"
@@ -774,7 +779,14 @@ const db = [
         "type": "app",
         "icon": "🏛️",
         "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp"
+        "thumbnail": "content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp",
+        "journal": [
+            {
+                "titolo": "Il filo di Dedalo: un labirinto da risolvere con la matematica",
+                "url": "journal/2026-10-11-il-filo-di-dedalo/",
+                "data": "2026-10-11"
+            }
+        ]
     },
     {
         "title": "Math Bubble: la retta esplicita",
@@ -898,7 +910,14 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp"
+        "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp",
+        "journal": [
+            {
+                "titolo": "Studio Plotter CNC: dalla curva alla penna",
+                "url": "journal/2026-10-16-studio-plotter-cnc/",
+                "data": "2026-10-16"
+            }
+        ]
     },
     {
         "title": "Teoria dei giochi e valutazione consapevole",
