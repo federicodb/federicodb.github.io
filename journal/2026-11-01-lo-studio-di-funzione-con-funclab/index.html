@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="it">
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare la nota in content/journal/ -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Lo studio di funzione con FuncLab: un&#x27;onda chiusa in un cerchio | Journal · Orfini Math Lab</title>
+    <meta name="description" content="Si chiede all&#x27;intelligenza artificiale &quot;una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10&quot; e poi la si studia davvero: dominio, simmetria, zeri, inviluppo, con il tutor socratico.">
+    <meta name="author" content="Prof. Federico De Benedictis">
+    <link rel="canonical" href="https://federicodb.github.io/journal/2026-11-01-lo-studio-di-funzione-con-funclab/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://federicodb.github.io/journal/2026-11-01-lo-studio-di-funzione-con-funclab/">
+    <meta property="og:title" content="Lo studio di funzione con FuncLab: un&#x27;onda chiusa in un cerchio">
+    <meta property="og:description" content="Si chiede all&#x27;intelligenza artificiale &quot;una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10&quot; e poi la si studia davvero: dominio, simmetria, zeri, inviluppo, con il tutor socratico.">
+    <meta property="og:image" content="https://federicodb.github.io/journal/2026-11-01-lo-studio-di-funzione-con-funclab/copertina.webp">
+    <meta property="article:published_time" content="2026-11-01">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet" href="../../cookie-consent.css">
+    <script>
+        if (localStorage.getItem('orfini_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+    <link rel="stylesheet" href="../../content/assets/style/theme-light.css">
+    <link rel="stylesheet" href="../../journal.css">
+    <script src="../../content/assets/js/theme-toggle.js" defer></script>
+</head>
+
+<body>
+
+    <nav id="main-nav">
+        <div class="container nav-container">
+            <div class="nav-row-1">
+                <a href="../../index.html" class="brand">
+                    <span class="brand-title">ORFINI</span>
+                    <span class="brand-sub">JOURNAL</span>
+                </a>
+                <div class="nav-links">
+                    <a href="../../index.html" class="nav-link">Attività</a>
+                    <a href="../../allenamento/" class="nav-link nav-link-cta">Allenati</a>
+                    <a href="../../journal/" class="nav-link active" aria-current="page">Journal</a>
+                    <a href="../../calcolo-mentale.html" class="nav-link">Calcolo veloce</a>
+                    <a href="../../verifiche.html" class="nav-link">Archivio</a>
+                    <a href="../../galaxy.html" class="nav-link">Mappa</a>
+                    <a href="../../competenze.html" class="nav-link">Competenze</a>
+                    <a href="../../scuola.html" class="nav-link">La Scuola</a>
+                    <a href="../../index.html#about" class="nav-link">Chi Sono</a>
+                    <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+                        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="nav-row-2">
+                <form class="search-filter-wrapper" action="../../journal/" method="get" role="search">
+                    <button type="button" id="filter-burger-btn" class="burger-btn" aria-label="Filtra per attività" aria-expanded="false" aria-controls="filter-dropdown">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="search-container">
+                        <input type="search" id="search-input" name="q" class="search-input" placeholder="Cerca nelle note..." aria-label="Cerca nelle note">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    </div>
+                </form>
+                <div id="filter-dropdown" class="filter-dropdown">
+                    <div class="filter-group">
+                        <span class="filter-group-title">Filtra per attività</span>
+                        <a class="filter-chip" href="../../journal/" data-attivita="">Tutte le note</a>
+                        <a class="filter-chip" href="../../journal/?attivita=pi_is_irrational" data-attivita="pi_is_irrational">$\pi$ is irrational: perché π non è una frazione</a>
+                        <a class="filter-chip" href="../../journal/?attivita=sqrt2_is_irrational" data-attivita="sqrt2_is_irrational">$\sqrt{2}$ is irrational: la diagonale incommensurabile</a>
+                        <a class="filter-chip" href="../../journal/?attivita=albero_pitagorico_3d_gemini_001" data-attivita="albero_pitagorico_3d_gemini_001">Albero di Pitagora: Frattali 3D</a>
+                        <a class="filter-chip" href="../../journal/?attivita=mcd_mcm_1el_001" data-attivita="mcd_mcm_1el_001">Arcade Challenge: MCM &amp; MCD</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_scomposizioni_parabola" data-attivita="arcade_challenge_scomposizioni_parabola">Arcade Challenge: Scomposizioni &amp; Parabola</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_unita_di_misura" data-attivita="arcade_challenge_unita_di_misura">Arcade Challenge: Unità di misura</a>
+                        <a class="filter-chip" href="../../journal/?attivita=tavola_tart_canva0003" data-attivita="tavola_tart_canva0003">Esploratore Numerico: Pitagora &amp; Tartaglia</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fibonacci_anim" data-attivita="fibonacci_anim">Experience Fibonacci</a>
+                        <a class="filter-chip" href="../../journal/?attivita=functions_lab_008" data-attivita="functions_lab_008">FuncLab AI: Esploratore di Funzioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=il-filo-di-dedalo_2.5d_claude_2" data-attivita="il-filo-di-dedalo_2.5d_claude_2">Il Filo di Dedalo: Labirinto Matematico 2.5D</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fractions_lab_001" data-attivita="fractions_lab_001">Laboratorio di operazioni tra Frazioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=disequazioni_frazionarie_vs_sistemi" data-attivita="disequazioni_frazionarie_vs_sistemi">Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_bubble_equazione_della_retta" data-attivita="math_bubble_equazione_della_retta">Math Bubble: la retta esplicita</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_pool_retta_pianocartesiano" data-attivita="math_pool_retta_pianocartesiano">Math Pool: Biliardo Cartesiano e retta</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_underground003_4el" data-attivita="math_underground003_4el">Math Underground: Mappa per la classificazione di Funzioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=parabola_e_disequazioni_di_secondo_grado_maggio_2026" data-attivita="parabola_e_disequazioni_di_secondo_grado_maggio_2026">Parabola e disequazioni di secondo grado</a>
+                        <a class="filter-chip" href="../../journal/?attivita=percentuali_001" data-attivita="percentuali_001">Percent Lab</a>
+                        <a class="filter-chip" href="../../journal/?attivita=soglie_particelle_automa_cellulare" data-attivita="soglie_particelle_automa_cellulare">Simulatore di Automi Cellulari e Particelle</a>
+                        <a class="filter-chip" href="../../journal/?attivita=snake_conway_self" data-attivita="snake_conway_self">Snake of Life</a>
+                        <a class="filter-chip" href="../../journal/?attivita=pen_plotter__23v2_8k" data-attivita="pen_plotter__23v2_8k">Studio Plotter CNC</a>
+                        <a class="filter-chip" href="../../journal/?attivita=phi_is_irrational_01" data-attivita="phi_is_irrational_01">φ è irrazionale: il rapporto aureo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container jr" id="contenuto">
+        <p class="jr-back"><a href="../">← Tutte le note</a></p>
+        <div class="jr-layout">
+        <article class="jr-note">
+            <header>
+                <p class="jr-meta"><time datetime="2026-11-01">1 novembre 2026</time> · Prof. Federico De Benedictis</p>
+                <h1>Lo studio di funzione con FuncLab: un&#x27;onda chiusa in un cerchio</h1>
+                <p class="jr-lead">Si chiede all&#x27;intelligenza artificiale &quot;una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10&quot; e poi la si studia davvero: dominio, simmetria, zeri, inviluppo, con il tutor socratico.</p>
+                <ul class="jr-tags" aria-label="Temi"><li><a href="../../index.html?tag=analisi">Analisi</a></li><li><a href="../../index.html?tag=funzioni">Funzioni</a></li><li><a href="../../index.html?tag=grafici">Grafici</a></li><li><a href="../../index.html?tag=piano%20cartesiano">Piano cartesiano</a></li><li><a href="../../index.html?tag=studio%20di%20funzione">Studio di funzione</a></li><li><a href="../../index.html?tag=dominio">Dominio</a></li></ul>
+            </header>
+        <p class="jr-flag">Bozza: non ancora pubblicata.</p>
+            <div class="jr-body">
+<h2>Cosa è</h2>
+<p><strong>FuncLab</strong> è un esploratore di funzioni con l'intelligenza artificiale: si descrive una funzione a parole, si preme <strong>Genera</strong> e la funzione compare sul piano, con una scheda che ne riassume le proprietà. Il piano si trascina e si ingrandisce con la rotella (con Shift solo l'asse $x$, con Alt solo l'asse $y$); un clic sulla curva fissa un punto. A destra c'è il <strong>tutor socratico</strong>: non dà le risposte, fa domande sulla funzione che si vede.</p>
+<h2>L'idea matematica</h2>
+<p>Abbiamo chiesto: <em>"dammi una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10"</em>. FuncLab ha proposto</p>
+<p>$$f(x) = \sin(10x)\,\sqrt{100 - x^2}$$</p>
+<p>e la si può studiare come qualunque altra funzione:</p>
+<ul>
+<li><strong>Dominio</strong>: la radice esiste solo se $100 - x^2 \geq 0$, cioè $-10 \leq x \leq 10$.</li>
+<li><strong>Inviluppo</strong>: $|\sin(10x)| \leq 1$, quindi $|f(x)| \leq \sqrt{100 - x^2}$, cioè $x^2 + y^2 \leq 100$: l'onda non esce mai dal cerchio di raggio 10.</li>
+<li><strong>Simmetria</strong>: il seno è dispari e la radice è pari, quindi $f(-x) = -f(x)$: la funzione è <strong>dispari</strong>.</li>
+<li><strong>Zeri</strong>: dove $\sin(10x) = 0$, cioè $x = \dfrac{k\pi}{10}$, più gli estremi $x = \pm 10$.</li>
+<li><strong>Periodo</strong> del seno: $\dfrac{2\pi}{10} = \dfrac{\pi}{5} \approx 0{,}63$: per questo le oscillazioni sono così fitte.</li>
+</ul>
+<p>È lo stesso percorso di <strong>Math Underground</strong>: c'è una radice di indice pari (dominio), c'è una funzione goniometrica (periodicità), e il prodotto delle due eredita le proprietà di entrambe.</p>
+<h2>Il dialogo con il tutor</h2>
+<p>[DA INSERIRE: alcune battute scambiate con il tutor socratico, copiate dalla cattura.]</p>
+<section class="jr-studenti"><h2>Per prepararti alla verifica</h2>
+<ul>
+<li>Lo studio di funzione segue sempre lo stesso ordine: tipo di funzione, dominio, simmetrie, intersezioni con gli assi, segno, asintoti, crescenza. Scrivilo come scaletta prima di cominciare.</li>
+<li>Usa FuncLab per <strong>controllare</strong> il tuo studio, non per farlo: prima i conti, poi il grafico.</li>
+<li><strong>Attenzione</strong>: l'intelligenza artificiale può sbagliare una formula o una proprietà. Ogni affermazione della scheda di FuncLab si può verificare con un conto, come quelle qui sopra.</li>
+</ul>
+<p><strong>Prova tu.</strong> Studia $g(x) = \sqrt{9 - x^2}$: dominio, simmetria, intersezioni con gli assi. Che figura è il suo grafico?</p>
+<details>
+<summary>Soluzione</summary>
+<p>Dominio: $9 - x^2 \geq 0$, cioè $-3 \leq x \leq 3$. È pari: $g(-x) = g(x)$. Asse $y$: $g(0) = 3$; zeri: $x = \pm 3$. Da $y = \sqrt{9 - x^2}$ si ha $x^2 + y^2 = 9$ con $y \geq 0$: è la semicirconferenza superiore di raggio 3.</p>
+</details>
+<div class="jr-carta"><h3>Mettiti alla prova su carta</h3><p>Verifiche dell'Archivio con esercizi sugli stessi temi. Prova a farle con carta e penna, senza l'app: è lì che si vede se hai capito.</p><ul><li><span>Verifica di marzo 2026: Studio di funzione, Classificazione e dominio, Funzioni, Dominio, Grafici, Retta, Polinomi, Elettricità</span> <a href="../../content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_A.pdf" target="_blank" rel="noopener">Fila A</a> · <a href="../../content/verifiche/4EL/4EL___verifica_27_marzo_2026_fila_B.pdf" target="_blank" rel="noopener">Fila B</a></li><li><span>Verifica di marzo 2026: Equazioni di secondo grado e parabola, Equazioni, Grafici, Parabola, Retta, Polinomi</span> <a href="../../content/verifiche/3MEC/3MEC___verifica_26_marzo_2026_fila_A.pdf" target="_blank" rel="noopener">Fila A</a> · <a href="../../content/verifiche/3MEC/3MEC___verifica_26_marzo_2026_fila_B.pdf" target="_blank" rel="noopener">Fila B</a></li><li><span>Verifica di ottobre 2025: Equazioni e sistemi lineari, Equazione della retta, Equazioni, Grafici, Retta</span> <a href="../../content/verifiche/3MEC/3MEC___verifica_3_ottobre_2025.pdf" target="_blank" rel="noopener">Apri il PDF</a></li></ul></div>
+</section>
+<h2>Come usarla in classe</h2>
+<p>Alla LIM si fa scrivere alla classe la descrizione della funzione da chiedere, poi si studia insieme quella che FuncLab propone: la scheda di FuncLab diventa un elenco di affermazioni da <strong>verificare</strong>, una per una. Il tutor si può interrogare a turno, a voce alta, e la classe giudica se le sue domande portano avanti il ragionamento.</p>
+<p>Per classificare la funzione prima di studiarla c'è <strong>Math Underground</strong>; per il segno della parabola, <strong>Parabola e disequazioni di secondo grado</strong>. Per allenarsi: <strong>Funzioni lineari</strong>, <strong>La parabola</strong>, <strong>Studio di funzione</strong>. La scheda da stampare raccoglie lo studio di funzione in sette passi.</p>
+<h2>A cosa fare attenzione</h2>
+<ul>
+<li><strong>La fiducia nell'AI</strong>: FuncLab disegna bene, ma la scheda che accompagna il grafico va verificata. È proprio lì il valore didattico.</li>
+<li><strong>Le descrizioni ambigue</strong>: "frequenza 10x" si può leggere in modi diversi. Chiedere alla classe che cosa intendeva è già matematica.</li>
+<li><strong>La connessione</strong>: FuncLab gira su Google AI Studio e ha bisogno della rete.</li>
+</ul>
+
+            </div>
+        </article>
+        <aside class="jr-acts" aria-labelledby="att">
+            <h2 id="att">Le attività di cui parla</h2>
+            <ul><li class="jr-act" style="--jr-accent: hsl(220, 90%, 70%)"><img src="../../content/assets/thumbnails/functions_lab_008.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/functions_lab_008.html">FuncLab AI: Esploratore di Funzioni</a></h3><p>Laboratorio interattivo di analisi matematica: descrivi una funzione a parole e l&#x27;AI la disegna su un piano cartesiano navigabile (zoom, trascinamento, lettura dei punti), con zeri, massimi e minimi evidenziati, più funzioni sovrapposte e Tutor Socratico con sintesi vocale.</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/funzioni-lineari/1">Allenati: Funzioni lineari</a> · <a href="../../allenamento/#/lezione/parabola/1">Allenati: La parabola</a> · <a href="../../allenamento/#/lezione/studio-funzione/1">Allenati: Studio di funzione</a> · <a href="../../schede/functions_lab_008.html">Scheda da stampare</a></p></div></li><li class="jr-act" style="--jr-accent: hsl(10, 90%, 65%)"><img src="../../content/assets/thumbnails/math_underground003_4el.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/math_underground003_4el.html">Math Underground: Mappa per la classificazione di Funzioni</a></h3><p>Mappa interattiva della metropolitana per lo studio teorico delle funzioni analitiche e delle loro principali proprietà (Dominio, Codominio).</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/studio-funzione/1">Allenati: Studio di funzione</a> · <a href="../../allenamento/#/lezione/esponenziali/1">Allenati: Esponenziali</a> · <a href="../../allenamento/#/lezione/logaritmi/1">Allenati: Logaritmi</a> · <a href="../../schede/math_underground003_4el.html">Scheda da stampare</a></p></div></li><li class="jr-act" style="--jr-accent: hsl(280, 85%, 65%)"><img src="../../content/assets/thumbnails/parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026.html">Parabola e disequazioni di secondo grado</a></h3><p>Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.</p><p class="jr-act-more"><a href="../../content/apps/parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026_spiegazione.html">Spiegami come funziona</a> · <a href="../../allenamento/#/lezione/disequazioni-2/1">Allenati: Disequazioni di secondo grado</a> · <a href="../../allenamento/#/lezione/equazioni-2/1">Allenati: Equazioni di secondo grado</a> · <a href="../../allenamento/#/lezione/parabola/1">Allenati: La parabola</a> · <a href="../../schede/parabola_e_disequazioni_di_secondo_grado_maggio_2026.html">Scheda da stampare</a></p></div></li></ul>
+            <h2 class="jr-side-title">Competenze in gioco</h2>
+            <ul class="jr-skills"><li><a href="../../competenze.html#MAT_K1"><span class="jr-code">MAT_K1</span> Insiemi numerici e calcolo letterale</a></li><li><a href="../../competenze.html#MAT_K2"><span class="jr-code">MAT_K2</span> Funzioni elementari e loro rappresentazione</a></li><li><a href="../../competenze.html#MAT_A2"><span class="jr-code">MAT_A2</span> Rappresentare dati mediante tabelle, grafici e funzioni</a></li><li><a href="../../competenze.html#MAT_A3"><span class="jr-code">MAT_A3</span> Risolvere equazioni, disequazioni e sistemi</a></li><li><a href="../../competenze.html#MAT_C3"><span class="jr-code">MAT_C3</span> Analizzare dati e interpretare informazioni con strumenti statistici e probabilistici</a></li><li><a href="../../competenze.html#SOFT_3"><span class="jr-code">SOFT_3</span> Comunicazione Efficace e Lavoro di Squadra</a></li></ul>
+            <h2 class="jr-side-title">Come è cambiata: FuncLab AI: Esploratore di Funzioni</h2>
+            <ul class="jr-storia"><li><time datetime="2026-10-31">31 ottobre 2026</time> Lo studio di funzione (FuncLab con Math Underground) e Il teorema di Pitagora</li></ul>
+            <h2 class="jr-side-title">Potrebbe interessarti anche</h2>
+            <ul class="jr-related"><li><a href="../../content/apps/math_pool_retta_pianocartesiano.html"><img src="../../content/assets/thumbnails/math_pool_retta_pianocartesiano.webp" alt="" loading="lazy"><span>Math Pool: Biliardo Cartesiano e retta</span></a></li></ul>
+        </aside>
+        </div>
+        <nav class="jr-more" aria-labelledby="altre">
+            <h2 id="altre">Altre note</h2>
+            <ul><li><a href="../2026-10-30-disequazioni-di-secondo-grado-sulla-parabola/">Disequazioni di secondo grado: la risposta si legge sulla parabola</a> <time datetime="2026-10-30">30 ottobre 2026</time></li></ul>
+        </nav>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio matematico digitale<br>Istituto Professionale "E. Orfini" · Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener" class="social-circle" aria-label="Instagram @meltingmath">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="jr-colophon">
+                <p><strong>Un diario di bordo.</strong> Orfini Math Lab raccoglie una sperimentazione didattica di matematica
+                    all'Istituto Professionale "E. Orfini" di Foligno: attività costruite, provate in classe, corrette. Ultimo aggiornamento: <time datetime="2026-11-01">1 novembre 2026</time>.</p>
+                <p>Fatto con strumenti open source, ed è a sua volta un progetto aperto: il codice è pubblico su GitHub.
+                    Si può riusare e adattare citando l'autore, mai a scopo di lucro senza il suo permesso.</p>
+                <ul class="jr-badges" aria-label="Progetto aperto e licenze">
+                    <li><a href="https://github.com/federicodb/federicodb.github.io" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Sorgenti su GitHub</a></li>
+                    <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it" target="_blank" rel="license noopener" title="Codice e contenuti: attribuzione, non commerciale, condividi allo stesso modo"><svg viewBox="0 0 86 22" aria-hidden="true" class="jr-cc"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="9.2"/><path d="M9.6 8.4a3.2 3.2 0 1 0 0 5.2M15.4 8.4a3.2 3.2 0 1 0 0 5.2"/><circle cx="32" cy="11" r="9.2"/><circle cx="32" cy="6.2" r="1.4" fill="currentColor" stroke="none"/><path d="M29.4 9.2h5.2v4.6h-1.6v4.2h-2v-4.2h-1.6z" fill="currentColor" stroke="none"/><circle cx="53" cy="11" r="9.2"/><path d="M56.4 7.6a3.6 3.6 0 1 0 0 6.8M48.8 10h5.4M48.8 12.4h5.4M46.6 4.6l12.8 12.8"/><circle cx="74" cy="11" r="9.2"/><path d="M78.2 11a4.2 4.2 0 1 1-1.3-3"/><path d="M77.3 5.4l-.3 2.8-2.8-.3"/></g></svg>CC BY-NC-SA 4.0 · uso non commerciale</a></li>
+                </ul>
+            </div>
+            <script src="../../content/assets/js/offline.js" defer></script>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Laboratorio Matematico Orfini Foligno · Prof. Federico De Benedictis · <a href="../../privacy-policy.html">Privacy e cookie</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('filter-burger-btn'), menu = document.getElementById('filter-dropdown');
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                btn.setAttribute('aria-expanded', menu.classList.toggle('active'));
+            });
+            document.addEventListener('click', function (e) {
+                if (!menu.contains(e.target)) { menu.classList.remove('active'); btn.setAttribute('aria-expanded', 'false'); }
+            });
+        })();
+    </script>
+    <script src="../../cookie-consent.js"></script>
+</body>
+
+</html>

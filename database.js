@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-10-31 19:05:59
+   Data: 2026-11-01 11:08:37
 */
 
 const db = [
@@ -57,6 +57,11 @@ const db = [
             }
         ],
         "journal": [
+            {
+                "titolo": "Lo studio di funzione con FuncLab: un'onda chiusa in un cerchio",
+                "url": "journal/2026-11-01-lo-studio-di-funzione-con-funclab/",
+                "data": "2026-11-01"
+            },
             {
                 "titolo": "Disequazioni di secondo grado: la risposta si legge sulla parabola",
                 "url": "journal/2026-10-30-disequazioni-di-secondo-grado-sulla-parabola/",
@@ -521,6 +526,13 @@ const db = [
                     "MAT_A2"
                 ]
             }
+        ],
+        "journal": [
+            {
+                "titolo": "Lo studio di funzione con FuncLab: un'onda chiusa in un cerchio",
+                "url": "journal/2026-11-01-lo-studio-di-funzione-con-funclab/",
+                "data": "2026-11-01"
+            }
         ]
     },
     {
@@ -581,6 +593,11 @@ const db = [
             }
         ],
         "journal": [
+            {
+                "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
+                "url": "journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/",
+                "data": "2026-11-01"
+            },
             {
                 "titolo": "Arcade Challenge: le unità di misura in ascensore",
                 "url": "journal/2026-10-26-arcade-challenge-unita-di-misura/",
@@ -1354,6 +1371,11 @@ const db = [
             }
         ],
         "journal": [
+            {
+                "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
+                "url": "journal/2026-11-01-il-teorema-di-pitagora-nell-albero/",
+                "data": "2026-11-01"
+            },
             {
                 "titolo": "π non è una frazione (e nemmeno √2)",
                 "url": "journal/2026-10-28-pi-greco-non-e-una-frazione/",
@@ -2156,6 +2178,13 @@ const db = [
                     "MAT_C2"
                 ]
             }
+        ],
+        "journal": [
+            {
+                "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
+                "url": "journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/",
+                "data": "2026-11-01"
+            }
         ]
     },
     {
@@ -2460,6 +2489,13 @@ const db = [
                     "MAT_C4"
                 ]
             }
+        ],
+        "journal": [
+            {
+                "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
+                "url": "journal/2026-11-01-il-teorema-di-pitagora-nell-albero/",
+                "data": "2026-11-01"
+            }
         ]
     },
     {
@@ -2518,6 +2554,13 @@ const db = [
                     "MAT_A1"
                 ]
             }
+        ],
+        "journal": [
+            {
+                "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
+                "url": "journal/2026-11-01-il-teorema-di-pitagora-nell-albero/",
+                "data": "2026-11-01"
+            }
         ]
     },
     {
@@ -2568,50 +2611,6 @@ const db = [
         ]
     },
     {
-        "title": "Parabola Challenge: Disequazioni",
-        "excerpt": "Videogioco didattico a livelli sulle disequazioni di secondo grado. Scaffolding progressivo fino all'input testuale libero.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "ALGEBRA",
-            "DISEQUAZIONI",
-            "GAMIFICATION",
-            "MAT:ANALISI",
-            "MAT:PROBLEMSOLVING",
-            "MATEMATICA",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "PARABOLA",
-            "SCAFFOLDING"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/disequazioni grafiche 4el.html",
-        "type": "app",
-        "icon": "🧱",
-        "game_type": "arcade",
-        "thumbnail": "content/assets/thumbnails/disequazioni grafiche 4el.webp",
-        "allenamento": [
-            {
-                "id": "disequazioni-2",
-                "titolo": "Disequazioni di secondo grado",
-                "url": "allenamento/#/lezione/disequazioni-2/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "parabola",
-                "titolo": "La parabola",
-                "url": "allenamento/#/lezione/parabola/1",
-                "mat": [
-                    "MAT_K2",
-                    "MAT_K3"
-                ]
-            }
-        ]
-    },
-    {
         "title": "Laboratorio di operazioni tra Frazioni",
         "excerpt": "Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.",
         "tags": [
@@ -2653,6 +2652,13 @@ const db = [
                     "MAT_K1",
                     "MAT_A1"
                 ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
+                "url": "journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/",
+                "data": "2026-11-01"
             }
         ]
     },
@@ -2706,6 +2712,13 @@ const db = [
                     "MAT_K2",
                     "MAT_A3"
                 ]
+            }
+        ],
+        "journal": [
+            {
+                "titolo": "Lo studio di funzione con FuncLab: un'onda chiusa in un cerchio",
+                "url": "journal/2026-11-01-lo-studio-di-funzione-con-funclab/",
+                "data": "2026-11-01"
             }
         ]
     },
