@@ -14,7 +14,6 @@
     <meta property="og:description" content="Si chiede all&#x27;intelligenza artificiale &quot;una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10&quot; e poi la si studia davvero: dominio, simmetria, zeri, inviluppo, con il tutor socratico.">
     <meta property="og:image" content="https://federicodb.github.io/journal/2026-11-01-lo-studio-di-funzione-con-funclab/copertina.webp">
     <meta property="article:published_time" content="2026-11-01">
-    <meta name="robots" content="noindex">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
@@ -111,24 +110,49 @@
                 <p class="jr-lead">Si chiede all&#x27;intelligenza artificiale &quot;una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10&quot; e poi la si studia davvero: dominio, simmetria, zeri, inviluppo, con il tutor socratico.</p>
                 <ul class="jr-tags" aria-label="Temi"><li><a href="../../index.html?tag=analisi">Analisi</a></li><li><a href="../../index.html?tag=funzioni">Funzioni</a></li><li><a href="../../index.html?tag=grafici">Grafici</a></li><li><a href="../../index.html?tag=piano%20cartesiano">Piano cartesiano</a></li><li><a href="../../index.html?tag=studio%20di%20funzione">Studio di funzione</a></li><li><a href="../../index.html?tag=dominio">Dominio</a></li></ul>
             </header>
-        <p class="jr-flag">Bozza: non ancora pubblicata.</p>
             <div class="jr-body">
 <h2>Cosa è</h2>
 <p><strong>FuncLab</strong> è un esploratore di funzioni con l'intelligenza artificiale: si descrive una funzione a parole, si preme <strong>Genera</strong> e la funzione compare sul piano, con una scheda che ne riassume le proprietà. Il piano si trascina e si ingrandisce con la rotella (con Shift solo l'asse $x$, con Alt solo l'asse $y$); un clic sulla curva fissa un punto. A destra c'è il <strong>tutor socratico</strong>: non dà le risposte, fa domande sulla funzione che si vede.</p>
-<h2>L'idea matematica</h2>
-<p>Abbiamo chiesto: <em>"dammi una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10"</em>. FuncLab ha proposto</p>
+<h2>Che cos'è una funzione</h2>
+<p>Una <strong>funzione</strong> $f$ è una regola che a <strong>ogni</strong> numero $x$ di un insieme associa <strong>uno e un solo</strong> numero $y = f(x)$. Le due parole che contano sono "ogni" e "uno solo": una $x$ non può restare senza risposta, né averne due.</p>
+<ul>
+<li>Il <strong>dominio</strong> è l'insieme delle $x$ per cui la regola ha senso: per $\dfrac{1}{x}$ si esclude $0$, per $\sqrt{x}$ i numeri negativi.</li>
+<li>Il <strong>codominio</strong> è l'insieme in cui cerchiamo i risultati: per le funzioni della scuola, di solito tutti i numeri reali $\mathbb{R}$.</li>
+<li>L'<strong>immagine</strong> è l'insieme dei valori che la funzione <strong>raggiunge davvero</strong>: è contenuta nel codominio, ma spesso è più piccola.</li>
+</ul>
+<p>Il <strong>grafico</strong> è l'insieme dei punti $(x;\ f(x))$: studiare una funzione vuol dire capire com'è fatto il grafico prima di disegnarlo.</p>
+<h2>Lo studio, passo per passo, su una parabola</h2>
+<p>Prendiamo $f(x) = x^2 - 4x + 3$.</p>
+<figure><img loading="lazy" alt="Lo studio di $f(x) = x^2 - 4x + 3$: intersezioni, segno, minimo; la retta $y = x - 1$ sovrapposta" src="../media/studio-funzione-parabola.svg"><figcaption>Lo studio di $f(x) = x^2 - 4x + 3$: intersezioni, segno, minimo; la retta $y = x - 1$ sovrapposta</figcaption></figure>
+<ol>
+<li><strong>Dominio</strong>: è un polinomio, si può calcolare per ogni $x$: il dominio è $\mathbb{R}$.</li>
+<li><strong>Intersezione con l'asse $y$</strong>: è il punto in cui $x = 0$. Si calcola $f(0) = 3$: il punto è $(0;\ 3)$.</li>
+<li><strong>Intersezioni con l'asse $x$ (zeri)</strong>: sono i punti in cui $y = 0$. Si risolve $x^2 - 4x + 3 = 0$, cioè $(x - 1)(x - 3) = 0$: gli zeri sono $x = 1$ e $x = 3$.</li>
+<li><strong>Segno</strong>: dove il grafico sta sopra l'asse ($f(x) &gt; 0$) e dove sotto ($f(x) &lt; 0$). La parabola è rivolta verso l'alto, quindi è positiva per $x &lt; 1$ oppure $x &gt; 3$, negativa per $1 &lt; x &lt; 3$.</li>
+<li><strong>Crescenza e decrescenza</strong>: una funzione è <strong>crescente</strong> in un intervallo se, prese due $x$ qualunque in quell'intervallo con $x_1 &lt; x_2$, si ha $f(x_1) &lt; f(x_2)$: andando verso destra il grafico sale. È <strong>decrescente</strong> se scende. Qui il vertice ha $x = -\dfrac{b}{2a} = 2$ e $f(2) = -1$: la funzione decresce per $x \leq 2$ e cresce per $x \geq 2$.</li>
+<li><strong>Minimo e immagine</strong>: il punto più basso è il vertice $(2;\ -1)$, un <strong>minimo</strong>. La funzione raggiunge $-1$ e tutti i valori più grandi, ma nessuno più piccolo: l'immagine è $y \geq -1$, mentre il codominio resta $\mathbb{R}$.</li>
+</ol>
+<p>Due grafici si incontrano dove hanno la stessa $y$: per la retta $y = x - 1$ si risolve $x^2 - 4x + 3 = x - 1$ e si trovano i punti $(1;\ 0)$ e $(4;\ 3)$.</p>
+<h2>Un'onda chiusa in un cerchio</h2>
+<p>In FuncLab abbiamo chiesto: <em>"dammi una funzione periodica di frequenza 10x, inclusa in un cerchio di raggio 10"</em>. FuncLab ha proposto</p>
 <p>$$f(x) = \sin(10x)\,\sqrt{100 - x^2}$$</p>
-<p>e la si può studiare come qualunque altra funzione:</p>
+<p>e le stesse domande funzionano anche qui:</p>
 <ul>
 <li><strong>Dominio</strong>: la radice esiste solo se $100 - x^2 \geq 0$, cioè $-10 \leq x \leq 10$.</li>
-<li><strong>Inviluppo</strong>: $|\sin(10x)| \leq 1$, quindi $|f(x)| \leq \sqrt{100 - x^2}$, cioè $x^2 + y^2 \leq 100$: l'onda non esce mai dal cerchio di raggio 10.</li>
+<li><strong>Immagine e inviluppo</strong>: $|\sin(10x)| \leq 1$, quindi $|f(x)| \leq \sqrt{100 - x^2}$, cioè $x^2 + y^2 \leq 100$: l'onda non esce mai dal cerchio di raggio 10, e l'immagine è contenuta tra $-10$ e $10$.</li>
 <li><strong>Simmetria</strong>: il seno è dispari e la radice è pari, quindi $f(-x) = -f(x)$: la funzione è <strong>dispari</strong>.</li>
 <li><strong>Zeri</strong>: dove $\sin(10x) = 0$, cioè $x = \dfrac{k\pi}{10}$, più gli estremi $x = \pm 10$.</li>
-<li><strong>Periodo</strong> del seno: $\dfrac{2\pi}{10} = \dfrac{\pi}{5} \approx 0{,}63$: per questo le oscillazioni sono così fitte.</li>
+<li><strong>Periodo</strong> del seno: $\dfrac{2\pi}{10} = \dfrac{\pi}{5} \approx 0{,}63$: per questo le oscillazioni sono così fitte, e la crescenza cambia decine di volte.</li>
 </ul>
-<p>È lo stesso percorso di <strong>Math Underground</strong>: c'è una radice di indice pari (dominio), c'è una funzione goniometrica (periodicità), e il prodotto delle due eredita le proprietà di entrambe.</p>
+<p>È lo stesso percorso di <strong>Math Underground</strong>: una radice di indice pari decide il dominio, una funzione goniometrica porta la periodicità, e il prodotto eredita le proprietà di entrambe.</p>
 <h2>Il dialogo con il tutor</h2>
-<p>[DA INSERIRE: alcune battute scambiate con il tutor socratico, copiate dalla cattura.]</p>
+<figure><img loading="lazy" alt="FuncLab con la funzione generata: a sinistra la scheda con dominio, inviluppo, simmetria e zeri; a destra il tutor socratico" src="../media/funclab-onda-nel-cerchio-schermata.webp"><figcaption>FuncLab con la funzione generata: a sinistra la scheda con dominio, inviluppo, simmetria e zeri; a destra il tutor socratico</figcaption></figure>
+<p>La scheda che FuncLab mette accanto al grafico riassume le proprietà: <em>dominio $[-10, 10]$</em>, <em>inviluppo limitato dal cerchio $x^2 + y^2 \leq 100$</em>, <em>funzione dispari</em>, <em>zeri periodici per $x = \dfrac{k\pi}{10}$ e agli estremi $x = \pm 10$</em>, e avverte che nella vista ci sono 128 punti notevoli: per vederli uno per uno bisogna ingrandire. Il tutor apre così:</p>
+<blockquote>
+<p><em>Ciao! Sono il tuo tutor. Chiedimi qualsiasi cosa sulla funzione che vedi a schermo.</em></p>
+<p><em>Ora guardiamo la funzione $\sin(10x)\sqrt{100 - x^2}$. Analizziamola insieme!</em></p>
+</blockquote>
+<p>Da qui la parola passa alla classe: ogni proprietà della scheda è una domanda da fare al tutor, e una verifica da fare con i conti della sezione precedente.</p>
 <section class="jr-studenti"><h2>Per prepararti alla verifica</h2>
 <ul>
 <li>Lo studio di funzione segue sempre lo stesso ordine: tipo di funzione, dominio, simmetrie, intersezioni con gli assi, segno, asintoti, crescenza. Scrivilo come scaletta prima di cominciare.</li>
@@ -159,8 +183,6 @@
             <ul><li class="jr-act" style="--jr-accent: hsl(220, 90%, 70%)"><img src="../../content/assets/thumbnails/functions_lab_008.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/functions_lab_008.html">FuncLab AI: Esploratore di Funzioni</a></h3><p>Laboratorio interattivo di analisi matematica: descrivi una funzione a parole e l&#x27;AI la disegna su un piano cartesiano navigabile (zoom, trascinamento, lettura dei punti), con zeri, massimi e minimi evidenziati, più funzioni sovrapposte e Tutor Socratico con sintesi vocale.</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/funzioni-lineari/1">Allenati: Funzioni lineari</a> · <a href="../../allenamento/#/lezione/parabola/1">Allenati: La parabola</a> · <a href="../../allenamento/#/lezione/studio-funzione/1">Allenati: Studio di funzione</a> · <a href="../../schede/functions_lab_008.html">Scheda da stampare</a></p></div></li><li class="jr-act" style="--jr-accent: hsl(10, 90%, 65%)"><img src="../../content/assets/thumbnails/math_underground003_4el.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/math_underground003_4el.html">Math Underground: Mappa per la classificazione di Funzioni</a></h3><p>Mappa interattiva della metropolitana per lo studio teorico delle funzioni analitiche e delle loro principali proprietà (Dominio, Codominio).</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/studio-funzione/1">Allenati: Studio di funzione</a> · <a href="../../allenamento/#/lezione/esponenziali/1">Allenati: Esponenziali</a> · <a href="../../allenamento/#/lezione/logaritmi/1">Allenati: Logaritmi</a> · <a href="../../schede/math_underground003_4el.html">Scheda da stampare</a></p></div></li><li class="jr-act" style="--jr-accent: hsl(280, 85%, 65%)"><img src="../../content/assets/thumbnails/parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026.html">Parabola e disequazioni di secondo grado</a></h3><p>Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.</p><p class="jr-act-more"><a href="../../content/apps/parabola%20e%20disequazioni%20di%20secondo%20grado%20maggio%202026_spiegazione.html">Spiegami come funziona</a> · <a href="../../allenamento/#/lezione/disequazioni-2/1">Allenati: Disequazioni di secondo grado</a> · <a href="../../allenamento/#/lezione/equazioni-2/1">Allenati: Equazioni di secondo grado</a> · <a href="../../allenamento/#/lezione/parabola/1">Allenati: La parabola</a> · <a href="../../schede/parabola_e_disequazioni_di_secondo_grado_maggio_2026.html">Scheda da stampare</a></p></div></li></ul>
             <h2 class="jr-side-title">Competenze in gioco</h2>
             <ul class="jr-skills"><li><a href="../../competenze.html#MAT_K1"><span class="jr-code">MAT_K1</span> Insiemi numerici e calcolo letterale</a></li><li><a href="../../competenze.html#MAT_K2"><span class="jr-code">MAT_K2</span> Funzioni elementari e loro rappresentazione</a></li><li><a href="../../competenze.html#MAT_A2"><span class="jr-code">MAT_A2</span> Rappresentare dati mediante tabelle, grafici e funzioni</a></li><li><a href="../../competenze.html#MAT_A3"><span class="jr-code">MAT_A3</span> Risolvere equazioni, disequazioni e sistemi</a></li><li><a href="../../competenze.html#MAT_C3"><span class="jr-code">MAT_C3</span> Analizzare dati e interpretare informazioni con strumenti statistici e probabilistici</a></li><li><a href="../../competenze.html#SOFT_3"><span class="jr-code">SOFT_3</span> Comunicazione Efficace e Lavoro di Squadra</a></li></ul>
-            <h2 class="jr-side-title">Come è cambiata: FuncLab AI: Esploratore di Funzioni</h2>
-            <ul class="jr-storia"><li><time datetime="2026-10-31">31 ottobre 2026</time> Lo studio di funzione (FuncLab con Math Underground) e Il teorema di Pitagora</li></ul>
             <h2 class="jr-side-title">Potrebbe interessarti anche</h2>
             <ul class="jr-related"><li><a href="../../content/apps/math_pool_retta_pianocartesiano.html"><img src="../../content/assets/thumbnails/math_pool_retta_pianocartesiano.webp" alt="" loading="lazy"><span>Math Pool: Biliardo Cartesiano e retta</span></a></li></ul>
         </aside>

@@ -546,7 +546,8 @@ def _blocco_verifiche(verifiche, root):
 
 
 # storia di un'attività dai commit: solo modifiche didattiche, in italiano, dell'app stessa (non del sito)
-AMBITI_DI_SITO = {"allenamento", "build", "journal", "mappa", "catalogo", "offline", "readme", "app", "riorganizzazione"}
+AMBITI_DI_SITO = {"allenamento", "build", "journal", "mappa", "catalogo", "offline", "readme", "app", "riorganizzazione",
+                  "schede", "competenze", "licenza", "perf"}
 PAROLE_TECNICHE = re.compile(r"\b(meta|metadati|database|sitemap|build|catalogo|refactor|test|tailwind|react|babel|jsx|cdn)\b", re.I)
 ITALIANO = re.compile(r"\b(il|la|le|lo|gli|di|del|della|dei|delle|e|per|con|che|più|una|un|nel|nella|nei|al|alla|ai|sul|sulla|sui|a|in|da)\b", re.I)
 INGLESE = re.compile(r"\b(the|and|add|adds|added|with|to|for|of|update|improve)\b", re.I)
