@@ -22,6 +22,8 @@ Il rapporto tra due numeri di Fibonacci consecutivi non è mai uguale a $\varphi
 $$\varphi = 1 + \cfrac{1}{1 + \cfrac{1}{1 + \cdots}}$$
 e per questo è il numero che le frazioni approssimano peggio.
 
+**Il filo rosso.** Le frazioni di Fibonacci sono rapporti tra grandezze **commensurabili**, $\varphi$ no: nessuna tacca comune misura i due lati del rettangolo aureo. Perché le frazioni, i razionali, le proporzioni e le percentuali siano facce della stessa idea, e $\varphi$ ne resti fuori, è raccontato nelle [quattro facce dello stesso discorso](../2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/).
+
 ## Per prepararti alla verifica
 
 - Calcola a mano qualche rapporto tra numeri di Fibonacci vicini, per esempio $\dfrac{8}{5}$ e $\dfrac{13}{8}$, e guarda come si avvicinano a $1{,}618$.

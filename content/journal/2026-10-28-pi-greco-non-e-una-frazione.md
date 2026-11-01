@@ -25,6 +25,8 @@ $\frac{22}{7}$ è vicinissima, ma il suo periodo $142857$ si ripete per sempre; 
 
 Lo stesso discorso vale per lato e diagonale di un quadrato: nell'app sull'**albero di Pitagora** la diagonale è $\sqrt2$ volte il lato e nessuna unità li misura tutti e due. Lo zoom di quell'app ora funziona di nuovo.
 
+**Il filo rosso.** Dire che $\pi$ non è una frazione vuol dire che diametro e circonferenza sono **incommensurabili**: nessuna tacca, per quanto piccola, li misura tutti e due. È il rovescio delle [quattro facce dello stesso discorso](../2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/) (frazione, numero razionale, proporzione, percentuale), che esistono solo quando la tacca comune c'è.
+
 ## Per prepararti alla verifica
 
 - Rifai la **Verifica** finale dell'app e spiega a voce, anche da solo, perché ogni risposta è giusta.

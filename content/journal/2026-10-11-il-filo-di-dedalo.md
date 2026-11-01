@@ -25,6 +25,8 @@ $$15\% \text{ di } 80 = 10\% + 5\% = 8 + 4 = 12 \qquad 3 : 4 = x : 20 \Rightarro
 
 E c'è una regola aurea: **il filo più corto vale di più**. Per vincere non basta uscire dal labirinto: bisogna scegliere la strada migliore.
 
+**Il filo rosso.** Frazioni, percentuali e proporzioni nei sigilli non sono tre argomenti diversi: sono facce della stessa idea, una **tacca comune** che misura due grandezze. È raccontato nelle [quattro facce dello stesso discorso](../2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/), nella nota su Fractions Lab.
+
 ## Per prepararti alla verifica
 
 - Prima di aprire un sigillo, prova a stimare il risultato: "più o meno di metà?", "più o meno di 10?".

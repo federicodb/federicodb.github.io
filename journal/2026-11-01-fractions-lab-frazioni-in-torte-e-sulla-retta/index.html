@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Fractions Lab: le frazioni in torte e sulla retta | Journal · Orfini Math Lab</title>
-    <meta name="description" content="Somma, differenza, prodotto, quoziente e potenza tra frazioni, viste come fette di torta e come punti sulla retta dei numeri, con il procedimento spiegato passo per passo.">
+    <meta name="description" content="Somma, differenza, prodotto, quoziente e potenza tra frazioni, in torte e sulla retta; e le quattro facce della stessa idea, la commensurabilità: frazione, numero razionale, proporzione, percentuale.">
     <meta name="author" content="Prof. Federico De Benedictis">
     <link rel="canonical" href="https://federicodb.github.io/journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://federicodb.github.io/journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/">
     <meta property="og:title" content="Fractions Lab: le frazioni in torte e sulla retta">
-    <meta property="og:description" content="Somma, differenza, prodotto, quoziente e potenza tra frazioni, viste come fette di torta e come punti sulla retta dei numeri, con il procedimento spiegato passo per passo.">
+    <meta property="og:description" content="Somma, differenza, prodotto, quoziente e potenza tra frazioni, in torte e sulla retta; e le quattro facce della stessa idea, la commensurabilità: frazione, numero razionale, proporzione, percentuale.">
     <meta property="og:image" content="https://federicodb.github.io/journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/copertina.webp">
     <meta property="article:published_time" content="2026-11-01">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,7 +107,7 @@
             <header>
                 <p class="jr-meta"><time datetime="2026-11-01">1 novembre 2026</time> · Prof. Federico De Benedictis</p>
                 <h1>Fractions Lab: le frazioni in torte e sulla retta</h1>
-                <p class="jr-lead">Somma, differenza, prodotto, quoziente e potenza tra frazioni, viste come fette di torta e come punti sulla retta dei numeri, con il procedimento spiegato passo per passo.</p>
+                <p class="jr-lead">Somma, differenza, prodotto, quoziente e potenza tra frazioni, in torte e sulla retta; e le quattro facce della stessa idea, la commensurabilità: frazione, numero razionale, proporzione, percentuale.</p>
                 <ul class="jr-tags" aria-label="Temi"><li><a href="../../index.html?tag=aritmetica">Aritmetica</a></li><li><a href="../../index.html?tag=frazioni">Frazioni</a></li><li><a href="../../index.html?tag=percentuali">Percentuali</a></li><li><a href="../../index.html?tag=numeri%20razionali">Numeri razionali</a></li><li><a href="../../index.html?tag=caccia%20all%27errore">Caccia all&#x27;errore</a></li><li><a href="../../index.html?tag=dedalo">Dedalo</a></li></ul>
             </header>
             <div class="jr-body">
@@ -126,6 +126,18 @@
 <p>$$\left(\dfrac12\right)^{2} = \dfrac14 \qquad \left(\dfrac12\right)^{-2} = 2^2 = 4 \qquad \left(\dfrac12\right)^{0} = 1$$</p>
 <p>L'esponente negativo inverte la frazione, "come una retromarcia", dice l'app.</p>
 <figure><img loading="lazy" alt="La potenza in Fractions Lab: l'esponente si sceglie con il cursore, a destra il procedimento" src="../media/fractions-lab-potenza.webp"><figcaption>La potenza in Fractions Lab: l'esponente si sceglie con il cursore, a destra il procedimento</figcaption></figure>
+<h2>Quattro facce dello stesso discorso</h2>
+<p>Prendi due bastoncini, uno lungo $15$ e uno lungo $20$, e un righello senza numeri: ha una sola tacca, che puoi riportare quante volte vuoi. Esiste una tacca che stia un numero <strong>intero</strong> di volte in tutti e due? Sì: una tacca lunga $5$ entra $3$ volte nel primo e $4$ nel secondo. Quando succede, i due bastoncini si dicono <strong>commensurabili</strong>: hanno una misura in comune.</p>
+<p>Per trovare la tacca c'è un trucco vecchio di duemila anni, l'<strong>algoritmo di Euclide</strong>: si toglie il bastoncino corto da quello lungo finché i due pezzi non diventano uguali. $20 - 15 = 5$, poi $15 - 5 = 10$, $10 - 5 = 5$: la tacca è $5$, cioè il <strong>MCD</strong>. È la stessa idea della teglia da tagliare nell'<a href="../2026-10-25-arcade-challenge-mcm-mcd/">Arcade MCM &amp; MCD</a>.</p>
+<figure><img loading="lazy" alt="Una tacca comune misura 15 e 20; lato e diagonale del quadrato non ne hanno nessuna" src="../media/commensurabilita.svg"><figcaption>Una tacca comune misura 15 e 20; lato e diagonale del quadrato non ne hanno nessuna</figcaption></figure>
+<p>Trovata la tacca, la stessa coppia si può raccontare in quattro modi. Sono quattro facce dello stesso discorso:</p>
+<ul>
+<li><strong>Frazione</strong>: il primo contiene la tacca 3 volte, il secondo 4: il primo è $\dfrac34$ del secondo. Il denominatore dice in quante tacche è diviso l'intero, il numeratore quante ne prendiamo.</li>
+<li><strong>Numero razionale</strong>: lo stesso rapporto scritto come numero, $3 : 4 = 0{,}75$, un punto preciso della retta. Ogni coppia commensurabile dà un razionale, e ogni razionale nasce così: è il significato di $\mathbb{Q}$, e il motivo per cui il suo decimale è finito o periodico.</li>
+<li><strong>Proporzione</strong>: ingrandisci tutto, come una ricetta per più persone o una mappa in scala, e la tacca cresce con te: $3 : 4 = 15 : 20 = 30 : 40$. Cambia la scala, non il rapporto. Le <a href="../2026-10-26-arcade-challenge-unita-di-misura/">equivalenze dell'ascensore</a> sono proporzioni con il $10$; la lezione <a href="/allenamento/#/lezione/proporzioni/1">Proporzioni</a> le allena.</li>
+<li><strong>Percentuale</strong>: scegli una tacca speciale, quella che sta <strong>100</strong> volte nell'intero. Allora $\dfrac34 = \dfrac{75}{100} = 75\%$. Una percentuale è una proporzione con il 100 in fondo: $x : 100 = 3 : 4$. Si allena nel <a href="/content/apps/percentuali_001.html">Percent Lab</a>, nella lezione <a href="/allenamento/#/lezione/percentuali/1">Percentuali</a> e con due trucchi del calcolo veloce: <a href="/calcolo-mentale.html#percentuali-scambiate">le percentuali che si scambiano</a> ($8\%$ di $25$ è il $25\%$ di $8$) e <a href="/calcolo-mentale.html#per-5-e-25">per 25 come diviso 4</a>.</li>
+</ul>
+<p>E poi c'è il rovescio della medaglia. Prova con il lato e la diagonale di un quadrato: l'algoritmo di Euclide non finisce mai, i pezzi diventano sempre più piccoli senza mai diventare uguali. <strong>Nessuna tacca</strong> li misura tutti e due: sono <strong>incommensurabili</strong>, e il loro rapporto, $\sqrt2$, non è una frazione. Da qui nascono gli irrazionali: <a href="../2026-10-28-pi-greco-non-e-una-frazione/">π</a> tra diametro e circonferenza, <a href="../2026-10-30-phi-e-le-frazioni-di-fibonacci/">φ</a> nel rapporto aureo, e la diagonale che si incontra nel <a href="../2026-11-01-il-teorema-di-pitagora-nell-albero/">teorema di Pitagora</a>.</p>
 <section class="jr-studenti"><h2>Per prepararti alla verifica</h2>
 <ul>
 <li>Prima di calcolare, prevedi: il risultato sarà più grande o più piccolo di A? Poi controlla sulla retta. Moltiplicare per una frazione minore di 1 <strong>rimpicciolisce</strong>, dividere <strong>ingrandisce</strong>.</li>

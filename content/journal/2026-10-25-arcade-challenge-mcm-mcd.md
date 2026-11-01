@@ -25,6 +25,8 @@ Entrambi nascono dai fattori primi:
 
 $$360 = 2^3 \cdot 3^2 \cdot 5$$
 
+**Il filo rosso.** Il MCD è la **tacca comune** più grande che misura due grandezze: da lì nascono la frazione, il numero razionale, la proporzione e la percentuale, che sono [quattro facce dello stesso discorso](../2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/). E l'algoritmo di Euclide, che toglie il numero piccolo dal grande, lo trova senza scomporre.
+
 ## Per prepararti alla verifica
 
 - Nella missione **Detective**, prima di calcolare, sottolinea la domanda: "di nuovo insieme" e "ogni quanto si ripete" chiedono il mcm; "il più grande possibile" e "in parti uguali senza avanzi" chiedono il MCD.

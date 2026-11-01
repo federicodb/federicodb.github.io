@@ -709,5 +709,37 @@ def pitagora_teorema():
     return _svg(640, 245, "".join(out), "Teorema di Pitagora con i quadrati sui lati e distanza tra due punti")
 
 
+def commensurabilita():
+    """ Due bastoncini (15 e 20) misurati dalla stessa tacca (5): le quattro facce del rapporto 3 : 4,
+        e il rovescio, lato e diagonale del quadrato, che nessuna tacca misura insieme """
+    u, x0 = 22, 110
+    out = [_t(20, 22, "una tacca comune", 13, "start", ACC, 700)]
+    for r, (nome, n) in enumerate((("A = 15", 3), ("B = 20", 4))):
+        y = 36 + r * 34
+        out.append(_t(x0 - 12, y + 15, nome, 13, "end", weight=700))
+        for k in range(n):
+            out.append(_rect(x0 + k * 5 * u / 1.5, y, 5 * u / 1.5, 20, FILL if k % 2 == 0 else "none", INK, 1.2))
+        out.append(_t(x0 + n * 5 * u / 1.5 + 10, y + 15, f"{n} tacche", 12, "start", ACC2, 600))
+    out.append(_t(20, 120, "tacca = 5 = MCD(15, 20)", 12.5, "start", "#333"))
+    # le quattro facce
+    facce = (("frazione", "A è 3/4 di B"), ("numero razionale", "3 : 4 = 0,75"),
+             ("proporzione", "3 : 4 = 15 : 20"), ("percentuale", "3/4 = 75/100 = 75%"))
+    for i, (titolo, testo) in enumerate(facce):
+        cx, cy = 30 + (i % 2) * 190, 140 + (i // 2) * 58
+        out += [_rect(cx, cy, 178, 48, "none", ACC, 1.3), _t(cx + 89, cy + 19, titolo, 12, color=ACC, weight=700),
+                _t(cx + 89, cy + 38, testo, 13.5, weight=600)]
+    # il rovescio: lato e diagonale
+    X0, Y0, L = 488, 70, 110
+    out += [_t(X0 + L / 2, 22, "nessuna tacca comune", 13, color=ACC2, weight=700),
+            _rect(X0, Y0, L, L, "none", INK, 1.4), _line(X0, Y0 + L, X0 + L, Y0, ACC2, 2.4),
+            _t(X0 + L / 2, Y0 + L + 18, "lato 1", 12), _t(X0 + L / 2 + 14, Y0 + L / 2 - 6, "√2", 15, "start", ACC2, 700)]
+    for k in range(1, 7):
+        out.append(_line(X0 + k * L / 7, Y0 + L - 5, X0 + k * L / 7, Y0 + L + 5, INK, 1))
+    out += [_t(X0 + L / 2, Y0 + L + 44, "lato e diagonale:", 12, color="#333"),
+            _t(X0 + L / 2, Y0 + L + 60, "incommensurabili", 12.5, color=ACC2, weight=700),
+            _t(X0 + L / 2, Y0 + L + 78, "→ √2, π, φ irrazionali", 12, color="#333")]
+    return _svg(620, 262, "".join(out), "Commensurabilità: una tacca comune misura 15 e 20; lato e diagonale del quadrato non ne hanno")
+
+
 FIGURE = {name: fn for name, fn in globals().items() if callable(fn) and not name.startswith("_") and name.islower()
           and name not in ("FIGURE",)}

@@ -31,6 +31,8 @@ $$L^2\cos^2\alpha + L^2\sin^2\alpha = L^2$$
 
 Così, a ogni livello, l'area totale dei quadrati nuovi resta la stessa: l'albero cresce senza "consumare" area. Con $\alpha = 45°$ è simmetrico; con $35°$, come nella copertina, si piega da una parte.
 
+**Il filo rosso.** Lato e diagonale del quadrato sono l'esempio più antico di grandezze **incommensurabili**: nessuna tacca comune li misura, e il loro rapporto $\sqrt2$ non è una frazione. È il rovescio delle [quattro facce dello stesso discorso](../2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/).
+
 ## Per prepararti alla verifica
 
 - Il teorema serve ogni volta che una lunghezza è il lato obliquo di un triangolo rettangolo nascosto: diagonali, altezze, distanze sul piano cartesiano. Cerca sempre il triangolo prima di calcolare.

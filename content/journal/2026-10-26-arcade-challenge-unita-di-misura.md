@@ -32,6 +32,8 @@ L'ascensore rende visibile una cosa che sul quaderno si dimentica: il "gradino" 
 
 E il ponte tra volume e capacità: $1\ \text{dm}^3 = 1\ \text{L}$.
 
+**Il filo rosso.** Ogni equivalenza è una **proporzione**: $1\ \text{m} : 1\ \text{dm} = 10 : 1$. Cambia la scala, non il rapporto. Proporzioni, frazioni, percentuali e numeri razionali sono [quattro facce dello stesso discorso](../2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/).
+
 ## Per prepararti alla verifica
 
 - Usa l'ascensore finché riesci a dire il risultato **prima** di premere.
