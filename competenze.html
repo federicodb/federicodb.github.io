@@ -610,10 +610,12 @@
             const prime = apps.slice(0, 6).map((a) => `<li><a href="${href(a.url)}">${titoloHtml(a.title)}</a></li>`).join('');
             const altre = apps.length > 6 ? `<li><a class="more" href="index.html?tag=${encodeURIComponent(id)}">e altre ${apps.length - 6} nel catalogo</a></li>` : '';
             const verif = ver.length ? `<li><a class="more" href="verifiche.html">${ver.length} ${ver.length === 1 ? 'verifica' : 'verifiche'} nell'Archivio</a></li>` : '';
+            const nSchede = apps.filter((a) => a.scheda).length;
+            const schede = nSchede ? `<li><a class="more" href="schede/?codice=${encodeURIComponent(id)}">${nSchede} ${nSchede === 1 ? 'scheda' : 'schede'} da stampare</a></li>` : '';
             return `
                 <div class="skill-links">
                     <div class="skill-training-title">Attività${ver.length ? ' e verifiche' : ''}</div>
-                    <ul>${prime}${altre}${verif}</ul>
+                    <ul>${prime}${altre}${verif}${schede}</ul>
                 </div>`;
         }
 

@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-11-01 11:19:47
+   Data: 2026-11-01 11:27:10
 */
 
 const db = [
@@ -56,6 +56,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/parabola_e_disequazioni_di_secondo_grado_maggio_2026.html",
         "journal": [
             {
                 "titolo": "Lo studio di funzione con FuncLab: un'onda chiusa in un cerchio",
@@ -124,6 +125,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/disequazioni_frazionarie_vs_sistemi.html",
         "journal": [
             {
                 "titolo": "Frazionaria o sistema? Due regole che si somigliano troppo",
@@ -174,6 +176,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/phi_is_irrational_01.html",
         "journal": [
             {
                 "titolo": "φ e le frazioni di Fibonacci: vedere un numero che non si lascia scrivere",
@@ -216,6 +219,7 @@ const db = [
         "icon": "💻",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/snake_conway_self.webp",
+        "scheda": "schede/snake_conway_self.html",
         "journal": [
             {
                 "titolo": "Snake of Life: un serpente che impara da solo",
@@ -255,6 +259,7 @@ const db = [
         "icon": "⚡",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/soglie_particelle_automa_cellulare.webp",
+        "scheda": "schede/soglie_particelle_automa_cellulare.html",
         "journal": [
             {
                 "titolo": "Snake of Life: un serpente che impara da solo",
@@ -314,6 +319,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/math_pool_retta_pianocartesiano.html",
         "journal": [
             {
                 "titolo": "Math Pool: la retta diventa un tiro di sponda",
@@ -383,6 +389,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/pi_is_irrational.html",
         "journal": [
             {
                 "titolo": "π non è una frazione (e nemmeno √2)",
@@ -463,6 +470,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/arcade_challenge_unita_di_misura.html",
         "journal": [
             {
                 "titolo": "Arcade Challenge: le unità di misura in ascensore",
@@ -484,7 +492,6 @@ const db = [
             "LABORATORIO",
             "MATEMATICA",
             "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K2:FUNZIONI ELEMENTARI",
             "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "PIANO CARTESIANO",
@@ -527,6 +534,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/functions_lab_008.html",
         "journal": [
             {
                 "titolo": "Lo studio di funzione con FuncLab: un'onda chiusa in un cerchio",
@@ -592,6 +600,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/mcd_mcm_1el_001.html",
         "journal": [
             {
                 "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
@@ -675,7 +684,8 @@ const db = [
                     "MAT_C4"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/dimostrazione_geometrica_prodotti_notevoli.html"
     },
     {
         "title": "Arcade Challenge: Scomposizioni & Parabola",
@@ -753,6 +763,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/arcade_challenge_scomposizioni_parabola.html",
         "journal": [
             {
                 "titolo": "Arcade Challenge: scomporre a colpi di aree",
@@ -800,6 +811,7 @@ const db = [
         "icon": "🏛️",
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp",
+        "scheda": "schede/il-filo-di-dedalo_2.5d_claude_2.html",
         "journal": [
             {
                 "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
@@ -822,9 +834,7 @@ const db = [
             "GAMIFICATION",
             "MATEMATICA",
             "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K2:FUNZIONI ELEMENTARI",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
             "ORFINI",
             "PENDENZA",
@@ -857,6 +867,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/math_bubble_equazione_della_retta.html",
         "journal": [
             {
                 "titolo": "Math Bubble: la retta che fa scoppiare le bolle",
@@ -899,7 +910,8 @@ const db = [
         "type": "app",
         "icon": "🌕",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.webp"
+        "thumbnail": "content/assets/thumbnails/le_fasi_della_luna.webp",
+        "scheda": "schede/le_fasi_della_luna.html"
     },
     {
         "title": "Studio Plotter CNC",
@@ -936,6 +948,7 @@ const db = [
         "icon": "📈",
         "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/pen_plotter__23v2_8K.webp",
+        "scheda": "schede/pen_plotter__23v2_8k.html",
         "journal": [
             {
                 "titolo": "Studio Plotter CNC: dalla curva alla penna",
@@ -996,7 +1009,8 @@ const db = [
                     "MAT_C2"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/voto_cosapevole.2.5.html"
     },
     {
         "title": "Challenge: Scomposizione di Polinomi (PRO)",
@@ -1046,7 +1060,8 @@ const db = [
                     "MAT_C1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/polinomi_challenge_v2_pro.html"
     },
     {
         "title": "Experience Fibonacci",
@@ -1090,6 +1105,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/fibonacci_anim.html",
         "journal": [
             {
                 "titolo": "φ e le frazioni di Fibonacci: vedere un numero che non si lascia scrivere",
@@ -1112,10 +1128,8 @@ const db = [
             "LEGGE DI MOORE",
             "MATEMATICA",
             "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_C3:DATI E STRUMENTI STATISTICI",
             "MAT_K2:FUNZIONI ELEMENTARI",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "SCALE LOGARITMICHE"
         ],
         "date": "2026-05-22",
@@ -1152,7 +1166,8 @@ const db = [
                     "MAT_A1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/scale_logaritmiche.html"
     },
     {
         "title": "Random Walk 3D: Hypercaos & Chromatic Memory",
@@ -1166,10 +1181,8 @@ const db = [
             "FRATTALI",
             "IND_C2:CODING",
             "MAT_K3:GEOMETRIA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
             "RANDOM WALK",
             "SOFT_2:METACOGNIZIONE",
-            "SOFT_2:PROBLEM SOLVING E PENSIERO CRITICO",
             "WEBGL"
         ],
         "date": "2026-05-16",
@@ -1188,7 +1201,8 @@ const db = [
                     "MAT_C3"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/random_walk.html"
     },
     {
         "date": "2026-05-13",
@@ -1285,7 +1299,8 @@ const db = [
                     "MAT_A1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/cards_polinomi_memory004.html"
     },
     {
         "title": "C.E. Match",
@@ -1330,7 +1345,8 @@ const db = [
                     "MAT_A1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/card_frazioni_algebriche_005.html"
     },
     {
         "title": "$\\sqrt{2}$ is irrational: la diagonale incommensurabile",
@@ -1375,6 +1391,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/sqrt2_is_irrational.html",
         "journal": [
             {
                 "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
@@ -1867,7 +1884,8 @@ const db = [
                     "MAT_A1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/esaustione_01.html"
     },
     {
         "title": "Esploratore Grafico: Operazioni con i Polinomi",
@@ -1914,7 +1932,8 @@ const db = [
                     "MAT_A1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/operazioni_polinomi_graph.html"
     },
     {
         "title": "Errori Comuni - Potenze, Espressioni",
@@ -2000,12 +2019,10 @@ const db = [
         "description": "Assistente conversazionale basato su modelli linguistici per la didattica della matematica: guida lo studente nel ragionamento socratico, nell'analisi degli errori e nella formulazione di ipotesi.",
         "tags": [
             "AI",
-            "CIT_1:COMUNICAZIONE NELLA MADRELINGUA",
             "DIDATTICA",
             "GEMINI",
             "LABORATORIO",
             "SOFT_2:METACOGNIZIONE",
-            "SOFT_2:PROBLEM SOLVING E PENSIERO CRITICO",
             "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA",
             "TUTOR SOCRATICO"
         ],
@@ -2184,6 +2201,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/percentuali_001.html",
         "journal": [
             {
                 "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
@@ -2236,7 +2254,8 @@ const db = [
                     "MAT_C4"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/mercatore_correzione_001_gemini_worksproperly.html"
     },
     {
         "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
@@ -2283,7 +2302,8 @@ const db = [
                     "MAT_A3"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/scomp_3d_grafica_002.html"
     },
     {
         "title": "Sketch to Pattern: Arte Generativa",
@@ -2307,7 +2327,8 @@ const db = [
         "type": "app",
         "icon": "📐",
         "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp"
+        "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp",
+        "scheda": "schede/sketch_to_pattern_gemini_005.html"
     },
     {
         "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
@@ -2350,7 +2371,8 @@ const db = [
                     "MAT_C4"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/gioco_sin_cos_01.html"
     },
     {
         "title": "Logic Lab: Insiemi & Venn",
@@ -2395,7 +2417,8 @@ const db = [
                     "MAT_A2"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/insiemi004.html"
     },
     {
         "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
@@ -2442,7 +2465,8 @@ const db = [
                     "MAT_A1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/visualizzatore_polinomi_2d_3d_001.html"
     },
     {
         "title": "Albero di Pitagora: Frattali 3D",
@@ -2495,6 +2519,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/albero_pitagorico_3d_gemini_001.html",
         "journal": [
             {
                 "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
@@ -2560,6 +2585,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/tavola_tart_canva0003.html",
         "journal": [
             {
                 "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
@@ -2583,9 +2609,7 @@ const db = [
             "MAT:MODELLIZZAZIONE",
             "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
             "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K2:FUNZIONI ELEMENTARI",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "ONDE"
         ],
         "date": "2025-12-08",
@@ -2613,7 +2637,8 @@ const db = [
                     "MAT_C4"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/corrente_4el_sincos.html"
     },
     {
         "title": "Laboratorio di operazioni tra Frazioni",
@@ -2659,6 +2684,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/fractions_lab_001.html",
         "journal": [
             {
                 "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
@@ -2724,6 +2750,7 @@ const db = [
                 ]
             }
         ],
+        "scheda": "schede/math_underground003_4el.html",
         "journal": [
             {
                 "titolo": "Lo studio di funzione con FuncLab: un'onda chiusa in un cerchio",
@@ -2758,7 +2785,8 @@ const db = [
         "type": "app",
         "icon": "📈",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp"
+        "thumbnail": "content/assets/thumbnails/attrattori_001_dec25.webp",
+        "scheda": "schede/attrattori_001_dec25.html"
     },
     {
         "title": "Caccia all'Errore: Memory su Operazioni in Z",
@@ -2803,6 +2831,7 @@ const db = [
                     "MAT_A1"
                 ]
             }
-        ]
+        ],
+        "scheda": "schede/memory_1el_numeri_004.html"
     }
 ];

@@ -638,7 +638,7 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
     os.makedirs(SCHEDE_DIR)
     open(os.path.join(SCHEDE_DIR, MARKER), "w").close()
     root = "../"
-    conta, senza = 0, []
+    conta, senza, indice = 0, [], []
     descr = _descrizioni_riforma()
     for it in items:
         if it.get("type") != "app":
@@ -732,10 +732,74 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
 """
         with open(os.path.join(SCHEDE_DIR, chiave + ".html"), "w", encoding="utf-8") as f:
             f.write(pagina)
+        it["scheda"] = SCHEDE_DIR + "/" + chiave + ".html"  # in database.js: link "Scheda da stampare" nel catalogo e in Competenze
+        indice.append((titolo, titolo_app, chiave, codici, fn() if fn else ""))
         conta += 1
+    _scrivi_indice_schede(indice, riforma)
     if senza:
         print(f"  ⚠️ Schede: manca il contenuto (content/schede/<app>.md) per {len(senza)} attività: {', '.join(senza[:5])}")
     return conta
+
+
+def _scrivi_indice_schede(indice, riforma):
+    """ schede/index.html: tutte le schede, in ordine di titolo, con la figura e le competenze; ?codice=MAT_K1 filtra
+        (ci arriva Competenze) """
+    voci = []
+    for titolo, titolo_app, chiave, codici, svg in sorted(indice, key=lambda x: x[0].lower()):
+        att = '' if titolo == titolo_app else f'<p class="si-app">attività: {titolo_app}</p>'
+        chips = "".join(f'<li title="{html.escape(riforma.get(c, ""))}">{c}</li>' for c in codici if c.startswith("MAT_"))
+        voci.append(f'<li class="si-voce" data-codici="{" ".join(codici)}"><a href="{chiave}.html">'
+                    f'<div class="si-fig">{svg}</div><h2>{titolo}</h2>{att}'
+                    f'{f"<ul class=sc-chips>{chips}</ul>" if chips else ""}</a></li>')
+    pagina = f"""<!DOCTYPE html>
+<html lang="it">
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): non modificare a mano -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schede da stampare | Orfini Math Lab</title>
+    <meta name="description" content="Schede da stampare o salvare in PDF: ripasso, regole, esercizi con soluzioni e QR verso l'attività di Orfini Math Lab.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {{delimiters: [{{left: '$', right: '$', display: false}}]}});"></script>
+    <link rel="stylesheet" href="../schede.css">
+</head>
+<body>
+    <nav class="sc-bar"><a href="../index.html">← Orfini Math Lab</a><a href="../competenze.html">Competenze</a></nav>
+    <main class="sc-foglio si-foglio">
+        <p class="sc-kicker">Orfini Math Lab · {len(voci)} schede</p>
+        <h1>Schede da stampare</h1>
+        <p class="sc-desc">Una o due pagine A4 per attività: ripasso, regole, esercizi con le soluzioni capovolte e un QR per aprire l'attività. Si stampano o si salvano in PDF dal pulsante in alto.</p>
+        <p class="si-filtro" hidden>Solo le schede con <b></b> · <a href="./">mostra tutte</a></p>
+        <ul class="si-lista">{"".join(voci)}</ul>
+        <footer class="sc-piede">Contenuti CC BY-NC-SA 4.0 · Prof. Federico De Benedictis</footer>
+    </main>
+    <script>
+        (function () {{
+            var c = new URLSearchParams(location.search).get('codice');
+            if (!c) return;
+            c = c.toUpperCase();
+            var n = 0;
+            document.querySelectorAll('.si-voce').forEach(function (li) {{
+                var ok = li.dataset.codici.split(' ').indexOf(c) >= 0;
+                li.hidden = !ok; n += ok;
+            }});
+            if (!n) return document.querySelectorAll('.si-voce').forEach(function (li) {{ li.hidden = false; }});
+            var f = document.querySelector('.si-filtro');
+            f.querySelector('b').textContent = c;
+            f.hidden = false;
+        }})();
+    </script>
+    <script src="../content/assets/js/offline.js" defer></script>
+</body>
+</html>
+"""
+    with open(os.path.join(SCHEDE_DIR, "index.html"), "w", encoding="utf-8") as f:
+        f.write(pagina)
 
 
 ESITI_DIR = os.path.join(SRC_DIR, "esiti")
@@ -799,7 +863,7 @@ def _scheda_attivita(item, root):
         extra.append(f'<a href="{_href(root, spieg)}">Spiegami come funziona</a>')
     for a in item.get("allenamento", [])[:3]:
         extra.append(f'<a href="{_href(root, a["url"])}">Allenati: {html.escape(a["titolo"])}</a>')
-    if item.get("type") == "app":
+    if item.get("type") == "app" and os.path.exists(os.path.join(SCHEDE_SRC, _chiave(item["url"]) + ".md")):
         extra.append(f'<a href="{_href(root, SCHEDE_DIR + "/" + _chiave(item["url"]) + ".html")}">Scheda da stampare</a>')
     extra_html = f'<p class="jr-act-more">{" · ".join(extra)}</p>' if extra else ""
     return (f'<li class="jr-act" style="--jr-accent: {_colore(item.get("title", ""))}">{img}<div><h3><a href="{_href(root, item["url"])}">{titolo}</a></h3>'

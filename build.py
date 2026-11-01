@@ -654,10 +654,14 @@ def map_topics_to_riforma(topics):
     if not RIFORMA_DATA: return []
     
     extra_tags = []
-    text_to_search = " ".join([t.lower() for t in topics])
-    
+    # I codici già scritti (es. "MAT_A2:Rappresentare dati e funzioni") non si rileggono come parole:
+    # "dati" darebbe MAT_C3. Le parole si cercano a inizio parola ("ai" non è in "funzioni", "spaziale"),
+    # e quelle di 3 lettere o meno solo intere ("ai" non è "aiuto").
+    text_to_search = " ".join([t.lower() for t in topics if not re.match(r'^[A-Z]+_[A-Z0-9]+:', t.strip())])
+
     for keyword, ref_id in KEYWORD_TO_RIFORMA_ID.items():
-        if keyword in text_to_search:
+        fine = r'(?![\w])' if len(keyword) <= 3 else ''
+        if re.search(r'(?<![\w])' + re.escape(keyword) + fine, text_to_search):
             label = get_riforma_label(ref_id)
             if label:
                 # Formato: ID:Label pulita senza troncamenti artificiali

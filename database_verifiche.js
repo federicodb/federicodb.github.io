@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-11-01 11:19:47
+   Data: 2026-11-01 11:27:10
 */
 
 const db_verifiche = [
@@ -20,7 +20,6 @@ const db_verifiche = [
             "LEGGE DI OHM",
             "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI",
             "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
             "MCM",
@@ -247,7 +246,6 @@ const db_verifiche = [
             "FUNZIONI",
             "GRAFICI",
             "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI E FUNZIONI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "POLINOMI",
@@ -273,15 +271,6 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
-                "mat": [
-                    "MAT_A2",
-                    "MAT_C3"
-                ]
-            },
-            {
                 "id": "funzioni-lineari",
                 "titolo": "Funzioni lineari",
                 "url": "allenamento/#/lezione/funzioni-lineari/1",
@@ -291,11 +280,19 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "probabilita",
-                "titolo": "Probabilità",
-                "url": "allenamento/#/lezione/probabilita/1",
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
                 "mat": [
-                    "MAT_C3"
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
                 ]
             }
         ],
@@ -322,7 +319,6 @@ const db_verifiche = [
             "GRAFICI",
             "MAPPA",
             "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI E FUNZIONI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE"
         ],
         "date": "2026-03-27",
@@ -334,15 +330,6 @@ const db_verifiche = [
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/4EL___verifica_27_marzo_2026_mappa_en.webp",
         "allenamento": [
-            {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
-                "mat": [
-                    "MAT_A2",
-                    "MAT_C3"
-                ]
-            },
             {
                 "id": "funzioni-lineari",
                 "titolo": "Funzioni lineari",
@@ -362,11 +349,19 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "probabilita",
-                "titolo": "Probabilità",
-                "url": "allenamento/#/lezione/probabilita/1",
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
                 "mat": [
-                    "MAT_C3"
+                    "MAT_A2"
+                ]
+            },
+            {
+                "id": "esponenziali",
+                "titolo": "Esponenziali",
+                "url": "allenamento/#/lezione/esponenziali/1",
+                "mat": [
+                    "MAT_K2"
                 ]
             }
         ],
@@ -470,9 +465,7 @@ const db_verifiche = [
             "MAPPA",
             "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI E FUNZIONI",
             "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "POLINOMI",
             "RETTA",
             "SCOMPOSIZIONE"
@@ -514,12 +507,12 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K2"
+                    "MAT_K1"
                 ]
             }
         ],
@@ -613,6 +606,8 @@ const db_verifiche = [
             "1 EL",
             "ELETTRICITÀ",
             "INSIEMI",
+            "MAT_A1:ESEGUIRE CALCOLI OPERANDO CON DIVERSI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "MCM/MCD",
             "NUMERI INTERI E RELATIVI",
             "NUMERI RAZIONALI",
@@ -629,6 +624,43 @@ const db_verifiche = [
         "icon": "📄",
         "game_type": "document",
         "thumbnail": "content/assets/thumbnails/1EL___verifica_6_mar_2026_filaA.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "potenze",
+                "titolo": "Proprietà delle potenze",
+                "url": "allenamento/#/lezione/potenze/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ],
         "versions": [
             {
                 "url": "content/verifiche/1EL/1EL___verifica_6_mar_2026_filaA.pdf",
@@ -658,8 +690,7 @@ const db_verifiche = [
             "POLINOMI",
             "RETTA",
             "SCOMPOSIZIONE",
-            "SCOMPOSIZIONI",
-            "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA"
+            "SCOMPOSIZIONI"
         ],
         "date": "2026-02-24",
         "group_ref": "2_gp_2026-02-24_scomposizioni",
@@ -735,8 +766,7 @@ const db_verifiche = [
             "POLINOMI",
             "RETTA",
             "SCOMPOSIZIONE",
-            "SCOMPOSIZIONI",
-            "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA"
+            "SCOMPOSIZIONI"
         ],
         "date": "2026-02-02",
         "group_ref": "2_el_2026-02-02_scomposizioni",
@@ -811,14 +841,11 @@ const db_verifiche = [
             "GEOMETRIA",
             "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI E FUNZIONI",
             "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_C3:ANALIZZARE DATI E INTERPRETARE INFORMAZIONI CON STRUMENTI STATISTICI E PROBABILISTICI",
             "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
             "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
             "POLINOMI",
             "RETTA",
-            "SCOMPOSIZIONE",
-            "SOFT_3:COMUNICAZIONE EFFICACE E LAVORO DI SQUADRA"
+            "SCOMPOSIZIONE"
         ],
         "date": "2026-01-29",
         "group_ref": "3_mec_2026-01-29_equazioni_e_sistemi_lineari",
@@ -834,8 +861,7 @@ const db_verifiche = [
                 "titolo": "Funzioni lineari",
                 "url": "allenamento/#/lezione/funzioni-lineari/1",
                 "mat": [
-                    "MAT_A2",
-                    "MAT_K2"
+                    "MAT_A2"
                 ]
             },
             {
@@ -847,21 +873,21 @@ const db_verifiche = [
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K2"
+                    "MAT_K1"
                 ]
             },
             {
-                "id": "disequazioni-2",
-                "titolo": "Disequazioni di secondo grado",
-                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
                 "mat": [
                     "MAT_A3",
-                    "MAT_K2"
+                    "MAT_K1"
                 ]
             }
         ],

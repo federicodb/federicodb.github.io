@@ -365,6 +365,7 @@ export class UIManager {
                 <div class="card-footer">
                     <div class="topics-pills">${topicsHtml}</div>
                     ${versionsHtml}
+                    ${item.scheda ? `<a href="${item.scheda}" class="card-scheda">Scheda da stampare</a>` : ''}
                 </div>
             </div>
         `;

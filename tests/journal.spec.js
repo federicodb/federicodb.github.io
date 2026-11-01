@@ -97,9 +97,23 @@ test.describe('Journal: collegamenti generati dal build', () => {
   }
 });
 
+test('indice delle schede: una voce per scheda, filtro per competenza, formule leggibili', async ({ page }) => {
+  const schede = fs.readdirSync(path.join(ROOT, 'schede')).filter((f) => f.endsWith('.html') && f !== 'index.html');
+  await page.goto('/schede/');
+  await expect(page.locator('.si-voce')).toHaveCount(schede.length);
+  await page.waitForFunction(() => window.renderMathInElement !== undefined);
+  await page.waitForTimeout(150);
+  expect(await page.locator('.katex-error').count()).toBe(0);
+  await page.goto('/schede/?codice=MAT_A4');
+  const visibili = await page.locator('.si-voce:visible').count();
+  expect(visibili).toBeGreaterThan(0);
+  expect(visibili).toBeLessThan(schede.length);
+  await expect(page.locator('.si-filtro')).toBeVisible();
+});
+
 test('schede da stampare: formule lette da KaTeX, figura vettoriale, al massimo due pagine', async ({ page }) => {
   test.setTimeout(300000);
-  const schede = fs.readdirSync(path.join(ROOT, 'schede')).filter((f) => f.endsWith('.html'));
+  const schede = fs.readdirSync(path.join(ROOT, 'schede')).filter((f) => f.endsWith('.html') && f !== 'index.html');
   expect(schede.length).toBeGreaterThan(30);
   for (const f of schede) {
     await page.goto(`/schede/${f}`);

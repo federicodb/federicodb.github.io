@@ -1294,3 +1294,14 @@ html.theme-light .search-input::placeholder { color: #5b6474; }
 .jr-badges a:hover { color: var(--text-main); border-color: var(--text-muted); }
 .jr-badges svg { width: 16px; height: 16px; flex: none; }
 .jr-badges svg.jr-cc { width: 58px; }
+
+/* link secondario della card: scheda da stampare (schede/, generata da build.py) */
+.card-scheda {
+    align-self: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 4px 8px;
+}
+.card-scheda:hover, .card-scheda:focus-visible { color: var(--md-sys-color-primary); }

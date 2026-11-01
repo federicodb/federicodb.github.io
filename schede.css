@@ -59,3 +59,17 @@ h2 { font: 700 11.5pt Syne, sans-serif; color: var(--accent); margin-bottom: 2mm
 .sc-collegamenti .sc-qr2 { float: right; margin: 0 0 2mm 5mm; width: 30mm; }
 .sc-collegamenti .sc-qr2 .qr { display: flex; justify-content: center; }
 .sc-collegamenti::after { content: ""; display: block; clear: both; }
+
+/* Indice delle schede (schede/index.html) */
+.si-foglio { min-height: 0; }
+.si-filtro { margin-top: 4mm; font-size: 9.5pt; color: var(--muted); }
+.si-filtro a { color: var(--accent); }
+.si-lista { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 5mm; margin-top: 6mm; }
+.si-voce a { display: flex; flex-direction: column; gap: 2mm; height: 100%; padding: 4mm; border: 1px solid var(--line); border-radius: 3mm; color: inherit; text-decoration: none; transition: border-color 0.15s; }
+.si-voce a:hover, .si-voce a:focus-visible { border-color: var(--accent); outline: none; }
+.si-fig svg { display: block; width: 100%; height: 34mm; }
+.si-voce h2 { border: 0; padding: 0; margin: 0; font-size: 11pt; color: var(--ink); }
+.si-app { font-size: 8.5pt; color: var(--muted); }
+.si-voce .sc-chips { margin-top: auto; padding-top: 1mm; }
+.si-voce .sc-chips li { font-size: 7.5pt; color: var(--accent); }
+@media print { .si-voce a { break-inside: avoid; } }
