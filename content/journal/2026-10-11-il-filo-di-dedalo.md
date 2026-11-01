@@ -2,7 +2,7 @@
 titolo: Il filo di Dedalo: un labirinto da risolvere con la matematica
 data: 2026-10-11
 descrizione: A Cnosso, nel labirinto del Minotauro, le porte si aprono solo risolvendo sigilli su frazioni, percentuali e proporzioni.
-attivita: il-filo-di-dedalo_2.5D_claude_2
+attivita: il-filo-di-dedalo_2.5D_claude_2, fractions_lab_001
 copertina: media/dedalo-filo-di-arianna.png
 ---
 
@@ -44,6 +44,8 @@ $10\%$ di $45$ è $4{,}5$, quindi il $20\%$ è $9$. Nella proporzione $2\cdot x 
 La modalità **Classe** alla LIM funziona come un gioco a squadre: ogni squadra sceglie un nome e un colore, e chi risponde deve spiegare il ragionamento alla propria squadra prima di dare la risposta. Ogni partita ha un **codice** (come `K7Q2XM`): con lo stesso codice si può ripetere lo stesso labirinto in un'altra classe o il giorno dopo, e confrontare.
 
 La **prima persona** si presta a un momento di orientamento nello spazio: dove sono? Dove ho girato? La bussola in alto a sinistra aiuta.
+
+Prima di entrare nel labirinto conviene passare da **Fractions Lab**: lì le operazioni con le frazioni si vedono in torte e sulla retta, con il procedimento passo per passo. Dedalo chiede di farle a mente; se un sigillo blocca la squadra, si torna al laboratorio e si guarda che cosa sta succedendo davvero.
 
 ## A cosa fare attenzione
 

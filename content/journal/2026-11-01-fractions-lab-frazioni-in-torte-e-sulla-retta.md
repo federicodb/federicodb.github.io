@@ -2,7 +2,7 @@
 titolo: Fractions Lab: le frazioni in torte e sulla retta
 data: 2026-11-01
 descrizione: Somma, differenza, prodotto, quoziente e potenza tra frazioni, viste come fette di torta e come punti sulla retta dei numeri, con il procedimento spiegato passo per passo.
-attivita: fractions_lab_001, MCD_mcm_1el_001, percentuali_001
+attivita: fractions_lab_001, il-filo-di-dedalo_2.5D_claude_2, MCD_mcm_1el_001, percentuali_001
 copertina: media/fractions-lab-torte-e-retta.png
 verifiche: 1EL___verifica_15_maggio_2026, 1EL___verifica_6_mar_2026_filaA
 ---
@@ -35,6 +35,7 @@ L'esponente negativo inverte la frazione, "come una retromarcia", dice l'app.
 
 - Prima di calcolare, prevedi: il risultato sarà più grande o più piccolo di A? Poi controlla sulla retta. Moltiplicare per una frazione minore di 1 **rimpicciolisce**, dividere **ingrandisce**.
 - Da sapere: mcm per sommare, prodotto in croce per confrontare, reciproco per dividere, esponente negativo che inverte.
+- Quando le operazioni ti sono chiare qui, allenale a mente nel **Filo di Dedalo**: i sigilli del labirinto chiedono frazioni, percentuali e proporzioni senza torte né retta, e senza tempo per scrivere.
 - **Attenzione**: non si sommano i denominatori ($\frac12 + \frac13 \neq \frac25$) e il risultato va sempre semplificato.
 
 **Prova tu.** Calcola $\frac34 - \frac16$ e $\left(\frac23\right)^{-2}$. Il primo risultato è più grande o più piccolo di $\frac12$?
@@ -50,6 +51,8 @@ $\text{mcm}(4, 6) = 12$: $\frac{9}{12} - \frac{2}{12} = \frac{7}{12}$, poco più
 Alla LIM si fissa A e si cambia solo B, un passo alla volta, chiedendo alla classe di prevedere dove finirà il punto arancio del risultato sulla retta: è il modo più rapido per accorgersi che $\frac12 \cdot \frac12$ è *più piccolo* di $\frac12$. Con la potenza si trascina il cursore da $3$ a $-3$ e si guarda la torta riempirsi e poi "uscire" dall'intero quando l'esponente diventa negativo.
 
 Il procedimento a destra si può copiare sul quaderno così com'è: è lo stesso che si scrive in verifica. Per allenarsi: **Frazioni** e **Proprietà delle potenze**; la scheda da stampare riassume regole ed esercizi.
+
+Il passo dopo è **Il filo di Dedalo**. Fractions Lab fa *vedere* le operazioni; nel labirinto le stesse operazioni vanno *usate*, a mente, per aprire i sigilli mentre il Minotauro avanza. Funziona bene in due tempi: prima il laboratorio alla LIM, poi una partita in modalità **Classe**, a squadre, dove chi apre un sigillo spiega alla squadra il ragionamento. Se un sigillo blocca la squadra, si torna a Fractions Lab e lo si guarda in torte e sulla retta.
 
 ## A cosa fare attenzione
 

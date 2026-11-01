@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-11-01 11:12:25
+   Data: 2026-11-01 11:17:07
 */
 
 const db = [
@@ -801,6 +801,11 @@ const db = [
         "game_type": "arcade",
         "thumbnail": "content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp",
         "journal": [
+            {
+                "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
+                "url": "journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/",
+                "data": "2026-11-01"
+            },
             {
                 "titolo": "Il filo di Dedalo: un labirinto da risolvere con la matematica",
                 "url": "journal/2026-10-11-il-filo-di-dedalo/",
@@ -2659,6 +2664,11 @@ const db = [
                 "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
                 "url": "journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/",
                 "data": "2026-11-01"
+            },
+            {
+                "titolo": "Il filo di Dedalo: un labirinto da risolvere con la matematica",
+                "url": "journal/2026-10-11-il-filo-di-dedalo/",
+                "data": "2026-10-11"
             }
         ]
     },
