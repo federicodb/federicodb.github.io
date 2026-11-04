@@ -176,10 +176,21 @@
             /* Smooth Layout Transition */
         }
 
-        /* Collapsed State */
+        /* Collapsed State - show only header */
         .glass-panel.collapsed {
             max-height: 70px !important;
             overflow: hidden !important;
+            padding-bottom: 0 !important;
+        }
+        .glass-panel.collapsed > div:not(:first-child) {
+            display: none !important;
+        }
+        .glass-panel.collapsed .mb-6 {
+            margin-bottom: 0 !important;
+        }
+        .glass-panel.collapsed > div:first-child {
+            margin-bottom: 0 !important;
+            padding-bottom: 8px !important;
         }
 
         @media (min-width: 768px) {

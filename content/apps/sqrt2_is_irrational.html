@@ -37,7 +37,24 @@
 
         #ui-layer {
             position: absolute; top: 20px; right: 20px; width: 340px; z-index: 10;
-            display: flex; flex-direction: column; gap: 12px; pointer-events: none;
+            display: flex; flex-direction: column; gap: 12px; pointer-events: auto;
+        }
+
+        .toggle-ui {
+            position: absolute; top: 0; right: 0; width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%; cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--accent); z-index: 30;
+            pointer-events: auto;
+            transition: transform 0.3s ease;
+        }
+        .toggle-ui.collapsed {
+            transform: rotate(180deg);
+        }
+        #settings-panel {
+            margin-top: 12px;
         }
 
         .panel {
@@ -56,18 +73,11 @@
         }
 
         .panel.collapsed { 
-            max-height: 65px; 
+            max-height: 0; 
             padding-bottom: 0;
-            padding-top: 18px;
-        }
-
-        .toggle-ui {
-            position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%; cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--accent); z-index: 20;
+            padding-top: 0;
+            border: none;
+            box-shadow: none;
         }
 
         h1 { margin: 0 0 5px 0; font-size: 1.2rem; color: #fff; letter-spacing: 2px; }
@@ -200,10 +210,10 @@
 <div id="canvas-container"></div>
 
     <div id="ui-layer">
+        <div class="toggle-ui" onclick="toggleUI()" title="Mostra/Nascondi controlli">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </div>
         <div class="panel" id="settings-panel">
-            <div class="toggle-ui" onclick="toggleUI()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </div>
             <h1>$\sqrt{2}$ is irrational</h1>
             <p class="subtitle">Soft Fusion Engine | Pythagoras Tree</p>
 
@@ -458,7 +468,10 @@
         }
 
         function toggleUI() {
-            document.getElementById('settings-panel').classList.toggle('collapsed');
+            const panel = document.getElementById('settings-panel');
+            const toggleBtn = document.querySelector('.toggle-ui');
+            panel.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('collapsed');
         }
     </script>
     <script src="../assets/js/orfini-shared.js"></script>

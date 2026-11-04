@@ -87,6 +87,12 @@
             #app-container { flex-direction: row-reverse; }
             #canvas-wrapper { height: 100%; border-left: 1px solid #334155; }
             #control-panel { width: 340px; height: 100% !important; border-top: none; }
+            #control-panel.collapsed { width: 0 !important; }
+            #control-panel.collapsed .scrollable-area,
+            #control-panel.collapsed nav,
+            #control-panel.collapsed header > *:not(:first-child) {
+                display: none !important;
+            }
         }
 
         .math-block { 
@@ -151,7 +157,7 @@
     </main>
 
     <aside id="control-panel" class="collapsed">
-        <header class="p-4 border-b border-slate-700 bg-slate-900 shadow-md flex justify-between items-center cursor-pointer md:cursor-default" onclick="toggleCollapseMobile()">
+        <header class="p-4 border-b border-slate-700 bg-slate-900 shadow-md flex justify-between items-center cursor-pointer" onclick="toggleCollapseMobile()">
 <!-- ORFINI-BACK START -->
 <style>
 .orfini-back-btn {
@@ -582,8 +588,6 @@
     }
 
     function toggleCollapseMobile() {
-        if (window.innerWidth >= 768) return;
-        
         const panel = document.getElementById('control-panel');
         const iconSvg = document.getElementById('toggle-icon-svg');
         

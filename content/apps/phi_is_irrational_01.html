@@ -73,17 +73,14 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .panel.collapsed {
-            max-height: 65px;
-            overflow: hidden;
-            padding-bottom: 0;
-            padding-top: 15px;
+        #ui-layer {
+            pointer-events: auto;
         }
 
         .toggle-ui {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 0;
+            right: 0;
             width: 32px;
             height: 32px;
             display: flex;
@@ -95,7 +92,8 @@
             transition: all 0.3s;
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--accent);
-            z-index: 20;
+            z-index: 30;
+            pointer-events: auto;
         }
 
         .toggle-ui:hover {
@@ -107,8 +105,21 @@
             transition: transform 0.4s;
         }
 
-        .collapsed .toggle-ui svg {
+        .toggle-ui.collapsed svg {
             transform: rotate(-180deg);
+        }
+
+        .panel {
+            margin-top: 12px;
+        }
+
+        .panel.collapsed {
+            max-height: 0;
+            overflow: hidden;
+            padding-bottom: 0;
+            padding-top: 0;
+            border: none;
+            box-shadow: none;
         }
         
         .panel::-webkit-scrollbar {
@@ -254,15 +265,16 @@
             z-index: 5;
         }
 
-        /* Il CSS condiviso nasconde del tutto ogni ".panel.collapsed": qui "chiuso" vuol dire
-           solo ridotto al titolo, quindi il pannello resta visibile e cliccabile */
+        /* Il pannello collapsed viene nascosto completamente per mostrare solo il pulsante toggle */
         #settings-panel.collapsed {
-            /* per id: vale anche sopra il limite di altezza per telefono definito più sotto */
-            max-height: 66px;
+            max-height: 0 !important;
             transform: none;
             opacity: 1;
             pointer-events: auto;
             transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
         body {
@@ -443,10 +455,10 @@
 <div id="canvas-container"></div>
 
     <div id="ui-layer">
+        <div class="toggle-ui" id="btn-toggle-ui" role="button" tabindex="0" aria-expanded="false" aria-controls="settings-panel" title="Apri o chiudi i controlli">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </div>
         <div class="panel collapsed" id="settings-panel">
-            <div class="toggle-ui" id="btn-toggle-ui" role="button" tabindex="0" aria-expanded="false" aria-controls="settings-panel" title="Apri o chiudi i controlli">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </div>
             <div class="panel-head" id="panel-head">
                 <h1 style="font-size: 1.6rem; margin-bottom: 5px;">$\phi$ è irrazionale</h1>
                 <p class="subtitle">Due punti girano con velocità in rapporto $\phi$: il disegno non si chiude mai</p>
@@ -966,8 +978,10 @@
 
         function toggleUI() {
             const panel = document.getElementById('settings-panel');
+            const toggleBtn = document.getElementById('btn-toggle-ui');
             const chiuso = panel.classList.toggle('collapsed');
-            document.getElementById('btn-toggle-ui').setAttribute('aria-expanded', String(!chiuso));
+            toggleBtn.classList.toggle('collapsed');
+            toggleBtn.setAttribute('aria-expanded', String(!chiuso));
         }
 
         // Testo che spiega il rapporto scelto e dice se il disegno si è già chiuso
