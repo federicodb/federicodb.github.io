@@ -2,7 +2,7 @@
 titolo: Il teorema di Pitagora, dal triangolo all'albero frattale
 data: 2026-11-01
 descrizione: Un quadrato, un triangolo rettangolo, due quadrati più piccoli, e di nuovo: l'albero di Pitagora fa vedere il teorema e lo trasforma in un frattale da stampare in 3D.
-attivita: albero_pitagorico_3d_gemini_001, sqrt2_is_irrational, tavola_tart_canva0003
+attivita: albero_pitagorico_3d_gemini_001, tavola_tart_canva0003
 copertina: media/albero-pitagora-3d.png
 verifiche: 2GP___verifica_13_maggio_2026
 ---

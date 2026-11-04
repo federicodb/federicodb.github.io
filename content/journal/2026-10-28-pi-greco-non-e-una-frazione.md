@@ -2,7 +2,7 @@
 titolo: π non è una frazione (e nemmeno √2)
 data: 2026-10-28
 descrizione: Un percorso in quattro tappe per capire perché diametro e circonferenza non hanno un'unità di misura comune.
-attivita: pi_is_irrational, sqrt2_is_irrational
+attivita: pi_is_irrational, albero_pitagorico_3d_gemini_001
 copertina: media/pi-lancette.png
 ---
 

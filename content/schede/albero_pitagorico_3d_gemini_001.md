@@ -32,7 +32,7 @@ In ogni **triangolo rettangolo** il quadrato costruito sull'ipotenusa ha la stes
 
 ## Collegamenti
 
-- **$\sqrt2$ is irrational**: la diagonale del quadrato di lato $1$ misura $\sqrt2$, un numero che nessuna frazione scrive.
+- **$\pi$ is irrational**: come lato e diagonale del quadrato di lato $1$ (che misura $\sqrt2$), diametro e circonferenza non hanno una misura comune.
 - **Esploratore Numerico: Pitagora & Tartaglia**: le terne pitagoriche nella tavola dei numeri.
 - **Math Pool**: sul tavolo da biliardo la distanza tra due palle è un'ipotenusa.
 - **Studio Plotter CNC**: la lunghezza di ogni tratto della penna si calcola con Pitagora.

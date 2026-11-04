@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-11-01 11:27:10
+   Data: 2026-11-04 18:52:09
 */
 
 const db = [
@@ -1349,63 +1349,6 @@ const db = [
         "scheda": "schede/card_frazioni_algebriche_005.html"
     },
     {
-        "title": "$\\sqrt{2}$ is irrational: la diagonale incommensurabile",
-        "excerpt": "Esplorazione visiva dell'Albero di Pitagora e della spirale dei triangoli rettangoli. Scopri perché lato e diagonale di un quadrato non possono essere misurati con la stessa unità, illustrando l'irrazionalità di $\\sqrt{2}$.",
-        "tags": [
-            "$\\SQRT{2}$",
-            "3D",
-            "ALBERO PITAGORICO",
-            "FRATTALI",
-            "GEOMETRIA",
-            "INCOMMENSURABILITÀ",
-            "IRRAZIONALITÀ",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "SQRT(2)",
-            "WEBGL"
-        ],
-        "date": "2026-04-21",
-        "url": "content/apps/sqrt2_is_irrational.html",
-        "type": "app",
-        "icon": "📐",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/sqrt2_is_irrational.webp",
-        "allenamento": [
-            {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_A4",
-                    "MAT_C4"
-                ]
-            },
-            {
-                "id": "radicali",
-                "titolo": "Radicali",
-                "url": "allenamento/#/lezione/radicali/1",
-                "mat": [
-                    "MAT_K1",
-                    "MAT_A1"
-                ]
-            }
-        ],
-        "scheda": "schede/sqrt2_is_irrational.html",
-        "journal": [
-            {
-                "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
-                "url": "journal/2026-11-01-il-teorema-di-pitagora-nell-albero/",
-                "data": "2026-11-01"
-            },
-            {
-                "titolo": "π non è una frazione (e nemmeno √2)",
-                "url": "journal/2026-10-28-pi-greco-non-e-una-frazione/",
-                "data": "2026-10-28"
-            }
-        ]
-    },
-    {
         "title": "Allegato A - Profilo Educativo, Culturale e Professionale (PECUP)",
         "excerpt": "Allegato A al D.Lgs. 61/2017: risultati di apprendimento comuni a tutti i percorsi di istruzione professionale e declinazione delle competenze generali.",
         "tags": [
@@ -2525,6 +2468,11 @@ const db = [
                 "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
                 "url": "journal/2026-11-01-il-teorema-di-pitagora-nell-albero/",
                 "data": "2026-11-01"
+            },
+            {
+                "titolo": "π non è una frazione (e nemmeno √2)",
+                "url": "journal/2026-10-28-pi-greco-non-e-una-frazione/",
+                "data": "2026-10-28"
             }
         ]
     },
