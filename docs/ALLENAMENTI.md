@@ -21,6 +21,7 @@ Questa tabella è un promemoria rigenerabile, non la fonte.
 | Caccia all'Errore: Memory su Operazioni in Z | `memory_1el_numeri_004.html` | Numeri relativi, Proprietà delle potenze | `numeri-relativi, potenze` |
 | Challenge: Scomposizione di Polinomi (PRO) | `polinomi_challenge_v2_pro.html` | Scomposizioni, Prodotti notevoli, Monomi e polinomi | `scomposizioni, prodotti-notevoli, monomi` |
 | Chaos Lab: Sistemi Dinamici | `attrattori_001_dec25.html` | nessuno | `nessuno` |
+| Cinematismi 3D: ruota quadrata, Reuleaux e Cardano | `ruota_quadrata_cinematismi.html` | Goniometria, Esponenziali, Proporzioni, Il teorema di Pitagora, Solidi e volumi | `goniometria, esponenziali, proporzioni, pitagora, solidi` |
 | Esploratore di Scale Logaritmiche | `scale_logaritmiche.html` | Logaritmi, Esponenziali, Notazione scientifica | `logaritmi, esponenziali, notazione-scientifica` |
 | Esploratore Grafico: Operazioni con i Polinomi | `operazioni_polinomi_graph.html` | Monomi e polinomi, Prodotti notevoli | `monomi, prodotti-notevoli` |
 | Esploratore Numerico: Pitagora & Tartaglia | `tavola_tart_canva0003.html` | Il triangolo dei coefficienti, Il teorema di Pitagora, Prodotti notevoli | `calcolo-triangolo-dei-coefficienti, pitagora, prodotti-notevoli` |

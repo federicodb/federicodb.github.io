@@ -1,6 +1,6 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-11-05 08:04:30
+   Data: 2026-11-05 11:38:57
 */
 
 const db = [
@@ -39,13 +39,21 @@ const db = [
         "thumbnail": "content/assets/thumbnails/ruota_quadrata_cinematismi.webp",
         "allenamento": [
             {
-                "id": "solidi",
-                "titolo": "Solidi e volumi",
-                "url": "allenamento/#/lezione/solidi/1",
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
                 "mat": [
-                    "MAT_K3",
-                    "MAT_A4",
-                    "MAT_C4"
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "esponenziali",
+                "titolo": "Esponenziali",
+                "url": "allenamento/#/lezione/esponenziali/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_C2"
                 ]
             },
             {
@@ -66,6 +74,24 @@ const db = [
                     "MAT_A4",
                     "MAT_C4"
                 ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            }
+        ],
+        "scheda": "schede/ruota_quadrata_cinematismi.html",
+        "journal": [
+            {
+                "titolo": "Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare",
+                "url": "journal/2026-11-05-ruote-che-non-sobbalzano/",
+                "data": "2026-11-05"
             }
         ]
     },
@@ -601,6 +627,11 @@ const db = [
         ],
         "scheda": "schede/functions_lab_008.html",
         "journal": [
+            {
+                "titolo": "Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare",
+                "url": "journal/2026-11-05-ruote-che-non-sobbalzano/",
+                "data": "2026-11-05"
+            },
             {
                 "titolo": "Lo studio di funzione con FuncLab: un'onda chiusa in un cerchio",
                 "url": "journal/2026-11-01-lo-studio-di-funzione-con-funclab/",
@@ -2380,7 +2411,14 @@ const db = [
                 ]
             }
         ],
-        "scheda": "schede/gioco_sin_cos_01.html"
+        "scheda": "schede/gioco_sin_cos_01.html",
+        "journal": [
+            {
+                "titolo": "Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare",
+                "url": "journal/2026-11-05-ruote-che-non-sobbalzano/",
+                "data": "2026-11-05"
+            }
+        ]
     },
     {
         "title": "Logic Lab: Insiemi & Venn",

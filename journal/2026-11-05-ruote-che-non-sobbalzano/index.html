@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="it">
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare la nota in content/journal/ -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare | Journal · Orfini Math Lab</title>
+    <meta name="description" content="Una ruota quadrata che rotola senza scossoni, un triangolo che gira in un foro quadrato, un planetario stampato già montato: dietro ogni meccanismo c&#x27;è una funzione, e il pezzo si stampa davvero.">
+    <meta name="author" content="Prof. Federico De Benedictis">
+    <link rel="canonical" href="https://federicodb.github.io/journal/2026-11-05-ruote-che-non-sobbalzano/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://federicodb.github.io/journal/2026-11-05-ruote-che-non-sobbalzano/">
+    <meta property="og:title" content="Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare">
+    <meta property="og:description" content="Una ruota quadrata che rotola senza scossoni, un triangolo che gira in un foro quadrato, un planetario stampato già montato: dietro ogni meccanismo c&#x27;è una funzione, e il pezzo si stampa davvero.">
+    <meta property="og:image" content="https://federicodb.github.io/journal/2026-11-05-ruote-che-non-sobbalzano/copertina.webp">
+    <meta property="article:published_time" content="2026-11-05">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet" href="../../cookie-consent.css">
+    <script>
+        if (localStorage.getItem('orfini_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+    <link rel="stylesheet" href="../../content/assets/style/theme-light.css">
+    <link rel="stylesheet" href="../../journal.css">
+    <script src="../../content/assets/js/theme-toggle.js" defer></script>
+</head>
+
+<body>
+
+    <nav id="main-nav">
+        <div class="container nav-container">
+            <div class="nav-row-1">
+                <a href="../../index.html" class="brand">
+                    <span class="brand-title">ORFINI</span>
+                    <span class="brand-sub">JOURNAL</span>
+                </a>
+                <div class="nav-links">
+                    <a href="../../index.html" class="nav-link">Attività</a>
+                    <a href="../../allenamento/" class="nav-link nav-link-cta">Allenati</a>
+                    <a href="../../journal/" class="nav-link active" aria-current="page">Journal</a>
+                    <a href="../../calcolo-mentale.html" class="nav-link">Calcolo veloce</a>
+                    <a href="../../verifiche.html" class="nav-link">Archivio</a>
+                    <a href="../../galaxy.html" class="nav-link">Mappa</a>
+                    <a href="../../competenze.html" class="nav-link">Competenze</a>
+                    <a href="../../scuola.html" class="nav-link">La Scuola</a>
+                    <a href="../../index.html#about" class="nav-link">Chi Sono</a>
+                    <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+                        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="nav-row-2">
+                <form class="search-filter-wrapper" action="../../journal/" method="get" role="search">
+                    <button type="button" id="filter-burger-btn" class="burger-btn" aria-label="Filtra per attività" aria-expanded="false" aria-controls="filter-dropdown">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="search-container">
+                        <input type="search" id="search-input" name="q" class="search-input" placeholder="Cerca nelle note..." aria-label="Cerca nelle note">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    </div>
+                </form>
+                <div id="filter-dropdown" class="filter-dropdown">
+                    <div class="filter-group">
+                        <span class="filter-group-title">Filtra per attività</span>
+                        <a class="filter-chip" href="../../journal/" data-attivita="">Tutte le note</a>
+                        <a class="filter-chip" href="../../journal/?attivita=pi_is_irrational" data-attivita="pi_is_irrational">$\pi$ is irrational: perché π non è una frazione</a>
+                        <a class="filter-chip" href="../../journal/?attivita=albero_pitagorico_3d_gemini_001" data-attivita="albero_pitagorico_3d_gemini_001">Albero di Pitagora: Frattali 3D</a>
+                        <a class="filter-chip" href="../../journal/?attivita=mcd_mcm_1el_001" data-attivita="mcd_mcm_1el_001">Arcade Challenge: MCM &amp; MCD</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_scomposizioni_parabola" data-attivita="arcade_challenge_scomposizioni_parabola">Arcade Challenge: Scomposizioni &amp; Parabola</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_unita_di_misura" data-attivita="arcade_challenge_unita_di_misura">Arcade Challenge: Unità di misura</a>
+                        <a class="filter-chip" href="../../journal/?attivita=ruota_quadrata_cinematismi" data-attivita="ruota_quadrata_cinematismi">Cinematismi 3D: ruota quadrata, Reuleaux e Cardano</a>
+                        <a class="filter-chip" href="../../journal/?attivita=tavola_tart_canva0003" data-attivita="tavola_tart_canva0003">Esploratore Numerico: Pitagora &amp; Tartaglia</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fibonacci_anim" data-attivita="fibonacci_anim">Experience Fibonacci</a>
+                        <a class="filter-chip" href="../../journal/?attivita=functions_lab_008" data-attivita="functions_lab_008">FuncLab AI: Esploratore di Funzioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=gioco_sin_cos_01" data-attivita="gioco_sin_cos_01">GonioMatch: Memory su valori notevoli di funzioni goniometriche</a>
+                        <a class="filter-chip" href="../../journal/?attivita=il-filo-di-dedalo_2.5d_claude_2" data-attivita="il-filo-di-dedalo_2.5d_claude_2">Il Filo di Dedalo: Labirinto Matematico 2.5D</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fractions_lab_001" data-attivita="fractions_lab_001">Laboratorio di operazioni tra Frazioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=disequazioni_frazionarie_vs_sistemi" data-attivita="disequazioni_frazionarie_vs_sistemi">Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_bubble_equazione_della_retta" data-attivita="math_bubble_equazione_della_retta">Math Bubble: la retta esplicita</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_pool_retta_pianocartesiano" data-attivita="math_pool_retta_pianocartesiano">Math Pool: Biliardo Cartesiano e retta</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_underground003_4el" data-attivita="math_underground003_4el">Math Underground: Mappa per la classificazione di Funzioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=parabola_e_disequazioni_di_secondo_grado_maggio_2026" data-attivita="parabola_e_disequazioni_di_secondo_grado_maggio_2026">Parabola e disequazioni di secondo grado</a>
+                        <a class="filter-chip" href="../../journal/?attivita=percentuali_001" data-attivita="percentuali_001">Percent Lab</a>
+                        <a class="filter-chip" href="../../journal/?attivita=soglie_particelle_automa_cellulare" data-attivita="soglie_particelle_automa_cellulare">Simulatore di Automi Cellulari e Particelle</a>
+                        <a class="filter-chip" href="../../journal/?attivita=snake_conway_self" data-attivita="snake_conway_self">Snake of Life</a>
+                        <a class="filter-chip" href="../../journal/?attivita=pen_plotter__23v2_8k" data-attivita="pen_plotter__23v2_8k">Studio Plotter CNC</a>
+                        <a class="filter-chip" href="../../journal/?attivita=phi_is_irrational_01" data-attivita="phi_is_irrational_01">φ è irrazionale: il rapporto aureo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container jr" id="contenuto">
+        <p class="jr-back"><a href="../">← Tutte le note</a></p>
+        <div class="jr-layout">
+        <article class="jr-note">
+            <header>
+                <p class="jr-meta"><time datetime="2026-11-05">5 novembre 2026</time> · Prof. Federico De Benedictis</p>
+                <h1>Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare</h1>
+                <p class="jr-lead">Una ruota quadrata che rotola senza scossoni, un triangolo che gira in un foro quadrato, un planetario stampato già montato: dietro ogni meccanismo c&#x27;è una funzione, e il pezzo si stampa davvero.</p>
+                <ul class="jr-tags" aria-label="Temi"><li><a href="../../index.html?tag=funzioni">Funzioni</a></li><li><a href="../../index.html?tag=bambu%20lab">Bambu lab</a></li><li><a href="../../index.html?tag=cardano">Cardano</a></li><li><a href="../../index.html?tag=catenaria">Catenaria</a></li><li><a href="../../index.html?tag=coding">Coding</a></li><li><a href="../../index.html?tag=evolvente">Evolvente</a></li></ul>
+            </header>
+        <p class="jr-flag">Bozza: non ancora pubblicata.</p>
+            <div class="jr-body">
+<h2>Cosa è</h2>
+<p>Un generatore di <strong>cinematismi</strong>, meccanismi che trasformano un moto in un altro, da vedere in 3D e da stampare. Ce ne sono cinque:</p>
+<ul>
+<li>la <strong>ruota quadrata</strong> dentata, che rotola su una guida a gobbe con le sponde;</li>
+<li>il <strong>triangolo di Reuleaux</strong> che gira dentro un foro quadrato;</li>
+<li>due <strong>rulli di Reuleaux</strong> sotto una piattaforma che resta in piano;</li>
+<li>un <strong>planetario</strong> a denti a V, stampato in un pezzo solo e già montato;</li>
+<li>la <strong>coppia di Cardano</strong>, un ingranaggio che rotola dentro una corona e fa disegnare una retta a un punto.</li>
+</ul>
+<p>Si sceglie la stampante, si cambiano i parametri, si guarda il moto con il grafico accanto e si scaricano i pezzi pronti da stampare, oppure il codice OpenSCAD per leggerli e modificarli.</p>
+<figure><img loading="lazy" alt="La ruota quadrata a metà della gobba: il centro resta sulla linea bianca, mentre lo spigolo disegna archi" src="../media/cinematismi-ruota-quadrata.webp"><figcaption>La ruota quadrata a metà della gobba: il centro resta sulla linea bianca, mentre lo spigolo disegna archi</figcaption></figure>
+<h2>L'idea matematica: compensare una rotazione</h2>
+<p>Una ruota rotonda su una strada piatta tiene il centro sempre alla stessa altezza. Un quadrato no: se il lato è $10$ cm, il centro sta a $5$ cm da terra quando il quadrato poggia su un lato, e sale a mezza diagonale, $5\sqrt2 \approx 7$ cm, quando poggia su uno spigolo. Per eliminare i sobbalzi si cambia la strada: ogni gobba è un pezzo di <strong>catenaria</strong> capovolta,</p>
+<p>$$y = -a\cosh\dfrac{x}{a}, \qquad \cosh x = \dfrac{e^x + e^{-x}}{2},$$</p>
+<p>dove $a$ è metà del lato. È la stessa curva di una catenella appesa per i due capi. La funzione $\cosh$ è <strong>pari</strong> e ha il minimo $1$ in $x = 0$: la gobba è simmetrica e il suo punto più alto sta proprio sotto il centro della ruota. Una gobba è lunga $L \cdot \ln(1 + \sqrt2)$: per un lato di $32$ mm, circa $28{,}2$ mm.</p>
+<p>Negli altri meccanismi a compensare è una funzione diversa:</p>
+<ul>
+<li><strong>Reuleaux</strong>: la larghezza è la stessa, $W$, in ogni direzione. Per questo il triangolo tocca sempre i quattro lati del foro, e la piattaforma sui rulli non si inclina. Il perimetro è $\pi W$, come quello del cerchio (teorema di Barbier).</li>
+<li><strong>Planetario</strong>: con la corona ferma, i satelliti girano attorno al sole in <strong>proporzione</strong> ai giri del sole. Con sole da $14$ denti e corona da $34$ si ha $\dfrac{14}{14 + 34} = \dfrac{14}{48} \approx 0{,}29$ giri dei satelliti per ogni giro del sole (formula di Willis).</li>
+<li><strong>Cardano</strong>: se la corona ha raggio doppio dell'ingranaggio, un punto del bordo si muove su $x = R\cos\theta$, $y = 0$, cioè su un diametro: un moto circolare diventa rettilineo.</li>
+</ul>
+<figure><img loading="lazy" alt="Il planetario da stampare già montato: sole giallo, quattro satelliti, corona con le prese per le dita" src="../media/cinematismi-planetario.webp"><figcaption>Il planetario da stampare già montato: sole giallo, quattro satelliti, corona con le prese per le dita</figcaption></figure>
+<p>Per vederlo in movimento c'è la <a href="/content/apps/ruota_quadrata_cinematismi_spiegazione.html">spiegazione animata</a>, una scena per meccanismo; le regole e cinque esercizi sono nella <a href="/schede/ruota_quadrata_cinematismi.html">scheda da stampare</a>.</p>
+<p><strong>Il filo rosso.</strong> La ruota quadrata è il rovescio della <a href="../2026-10-28-pi-greco-non-e-una-frazione/">ruota che misura π</a>: lì la strada è piatta e la ruota rotonda, qui è la strada a cambiare forma. Lo spigolo del quadrato sta a mezza diagonale dal centro, e la diagonale è quella del <a href="../2026-11-01-il-teorema-di-pitagora-nell-albero/">teorema di Pitagora</a>. Parità, minimo e simmetria di $\cosh$ sono le domande dello <a href="../2026-11-01-lo-studio-di-funzione-con-funclab/">studio di funzione</a>. E il planetario si monta solo se la somma dei denti di sole e corona si divide per il numero di satelliti: è aritmetica da <a href="../2026-10-25-arcade-challenge-mcm-mcd/">MCM e MCD</a>: multipli e divisori decidono se i denti tornano al loro posto.</p>
+<section class="jr-studenti"><h2>Per prepararti alla verifica</h2>
+<ul>
+<li>Guarda il <strong>grafico</strong> accanto alla vista 3D: per la ruota quadrata confronta la quota del centro su strada piatta, che sale e scende, con quella sulla guida a catenarie, che resta costante. Prova a cambiare il numero di lati e osserva come cambia la strada.</li>
+<li>Sapere <strong>riconoscere una funzione pari</strong> (simmetrica rispetto all'asse $y$) e <strong>leggere un minimo</strong> sul grafico serve qui come in ogni studio di funzione.</li>
+<li>Nel planetario il rapporto tra i giri è una <strong>proporzione</strong>: se raddoppi i giri del sole, raddoppiano quelli dei satelliti.</li>
+<li><strong>Attenzione</strong>: nella formula di Willis al denominatore ci sono i denti del sole <strong>più</strong> quelli della corona, non solo quelli della corona.</li>
+</ul>
+<p><strong>Prova tu.</strong> Un planetario ha il sole da $16$ denti e i satelliti da $8$. Quanti denti ha la corona? Con $4$ satelliti si può montare? Quanti giri fanno i satelliti attorno al sole mentre il sole ne fa $6$?</p>
+<details>
+<summary>Soluzione</summary>
+<p>Corona: $16 + 2 \cdot 8 = 32$ denti. Montaggio: $(16 + 32) : 4 = 48 : 4 = 12$, un numero intero, quindi sì. Giri: $\dfrac{16}{16 + 32} \cdot 6 = \dfrac{16}{48} \cdot 6 = \dfrac13 \cdot 6 = 2$ giri.</p>
+</details>
+</section>
+<h2>Come usarla in classe</h2>
+<p>Una proposta per un'ora alla LIM: si parte dal quadrato su strada piatta e si chiede alla classe di quanto sale il centro (la risposta passa per Pitagora). Poi si apre la ruota quadrata e si fa notare che la linea del centro resta dritta: che curva serve per la strada? Il grafico e la formula arrivano dopo, come risposta a una domanda.</p>
+<p>Il secondo passo è <strong>stampare</strong>: la guida e la ruota sono due pezzi soli, senza perni, e la ruota rotola tra le sponde. Il planetario esce dalla stampante già montato e si sblocca girando il sole: è un oggetto che passa di mano in mano mentre si contano i giri per verificare la formula di Willis. Chi vuole andare oltre apre il codice OpenSCAD e cerca dove sta scritta la formula della catenaria.</p>
+<p>Per allenarsi sulle funzioni che compaiono qui: <strong>Goniometria</strong> (il coseno di Cardano), <strong>Esponenziali</strong> (il coseno iperbolico è fatto di $e^x$ ed $e^{-x}$) e <strong>Proporzioni</strong>.</p>
+<h2>A cosa fare attenzione</h2>
+<ul>
+<li><strong>Il gioco tra i pezzi</strong>: con una stampante tarata male i pezzi del planetario si saldano tra loro. Conviene stamparne uno di prova prima di stamparne una serie.</li>
+<li><strong>Un parametro alla volta</strong>: cambiarne tanti insieme rende impossibile capire che cosa ha cambiato il moto.</li>
+<li><strong>La catenaria non è una parabola</strong>: si somigliano vicino al vertice, ma la catenaria cresce come un'esponenziale. Vale la pena farlo notare, perché è l'errore più naturale.</li>
+</ul>
+
+            </div>
+        </article>
+        <aside class="jr-acts" aria-labelledby="att">
+            <h2 id="att">Le attività di cui parla</h2>
+            <ul><li class="jr-act" style="--jr-accent: hsl(280, 85%, 65%)"><img src="../../content/assets/thumbnails/ruota_quadrata_cinematismi.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/ruota_quadrata_cinematismi.html">Cinematismi 3D: ruota quadrata, Reuleaux e Cardano</a></h3><p>Generatore di cinematismi dentati stampabili in 3D: ruota quadrata su guida a catenarie con sponde, triangolo di Reuleaux nel foro quadrato e su rulli sotto una piattaforma, coppia di Cardano con ingranaggi a evolvente, planetario a spina di pesce stampato già montato (print in place). Denti generati per inviluppo, solidi unici senza perni, scala per Bambu Lab A1, A1 mini e P2S, esportazione STL e codice OpenSCAD.</p><p class="jr-act-more"><a href="../../content/apps/ruota_quadrata_cinematismi_spiegazione.html">Spiegami come funziona</a> · <a href="../../allenamento/#/lezione/goniometria/1">Allenati: Goniometria</a> · <a href="../../allenamento/#/lezione/esponenziali/1">Allenati: Esponenziali</a> · <a href="../../allenamento/#/lezione/proporzioni/1">Allenati: Proporzioni</a> · <a href="../../schede/ruota_quadrata_cinematismi.html">Scheda da stampare</a></p></div></li><li class="jr-act" style="--jr-accent: hsl(10, 90%, 65%)"><img src="../../content/assets/thumbnails/gioco_sin_cos_01.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/gioco_sin_cos_01.html">GonioMatch: Memory su valori notevoli di funzioni goniometriche</a></h3><p>Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/goniometria/1">Allenati: Goniometria</a> · <a href="../../allenamento/#/lezione/trigonometria/1">Allenati: Trigonometria del triangolo rettangolo</a> · <a href="../../schede/gioco_sin_cos_01.html">Scheda da stampare</a></p></div></li><li class="jr-act" style="--jr-accent: hsl(220, 90%, 70%)"><img src="../../content/assets/thumbnails/functions_lab_008.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/functions_lab_008.html">FuncLab AI: Esploratore di Funzioni</a></h3><p>Laboratorio interattivo di analisi matematica: descrivi una funzione a parole e l&#x27;AI la disegna su un piano cartesiano navigabile (zoom, trascinamento, lettura dei punti), con zeri, massimi e minimi evidenziati, più funzioni sovrapposte e Tutor Socratico con sintesi vocale.</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/funzioni-lineari/1">Allenati: Funzioni lineari</a> · <a href="../../allenamento/#/lezione/parabola/1">Allenati: La parabola</a> · <a href="../../allenamento/#/lezione/studio-funzione/1">Allenati: Studio di funzione</a> · <a href="../../schede/functions_lab_008.html">Scheda da stampare</a></p></div></li></ul>
+            <h2 class="jr-side-title">Competenze in gioco</h2>
+            <ul class="jr-skills"><li><a href="../../competenze.html#MAT_K2"><span class="jr-code">MAT_K2</span> Funzioni elementari e loro rappresentazione</a></li><li><a href="../../competenze.html#MAT_K3"><span class="jr-code">MAT_K3</span> Geometria euclidea e analitica</a></li><li><a href="../../competenze.html#MAT_K4"><span class="jr-code">MAT_K4</span> Statistica descrittiva e Probabilità</a></li><li><a href="../../competenze.html#MAT_A2"><span class="jr-code">MAT_A2</span> Rappresentare dati mediante tabelle, grafici e funzioni</a></li><li><a href="../../competenze.html#IND_C2"><span class="jr-code">IND_C2</span> Sviluppo di simulazioni interattive e visualizzazioni STEM</a></li><li><a href="../../competenze.html#SOFT_3"><span class="jr-code">SOFT_3</span> Comunicazione Efficace e Lavoro di Squadra</a></li></ul>
+            <h2 class="jr-side-title">Potrebbe interessarti anche</h2>
+            <ul class="jr-related"><li><a href="../../content/apps/math_underground003_4el.html"><img src="../../content/assets/thumbnails/math_underground003_4el.webp" alt="" loading="lazy"><span>Math Underground: Mappa per la classificazione di Funzioni</span></a></li><li><a href="../../content/apps/albero_pitagorico_3d_gemini_001.html"><img src="../../content/assets/thumbnails/albero_pitagorico_3d_gemini_001.webp" alt="" loading="lazy"><span>Albero di Pitagora: Frattali 3D</span></a></li></ul>
+        </aside>
+        </div>
+        <nav class="jr-more" aria-labelledby="altre">
+            <h2 id="altre">Altre note</h2>
+            <ul><li><a href="../2026-11-01-lo-studio-di-funzione-con-funclab/">Lo studio di funzione con FuncLab: un&#x27;onda chiusa in un cerchio</a> <time datetime="2026-11-01">1 novembre 2026</time></li></ul>
+        </nav>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio matematico digitale<br>Istituto Professionale "E. Orfini" · Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener" class="social-circle" aria-label="Instagram @meltingmath">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="jr-colophon">
+                <p><strong>Un diario di bordo.</strong> Orfini Math Lab raccoglie una sperimentazione didattica di matematica
+                    all'Istituto Professionale "E. Orfini" di Foligno: attività costruite, provate in classe, corrette. Ultimo aggiornamento: <time datetime="2026-11-04">4 novembre 2026</time>.</p>
+                <p>Fatto con strumenti open source, ed è a sua volta un progetto aperto: il codice è pubblico su GitHub.
+                    Si può riusare e adattare citando l'autore, mai a scopo di lucro senza il suo permesso.</p>
+                <ul class="jr-badges" aria-label="Progetto aperto e licenze">
+                    <li><a href="https://github.com/federicodb/federicodb.github.io" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Sorgenti su GitHub</a></li>
+                    <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it" target="_blank" rel="license noopener" title="Codice e contenuti: attribuzione, non commerciale, condividi allo stesso modo"><svg viewBox="0 0 86 22" aria-hidden="true" class="jr-cc"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="9.2"/><path d="M9.6 8.4a3.2 3.2 0 1 0 0 5.2M15.4 8.4a3.2 3.2 0 1 0 0 5.2"/><circle cx="32" cy="11" r="9.2"/><circle cx="32" cy="6.2" r="1.4" fill="currentColor" stroke="none"/><path d="M29.4 9.2h5.2v4.6h-1.6v4.2h-2v-4.2h-1.6z" fill="currentColor" stroke="none"/><circle cx="53" cy="11" r="9.2"/><path d="M56.4 7.6a3.6 3.6 0 1 0 0 6.8M48.8 10h5.4M48.8 12.4h5.4M46.6 4.6l12.8 12.8"/><circle cx="74" cy="11" r="9.2"/><path d="M78.2 11a4.2 4.2 0 1 1-1.3-3"/><path d="M77.3 5.4l-.3 2.8-2.8-.3"/></g></svg>CC BY-NC-SA 4.0 · uso non commerciale</a></li>
+                </ul>
+            </div>
+            <script src="../../content/assets/js/offline.js" defer></script>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Laboratorio Matematico Orfini Foligno · Prof. Federico De Benedictis · <a href="../../privacy-policy.html">Privacy e cookie</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('filter-burger-btn'), menu = document.getElementById('filter-dropdown');
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                btn.setAttribute('aria-expanded', menu.classList.toggle('active'));
+            });
+            document.addEventListener('click', function (e) {
+                if (!menu.contains(e.target)) { menu.classList.remove('active'); btn.setAttribute('aria-expanded', 'false'); }
+            });
+        })();
+    </script>
+    <script src="../../cookie-consent.js"></script>
+</body>
+
+</html>

@@ -8,7 +8,7 @@
 <script src="../assets/js/orfini-shared.js"></script>
 <meta name="description" content="Generatore di cinematismi dentati stampabili in 3D: ruota quadrata su guida a catenarie con sponde, triangolo di Reuleaux nel foro quadrato e su rulli sotto una piattaforma, coppia di Cardano con ingranaggi a evolvente, planetario a spina di pesce stampato già montato (print in place). Denti generati per inviluppo, solidi unici senza perni, scala per Bambu Lab A1, A1 mini e P2S, esportazione STL e codice OpenSCAD.">
 <meta name="keywords" content="Ruota quadrata, Catenaria, Triangolo di Reuleaux, Teorema di Barbier, Cardano, Ingranaggi, Evolvente, Planetario, Formula di Willis, Print in place, Stampa 3D, OpenSCAD, Bambu Lab, Coding, MAT_K3:Geometria, MAT_K4:Funzioni, IND_C2:Coding, 1 EL, 2 EL, 3 EL, 4 EL, 5 EL">
-<meta name="allenamento" content="solidi, proporzioni, pitagora">
+<meta name="allenamento" content="goniometria, esponenziali, proporzioni, pitagora, solidi">
 <meta name="date" content="2026-11-04">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -65,16 +65,34 @@ pre{background:#05070a;border:1px solid var(--line);border-radius:8px;padding:10
 details summary{cursor:pointer;color:var(--acc2);margin-top:8px}
 .learn li{margin:3px 0;font-size:.88rem;color:var(--mut)}
 @media (max-width:900px){main{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}.grid2{grid-template-columns:1fr}}
+/* spiegazione animata */
+header{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px}
+header>div{flex:1 1 320px;min-width:0}
+.btn-explain{background:var(--acc);color:#2a2000;border:0;border-radius:10px;padding:9px 14px;font:inherit;font-weight:700;min-height:44px;cursor:pointer}
+.btn-explain:focus-visible{outline:3px solid var(--acc2);outline-offset:3px}
+.h2-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.h2-row h2{margin:0}
+.mode-explain{background:transparent;color:var(--acc);border:1px solid var(--acc);border-radius:8px;padding:4px 10px;font:inherit;font-size:.8rem;font-weight:600;min-height:32px;cursor:pointer}
+.explain{position:fixed;inset:0;z-index:999;display:grid;place-items:center;
+  padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  background:rgba(0,0,0,.86);backdrop-filter:blur(6px)}
+.explain[hidden]{display:none}
+.explain-box{position:relative;width:min(1000px,100%);height:min(88vh,820px);border-radius:16px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.explain-box iframe{width:100%;height:100%;border:0;display:block}
+.explain-close{position:absolute;top:10px;right:10px;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#ff5252;color:#fff;font:700 22px/1 system-ui,sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
 <header>
+  <div>
   <h1>Cinematismi 3D: ruota quadrata, Reuleaux e Cardano</h1>
   <p>Meccanismi dentati da stampare: cambia i parametri, guarda il moto, scarica gli STL (un solido per pezzo, già orientato) o il codice OpenSCAD.</p>
+  </div>
+  <button class="btn-explain" type="button" data-explain="">▶ Spiegami come funziona</button>
 </header>
 <main>
 <aside>
-  <h2>Meccanismo</h2>
+  <div class="h2-row"><h2>Meccanismo</h2><button class="mode-explain" type="button" data-explain="mode" title="Spiegazione animata del meccanismo scelto">▶ Spiegami</button></div>
   <div class="tabs" id="tabs"></div>
   <h2>Stampante</h2>
   <select id="printer" aria-label="Stampante">
@@ -122,6 +140,12 @@ details summary{cursor:pointer;color:var(--acc2);margin-top:8px}
   <div class="card"><h3>Cosa impari</h3><ul class="learn" id="learn" style="margin:0;padding-left:18px"></ul></div>
 </section>
 </main>
+<div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
+  <div class="explain-box">
+    <button class="explain-close" id="explainClose" type="button" aria-label="Chiudi spiegazione">✕</button>
+    <iframe id="explainFrame" title="Spiegazione animata dei cinematismi" allow="fullscreen"></iframe>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -860,6 +884,15 @@ addEventListener('resize',()=>{resize();drawChart();});
 
 $('play').textContent=state.playing?'Ferma':'Avvia';$('s').value=Math.round(state.s*1000);
 renderTabs();renderParams();resize();rebuild();frame();requestAnimationFrame(tick);
+
+/* Spiegazione animata: '' = tutta, oppure la scena del meccanismo scelto (stessi id di MECH) */
+function openExplainer(scena=''){$('explainFrame').src='ruota_quadrata_cinematismi_spiegazione.html?embed=1'+(scena?'#'+scena:'');$('explain').hidden=false;$('explainClose').focus();}
+function closeExplainer(){$('explain').hidden=true;$('explainFrame').src='about:blank';}
+$('explainClose').addEventListener('click',closeExplainer);
+$('explain').addEventListener('click',e=>{if(e.target.id==='explain')closeExplainer();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('explain').hidden)closeExplainer();});
+addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.type==='spiegazione-finita')setTimeout(closeExplainer,1500);});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-explain]');if(b)openExplainer(b.dataset.explain==='mode'?state.mech:b.dataset.explain);});
 
 /* API per i test */
 window.OCM={state,MECH,PRINTERS,CL,SC,toP,fromP,polyP,I,D,U,OFF,xf,areaP,partMesh,partStl,packPlates,gearAddendumOK,

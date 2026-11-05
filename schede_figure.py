@@ -741,5 +741,38 @@ def commensurabilita():
     return _svg(620, 262, "".join(out), "Commensurabilità: una tacca comune misura 15 e 20; lato e diagonale del quadrato non ne hanno")
 
 
+def ruota_catenaria():
+    """ Ruota quadrata (semilato a) su gobbe y = −a·cosh(x/a): il centro resta sulla retta tratteggiata;
+        accanto le altre tre funzioni dei cinematismi (Reuleaux, Willis, Cardano) """
+    a, x0, yc = 40, 20, 80
+    per = 2 * a * math.asinh(1)
+    strada = []
+    x = x0
+    while x <= x0 + 4 * per + 0.01:
+        xl = (x - x0) % per - per / 2
+        strada.append((x, yc + a * math.cosh(xl / a)))
+        x += 1.5
+    out = [_path(strada + [(x0 + 4 * per, 168), (x0, 168)], INK, 1.6, FILL, True),
+           _line(x0, yc, x0 + 4 * per, yc, ACC2, 1.4, "5 4")]
+    xl = 12
+    cx, ang = x0 + 1.5 * per + xl, math.atan(math.sinh(xl / a))
+    ca, sa = math.cos(ang), math.sin(ang)
+    vert = [(cx + px * ca - py * sa, yc + px * sa + py * ca) for px, py in ((-a, -a), (a, -a), (a, a), (-a, a))]
+    out += [_path(vert, ACC, 2.2, "white", True), _dot(cx, yc, 4),
+            _line(cx, yc, cx - a * math.sin(ang), yc + a * math.cos(ang), INK, 1, "3 3"),
+            _t(cx + 10, yc + 26, "a", 12, "start", italic=True),
+            _t(x0 + 2 * per, 190, "y = −a · cosh(x / a)", 14, color=ACC, weight=700),
+            _t(x0 + 2 * per, 210, "gobba lunga 2a · ln(1 + √2) ≈ 0,88 · lato", 12, color="#333"),
+            _t(x0 + 2 * per, 16, "il centro resta alla stessa quota", 12.5, color=ACC2, weight=600)]
+    tx = 345
+    righe = (("Reuleaux", "larghezza W costante · perimetro π·W"),
+             ("Planetario", "corona ferma: giri satelliti = zs/(zs+zr) · giri sole"),
+             ("Cardano (R = 2r)", "x = R · cos θ,  y = 0: una retta"))
+    for i, (titolo, testo) in enumerate(righe):
+        y = 60 + i * 52
+        out += [_t(tx, y, titolo, 13, "start", ACC, 700), _t(tx, y + 18, testo, 12, "start")]
+    return _svg(640, 222, "".join(out), "Ruota quadrata sulle gobbe a catenaria e le funzioni degli altri cinematismi")
+
+
 FIGURE = {name: fn for name, fn in globals().items() if callable(fn) and not name.startswith("_") and name.islower()
           and name not in ("FIGURE",)}

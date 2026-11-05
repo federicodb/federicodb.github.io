@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Ruote che non sobbalzano in 70 secondi</title>
+<meta name="description" content="Animazione di poco più di un minuto sui cinematismi: ruota quadrata sulla catenaria, triangolo di Reuleaux, rulli a larghezza costante, planetario e coppia di Cardano (Orfini Math Lab).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Stesso look dell'app: nero AMOLED, pannelli grafite, giallo e ciano come accenti. */
+:root{
+  --bg:#000; --panel:#0d0f13; --panel2:#161a21; --line:rgba(255,255,255,.12);
+  --fg:#e8eaed; --muted:#9aa3ad; --ink:#05070a;
+  --y:#ffd54a; --yd:#a8892a; --c:#4dd0e1; --ok:#7be0a0; --bad:#ff8a80;
+  --disp:'Inter',system-ui,sans-serif; --body:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;min-height:100%}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow a{color:var(--muted);text-decoration:none}
+.eyebrow a:hover{color:var(--fg)}
+h1{font-family:var(--disp);font-weight:800;font-size:clamp(32px,5.6vw,52px);line-height:1.05;margin:0;color:var(--y);text-wrap:balance;letter-spacing:-.01em}
+.lead{margin:0;max-width:62ch;color:var(--muted);font-size:17px}
+.screen{position:relative;border-radius:16px;padding:8px;background:var(--panel);border:1px solid var(--line)}
+canvas{display:block;width:100%;max-width:100%;aspect-ratio:16/9;border-radius:10px;background:#05070a;cursor:pointer}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.btn{font-family:var(--body);font-weight:700;font-size:16px;border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-height:44px;
+  background:var(--panel2);color:var(--fg);cursor:pointer}
+.btn:hover{border-color:var(--c)}
+.btn:focus-visible,.chap:focus-visible,.ts:focus-visible,input:focus-visible{outline:3px solid var(--y);outline-offset:3px}
+.play{background:var(--y);color:#2a2000;border-color:var(--y);min-width:120px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:10px;min-width:0}
+input[type=range]{flex:1;min-width:0;accent-color:var(--y)}
+.time{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:flex;flex-wrap:wrap;gap:8px}
+.chap{font-family:var(--body);font-weight:600;font-size:14px;color:var(--fg);background:transparent;border:1px solid var(--line);
+  border-radius:999px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:7px;align-items:center;min-height:36px}
+.chap::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.chap[aria-current="true"]{border-color:var(--c);background:rgba(255,255,255,.06)}
+.caption{margin:0;min-height:3.2em;font-size:clamp(17px,2.2vw,20px);line-height:1.45;font-weight:500;max-width:72ch}
+.caption b{color:var(--y);font-weight:700}
+section.tx{border-top:1px solid var(--line);padding-top:20px;display:flex;flex-direction:column;gap:14px}
+section.tx h2{font-weight:800;font-size:24px;margin:0}
+.txlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px 26px}
+.txlist li{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ts{align-self:flex-start;font-family:var(--mono);font-size:13px;color:#05070a;background:var(--c);border:0;border-radius:6px;padding:2px 8px;cursor:pointer}
+.txlist strong{font-weight:700;font-size:18px}
+.txlist p{margin:0;color:var(--muted);max-width:60ch}
+.txlist b{color:var(--fg)}
+.cta{display:inline-block;align-self:flex-start;text-decoration:none;background:var(--ok);color:#06301a;border-color:var(--ok)}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.embed header,.embed section.tx,.embed .hint,.embed .cta{display:none}
+.embed .wrap{padding-block:12px;gap:12px}
+.embed .caption{min-height:0;font-size:17px}
+@media (max-width:560px){.btn{font-size:15px;padding:9px 12px}.play{min-width:100px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><a href="https://federicodb.github.io/index.html">← Orfini Math Lab</a> · Funzioni · Geometria · Stampa 3D</div>
+    <h1>Ruote che non sobbalzano</h1>
+    <p class="lead">Poco più di un minuto per capire i cinque meccanismi del generatore: come una strada, una forma o un ingranaggio compensano una rotazione, e quale funzione c'è dietro.</p>
+  </header>
+
+  <div class="screen">
+    <canvas id="stage" width="1280" height="720" role="img" aria-label="Animazione: ruota quadrata sulla catenaria, triangolo di Reuleaux, rulli, planetario e coppia di Cardano"></canvas>
+  </div>
+
+  <div class="bar">
+    <button class="btn play" id="play" type="button">▶ Play</button>
+    <button class="btn" id="speed" type="button" title="Velocità di riproduzione">1×</button>
+    <div class="scrub">
+      <input id="seek" type="range" min="0" max="71" step="0.1" value="4" aria-label="Posizione nell'animazione">
+      <span class="time" id="time">0:04 / 1:11</span>
+    </div>
+  </div>
+  <div class="chaps" id="chaps"></div>
+  <p class="caption" id="cap" aria-live="polite"></p>
+  <p class="hint">Barra spaziatrice: play/pausa · frecce: ±5 secondi · clic sullo schermo per fermare e spiegare.</p>
+
+  <a class="btn cta" href="https://federicodb.github.io/content/apps/ruota_quadrata_cinematismi.html">⚙️ Apri il generatore di cinematismi</a>
+
+  <section class="tx">
+    <h2>Il testo dell'animazione</h2>
+    <ol class="txlist" id="tx"></ol>
+  </section>
+</div>
+
+<script>
+(() => {
+const W = 1280, H = 720, TOTAL = 71, PI = Math.PI, TAU = 2 * PI;
+const DISP = "'Inter',system-ui,sans-serif", MONO = "'JetBrains Mono',ui-monospace,monospace";
+const Y = '#ffd54a', C = '#4dd0e1', OK = '#7be0a0', BAD = '#ff8a80', OR = '#ff9e64', PU = '#c792ea';
+const INK = '#05070a', MUT = '#9aa3ad', FG = '#e8eaed', PANEL = '#0d0f13', PANEL2 = '#161a21', STEEL = '#3a4452';
+
+const MODES = [
+  { icon: '⬛', name: 'Ruota quadrata', tag: 'catenaria', c: Y, t: INK },
+  { icon: '🔺', name: 'Reuleaux', tag: 'larghezza costante', c: OR, t: INK },
+  { icon: '🛞', name: 'Rulli', tag: 'piattaforma in piano', c: OK, t: INK },
+  { icon: '⚙️', name: 'Planetario', tag: 'formula di Willis', c: C, t: INK },
+  { icon: '📏', name: 'Cardano', tag: 'il cerchio che fa una retta', c: PU, t: INK }
+];
+const SC = [
+  { id: 'intro', label: 'Intro', a: 0, b: 5, c: Y,
+    cap: 'Una ruota rotonda su una strada piatta tiene il centro sempre alla stessa altezza. Si può fare lo stesso con <b>forme non rotonde</b>, se la strada o gli ingranaggi <b>compensano</b> la rotazione.' },
+  { id: 'ruota', label: 'Ruota quadrata', a: 5, b: 20, ...MODES[0],
+    cap: 'Su una strada piatta il quadrato sobbalza: il centro sale da a ad a·√2. Sulle gobbe a <b>catenaria</b>, y = −a·cosh(x/a), il centro resta in piano. Con lato 32 mm ogni gobba è lunga 32 · ln(1 + √2) ≈ <b>28,2 mm</b>.' },
+  { id: 'reuleaux', label: 'Reuleaux', a: 20, b: 32, ...MODES[1],
+    cap: 'Il <b>triangolo di Reuleaux</b> è largo W in ogni direzione: per questo gira dentro un quadrato di lato W toccando sempre i quattro lati, e la punta disegna un quadrato dagli angoli arrotondati. Per il teorema di Barbier il perimetro è <b>π·W</b>, come quello del cerchio.' },
+  { id: 'rulli', label: 'Rulli', a: 32, b: 43, ...MODES[2],
+    cap: 'Su due rulli di Reuleaux la piattaforma resta <b>in piano</b>, anche se i rulli sono girati in modo diverso. Il loro centro invece sale e scende: per questo i rulli non hanno assi. La piattaforma va al <b>doppio</b> della velocità dei rulli.' },
+  { id: 'planetario', label: 'Planetario', a: 43, b: 56, ...MODES[3],
+    cap: 'Sole 14 denti, satelliti 10, corona 14 + 2·10 = 34. Con la corona ferma, a ogni giro del sole i satelliti fanno 14/48 ≈ <b>0,29 giri</b> attorno al centro (formula di Willis). Si monta solo se (14 + 34) : 4 è intero; con un sole da 15 denti, 50 : 4 non lo è.' },
+  { id: 'cardano', label: 'Cardano', a: 56, b: 66, ...MODES[4],
+    cap: 'Un ingranaggio di raggio r rotola dentro una corona di raggio <b>R = 2r</b>. Un punto del suo bordo va avanti e indietro su una <b>retta</b>: x = R·cos θ, y = 0. Un punto più interno disegna un\'ellisse.' },
+  { id: 'end', label: 'Riepilogo', a: 66, b: 71, c: OK,
+    cap: 'Dietro cinque meccanismi ci sono quattro funzioni: la <b>catenaria</b>, la <b>larghezza costante</b>, il <b>rapporto</b> di Willis, il <b>coseno</b> di Cardano. Ora genera il tuo meccanismo e stampalo.' }
+];
+
+/* ---------- helpers ---------- */
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const prog = (u, a, b) => clamp((u - a) / (b - a));
+const eo = p => 1 - Math.pow(1 - p, 3);
+const eio = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const back = p => 1 + 2.70158 * Math.pow(p - 1, 3) + 1.70158 * Math.pow(p - 1, 2);
+const frac = x => x - Math.floor(x);
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+let S = 1, BASE = 1;
+const A = a => { ctx.globalAlpha = BASE * clamp(a); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); }
+function T(s, x, y, size, col, o = {}) {
+  ctx.font = `${o.w || 600} ${size}px ${o.f || DISP}`;
+  ctx.textAlign = o.al || 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = col;
+  ctx.fillText(s, x, y);
+}
+function W_(s, size, f = DISP, w = 600) { ctx.font = `${w} ${size}px ${f}`; return ctx.measureText(s).width; }
+function pop(x, y, p, fn, rot = 0) {
+  if (p <= 0) return;
+  const s = back(Math.min(p, 1));
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  const keep = BASE; BASE = keep * Math.min(1, p * 2.5); A(1); fn(); BASE = keep;
+  ctx.restore(); A(1);
+}
+function poly(pts, close = true) { ctx.beginPath(); pts.forEach((p, i) => ctx[i ? 'lineTo' : 'moveTo'](p[0], p[1])); if (close) ctx.closePath(); }
+function chip(m) {
+  const lab = `${m.icon} ${m.name.toUpperCase()}`, tag = m.tag;
+  const w1 = W_(lab, 24, DISP, 800), w2 = W_(tag, 19, DISP, 500), w = w1 + w2 + 60;
+  rr(32, 26, w, 50, 25); ctx.fillStyle = m.c; ctx.fill();
+  T(lab, 52, 52, 24, m.t, { al: 'left', w: 800 });
+  A(.75); T(tag, 52 + w1 + 20, 52, 19, m.t, { al: 'left', w: 500 }); A(1);
+}
+function label(s, x, y, col, size = 24, al = 'left') { T(s, x, y, size, col, { al, w: 600 }); }
+
+/* ---------- forme: triangolo di Reuleaux (anche con punte arrotondate) ---------- */
+function reuleaux(Wd, rho = 0, N = 1440) {
+  const W0 = Wd - 2 * rho, R = W0 / Math.sqrt(3), V = [0, 1, 2].map(i => [R * Math.cos(-PI / 2 + i * TAU / 3), R * Math.sin(-PI / 2 + i * TAU / 3)]);
+  const pts = [], cum = [0];
+  for (let k = 0; k < N; k++) {
+    const f = k / N * TAU, d = [Math.cos(f), Math.sin(f)];
+    /* entro 30° dalla direzione di una punta il punto di appoggio è la punta, altrimenti l'arco centrato nella punta opposta */
+    const dots = V.map(v => v[0] * d[0] + v[1] * d[1]);
+    const jmax = dots.indexOf(Math.max(...dots)), imin = dots.indexOf(Math.min(...dots));
+    const p = dots[jmax] >= R * Math.cos(PI / 6) - 1e-9 ? V[jmax].slice() : [V[imin][0] + W0 * d[0], V[imin][1] + W0 * d[1]];
+    pts.push([p[0] + rho * d[0], p[1] + rho * d[1]]);
+    if (k) cum.push(cum[k - 1] + Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]));
+  }
+  const per = cum[N - 1] + Math.hypot(pts[0][0] - pts[N - 1][0], pts[0][1] - pts[N - 1][1]);
+  /* lunghezza d'arco fino alla direzione f (con i giri interi): serve per il rotolamento senza strisciare */
+  const Cf = f => { const n = Math.floor(f / TAU), r = (f - n * TAU) / TAU * N, i = Math.floor(r), j = (i + 1) % N, t = r - i;
+    const c1 = j ? cum[j] : per; return n * per + cum[i] + (c1 - cum[i]) * t; };
+  return { pts, V, per, Cf, N };
+}
+const rot = (p, a) => [p[0] * Math.cos(a) - p[1] * Math.sin(a), p[0] * Math.sin(a) + p[1] * Math.cos(a)];
+
+/* ---------- ingranaggi disegnati: dente centrato sull'angolo rot ---------- */
+function gearPts(cx, cy, z, m, rotA, internal) {
+  const rp = m * z / 2, n = z * 18, out = [];
+  for (let k = 0; k < n; k++) {
+    const f = k / n * TAU, q = frac((f - rotA) * z / TAU), d = Math.min(q, 1 - q);
+    const tt = d < .15 ? 1 : d > .33 ? -1.25 : 1 - 2.25 * (d - .15) / .18;
+    const r = internal ? rp - m * tt : rp + m * tt;
+    out.push([cx + r * Math.cos(f), cy + r * Math.sin(f)]);
+  }
+  return out;
+}
+function drawGear(cx, cy, z, m, rotA, fill, stroke = INK) {
+  poly(gearPts(cx, cy, z, m, rotA, false)); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke();
+}
+function drawRing(cx, cy, z, m, rotA, rOut, fill) {
+  ctx.beginPath(); ctx.arc(cx, cy, rOut, 0, TAU);
+  const p = gearPts(cx, cy, z, m, rotA, true); p.forEach((q, i) => ctx[i ? 'lineTo' : 'moveTo'](q[0], q[1])); ctx.closePath();
+  ctx.fillStyle = fill; ctx.fill('evenodd'); ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 2; ctx.stroke();
+}
+
+/* ---------- scena: intro ---------- */
+function sIntro(u) {
+  pop(640, 170, prog(u, 0, .7), () => T('Ruote che non sobbalzano', 0, 0, 72, Y, { w: 800 }));
+  A(prog(u, .4, .9)); T('CINEMATISMI 3D', 640, 245, 28, C, { w: 700 }); A(1);
+  // un quadrato e un cerchio che rotolano: il cerchio non sobbalza
+  const k = u * .9;
+  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(140, 420); ctx.lineTo(1140, 420); ctx.stroke();
+  const r = 50, cxC = 300 + r * k;
+  A(prog(u, .6, 1.1));
+  circ(cxC, 420 - r, r); ctx.fillStyle = C; ctx.fill();
+  ctx.save(); ctx.translate(cxC, 420 - r); ctx.rotate(k); ctx.fillStyle = INK; circ(r * .6, 0, 8); ctx.fill(); ctx.restore();
+  A(1);
+  MODES.forEach((m, i) => {
+    const x = 640 + (i - 2) * 232, y = 560;
+    pop(x, y, prog(u, 1 + i * .25, 1.6 + i * .25), () => {
+      rr(-106, -62, 212, 124, 16); ctx.fillStyle = PANEL2; ctx.fill(); ctx.strokeStyle = m.c; ctx.lineWidth = 3; ctx.stroke();
+      T(m.icon, 0, -26, 34, '#fff');
+      T(m.name, 0, 14, 22, m.c, { w: 700 });
+      A(.85); T(m.tag, 0, 42, 16, MUT, { w: 500 }); A(1);
+    });
+  });
+  A(prog(u, 2.6, 3.2)); T('Cinque meccanismi, una domanda: come si compensa una rotazione?', 640, 668, 24, MUT, { w: 500 }); A(1);
+}
+
+/* ---------- scena: ruota quadrata ---------- */
+const AS = Math.asinh(1);
+function sRuota(u) {
+  const a = 50, P = 2 * a * AS, Q = 8, phi = eio(prog(u, 1, 12.5)) * Q * PI / 2;
+  // --- strada piatta: il quadrato ruota sugli spigoli
+  const G1 = 290, X1 = 120;
+  const flat = f => { const k = Math.min(Q - 1, Math.floor(f / (PI / 2))), b = f - k * PI / 2, cx0 = X1 + a + k * 2 * a;
+    return { x: cx0 + a * Math.SQRT2 * Math.cos(3 * PI / 4 - b), y: G1 - a * Math.SQRT2 * Math.sin(3 * PI / 4 - b), r: b + k * PI / 2 }; };
+  // --- gobbe a catenaria: il centro resta alla stessa quota
+  const YC = 450, X2 = 120;
+  const cat = f => { const k = Math.min(Q - 1, Math.floor(f / (PI / 2))), b = f - k * PI / 2, xl = a * Math.asinh(Math.tan(b - PI / 4));
+    return { x: X2 + k * P + P / 2 + xl, y: YC, r: (b - PI / 4) + k * PI / 2 }; };
+  // strade
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(40, G1); ctx.lineTo(1240, G1); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(40, 560);
+  for (let x = 40; x <= 1240; x += 2) { const xl = ((x - X2) % P + P) % P - P / 2; ctx.lineTo(x, YC + a * Math.cosh(xl / a)); }
+  ctx.lineTo(1240, 560); ctx.closePath(); ctx.fillStyle = PANEL2; ctx.fill(); ctx.strokeStyle = Y; ctx.lineWidth = 3; ctx.stroke();
+  // tracce del centro
+  const trace = (fn, col) => { ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.setLineDash([2, 7]); ctx.lineCap = 'round'; ctx.beginPath();
+    for (let i = 0; i <= 200; i++) { const p = fn(phi * i / 200); ctx[i ? 'lineTo' : 'moveTo'](p.x, p.y); } ctx.stroke(); ctx.setLineDash([]); ctx.lineCap = 'butt'; };
+  if (phi > 0) { trace(flat, BAD); trace(cat, OK); }
+  const square = (p, col) => {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+    rr(-a, -a, 2 * a, 2 * a, 3); ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+    circ(-a + 12, -a + 12, 6); ctx.fillStyle = INK; ctx.fill();
+    ctx.restore();
+    circ(p.x, p.y, 7); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+  };
+  square(flat(phi), '#c9a43a'); square(cat(phi), Y);
+  A(prog(u, .5, 1)); label('Strada piatta: il centro sobbalza ✗', 40, 116, BAD); A(1);
+  A(prog(u, 2.5, 3)); label('Gobbe a catenaria: il centro resta in piano ✓', 40, 360, OK); A(1);
+  // quota del centro
+  if (u > 3) {
+    const fp = flat(phi); A(prog(u, 3, 3.5));
+    T(`quota del centro: ${(((G1 - fp.y) / a)).toFixed(2).replace('.', ',')} · a`, 1240, 116, 22, MUT, { al: 'right', w: 500, f: MONO });
+    T('quota del centro: sempre a', 1240, 360, 22, MUT, { al: 'right', w: 500, f: MONO }); A(1);
+  }
+  pop(330, 625, prog(u, 12.6, 13.2), () => T('y = −a · cosh(x / a)', 0, 0, 40, Y, { w: 800, f: MONO }));
+  A(prog(u, 13.2, 13.7)); T('lato 32 mm → gobba lunga 32 · ln(1 + √2) ≈ 28,2 mm', 900, 625, 24, FG, { w: 500 }); A(1);
+  A(prog(u, 13.6, 14.1)); T('la stessa curva della catenella appesa per i due capi, capovolta', 640, 680, 21, MUT, { w: 500 }); A(1);
+}
+
+/* ---------- scena: Reuleaux nel quadrato ---------- */
+const RL = reuleaux(300), RL2 = reuleaux(200);
+function placeInSquare(R, th, half) {
+  let x0 = 1e9, y0 = 1e9; const q = R.pts.map(p => { const r = rot(p, th); x0 = Math.min(x0, r[0]); y0 = Math.min(y0, r[1]); return r; });
+  return { q, dx: -half - x0, dy: -half - y0 };
+}
+function sReuleaux(u) {
+  const cx = 360, cy = 405, half = 150, th = eio(prog(u, 1, 10.5)) * TAU;
+  rr(cx - half - 10, cy - half - 10, 2 * half + 20, 2 * half + 20, 10); ctx.fillStyle = STEEL; ctx.fill();
+  ctx.fillStyle = '#05070a'; ctx.fillRect(cx - half, cy - half, 2 * half, 2 * half);
+  // traccia della punta
+  ctx.strokeStyle = C; ctx.lineWidth = 3; ctx.beginPath();
+  for (let i = 0; i <= 240; i++) { const t = th * i / 240, s = placeInSquare(RL, t, half), v = rot(RL.V[0], t); ctx[i ? 'lineTo' : 'moveTo'](cx + v[0] + s.dx, cy + v[1] + s.dy); }
+  if (th > 0) ctx.stroke();
+  const s = placeInSquare(RL, th, half);
+  poly(s.q.map(p => [cx + p[0] + s.dx, cy + p[1] + s.dy])); ctx.fillStyle = OR; A(.92); ctx.fill(); A(1); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+  const v = rot(RL.V[0], th); circ(cx + v[0] + s.dx, cy + v[1] + s.dy, 8); ctx.fillStyle = C; ctx.fill();
+  // i quattro contatti
+  const touch = [[0, 0], [0, 0], [0, 0], [0, 0]]; let best = [1e9, -1e9, 1e9, -1e9];
+  s.q.forEach(p => { const x = p[0] + s.dx, y = p[1] + s.dy;
+    if (x < best[0]) { best[0] = x; touch[0] = [x, y]; } if (x > best[1]) { best[1] = x; touch[1] = [x, y]; }
+    if (y < best[2]) { best[2] = y; touch[2] = [x, y]; } if (y > best[3]) { best[3] = y; touch[3] = [x, y]; } });
+  touch.forEach(p => { circ(cx + p[0], cy + p[1], 7); ctx.fillStyle = Y; ctx.fill(); });
+  A(prog(u, .3, .8)); label('Tocca sempre i quattro lati', cx, 210, Y, 24, 'center'); A(1);
+  A(prog(u, 6, 6.6)); label('la punta disegna un quadrato', cx, 600, C, 22, 'center'); A(1);
+  // a destra: larghezza costante tra due rette parallele
+  const rx = 960, ry = 330, th2 = u * .9;
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(800, ry - 100); ctx.lineTo(1120, ry - 100); ctx.moveTo(800, ry + 100); ctx.lineTo(1120, ry + 100); ctx.stroke();
+  let ymin = 1e9, sx = 0; const q2 = RL2.pts.map(p => { const r = rot(p, th2); if (r[1] < ymin) ymin = r[1]; sx += r[0]; return r; });
+  sx /= q2.length;
+  poly(q2.map(p => [rx + p[0] - sx, ry - 100 + p[1] - ymin])); ctx.fillStyle = OR; A(.85); ctx.fill(); A(1); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+  ctx.strokeStyle = Y; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(1160, ry - 100); ctx.lineTo(1160, ry + 100); ctx.stroke();
+  [[ry - 100, 1], [ry + 100, -1]].forEach(([yy, sg]) => { ctx.beginPath(); ctx.moveTo(1150, yy + sg * 14); ctx.lineTo(1160, yy); ctx.lineTo(1170, yy + sg * 14); ctx.stroke(); });
+  T('W', 1192, ry, 30, Y, { w: 800 });
+  A(prog(u, 1, 1.5)); label('larghezza W in ogni direzione', 960, 190, FG, 22, 'center'); A(1);
+  pop(960, 520, prog(u, 9, 9.6), () => T('perimetro = π · W', 0, 0, 40, Y, { w: 800, f: MONO }));
+  A(prog(u, 9.6, 10.1)); T('W = 50 mm → perimetro ≈ 157 mm', 960, 575, 24, FG, { w: 500 });
+  T('come il cerchio di diametro 50 mm (Barbier)', 960, 610, 21, MUT, { w: 500 }); A(1);
+}
+
+/* ---------- scena: rulli ---------- */
+const RW = 170, RR = reuleaux(RW, RW * .15);
+function rollerPose(R, psi, X0, G) {
+  const fC = PI / 2 - psi, S = R.Cf(PI / 2) - R.Cf(fC);
+  const k = ((Math.round(frac(fC / TAU) * R.N)) % R.N), cp = rot(R.pts[k], psi);
+  return { tx: X0 + S - cp[0], ty: G - cp[1], psi };
+}
+function sRulli(u) {
+  const G = 610, psi = eio(prog(u, 1, 10)) * .8 * PI;
+  ctx.fillStyle = PANEL2; ctx.fillRect(40, G, 1200, 60); ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(40, G); ctx.lineTo(1240, G); ctx.stroke();
+  const rolls = [{ x: 400, ph: 0 }, { x: 640, ph: PI / 3 }];
+  // traccia del centro dei rulli
+  rolls.forEach(r => {
+    ctx.strokeStyle = BAD; ctx.setLineDash([2, 7]); ctx.lineCap = 'round'; ctx.lineWidth = 3; ctx.beginPath();
+    for (let i = 0; i <= 160; i++) { const p = rollerPose(RR, r.ph + psi * i / 160, r.x - (RR.Cf(PI / 2) - RR.Cf(PI / 2 - r.ph)), G); ctx[i ? 'lineTo' : 'moveTo'](p.tx, p.ty); }
+    if (psi > 0) ctx.stroke(); ctx.setLineDash([]); ctx.lineCap = 'butt';
+  });
+  rolls.forEach(r => {
+    const p = rollerPose(RR, r.ph + psi, r.x - (RR.Cf(PI / 2) - RR.Cf(PI / 2 - r.ph)), G);
+    ctx.save(); ctx.translate(p.tx, p.ty); ctx.rotate(p.psi);
+    poly(RR.pts); ctx.fillStyle = OK; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+    ctx.restore();
+    circ(p.tx, p.ty, 7); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = INK; ctx.stroke();
+  });
+  // piattaforma: avanza di W per radiante, il doppio dei rulli
+  const px = 120 + RW * psi, py = G - RW;
+  rr(px, py - 26, 700, 26, 6); ctx.fillStyle = Y; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+  // livella
+  rr(px + 290, py - 62, 120, 30, 15); ctx.fillStyle = PANEL2; ctx.fill(); ctx.strokeStyle = OK; ctx.lineWidth = 2; ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.beginPath(); ctx.moveTo(px + 336, py - 62); ctx.lineTo(px + 336, py - 32); ctx.moveTo(px + 364, py - 62); ctx.lineTo(px + 364, py - 32); ctx.stroke();
+  circ(px + 350, py - 47, 10); ctx.fillStyle = OK; ctx.fill();
+  ctx.strokeStyle = 'rgba(255,213,74,.45)'; ctx.setLineDash([10, 8]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(40, py - 26); ctx.lineTo(1240, py - 26); ctx.stroke(); ctx.setLineDash([]);
+  A(prog(u, .5, 1)); label('La piattaforma resta in piano ✓', 40, 140, OK); A(1);
+  A(prog(u, 4, 4.5)); label('il centro dei rulli sale e scende: niente assi', 40, 185, BAD, 22); A(1);
+  A(prog(u, 3, 3.5)); T(`strada fatta  piattaforma: ${psi.toFixed(2).replace('.', ',')} W  ·  rulli: ${(psi / 2).toFixed(2).replace('.', ',')} W`, 1240, 140, 22, MUT, { al: 'right', f: MONO, w: 500 }); A(1);
+  A(prog(u, 9.5, 10)); T('la piattaforma va al doppio della velocità dei rulli', 1240, 185, 22, Y, { al: 'right', w: 600 }); A(1);
+}
+
+/* ---------- scena: planetario ---------- */
+const ZS = 14, ZP = 10, ZR = 34, NP = 4;
+function sPlanetario(u) {
+  const cx = 380, cy = 395, m = 12.5, rs = m * ZS / 2, rp = m * ZP / 2, ac = rs + rp;
+  const ths = eio(prog(u, 1, 10)) * TAU, thc = ths * ZS / (ZS + ZR);
+  const planets = [];
+  for (let i = 0; i < NP; i++) {
+    const al = thc + i * TAU / NP, fs = frac((al - ths) * ZS / TAU);
+    planets.push({ x: cx + ac * Math.cos(al), y: cy + ac * Math.sin(al), al, r: al + PI - (TAU / ZP) * (.5 - fs) });
+  }
+  // fase della corona: fissata dal satellite 0 all'inizio
+  const r0 = PI - (TAU / ZP) * (.5 - frac(0)), g0 = frac((0 - r0) * ZP / TAU), psiR = -(TAU / ZR) * (.5 + g0);
+  drawRing(cx, cy, ZR, m, psiR, m * ZR / 2 + 2.6 * m, '#2a3340');
+  // orbita dei satelliti
+  ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.setLineDash([6, 8]); ctx.lineWidth = 2; circ(cx, cy, ac); ctx.stroke(); ctx.setLineDash([]);
+  drawGear(cx, cy, ZS, m, ths, Y);
+  // foro esagonale e freccia sul sole
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(ths);
+  poly([0, 1, 2, 3, 4, 5].map(k => [22 * Math.cos(k * PI / 3), 22 * Math.sin(k * PI / 3)])); ctx.fillStyle = INK; ctx.fill();
+  circ(rs - 16, 0, 7); ctx.fillStyle = INK; ctx.fill(); ctx.restore();
+  planets.forEach((p, i) => { drawGear(p.x, p.y, ZP, m, p.r, C);
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); circ(rp - 18, 0, 6); ctx.fillStyle = INK; ctx.fill(); ctx.restore();
+    if (i === 0) { circ(p.x, p.y, 9); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke(); } });
+  // pannello
+  const X = 760;
+  A(prog(u, .3, .8));
+  T('sole', X, 150, 24, Y, { al: 'left', w: 700 }); T('14 denti', 1240, 150, 24, FG, { al: 'right', f: MONO, w: 500 });
+  T('satelliti (4)', X, 192, 24, C, { al: 'left', w: 700 }); T('10 denti', 1240, 192, 24, FG, { al: 'right', f: MONO, w: 500 });
+  T('corona (ferma)', X, 234, 24, '#b7c2cf', { al: 'left', w: 700 }); T('14 + 2·10 = 34', 1240, 234, 24, FG, { al: 'right', f: MONO, w: 500 }); A(1);
+  A(prog(u, 1, 1.4));
+  ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(X, 266); ctx.lineTo(1240, 266); ctx.stroke();
+  T('giri del sole', X, 304, 24, FG, { al: 'left', w: 500 }); T((ths / TAU).toFixed(2).replace('.', ','), 1240, 304, 30, Y, { al: 'right', f: MONO, w: 700 });
+  T('giri dei satelliti attorno', X, 348, 24, FG, { al: 'left', w: 500 }); T((thc / TAU).toFixed(2).replace('.', ','), 1240, 348, 30, C, { al: 'right', f: MONO, w: 700 }); A(1);
+  pop(1000, 430, prog(u, 9.8, 10.4), () => T('14 / (14 + 34) = 14/48 ≈ 0,29', 0, 0, 32, Y, { w: 800, f: MONO }));
+  A(prog(u, 10.4, 10.8)); T('formula di Willis', 1000, 470, 21, MUT, { w: 500 }); A(1);
+  A(prog(u, 11, 11.4)); T('si monta: (14 + 34) : 4 = 12 ✓', X, 540, 23, OK, { al: 'left', w: 600 }); A(1);
+  A(prog(u, 11.6, 12)); T('sole da 15: (15 + 35) : 4 = 12,5 ✗', X, 582, 23, BAD, { al: 'left', w: 600 }); A(1);
+}
+
+/* ---------- scena: Cardano ---------- */
+function sCardano(u) {
+  const cx = 380, cy = 395, R = 230, r = R / 2, zr = 36, zp = 18, m = 2 * R / zr;
+  const th = eio(prog(u, 1, 8.5)) * TAU;
+  drawRing(cx, cy, zr, m, -PI / zr, R + 2.4 * m, '#2a3340');
+  const pc = [cx + r * Math.cos(th), cy + r * Math.sin(th)], pr = -th;
+  // tracce: il bordo fa una retta, un punto interno un'ellisse
+  const traceP = (d, col, dash) => { ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.setLineDash(dash); ctx.lineCap = 'round'; ctx.beginPath();
+    for (let i = 0; i <= 240; i++) { const t = th * i / 240; ctx[i ? 'lineTo' : 'moveTo'](cx + r * Math.cos(t) + d * Math.cos(-t), cy + r * Math.sin(t) + d * Math.sin(-t)); }
+    if (th > 0) ctx.stroke(); ctx.setLineDash([]); ctx.lineCap = 'butt'; };
+  drawGear(pc[0], pc[1], zp, m, pr, PU);
+  traceP(r / 2, Y, [2, 8]); traceP(r, BAD, []);
+  ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(pc[0], pc[1]); ctx.lineTo(pc[0] + r * Math.cos(pr), pc[1] + r * Math.sin(pr)); ctx.stroke();
+  circ(pc[0] + r * Math.cos(pr), pc[1] + r * Math.sin(pr), 11); ctx.fillStyle = BAD; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
+  circ(pc[0] + r / 2 * Math.cos(pr), pc[1] + r / 2 * Math.sin(pr), 9); ctx.fillStyle = Y; ctx.fill(); ctx.stroke();
+  circ(pc[0], pc[1], 6); ctx.fillStyle = '#fff'; ctx.fill();
+  const X = 760;
+  A(prog(u, .3, .8)); T('corona: raggio R', X, 170, 24, '#b7c2cf', { al: 'left', w: 700 }); T('ingranaggio: raggio r = R / 2', X, 212, 24, PU, { al: 'left', w: 700 }); A(1);
+  A(prog(u, 4, 4.5)); T('punto sul bordo → retta', X, 300, 26, BAD, { al: 'left', w: 700 }); A(1);
+  A(prog(u, 5.5, 6)); T('punto a metà raggio → ellisse', X, 344, 24, Y, { al: 'left', w: 600 }); A(1);
+  pop(1000, 450, prog(u, 8.3, 8.9), () => { T('x = R · cos θ', 0, 0, 38, FG, { w: 800, f: MONO }); T('y = 0', 0, 50, 38, FG, { w: 800, f: MONO }); });
+  A(prog(u, 8.9, 9.3)); T('un moto circolare diventa rettilineo', 1000, 570, 22, MUT, { w: 500 }); A(1);
+}
+
+/* ---------- scena: riepilogo ---------- */
+function sEnd(u) {
+  const R = [
+    { c: Y, t: 'catenaria', f: 'y = −a·cosh(x/a)' },
+    { c: OR, t: 'larghezza costante', f: 'perimetro = π·W' },
+    { c: C, t: 'rapporto (Willis)', f: '14/48 ≈ 0,29' },
+    { c: PU, t: 'Cardano', f: 'x = R·cos θ' }
+  ];
+  R.forEach((r, i) => pop(640 + (i - 1.5) * 300, 270, prog(u, .1 + i * .3, .7 + i * .3), () => {
+    rr(-138, -105, 276, 210, 18); ctx.fillStyle = PANEL2; ctx.fill(); ctx.strokeStyle = r.c; ctx.lineWidth = 3; ctx.stroke();
+    T(r.t, 0, -50, 24, r.c, { w: 700 });
+    T(r.f, 0, 22, 24, FG, { w: 700, f: MONO });
+  }));
+  pop(640, 500, prog(u, 1.5, 2.1), () => T('Ora tocca a te: genera il tuo meccanismo', 0, 0, 44, Y, { w: 800 }));
+  A(prog(u, 2.2, 2.7)); T('scegli la stampante, scarica gli STL, guarda il codice OpenSCAD', 640, 565, 24, MUT, { w: 500 }); A(1);
+}
+
+const FN = { intro: sIntro, ruota: sRuota, reuleaux: sReuleaux, rulli: sRulli, planetario: sPlanetario, cardano: sCardano, end: sEnd };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let t = 4, playing = false, speed = 1, lastTs = null, curScene = -1, stopAt = null;
+/* ?embed → aperta da dentro l'app; #ruota #reuleaux #rulli #planetario #cardano → parte da quella scena e si ferma a fine scena */
+const EMBED = new URLSearchParams(location.search).has('embed');
+if (EMBED) document.documentElement.classList.add('embed');
+(() => {
+  const k = SC.findIndex(s => s.id === location.hash.slice(1));
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = true; }
+})();
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
+
+function draw() {
+  ctx.setTransform(S, 0, 0, S, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = '#05070a'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(255,255,255,.035)'; ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y <= H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  const i = sceneAt(t), sc = SC[i], u = t - sc.a;
+  let f = 1; if (i > 0) f = Math.min(f, prog(u, 0, .35)); if (i < SC.length - 1) f = Math.min(f, prog(sc.b - t, 0, .35));
+  BASE = f; A(1);
+  FN[sc.id](u);
+  BASE = f; A(1);
+  if (sc.icon) chip(sc);
+  BASE = 1; ctx.globalAlpha = 1;
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+const playB = $('play'), seek = $('seek'), timeEl = $('time'), cap = $('cap'), speedB = $('speed');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const chapBtns = SC.map(sc => {
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'chap'; b.style.setProperty('--c', sc.c);
+  b.textContent = sc.label; b.addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; }); $('chaps').appendChild(b); return b;
+});
+SC.forEach(sc => {
+  const li = document.createElement('li'); li.style.setProperty('--c', sc.c);
+  li.innerHTML = `<button type="button" class="ts">${fmt(sc.a)}</button><strong>${sc.label}</strong><p>${sc.cap}</p>`;
+  li.querySelector('.ts').addEventListener('click', () => { t = sc.a + .01; playing = true; stopAt = null; window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  $('tx').appendChild(li);
+});
+function toggle() { stopAt = null; if (!playing && t >= TOTAL - .05) t = 0; playing = !playing; }
+playB.addEventListener('click', toggle);
+cv.addEventListener('click', toggle);
+speedB.addEventListener('click', () => { speed = speed === 1 ? .75 : speed === .75 ? .5 : 1; speedB.textContent = String(speed).replace('.', ',') + '×'; });
+let dragging = false;
+seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
+seek.addEventListener('change', () => { dragging = false; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,button') && e.code === 'Space') return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
+  if (e.code === 'ArrowLeft') t = Math.max(0, t - 5);
+});
+function ui() {
+  const ended = t >= TOTAL - .05;
+  playB.textContent = playing ? '❚❚ Pausa' : ended ? '↺ Rivedi' : '▶ Play';
+  if (!dragging) seek.value = t.toFixed(1);
+  timeEl.textContent = `${fmt(t)} / ${fmt(TOTAL)}`;
+  const i = sceneAt(t);
+  if (i !== curScene) { curScene = i; cap.innerHTML = SC[i].cap; chapBtns.forEach((b, k) => b.setAttribute('aria-current', k === i ? 'true' : 'false')); }
+}
+function loop(ts) {
+  if (playing && lastTs != null) {
+    t += Math.min(.1, (ts - lastTs) / 1000) * speed;
+    if (stopAt != null && t >= stopAt - .02) { t = stopAt - .02; playing = false; stopAt = null; finish(); }
+    if (t >= TOTAL) { t = TOTAL - .01; playing = false; finish(); }
+  }
+  lastTs = ts; draw(); ui(); requestAnimationFrame(loop);
+}
+function fit() { const dpr = Math.min(2, window.devicePixelRatio || 1), cw = cv.clientWidth || W; S = cw / W * dpr; cv.width = Math.round(W * S); cv.height = Math.round(H * S); draw(); }
+new ResizeObserver(fit).observe(cv);
+fit(); requestAnimationFrame(loop);
+if (document.fonts) document.fonts.ready.then(fit);
+window.SPIEGA = { seek: v => { t = v; playing = false; stopAt = null; draw(); ui(); } };
+})();
+</script>
+</body>
+</html>
