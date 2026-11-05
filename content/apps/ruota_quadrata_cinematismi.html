@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinematismi 3D: ruota quadrata, Reuleaux e Cardano</title>
+<link rel="stylesheet" href="../assets/style/orfini-shared.css">
+<script src="../assets/js/orfini-shared.js"></script>
+<meta name="description" content="Generatore di cinematismi dentati stampabili in 3D: ruota quadrata su guida a catenarie con sponde, triangolo di Reuleaux nel foro quadrato e su rulli sotto una piattaforma, coppia di Cardano con ingranaggi a evolvente, planetario a spina di pesce stampato già montato (print in place). Denti generati per inviluppo, solidi unici senza perni, scala per Bambu Lab A1, A1 mini e P2S, esportazione STL e codice OpenSCAD.">
+<meta name="keywords" content="Ruota quadrata, Catenaria, Triangolo di Reuleaux, Teorema di Barbier, Cardano, Ingranaggi, Evolvente, Planetario, Formula di Willis, Print in place, Stampa 3D, OpenSCAD, Bambu Lab, Coding, MAT_K3:Geometria, MAT_K4:Funzioni, IND_C2:Coding, 1 EL, 2 EL, 3 EL, 4 EL, 5 EL">
+<meta name="allenamento" content="solidi, proporzioni, pitagora">
+<meta name="date" content="2026-11-04">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js"></script>
+<style>
+:root{--bg:#000;--panel:#0d0f13;--panel2:#161a21;--line:rgba(255,255,255,.12);--txt:#e8eaed;--mut:#9aa3ad;--acc:#ffd54a;--acc2:#4dd0e1;--bad:#ff8a80;--ok:#7be0a0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.45}
+header{padding:14px 16px 10px 84px;border-bottom:1px solid var(--line)}
+header h1{margin:0;font-size:1.25rem;font-weight:700}
+header p{margin:2px 0 0;color:var(--mut);font-size:.88rem}
+main{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:calc(100dvh - 70px)}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:14px 16px;overflow:auto}
+section.stage{padding:12px 16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+h2{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:16px 0 8px;font-weight:600}
+h2:first-child{margin-top:0}
+.tabs{display:flex;flex-direction:column;gap:6px}
+.tab{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:9px 12px;border-radius:10px;text-align:left;cursor:pointer;font:inherit;min-height:44px}
+.tab[aria-pressed="true"]{border-color:var(--acc);box-shadow:inset 3px 0 0 var(--acc)}
+.tab small{display:block;color:var(--mut);font-size:.78rem}
+select,button.btn{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;min-height:40px}
+select{width:100%}
+button.btn{cursor:pointer}
+button.btn:hover{border-color:var(--acc2)}
+.ctl{margin:10px 0}
+.ctl label{display:flex;justify-content:space-between;gap:8px;font-size:.86rem;color:var(--mut)}
+.ctl label b{color:var(--txt);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctl .hint{font-size:.76rem;color:var(--mut)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+#view{position:relative;height:min(58vh,520px);min-height:300px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#05070a}
+#view canvas{display:block;width:100%;height:100%}
+#busy{position:absolute;inset:auto 12px 12px auto;background:rgba(0,0,0,.75);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.85rem;color:var(--acc);display:none}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar input[type=range]{flex:1;min-width:140px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.card h3{margin:0 0 6px;font-size:.95rem}
+#chart{width:100%;height:170px;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--mut);margin-top:4px}
+.legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:5px;border-radius:2px}
+.info li,.steps li{margin:4px 0;font-size:.9rem}
+.k{font-family:ui-monospace,Menlo,monospace;color:var(--acc2);font-size:.86em}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--mut);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
+.tablewrap{overflow-x:auto}
+.ok{color:var(--ok)}.no{color:var(--bad)}
+.warn{background:#2a1c1a;border:1px solid #6b3a33;color:#ffb4a8;border-radius:10px;padding:8px 12px;margin:6px 0;font-size:.88rem}
+.note{background:#12201a;border:1px solid #2f5a45;color:#b9f0d0;border-radius:10px;padding:8px 12px;margin:6px 0;font-size:.88rem}
+.plates{display:flex;gap:12px;flex-wrap:wrap}
+.plate{font-size:.8rem;color:var(--mut)}
+.plate svg{display:block;background:#10141a;border:1px solid var(--line);border-radius:6px;margin-bottom:4px}
+pre{background:#05070a;border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;max-height:340px;font-size:.78rem;margin:8px 0 0}
+details summary{cursor:pointer;color:var(--acc2);margin-top:8px}
+.learn li{margin:3px 0;font-size:.88rem;color:var(--mut)}
+@media (max-width:900px){main{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cinematismi 3D: ruota quadrata, Reuleaux e Cardano</h1>
+  <p>Meccanismi dentati da stampare: cambia i parametri, guarda il moto, scarica gli STL (un solido per pezzo, già orientato) o il codice OpenSCAD.</p>
+</header>
+<main>
+<aside>
+  <h2>Meccanismo</h2>
+  <div class="tabs" id="tabs"></div>
+  <h2>Stampante</h2>
+  <select id="printer" aria-label="Stampante">
+    <option value="a1">Bambu Lab A1 (256 mm)</option>
+    <option value="a1mini">Bambu Lab A1 mini (180 mm)</option>
+    <option value="p2s">Bambu Lab P2S (256 mm)</option>
+  </select>
+  <div class="ctl">
+    <label for="c"><span>Tolleranza di stampa</span><b id="c-val"></b></label>
+    <input type="range" id="c" min="0.1" max="0.5" step="0.05" value="0.2">
+    <div class="hint">Gioco totale tra i denti. PLA con ugello 0,4 mm: 0,2. Il gioco laterale tra ruota e sponde è tolleranza + 0,2 mm per lato.</div>
+  </div>
+  <h2>Parametri</h2>
+  <div id="params"></div>
+</aside>
+<section class="stage">
+  <div id="view" aria-label="Vista 3D del meccanismo"><div id="busy">Taglio dei denti…</div></div>
+  <div class="bar">
+    <button class="btn" id="play">Ferma</button>
+    <input type="range" id="s" min="0" max="1000" value="0" aria-label="Posizione del meccanismo">
+    <button class="btn" id="vfront">Vista frontale</button>
+    <button class="btn" id="v3d">Vista 3D</button>
+    <label style="font-size:.85rem;color:var(--mut)"><input type="checkbox" id="traces" checked> tracce</label>
+  </div>
+  <div id="warns"></div>
+  <div class="grid2">
+    <div class="card"><h3>Grafico</h3><canvas id="chart"></canvas><div class="legend" id="legend"></div></div>
+    <div class="card"><h3>Cosa sta succedendo</h3><ul class="info" id="info" style="margin:0;padding-left:18px"></ul></div>
+  </div>
+  <div class="card">
+    <h3>Pezzi da stampare</h3>
+    <div class="tablewrap"><table><thead><tr><th>Pezzo</th><th>Q.tà</th><th>Come si stampa</th><th>Ingombro (mm)</th><th>Piatto</th><th></th></tr></thead><tbody id="parts"></tbody></table></div>
+    <h2 style="margin-top:14px">Disposizione sul piatto</h2>
+    <div class="plates" id="plates"></div>
+    <div class="bar" style="margin-top:10px">
+      <button class="btn" id="scadDl">Scarica codice OpenSCAD (.scad)</button>
+      <button class="btn" id="scadCp">Copia il codice</button>
+    </div>
+    <details><summary>Mostra il codice OpenSCAD</summary><pre id="scadPre"></pre></details>
+  </div>
+  <div class="grid2">
+    <div class="card"><h3>Montaggio</h3><ol class="steps" id="steps" style="margin:0;padding-left:20px"></ol></div>
+    <div class="card"><h3>Stampa (Bambu Studio)</h3><ul class="steps" id="printnotes" style="margin:0;padding-left:18px"></ul></div>
+  </div>
+  <div class="card"><h3>Cosa impari</h3><ul class="learn" id="learn" style="margin:0;padding-left:18px"></ul></div>
+</section>
+</main>
+
+<script>
+(function(){
+'use strict';
+const PI=Math.PI, TAU=PI*2, ALPHA=20*PI/180, TA=Math.tan(ALPHA);
+const PRINTERS={a1:{name:'Bambu Lab A1',bed:256},a1mini:{name:'Bambu Lab A1 mini',bed:180},p2s:{name:'Bambu Lab P2S',bed:256}};
+const MARGIN=5, GAP=5, TW=3;   // TW = spessore delle sponde
+const f2=(x,d=2)=>(+x).toFixed(d).replace('.',',');
+const wrap=a=>{a=(a+PI)%TAU;if(a<0)a+=TAU;return a-PI;};
+const mod=(a,b)=>((a%b)+b)%b;
+const sideGap=c=>c/2+0.2;     // gioco laterale per lato tra pezzo mobile e sponda
+
+/* ======================= geometria 2D (Clipper, coordinate intere in µm) ======================= */
+const CL=ClipperLib, SC=1000, R=v=>Math.round(v*SC);
+const toP=pts=>pts.map(p=>({X:R(p[0]),Y:R(p[1])}));
+const fromP=path=>path.map(q=>[q.X/SC,q.Y/SC]);
+const ccwP=path=>CL.Clipper.Area(path)<0?path.slice().reverse():path;
+const polyP=pts=>ccwP(toP(pts));
+const rectP=(x0,y0,x1,y1)=>[{X:R(x0),Y:R(y0)},{X:R(x1),Y:R(y0)},{X:R(x1),Y:R(y1)},{X:R(x0),Y:R(y1)}];
+function clip(type,subj,cl){const c=new CL.Clipper();c.AddPaths(subj,CL.PolyType.ptSubject,true);if(cl&&cl.length)c.AddPaths(cl,CL.PolyType.ptClip,true);
+  const sol=new CL.Paths();c.Execute(type,sol,CL.PolyFillType.pftNonZero,CL.PolyFillType.pftNonZero);return sol;}
+const U=a=>clip(CL.ClipType.ctUnion,a,null);
+const D=(a,b)=>clip(CL.ClipType.ctDifference,a,b);
+const I=(a,b)=>clip(CL.ClipType.ctIntersection,a,b);
+function OFF(paths,delta){const co=new CL.ClipperOffset(2,0.01*SC);co.AddPaths(paths,CL.JoinType.jtRound,CL.EndType.etClosedPolygon);const sol=new CL.Paths();co.Execute(sol,delta*SC);return sol;}
+const areaP=paths=>paths.reduce((s,p)=>s+CL.Clipper.Area(p),0)/(SC*SC);
+function xf(paths,x,y,rot){const c=Math.cos(rot),s=Math.sin(rot),X=x*SC,Y=y*SC;
+  return paths.map(path=>path.map(q=>({X:Math.round(q.X*c-q.Y*s+X),Y:Math.round(q.X*s+q.Y*c+Y)})));}
+const ori=(r,pos)=>{const a=CL.Clipper.Area(r);return (pos?a<0:a>0)?r.slice().reverse():r.slice();};
+function exPolys(paths){const c=new CL.Clipper();c.AddPaths(paths,CL.PolyType.ptSubject,true);const tree=new CL.PolyTree();
+  c.Execute(CL.ClipType.ctUnion,tree,CL.PolyFillType.pftNonZero,CL.PolyFillType.pftNonZero);
+  return CL.JS.PolyTreeToExPolygons(tree).map(e=>({outer:ori(e.outer,true),holes:e.holes.map(h=>ori(h,false))}));}
+const shapesOf=paths=>exPolys(paths).map(e=>({outer:fromP(e.outer),holes:e.holes.map(fromP)}));
+function ringsOf(shapes){const out=[];shapes.forEach(sh=>{out.push(ori(toP(sh.outer),true));sh.holes.forEach(h=>out.push(ori(toP(h),false)));});return out;}
+function circle(r,N=64,cx=0,cy=0){const p=[];for(let i=0;i<N;i++){const a=TAU*i/N;p.push([cx+r*Math.cos(a),cy+r*Math.sin(a)]);}return p;}
+const circleP=(r,cx=0,cy=0,N)=>polyP(circle(r,N||Math.max(24,Math.ceil(r*8)),cx,cy));
+function carve(blank,copies){let r=blank;for(let i=0;i<copies.length;i+=50){const chunk=[];copies.slice(i,i+50).forEach(c=>chunk.push(...c));if(chunk.length)r=D(r,U(chunk));}return r;}
+
+/* vano di dentatura (profilo di cremagliera, 20°) centrato in P, tangente t, normale uscente */
+function vanoP(P,t,ws,m){const nr=[t[1],-t[0]],v0=-1.25*m,v1=1.25*m+0.6,e0=ws/2+v0*TA,e1=ws/2+v1*TA;
+  const q=(u,v)=>[P[0]+u*t[0]+v*nr[0],P[1]+u*t[1]+v*nr[1]];
+  return polyP([q(-e0,v0),q(e0,v0),q(e1,v1),q(-e1,v1)]);}
+const toothed=(pitch,vani,add)=>D(OFF(pitch,add),U(vani));
+function arcTab(pts){const n=pts.length,S=new Float64Array(n+1);for(let i=0;i<n;i++){const a=pts[i],b=pts[(i+1)%n];S[i+1]=S[i]+Math.hypot(b[0]-a[0],b[1]-a[1]);}return S;}
+function frameAt(pts,S,s){const n=pts.length,tot=S[n];s=mod(s,tot);let lo=0,hi=n;while(hi-lo>1){const md=(lo+hi)>>1;if(S[md]<=s)lo=md;else hi=md;}
+  const a=pts[lo],b=pts[(lo+1)%n],f=(s-S[lo])/((S[lo+1]-S[lo])||1),P=[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f];
+  const pa=pts[(lo-2+n)%n],pb=pts[(lo+3)%n];let t=[pb[0]-pa[0],pb[1]-pa[1]];const l=Math.hypot(t[0],t[1]);t=[t[0]/l,t[1]/l];return{P,t};}
+
+/* ======================= ingranaggi a evolvente ======================= */
+const inv=a=>Math.tan(a)-a;
+function gearAddendumOK(z,m,t,ra){const r=m*z/2,rb=r*Math.cos(ALPHA);const dl=rho=>t/(2*r)+inv(ALPHA)-inv(Math.acos(Math.min(1,rb/rho)));
+  let raE=ra;while(dl(raE)*raE<0.08*m&&raE>r)raE-=0.01*m;return raE;}
+function gearOutline(z,m,t,ra,rf,N=8){const r=m*z/2,rb=r*Math.cos(ALPHA);const dl=rho=>t/(2*r)+inv(ALPHA)-inv(Math.acos(Math.min(1,rb/rho)));
+  const raE=gearAddendumOK(z,m,t,ra),rs=Math.max(rb,rf),d0=dl(rs),pts=[],P=(rho,a)=>[rho*Math.cos(a),rho*Math.sin(a)];
+  for(let k=0;k<z;k++){const th=TAU*k/z;if(rf<rs)pts.push(P(rf,th-d0));
+    for(let i=0;i<=N;i++){const rho=rs+(raE-rs)*i/N;pts.push(P(rho,th-dl(rho)));}
+    for(let i=N;i>=0;i--){const rho=rs+(raE-rs)*i/N;pts.push(P(rho,th+dl(rho)));}
+    if(rf<rs)pts.push(P(rf,th+d0));pts.push(P(rf,th+PI/z));}
+  return pts;}
+
+/* ======================= Reuleaux (somma di Minkowski con un cerchio di raggio rho) ======================= */
+function reuH(phi,W0,rho){const R0=W0/Math.sqrt(3);
+  for(let i=0;i<3;i++){const d=PI/2+i*TAU/3,df=wrap(phi-d);if(Math.abs(df)<=PI/6+1e-12)return R0*Math.cos(df)+rho;}
+  for(let i=0;i<3;i++){const d=PI/2+i*TAU/3,df=wrap(phi-d-PI);if(Math.abs(df)<=PI/6+1e-12)return R0*Math.cos(phi-d)+W0+rho;}
+  return rho;}
+function reuOutline(W0,rho,N=720){const R0=W0/Math.sqrt(3),pts=[];
+  for(let j=0;j<N;j++){const phi=TAU*j/N,u=[Math.cos(phi),Math.sin(phi)];let base=null,rad=rho;
+    for(let i=0;i<3&&!base;i++){const d=PI/2+i*TAU/3;if(Math.abs(wrap(phi-d))<=PI/6+1e-12)base=[R0*Math.cos(d),R0*Math.sin(d)];}
+    if(!base)for(let i=0;i<3;i++){const d=PI/2+i*TAU/3;if(Math.abs(wrap(phi-d-PI))<=PI/6+1e-12){base=[R0*Math.cos(d),R0*Math.sin(d)];rad=W0+rho;break;}}
+    pts.push([base[0]+rad*u[0],base[1]+rad*u[1]]);}
+  return pts;}
+
+/* ======================= solido unico da strati sovrapposti (unione booleana) =======================
+   Ogni strato è un'estrusione verticale. Il solido si chiude con: fondo, cima, facce di raccordo tra strati
+   (differenze booleane) e pareti. I vertici che cadono a metà di uno spigolo vengono inseriti anche nelle facce
+   vicine: niente giunzioni a T, mesh chiusa che lo slicer legge come un oggetto solo. */
+function makeGrid(points,cell=1000){const m=new Map(),key=(i,j)=>i*1000003+j;
+  for(const p of points){const k=key(Math.floor(p.X/cell),Math.floor(p.Y/cell));let a=m.get(k);if(!a){a=[];m.set(k,a);}a.push(p);}
+  return{query(x0,y0,x1,y1){const r=[],i0=Math.floor((x0-3)/cell),i1=Math.floor((x1+3)/cell),j0=Math.floor((y0-3)/cell),j1=Math.floor((y1+3)/cell);
+    if((i1-i0+1)*(j1-j0+1)>2e5){for(const a of m.values())r.push(...a);return r;}
+    for(let i=i0;i<=i1;i++)for(let j=j0;j<=j1;j++){const a=m.get(key(i,j));if(a)for(const p of a)r.push(p);}return r;}};}
+function augment(ring,grid){const out=[],n=ring.length;let added=0;
+  for(let i=0;i<n;i++){const p=ring[i],q=ring[(i+1)%n];out.push(p);const dx=q.X-p.X,dy=q.Y-p.Y,L2=dx*dx+dy*dy;if(!L2)continue;const len=Math.sqrt(L2);
+    const ins=[];for(const r of grid.query(Math.min(p.X,q.X),Math.min(p.Y,q.Y),Math.max(p.X,q.X),Math.max(p.Y,q.Y))){
+      if((r.X===p.X&&r.Y===p.Y)||(r.X===q.X&&r.Y===q.Y))continue;
+      if(Math.abs((r.X-p.X)*dy-(r.Y-p.Y)*dx)>1.5*len)continue;const t=((r.X-p.X)*dx+(r.Y-p.Y)*dy)/L2;if(t<=0||t>=1)continue;ins.push({t,r});}
+    ins.sort((a,b)=>a.t-b.t);let last=null;for(const o of ins){if(last&&last.X===o.r.X&&last.Y===o.r.Y)continue;out.push({X:o.r.X,Y:o.r.Y});last=o.r;added++;}}
+  return{ring:out,added};}
+/* earcut scarta i vertici allineati: li rimettiamo spezzando a ventaglio i triangoli che li hanno su un lato */
+function restoreCollinear(idx,all,ringLens){const used=new Uint8Array(all.length);idx.forEach(t=>{used[t[0]]=used[t[1]]=used[t[2]]=1;});
+  let any=false;for(let i=0;i<all.length;i++)if(!used[i]){any=true;break;}if(!any)return idx;
+  // per ogni anello: catene di vertici scartati tra due vertici usati a e b → il lato (a,b) va spezzato
+  const chains=new Map();let off=0;
+  for(const n of ringLens){let start=-1;for(let k=0;k<n;k++)if(used[off+k]){start=k;break;}
+    if(start>=0)for(let s=0;s<n;s++){const k=(start+s)%n;if(!used[off+k])continue;const mid=[];let j=(k+1)%n;
+      while(!used[off+j]&&mid.length<n){mid.push(off+j);j=(j+1)%n;}if(mid.length)chains.set((off+k)+','+(off+j),mid);}
+    off+=n;}
+  const out=[],stack=idx.map(t=>[t[0],t[1],t[2]]);
+  while(stack.length){const t=stack.pop();let split=false;
+    for(let e=0;e<3&&!split;e++){const a=t[e],b=t[(e+1)%3],c=t[(e+2)%3];let mid=chains.get(a+','+b);if(!mid){const r=chains.get(b+','+a);if(r)mid=r.slice().reverse();}
+      if(mid){const seq=[a,...mid,b];for(let k=0;k+1<seq.length;k++)stack.push([seq[k],seq[k+1],c]);split=true;}}
+    if(!split)out.push(t);}
+  return out;}
+function solidTris(part){
+  const Ls=part.layers.slice().sort((a,b)=>a.z0-b.z0),stacks=[];
+  for(const L of Ls){const s=stacks[stacks.length-1];if(s&&Math.abs(s[s.length-1].z0+s[s.length-1].t-L.z0)<1e-6)s.push(L);else stacks.push([L]);}
+  const tris=[];
+  for(const st of stacks){
+    const A=st.map(L=>U(CL.Clipper.CleanPolygons(U(ringsOf(L.shapes)),4))),zs=[st[0].z0,...st.map(L=>L.z0+L.t)],n=st.length,faces=[];
+    for(let k=0;k<=n;k++){const below=k>0?A[k-1]:[],above=k<n?A[k]:[];
+      if(below.length){const f=above.length?D(below,above):below;if(f.length)faces.push({k,up:true,ex:exPolys(f)});}
+      if(above.length){const f=below.length?D(above,below):above;if(f.length)faces.push({k,up:false,ex:exPolys(f)});}}
+    const walls=A.map((a,i)=>({i,ex:exPolys(a)}));
+    const ringsList=ex=>{const r=[];ex.forEach(e=>{r.push(e.outer);e.holes.forEach(h=>r.push(h));});return r;};
+    for(let it=0;it<6;it++){
+      const grids=[];for(let k=0;k<=n;k++){const pts=[];faces.filter(f=>f.k===k).forEach(f=>ringsList(f.ex).forEach(r=>pts.push(...r)));
+        walls.forEach(wl=>{if(wl.i===k||wl.i===k-1)ringsList(wl.ex).forEach(r=>pts.push(...r));});grids.push(makeGrid(pts));}
+      let added=0;const fix=(e,gs)=>{for(const g of gs){let o=augment(e.outer,g);e.outer=o.ring;added+=o.added;e.holes=e.holes.map(h=>{const q=augment(h,g);added+=q.added;return q.ring;});}};
+      faces.forEach(f=>f.ex.forEach(e=>fix(e,[grids[f.k]])));
+      walls.forEach(wl=>wl.ex.forEach(e=>fix(e,[grids[wl.i],grids[wl.i+1]])));
+      if(!added)break;}
+    for(const f of faces){const z=zs[f.k];
+      for(const e of f.ex){const cont=e.outer.map(q=>new THREE.Vector2(q.X/SC,q.Y/SC)),holes=e.holes.map(h=>h.map(q=>new THREE.Vector2(q.X/SC,q.Y/SC)));
+        const idx=THREE.ShapeUtils.triangulateShape(cont,holes),all=cont.concat(...holes);
+        for(const t of restoreCollinear(idx,all,[cont.length,...holes.map(h=>h.length)])){let a=all[t[0]],b=all[t[1]],c=all[t[2]];const ar=(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);if((ar>0)!==f.up){const tmp=b;b=c;c=tmp;}
+          tris.push(a.x,a.y,z,b.x,b.y,z,c.x,c.y,z);}}}
+    for(const wl of walls){const z0=zs[wl.i],z1=zs[wl.i+1];
+      for(const e of wl.ex)for(const r of [e.outer,...e.holes])for(let i=0;i<r.length;i++){const p=r[i],q=r[(i+1)%r.length],px=p.X/SC,py=p.Y/SC,qx=q.X/SC,qy=q.Y/SC;
+        tris.push(px,py,z0,qx,qy,z0,qx,qy,z1,px,py,z0,qx,qy,z1,px,py,z1);}}}
+  return tris;}
+/* orientamento di stampa: flat = com'è; flip = capovolto; up = in piedi (l'asse y del profilo diventa la quota); down = in piedi capovolto */
+const ORIENT={flat:(x,y,z)=>[x,y,z],flip:(x,y,z)=>[x,-y,-z],up:(x,y,z)=>[x,-z,y],down:(x,y,z)=>[x,z,-y]};
+const ORIENT_TXT={flat:'sdraiato',flip:'capovolto',up:'in piedi, sponde in alto',down:'in piedi, denti in alto'};
+function partMesh(part){if(part._mesh)return part._mesh;const raw=part.tris||solidTris(part),T=ORIENT[part.print||'flat'],out=new Float32Array(raw.length);
+  let x0=1e9,y0=1e9,z0=1e9,x1=-1e9,y1=-1e9,z1=-1e9;
+  for(let i=0;i<raw.length;i+=3){const v=T(raw[i],raw[i+1],raw[i+2]);out[i]=v[0];out[i+1]=v[1];out[i+2]=v[2];
+    x0=Math.min(x0,v[0]);x1=Math.max(x1,v[0]);y0=Math.min(y0,v[1]);y1=Math.max(y1,v[1]);z0=Math.min(z0,v[2]);z1=Math.max(z1,v[2]);}
+  for(let i=0;i<out.length;i+=3){out[i]-=x0;out[i+1]-=y0;out[i+2]-=z0;}
+  return part._mesh={tris:out,w:x1-x0,h:y1-y0,d:z1-z0};}
+function stlOf(list){let n=0;list.forEach(o=>n+=o.tris.length/9);const buf=new ArrayBuffer(84+50*n),dv=new DataView(buf),head='Orfini Math Lab - cinematismi 3D (mm)';
+  for(let i=0;i<head.length;i++)dv.setUint8(i,head.charCodeAt(i));dv.setUint32(80,n,true);let o=84;
+  for(const it of list){const p=it.tris,dx=it.dx||0,dy=it.dy||0;
+    for(let t=0;t<p.length;t+=9){const ux=p[t+3]-p[t],uy=p[t+4]-p[t+1],uz=p[t+5]-p[t+2],vx=p[t+6]-p[t],vy=p[t+7]-p[t+1],vz=p[t+8]-p[t+2];
+      let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;const l=Math.hypot(nx,ny,nz)||1;
+      dv.setFloat32(o,nx/l,true);dv.setFloat32(o+4,ny/l,true);dv.setFloat32(o+8,nz/l,true);o+=12;
+      for(let k=0;k<9;k+=3){dv.setFloat32(o,p[t+k]+dx,true);dv.setFloat32(o+4,p[t+k+1]+dy,true);dv.setFloat32(o+8,p[t+k+2],true);o+=12;}
+      dv.setUint16(o,0,true);o+=2;}}
+  return new Blob([buf],{type:'model/stl'});}
+const partStl=part=>stlOf([partMesh(part)]);
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+function packPlates(parts,bed){const Us=bed-2*MARGIN,items=[];
+  for(const p of parts){const b=partMesh(p);for(let i=0;i<(p.qty||1);i++)items.push({part:p,b,fit:b.w<=Us&&b.h<=Us&&b.d<=bed});}
+  items.sort((a,b)=>b.b.h-a.b.h);const plates=[];let cur=null,x=0,y=0,rowH=0;
+  const fresh=()=>{cur={items:[]};plates.push(cur);x=0;y=0;rowH=0;};
+  for(const it of items){if(!cur)fresh();if(x+it.b.w>Us&&x>0){x=0;y+=rowH+GAP;rowH=0;}
+    if(y+it.b.h>Us&&cur.items.length)fresh();it.px=x;it.py=y;cur.items.push(it);x+=it.b.w+GAP;rowH=Math.max(rowH,it.b.h);}
+  return plates;}
+const plateStl=pl=>stlOf(pl.items.map(it=>({tris:it.b.tris,dx:MARGIN+it.px,dy:MARGIN+it.py})));
+function partBBox(part){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9,z0=1e9,z1=-1e9;
+  if(part.tris){const t=part.tris;for(let i=0;i<t.length;i+=3){x0=Math.min(x0,t[i]);x1=Math.max(x1,t[i]);y0=Math.min(y0,t[i+1]);y1=Math.max(y1,t[i+1]);z0=Math.min(z0,t[i+2]);z1=Math.max(z1,t[i+2]);}return{x0,y0,x1,y1,z0,z1};}
+  for(const L of part.layers){for(const sh of L.shapes)for(const p of sh.outer){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}z0=Math.min(z0,L.z0);z1=Math.max(z1,L.z0+L.t);}
+  return{x0,y0,x1,y1,z0,z1};}
+
+const PRINT_NOTES=['PLA, strato 0,16–0,20 mm, 3 perimetri, riempimento 20 % gyroid, nessun supporto.',
+  'Ogni STL è un solido unico già orientato: le guide si stampano in piedi, così le sponde salgono dritte senza sbalzi.',
+  'Sui fianchi delle gobbe i denti hanno brevi sbalzi: ventola al massimo e pareti esterne lente aiutano.',
+  'Compensazione del piede d\'elefante attiva (in Bambu Studio è già a 0,15 mm): serve perché la ruota scorra tra le sponde.',
+  'Prima stampa di prova: se i denti sono duri alza la tolleranza di 0,05 mm, se ballano abbassala.'];
+
+/* ======================================================================
+   1. RUOTA POLIGONALE DENTATA su guida a catenarie con sponde
+   ====================================================================== */
+function catPer(n,L){const th=PI/n,a=L/(2*Math.tan(th));return 2*a*Math.asinh(Math.tan(th));}
+function buildRuota(P,bed){
+  const n=P.n,L=P.L,c=P.c,w=P.w,K=P.K,hs=P.hs,foro=P.foro,g=sideGap(c);
+  const Nt=Math.max(2,Math.round(L/(PI*P.m))),m=L/(PI*Nt),p=PI*m;
+  const th=PI/n,a=L/(2*Math.tan(th)),Rc=a/Math.cos(th),ue=Math.asinh(Math.tan(th)),Per=2*a*ue,total=K*Per;
+  const base=Math.max(P.base,1.25*m+4),yb=-Rc-base,yR=-a+m+hs,warns=[],notes=[];
+  const V=k=>{const ang=-PI/2-th+k*2*th;return[Rc*Math.cos(ang),Rc*Math.sin(ang)];};
+  const pitchPts=[];for(let k=0;k<n;k++)pitchPts.push(V(k));
+  const pitch=[polyP(pitchPts)],vani=[];
+  for(let j=0;j<n;j++){const A=V(j),B=V(j+1),t=[(B[0]-A[0])/L,(B[1]-A[1])/L];for(let k=0;k<=Nt;k++)vani.push(vanoP([A[0]+k*p*t[0],A[1]+k*p*t[1]],t,p/2,m));}
+  const body=toothed(pitch,vani,m),cutter=OFF(toothed(pitch,vani,1.25*m),c/2);
+  const NS=32,top=[];for(let j=0;j<K;j++)for(let i=(j?1:0);i<=NS;i++){const u=-ue+2*ue*i/NS;top.push([(j+.5)*Per+a*u-total/2,-a*Math.cosh(u)]);}
+  const blank=I(OFF([polyP(top.concat([[total/2,yb],[-total/2,yb]]))],m),[rectP(-total/2,yb,total/2,0)]);
+  function pose(s){const X=s*total,k=Math.max(0,Math.min(K-1,Math.floor(X/Per))),u=(X-(k+.5)*Per)/a;return{x:X-total/2,y:0,rot:-Math.atan(Math.sinh(u))-k*2*th};}
+  const Ns=Math.ceil(total/0.3),win=[rectP(-total/2-1,yb-1,total/2+1,-a+m+0.5)],copies=[];
+  for(let i=0;i<=Ns;i++){const q=pose(i/Ns);copies.push(I(xf(cutter,q.x,q.y,q.rot),win));}
+  const road=carve(blank,copies),wallS=shapesOf([rectP(-total/2,yb,total/2,yR)]),zc=TW+w+2*g;
+  const wheelPaths=foro>0?D(body,[circleP(foro/2)]):body;
+  const parts=[
+    {id:'ruota',name:'Ruota a '+n+' lati, '+(Nt*n)+' denti',qty:1,color:0xffd54a,print:'flat',layers:[{shapes:shapesOf(wheelPaths),t:w,z0:TW+g}]},
+    {id:'guida',name:'Guida a catenarie con sponde',qty:1,color:0x4dd0e1,print:'up',
+      layers:[{shapes:wallS,t:TW,z0:0,opacity:.25},{shapes:shapesOf(road),t:w+2*g,z0:TW},{shapes:wallS,t:TW,z0:zc,opacity:.25}]}];
+  if(total>bed-2*MARGIN)warns.push('La guida ('+f2(total,0)+' mm) è più lunga del piatto: riduci le gobbe.');
+  if(2*(Rc+m)>bed-2*MARGIN)warns.push('La ruota non entra nel piatto: riduci il lato.');
+  if(m<1)warns.push('Denti con modulo '+f2(m)+' mm: sotto 1 mm non si stampano bene con l\'ugello 0,4.');
+  if(w<0.35*L)notes.push('Ruota sottile rispetto al lato: con sponde basse può inclinarsi; spessore consigliato almeno '+f2(0.35*L,0)+' mm.');
+  const poses=s=>({ruota:pose(s)});
+  const vtx=[];for(let i=0;i<=600;i++){const q=pose(i/600),cs=Math.cos(q.rot),sn=Math.sin(q.rot),v=V(1);vtx.push([q.x+v[0]*cs-v[1]*sn,v[0]*sn+v[1]*cs]);}
+  const flat=s=>{const psi=-pose(s).rot,tau=mod(psi+th,2*th)-th;return Rc*Math.cos(th-Math.abs(tau))-a;};
+  const tilt=Math.atan(2*g/Math.max(1,hs+m))*180/PI;
+  return{parts,poses,warns,notes,pitch:pitchPts,
+    mesh:[{body,partner:road,bodyPose:pose,partnerPose:()=>({x:0,y:0,rot:0})}],
+    traces:[{color:0xffffff,pts:[[-total/2,0],[total/2,0]]},{color:0xff7043,pts:vtx}],
+    chart:{x:'posizione lungo la guida',series:[{label:'quota del centro su strada piana (mm)',color:'#ff7043',fn:flat},{label:'sulla guida a catenarie',color:'#4dd0e1',fn:()=>0}]},
+    info:['Apotema <span class="k">a = L/(2·tan(π/n))</span> = '+f2(a)+' mm: è anche il parametro della catenaria <span class="k">y = −a·cosh(x/a)</span>.',
+      'Periodo della guida <span class="k">2a·settsinh(tan(π/n))</span> = '+f2(Per)+' mm'+(n===4?' = L·ln(1+√2) ≈ 0,881·L':'')+'.',
+      'Ogni arco è lungo quanto il lato: '+Nt+' denti per lato, modulo '+f2(m)+' mm. I denti della guida sono tagliati dalla ruota stessa che rotola.',
+      'Il centro (foro) resta a quota costante; su strada piana oscillerebbe di '+f2(Rc-a)+' mm.',
+      'Sponde alte '+f2(hs,0)+' mm sopra le gobbe, gioco laterale '+f2(g)+' mm per lato: la ruota può inclinarsi al massimo di circa '+f2(tilt,1)+'°.'],
+    steps:['Stampa la guida in piedi (come nell\'STL) e la ruota sdraiata.','Cala la ruota tra le sponde con uno spigolo in una valle.','Spingila con un dito sul bordo superiore: rotola, i denti la tengono in fase, il foro centrale resta alla stessa altezza.'],
+    learn:['Funzioni: coseno iperbolico, catenaria, funzione di Gudermann gd(u) = arctan(sinh u).','Lunghezza d\'arco = lato: il rotolamento senza strisciare diventa un vincolo che si tocca (i denti).','Generazione per inviluppo: la ruota "fresa" la propria guida, come una dentatrice.','Poligoni regolari, apotema, raggio circoscritto; per il quadrato √2 e ln(1+√2).'],
+    scad:()=>scadRuota(P,{Nt,base,g})};
+}
+
+/* ======================================================================
+   2. REULEAUX nel foro quadrato (punta di Watt)
+   ====================================================================== */
+function buildReuleaux(P,bed){
+  const W=P.W,rho=P.rho,c=P.c,t=P.t,gr=P.g,wall=10,floorT=2,S=W+c,W0=W-2*rho,R0=W0/Math.sqrt(3),side=S+2*wall,warns=[],notes=[];
+  const rotor=D([polyP(reuOutline(W0,rho))],gr>0?[circleP(gr/2)]:[]),h=side/2,hs=S/2,sq=rectP(-h,-h,h,h);
+  const parts=[
+    {id:'rotore',name:'Rotore di Reuleaux (W = '+f2(W,0)+' mm)',qty:1,color:0xffd54a,print:'flat',layers:[{shapes:shapesOf(rotor),t:t,z0:floorT}]},
+    {id:'telaio',name:'Vaschetta con foro quadrato',qty:1,color:0x4dd0e1,print:'flat',
+      layers:[{shapes:shapesOf([sq]),t:floorT,z0:0},{shapes:shapesOf(D([sq],[rectP(-hs,-hs,hs,hs)])),t:t+0.6,z0:floorT}]}];
+  if(side>bed-2*MARGIN)warns.push('La vaschetta ('+f2(side,0)+' mm) non entra nel piatto.');
+  const cen=th=>[(reuH(PI-th,W0,rho)-reuH(-th,W0,rho))/2,(reuH(3*PI/2-th,W0,rho)-reuH(PI/2-th,W0,rho))/2];
+  const poses=s=>{const th=TAU*s,q=cen(th);return{rotore:{x:q[0],y:q[1],rot:th}};};
+  const cp=[],tp=[];for(let i=0;i<=720;i++){const th=TAU*i/720,q=cen(th);cp.push(q);tp.push([q[0]-(R0+rho)*Math.sin(th),q[1]+(R0+rho)*Math.cos(th)]);}
+  return{parts,poses,warns,notes,mesh:[],
+    traces:[{color:0xffffff,pts:cp},{color:0xff7043,pts:tp}],
+    chart:{x:'angolo del rotore (un giro)',series:[{label:'x del centro (mm)',color:'#ffd54a',fn:s=>cen(TAU*s)[0]},{label:'y del centro (mm)',color:'#4dd0e1',fn:s=>cen(TAU*s)[1]}]},
+    info:['Larghezza costante W = '+f2(W,0)+' mm in ogni direzione: il rotore tocca sempre i quattro lati del foro (lato '+f2(S)+' mm = W + tolleranza).',
+      'Il centro non sta fermo: descrive quattro archi (curva bianca) mentre lo spigolo disegna un quadrato quasi perfetto (curva rossa).',
+      'Area <span class="k">(π − √3)/2 · W²</span> ≈ 0,705·W²; perimetro <span class="k">π·W</span> come un cerchio di diametro W (teorema di Barbier).',
+      'Punte arrotondate di ρ = '+f2(rho)+' mm: Reuleaux di larghezza W − 2ρ "ingrassato" di ρ; la larghezza resta W.'],
+    steps:['Stampa la vaschetta (fondo sul piatto) e il rotore.','Appoggia il rotore nel foro e fallo girare con un dito nel foro di presa: tocca sempre i quattro lati.','Segui con una matita lo spigolo: disegna un quadrato con gli angoli appena smussati.'],
+    learn:['Curve a larghezza costante: il cerchio non è l\'unica.','Costruzione con compasso: tre archi di raggio W centrati sui vertici di un triangolo equilatero.','Funzione di supporto h(φ) + h(φ + π) = W: da qui la posizione del centro.','Teorema di Barbier: perimetro π·W.'],
+    scad:()=>scadReuleaux(P)};
+}
+
+/* ======================================================================
+   3. RULLI DI REULEAUX DENTATI tra cremagliera e piattaforma, entrambe con sponde
+   ====================================================================== */
+function rulliTmax(P,bed){const per=PI*P.W,p=PI*P.m;return Math.max(2,Math.min(6,Math.floor((bed-2*MARGIN-P.jD*per/3-4*p-4)/(per/3))));}
+function buildRulli(P,bed){
+  const W=P.W,c=P.c,w=P.w,jD=P.jD,g=sideGap(c),warns=[],notes=[];
+  const Nt=3*Math.max(4,Math.round(W/(3*P.m))),m=W/Nt,rho=Math.max(P.rho,5.5*m),W0=W-2*rho;
+  const base=Math.max(8,1.25*m+5),topT=base;
+  const NP=1440,pts=reuOutline(W0,rho,NP),S=arcTab(pts),per=S[NP];
+  const pitch=[polyP(pts)],vani=[],vlist=[];
+  const sV=S[NP/4];for(let k=0;k<Nt;k++){const fr=frameAt(pts,S,sV+(k+.5)*per/Nt);vani.push(vanoP(fr.P,fr.t,per/Nt/2,m));vlist.push([fr.P[0],fr.P[1],Math.atan2(fr.t[1],fr.t[0])*180/PI]);}
+  const body=toothed(pitch,vani,m),cutter=OFF(toothed(pitch,vani,1.25*m),c/2),p=per/Nt;
+  function roll(phi){const x=phi/TAU*NP,fl=Math.floor(x),f=x-fl,i=mod(fl,NP),a=pts[i],b=pts[(i+1)%NP];
+    return{P:[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f],s:Math.floor(fl/NP)*per+S[i]+f*(S[i+1]-S[i])};}
+  const phi0=-PI/2,s0=roll(phi0).s,Dx=jD*per/3;let T=P.T,Phi=0;
+  function pose(s){const phi=phi0+s*Phi,r=roll(phi),th=-PI/2-phi,cs=Math.cos(th),sn=Math.sin(th);
+    return{x:r.s-s0-(cs*r.P[0]-sn*r.P[1]),y:-(sn*r.P[0]+cs*r.P[1]),rot:th,plat:W*(phi-phi0),contact:r.s-s0};}
+  let Smax,xa,xb,Ns,pa,pb;
+  for(;;){Phi=T*TAU/3;Smax=pose(1).contact;xa=-2*p;xb=Dx+Smax+2*p;Ns=Math.ceil(Smax/0.35);
+    let ca=1e9,cb=-1e9;for(let i=0;i<=Ns;i++){const q=pose(i/Ns);for(const o of [0,Dx]){const v=q.contact+o-q.plat;ca=Math.min(ca,v);cb=Math.max(cb,v);}}
+    pa=ca-2*p;pb=cb+2*p;if((xb-xa<=bed-2*MARGIN&&pb-pa<=bed-2*MARGIN)||T<=1)break;T--;}
+  if(T<P.T)notes.push('Corsa ridotta a '+T+' terzi di giro perché base e piattaforma entrino nel piatto.');
+  const hb=Math.max(2,Math.min(6,(W-2*m-2)/2)),yRB=m+hb,yRT=W-m-hb;
+  const cB=[],cT=[],winB=[rectP(xa-1,-base-1,xb+1,m+0.5)],winT=[rectP(pa-1,W-m-0.5,pb+1,W+topT+1)];
+  for(let i=0;i<=Ns;i++){const q=pose(i/Ns);for(const o of [0,Dx]){cB.push(I(xf(cutter,q.x+o,q.y,q.rot),winB));cT.push(I(xf(cutter,q.x+o-q.plat,q.y,q.rot),winT));}}
+  const rackB=carve([rectP(xa,-base,xb,m)],cB),rackT=carve([rectP(pa,W-m,pb,W+topT)],cT),zc=TW+w+2*g;
+  const wB=shapesOf([rectP(xa,-base,xb,yRB)]),wT=shapesOf([rectP(pa,yRT,pb,W+topT)]);
+  const parts=[
+    {id:'rullo1',name:'Rullo di Reuleaux, '+Nt+' denti',qty:1,color:0xffd54a,print:'flat',layers:[{shapes:shapesOf(body),t:w,z0:TW+g}]},
+    {id:'rullo2',name:'Rullo di Reuleaux, '+Nt+' denti',qty:1,color:0xffb300,print:'flat',layers:[{shapes:shapesOf(body),t:w,z0:TW+g}]},
+    {id:'base',name:'Cremagliera di base con sponde',qty:1,color:0x4dd0e1,print:'up',
+      layers:[{shapes:wB,t:TW,z0:0,opacity:.25},{shapes:shapesOf(rackB),t:w+2*g,z0:TW},{shapes:wB,t:TW,z0:zc,opacity:.25}]},
+    {id:'plat',name:'Piattaforma dentata con sponde',qty:1,color:0x80cbc4,print:'down',
+      layers:[{shapes:wT,t:TW,z0:0,opacity:.25},{shapes:shapesOf(rackT),t:w+2*g,z0:TW},{shapes:wT,t:TW,z0:zc,opacity:.25}]}];
+  if(rho>P.rho)notes.push('Arrotondamento portato a '+f2(rho,1)+' mm (5,5 moduli) perché i denti delle punte restino sempre in presa.');
+  if(W0<W/3)warns.push('Punte troppo arrotondate per questa larghezza: il rullo è quasi un cerchio.');
+  if(Dx<W+2*m+3)warns.push('I rulli sono troppo vicini e si toccano: aumenta la distanza.');
+  if(xb-xa>bed-2*MARGIN||pb-pa>bed-2*MARGIN)warns.push('Base o piattaforma più lunghe del piatto: riduci la corsa.');
+  if(m<1)warns.push('Modulo '+f2(m)+' mm: denti troppo piccoli per l\'ugello 0,4.');
+  const poses=s=>{const q=pose(s);return{rullo1:{x:q.x,y:q.y,rot:q.rot},rullo2:{x:q.x+Dx,y:q.y,rot:q.rot},plat:{x:q.plat,y:0,rot:0}};};
+  const cpath=[],ppath=[];for(let i=0;i<=600;i++){const q=pose(i/600);cpath.push([q.x,q.y]);ppath.push([q.plat+(pa+pb)/2,W+topT+1]);}
+  return{parts,poses,warns,notes,
+    mesh:[{body,partner:rackB,bodyPose:pose,partnerPose:()=>({x:0,y:0,rot:0})},{body,partner:rackT,bodyPose:pose,partnerPose:s=>({x:pose(s).plat,y:0,rot:0})}],
+    traces:[{color:0xffffff,pts:cpath},{color:0xff7043,pts:ppath}],
+    chart:{x:'avanzamento ('+T+' terzi di giro)',series:[{label:'quota del centro del rullo (mm)',color:'#ff7043',fn:s=>pose(s).y},{label:'quota della piattaforma (mm)',color:'#4dd0e1',fn:()=>W}]},
+    info:['Larghezza costante W = '+f2(W,0)+' mm: la piattaforma resta sempre a quota W anche se il centro del rullo sale e scende di '+f2(W0*(2/Math.sqrt(3)-1))+' mm.',
+      'Perimetro della primitiva <span class="k">π·W</span> = '+f2(per,1)+' mm (teorema di Barbier): con '+Nt+' denti il modulo è W/'+Nt+' = '+f2(m)+' mm.',
+      'In un giro il rullo avanza di π·W sulla base e la piattaforma di 2π·W: va al doppio della velocità media dei rulli, come sopra dei rulli rotondi.',
+      'Denti di base e piattaforma tagliati dal rullo che rotola, con gioco '+f2(c)+' mm. Le sponde tengono i rulli in piedi.',
+      'I due rulli distano '+jD+'/3 di perimetro ('+f2(Dx,1)+' mm): così hanno sempre la stessa fase.'],
+    steps:['Stampa base e piattaforma in piedi (come negli STL) e i due rulli sdraiati.',
+      'Metti i rulli tra le sponde della base, tutti e due con una punta in alto, a '+jD+' terzi di perimetro di distanza.',
+      'Cala la piattaforma dall\'alto, sponde in giù: spingila, i rulli girano e lei resta in piano.'],
+    learn:['Curve a larghezza costante e teorema di Barbier (perimetro π·W).','Rotolamento senza strisciare: il centro oscilla, la piattaforma no.','Rapporto 2:1 tra piattaforma e rulli, come con i rulli rotondi.','Generazione dei denti per inviluppo.'],
+    scad:()=>scadRulli(P,{Nt,rho,base,topT,g,vlist,xa,xb,pa,pb,yRB,yRT,Ns,pose,Dx})};
+}
+
+/* ======================================================================
+   4. COPPIA DI CARDANO con ingranaggi a evolvente (perni stampati insieme ai pezzi)
+   ====================================================================== */
+function buildCardano(P,bed){
+  const zp=P.zp,m=P.m,w=P.w,pd=P.pd,c=P.c,zR=2*zp,r=m*zp/2,R=2*r,warns=[],notes=[];
+  const mark=4,drMin=Math.min(1,((pd+c)/2+(mark+c)/2+1.2)/r),dr=Math.max(P.dr,drMin),d=dr*r;
+  const floorT=3,crankT=3,vg=0.3,cap=3,Rout=R+1.25*m+6,hw=pd/2+3;
+  const tp=PI*m/2-c/2,tr=PI*m/2+c/2;
+  const planetO=gearOutline(zp,m,tp,r+m,r-1.25*m),cavity=gearOutline(zR,m,tr,R+1.25*m,R-m);
+  const zCr=floorT,zPl=zCr+crankT+vg,capZ=zPl+w+vg,capTop=capZ+cap,ringTop=floorT+crankT+vg+w;
+  const disc=[circleP(Rout,0,0,160)],annulus=D(disc,[polyP(cavity)]);
+  const parts=[
+    {id:'ring',name:'Corona dentata ('+zR+' denti) con fondo e perno centrale',qty:1,color:0x4dd0e1,print:'flat',
+      layers:[{shapes:shapesOf(disc),t:floorT,z0:0},{shapes:shapesOf(U(annulus.concat([circleP(pd/2)]))),t:crankT,z0:floorT},
+              {shapes:shapesOf(annulus),t:ringTop-floorT-crankT,z0:floorT+crankT}]},
+    {id:'crank',name:'Manovella con perno del satellite',qty:1,color:0xff7043,print:'flat',
+      layers:[{shapes:shapesOf(D([polyP(capsule(r,hw))],[circleP((pd+c)/2)])),t:crankT,z0:zCr},{shapes:shapesOf([circleP(pd/2,r,0)]),t:capTop-zCr-crankT,z0:zCr+crankT}]},
+    {id:'planet',name:'Satellite ('+zp+' denti) con disco',qty:1,color:0xffd54a,print:'flip',
+      layers:[{shapes:shapesOf(D([polyP(planetO)],[circleP((pd+c)/2)])),t:w+vg,z0:zPl},
+              {shapes:shapesOf(D([circleP(r+5)],[circleP((pd+c)/2),circleP((mark+c)/2,d,0)])),t:cap,z0:capZ,opacity:.55}]}];
+  if(2*Rout>bed-2*MARGIN)warns.push('La corona ('+f2(2*Rout,0)+' mm) non entra nel piatto: riduci modulo o denti.');
+  if(P.dr<drMin)notes.push('Foro del segno spostato a d/r = '+f2(drMin)+': più vicino al centro toccherebbe il perno.');
+  const poses=s=>{const th=TAU*s,cs=Math.cos(th),sn=Math.sin(th);return{crank:{x:0,y:0,rot:th},planet:{x:r*cs,y:r*sn,rot:-th}};};
+  const pen=[];for(let i=0;i<=400;i++){const th=TAU*i/400;pen.push([(r+d)*Math.cos(th),(r-d)*Math.sin(th)]);}
+  const kind=Math.abs(dr-1)<1e-9?'un segmento di retta (un diametro della corona)':'un\'ellisse di semiassi '+f2(r+d)+' e '+f2(Math.abs(r-d))+' mm';
+  return{parts,poses,warns,notes,mesh:[],cardano:{planetO,cavity},
+    traces:[{color:0xff7043,pts:pen},{color:0xffffff,pts:circle(r,120)}],
+    chart:{x:'angolo della manovella (un giro)',series:[{label:'x del foro (mm)',color:'#ffd54a',fn:s=>(r+d)*Math.cos(TAU*s)},{label:'y del foro (mm)',color:'#4dd0e1',fn:s=>(r-d)*Math.sin(TAU*s)}]},
+    info:['Modulo '+f2(m)+' mm, denti '+zp+' e '+zR+': <span class="k">R = 2r</span>, r = '+f2(r)+' mm, R = '+f2(R)+' mm.',
+      'Il satellite rotola dentro la corona: ogni punto della sua circonferenza primitiva percorre un diametro.',
+      'Il foro del disco, a '+f2(d)+' mm dal centro del satellite, disegna '+kind+'.',
+      'Gioco tra i denti '+f2(c)+' mm: dente del satellite assottigliato di '+f2(c/2)+' mm sulla primitiva, vano della corona allargato altrettanto. Evolvente, 20°.'],
+    steps:['Stampa corona (fondo sul piatto), manovella (piatta, perno in alto) e satellite (disco sul piatto).',
+      'Infila la manovella sul perno centrale della corona.','Infila il satellite sul perno della manovella, ingranandolo nella corona.',
+      'Metti la punta di una matita nel foro del disco e gira: la punta va avanti e indietro in linea retta.'],
+    learn:['Rapporti: 2:1 tra denti, raggi e giri.','Trasformare un moto circolare in uno rettilineo (coppia di Cardano, ipocicloide).','Ingranaggi: modulo, passo, evolvente; gioco piccolo ma necessario.','Ellisse come caso generale, quando il foro non sta sulla primitiva.'],
+    scad:()=>scadCardano(P,{r,R,tp,tr,raP:gearAddendumOK(zp,m,tp,r+m),raC:gearAddendumOK(zR,m,tr,R+1.25*m),Rout,hw,d,mark,floorT,crankT,vg,cap})};
+}
+/* ======================================================================
+   5. PLANETARIO A SPINA DI PESCE stampato già montato (print in place)
+   ====================================================================== */
+/* solido "loft": gli stessi anelli 2D ripetuti a quote diverse, ognuno trasformato (rotazione, scala); chiuso sopra e sotto */
+function loftTris(rings,zs){const tris=[],S=zs.length-1;
+  const sl=rings.map(r=>{let b=clean(r.pts);let a=0;for(let i=0;i<b.length;i++){const p=b[i],q=b[(i+1)%b.length];a+=p[0]*q[1]-q[0]*p[1];}
+    if((a>0)===!!r.hole)b=b.slice().reverse();return zs.map(z=>r.map(b,z));});
+  sl.forEach(ring=>{for(let k=0;k<S;k++){const A=ring[k],B=ring[k+1],z0=zs[k],z1=zs[k+1],n=A.length;
+    for(let i=0;i<n;i++){const j=(i+1)%n,p=A[i],q=A[j],P2=B[i],Q2=B[j];tris.push(p[0],p[1],z0,q[0],q[1],z0,Q2[0],Q2[1],z1,p[0],p[1],z0,Q2[0],Q2[1],z1,P2[0],P2[1],z1);}}});
+  for(const [k,up] of [[0,false],[S,true]]){const outer=[],holes=[];rings.forEach((r,j)=>{const pts=sl[j][k].map(p=>new THREE.Vector2(p[0],p[1]));if(r.hole)holes.push(pts);else outer.push(pts);});
+    for(const cont of outer){const idx=THREE.ShapeUtils.triangulateShape(cont,holes),all=cont.concat(...holes);
+      for(const t of restoreCollinear(idx,all,[cont.length,...holes.map(h=>h.length)])){let a=all[t[0]],b=all[t[1]],c=all[t[2]];const ar=(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);if((ar>0)!==up){const tmp=b;b=c;c=tmp;}tris.push(a.x,a.y,zs[k],b.x,b.y,zs[k],c.x,c.y,zs[k]);}}}
+  return tris;}
+const rot2=(pts,a,x=0,y=0)=>{const c=Math.cos(a),s=Math.sin(a);return pts.map(p=>[x+p[0]*c-p[1]*s,y+p[0]*s+p[1]*c]);};
+const frac=x=>x-Math.floor(x);
+function buildPlanetario(P,bed){
+  const m=P.m,h=P.h,N=P.N,zp=P.zp,c=P.gioco,beta=P.beta*PI/180,hex=P.foro,warns=[],notes=[];
+  let zs=P.zs;while((2*zs+2*zp)%N!==0)zs++;
+  if(zs!==P.zs)notes.push('Denti del sole portati a '+zs+': sole + corona deve essere divisibile per '+N+' (condizione di montaggio).');
+  const zr=zs+2*zp,rs=m*zs/2,rp=m*zp/2,rr=m*zr/2,ac=rs+rp,tE=PI*m/2-c/2,tI=PI*m/2+c/2;
+  const sunO=gearOutline(zs,m,tE,rs+m,rs-1.25*m),plO=gearOutline(zp,m,tE,rp+m,rp-1.25*m),cav=gearOutline(zr,m,tI,rr+1.25*m,rr-m);
+  const wall=Math.max(3.5,2*m),Rout=rr+1.25*m+wall,ch=Math.min(1.2,h/6),tb=Math.tan(beta),tau=z=>tb*(z<=h/2?z:h-z);
+  // fasi: il dente del sole guarda il vano del satellite; il dente del satellite entra nel vano della corona
+  const al=[],ph=[];for(let i=0;i<N;i++){const a=TAU*i/N;al.push(a);ph.push(a+PI-(TAU/zp)*(0.5-frac(a*zs/TAU)));}
+  const psi=-frac((0-ph[0])*zp/TAU)*TAU/zr;
+  const SH=12,zsG=[];for(let k=0;k<=2*SH;k++)zsG.push(h*k/(2*SH));
+  const zsR=[...new Set(zsG.concat([0.25,0.5,0.75].map(f=>f*ch),[0.25,0.5,0.75].map(f=>h-f*ch)).map(z=>+z.toFixed(6)))].sort((a,b)=>a-b);
+  const sc=z=>{let d=0;if(z<ch)d=ch-z;if(z>h-ch){const u=z-(h-ch);d=ch-Math.sqrt(Math.max(0,ch*ch-u*u));}return (Rout-d)/Rout;};
+  const scallop=[];const NS=18,NPT=360;for(let i=0;i<NPT;i++){const a=TAU*i/NPT,r=Rout-0.9*Math.pow(Math.max(0,Math.cos(NS*a/2)),8);scallop.push([r*Math.cos(a),r*Math.sin(a)]);}
+  const hexPts=hex>0?[0,1,2,3,4,5].map(k=>{const a=PI/6+k*PI/3,r=(hex+c)/2/Math.cos(PI/6);return[r*Math.cos(a),r*Math.sin(a)];}):null;
+  const sunTris=loftTris([{pts:sunO,map:(b,z)=>rot2(b,tau(z)/rs)}].concat(hexPts?[{pts:hexPts,hole:true,map:b=>b}]:[]),zsG);
+  const plTris=loftTris([{pts:plO,map:(b,z)=>rot2(b,-tau(z)/rp)}],zsG);
+  const ringTris=loftTris([{pts:scallop,map:(b,z)=>{const k=sc(z);return b.map(p=>[p[0]*k,p[1]*k]);}},{pts:cav,hole:true,map:(b,z)=>rot2(b,psi-tau(z)/rr)}],zsR);
+  const parts=[{id:'corona',name:'Corona',color:0x4dd0e1,tris:ringTris},{id:'sole',name:'Sole',color:0xffd54a,tris:sunTris}];
+  for(let i=0;i<N;i++)parts.push({id:'sat'+i,name:'Satellite',color:0xff7043,tris:plTris});
+  function pose(s){const thc=TAU*s,ths=thc*(1+zr/zs),o={sole:{x:0,y:0,rot:ths},corona:{x:0,y:0,rot:0}};
+    for(let i=0;i<N;i++){const a=al[i]+thc;o['sat'+i]={x:ac*Math.cos(a),y:ac*Math.sin(a),rot:ph[i]+thc-(ths-thc)*zs/zp};}return o;}
+  // pezzo unico da stampare: tutti gli ingranaggi nella posa di partenza
+  const p0=pose(0),all=[];
+  for(const pt of parts){const q=p0[pt.id],cs=Math.cos(q.rot),sn=Math.sin(q.rot),t=pt.tris;for(let i=0;i<t.length;i+=3)all.push(q.x+t[i]*cs-t[i+1]*sn,q.y+t[i]*sn+t[i+1]*cs,t[i+2]);}
+  const printParts=[{id:'fidget',name:'Planetario completo (un\'unica stampa, già montato)',qty:1,color:0x4dd0e1,print:'flat',tris:all}];
+  if(2*ac*Math.sin(PI/N)<2*(rp+m)+c+0.4)warns.push('I satelliti si toccano tra loro: riduci il numero di satelliti o aumenta i denti del sole.');
+  if(2*Rout>bed-2*MARGIN)warns.push('Il fidget ('+f2(2*Rout,0)+' mm) non entra nel piatto.');
+  if(beta<15*PI/180)warns.push('Con un angolo d\'elica sotto 15° i denti a V trattengono poco: il fidget può sfilarsi.');
+  if(c<0.3)notes.push('Per la stampa già montata un gioco sotto 0,3 mm rischia di saldare i pezzi: prova prima un campione.');
+  // controllo di ingranamento per i test (sezione a quota z)
+  const pipCheck=(s,z)=>{const q=pose(s),near=d=>OFF(d,c),out=[];
+    const sun=[polyP(rot2(sunO,q.sole.rot+tau(z)/rs))],ring=[polyP(rot2(cav,psi-tau(z)/rr))];
+    for(let i=0;i<N;i++){const qi=q['sat'+i],pl=[polyP(rot2(plO,qi.rot-tau(z)/rp,qi.x,qi.y))];
+      out.push({overSun:Math.abs(areaP(I(pl,sun))),touchSun:Math.abs(areaP(I(near(pl),sun))),overRing:Math.abs(areaP(D(pl,ring))),touchRing:Math.abs(areaP(D(near(pl),ring)))});}
+    return out;};
+  const ratio=zs/(zs+zr);
+  return{parts,printParts,poses:pose,warns,notes,mesh:[],pipCheck,
+    traces:[{color:0xffffff,pts:circle(ac,120)}],
+    chart:{x:'un giro del portasatelliti',series:[{label:'angolo del sole (giri)',color:'#ffd54a',fn:s=>s*(1+zr/zs)},{label:'angolo dei satelliti attorno al centro (giri)',color:'#ff7043',fn:s=>s}]},
+    info:['Sole '+zs+' denti, satelliti '+zp+', corona <span class="k">'+zs+' + 2·'+zp+' = '+zr+'</span> denti, modulo '+f2(m)+' mm.',
+      'Con la corona ferma, il portasatelliti fa <span class="k">'+zs+'/('+zs+'+'+zr+') = '+f2(ratio,3)+'</span> giri per ogni giro del sole (formula di Willis).',
+      'Condizione di montaggio: ('+zs+' + '+zr+') / '+N+' = '+((zs+zr)/N)+' è intero, così i '+N+' satelliti stanno a distanze uguali.',
+      'Denti a spina di pesce, elica di '+P.beta+'°: le due metà spingono in versi opposti e tengono il fidget unito senza perni.',
+      'Gioco '+f2(c)+' mm tra tutti i pezzi: si stampa già montato e si sblocca girando il sole.'],
+    steps:['Stampa il file unico così com\'è, senza supporti: corona, sole e satelliti escono già montati.','Appena tolto dal piatto, tieni la corona e gira il sole con decisione (o con una matita nel foro esagonale) finché si sblocca.','Conta: quanti giri fa il sole mentre i satelliti fanno un giro completo?'],
+    learn:['Rapporti di trasmissione e formula di Willis.','Divisibilità: la condizione di montaggio dei satelliti.','Eliche e spina di pesce: perché i denti a V non si sfilano.','Progettare per la stampa: gioco, piede d\'elefante, pezzi stampati già montati.'],
+    scad:()=>scadPlanetario(P,{zs,zr,rs,rp,rr,ac,tE,tI,raS:gearAddendumOK(zs,m,tE,rs+m),raP:gearAddendumOK(zp,m,tE,rp+m),raC:gearAddendumOK(zr,m,tI,rr+1.25*m),Rout,ch,al,ph,psi,tb})};
+}
+function scadPlanetario(P,q){const deg=x=>num(x*180/PI);return stamp+`
+zs=${q.zs}; zp=${P.zp}; zr=${q.zr}; N=${P.N};   // denti: sole, satelliti, corona = zs + 2*zp
+m=${num(P.m)}; h=${num(P.h)}; beta=${num(P.beta)}; c=${num(P.gioco)}; foro=${num(P.foro)};
+$fn=48; alpha=20;
+rs=m*zs/2; rp=m*zp/2; rr=m*zr/2; ac=rs+rp;          // raggi primitivi e interasse
+tE=PI*m/2-c/2; tI=PI*m/2+c/2;                        // denti esterni assottigliati, vani della corona allargati
+// elica: a metà altezza la sagoma è ruotata di tan(beta)*(h/2)/r radianti
+tw_s=${deg(q.tb*P.h/2/q.rs)}; tw_p=${deg(q.tb*P.h/2/q.rp)}; tw_r=${deg(q.tb*P.h/2/q.rr)};
+function inv(a) = (tan(a) - a*PI/180)*180/PI;
+function pt(rho,a) = [rho*cos(a), rho*sin(a)];
+function dl(rho,r,rb,t) = t/(2*r)*180/PI + inv(alpha) - inv(acos(rb/rho));
+function dente(k,z,m,t,ra,rf) = let(r=m*z/2, rb=r*cos(alpha), rs=max(rb,rf), th=360*k/z, d0=dl(rs,r,rb,t), N=8)
+  concat(rf<rs ? [pt(rf,th-d0)] : [],
+         [for (i=[0:N]) let(rho=rs+(ra-rs)*i/N) pt(rho, th-dl(rho,r,rb,t))],
+         [for (i=[N:-1:0]) let(rho=rs+(ra-rs)*i/N) pt(rho, th+dl(rho,r,rb,t))],
+         rf<rs ? [pt(rf,th+d0)] : [], [pt(rf, th+180/z)]);
+function ingranaggio(z,m,t,ra,rf) = [for (k=[0:z-1]) each dente(k,z,m,t,ra,rf)];
+// spina di pesce: metà inferiore ruota in un verso, metà superiore torna indietro (twist positivo = orario)
+module spina(a) { linear_extrude(h/2, twist=-a, slices=12) children();
+                  translate([0,0,h/2]) rotate(a) linear_extrude(h/2, twist=a, slices=12) children(); }
+Rout=${num(q.Rout)}; ch=${num(q.ch)};
+module sole() difference() { spina(tw_s) polygon(ingranaggio(zs,m,tE,${num(q.raS)},rs-1.25*m)); if (foro>0) translate([0,0,-1]) cylinder(d=(foro+c)/cos(30), h=h+2, $fn=6); }
+module satellite() spina(-tw_p) polygon(ingranaggio(zp,m,tE,${num(q.raP)},rp-1.25*m));
+module corona() difference() {
+  intersection() {
+    linear_extrude(h) polygon([for (i=[0:359]) let(r=Rout-0.9*pow(max(0,cos(18*i/2)),8)) [r*cos(i),r*sin(i)]]);
+    rotate_extrude($fn=180) polygon(concat([[0,0],[Rout-ch,0],[Rout,ch]], [for (j=[0:8]) let(u=ch*j/8) [Rout-ch+sqrt(ch*ch-u*u), h-ch+u]], [[0,h]]));
+  }
+  rotate(${deg(q.psi)}) spina(-tw_r) polygon(ingranaggio(zr,m,tI,${num(q.raC)},rr-m));
+}
+// tutto già montato: si stampa così
+color("lightblue") corona();
+color("gold") sole();
+pose = [${q.al.map((a,i)=>'['+deg(a)+','+deg(q.ph[i])+']').join(',')}];   // [angolo attorno al centro, rotazione propria]
+for (p=pose) color("orangered") translate(ac*[cos(p[0]),sin(p[0])]) rotate(p[1]) satellite();
+`;}
+function capsule(len,hw,N=16){const p=[];for(let i=0;i<=N;i++){const a=-PI/2+PI*i/N;p.push([len+hw*Math.cos(a),hw*Math.sin(a)]);}for(let i=0;i<=N;i++){const a=PI/2+PI*i/N;p.push([hw*Math.cos(a),hw*Math.sin(a)]);}return p;}
+
+/* ======================= OpenSCAD ======================= */
+const stamp='// Generato da Orfini Math Lab - Cinematismi 3D. OpenSCAD puro, nessuna libreria esterna.\n// Unità: millimetri. Cambia i parametri in alto e premi F6 per ricalcolare.\n';
+const num=x=>String(+(+x).toFixed(5));
+function scadRuota(P,q){return stamp+`
+// ---------- parametri ----------
+n     = ${P.n};      // lati della ruota
+L     = ${num(P.L)};     // lato (mm)
+Nt    = ${q.Nt};      // denti per lato: il modulo si adatta perché il lato contenga Nt passi
+w     = ${num(P.w)};     // spessore della ruota (mm)
+K     = ${P.K};      // gobbe della guida
+base  = ${num(q.base)};  // spessore sotto i denti (mm)
+hs    = ${num(P.hs)};     // altezza delle sponde sopra le gobbe (mm)
+foro  = ${num(P.foro)};     // foro al centro della ruota (0 = nessuno)
+c     = ${num(P.c)};   // tolleranza: gioco totale tra i denti (mm)
+g     = ${num(q.g)};   // gioco laterale per lato tra ruota e sponde (mm)
+tw    = ${TW};      // spessore delle sponde (mm)
+parte = "tutto";  // "ruota", "guida", "tutto"
+s_vista = 0.3;    // posizione della ruota (0..1) nella vista "tutto"
+$fn = 48;
+
+// ---------- la matematica ----------
+m   = L/(PI*Nt);  p = PI*m;              // modulo e passo
+a   = L/(2*tan(180/n));                  // apotema = parametro della catenaria
+Rc  = a/cos(180/n);                      // raggio circoscritto
+ue  = ln(tan(180/n)+sqrt(1+pow(tan(180/n),2)));   // settsinh(tan(pi/n))
+Per = 2*a*ue;  tot = K*Per;  yb = -Rc-base;  yR = -a+m+hs;
+function sh(u) = (exp(u)-exp(-u))/2;
+function ch(u) = (exp(u)+exp(-u))/2;
+// posa della ruota: avanza di a*u e ruota di gd(u) = atan(sinh u)
+function posa(s) = let(X=s*tot, k=max(0,min(K-1,floor(X/Per))), u=(X-(k+0.5)*Per)/a)
+                   [X-tot/2, -atan(sh(u))-k*360/n];
+
+// ---------- ruota dentata ----------
+function V(k) = Rc*[cos(-90-180/n+k*360/n), sin(-90-180/n+k*360/n)];
+module primitiva() polygon([for (k=[0:n-1]) V(k)]);
+module vano(P,t) {                       // profilo di cremagliera a 20°
+  nr=[t[1],-t[0]]; v0=-1.25*m; v1=1.25*m+0.6; e0=p/4+v0*tan(20); e1=p/4+v1*tan(20);
+  polygon([P-e0*t+v0*nr, P+e0*t+v0*nr, P+e1*t+v1*nr, P-e1*t+v1*nr]);
+}
+module vani() for (j=[0:n-1]) { A=V(j); B=V(j+1); t=(B-A)/norm(B-A); for (k=[0:Nt]) vano(A+k*p*t, t); }
+module dentata(add) difference() { offset(r=add) primitiva(); vani(); }
+module ruota() translate([0,0,tw+g]) linear_extrude(w) difference() { dentata(m); if (foro>0) circle(d=foro); }
+
+// ---------- guida: la ruota (con il gioco) la fresa rotolando ----------
+function profilo() = concat([for (j=[0:K-1]) for (i=[(j==0?0:1):32]) let(u=-ue+2*ue*i/32) [(j+0.5)*Per+a*u-tot/2, -a*ch(u)]],
+                            [[tot/2,yb],[-tot/2,yb]]);
+Ns = ceil(tot/0.3);   // pose di taglio: con F6 servono circa due minuti; per un'anteprima veloce usa ceil(tot/1)
+module guida2d() difference() {
+  intersection() { offset(r=m) polygon(profilo()); translate([-tot/2,yb]) square([tot,-yb]); }
+  for (i=[0:Ns]) let(q=posa(i/Ns)) translate([q[0],0]) rotate(q[1]) offset(r=c/2) dentata(1.25*m);
+}
+module sponda() linear_extrude(tw) translate([-tot/2,yb]) square([tot,yR-yb]);
+module guida() {
+  sponda();
+  translate([0,0,tw]) linear_extrude(w+2*g) guida2d();
+  translate([0,0,tw+w+2*g]) sponda();
+}
+// per la stampa la guida va in piedi: rotate([90,0,0]) guida();
+if (parte=="ruota") ruota();
+if (parte=="guida") guida();
+if (parte=="tutto") { color("lightblue") guida(); q=posa(s_vista); color("gold") translate([q[0],0]) rotate(q[1]) ruota(); }
+`;}
+function scadReuleaux(P){return stamp+`
+W    = ${num(P.W)};   // larghezza costante (mm)
+rho  = ${num(P.rho)};  // arrotondamento delle punte (mm)
+c    = ${num(P.c)};  // tolleranza (mm)
+t    = ${num(P.t)};   // spessore del rotore (mm)
+g    = ${num(P.g)};   // foro di presa (0 = nessuno)
+parte= "tutto";  // "rotore", "telaio", "tutto"
+$fn  = 180;
+W0 = W-2*rho;  R0 = W0/sqrt(3);  S = W+c;  muro = 10;  fondo = 2;
+// intersezione di tre cerchi di raggio W0 centrati sui vertici di un triangolo equilatero, poi ingrassata di rho
+module reuleaux2d() offset(r=rho) intersection_for(i=[0:2]) translate(R0*[cos(90+120*i), sin(90+120*i)]) circle(r=W0);
+module rotore() translate([0,0,fondo]) linear_extrude(t) difference() { reuleaux2d(); if (g>0) circle(d=g); }
+module telaio() {
+  linear_extrude(fondo) square(S+2*muro, center=true);
+  translate([0,0,fondo]) linear_extrude(t+0.6) difference() { square(S+2*muro, center=true); square(S, center=true); }
+}
+if (parte=="telaio" || parte=="tutto") color("lightblue") telaio();
+if (parte=="rotore" || parte=="tutto") color("gold") rotore();
+`;}
+function scadRulli(P,q){
+  const pb=[],pt=[];for(let i=0;i<=q.Ns;i+=(i+2>q.Ns&&i<q.Ns?q.Ns-i:2)){const s=q.pose(i/q.Ns);for(const o of [0,q.Dx]){pb.push('['+num(s.x+o)+','+num(s.y)+','+num(s.rot*180/PI)+']');pt.push('['+num(s.x+o-s.plat)+','+num(s.y)+','+num(s.rot*180/PI)+']');}}
+  return stamp+`
+W    = ${num(P.W)};      // larghezza costante del rullo (mm)
+Nt   = ${q.Nt};      // denti (multiplo di 3): modulo m = W/Nt (perimetro = PI*W, teorema di Barbier)
+rho  = ${num(q.rho)};  // arrotondamento delle punte (mm)
+w    = ${num(P.w)};      // spessore dei rulli (mm)
+c    = ${num(P.c)};    // tolleranza (mm)
+g    = ${num(q.g)};    // gioco laterale per lato (mm)
+tw   = ${TW};      // spessore delle sponde (mm)
+base = ${num(q.base)};  top = ${num(q.topT)};
+parte= "rullo";   // "rullo", "base", "piattaforma"
+$fn  = 180;
+m = W/Nt;  p = PI*m;  W0 = W-2*rho;  R0 = W0/sqrt(3);
+module primitiva() offset(r=rho) intersection_for(i=[0:2]) translate(R0*[cos(90+120*i), sin(90+120*i)]) circle(r=W0);
+// vani: [x, y, direzione della tangente] presi a passo costante lungo il perimetro (calcolati dall'app)
+vani = [${q.vlist.map(v=>'['+num(v[0])+','+num(v[1])+','+num(v[2])+']').join(',')}];
+module vano(P,a) { t=[cos(a),sin(a)]; nr=[t[1],-t[0]]; v0=-1.25*m; v1=1.25*m+0.6; e0=p/4+v0*tan(20); e1=p/4+v1*tan(20);
+  polygon([P-e0*t+v0*nr, P+e0*t+v0*nr, P+e1*t+v1*nr, P-e1*t+v1*nr]); }
+module dentata(add) difference() { offset(r=add) primitiva(); for (v=vani) vano([v[0],v[1]], v[2]); }
+module rullo() linear_extrude(w) dentata(m);
+// pose [x, y, rotazione] dei due rulli rispetto alla base e alla piattaforma (rotolamento senza strisciare).
+// Una posa ogni 0,7 mm circa (l'app ne usa il doppio): differenze sui fianchi sotto 0,01 mm. Il calcolo richiede qualche minuto.
+pose_base = [${pb.join(',')}];
+pose_piatt = [${pt.join(',')}];
+module fresa() offset(r=c/2) dentata(1.25*m);
+module base2d() difference() { translate([${num(q.xa)},-base]) square([${num(q.xb-q.xa)}, base+m]); for (q=pose_base) translate([q[0],q[1]]) rotate(q[2]) fresa(); }
+module piatt2d() difference() { translate([${num(q.pa)},W-m]) square([${num(q.pb-q.pa)}, m+top]); for (q=pose_piatt) translate([q[0],q[1]]) rotate(q[2]) fresa(); }
+module con_sponde(x0,y0,x1,y1) { linear_extrude(tw) translate([x0,y0]) square([x1-x0,y1-y0]);
+  translate([0,0,tw]) linear_extrude(w+2*g) children();
+  translate([0,0,tw+w+2*g]) linear_extrude(tw) translate([x0,y0]) square([x1-x0,y1-y0]); }
+if (parte=="rullo") rullo();
+if (parte=="base") con_sponde(${num(q.xa)},-base,${num(q.xb)},${num(q.yRB)}) base2d();
+if (parte=="piattaforma") con_sponde(${num(q.pa)},${num(q.yRT)},${num(q.pb)},W+top) piatt2d();
+`;}
+function scadCardano(P,q){return stamp+`
+zp   = ${P.zp};      // denti del satellite (la corona ne ha il doppio)
+m    = ${num(P.m)};   // modulo (mm)
+w    = ${num(P.w)};     // spessore degli ingranaggi (mm)
+pd   = ${num(P.pd)};     // diametro dei perni stampati insieme ai pezzi (mm)
+d    = ${num(q.d)};  // distanza del foro del segno dal centro del satellite (r = retta, meno = ellisse)
+c    = ${num(P.c)};   // tolleranza = gioco tra i denti (mm)
+parte= "tutto";  // "corona", "manovella", "satellite", "tutto"
+th_m = 30;       // angolo della manovella nella vista "tutto" (gradi)
+$fn  = 48;
+alpha=20; zR=2*zp; r=m*zp/2; R=2*r;
+tp = PI*m/2 - c/2;   tr = PI*m/2 + c/2;          // dente del satellite e vano della corona sulla primitiva
+fondo=${q.floorT}; cr=${q.crankT}; vg=${q.vg}; cap=${q.cap}; Rout=${num(q.Rout)}; segno=${q.mark};
+zP=fondo+cr+vg; capZ=zP+w+vg; capTop=capZ+cap;
+function inv(a) = (tan(a) - a*PI/180)*180/PI;    // evolvente, in gradi
+function pt(rho,a) = [rho*cos(a), rho*sin(a)];
+function dl(rho,r,rb,t) = t/(2*r)*180/PI + inv(alpha) - inv(acos(rb/rho));
+function dente(k,z,m,t,ra,rf) = let(r=m*z/2, rb=r*cos(alpha), rs=max(rb,rf), th=360*k/z, d0=dl(rs,r,rb,t), N=8)
+  concat(rf<rs ? [pt(rf,th-d0)] : [],
+         [for (i=[0:N]) let(rho=rs+(ra-rs)*i/N) pt(rho, th-dl(rho,r,rb,t))],
+         [for (i=[N:-1:0]) let(rho=rs+(ra-rs)*i/N) pt(rho, th+dl(rho,r,rb,t))],
+         rf<rs ? [pt(rf,th+d0)] : [], [pt(rf, th+180/z)]);
+function ingranaggio(z,m,t,ra,rf) = [for (k=[0:z-1]) each dente(k,z,m,t,ra,rf)];
+module corona() {
+  cylinder(r=Rout, h=fondo, $fn=160);
+  translate([0,0,fondo]) cylinder(d=pd, h=cr);                          // perno centrale
+  translate([0,0,fondo]) linear_extrude(cr+vg+w) difference() { circle(r=Rout,$fn=160); polygon(ingranaggio(zR,m,tr,${num(q.raC)},R-m)); }
+}
+module manovella() translate([0,0,fondo]) {
+  linear_extrude(cr) difference() { hull() { circle(r=${num(q.hw)}); translate([r,0]) circle(r=${num(q.hw)}); } circle(d=pd+c); }
+  translate([r,0,cr]) cylinder(d=pd, h=capTop-fondo-cr);               // perno del satellite
+}
+module satellite() {
+  translate([0,0,zP]) linear_extrude(w+vg) difference() { polygon(ingranaggio(zp,m,tp,${num(q.raP)},r-1.25*m)); circle(d=pd+c); }
+  translate([0,0,capZ]) linear_extrude(cap) difference() { circle(r=r+5,$fn=96); circle(d=pd+c); translate([d,0]) circle(d=segno+c); }
+}
+if (parte=="corona") corona();
+if (parte=="manovella") manovella();
+if (parte=="satellite") satellite();
+if (parte=="tutto") {
+  color("lightblue") corona(); color("orangered") rotate(th_m) manovella();
+  color("gold") translate([r*cos(th_m), r*sin(th_m)]) rotate(-th_m) satellite();
+}
+`;}
+
+/* ======================= meccanismi e parametri ======================= */
+const MECH={
+  ruota:{title:'Ruota quadrata dentata',sub:'poligono su guida a catenarie con sponde',build:buildRuota,params:[
+    {k:'n',label:'Lati della ruota',min:4,max:8,step:1,def:4},
+    {k:'L',label:'Lato L',min:16,max:(P,bed)=>{const th=PI/P.n;return Math.floor(Math.min((bed-2*MARGIN-6)*Math.sin(th),(bed-2*MARGIN)/2*Math.tan(th)/Math.asinh(Math.tan(th))));},step:1,def:32,unit:'mm'},
+    {k:'m',label:'Modulo dei denti (circa)',min:1,max:3,step:0.25,def:1.5,unit:'mm',hint:'si adatta perché ogni lato contenga un numero intero di denti'},
+    {k:'w',label:'Spessore della ruota',min:8,max:30,step:1,def:14,unit:'mm'},
+    {k:'K',label:'Gobbe della guida',min:2,max:(P,bed)=>Math.max(2,Math.floor((bed-2*MARGIN)/catPer(P.n,P.L))),step:1,def:6,hint:'il massimo dipende dalla lunghezza del piatto'},
+    {k:'hs',label:'Altezza delle sponde sopra le gobbe',min:3,max:20,step:1,def:6,unit:'mm'},
+    {k:'base',label:'Base sotto i denti',min:6,max:20,step:1,def:8,unit:'mm'},
+    {k:'foro',label:'Foro al centro della ruota',min:0,max:10,step:1,def:5,unit:'mm',hint:'per vedere (o segnare con la matita) che il centro resta alla stessa quota'}]},
+  reuleaux:{title:'Reuleaux nel quadrato',sub:'rotore nel foro quadrato (punta di Watt)',build:buildReuleaux,params:[
+    {k:'W',label:'Larghezza costante W',min:20,max:(P,bed,c)=>Math.floor(bed-2*MARGIN-20-c),step:1,def:50,unit:'mm'},
+    {k:'rho',label:'Arrotondamento delle punte',min:0.5,max:6,step:0.5,def:1.5,unit:'mm'},
+    {k:'t',label:'Spessore',min:4,max:20,step:1,def:8,unit:'mm'},
+    {k:'g',label:'Foro di presa',min:0,max:20,step:1,def:10,unit:'mm'}]},
+  rulli:{title:'Rulli di Reuleaux dentati',sub:'la piattaforma resta in piano',build:buildRulli,params:[
+    {k:'W',label:'Larghezza costante W',min:30,max:(P,bed)=>Math.floor(Math.min(80,bed/4)),step:1,def:40,unit:'mm'},
+    {k:'m',label:'Modulo dei denti (circa)',min:1,max:2.5,step:0.25,def:1.5,unit:'mm',hint:'i denti sono un multiplo di 3: m = W / denti'},
+    {k:'rho',label:'Arrotondamento delle punte',min:6,max:16,step:0.5,def:9,unit:'mm',hint:'almeno 5,5 moduli: sulle punte i denti lavorano come un pignone'},
+    {k:'w',label:'Spessore dei rulli',min:8,max:24,step:1,def:12,unit:'mm'},
+    {k:'jD',label:'Distanza tra i rulli (terzi di perimetro)',min:2,max:4,step:1,def:2},
+    {k:'T',label:'Corsa (terzi di giro)',min:2,max:(P,bed)=>rulliTmax(P,bed),step:1,def:3,hint:'il massimo dipende dalla lunghezza del piatto'}]},
+  planetario:{title:'Planetario a spina di pesce',sub:'fidget stampato già montato (print in place)',build:buildPlanetario,params:[
+    {k:'zs',label:'Denti del sole',min:10,max:30,step:1,def:14},
+    {k:'zp',label:'Denti dei satelliti',min:10,max:24,step:1,def:10},
+    {k:'N',label:'Numero di satelliti',min:3,max:6,step:1,def:4},
+    {k:'m',label:'Modulo',min:1,max:2.5,step:0.25,def:1.5,unit:'mm'},
+    {k:'h',label:'Spessore',min:6,max:20,step:1,def:10,unit:'mm'},
+    {k:'beta',label:'Angolo d\'elica (spina di pesce)',min:0,max:45,step:5,def:30,unit:'°'},
+    {k:'gioco',label:'Gioco tra i pezzi (print in place)',min:0.2,max:0.6,step:0.05,def:0.35,unit:'mm',hint:'sostituisce la tolleranza generale: i pezzi nascono già montati'},
+    {k:'foro',label:'Foro esagonale nel sole',min:0,max:10,step:1,def:6,unit:'mm'}]},
+  cardano:{title:'Coppia di Cardano',sub:'ingranaggi: il cerchio che disegna una retta',build:buildCardano,params:[
+    {k:'zp',label:'Denti del satellite',min:14,max:(P,bed)=>Math.max(14,Math.min(30,Math.floor(((bed-2*MARGIN)/2-6-1.25*P.m)/P.m))),step:1,def:18},
+    {k:'m',label:'Modulo',min:1,max:3,step:0.25,def:1.5,unit:'mm'},
+    {k:'w',label:'Spessore ingranaggi',min:4,max:16,step:1,def:8,unit:'mm'},
+    {k:'pd',label:'Diametro dei perni (stampati)',min:4,max:8,step:0.5,def:5,unit:'mm'},
+    {k:'dr',label:'Posizione del foro del segno (d/r)',min:0.2,max:1,step:0.05,def:1}]}
+};
+
+/* ======================= stato e scena ======================= */
+const state={mech:'ruota',printer:'a1',c:0.2,s:0.3,playing:!matchMedia('(prefers-reduced-motion: reduce)').matches,showTraces:true,P:{},M:null};
+for(const id in MECH){state.P[id]={};MECH[id].params.forEach(p=>state.P[id][p.k]=p.def);}
+const bedNow=()=>PRINTERS[state.printer].bed;
+const limOf=(p,mid)=>typeof p.max==='function'?p.max(state.P[mid],bedNow(),state.c):p.max;
+const $=id=>document.getElementById(id);
+
+const view=$('view'),renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));view.appendChild(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x05070a);
+const camera=new THREE.PerspectiveCamera(40,1,1,5000),controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+scene.add(new THREE.AmbientLight(0xffffff,.75));
+const dl1=new THREE.DirectionalLight(0xffffff,.8);dl1.position.set(.4,.8,1);scene.add(dl1);
+const dl2=new THREE.DirectionalLight(0xffffff,.3);dl2.position.set(-.6,-.4,.6);scene.add(dl2);
+let root=new THREE.Group();scene.add(root);let groups={},traceObjs=[],fit={cx:0,cy:0,w:100,h:60,z:0};
+function clean(pts){const o=[];for(const p of pts){const q=o[o.length-1];if(!q||Math.hypot(p[0]-q[0],p[1]-q[1])>1e-6)o.push(p);}
+  while(o.length>2&&Math.hypot(o[0][0]-o[o.length-1][0],o[0][1]-o[o.length-1][1])<=1e-6)o.pop();return o;}
+function layerGeom(L){const shapes=L.shapes.map(sh=>{const s=new THREE.Shape(clean(sh.outer).map(p=>new THREE.Vector2(p[0],p[1])));
+    (sh.holes||[]).forEach(h=>s.holes.push(new THREE.Path(clean(h).map(p=>new THREE.Vector2(p[0],p[1])))));return s;});
+  const g=new THREE.ExtrudeGeometry(shapes,{depth:L.t,bevelEnabled:false,steps:1,curveSegments:1});g.translate(0,0,L.z0||0);return g;}
+function disposeRoot(){root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});scene.remove(root);root=new THREE.Group();scene.add(root);groups={};traceObjs=[];}
+function buildScene(){disposeRoot();const M=state.M;let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9,zTop=0;
+  for(const p of M.parts){const g=new THREE.Group();
+    const geos=p.tris?[{geo:(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p.tris,3));g.computeVertexNormals();return g;})(),op:1}]:p.layers.map(L=>({geo:layerGeom(L),op:L.opacity||1}));
+    geos.forEach(({geo,op})=>{
+      g.add(new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:p.color,roughness:.55,metalness:.05,transparent:op<1,opacity:op,depthWrite:op>=1})));
+      g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo,35),new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:op<1?.15:.45})));});
+    root.add(g);groups[p.id]=g;const b=partBBox(p);zTop=Math.max(zTop,b.z1);x0=Math.min(x0,b.x0);y0=Math.min(y0,b.y0);x1=Math.max(x1,b.x1);y1=Math.max(y1,b.y1);}
+  for(const tr of M.traces){const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(tr.pts.map(q=>new THREE.Vector3(q[0],q[1],zTop+.6))),new THREE.LineBasicMaterial({color:tr.color}));root.add(l);traceObjs.push(l);
+    tr.pts.forEach(q=>{x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1]);});}
+  fit={cx:(x0+x1)/2,cy:(y0+y1)/2,w:Math.max(30,x1-x0),h:Math.max(30,y1-y0),z:zTop/2};applyPose();}
+function setCamera(mode){const asp=Math.max(.4,view.clientWidth/Math.max(1,view.clientHeight)),tf=Math.tan(20*PI/180);
+  const d=1.18*Math.max(fit.w/(2*tf*asp),fit.h/(2*tf))+fit.z;controls.target.set(fit.cx,fit.cy,fit.z);
+  if(mode==='front')camera.position.set(fit.cx,fit.cy,fit.z+d);else camera.position.set(fit.cx+d*.45,fit.cy+d*.38,fit.z+d*.82);
+  camera.far=d*12;camera.updateProjectionMatrix();controls.update();}
+function applyPose(){const ps=state.M.poses(state.s);for(const id in groups){const q=ps[id]||{x:0,y:0,rot:0};groups[id].position.set(q.x,q.y,0);groups[id].rotation.z=q.rot;}traceObjs.forEach(l=>l.visible=state.showTraces);}
+function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix();}
+function frame(){controls.update();renderer.render(scene,camera);requestAnimationFrame(frame);}
+let last=performance.now();
+function tick(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(state.playing&&state.M){state.s=(state.s+dt/14)%1;$('s').value=Math.round(state.s*1000);applyPose();drawChart();}requestAnimationFrame(tick);}
+
+function drawChart(){const cv=$('chart'),dpr=Math.min(devicePixelRatio||1,2),W=cv.clientWidth,H=cv.clientHeight;
+  if(cv.width!==W*dpr||cv.height!==H*dpr){cv.width=W*dpr;cv.height=H*dpr;}
+  const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);
+  const ch=state.M.chart,N=240,pl=44,pr=8,pt=8,pb=22,data=ch.series.map(se=>{const a=[];for(let i=0;i<=N;i++)a.push(se.fn(i/N));return a;});
+  let lo=Math.min(0,...data.flat()),hi=Math.max(0,...data.flat());if(hi-lo<1e-6)hi=lo+1;const pad=(hi-lo)*.08;lo-=pad;hi+=pad;
+  const X=v=>pl+(W-pl-pr)*v,Y=v=>pt+(H-pt-pb)*(1-(v-lo)/(hi-lo));
+  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.fillStyle='#9aa3ad';ctx.font='11px system-ui';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4;ctx.beginPath();ctx.moveTo(pl,Y(v));ctx.lineTo(W-pr,Y(v));ctx.stroke();ctx.fillText(f2(v,1),4,Y(v)+4);}
+  ctx.fillText(ch.x+' →',pl,H-5);
+  data.forEach((a,i)=>{ctx.strokeStyle=ch.series[i].color;ctx.lineWidth=2;ctx.beginPath();a.forEach((v,j)=>j?ctx.lineTo(X(j/N),Y(v)):ctx.moveTo(X(0),Y(v)));ctx.stroke();});
+  ctx.strokeStyle='#fff';ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(X(state.s),pt);ctx.lineTo(X(state.s),H-pb);ctx.stroke();ctx.setLineDash([]);
+  ch.series.forEach(se=>{ctx.fillStyle=se.color;ctx.beginPath();ctx.arc(X(state.s),Y(se.fn(state.s)),4,0,TAU);ctx.fill();});}
+
+/* ======================= interfaccia ======================= */
+function renderTabs(){const t=$('tabs');t.innerHTML='';for(const id in MECH){const b=document.createElement('button');b.className='tab';b.setAttribute('aria-pressed',id===state.mech);
+  b.innerHTML=MECH[id].title+'<small>'+MECH[id].sub+'</small>';b.onclick=()=>{state.mech=id;renderTabs();renderParams();schedule();};t.appendChild(b);}}
+function renderParams(){const box=$('params');box.innerHTML='';const mid=state.mech,P=state.P[mid];
+  MECH[mid].params.forEach(p=>{const mx=limOf(p,mid);if(P[p.k]>mx)P[p.k]=mx;const dec=p.step<1?2:0,u=p.unit?' '+p.unit:'';
+    const d=document.createElement('div');d.className='ctl';
+    d.innerHTML='<label for="p_'+p.k+'"><span>'+p.label+'</span><b id="v_'+p.k+'">'+f2(P[p.k],dec)+u+'</b></label><input type="range" id="p_'+p.k+'" min="'+p.min+'" max="'+mx+'" step="'+p.step+'" value="'+P[p.k]+'">'+(p.hint?'<div class="hint">'+p.hint+'</div>':'');
+    box.appendChild(d);const inp=d.querySelector('input');
+    inp.oninput=()=>{P[p.k]=parseFloat(inp.value);$('v_'+p.k).textContent=f2(P[p.k],dec)+u;};
+    inp.onchange=()=>{P[p.k]=parseFloat(inp.value);renderParams();schedule();};});}
+let pending=null;
+function schedule(){clearTimeout(pending);$('busy').style.display='block';pending=setTimeout(()=>{rebuild();$('busy').style.display='none';},30);}
+function rebuild(){const mid=state.mech,P=Object.assign({},state.P[mid],{c:state.c});
+  const M=MECH[mid].build(P,bedNow());M.P=P;state.M=M;$('c-val').textContent=f2(state.c)+' mm';
+  buildScene();setCamera('front');renderOut();drawChart();}
+function renderOut(){const M=state.M,bed=bedNow(),Us=bed-2*MARGIN;
+  $('warns').innerHTML=M.warns.map(w=>'<div class="warn">'+w+'</div>').join('')+M.notes.map(w=>'<div class="note">'+w+'</div>').join('');
+  $('info').innerHTML=M.info.map(i=>'<li>'+i+'</li>').join('');$('learn').innerHTML=M.learn.map(i=>'<li>'+i+'</li>').join('');
+  $('steps').innerHTML=M.steps.map(i=>'<li>'+i+'</li>').join('');$('printnotes').innerHTML=PRINT_NOTES.map(i=>'<li>'+i+'</li>').join('');
+  $('legend').innerHTML=M.chart.series.map(s=>'<span><i style="background:'+s.color+'"></i>'+s.label+'</span>').join('');
+  const PP=M.printParts||M.parts,plates=packPlates(PP,bed),plateOf={};plates.forEach((pl,i)=>pl.items.forEach(it=>(plateOf[it.part.id]=plateOf[it.part.id]||[]).push(i+1)));
+  const tb=$('parts');tb.innerHTML='';
+  PP.forEach(p=>{const b=partMesh(p),fitOk=b.w<=Us&&b.h<=Us&&b.d<=bed,tr=document.createElement('tr');
+    tr.innerHTML='<td>'+p.name+'</td><td>'+(p.qty||1)+'</td><td>'+ORIENT_TXT[p.print||'flat']+'</td><td>'+f2(b.w,1)+' × '+f2(b.h,1)+' × '+f2(b.d,1)+' h</td><td class="'+(fitOk?'ok':'no')+'">'+(fitOk?'sì ('+(plateOf[p.id]||[]).join(', ')+')':'NON entra')+'</td><td><button class="btn">STL</button></td>';
+    tr.querySelector('button').onclick=()=>download(partStl(p),state.mech+'_'+p.id+'.stl');tb.appendChild(tr);});
+  const pbx=$('plates');pbx.innerHTML='';
+  plates.forEach((pl,i)=>{const sc=150/bed;let svg='<svg width="150" height="150" viewBox="0 0 150 150"><rect x="'+MARGIN*sc+'" y="'+MARGIN*sc+'" width="'+Us*sc+'" height="'+Us*sc+'" fill="none" stroke="#3a4350" stroke-dasharray="3 2"/>';
+    pl.items.forEach(it=>{svg+='<rect x="'+(MARGIN+it.px)*sc+'" y="'+(150-(MARGIN+it.py+it.b.h)*sc)+'" width="'+it.b.w*sc+'" height="'+it.b.h*sc+'" fill="#'+it.part.color.toString(16).padStart(6,'0')+'" fill-opacity=".75" stroke="'+(it.fit?'#000':'#ff5252')+'"/>';});
+    const d=document.createElement('div');d.className='plate';d.innerHTML=svg+'</svg>Piatto '+(i+1)+' di '+plates.length+'<br><button class="btn">STL del piatto</button>';
+    d.querySelector('button').onclick=()=>download(plateStl(pl),state.mech+'_piatto_'+(i+1)+'.stl');pbx.appendChild(d);});
+  $('scadPre').textContent=M.scad();}
+$('printer').onchange=e=>{state.printer=e.target.value;renderParams();schedule();};
+$('c').oninput=e=>{state.c=parseFloat(e.target.value);$('c-val').textContent=f2(state.c)+' mm';};
+$('c').onchange=()=>schedule();
+$('play').onclick=()=>{state.playing=!state.playing;$('play').textContent=state.playing?'Ferma':'Avvia';};
+$('s').oninput=e=>{state.playing=false;$('play').textContent='Avvia';state.s=e.target.value/1000;applyPose();drawChart();};
+$('vfront').onclick=()=>setCamera('front');$('v3d').onclick=()=>setCamera('3d');
+$('traces').onchange=e=>{state.showTraces=e.target.checked;applyPose();};
+$('scadDl').onclick=()=>download(new Blob([state.M.scad()],{type:'text/plain'}),state.mech+'.scad');
+$('scadCp').onclick=()=>{const t=state.M.scad();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$('scadCp').textContent='Copiato';setTimeout(()=>$('scadCp').textContent='Copia il codice',1500);}).catch(()=>{$('scadPre').parentNode.open=true;});};
+addEventListener('resize',()=>{resize();drawChart();});
+
+$('play').textContent=state.playing?'Ferma':'Avvia';$('s').value=Math.round(state.s*1000);
+renderTabs();renderParams();resize();rebuild();frame();requestAnimationFrame(tick);
+
+/* API per i test */
+window.OCM={state,MECH,PRINTERS,CL,SC,toP,fromP,polyP,I,D,U,OFF,xf,areaP,partMesh,partStl,packPlates,gearAddendumOK,
+  setMech:id=>{state.mech=id;renderTabs();renderParams();rebuild();},
+  setPrinter:id=>{state.printer=id;$('printer').value=id;renderParams();rebuild();},
+  setParam:(k,v)=>{state.P[state.mech][k]=v;rebuild();},setTol:v=>{state.c=v;$('c').value=v;rebuild();},
+  setS:v=>{state.playing=false;state.s=v;applyPose();drawChart();}};
+})();
+</script>
+</body>
+</html>

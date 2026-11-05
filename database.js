@@ -1,9 +1,74 @@
 /* 
    ⚠️ GENERATO AUTOMATICAMENTE DA build.py 
-   Data: 2026-11-04 18:52:09
+   Data: 2026-11-05 08:04:30
 */
 
 const db = [
+    {
+        "title": "Cinematismi 3D: ruota quadrata, Reuleaux e Cardano",
+        "excerpt": "Generatore di cinematismi dentati stampabili in 3D: ruota quadrata su guida a catenarie con sponde, triangolo di Reuleaux nel foro quadrato e su rulli sotto una piattaforma, coppia di Cardano con ingranaggi a evolvente, planetario a spina di pesce stampato già montato (print in place). Denti generati per inviluppo, solidi unici senza perni, scala per Bambu Lab A1, A1 mini e P2S, esportazione STL e codice OpenSCAD.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "3 EL",
+            "4 EL",
+            "5 EL",
+            "BAMBU LAB",
+            "CARDANO",
+            "CATENARIA",
+            "CODING",
+            "EVOLVENTE",
+            "FORMULA DI WILLIS",
+            "IND_C2:CODING",
+            "INGRANAGGI",
+            "MAT_K3:GEOMETRIA",
+            "MAT_K4:FUNZIONI",
+            "OPENSCAD",
+            "PLANETARIO",
+            "PRINT IN PLACE",
+            "RUOTA QUADRATA",
+            "STAMPA 3D",
+            "TEOREMA DI BARBIER",
+            "TRIANGOLO DI REULEAUX"
+        ],
+        "date": "2026-11-04",
+        "url": "content/apps/ruota_quadrata_cinematismi.html",
+        "type": "app",
+        "icon": "💻",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/ruota_quadrata_cinematismi.webp",
+        "allenamento": [
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            }
+        ]
+    },
     {
         "title": "Parabola e disequazioni di secondo grado",
         "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
