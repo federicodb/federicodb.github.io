@@ -3,8 +3,9 @@
 //   Così dopo un aggiornamento del sito non si mescolano mai moduli vecchi e nuovi.
 // - Librerie su CDN con versione nell'indirizzo (KaTeX, Chart.js, JSXGraph, math.js, nerdamer): dalla cache,
 //   perché a parità di indirizzo il contenuto non cambia.
-// - Font di Google: dalla cache, aggiornati in background.
-const CACHE = 'orfini-quest-v1';
+// - I font sono copie locali del sito: nessuna richiesta a Google.
+// Si salvano solo risposte valide (mai opache). v2: via le copie della v1.
+const CACHE = 'orfini-quest-v2';
 const CORE = ['./', './index.html', './css/app.css', './js/main.js', './manifest.webmanifest', './icons/icon.svg'];
 
 self.addEventListener('install', (e) => {
@@ -20,7 +21,6 @@ self.addEventListener('activate', (e) => {
 });
 
 const isVersionedCdn = (url) => url.hostname === 'cdn.jsdelivr.net' && /@\d+\.\d+\.\d+/.test(url.pathname);
-const isFont = (url) => url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
 
 async function networkFirst(req) {
   const cache = await caches.open(CACHE);
@@ -42,17 +42,10 @@ async function networkFirst(req) {
 async function cacheFirst(req) {
   const cache = await caches.open(CACHE);
   const hit = await cache.match(req);
-  if (hit) return hit;
+  if (hit && hit.type !== 'opaque') return hit;
   const res = await fetch(req);
-  if (res.ok || res.type === 'opaque') cache.put(req, res.clone());
+  if (res.ok) cache.put(req, res.clone());
   return res;
-}
-
-async function staleWhileRevalidate(req) {
-  const cache = await caches.open(CACHE);
-  const hit = await cache.match(req);
-  const update = fetch(req).then((res) => { if (res.ok || res.type === 'opaque') cache.put(req, res.clone()); return res; }).catch(() => hit);
-  return hit || update;
 }
 
 self.addEventListener('fetch', (e) => {
@@ -62,8 +55,9 @@ self.addEventListener('fetch', (e) => {
   if (url.origin === self.location.origin) {
     // solo i file della Quest: il resto del sito (giochi, catalogo) non passa di qui
     if (url.pathname.startsWith(new URL('./', self.registration.scope).pathname)) e.respondWith(networkFirst(req));
+    // i font locali del sito non cambiano a parità di nome: dalla cache, così la Quest offline ha i suoi caratteri
+    else if (url.pathname.startsWith('/content/assets/fonts/')) e.respondWith(cacheFirst(req));
     return;
   }
   if (isVersionedCdn(url)) e.respondWith(cacheFirst(req));
-  else if (isFont(url)) e.respondWith(staleWhileRevalidate(req));
 });

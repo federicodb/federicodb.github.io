@@ -586,17 +586,6 @@ def _blocco_storia(item, root):
 SCHEDE_DIR = "schede"
 
 
-def _sezione_studenti(corpo_md):  # (non più usata dalle schede, che hanno content/schede/)
-    """ (punti e prova in HTML, soluzione in HTML) dalla sezione "Per prepararti alla verifica" di una nota """
-    m = re.search(r"## Per prepararti alla verifica\s*\n(.*?)(?=\n## |\Z)", corpo_md, re.S)
-    if not m:
-        return "", ""
-    testo = m.group(1)
-    sol = re.search(r'<details[^>]*>\s*<summary>[^<]*</summary>(.*?)</details>', testo, re.S)
-    testo = re.sub(r'<details[^>]*>.*?</details>', "", testo, flags=re.S)
-    return _markdown_con_formule(testo), (_markdown_con_formule(sol.group(1)) if sol else "")
-
-
 SCHEDE_SRC = os.path.join("content", "schede")
 
 
@@ -687,14 +676,12 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
     <title>Scheda: {titolo} | Orfini Math Lab</title>
     <meta name="description" content="Scheda da stampare: {html.escape(it.get('excerpt', ''))[:150]}">
     <meta name="robots" content="noindex">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    <link href="/content/assets/fonts/inter-syne-7f8620.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
         onload="renderMathInElement(document.body, {{delimiters: [{{left: '$$', right: '$$', display: true}}, {{left: '$', right: '$', display: false}}]}});"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{root}schede.css">
 </head>
 <body>
@@ -759,12 +746,10 @@ def _scrivi_indice_schede(indice, riforma):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schede da stampare | Orfini Math Lab</title>
     <meta name="description" content="Schede da stampare o salvare in PDF: ripasso, regole, esercizi con soluzioni e QR verso l'attività di Orfini Math Lab.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    <link href="/content/assets/fonts/inter-syne-7f8620.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
         onload="renderMathInElement(document.body, {{delimiters: [{{left: '$', right: '$', display: false}}]}});"></script>
     <link rel="stylesheet" href="../schede.css">
 </head>
@@ -939,12 +924,10 @@ def _pagina(root, titolo, descrizione, canonical, immagine, corpo, extra_head=""
     <meta property="og:title" content="{html.escape(titolo)}">
     <meta property="og:description" content="{html.escape(descrizione)}">
     <meta property="og:image" content="{immagine}">
-{extra_head}    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+{extra_head}    <link href="/content/assets/fonts/inter-syne-spacemono-7547e1.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
         onload="renderMathInElement(document.body, {{delimiters: [{{left: '$$', right: '$$', display: true}}, {{left: '$', right: '$', display: false}}]}});"></script>
     <link rel="stylesheet" href="{root}index.css">
     <link rel="stylesheet" href="{root}cookie-consent.css">
@@ -1181,7 +1164,7 @@ def build_journal(items, base_url, verifiche=()):
                             && parole.every(function (w) {{ return li.dataset.testo.indexOf(w) !== -1; }});
                         li.hidden = !ok; if (ok) shown++;
                     }});
-                    var chip = att && document.querySelector('.filter-chip[data-attivita="' + att + '"]');
+                    var chip = att && document.querySelector('.filter-chip[data-attivita="' + (window.CSS && CSS.escape ? CSS.escape(att) : att.replace(/["\\\\]/g, '')) + '"]');
                     var filtri = [];
                     if (chip) filtri.push('attività: ' + chip.textContent);
                     if (parole.length) filtri.push('ricerca: "' + input.value.trim() + '"');

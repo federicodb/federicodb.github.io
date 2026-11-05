@@ -140,11 +140,17 @@ test('ogni pezzo è un solido unico chiuso (niente gusci separati, niente giunzi
           const a = [t[i], t[i + 1], t[i + 2]], b = [t[i + 3], t[i + 4], t[i + 5]], c = [t[i + 6], t[i + 7], t[i + 8]];
           vol += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6; }
         let open = 0; for (const [e, n] of E) { const [x, y] = e.split('|'); if ((E.get(y + '|' + x) || 0) !== n) open++; }
+        // gusci: componenti connesse dei triangoli (vertici in comune)
+        const par = new Map(), find = x => { while (par.get(x) !== x) { par.set(x, par.get(par.get(x))); x = par.get(x); } return x; };
+        for (let i = 0; i < t.length; i += 9) { const k = [key(i), key(i + 3), key(i + 6)]; k.forEach(v => { if (!par.has(v)) par.set(v, v); });
+          par.set(find(k[1]), find(k[0])); par.set(find(k[2]), find(k[0])); }
+        const shells = new Set([...par.keys()].map(find)).size;
+        const want = p.id === 'fidget' ? O.state.M.P.N + 2 : 1;
         let lv = vol; if (p.layers) { lv = 0; for (const L of p.layers) for (const sh of L.shapes) { lv += Math.abs(O.areaP([O.polyP(sh.outer)])) * L.t; for (const h of sh.holes) lv -= Math.abs(O.areaP([O.polyP(h)])) * L.t; } }
-        out.push({ mid, id: p.id, open, vol: +vol.toFixed(1), lv: +lv.toFixed(1) }); } }
+        out.push({ mid, id: p.id, open, shells, want, vol: +vol.toFixed(1), lv: +lv.toFixed(1) }); } }
     return out;
   });
-  for (const x of r) { expect(x.open, JSON.stringify(x)).toBe(0); expect(Math.abs(x.vol - x.lv) / x.lv, JSON.stringify(x)).toBeLessThan(1e-3); }
+  for (const x of r) { expect(x.open, JSON.stringify(x)).toBe(0); expect(x.shells, JSON.stringify(x)).toBe(x.want); expect(Math.abs(x.vol - x.lv) / x.lv, JSON.stringify(x)).toBeLessThan(1e-3); }
 });
 
 test('STL validi e pezzi che entrano nel piatto per ogni stampante', async ({ page }) => {
@@ -162,4 +168,51 @@ test('STL validi e pezzi che entrano nel piatto per ogni stampante', async ({ pa
     return res;
   });
   for (const x of r) { expect(x.stlOk, JSON.stringify(x)).toBe(true); expect(x.allFit, JSON.stringify(x)).toBe(true); expect(x.warns, JSON.stringify(x)).toBe(0); }
+});
+
+test('ingombri dei pezzi senza mesh uguali a quelli della mesh; denti del sole dentro i limiti', async ({ page }) => {
+  const r = await page.evaluate(() => {
+    const O = window.OCM, bad = [];
+    for (const mid of ['ruota', 'reuleaux', 'rulli', 'cardano', 'planetario']) { O.setMech(mid);
+      for (const p of (O.state.M.printParts || O.state.M.parts)) { const q = Object.assign({}, p); delete q._mesh; delete q._dims;
+        const d = O.partDims(q), m = O.partMesh(p); for (const k of ['w', 'h', 'd']) if (Math.abs(d[k] - m[k]) > 0.02) bad.push([mid, p.id, k, d[k], m[k]]); } }
+    O.setMech('planetario'); Object.assign(O.state.P.planetario, { zs: 30, zp: 11, N: 4 }); O.setMech('planetario');
+    return { bad, notes: O.state.M.notes.join(' ') };
+  });
+  expect(r.bad).toEqual([]);
+  const z = +(r.notes.match(/portati a (\d+)/) || [])[1];
+  expect(z).toBe(29);
+  expect(z).toBeLessThanOrEqual(30);
+  expect((2 * z + 22) % 4).toBe(0);
+});
+
+test('Spiegami: si apre sulla scena del meccanismo, si chiude con Esc anche dall\'animazione, il focus torna al pulsante', async ({ page }) => {
+  await page.evaluate(() => window.OCM.setMech('rulli'));
+  const btn = page.locator('.mode-explain');
+  await btn.click();
+  await expect(page.locator('#explain')).toBeVisible();
+  await expect(page.locator('#explainFrame')).toHaveAttribute('src', 'ruota_quadrata_cinematismi_spiegazione.html?embed=1#rulli');
+  expect(await page.evaluate(() => document.querySelector('main').inert)).toBe(true);
+  const frame = page.frameLocator('#explainFrame');
+  await frame.locator('canvas').click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#explain')).toBeHidden();
+  await expect(btn).toBeFocused();
+  expect(await page.evaluate(() => document.querySelector('main').inert)).toBe(false);
+  // a fine scena non si chiude da sola
+  await page.locator('header [data-explain=""]').click();
+  await page.waitForTimeout(300);
+  await expect(page.locator('#explain')).toBeVisible();
+  await page.locator('#explainClose').click();
+  await expect(page.locator('#explain')).toBeHidden();
+});
+
+test('la spiegazione disegna ogni scena senza errori', async ({ page }) => {
+  const errori = []; page.on('pageerror', e => errori.push(e.message));
+  await page.goto('/content/apps/ruota_quadrata_cinematismi_spiegazione.html');
+  for (let x = 0; x < 71; x += 0.5) await page.evaluate(v => window.SPIEGA.seek(v), x);
+  expect(errori).toEqual([]);
+  await page.goto('/content/apps/ruota_quadrata_cinematismi_spiegazione.html?embed=1#planetario');
+  await expect(page.locator('#cap')).toContainText('Sole 14 denti');
+  await expect(page.locator('header')).toBeHidden();
 });

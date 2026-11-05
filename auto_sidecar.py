@@ -1,3 +1,6 @@
+import sys
+# python3 auto_sidecar.py --rinomina: rinomina davvero i file con nomi non conformi (cambia i loro URL)
+RINOMINA = '--rinomina' in sys.argv
 import os
 import json
 import re
@@ -133,7 +136,10 @@ def process_directory(category, default_tags):
         # Rinomina (Sanitization)
         clean_name = sanitize_filename(filename)
         clean_path = os.path.join(dir_path, clean_name)
-        if filename != clean_name:
+        if filename != clean_name and not RINOMINA:
+            # il nome del file è un URL pubblico (QR code, Classroom): si rinomina solo su richiesta esplicita
+            print(f"ℹ️ Nome da sistemare (non rinominato, usa --rinomina): '{filename}' -> '{clean_name}'")
+        elif filename != clean_name:
             if not os.path.exists(clean_path):
                 print(f"🧹 Rinomino: '{filename}' -> '{clean_name}'")
                 os.rename(file_path, clean_path)

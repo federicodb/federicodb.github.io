@@ -188,7 +188,11 @@ test('vista 3D: l\'orbita resta davanti al tavolo, senza giri completi né spost
   await page.waitForFunction(() => window.__orfini.orbita.enabled, null, { timeout: 8000 });
   await page.mouse.move(150, 120); await page.mouse.down();
   for (let i = 1; i <= 12; i++) await page.mouse.move(150 + i * 80, 120 + i * 40);
-  await page.mouse.up(); await page.waitForTimeout(1500);
+  await page.mouse.up();
+  // l'orbita ha lo smorzamento: si aspetta che la camera smetta di muoversi
+  let prev = null;
+  await expect.poll(async () => { const a = await page.evaluate(() => { const c = window.__orfini.orbita; return [c.getAzimuthalAngle(), c.getPolarAngle()]; });
+    const same = prev && Math.abs(a[0] - prev[0]) < 1e-4 && Math.abs(a[1] - prev[1]) < 1e-4; prev = a; return same; }, { intervals: [100], timeout: 8000 }).toBe(true);
   const o = await page.evaluate(() => { const c = window.__orfini.orbita; return { az: c.getAzimuthalAngle(), pol: c.getPolarAngle(), pan: c.enablePan }; });
   expect(Math.abs(o.az)).toBeLessThanOrEqual(0.62);
   expect(o.pol).toBeLessThanOrEqual(1.09);

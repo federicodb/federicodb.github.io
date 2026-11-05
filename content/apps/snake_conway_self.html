@@ -20,10 +20,8 @@
     } catch (err) { /* storage non disponibile */ }
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+  <link href="/content/assets/fonts/roboto-robotomono-c57f82.css" rel="stylesheet">
+  <link href="/content/assets/fonts/materialsymbolsrounded-8563d5.css" rel="stylesheet">
 
   <style>
     html { font-size: clamp(14px, calc(8px + 0.5vmin + 0.25vmax), 22px); }
@@ -3314,7 +3312,24 @@
       $('explain').addEventListener('click', (e) => { if (e.target.id === 'explain') closeExplainer(); });
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('explain').hidden) closeExplainer(); });
       window.addEventListener('message', (e) => {
-        if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-finita') setTimeout(closeExplainer, 1500);
+        /* Finestra della spiegazione: chiusa solo da chi guarda (✕, Esc, clic fuori, Esc dentro l'animazione);
+           mentre è aperta il resto della pagina è inerte, alla chiusura il focus torna al pulsante che l'ha aperta */
+        (() => {
+          const box = document.getElementById('explain'); if (!box) return;
+          let opener = null; const prev = new Map();
+          document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
+          document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
+          new MutationObserver(() => {
+            if (!box.hidden) {
+              for (let n = box; n && n !== document.body; n = n.parentElement)
+                for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
+            } else {
+              prev.forEach((v, s) => { s.inert = v; }); prev.clear();
+              if (opener && document.contains(opener) && opener.focus) opener.focus();
+            }
+          }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
+        })();
+        if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-chiudi' && e.source === document.getElementById('explainFrame').contentWindow) closeExplainer();
       });
       document.addEventListener('click', (e) => {
         const b = e.target.closest('[data-explain]');

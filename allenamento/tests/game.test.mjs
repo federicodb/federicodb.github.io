@@ -115,6 +115,15 @@ const dec = decode(code); assert.equal(dec.data.n, 'Mario Rossi'); assert.equal(
 const tampered = code.replace(/\.([A-Za-z0-9_-])/, (m, ch) => '.' + (ch === 'A' ? 'B' : 'A'));
 assert.ok(decode(tampered).error);
 assert.equal(decodeMany(`ciao ${code}\n${code}`).length, 2);
+// un codice costruito a mano (la firma si può rifare) non porta HTML né tipi sbagliati nel registro
+{
+  const evil = decode(encode({ n: '<b>x</b>', c: 42, xp: '<img src=x onerror=alert(1)>', lv: '7', s: -3, i10: '<svg>', i13: null,
+    d: '<script>', a: { pitagora: ['2', '90'], 'x"><img': [1, 1], solidi: 'tre' } })).data;
+  assert.equal(evil.xp, 0); assert.equal(evil.lv, 7); assert.equal(evil.s, 0); assert.equal(evil.i10, 0); assert.equal(evil.i13, null);
+  assert.equal(evil.c, '42'); assert.equal(evil.d, ''); assert.equal(evil.n, '<b>x</b>');
+  assert.deepEqual(evil.a, { pitagora: [2, 90] });
+  assert.ok(decode(encode([1, 2])).error);
+}
 // più utenti sullo stesso dispositivo: le chiavi dei giochi del sito non si toccano
 {
   const mem = { arcade_classifica: '[{"nome":"3EL","punti":990}]', orfini_theme: 'dark' };

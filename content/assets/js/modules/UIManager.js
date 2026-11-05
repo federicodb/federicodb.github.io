@@ -213,11 +213,22 @@ export class UIManager {
         return this.semanticLabels[key] || label;
     }
 
+    // I dati del catalogo finiscono in innerHTML: si scrivono sempre come testo (KaTeX legge poi il testo, entità comprese)
+    esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    }
+
+    // Indirizzi: solo relativi, http(s) o mailto; niente javascript: o data:
+    safeUrl(u) {
+        const s = String(u ?? '').trim();
+        return /^[a-z][a-z0-9+.-]*:/i.test(s) && !/^(https?|mailto):/i.test(s) ? '#' : this.esc(s);
+    }
+
     formatMath(text) {
         if (!text) return text;
-        
+
         // Risoluzione stringhe fisse (come SQRT(2) o PI GRECO) usate nei tags prima del regex standard
-        let corrected = text.replace(/SQRT\(2\)/gi, '$\\sqrt{2}$')
+        let corrected = this.esc(text).replace(/SQRT\(2\)/gi, '$\\sqrt{2}$')
                             .replace(/PI GRECO/gi, '$\\pi$');
         
         corrected = corrected.replace(/\\(PI|PHI|ALPHA|BETA|GAMMA|DELTA|EPSILON|ZETA|ETA|THETA|IOTA|KAPPA|LAMBDA|MU|NU|XI|OMICRON|RHO|SIGMA|TAU|UPSILON|CHI|PSI|OMEGA|SQRT)\b/g, (match, p1) => {
@@ -306,11 +317,11 @@ export class UIManager {
         const competenciesHtml = categories.competencies.slice(0, 3).map(c => `
             <div class="competency-item">
                 <span class="comp-dot"></span>
-                <span class="comp-text"><a href="competenze.html#${c.code}" style="color: var(--primary); text-decoration: none; font-weight: 700;">${c.code}:</a> ${this.formatMath(c.text)}</span>
+                <span class="comp-text"><a href="competenze.html#${encodeURIComponent(c.code)}" style="color: var(--primary); text-decoration: none; font-weight: 700;">${this.esc(c.code)}:</a> ${this.formatMath(c.text)}</span>
             </div>
         `).join('');
 
-        const topicsHtml = categories.topics.slice(0, 7).map(t => `<button class="topic-chip" onclick="window.setGlobalFilter('${t.replace(/'/g, "\\'")}')">${this.formatMath(t)}</button>`).join('');
+        const topicsHtml = categories.topics.slice(0, 7).map(t => `<button class="topic-chip" data-topic="${this.esc(t)}" onclick="window.setGlobalFilter(this.dataset.topic)">${this.formatMath(t)}</button>`).join('');
         
         const isExternalOrPdf = (url) => url.startsWith('http') || url.endsWith('.pdf');
 
@@ -323,8 +334,8 @@ export class UIManager {
                         ${item.versions.map((v, i) => {
                             const targetVal = isExternalOrPdf(v.url) ? '_blank' : '_self';
                             return `
-                                <a href="${v.url}" target="${targetVal}" class="v-btn">
-                                    ${this.getCleanLabel(v.label) || ('V' + (i+1))}
+                                <a href="${this.safeUrl(v.url)}" target="${targetVal}" class="v-btn">
+                                    ${this.esc(this.getCleanLabel(v.label)) || ('V' + (i+1))}
                                 </a>
                             `;
                         }).join('')}
@@ -334,14 +345,14 @@ export class UIManager {
         } else {
             const targetVal = isExternalOrPdf(item.url) ? '_blank' : '_self';
             versionsHtml = `
-                <a href="${item.url}" target="${targetVal}" class="main-cta-btn">
+                <a href="${this.safeUrl(item.url)}" target="${targetVal}" class="main-cta-btn">
                     Esplora Attività 
                     <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
             `;
         }
 
-        const bgStyle = item.thumbnail ? `style="background-image: url('${item.thumbnail}')"` : '';
+        const bgStyle = item.thumbnail ? `style="background-image: url('${this.safeUrl(item.thumbnail).replace(/[()]/g, (c) => '%' + c.charCodeAt(0).toString(16))}')"` : '';
 
         el.innerHTML = `
             <div class="card-bg" ${bgStyle}></div>
@@ -350,7 +361,7 @@ export class UIManager {
             <div class="card-content">
                 <div class="card-top-meta">
                     <span class="type-badge">${typeLabels[item.type] || 'Attività'}</span>
-                    ${categories.class ? `<span class="class-badge">${categories.class}</span>` : ''}
+                    ${categories.class ? `<span class="class-badge">${this.esc(categories.class)}</span>` : ''}
                 </div>
 
                 <div class="card-main">
@@ -365,7 +376,7 @@ export class UIManager {
                 <div class="card-footer">
                     <div class="topics-pills">${topicsHtml}</div>
                     ${versionsHtml}
-                    ${item.scheda ? `<a href="${item.scheda}" class="card-scheda">Scheda da stampare</a>` : ''}
+                    ${item.scheda ? `<a href="${this.safeUrl(item.scheda)}" class="card-scheda">Scheda da stampare</a>` : ''}
                 </div>
             </div>
         `;
@@ -388,9 +399,9 @@ export class UIManager {
     openModal(item) {
         let content = '';
         if (item.type === 'image' || item.type === 'infographic') {
-            content = `<img src="${item.url}" style="max-width:100%; max-height:80vh; border-radius:12px; display:block; margin:0 auto;">`;
+            content = `<img src="${this.safeUrl(item.url)}" alt="" style="max-width:100%; max-height:80vh; border-radius:12px; display:block; margin:0 auto;">`;
         } else if (item.type === 'video') {
-            content = `<video src="${item.url}" controls autoplay style="width:100%; border-radius:12px;"></video>`;
+            content = `<video src="${this.safeUrl(item.url)}" controls autoplay style="width:100%; border-radius:12px;"></video>`;
         }
         
         this.els.modalContent.innerHTML = content;

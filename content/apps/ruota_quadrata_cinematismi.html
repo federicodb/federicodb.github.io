@@ -10,9 +10,9 @@
 <meta name="keywords" content="Ruota quadrata, Catenaria, Triangolo di Reuleaux, Teorema di Barbier, Cardano, Ingranaggi, Evolvente, Planetario, Formula di Willis, Print in place, Stampa 3D, OpenSCAD, Bambu Lab, Coding, MAT_K3:Geometria, MAT_K4:Funzioni, IND_C2:Coding, 1 EL, 2 EL, 3 EL, 4 EL, 5 EL">
 <meta name="allenamento" content="goniometria, esponenziali, proporzioni, pitagora, solidi">
 <meta name="date" content="2026-11-04">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" integrity="sha384-wagZhIFgY4hD+7awjQjR4e2E294y6J2HSnd8eTNc15ZubTeQeVRZwhQJ+W6hnBsf" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js" integrity="sha384-oV9/r5hoq7qHFHfbghYwt50E2fe8J20vXRW0eIGQl20k40zMEAhSXMCh9ANASVB9" crossorigin="anonymous"></script>
 <style>
 :root{--bg:#000;--panel:#0d0f13;--panel2:#161a21;--line:rgba(255,255,255,.12);--txt:#e8eaed;--mut:#9aa3ad;--acc:#ffd54a;--acc2:#4dd0e1;--bad:#ff8a80;--ok:#7be0a0}
 *{box-sizing:border-box}
@@ -297,13 +297,18 @@ function stlOf(list){let n=0;list.forEach(o=>n+=o.tris.length/9);const buf=new A
 const partStl=part=>stlOf([partMesh(part)]);
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
 function packPlates(parts,bed){const Us=bed-2*MARGIN,items=[];
-  for(const p of parts){const b=partMesh(p);for(let i=0;i<(p.qty||1);i++)items.push({part:p,b,fit:b.w<=Us&&b.h<=Us&&b.d<=bed});}
+  for(const p of parts){const b=partDims(p);for(let i=0;i<(p.qty||1);i++)items.push({part:p,b,fit:b.w<=Us&&b.h<=Us&&b.d<=bed});}
   items.sort((a,b)=>b.b.h-a.b.h);const plates=[];let cur=null,x=0,y=0,rowH=0;
   const fresh=()=>{cur={items:[]};plates.push(cur);x=0;y=0;rowH=0;};
   for(const it of items){if(!cur)fresh();if(x+it.b.w>Us&&x>0){x=0;y+=rowH+GAP;rowH=0;}
     if(y+it.b.h>Us&&cur.items.length)fresh();it.px=x;it.py=y;cur.items.push(it);x+=it.b.w+GAP;rowH=Math.max(rowH,it.b.h);}
   return plates;}
-const plateStl=pl=>stlOf(pl.items.map(it=>({tris:it.b.tris,dx:MARGIN+it.px,dy:MARGIN+it.py})));
+const plateStl=pl=>stlOf(pl.items.map(it=>({tris:partMesh(it.part).tris,dx:MARGIN+it.px,dy:MARGIN+it.py})));
+/* Ingombro del pezzo già orientato per la stampa, senza triangolare: la mesh si calcola solo quando si scarica l'STL */
+function partDims(part){if(part._mesh)return part._mesh;if(part._dims)return part._dims;const b=partBBox(part),T=ORIENT[part.print||'flat'];
+  let x0=1e9,y0=1e9,z0=1e9,x1=-1e9,y1=-1e9,z1=-1e9;
+  for(const x of[b.x0,b.x1])for(const y of[b.y0,b.y1])for(const z of[b.z0,b.z1]){const v=T(x,y,z);x0=Math.min(x0,v[0]);x1=Math.max(x1,v[0]);y0=Math.min(y0,v[1]);y1=Math.max(y1,v[1]);z0=Math.min(z0,v[2]);z1=Math.max(z1,v[2]);}
+  return part._dims={w:x1-x0,h:y1-y0,d:z1-z0};}
 function partBBox(part){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9,z0=1e9,z1=-1e9;
   if(part.tris){const t=part.tris;for(let i=0;i<t.length;i+=3){x0=Math.min(x0,t[i]);x1=Math.max(x1,t[i]);y0=Math.min(y0,t[i+1]);y1=Math.max(y1,t[i+1]);z0=Math.min(z0,t[i+2]);z1=Math.max(z1,t[i+2]);}return{x0,y0,x1,y1,z0,z1};}
   for(const L of part.layers){for(const sh of L.shapes)for(const p of sh.outer){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}z0=Math.min(z0,L.z0);z1=Math.max(z1,L.z0+L.t);}
@@ -500,7 +505,8 @@ const rot2=(pts,a,x=0,y=0)=>{const c=Math.cos(a),s=Math.sin(a);return pts.map(p=
 const frac=x=>x-Math.floor(x);
 function buildPlanetario(P,bed){
   const m=P.m,h=P.h,N=P.N,zp=P.zp,c=P.gioco,beta=P.beta*PI/180,hex=P.foro,warns=[],notes=[];
-  let zs=P.zs;while((2*zs+2*zp)%N!==0)zs++;
+  /* condizione di montaggio: il valore valido più vicino dentro i limiti dello slider (10-30), prima verso l'alto */
+  let zs=P.zs;for(let d=0;d<=20;d++){if(P.zs+d<=30&&(2*(P.zs+d)+2*zp)%N===0){zs=P.zs+d;break;}if(P.zs-d>=10&&(2*(P.zs-d)+2*zp)%N===0){zs=P.zs-d;break;}}
   if(zs!==P.zs)notes.push('Denti del sole portati a '+zs+': sole + corona deve essere divisibile per '+N+' (condizione di montaggio).');
   const zr=zs+2*zp,rs=m*zs/2,rp=m*zp/2,rr=m*zr/2,ac=rs+rp,tE=PI*m/2-c/2,tI=PI*m/2+c/2;
   const sunO=gearOutline(zs,m,tE,rs+m,rs-1.25*m),plO=gearOutline(zp,m,tE,rp+m,rp-1.25*m),cav=gearOutline(zr,m,tI,rr+1.25*m,rr-m);
@@ -823,9 +829,11 @@ function setCamera(mode){const asp=Math.max(.4,view.clientWidth/Math.max(1,view.
   camera.far=d*12;camera.updateProjectionMatrix();controls.update();}
 function applyPose(){const ps=state.M.poses(state.s);for(const id in groups){const q=ps[id]||{x:0,y:0,rot:0};groups[id].position.set(q.x,q.y,0);groups[id].rotation.z=q.rot;}traceObjs.forEach(l=>l.visible=state.showTraces);}
 function resize(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix();}
-function frame(){controls.update();renderer.render(scene,camera);requestAnimationFrame(frame);}
+/* con la spiegazione aperta la scena 3D non si ridisegna: un'animazione alla volta */
+const explainOpen=()=>!$('explain').hidden;
+function frame(){if(!explainOpen()){controls.update();renderer.render(scene,camera);}requestAnimationFrame(frame);}
 let last=performance.now();
-function tick(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(state.playing&&state.M){state.s=(state.s+dt/14)%1;$('s').value=Math.round(state.s*1000);applyPose();drawChart();}requestAnimationFrame(tick);}
+function tick(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(state.playing&&state.M&&!explainOpen()){state.s=(state.s+dt/14)%1;$('s').value=Math.round(state.s*1000);applyPose();drawChart();}requestAnimationFrame(tick);}
 
 function drawChart(){const cv=$('chart'),dpr=Math.min(devicePixelRatio||1,2),W=cv.clientWidth,H=cv.clientHeight;
   if(cv.width!==W*dpr||cv.height!==H*dpr){cv.width=W*dpr;cv.height=H*dpr;}
@@ -862,7 +870,7 @@ function renderOut(){const M=state.M,bed=bedNow(),Us=bed-2*MARGIN;
   $('legend').innerHTML=M.chart.series.map(s=>'<span><i style="background:'+s.color+'"></i>'+s.label+'</span>').join('');
   const PP=M.printParts||M.parts,plates=packPlates(PP,bed),plateOf={};plates.forEach((pl,i)=>pl.items.forEach(it=>(plateOf[it.part.id]=plateOf[it.part.id]||[]).push(i+1)));
   const tb=$('parts');tb.innerHTML='';
-  PP.forEach(p=>{const b=partMesh(p),fitOk=b.w<=Us&&b.h<=Us&&b.d<=bed,tr=document.createElement('tr');
+  PP.forEach(p=>{const b=partDims(p),fitOk=b.w<=Us&&b.h<=Us&&b.d<=bed,tr=document.createElement('tr');
     tr.innerHTML='<td>'+p.name+'</td><td>'+(p.qty||1)+'</td><td>'+ORIENT_TXT[p.print||'flat']+'</td><td>'+f2(b.w,1)+' × '+f2(b.h,1)+' × '+f2(b.d,1)+' h</td><td class="'+(fitOk?'ok':'no')+'">'+(fitOk?'sì ('+(plateOf[p.id]||[]).join(', ')+')':'NON entra')+'</td><td><button class="btn">STL</button></td>';
     tr.querySelector('button').onclick=()=>download(partStl(p),state.mech+'_'+p.id+'.stl');tb.appendChild(tr);});
   const pbx=$('plates');pbx.innerHTML='';
@@ -891,11 +899,28 @@ function closeExplainer(){$('explain').hidden=true;$('explainFrame').src='about:
 $('explainClose').addEventListener('click',closeExplainer);
 $('explain').addEventListener('click',e=>{if(e.target.id==='explain')closeExplainer();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('explain').hidden)closeExplainer();});
-addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.type==='spiegazione-finita')setTimeout(closeExplainer,1500);});
+/* Finestra della spiegazione: chiusa solo da chi guarda (✕, Esc, clic fuori, Esc dentro l'animazione);
+   mentre è aperta il resto della pagina è inerte, alla chiusura il focus torna al pulsante che l'ha aperta */
+(() => {
+  const box = document.getElementById('explain'); if (!box) return;
+  let opener = null; const prev = new Map();
+  document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
+  document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
+  new MutationObserver(() => {
+    if (!box.hidden) {
+      for (let n = box; n && n !== document.body; n = n.parentElement)
+        for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
+    } else {
+      prev.forEach((v, s) => { s.inert = v; }); prev.clear();
+      if (opener && document.contains(opener) && opener.focus) opener.focus();
+    }
+  }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
+})();
+addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.type === 'spiegazione-chiudi' && e.source === document.getElementById('explainFrame').contentWindow) closeExplainer();});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-explain]');if(b)openExplainer(b.dataset.explain==='mode'?state.mech:b.dataset.explain);});
 
 /* API per i test */
-window.OCM={state,MECH,PRINTERS,CL,SC,toP,fromP,polyP,I,D,U,OFF,xf,areaP,partMesh,partStl,packPlates,gearAddendumOK,
+window.OCM={state,MECH,PRINTERS,CL,SC,toP,fromP,polyP,I,D,U,OFF,xf,areaP,partMesh,partDims,partStl,packPlates,gearAddendumOK,
   setMech:id=>{state.mech=id;renderTabs();renderParams();rebuild();},
   setPrinter:id=>{state.printer=id;$('printer').value=id;renderParams();rebuild();},
   setParam:(k,v)=>{state.P[state.mech][k]=v;rebuild();},setTol:v=>{state.c=v;$('c').value=v;rebuild();},

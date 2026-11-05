@@ -5,6 +5,8 @@ import re
 from datetime import datetime
 import html
 import subprocess
+import shutil
+import sys
 
 # --- GESTIONE VARIABILI D'AMBIENTE (TENTATIVO .ENV) ---
 env_path = os.path.join(os.path.dirname(__file__), ".env")
@@ -17,7 +19,10 @@ if os.path.exists(env_path):
                     os.environ[k.strip()] = v.strip()
                 except: pass
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+# Gemini si usa solo su richiesta esplicita (python3 build.py --ai, oppure ORFINI_AI=1): la sola presenza
+# della chiave nel .env non basta, così un build normale non invia contenuti a servizi esterni.
+AI_RICHIESTA = "--ai" in sys.argv or os.environ.get("ORFINI_AI") == "1"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "") if AI_RICHIESTA else ""
 
 # --- CONFIGURAZIONE ---
 CONTENT_DIR = "content"
@@ -154,7 +159,7 @@ def extract_markdown_meta(file_path):
             "title": os.path.basename(file_path).replace(".md", "").replace("_", " ").title(),
             "excerpt": "Nota di studio.",
             "tags": ["Appunti"],
-            "date": datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d')
+            "date": data_file(file_path)
         }
 
         # Parsing Frontmatter artigianale (per non dipendere da librerie esterne)
@@ -208,8 +213,7 @@ def extract_html_meta(file_path):
         if date_match:
             date_str = date_match.group(2)
         else:
-            timestamp = os.path.getmtime(file_path)
-            date_str = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
+            date_str = data_file(file_path)
 
         # Integrazione Gemini per App HTML (se disponibile)
         global GEMINI_API_KEY
@@ -369,40 +373,6 @@ def normalize_class_tag(tag):
     # Regex per trovare Numero e Lettere e inserire uno spazio se manca
     s = str(tag).upper().strip()
     return re.sub(r'^([1-5])([A-Z]{2,3})$', r'\1 \2', s)
-def infer_classes_from_competencies(tags):
-    """ Estrapola target espliciti (1 EL, 2 EL, etc.) in base all'argomento. """
-    has_class = False
-    for t in tags:
-        # Checka se c'è già una classe dichiarata o un livello macro (formato X YY o XYY)
-        if re.match(r'^[1-5]\s?[A-Z]{2,3}$', t, re.IGNORECASE) or t.lower() in ['biennio', 'triennio', 'trasversale'] or "/" in t:
-            has_class = True
-            break
-            
-    if has_class:
-        # Comunque normalizza i tag esistenti
-        return [normalize_class_tag(t) if re.match(r'^[1-5]\s?[A-Z]{2,3}$', t, re.IGNORECASE) else t for t in tags]
-        
-    tags_lower = [t.lower() for t in tags]
-    
-    # Dizionari Argomenti -> Indirizzi (Riforma Tecnici/Professionali)
-    base_kw = ['aritmetica', 'calcolo', 'frazioni', 'insiemi', 'potenze', 'polinomi', 'scomposizion', 'mcd', 'mcm', 'algebra']
-    terza_kw = ['retta', 'parabola', 'geometria analitica']
-    quarta_kw = ['funzioni', 'studio di funzione', 'dominio', 'disequazioni', 'fasori', 'onda', 'goniometria', 'trigonometria', 'seno', 'coseno']
-    quinta_kw = ['limiti', 'derivate', 'caos', 'sistemi dinamici', 'attrattori', 'integrali']
-    
-    if any(k in t for k in quinta_kw for t in tags_lower):
-        tags.append("5 EL")
-    elif any(k in t for k in quarta_kw for t in tags_lower):
-        tags.append("4 EL")
-    elif any(k in t for k in terza_kw for t in tags_lower):
-        tags.append("3 MEC")
-    elif any(k in t for k in base_kw for t in tags_lower):
-        tags.append("1 EL / 2 EL")
-    elif len(tags) > 0:
-        tags.append("Trasversale")
-        
-    return tags
-
 # --- DEEP CONTENT SCANNER (Motore Euristico Offline) ---
 class DeepContentScanner:
     """ 
@@ -669,8 +639,33 @@ def map_topics_to_riforma(topics):
     
     return sorted(list(set(extra_tags)))
 
+
+def data_file(path):
+    """ Data di un contenuto senza <meta name="date">: l'ultimo commit che lo tocca (uguale su ogni computer),
+        altrimenti la data di modifica del file (contenuto nuovo, non ancora in git) """
+    try:
+        out = subprocess.run(["git", "log", "-1", "--format=%cs", "--", path], capture_output=True, text=True, timeout=10).stdout.strip()
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", out):
+            return out
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y-%m-%d')
+
+
+def aggiorna_catalogo_quest():
+    """ allenamento/catalogo.json nasce da activities/catalogo.js: lo si rigenera a ogni build, così non resta indietro """
+    node = shutil.which("node")
+    if not node:
+        print("  ⚠️ node non trovato: allenamento/catalogo.json non rigenerato (lanciare node allenamento/tools/genera-catalogo.mjs)")
+        return
+    r = subprocess.run([node, "allenamento/tools/genera-catalogo.mjs"], capture_output=True, text=True, timeout=60)
+    if r.returncode:
+        sys.exit("❌ Catalogo della Quest non rigenerato:\n" + r.stderr.strip())
+    print("  🎯 " + r.stdout.strip())
+
 def main():
     items = []
+    aggiorna_catalogo_quest()
     allenamento_catalogo = load_allenamento_catalogo()
     avvisi_metadati = []
     print(f"🔄 Scansione '{CONTENT_DIR}' e altre cartelle in corso...")
@@ -767,7 +762,7 @@ def main():
                         date_match = re.search(rf'(\d{{1,2}})\s*({month_pattern})\s*(\d{{4}})?', fn_clean)
                         
                         day, month, year = "", "", ""
-                        file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
+                        file_mtime = datetime.strptime(data_file(file_path), '%Y-%m-%d')
                         
                         if date_match:
                             day, month, year = date_match.groups()
@@ -934,8 +929,7 @@ def main():
                     
                     # Fallback data se mancante nel JSON
                     if "date" not in meta:
-                         timestamp = os.path.getmtime(file_path)
-                         meta["date"] = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
+                         meta["date"] = data_file(file_path)
 
                     # --- NEW: Thumbnail Linking ---
                     # Cerca se esiste una thumbnail generata automaticamente (webp o jpg)
@@ -1089,15 +1083,16 @@ def main():
             if item.get('url') in note_per_url:
                 item['journal'] = note_per_url[item['url']]
     except ImportError as e:
-        print(f"  ⚠️ Journal saltato ({e}): installare 'markdown' nel .venv")
+        # senza Journal il database perderebbe i collegamenti alle note: meglio fermarsi che pubblicare un sito impoverito
+        sys.exit(f"❌ Journal non generato ({e}): installare 'markdown' e 'Pillow' nel .venv, poi rilanciare il build")
 
     # Scrive il file JS (Main)
-    js_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py \n   Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n*/\n\nconst {OUTPUT_VAR_NAME} = " + json.dumps(db_main, indent=4, ensure_ascii=False) + ";"
+    js_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py: non modificare a mano \n*/\n\nconst {OUTPUT_VAR_NAME} = " + json.dumps(db_main, indent=4, ensure_ascii=False) + ";"
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         f.write(js_content)
         
     # Scrive il file JS (Verifiche)
-    js_verifiche_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py \n   Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n*/\n\nconst db_verifiche = " + json.dumps(db_verifiche, indent=4, ensure_ascii=False) + ";"
+    js_verifiche_content = f"/* \n   ⚠️ GENERATO AUTOMATICAMENTE DA build.py: non modificare a mano \n*/\n\nconst db_verifiche = " + json.dumps(db_verifiche, indent=4, ensure_ascii=False) + ";"
     with open("database_verifiche.js", 'w', encoding='utf-8') as f:
         f.write(js_verifiche_content)
         
@@ -1108,7 +1103,7 @@ def main():
         import mappa_build
         mappa_build.build_mappa(db_main)
     except ImportError as e:
-        print(f"  ⚠️ Mappa saltata ({e})")
+        sys.exit(f"❌ Mappa non generata ({e})")
     
     # Iniezione SEO nell'index.html
     update_index_seo(db_main)
@@ -1151,7 +1146,8 @@ def generate_sitemap(items, extra_pages=()):
     # Home Page
     xml += '  <url>\n'
     xml += f'    <loc>{BASE_URL}</loc>\n'
-    xml += f'    <lastmod>{datetime.now().strftime("%Y-%m-%d")}</lastmod>\n'
+    # la home cambia quando cambia il catalogo: la data del contenuto più recente (non l'ora del build)
+    xml += f'    <lastmod>{max([i.get("date", "") for i in items] + [data_file("index.html")])}</lastmod>\n'
     xml += '    <changefreq>daily</changefreq>\n'
     xml += '    <priority>1.0</priority>\n'
     xml += '  </url>\n'
@@ -1160,7 +1156,7 @@ def generate_sitemap(items, extra_pages=()):
     for page, freq, prio in STATIC_PAGES:
         if not os.path.exists(page):
             continue
-        lastmod = datetime.fromtimestamp(os.path.getmtime(page)).strftime("%Y-%m-%d")
+        lastmod = data_file(page)
         xml += '  <url>\n'
         xml += f'    <loc>{BASE_URL}{page}</loc>\n'
         xml += f'    <lastmod>{lastmod}</lastmod>\n'
@@ -1181,7 +1177,7 @@ def generate_sitemap(items, extra_pages=()):
         
         xml += '  <url>\n'
         xml += f'    <loc>{full_url}</loc>\n'
-        xml += f'    <lastmod>{item.get("date", datetime.now().strftime("%Y-%m-%d"))}</lastmod>\n'
+        xml += f'    <lastmod>{item.get("date") or data_file("index.html")}</lastmod>\n'
         xml += '    <changefreq>monthly</changefreq>\n'
         xml += f'    <priority>{priority}</priority>\n'
         xml += '  </url>\n'
@@ -1218,10 +1214,10 @@ def update_index_seo(items):
             tags_str = ", ".join(item.get('tags', []))
             # Utilizzo di tag semantici article e microdati Schema.org
             catalog_html += f"""<article itemscope itemtype="https://schema.org/LearningResource">
-                <h3 itemprop="name">{item['title']}</h3>
-                <p itemprop="description">{item.get('excerpt', '')}</p>
+                <h3 itemprop="name">{html.escape(item['title'])}</h3>
+                <p itemprop="description">{html.escape(item.get('excerpt', ''))}</p>
                 <meta itemprop="learningResourceType" content="InteractiveResource">
-                <meta itemprop="keywords" content="{tags_str}">
+                <meta itemprop="keywords" content="{html.escape(tags_str)}">
             </article>\n"""
         
         print(f"  🔍 SEO Catalog: generati {seo_count} elementi (esclusa normativa)")

@@ -152,7 +152,7 @@ for (const vp of viewports) {
       // Cattura screenshot per il viewport
       const orientationName = vp.width < vp.height ? 'portrait' : 'landscape';
       await page.screenshot({
-        path: `tests/screenshots/mobile/${vp.width}x${vp.height}_${orientationName}.png`,
+        path: `test-results/screenshots/mobile/${vp.width}x${vp.height}_${orientationName}.png`,
         fullPage: true,
       });
     });

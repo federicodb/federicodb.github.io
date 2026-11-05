@@ -2847,7 +2847,24 @@ $('explainClose').addEventListener('click', closeExplainer);
 $('explain').addEventListener('click', (e) => { if (e.target.id === 'explain') closeExplainer(); });
 addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('explain').hidden) closeExplainer(); });
 addEventListener('message', (e) => {   // a fine scena si torna al gioco da soli
-  if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-finita') setTimeout(closeExplainer, 1500);
+  /* Finestra della spiegazione: chiusa solo da chi guarda (✕, Esc, clic fuori, Esc dentro l'animazione);
+     mentre è aperta il resto della pagina è inerte, alla chiusura il focus torna al pulsante che l'ha aperta */
+  (() => {
+    const box = document.getElementById('explain'); if (!box) return;
+    let opener = null; const prev = new Map();
+    document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
+    document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
+    new MutationObserver(() => {
+      if (!box.hidden) {
+        for (let n = box; n && n !== document.body; n = n.parentElement)
+          for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
+      } else {
+        prev.forEach((v, s) => { s.inert = v; }); prev.clear();
+        if (opener && document.contains(opener) && opener.focus) opener.focus();
+      }
+    }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
+  })();
+  if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-chiudi' && e.source === document.getElementById('explainFrame').contentWindow) closeExplainer();
 });
 document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-explain]'); if (!b) return;

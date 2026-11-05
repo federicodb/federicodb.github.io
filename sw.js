@@ -2,9 +2,12 @@
 // Stessa strategia della Quest (allenamento/sw.js), che ha il suo service worker e non passa di qui:
 // - file del sito: prima la rete (con la connessione si vede sempre la versione aggiornata), la copia solo se offline;
 // - librerie su CDN con la versione nell'indirizzo: dalla cache, perché a parità di indirizzo non cambiano;
-// - font e altre risorse esterne: dalla cache, aggiornate in background.
-// Per svuotare le copie sui dispositivi basta cambiare CACHE (es. 'orfini-sito-v2').
-const CACHE = 'orfini-sito-v1';
+// - altre risorse dei CDN ammessi: dalla cache, aggiornate in background; tutto il resto passa senza copie.
+// Si salvano solo risposte valide e leggibili (mai quelle opache: occupano molta quota e non passano i controlli
+// di integrità), con un tetto al numero di risorse esterne.
+// Per svuotare le copie sui dispositivi basta cambiare CACHE (v2: via le copie opache salvate dalla v1).
+const CACHE = 'orfini-sito-v2';
+const MAX_ESTERNE = 150;
 const QUEST = '/allenamento/';
 
 self.addEventListener('install', () => self.skipWaiting());
@@ -36,20 +39,31 @@ async function networkFirst(req) {
   }
 }
 
+const AMMESSI = /^(cdn\.jsdelivr\.net|unpkg\.com|cdnjs\.cloudflare\.com|cdn\.tailwindcss\.com)$/;
+// una copia vale se è leggibile; per Tailwind (senza CORS) la richiesta stessa è no-cors e la copia opaca è l'unica possibile
+const valida = (req, res) => res.ok || (res.type === 'opaque' && req.mode === 'no-cors' && new URL(req.url).hostname === 'cdn.tailwindcss.com');
+const usabile = (req, hit) => hit && !(hit.type === 'opaque' && req.mode !== 'no-cors');
+
+async function salva(cache, req, res) {
+  await cache.put(req, res);
+  const esterne = (await cache.keys()).filter((k) => new URL(k.url).origin !== self.location.origin);
+  for (const k of esterne.slice(0, Math.max(0, esterne.length - MAX_ESTERNE))) await cache.delete(k);
+}
+
 async function cacheFirst(req) {
   const cache = await caches.open(CACHE);
   const hit = await cache.match(req);
-  if (hit) return hit;
+  if (usabile(req, hit)) return hit;
   const res = await fetch(req);
-  if (res.ok || res.type === 'opaque') cache.put(req, res.clone());
+  if (valida(req, res)) await salva(cache, req, res.clone());
   return res;
 }
 
 async function staleWhileRevalidate(req) {
   const cache = await caches.open(CACHE);
   const hit = await cache.match(req);
-  const update = fetch(req).then((res) => { if (res.ok || res.type === 'opaque') cache.put(req, res.clone()); return res; }).catch(() => hit);
-  return hit || update;
+  const update = fetch(req).then(async (res) => { if (valida(req, res)) await salva(cache, req, res.clone()); return res; }).catch(() => hit);
+  return usabile(req, hit) ? hit : update;
 }
 
 self.addEventListener('fetch', (e) => {
@@ -61,7 +75,7 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(networkFirst(req));
   } else if (isVersioned(url)) {
     e.respondWith(cacheFirst(req));
-  } else if (url.protocol === 'https:') {
+  } else if (AMMESSI.test(url.hostname)) {
     e.respondWith(staleWhileRevalidate(req));
   }
 });

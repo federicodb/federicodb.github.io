@@ -36,8 +36,12 @@ test.describe('Mappa dei temi', () => {
   test('da lontano resta leggibile solo Matematica, anche con la rotella sopra un\'etichetta', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/galaxy.html');
-    await page.waitForTimeout(1500);
-    const box = await page.locator('.tag-content.is-sun').boundingBox();
+    // la galassia si assesta: si aspetta che il Sole resti fermo tra due fotogrammi invece di un tempo fisso
+    const sun = page.locator('.tag-content.is-sun');
+    await sun.waitFor();
+    let prev = null;
+    await expect.poll(async () => { const b = await sun.boundingBox(); const same = prev && b && Math.abs(b.x - prev.x) < 0.5 && Math.abs(b.y - prev.y) < 0.5; prev = b; return same; }, { intervals: [100], timeout: 10000 }).toBe(true);
+    const box = await sun.boundingBox();
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     for (let i = 0; i < 40; i++) await page.mouse.wheel(0, 400);
     await expect.poll(async () => page.evaluate(() => [...document.querySelectorAll('.galaxy-tag')]

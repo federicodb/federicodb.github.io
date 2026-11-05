@@ -10,7 +10,7 @@
 
     const DEFAULT_CONSENT = {
         necessary: true,   // Cookie tecnici essenziali (sempre attivi)
-        analytics: false,  // Statistiche ed analitici
+        analytics: false,  // sempre false: il sito non ha strumenti analitici (campo tenuto per i consensi già salvati)
         functional: false, // Widget ed embed interattivi
         timestamp: null
     };
@@ -41,6 +41,7 @@
         applyConsents();
         hideBanner();
         hideModal();
+        try { document.dispatchEvent(new CustomEvent('orfini-consenso', { detail: consentObj })); } catch (e) { /* browser vecchi */ }
     }
 
     function applyConsents() {
@@ -76,7 +77,7 @@
                         <span>🍪 Rispetto della Privacy e dei Cookie</span>
                     </h3>
                     <p class="cookie-description">
-                        Il <strong>Laboratorio Matematico Orfini Foligno</strong> utilizza cookie tecnici essenziali per garantire il corretto funzionamento delle applicazioni didattiche e dei simulatori. Previsto l'uso di cookie di terze parti solo previo tuo consenso. Puoi accettarli tutti, rifiutarli mantenendo solo i necessari, o personalizzare le tue preferenze. Consulta la nostra <a href="/privacy-policy.html" target="_blank" rel="noopener">Informativa Privacy e Cookie Policy</a>.
+                        Il <strong>Laboratorio Matematico Orfini Foligno</strong> utilizza cookie tecnici essenziali per garantire il corretto funzionamento delle applicazioni didattiche e dei simulatori. Non usa cookie analitici né traccianti. I contenuti di altri siti incorporati nelle pagine (come FuncLab AI) si caricano solo con il tuo consenso. Puoi accettarli, rifiutarli mantenendo solo i necessari, o personalizzare le tue preferenze. Consulta la nostra <a href="/privacy-policy.html" target="_blank" rel="noopener">Informativa Privacy e Cookie Policy</a>.
                     </p>
                 </div>
                 <div class="cookie-actions">
@@ -109,19 +110,6 @@
 
                 <div class="cookie-category-item">
                     <div class="cookie-category-header">
-                        <span class="cookie-category-title">Cookie Analitici (Anonimizzati)</span>
-                        <label class="cookie-toggle">
-                            <input type="checkbox" id="toggle-cookie-analytics">
-                            <span class="cookie-slider"></span>
-                        </label>
-                    </div>
-                    <p class="cookie-description">
-                        Ci aiutano a comprendere come gli studenti ed i docenti utilizzano i laboratori matematici per migliorare l'esperienza didattica.
-                    </p>
-                </div>
-
-                <div class="cookie-category-item">
-                    <div class="cookie-category-header">
                         <span class="cookie-category-title">Cookie Funzionali e Widget Terzi</span>
                         <label class="cookie-toggle">
                             <input type="checkbox" id="toggle-cookie-functional">
@@ -129,7 +117,7 @@
                         </label>
                     </div>
                     <p class="cookie-description">
-                        Abilitano contenuti multimediali integrati (video didattici, p5.js, Geogebra o risorse interattive esterne).
+                        Caricano contenuti di altri siti incorporati nelle pagine, come FuncLab AI (Google AI Studio). Senza questo consenso si caricano solo dopo un clic sul loro pulsante. Il sito non usa cookie analitici né traccianti.
                     </p>
                 </div>
 
@@ -155,7 +143,7 @@
 
         if (acceptAllBtn) {
             acceptAllBtn.addEventListener('click', () => {
-                saveConsent({ necessary: true, analytics: true, functional: true });
+                saveConsent({ necessary: true, analytics: false, functional: true });
             });
         }
 
@@ -171,7 +159,7 @@
 
         if (savePrefBtn) {
             savePrefBtn.addEventListener('click', () => {
-                const analytics = document.getElementById('toggle-cookie-analytics')?.checked || false;
+                const analytics = false; // il sito non ha strumenti analitici
                 const functional = document.getElementById('toggle-cookie-functional')?.checked || false;
                 saveConsent({ necessary: true, analytics, functional });
             });
@@ -195,9 +183,7 @@
         const modal = document.getElementById('cookie-settings-modal');
         if (!modal) return;
         const consent = currentConsent || DEFAULT_CONSENT;
-        const analyticsToggle = document.getElementById('toggle-cookie-analytics');
         const functionalToggle = document.getElementById('toggle-cookie-functional');
-        if (analyticsToggle) analyticsToggle.checked = consent.analytics;
         if (functionalToggle) functionalToggle.checked = consent.functional;
         modal.classList.remove('cookie-modal-hidden');
     }
@@ -233,7 +219,7 @@
             showModal();
         },
         acceptAll: function () {
-            saveConsent({ necessary: true, analytics: true, functional: true });
+            saveConsent({ necessary: true, analytics: false, functional: true });
         },
         rejectAll: function () {
             saveConsent({ necessary: true, analytics: false, functional: false });

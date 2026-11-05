@@ -81,7 +81,7 @@ test.describe('T5, T6, T7, T8: Resize, Tema LIM, Console e Screenshot Desktop', 
     await page.goto('/content/apps/math_bubble_equazione_della_retta.html');
 
     // 1. Screenshot Login
-    await page.screenshot({ path: 'tests/screenshots/desktop_01_login.png' });
+    await page.screenshot({ path: 'test-results/screenshots/desktop_01_login.png' });
 
     // Inizia partita
     await page.fill('#playerName', 'Marco LIM');
@@ -90,7 +90,7 @@ test.describe('T5, T6, T7, T8: Resize, Tema LIM, Console e Screenshot Desktop', 
     await page.waitForTimeout(300);
 
     // 2. Screenshot Livello 1
-    await page.screenshot({ path: 'tests/screenshots/desktop_02_livello1.png' });
+    await page.screenshot({ path: 'test-results/screenshots/desktop_02_livello1.png' });
 
     // 3. Screenshot Livello 4
     await page.evaluate(() => {
@@ -98,7 +98,7 @@ test.describe('T5, T6, T7, T8: Resize, Tema LIM, Console e Screenshot Desktop', 
       window.setupLevel(4);
     });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: 'tests/screenshots/desktop_03_livello4.png' });
+    await page.screenshot({ path: 'test-results/screenshots/desktop_03_livello4.png' });
 
     // 4. Screenshot Livello 5
     await page.evaluate(() => {
@@ -106,20 +106,20 @@ test.describe('T5, T6, T7, T8: Resize, Tema LIM, Console e Screenshot Desktop', 
       window.setupLevel(5);
     });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: 'tests/screenshots/desktop_04_livello5.png' });
+    await page.screenshot({ path: 'test-results/screenshots/desktop_04_livello5.png' });
 
     // 5. Screenshot Vittoria
     await page.evaluate(() => {
       window.completeGameVictory();
     });
     await page.waitForTimeout(300);
-    await page.screenshot({ path: 'tests/screenshots/desktop_05_vittoria.png' });
+    await page.screenshot({ path: 'test-results/screenshots/desktop_05_vittoria.png' });
 
     // 6. Screenshot Modalità Proiezione LIM
     await page.click('#btnRestart');
     await page.click('#btnStartGame');
     await page.click('#btnThemeToggle');
     await page.waitForTimeout(300);
-    await page.screenshot({ path: 'tests/screenshots/desktop_06_proiezione.png' });
+    await page.screenshot({ path: 'test-results/screenshots/desktop_06_proiezione.png' });
   });
 });

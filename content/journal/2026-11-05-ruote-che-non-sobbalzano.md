@@ -29,7 +29,7 @@ $$y = -a\cosh\frac{x}{a}, \qquad \cosh x = \frac{e^x + e^{-x}}{2},$$
 
 dove $a$ è metà del lato. È la stessa curva di una catenella appesa per i due capi. La funzione $\cosh$ è **pari** e ha il minimo $1$ in $x = 0$: la gobba è simmetrica e il suo punto più alto sta proprio sotto il centro della ruota. Una gobba è lunga $L \cdot \ln(1 + \sqrt2)$: per un lato di $32$ mm, circa $28{,}2$ mm.
 
-Negli altri meccanismi a compensare è una funzione diversa:
+Negli altri meccanismi a compensare la rotazione è un'altra idea:
 
 - **Reuleaux**: la larghezza è la stessa, $W$, in ogni direzione. Per questo il triangolo tocca sempre i quattro lati del foro, e la piattaforma sui rulli non si inclina. Il perimetro è $\pi W$, come quello del cerchio (teorema di Barbier).
 - **Planetario**: con la corona ferma, i satelliti girano attorno al sole in **proporzione** ai giri del sole. Con sole da $14$ denti e corona da $34$ si ha $\frac{14}{14 + 34} = \frac{14}{48} \approx 0{,}29$ giri dei satelliti per ogni giro del sole (formula di Willis).

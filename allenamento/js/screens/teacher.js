@@ -6,6 +6,8 @@ import { INDIRIZZI_BY_ID } from '../../activities/contesti.js';
 const indName = (i) => INDIRIZZI_BY_ID[i]?.name || '';
 
 const KEY = 'orfini_docente_codici';
+// Una cella che inizia con = + - @ verrebbe eseguita come formula dal foglio di calcolo: la si apre con un apostrofo
+const cell = (v) => { const t = String(v ?? ''); return /^[=+\-@\t\r]/.test(t) ? "'" + t : t; };
 
 export function viewTeacher(app) {
   let saved = '';
@@ -36,7 +38,7 @@ export function viewTeacher(app) {
     const acts = allActivities.filter((a) => rows.some((r) => r.a?.[a.id]));
     const csv = [['Studente', 'Classe', 'Indirizzo', 'Data', 'Livello', 'XP', 'Serie', 'Serie max', 'Lampo', 'INVALSI 2ª %', 'INVALSI 5ª %', 'Lezioni', 'Perfette', 'Ripassi', 'Enigmi', ...acts.map((a) => `${a.title} (stelle)`)]]
       .concat(rows.map((r) => [r.n, r.c, indName(r.i), r.d, r.lv, r.xp, r.s, r.sb, r.sp, r.i10 ?? '', r.i13 ?? '', r.ls, r.pf, r.rv, r.en, ...acts.map((a) => r.a?.[a.id]?.[0] ?? 0)]))
-      .map((row) => row.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';'))
+      .map((row) => row.map((v) => `"${cell(v).replace(/"/g, '""')}"`).join(';'))
       .join('\n');
     out.innerHTML = `
       ${bad.length ? `<p style="color:var(--bad)">${bad.length} ${bad.length === 1 ? 'codice non valido' : 'codici non validi'}: ${bad.map((b) => esc(b.error)).join('; ')}</p>` : ''}
@@ -44,12 +46,12 @@ export function viewTeacher(app) {
         <div class="spread"><h2 style="margin:0">Classifica</h2><span class="muted">${rows.length} studenti</span></div>
         <div class="table-scroll"><table class="board-table">
           <thead><tr><th>#</th><th>Studente</th><th>Classe</th><th>Indirizzo</th><th class="n">Livello</th><th class="n">XP</th><th class="n">Serie</th><th class="n">Lampo</th><th class="n">INVALSI</th><th>Aggiornato</th></tr></thead>
-          <tbody>${rows.map((r, k) => `<tr class="${k === 0 ? 'top1' : ''}"><td>${k + 1}</td><td><b>${esc(r.n || '—')}</b></td><td>${esc(r.c || '')}</td><td>${esc(indName(r.i))}</td><td class="n">${r.lv}</td><td class="n">${r.xp}</td><td class="n">${r.s} <small class="muted">(${r.sb})</small></td><td class="n">${r.sp}</td><td class="n">${r.i10 != null ? r.i10 + '%' : '–'} / ${r.i13 != null ? r.i13 + '%' : '–'}</td><td>${esc(r.d)}</td></tr>`).join('')}</tbody>
+          <tbody>${rows.map((r, k) => `<tr class="${k === 0 ? 'top1' : ''}"><td>${k + 1}</td><td><b>${esc(r.n || '—')}</b></td><td>${esc(r.c || '')}</td><td>${esc(indName(r.i))}</td><td class="n">${esc(r.lv)}</td><td class="n">${esc(r.xp)}</td><td class="n">${esc(r.s)} <small class="muted">(${esc(r.sb)})</small></td><td class="n">${esc(r.sp)}</td><td class="n">${r.i10 != null ? esc(r.i10) + '%' : '–'} / ${r.i13 != null ? esc(r.i13) + '%' : '–'}</td><td>${esc(r.d)}</td></tr>`).join('')}</tbody>
         </table></div>
       </section>
       ${acts.length ? `<section class="panel" style="margin-top:14px"><h2>Stelle per attività</h2><div class="table-scroll"><table class="board-table">
         <thead><tr><th>Studente</th>${acts.map((a) => `<th title="${esc(a.title)}">${esc(a.glyph)}</th>`).join('')}</tr></thead>
-        <tbody>${rows.map((r) => `<tr><td>${esc(r.n)}</td>${acts.map((a) => `<td class="n" title="${esc(byId[a.id].title)}: miglior risultato ${r.a?.[a.id]?.[1] ?? 0}%">${'★'.repeat(r.a?.[a.id]?.[0] ?? 0) || '·'}</td>`).join('')}</tr>`).join('')}</tbody>
+        <tbody>${rows.map((r) => `<tr><td>${esc(r.n)}</td>${acts.map((a) => `<td class="n" title="${esc(byId[a.id].title)}: miglior risultato ${esc(r.a?.[a.id]?.[1] ?? 0)}%">${'★'.repeat(Number(r.a?.[a.id]?.[0]) || 0) || '·'}</td>`).join('')}</tr>`).join('')}</tbody>
       </table></div></section>` : ''}
       <div class="row" style="margin-top:14px"><button class="btn" data-csv>Scarica CSV</button><button class="btn-ghost" data-copycsv>Copia per il foglio di calcolo</button></div>`;
     out.querySelector('[data-csv]').addEventListener('click', () => {

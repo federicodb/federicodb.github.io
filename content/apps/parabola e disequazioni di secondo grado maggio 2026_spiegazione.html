@@ -8,9 +8,7 @@
 <script>
   try { if (localStorage.getItem('orfini_theme') === 'light') document.documentElement.dataset.tema = 'chiaro'; } catch (err) { /* storage non disponibile */ }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="/content/assets/fonts/inter-spacemono-1669ae.css" rel="stylesheet">
 <style>
 /* Stessa grafica dell'app: nero AMOLED, ciano = soluzione, verde = positivo, rosa = negativo */
 :root{ --r-m:14px; --r-l:20px; --sans:'Inter',system-ui,-apple-system,sans-serif; --mono:'Space Mono',ui-monospace,monospace;
@@ -385,10 +383,10 @@ const EMBED = new URLSearchParams(location.search).has('embed');
 if (EMBED) document.documentElement.classList.add('embed');
 (() => {
   const k = SC.findIndex(s => s.id === location.hash.slice(1));
-  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
-  else if (EMBED) { t = 0; playing = true; }
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = !reduce; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = !reduce; }
 })();
-const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, location.origin); };
 const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
 function draw() {
   ctx.setTransform(S, 0, 0, S, 0, 0);
@@ -424,6 +422,7 @@ let dragging = false;
 seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
 seek.addEventListener('change', () => { dragging = false; });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && EMBED && window.parent !== window) { window.parent.postMessage({ type: 'spiegazione-chiudi' }, location.origin); return; }
   if (e.target.closest('input,button') && e.code === 'Space') return;
   if (e.code === 'Space') { e.preventDefault(); toggle(); }
   if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);

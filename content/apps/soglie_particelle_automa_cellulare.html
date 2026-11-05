@@ -5,9 +5,8 @@
 <meta name="keywords" content="Matematica, Fisica, Automi Cellulari, Gioco della Vita, Particelle, Emergenza, Complessità, Simulazione, Pensiero Computazionale, Coding, Mat:Modellizzazione, EU:STEM, EU:Digitale, CIT_4:COMPETENZA DIGITALE, IND_C2:Coding e simulazioni STEM, Lab, 3 MEC, 4 EL, MAT_C1:Linguaggio e metodi della matematica, MAT_C2:Pensiero razionale in contesti reali">
     <meta name="allenamento" content="nessuno">
 <meta name="date" content="2026-10-29">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.42.0/dist/tabler-icons.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.42.0/dist/tabler-icons.min.css"></noscript>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Mono&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.42.0/dist/tabler-icons.min.css" integrity="sha384-KmZQ67jSeOgDkmQh84hM2iGH+Am0xx0RelqoJQKc6DNWc7cx+JY47Q35VEf5FL8/" crossorigin="anonymous" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.42.0/dist/tabler-icons.min.css" integrity="sha384-KmZQ67jSeOgDkmQh84hM2iGH+Am0xx0RelqoJQKc6DNWc7cx+JY47Q35VEf5FL8/" crossorigin="anonymous"></noscript>
+<link rel="stylesheet" href="/content/assets/fonts/inter-spacemono-51abf5.css">
 <style>
 :root{
   --bg:#050507;
@@ -448,7 +447,24 @@ function closeExplainer(){document.getElementById('explain').hidden=true;documen
 document.getElementById('explainClose').addEventListener('click',closeExplainer);
 document.getElementById('explain').addEventListener('click',e=>{if(e.target.id==='explain')closeExplainer()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('explain').hidden)closeExplainer()});
-window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.type==='spiegazione-finita')setTimeout(closeExplainer,1500)});
+/* Finestra della spiegazione: chiusa solo da chi guarda (✕, Esc, clic fuori, Esc dentro l'animazione);
+   mentre è aperta il resto della pagina è inerte, alla chiusura il focus torna al pulsante che l'ha aperta */
+(() => {
+  const box = document.getElementById('explain'); if (!box) return;
+  let opener = null; const prev = new Map();
+  document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
+  document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
+  new MutationObserver(() => {
+    if (!box.hidden) {
+      for (let n = box; n && n !== document.body; n = n.parentElement)
+        for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
+    } else {
+      prev.forEach((v, s) => { s.inert = v; }); prev.clear();
+      if (opener && document.contains(opener) && opener.focus) opener.focus();
+    }
+  }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
+})();
+window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.type === 'spiegazione-chiudi' && e.source === document.getElementById('explainFrame').contentWindow) closeExplainer()});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-explain]');if(b)openExplainer(b.dataset.explain)});
 </script>
 </body></html>

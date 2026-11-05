@@ -35,6 +35,14 @@
         .stage { position: relative; flex: 1; min-height: 0; }
         .stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
         .loading { position: absolute; inset: 0; display: grid; place-items: center; color: #737373; font-size: 14px; pointer-events: none; }
+        .gate { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; overflow: auto; }
+        .gate-box { max-width: 520px; background: #0a0a0a; border: 1px solid #262626; border-radius: 16px; padding: 22px; }
+        .gate-box h1 { margin: 0 0 8px; font-size: 1.5rem; }
+        .gate-box p { margin: 0 0 12px; color: #d4d4d4; line-height: 1.5; }
+        .gate-box .gate-note { font-size: .88rem; color: #a3a3a3; }
+        .gate-box a { color: #a5b4fc; }
+        .gate-box button { font: inherit; font-weight: 700; min-height: 44px; padding: 10px 18px; border-radius: 999px; border: 0; background: #6366f1; color: #fff; cursor: pointer; }
+        .gate-box button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
         @media (max-width: 520px) { .bar .title, .bar .long { display: none; } .bar { justify-content: space-between; } }
     </style>
 </head>
@@ -45,13 +53,36 @@
         <a href="https://funclab-ai-esploratore-di-funzioni.ai.studio/" target="_blank" rel="noopener" title="Apri FuncLab AI in una nuova scheda">Apri <span class="long">a tutto schermo</span> ↗</a>
     </nav>
     <main class="stage">
-        <div class="loading" id="loading">Caricamento di FuncLab AI…</div>
-        <iframe
-            src="https://funclab-ai-esploratore-di-funzioni.ai.studio/"
-            title="FuncLab AI: Esploratore di Funzioni"
-            allow="autoplay; fullscreen; clipboard-write"
-            referrerpolicy="strict-origin-when-cross-origin"
-            onload="document.getElementById('loading').remove()"></iframe>
+        <!-- FuncLab vive su Google AI Studio: si carica solo dopo un clic (o con il consenso ai contenuti di terze parti già dato) -->
+        <div class="gate" id="gate">
+            <div class="gate-box">
+                <h1>FuncLab AI</h1>
+                <p>Descrivi una funzione a parole e l'intelligenza artificiale la disegna sul piano cartesiano, con un tutor che ti fa domande.</p>
+                <p class="gate-note">FuncLab è ospitato su <b>Google AI Studio</b> e usa Gemini: premendo il pulsante la pagina si collega ai server di Google. Non scrivere dati personali nelle richieste. <a href="../../privacy-policy.html">Informativa</a></p>
+                <button type="button" id="gateGo">Carica FuncLab AI</button>
+            </div>
+        </div>
+        <div class="loading" id="loading" hidden>Caricamento di FuncLab AI…</div>
     </main>
+    <script>
+        (() => {
+            const URL_APP = 'https://funclab-ai-esploratore-di-funzioni.ai.studio/';
+            const stage = document.querySelector('.stage'), gate = document.getElementById('gate'), loading = document.getElementById('loading');
+            function carica() {
+                if (stage.querySelector('iframe')) return;
+                gate.remove(); loading.hidden = false;
+                const f = document.createElement('iframe');
+                f.src = URL_APP; f.title = 'FuncLab AI: Esploratore di Funzioni';
+                f.allow = 'autoplay; fullscreen; clipboard-write'; f.referrerPolicy = 'strict-origin-when-cross-origin';
+                f.addEventListener('load', () => loading.remove());
+                stage.appendChild(f);
+            }
+            let consenso = false;
+            try { consenso = !!(JSON.parse(localStorage.getItem('orfini_cookie_consent') || 'null') || {}).functional; } catch (e) { /* niente memoria */ }
+            document.getElementById('gateGo').addEventListener('click', carica);
+            document.addEventListener('orfini-consenso', (e) => { if (e.detail && e.detail.functional) carica(); });
+            if (consenso) carica();
+        })();
+    </script>
 </body>
 </html>

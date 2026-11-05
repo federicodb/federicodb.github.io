@@ -4,11 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Ruote che non sobbalzano in 70 secondi</title>
+<title>Ruote che non sobbalzano in 71 secondi</title>
 <meta name="description" content="Animazione di poco più di un minuto sui cinematismi: ruota quadrata sulla catenaria, triangolo di Reuleaux, rulli a larghezza costante, planetario e coppia di Cardano (Orfini Math Lab).">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="/content/assets/fonts/inter-jetbrainsmono-59edc8.css">
 <style>
 /* Stesso look dell'app: nero AMOLED, pannelli grafite, giallo e ciano come accenti. */
 :root{
@@ -107,7 +105,7 @@ const INK = '#05070a', MUT = '#9aa3ad', FG = '#e8eaed', PANEL = '#0d0f13', PANEL
 const MODES = [
   { icon: '⬛', name: 'Ruota quadrata', tag: 'catenaria', c: Y, t: INK },
   { icon: '🔺', name: 'Reuleaux', tag: 'larghezza costante', c: OR, t: INK },
-  { icon: '🛞', name: 'Rulli', tag: 'piattaforma in piano', c: OK, t: INK },
+  { icon: '🔄', name: 'Rulli', tag: 'piattaforma in piano', c: OK, t: INK },
   { icon: '⚙️', name: 'Planetario', tag: 'formula di Willis', c: C, t: INK },
   { icon: '📏', name: 'Cardano', tag: 'il cerchio che fa una retta', c: PU, t: INK }
 ];
@@ -125,7 +123,7 @@ const SC = [
   { id: 'cardano', label: 'Cardano', a: 56, b: 66, ...MODES[4],
     cap: 'Un ingranaggio di raggio r rotola dentro una corona di raggio <b>R = 2r</b>. Un punto del suo bordo va avanti e indietro su una <b>retta</b>: x = R·cos θ, y = 0. Un punto più interno disegna un\'ellisse.' },
   { id: 'end', label: 'Riepilogo', a: 66, b: 71, c: OK,
-    cap: 'Dietro cinque meccanismi ci sono quattro funzioni: la <b>catenaria</b>, la <b>larghezza costante</b>, il <b>rapporto</b> di Willis, il <b>coseno</b> di Cardano. Ora genera il tuo meccanismo e stampalo.' }
+    cap: 'Dietro cinque meccanismi ci sono quattro idee: la funzione <b>catenaria</b>, la <b>larghezza costante</b>, il <b>rapporto</b> di Willis, il <b>coseno</b> di Cardano. Ora genera il tuo meccanismo e stampalo.' }
 ];
 
 /* ---------- helpers ---------- */
@@ -438,10 +436,10 @@ const EMBED = new URLSearchParams(location.search).has('embed');
 if (EMBED) document.documentElement.classList.add('embed');
 (() => {
   const k = SC.findIndex(s => s.id === location.hash.slice(1));
-  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = true; stopAt = SC[k].b; } }
-  else if (EMBED) { t = 0; playing = true; }
+  if (k >= 0) { t = SC[k].a + .01; if (EMBED) { playing = !reduce; stopAt = SC[k].b; } }
+  else if (EMBED) { t = 0; playing = !reduce; }
 })();
-const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, '*'); };
+const finish = () => { if (EMBED && window.parent !== window) window.parent.postMessage({ type: 'spiegazione-finita' }, location.origin); };
 const sceneAt = tt => { for (let i = SC.length - 1; i >= 0; i--) if (tt >= SC[i].a) return i; return 0; };
 
 function draw() {
@@ -481,6 +479,7 @@ let dragging = false;
 seek.addEventListener('input', () => { dragging = true; t = +seek.value; });
 seek.addEventListener('change', () => { dragging = false; });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && EMBED && window.parent !== window) { window.parent.postMessage({ type: 'spiegazione-chiudi' }, location.origin); return; }
   if (e.target.closest('input,button') && e.code === 'Space') return;
   if (e.code === 'Space') { e.preventDefault(); toggle(); }
   if (e.code === 'ArrowRight') t = Math.min(TOTAL - .01, t + 5);
