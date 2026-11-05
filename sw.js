@@ -6,6 +6,8 @@
 // Si salvano solo risposte valide e leggibili (mai quelle opache: occupano molta quota e non passano i controlli
 // di integrità), con un tetto al numero di risorse esterne.
 // Per svuotare le copie sui dispositivi basta cambiare CACHE (v2: via le copie opache salvate dalla v1).
+// Le librerie con integrity hanno "?sw2" in fondo all'indirizzo (stesso file sul CDN): così un dispositivo con ancora
+// la v1 attiva non trova la vecchia copia opaca, che il browser scarterebbe, e le scarica di nuovo con CORS.
 const CACHE = 'orfini-sito-v2';
 const MAX_ESTERNE = 150;
 const QUEST = '/allenamento/';

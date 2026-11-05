@@ -4,9 +4,13 @@
 // - Librerie su CDN con versione nell'indirizzo (KaTeX, Chart.js, JSXGraph, math.js, nerdamer): dalla cache,
 //   perché a parità di indirizzo il contenuto non cambia.
 // - I font sono copie locali del sito: nessuna richiesta a Google.
-// Si salvano solo risposte valide (mai opache). v2: via le copie della v1.
-const CACHE = 'orfini-quest-v2';
-const CORE = ['./', './index.html', './css/app.css', './js/main.js', './manifest.webmanifest', './icons/icon.svg'];
+// Si salvano solo risposte valide (mai opache). v3: KaTeX servito dalla Quest e salvato alla prima visita.
+const CACHE = 'orfini-quest-v3';
+// KaTeX è nel nucleo: le formule devono funzionare dalla prima apertura, anche senza rete
+const KATEX_FONTS = ['AMS-Regular', 'Main-Regular', 'Main-Bold', 'Main-Italic', 'Math-Italic', 'Size1-Regular', 'Size2-Regular', 'Size3-Regular', 'Size4-Regular']
+  .map((f) => './vendor/katex/fonts/KaTeX_' + f + '.woff2');
+const CORE = ['./', './index.html', './css/app.css', './js/main.js', './manifest.webmanifest', './icons/icon.svg',
+  './vendor/katex/katex.min.css', './vendor/katex/katex.min.js', './vendor/katex/contrib/auto-render.min.js', ...KATEX_FONTS];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));

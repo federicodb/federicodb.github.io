@@ -677,11 +677,11 @@ def _scrivi_schede(items, note, verifiche, riforma, base_url):
     <meta name="description" content="Scheda da stampare: {html.escape(it.get('excerpt', ''))[:150]}">
     <meta name="robots" content="noindex">
     <link href="/content/assets/fonts/inter-syne-7f8620.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
+    <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
+    <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js"
         onload="renderMathInElement(document.body, {{delimiters: [{{left: '$$', right: '$$', display: true}}, {{left: '$', right: '$', display: false}}]}});"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js?sw2" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{root}schede.css">
 </head>
 <body>
@@ -747,9 +747,9 @@ def _scrivi_indice_schede(indice, riforma):
     <title>Schede da stampare | Orfini Math Lab</title>
     <meta name="description" content="Schede da stampare o salvare in PDF: ripasso, regole, esercizi con soluzioni e QR verso l'attività di Orfini Math Lab.">
     <link href="/content/assets/fonts/inter-syne-7f8620.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
+    <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
+    <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js"
         onload="renderMathInElement(document.body, {{delimiters: [{{left: '$', right: '$', display: false}}]}});"></script>
     <link rel="stylesheet" href="../schede.css">
 </head>
@@ -925,9 +925,9 @@ def _pagina(root, titolo, descrizione, canonical, immagine, corpo, extra_head=""
     <meta property="og:description" content="{html.escape(descrizione)}">
     <meta property="og:image" content="{immagine}">
 {extra_head}    <link href="/content/assets/fonts/inter-syne-spacemono-7547e1.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
+    <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
+    <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js"
         onload="renderMathInElement(document.body, {{delimiters: [{{left: '$$', right: '$$', display: true}}, {{left: '$', right: '$', display: false}}]}});"></script>
     <link rel="stylesheet" href="{root}index.css">
     <link rel="stylesheet" href="{root}cookie-consent.css">

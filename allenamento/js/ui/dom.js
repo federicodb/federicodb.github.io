@@ -1,15 +1,35 @@
 // Strumenti dell'interfaccia: KaTeX, icone, avvisi, dialoghi.
 
-export function renderMath(el) {
-  if (!el || !window.renderMathInElement) return;
-  window.renderMathInElement(el, {
-    delimiters: [
-      { left: '$$', right: '$$', display: true },
-      { left: '$', right: '$', display: false },
-    ],
-    throwOnError: false,
-  });
+const DELIMITERS = [
+  { left: '$$', right: '$$', display: true },
+  { left: '$', right: '$', display: false },
+];
+/* Una formula non deve mai restare scritta con i dollari. KaTeX è servito dalla Quest stessa (vendor/katex) ed è
+   caricato prima dei moduli; se per qualunque motivo non è ancora pronto, gli elementi aspettano in coda e vengono
+   disegnati appena arriva, invece di essere lasciati com'erano. */
+const pending = new Set();
+function drawMath(el) {
+  window.renderMathInElement(el, { delimiters: DELIMITERS, throwOnError: false });
   fitMath(el);
+}
+function flushMath() {
+  if (!window.renderMathInElement) return false;
+  for (const el of pending) if (el.isConnected) drawMath(el);
+  pending.clear();
+  return true;
+}
+let waiting = false;
+function waitMath() {
+  if (waiting) return;
+  waiting = true;
+  const tick = () => { if (flushMath()) { waiting = false; return; } setTimeout(tick, 50); };
+  tick();
+}
+export function renderMath(el) {
+  if (!el) return;
+  if (window.renderMathInElement) { drawMath(el); return; }
+  pending.add(el);
+  waitMath();
 }
 
 /** Formule in display (e nei tasselli da ordinare) più larghe del loro spazio: si rimpiccioliscono fino al 72%;
@@ -31,8 +51,11 @@ if (typeof window !== 'undefined') {
   window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(() => fitMath(document), 150); });
 }
 export function tex(el, latex, display = false) {
-  if (window.katex) { window.katex.render(latex, el, { throwOnError: false, displayMode: display }); if (display) fitMath(el); }
-  else el.textContent = latex;
+  if (window.katex) { window.katex.render(latex, el, { throwOnError: false, displayMode: display }); if (display) fitMath(el); return; }
+  // KaTeX non ancora pronto: la formula va tra i delimitatori e in coda come le altre
+  const d = display ? '$$' : '$';
+  el.textContent = d + latex + d;
+  renderMath(el);
 }
 export function html(el, str) {
   el.innerHTML = str;

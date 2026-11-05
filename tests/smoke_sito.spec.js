@@ -5,11 +5,14 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
+const { expectFormuleDisegnate } = require('./helpers/formule');
 
 const ROOT = path.join(__dirname, '..');
 const db = new Function(fs.readFileSync(path.join(ROOT, 'database.js'), 'utf8') + '; return db;')();
 const APPS = db.filter((i) => /^content\/.+\.html$/.test(i.url)).map((i) => i.url);
 const SPIEGAZIONI = fs.readdirSync(path.join(ROOT, 'content/apps')).filter((f) => f.endsWith('_spiegazione.html')).map((f) => 'content/apps/' + f);
+const NOTE = fs.readdirSync(path.join(ROOT, 'journal'), { withFileTypes: true }).filter((d) => d.isDirectory() && /^\d{4}-/.test(d.name)).map((d) => `journal/${d.name}/`);
+const SCHEDE = fs.readdirSync(path.join(ROOT, 'schede')).filter((f) => f.endsWith('.html')).map((f) => 'schede/' + f);
 const PAGINE = ['index.html', 'competenze.html', 'verifiche.html', 'galaxy.html', 'scuola.html', 'calcolo-mentale.html', 'privacy-policy.html', '404.html', 'journal/', 'schede/'];
 
 test.use({ launchOptions: { args: ['--use-gl=angle', '--use-angle=swiftshader'] } });
@@ -38,6 +41,20 @@ test.describe('ogni app si apre senza errori', () => {
       expect(res && res.status()).toBe(200);
       await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => { /* app con animazioni o polling */ });
       expect((await page.title()).trim().length).toBeGreaterThan(0);
+      expect(errori).toEqual([]);
+      await expectFormuleDisegnate(page, url);
+    });
+  }
+});
+
+// Note del Journal, schede da stampare e pagine fisse: formule tutte disegnate (criterio in tests/helpers/formule.js)
+test.describe('formule disegnate in Journal, schede e pagine', () => {
+  test.describe.configure({ mode: 'parallel' });
+  for (const url of [...NOTE, ...SCHEDE, 'journal/', 'calcolo-mentale.html', 'competenze.html', 'index.html']) {
+    test(url, async ({ page }) => {
+      const errori = sorveglia(page);
+      await page.goto('/' + url);
+      await expectFormuleDisegnate(page, url);
       expect(errori).toEqual([]);
     });
   }
