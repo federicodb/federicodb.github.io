@@ -189,3 +189,15 @@ Ogni voce: data, decisione, motivo.
 - **Librerie**: nessuna libreria nuova nel sito. `lighthouse` è una dipendenza di sviluppo, usata solo per le misure.
 - **Interruttore Costellazione/Elenco**: presente nella barra, con "Costellazione" spenta fino alla Fase 2.
 
+## 2026-11-10 — Home a costellazione, Fase 2
+
+- **`data/mappa.json` è calcolato dal build** (`tools/mappa.mjs`, d3-force 3 come dipendenza di sviluppo) e sta nel repository. Il sito non carica d3: il browser legge le posizioni già pronte. La validazione confronta un'impronta dei dati con quella salvata nella mappa, così il workflow resta senza dipendenze e una mappa vecchia ferma la pubblicazione.
+- **Posizione**: ogni parola tende verso le sezioni in cui è più *tipica* (voci della parola nella sezione divise per le voci della sezione). Con il conteggio semplice Journal e Archivio, più piccoli, restavano angoli vuoti. **Colore e forma** seguono invece il conteggio semplice ("sezione prevalente"), e un anello mostra le altre sezioni.
+- **Una sola disposizione**: su schermo verticale si scambiano x e y, invece di calcolarne una seconda.
+- **Elasticità mantenuta, su richiesta del docente**: molle verso la posizione di riposo e tra nodi collegati, calcolate nel browser solo mentre qualcosa si muove. La posizione di riposo resta quella salvata, quindi la mappa è uguale a ogni visita. Con "riduci movimento" niente elasticità né voli.
+- **Voci del menu nella costellazione**: il primo clic su Esplora, Allenati, Journal o Archivio vola sulla sezione e apre la sua scheda (con il pulsante "Apri la Quest" e simili); il secondo clic segue il link. Nell'elenco e nelle altre pagine le voci sono link normali. È quanto chiede il brief, ma allunga di un clic la strada verso la Quest dalla home: da rivedere dopo l'uso in classe.
+- **La scheda aperta filtra anche l'elenco**: l'indirizzo porta `?parola=` o `?sezione=`, e passando all'elenco si ritrova lo stesso filtro.
+- **Ricerca sulla mappa**: accende le parole del vocabolario che corrispondono (anche per alias); solo se non ce ne sono accende le stelle delle attività che contengono il testo ("mercatore" accende modelli, proporzione, geometria).
+- **In costellazione** titolo e riquadro "Il tuo allenamento" lasciano il posto alla mappa: il titolo resta piccolo in alto, il riquadro si vede solo nell'elenco. Il piè di pagina sta sotto la mappa e si raggiunge dalla legenda ("Informazioni e licenza").
+- **Legenda chiusa in partenza**: aperta copriva la sezione Journal.
+

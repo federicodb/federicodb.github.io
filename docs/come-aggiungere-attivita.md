@@ -2,7 +2,7 @@
 
 Guida di una pagina. Titolo, descrizione e indirizzo si scrivono una volta sola, dove stanno già oggi. In più serve **una riga con le parole chiave**, cioè gli `id` di `data/vocabolario.json` (per esempio `retta`, `numeri-irrazionali`, `mcm-mcd`).
 
-`data/attivita.json` non si tocca: lo riscrive il build.
+`data/attivita.json` e `data/mappa.json` non si toccano: li riscrive il build.
 
 ## 1. Scrivi le parole chiave accanto al contenuto
 
@@ -22,7 +22,7 @@ Per un'app nuova restano validi i passi di sempre: `<title>`, `description`, `ke
 npm run build
 ```
 
-Fa tre cose in ordine: `build.py` (catalogo, Journal, schede, Mappa, sitemap, `data/attivita.json`), la validazione, poi menu ed elenco della home. Deve finire con **"Build completato senza avvisi"**.
+Fa quattro cose in ordine: `build.py` (catalogo, Journal, schede, Mappa 3D, sitemap, `data/attivita.json`), la validazione, la disposizione della costellazione (`data/mappa.json`), poi menu, elenco e costellazione della home. Se aggiungi o togli parole, le stelle si risistemano da sole. Deve finire con **"Build completato senza avvisi"**.
 
 Per guardare il risultato: `python3 -m http.server 8080` e apri `http://localhost:8080/`.
 

@@ -2,6 +2,55 @@
 
 Aggiornato a ogni fase. Legenda: ✅ verificato · ⏳ non ancora applicabile · ❌ non passa.
 
+## Fase 2 — Costellazione 2D (2026-11-10)
+
+| Criterio | Esito | Come è stato verificato |
+|---|---|---|
+| Tutti gli URL presenti su `master` rispondono ancora | ✅ | Nessun file cancellato o rinominato. `tests/smoke_sito.spec.js` come in Fase 1 (stessa app in timeout nel giro completo) |
+| Da telefono si arriva a un'attività in tre tocchi | ✅ | Due tocchi sulla mappa (stella, poi attività nella scheda) e due nell'elenco. Test a 380 px con tocco vero |
+| Home ed elenco funzionano con JavaScript spento | ✅ | Senza JavaScript la home mostra l'elenco (test della Fase 1, ancora verde) |
+| Tutto raggiungibile da tastiera, con fuoco visibile | ✅ | Test: Tab tra i 44 nodi, Invio apre, Esc chiude e riporta il fuoco sulla stella; una figlia nascosta si porta in vista; frecce, `+`, `−`, `0` |
+| Contrasto AA nei due temi | ✅ | Test su etichette, legenda e scheda nei due temi; Lighthouse accessibilità 100 |
+| Etichette leggibili a 1920 px da lontano | ✅ | Da 1800 px le etichette passano a 18 px (sezioni 21,6 px). Schermata a 1920 px. Da provare sulla LIM vera |
+| Lighthouse mobile sulla home: prestazioni ≥ 90, accessibilità ≥ 95 | ✅ | Vista costellazione: prestazioni **97-98**, accessibilità **100**. Vista elenco: prestazioni tra 92 e 97 su tre misure (su questo portatile il tempo di blocco oscilla), accessibilità 100 |
+| Mappa fluida a 380 px su un telefono di fascia media | ⚠️ non provato su un telefono vero | La mappa si ridisegna solo quando cambia qualcosa e ha 44 nodi e 118 linee. In emulazione Lighthouse (processore rallentato 4 volte) resta nella vista costellazione. Va provata su un telefono reale |
+| Nessuno scorrimento orizzontale | ✅ | Test a 380 px; tutti i nodi stanno dentro lo schermo |
+| `npm run build` passa senza avvisi | ✅ | Ora comprende il calcolo della mappa e un secondo controllo |
+| Il workflow blocca la pubblicazione se la validazione fallisce | ⚠️ non provato | Come in Fase 1. In più la validazione fallisce se `data/mappa.json` non corrisponde ai dati |
+
+### Cosa fa la costellazione
+
+- **Disposizione**: calcolata da `tools/mappa.mjs` con d3-force e salvata in `data/mappa.json`. Test: ricalcolandola si ottiene lo stesso file, byte per byte. Su schermo verticale la stessa mappa è ruotata (x e y scambiate).
+- **Tre livelli**: 4 sezioni fisse con forma e colore propri, 40 stelle, attività solo nella scheda.
+- **Stelle**: grandezza secondo il numero di voci; colore e forma della sezione che ne ha di più; un anello mostra le quote delle altre sezioni.
+- **Legami**: 102 tra parole con attività in comune (più spessi se sono di più) e 16 tra padre e figlia.
+- **Zoom semantico**: le figlie si leggono da un ingrandimento di 1,4 volte in su; le etichette non si sovrappongono mai (si nasconde quella della stella più piccola).
+- **Elasticità** (richiesta del 10 novembre): trascinando una stella, quelle collegate la seguono; al rilascio tutto torna alla posizione salvata. Test: la figlia segue, una stella non collegata quasi non si muove, alla fine lo spostamento è zero.
+- **Riduci movimento**: la mappa si apre, ma senza voli né elasticità (trascinare una stella sposta la mappa).
+- **Quale vista**: costellazione; elenco con avviso se `deviceMemory` ≤ 2, risparmio dati, oppure meno di 20 fotogrammi nel primo secondo. La scelta fatta a mano vince e si ricorda. Quattro test.
+
+### Test eseguiti
+
+| Comando | Esito |
+|---|---|
+| `npx playwright test tests/costellazione.spec.js` | 17 su 17 |
+| `npx playwright test tests/elenco.spec.js` | 10 su 10 |
+| `tests/journal`, `offline`, `competenze`, `mappa`, `calcolo_mentale` | 49 su 49 |
+| `npx playwright test tests/smoke_sito.spec.js` | 118 su 119: la stessa app 3D della Fase 1 va in timeout solo nel giro completo |
+| `tests/allenamento.spec.js -g "home|cambia utente"` | 2 su 2 |
+
+Non eseguiti: il resto dei test della Quest, Math Bubble, Pen Plotter. Nessuna prova su telefono o LIM reali.
+
+### Come provarlo in locale
+
+```
+npm run build
+python3 -m http.server 8080      # http://localhost:8080/
+npm run test:home
+```
+
+Da provare a mano: trascinare una stella grande (polinomi, funzione); rotella o due dita per ingrandire finché compaiono le figlie; cercare "frazioni", "mercatore", "invalsi" + Invio; Tab tra i nodi; "Vedi nell'elenco" dalla scheda e ritorno; il telefono in verticale; il tema chiaro; `http://localhost:8080/?vista=elenco` e `?vista=costellazione`.
+
 ## Fase 1 — Struttura, menu, vista elenco (2026-11-10)
 
 | Criterio | Esito | Come è stato verificato |
