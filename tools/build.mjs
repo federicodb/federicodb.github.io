@@ -2,7 +2,8 @@
 // npm run build: rigenera tutto il sito in locale, senza rete.
 //   1. build.py (catalogo, Journal, schede, Mappa, sitemap, data/attivita.json), senza Gemini;
 //   2. tools/valida.mjs: se i dati non sono validi ci si ferma qui;
-//   3. tools/genera.mjs: menu ed elenco della home.
+//   3. tools/mappa.mjs: disposizione della costellazione (data/mappa.json), poi un secondo controllo;
+//   4. tools/genera.mjs: menu, elenco e costellazione della home.
 // Mostra solo avvisi, errori e riepiloghi; con --tutto mostra ogni riga. Esce con 1 se un passo fallisce.
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -29,6 +30,8 @@ function passo(nome, comando, argomenti) {
 }
 
 passo('Catalogo, Journal, schede, Mappa (build.py, senza Gemini)', python, ['-c', "import build; build.GEMINI_API_KEY=''; build.main()"]);
-passo('Validazione dei dati', process.execPath, ['tools/valida.mjs']);
-passo('Menu ed elenco della home', process.execPath, ['tools/genera.mjs']);
+passo('Validazione dei dati', process.execPath, ['tools/valida.mjs', '--senza-mappa']);
+passo('Disposizione della costellazione', process.execPath, ['tools/mappa.mjs']);
+passo('Controllo della mappa', process.execPath, ['tools/valida.mjs']);
+passo('Menu, elenco e costellazione della home', process.execPath, ['tools/genera.mjs']);
 console.log(avvisi ? `\n⚠️ Build completato con ${avvisi} ${avvisi === 1 ? 'avviso' : 'avvisi'}: leggi le righe segnate qui sopra.` : '\n✓ Build completato senza avvisi.');

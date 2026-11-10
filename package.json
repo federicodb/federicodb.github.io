@@ -7,7 +7,8 @@
     "build": "node tools/build.mjs",
     "valida": "node tools/valida.mjs",
     "genera": "node tools/genera.mjs",
-    "test:home": "playwright test tests/elenco.spec.js",
+    "mappa": "node tools/mappa.mjs",
+    "test:home": "playwright test tests/elenco.spec.js tests/costellazione.spec.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@babel/standalone": "^8.0.10",
     "@playwright/test": "^1.63.0",
+    "d3-force": "^3.0.1",
     "lighthouse": "^13.6.0"
   }
 }

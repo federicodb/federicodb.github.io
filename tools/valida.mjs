@@ -3,6 +3,7 @@
 // Uso: node tools/valida.mjs            (esce con 1 se trova errori: la pubblicazione si ferma)
 //      node tools/valida.mjs --riepilogo (stampa anche quante attività ha ogni parola, per sezione)
 //      node tools/valida.mjs --dati <cartella> (legge i due file da un'altra cartella: serve per le prove)
+//      node tools/valida.mjs --senza-mappa (salta il confronto con data/mappa.json: lo usa il build prima di ricalcolarla)
 // Non usa la rete: gli indirizzi esterni (https://…) sono controllati solo nella forma.
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -155,6 +156,17 @@ for (const p of vocabolario) {
   const n = totale.get(p.id).size;
   if (n === 0) errore(`vocabolario «${p.id}»: nessuna attività la usa`);
   else if (n < MIN_ATTIVITA) errore(`vocabolario «${p.id}»: una sola attività (${[...totale.get(p.id)][0]}). Non diventa una stella: spostala nel tema più vicino`);
+}
+
+// ---------- mappa: deve essere stata calcolata da questi dati ----------
+if (!errori.length && !process.argv.includes('--senza-mappa') && iDati < 0) {
+  try {
+    const { impronta } = await import('./mappa.mjs');
+    const mappa = JSON.parse(readFileSync(join(ROOT, 'data/mappa.json'), 'utf8'));
+    if (mappa.impronta !== impronta(attivita, vocabolario)) errore('data/mappa.json non corrisponde più ai dati: lancia «npm run build» (oppure «node tools/mappa.mjs») e committa il file');
+    const ids = new Set(mappa.parole.map((p) => p.id));
+    for (const p of vocabolario) if (!ids.has(p.id)) errore(`data/mappa.json: manca la stella «${p.id}»`);
+  } catch (e) { errore(`data/mappa.json: non si legge (${e.message})`); }
 }
 
 // ---------- esito ----------
