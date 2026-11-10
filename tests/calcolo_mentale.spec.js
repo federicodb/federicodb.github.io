@@ -61,8 +61,9 @@ test.describe('Calcolo veloce', () => {
 
   test('link alla Quest e voce di menu dalla home', async ({ page }) => {
     await page.goto('/index.html');
-    const voce = page.locator('#main-nav .nav-links .nav-link', { hasText: 'Calcolo veloce' });
+    const voce = page.locator('#barra .om-voci a', { hasText: 'Calcolo veloce' });
     await expect(voce).toHaveCount(1);
+    await page.locator('#barra .om-altro summary').click(); // "Calcolo veloce" è sotto "Altro"
     await voce.click();
     await expect(page).toHaveURL(/calcolo-mentale\.html/);
     await page.goto('/calcolo-mentale.html#per-11');

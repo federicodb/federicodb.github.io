@@ -246,7 +246,7 @@ test.describe('Orfini Math Quest (/allenamento/)', () => {
     await page.goto('/index.html');
     await expect(page.locator('#training-cta')).toHaveText('Inizia ad allenarti');
     await expect(page.locator('#training-stats')).toBeHidden();
-    const links = page.locator('#main-nav .nav-links .nav-link');
+    const links = page.locator('#barra .om-voci a');
     await expect(links.nth(1)).toHaveText('Allenati');
 
     await page.goto('/allenamento/');

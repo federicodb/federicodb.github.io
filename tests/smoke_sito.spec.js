@@ -78,23 +78,22 @@ test('i link interni delle pagine principali rispondono', async ({ page, request
   expect(visti.size).toBeGreaterThan(30);
 });
 
-test('catalogo: la ricerca, i filtri e la serie Arcade Challenge riducono le card giuste', async ({ page }) => {
+test('home: l\'elenco ha tutte le voci dei dati e la ricerca le riduce', async ({ page }) => {
   const errori = sorveglia(page);
+  const dati = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/attivita.json'), 'utf8'));
   await page.goto('/index.html');
   await expect(page.locator('#main-grid .card').first()).toBeVisible();
-  const tutti = await page.evaluate(() => window.appUI.state.filteredItems.length);
-  expect(tutti).toBe(db.filter((i) => i.type !== 'normativa').length);
-  await page.evaluate(() => window.setGlobalFilter('Arcade Challenge'));
-  await expect.poll(() => page.evaluate(() => window.appUI.state.filteredItems.length)).toBeLessThan(tutti);
-  const serie = await page.evaluate(() => window.appUI.state.filteredItems.map((i) => i.url));
-  const attese = db.filter((i) => (i.tags || []).some((t) => t.toLowerCase() === 'arcade challenge')).map((i) => i.url);
-  for (const u of attese) expect(serie).toContain(u);
-  await expect(page.locator('#active-filter-banner')).toHaveClass(/active/);
-  await page.evaluate(() => window.clearGlobalFilter());
-  await expect.poll(() => page.evaluate(() => window.appUI.state.filteredItems.length)).toBe(tutti);
-  await page.locator('#search-input').pressSequentially('parabola', { delay: 20 });
-  // la ricerca ha un ritardo voluto (300 ms) e la macchina dei test può essere carica: margine ampio
-  await expect.poll(() => page.evaluate(() => window.appUI.state.filteredItems.length), { timeout: 15000 }).toBeLessThan(tutti);
+  await expect(page.locator('#main-grid .card')).toHaveCount(dati.length);
+  // tutte le attività del catalogo (database.js, senza la normativa) sono nell'elenco, con lo stesso indirizzo
+  const indirizzi = await page.locator('#main-grid .card-link').evaluateAll((a) => a.map((x) => decodeURIComponent(x.getAttribute('href'))));
+  for (const i of db.filter((x) => x.type !== 'normativa')) expect(indirizzi, i.title).toContain(i.url);
+  await page.locator('#cerca').pressSequentially('parabola', { delay: 20 });
+  await expect.poll(() => page.locator('#main-grid .card:visible').count(), { timeout: 15000 }).toBeLessThan(dati.length);
+  expect(await page.locator('#main-grid .card:visible').count()).toBeGreaterThan(3);
+  // il vecchio indirizzo del catalogo filtrato (?tag=) vale ancora come ricerca
+  await page.goto('/index.html?tag=frattali');
+  await expect.poll(() => page.locator('#main-grid .card:visible').count()).toBeLessThan(dati.length);
+  await expect(page.locator('#cerca')).toHaveValue('frattali');
   expect(errori).toEqual([]);
 });
 
