@@ -120,6 +120,8 @@ math { font-size: 1.05em; }
 }
 .card-parole a:hover { color: var(--om-testo); border-color: var(--sez); }
 
+.espansione { position: fixed; z-index: 2000; border-radius: var(--om-raggio); background: var(--om-superficie); pointer-events: none; will-change: transform, opacity; }
+
 /* senza raggruppamento: una sola griglia, le intestazioni spariscono */
 .elenco:not(.raggruppato) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); gap: 16px; padding-top: 20px; }
 .elenco:not(.raggruppato) .sezione, .elenco:not(.raggruppato) .griglia { display: contents; }

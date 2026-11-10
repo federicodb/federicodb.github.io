@@ -929,6 +929,7 @@ def _pagina(root, titolo, descrizione, canonical, immagine, corpo, extra_head=""
     </script>
     <link rel="stylesheet" href="{root}content/assets/style/theme-light.css">
     <link rel="stylesheet" href="/sito/menu.css">
+    <script src="/sito/effetti.js"></script>
     <script src="/sito/menu.js" defer></script>
     <link rel="stylesheet" href="{root}journal.css">
     <script src="{root}content/assets/js/theme-toggle.js" defer></script>

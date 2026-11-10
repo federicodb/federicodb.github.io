@@ -193,6 +193,25 @@
         tutte.textContent = aperto ? 'Meno parole' : `Tutte le ${vocabolario.length} parole`;
     });
 
+    // ---- aprendo un'attività la scheda si allarga fino a riempire lo schermo, poi si apre la pagina ----
+    const fermo = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.effetti === 'ridotti';
+    griglia.addEventListener('click', (e) => {
+        const a = e.target.closest('.card-link');
+        if (!a || a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.button || fermo() || !a.animate) return;
+        e.preventDefault();
+        const r = a.closest('.card').getBoundingClientRect();
+        const velo = document.createElement('div');
+        velo.className = 'espansione';
+        velo.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px`;
+        document.body.append(velo);
+        const sx = window.innerWidth / r.width, sy = window.innerHeight / r.height;
+        const dx = window.innerWidth / 2 - (r.left + r.width / 2), dy = window.innerHeight / 2 - (r.top + r.height / 2);
+        const vai = () => { location.href = a.href; };
+        velo.animate([{ transform: 'none', opacity: 0.4 }, { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`, opacity: 1 }], { duration: 300, easing: 'cubic-bezier(0.3, 0, 0.1, 1)', fill: 'forwards' }).finished.then(vai, vai);
+    });
+    // tornando indietro la pagina riappare dalla memoria del browser: il velo non deve restare
+    window.addEventListener('pageshow', () => { for (const v of document.querySelectorAll('.espansione')) v.remove(); });
+
     // la costellazione (sito/costellazione.js) usa la stessa ricerca e gli stessi dati
     window.omElenco = { norma, vocabolario, parole, figlie, schede, stato, paroleTrovate, applica };
 

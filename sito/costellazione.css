@@ -13,6 +13,9 @@ html[data-vista="costellazione"] #filtri,
 html[data-vista="costellazione"] #main-grid { display: none; }
 
 html[data-vista="costellazione"] main { max-width: none; padding: 0; }
+/* la nebulosa riempie lo schermo e la pagina non scorre: il piè di pagina si legge nell'elenco (link nella legenda) */
+html[data-vista="costellazione"], html[data-vista="costellazione"] body { overflow: hidden; height: 100dvh; }
+html[data-vista="costellazione"] .site-footer { display: none; }
 html[data-vista="costellazione"] .apertura {
     position: absolute; z-index: 3; top: calc(var(--om-barra-h) + 14px); left: max(20px, calc((100vw - var(--om-largo)) / 2 + 20px)); right: 20px;
     display: block; padding: 0; pointer-events: none;
@@ -29,7 +32,7 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
 }
 .cielo.trascina { cursor: grabbing; }
 #cielo-tela { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.cielo-nodi { position: absolute; inset: 0; }
+.cielo-nodi { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
 
 .nodo {
     --d: 30px;
@@ -48,9 +51,11 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
 .nodo-stella:not(.figlia) .nodo-etichetta { font-weight: 700; }
 .nodo.figlia .nodo-etichetta { color: var(--om-testo-2); font-size: 0.8125rem; }
 .nodo-sezione .nodo-etichetta { opacity: 1; font: 800 1rem/1.1 var(--om-font-titoli); letter-spacing: -0.01em; }
-.nodo.nascosta { pointer-events: none; }
+/* le figlie da lontano: non si vedono, non si toccano e non prendono il fuoco finché non ci si avvicina (aprendo il padre) */
+.nodo.nascosta { visibility: hidden; pointer-events: none; }
 .nodo.spenta .nodo-etichetta { opacity: 0; }
-.nodo.scelta .nodo-etichetta, .nodo:focus-visible .nodo-etichetta, .nodo:hover .nodo-etichetta { opacity: 1; color: var(--om-testo); z-index: 2; }
+.nodo.scelta .nodo-etichetta, .nodo:focus-visible .nodo-etichetta, .nodo:hover .nodo-etichetta { opacity: 1; color: var(--om-testo); }
+.nodo.scelta, .nodo:focus-visible, .nodo:hover { z-index: 3000 !important; }
 
 .cielo.usata .cielo-aiuto { display: none; }
 .cielo-aiuto {
@@ -61,8 +66,8 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
 /* ---- legenda e comandi ---- */
 .cielo-legenda {
     position: absolute; left: 16px; bottom: 16px; z-index: 4; max-width: 300px;
-    border: 1px solid var(--om-bordo); border-radius: var(--om-raggio); background: var(--om-barra-fondo);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: 0.85rem; color: var(--om-testo-2); cursor: default;
+    border: 1px solid var(--om-bordo); border-radius: var(--om-raggio); background: var(--om-superficie);
+    font-size: 0.85rem; color: var(--om-testo-2); cursor: default;
 }
 .cielo-legenda summary { display: flex; align-items: center; min-height: 44px; padding: 0 14px; cursor: pointer; color: var(--om-testo); font-weight: 600; list-style: none; }
 .cielo-legenda summary::-webkit-details-marker { display: none; }
@@ -78,10 +83,13 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
 .cielo-comandi { position: absolute; right: 16px; bottom: 16px; z-index: 4; display: flex; flex-direction: column; gap: 6px; }
 .cielo-comandi button {
     display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid var(--om-bordo); border-radius: 50%;
-    background: var(--om-barra-fondo); color: var(--om-testo); cursor: pointer;
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    background: var(--om-superficie); color: var(--om-testo); cursor: pointer;
 }
 .cielo-comandi button:hover { border-color: var(--om-bordo-forte); }
+.cielo-comandi .i-via, .cielo-comandi [aria-pressed="true"] .i-pausa { display: none; }
+.cielo-comandi [aria-pressed="true"] .i-via { display: block; }
+html[data-effetti="ridotti"] [data-comando="pausa"] { display: none; }
+@media (prefers-reduced-motion: reduce) { [data-comando="pausa"] { display: none !important; } }
 .cielo-comandi svg, .scheda svg.icona { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 .cielo-legenda summary:focus-visible, .cielo-comandi button:focus-visible, .scheda :focus-visible { outline: 3px solid var(--om-fuoco); outline-offset: 2px; }
 
@@ -98,6 +106,7 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
 .scheda-occhiello { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font: 600 0.7rem/1 var(--om-font); letter-spacing: 0.18em; text-transform: uppercase; color: var(--om-testo-2); }
 .scheda-occhiello .forma { width: 10px; height: 10px; }
 .scheda h2 { font: 800 1.45rem/1.12 var(--om-font-titoli); letter-spacing: -0.02em; outline: none; text-wrap: balance; }
+.scheda h2:focus-visible { outline: none; } /* il titolo riceve il fuoco solo per far partire la lettura dalla scheda */
 .scheda-chiudi { display: grid; place-items: center; flex: none; width: 44px; height: 44px; margin: -6px -8px 0 0; border: 0; border-radius: 50%; background: none; color: var(--om-testo-2); cursor: pointer; }
 .scheda-chiudi:hover { background: var(--om-superficie-2); color: var(--om-testo); }
 .scheda-corpo { padding: 16px 20px 28px; display: grid; gap: 16px; font-size: 0.98rem; }
@@ -123,6 +132,14 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
 .scheda-vicine .forma { width: 9px; height: 9px; }
 .scheda-azione.principale { justify-self: start; min-height: 46px; padding: 0 22px; border-color: transparent; background: var(--sez, var(--om-accento)); color: var(--om-fondo); font-weight: 700; }
 .scheda-azione { justify-self: start; }
+
+.cielo-azzera { min-height: 36px; padding: 0 12px; border: 1px solid var(--om-bordo-forte); border-radius: 999px; background: none; color: var(--om-testo); cursor: pointer; font: 500 0.82rem/1 var(--om-font); }
+
+/* ---- elenco e costellazione sono la stessa cosa in due forme: schede e parole volano a diventare stelle ---- */
+@media (prefers-reduced-motion: no-preference) {
+    ::view-transition-group(*) { animation-duration: 0.6s; animation-timing-function: cubic-bezier(0.3, 0, 0.1, 1); }
+    ::view-transition-group(root) { animation-duration: 0.45s; }
+}
 
 /* ---- avviso per i dispositivi lenti (sopra l'elenco) ---- */
 .avviso { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0 0 4px; padding: 10px 14px; border: 1px solid var(--om-bordo); border-radius: var(--om-raggio); background: var(--om-superficie); color: var(--om-testo-2); font-size: 0.92rem; }
@@ -160,6 +177,8 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
     .scheda-corpo { font-size: 1.1rem; }
 }
 
+html[data-effetti="ridotti"] .scheda { animation: none; }
+html[data-effetti="ridotti"] .nodo-etichetta { transition: none; }
 @media (prefers-reduced-motion: reduce) {
     .scheda { animation: none; }
     .nodo-etichetta { transition: none; }

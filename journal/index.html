@@ -29,6 +29,7 @@
     </script>
     <link rel="stylesheet" href="../content/assets/style/theme-light.css">
     <link rel="stylesheet" href="/sito/menu.css">
+    <script src="/sito/effetti.js"></script>
     <script src="/sito/menu.js" defer></script>
     <link rel="stylesheet" href="../journal.css">
     <script src="../content/assets/js/theme-toggle.js" defer></script>
@@ -52,6 +53,7 @@
                         <a href="/competenze.html" data-voce="competenze">Competenze</a>
                         <a href="/scuola.html" data-voce="scuola">La Scuola</a>
                         <a href="#chi-sono" data-apre="chi-sono">Chi sono</a>
+                        <button type="button" class="om-effetti" id="om-effetti" aria-pressed="false">Riduci effetti</button>
                     </div>
                 </details>
             </nav>
@@ -114,7 +116,7 @@
         </div>
     </dialog>
     <noscript><style>
-        #raggruppa, #tutte-le-parole { display: none !important; }
+        #raggruppa, #tutte-le-parole, #om-effetti { display: none !important; }
         /* senza JavaScript: su telefono le voci stanno in una riga che scorre, sotto la barra */
         @media (max-width: 859px) {
             .om-apri-menu { display: none !important; }

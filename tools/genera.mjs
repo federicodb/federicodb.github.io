@@ -174,7 +174,7 @@ function cielo() {
         ${mappa.sezioni.map(nodoSezione).join('\n        ')}
         ${ordine.map(nodoParola).join('\n        ')}
     </div>
-    <p class="cielo-aiuto">Ogni stella è una parola chiave: toccala per vedere le attività.</p>
+    <p class="cielo-aiuto">Ogni stella è una parola chiave: toccala per vedere le attività. Trascina per ruotare.</p>
     <p id="cielo-stato" class="om-solo-lettori" role="status" aria-live="polite"></p>
     <details class="cielo-legenda" id="cielo-legenda">
         <summary>Legenda</summary>
@@ -182,12 +182,15 @@ function cielo() {
             ${SEZIONI.map((s) => `<li data-sezione="${s.id}">${forma(s.id)}${s.nome}</li>`).join('\n            ')}
         </ul>
         <p>Stella più grande: più voci. Colore e forma: la sezione che ne ha di più; l'anello mostra le altre. Linea più spessa: più voci in comune.</p>
-        <p><a href="#piede">Informazioni e licenza</a></p>
+        <p>Trascina lo sfondo per ruotare, una stella per spostarla. Rotella o due dita per ingrandire.</p>
+        <p><span id="cielo-viste"></span> <button type="button" class="cielo-azzera" data-comando="azzera" hidden>Azzera il percorso</button></p>
+        <p><a href="?vista=elenco#piede" data-informazioni>Informazioni e licenza</a></p>
     </details>
-    <div class="cielo-comandi" role="group" aria-label="Comandi della mappa">
+    <div class="cielo-comandi" role="group" aria-label="Comandi della nebulosa">
         <button type="button" data-comando="piu" aria-label="Ingrandisci" title="Ingrandisci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
         <button type="button" data-comando="meno" aria-label="Rimpicciolisci" title="Rimpicciolisci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
-        <button type="button" data-comando="ricentra" aria-label="Ricentra la mappa" title="Ricentra"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+        <button type="button" data-comando="pausa" aria-pressed="false" aria-label="Ferma il movimento" title="Ferma il movimento"><svg class="i-pausa" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-via" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg></button>
+        <button type="button" data-comando="ricentra" aria-label="Rimetti in ordine e ricentra" title="Rimetti in ordine e ricentra"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
     </div>
     <aside id="scheda" class="scheda" aria-labelledby="scheda-titolo" hidden></aside>
     <script type="application/json" id="om-mappa">${JSON.stringify(dati).replace(/</g, '\\u003c')}</script>

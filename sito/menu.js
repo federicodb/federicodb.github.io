@@ -45,6 +45,19 @@
     window.addEventListener('scroll', () => { if (!inAttesa) { inAttesa = true; requestAnimationFrame(scorri); } }, { passive: true });
     barra.addEventListener('focusin', () => barra.classList.remove('om-nascosta'));
 
+    // ---- "Riduci effetti": spegne rotazione, voli, particelle e transizioni in tutto il sito ----
+    const effetti = document.getElementById('om-effetti');
+    if (effetti) {
+        const mostra = () => effetti.setAttribute('aria-pressed', String(document.documentElement.dataset.effetti === 'ridotti'));
+        mostra();
+        effetti.addEventListener('click', () => {
+            const ridotti = document.documentElement.dataset.effetti !== 'ridotti';
+            if (ridotti) document.documentElement.dataset.effetti = 'ridotti'; else delete document.documentElement.dataset.effetti;
+            try { if (ridotti) localStorage.setItem('orfini_effetti', 'ridotti'); else localStorage.removeItem('orfini_effetti'); } catch (e) { /* vale per questa pagina */ }
+            mostra();
+        });
+    }
+
     // ---- pannello "Chi sono" ----
     const pannello = document.getElementById('chi-sono');
     if (pannello && typeof pannello.showModal === 'function') {

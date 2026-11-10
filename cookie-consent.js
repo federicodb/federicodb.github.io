@@ -73,9 +73,9 @@
         <div id="cookie-banner" role="dialog" aria-live="polite" aria-labelledby="cookie-title" class="cookie-hidden">
             <div class="cookie-banner-container">
                 <div class="cookie-text-content">
-                    <h3 id="cookie-title" class="cookie-title">
+                    <h2 id="cookie-title" class="cookie-title">
                         <span>🍪 Rispetto della Privacy e dei Cookie</span>
-                    </h3>
+                    </h2>
                     <p class="cookie-description">
                         Il <strong>Laboratorio Matematico Orfini Foligno</strong> utilizza cookie tecnici essenziali per garantire il corretto funzionamento delle applicazioni didattiche e dei simulatori. Non usa cookie analitici né traccianti. I contenuti di altri siti incorporati nelle pagine (come FuncLab AI) si caricano solo con il tuo consenso. Puoi accettarli, rifiutarli mantenendo solo i necessari, o personalizzare le tue preferenze. Consulta la nostra <a href="/privacy-policy.html" target="_blank" rel="noopener">Informativa Privacy e Cookie Policy</a>.
                     </p>
