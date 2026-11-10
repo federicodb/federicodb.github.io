@@ -6,7 +6,7 @@ test.use({ launchOptions: { args: ['--use-gl=angle', '--use-angle=swiftshader'] 
 
 test('dalla seconda visita catalogo, un\'app e il Journal si aprono senza rete', async ({ page, context }) => {
   await page.addInitScript(() => localStorage.setItem('orfini_cookie_consent', JSON.stringify({ necessary: true, analytics: false, date: Date.now() })));
-  await page.goto('/index.html');
+  await page.goto('/index.html?vista=elenco');
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.reload(); // ora il service worker controlla la pagina e salva ciò che si apre
   await expect(page.locator('.card').first()).toBeVisible();
@@ -16,7 +16,7 @@ test('dalla seconda visita catalogo, un\'app e il Journal si aprono senza rete',
   await expect(page.locator('.jr-item').first()).toBeVisible();
 
   await context.setOffline(true);
-  await page.goto('/index.html');
+  await page.goto('/index.html?vista=elenco');
   await expect(page.locator('.card').first()).toBeVisible();
   await page.goto('/content/apps/math_bubble_equazione_della_retta.html');
   await expect(page.locator('#playerName')).toBeVisible();

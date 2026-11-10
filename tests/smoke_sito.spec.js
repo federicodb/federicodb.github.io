@@ -81,7 +81,7 @@ test('i link interni delle pagine principali rispondono', async ({ page, request
 test('home: l\'elenco ha tutte le voci dei dati e la ricerca le riduce', async ({ page }) => {
   const errori = sorveglia(page);
   const dati = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/attivita.json'), 'utf8'));
-  await page.goto('/index.html');
+  await page.goto('/index.html?vista=elenco');
   await expect(page.locator('#main-grid .card').first()).toBeVisible();
   await expect(page.locator('#main-grid .card')).toHaveCount(dati.length);
   // tutte le attività del catalogo (database.js, senza la normativa) sono nell'elenco, con lo stesso indirizzo
@@ -91,7 +91,7 @@ test('home: l\'elenco ha tutte le voci dei dati e la ricerca le riduce', async (
   await expect.poll(() => page.locator('#main-grid .card:visible').count(), { timeout: 15000 }).toBeLessThan(dati.length);
   expect(await page.locator('#main-grid .card:visible').count()).toBeGreaterThan(3);
   // il vecchio indirizzo del catalogo filtrato (?tag=) vale ancora come ricerca
-  await page.goto('/index.html?tag=frattali');
+  await page.goto('/index.html?vista=elenco&tag=frattali');
   await expect.poll(() => page.locator('#main-grid .card:visible').count()).toBeLessThan(dati.length);
   await expect(page.locator('#cerca')).toHaveValue('frattali');
   expect(errori).toEqual([]);

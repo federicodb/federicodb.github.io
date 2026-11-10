@@ -251,7 +251,7 @@ test.describe('Orfini Math Quest (/allenamento/)', () => {
 
     await page.goto('/allenamento/');
     await completeOnboarding(page);
-    await page.goto('/index.html');
+    await page.goto('/index.html?vista=elenco'); // nella costellazione il primo clic su "Allenati" vola sulla sezione
     await expect(page.locator('#training-cta')).toHaveText('Continua ad allenarti');
     await expect(page.locator('#training-stats')).toContainText('Serie');
 

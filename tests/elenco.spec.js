@@ -13,7 +13,7 @@ const PAGINE_CON_MENU = ['index.html', 'verifiche.html', 'competenze.html', 'scu
 const visibili = (page) => page.locator('#main-grid .card:visible');
 
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => { try { localStorage.setItem('orfini_cookie_consent', JSON.stringify({ necessary: true, analytics: false, functional: false, timestamp: '2026-01-01' })); } catch (e) { /* senza archivio */ } });
+  await page.addInitScript(() => { try { localStorage.setItem('orfini_vista', 'elenco'); localStorage.setItem('orfini_cookie_consent', JSON.stringify({ necessary: true, analytics: false, functional: false, timestamp: '2026-01-01' })); } catch (e) { /* senza archivio */ } });
 });
 
 test('senza JavaScript: tutte le voci, le sezioni e il menu si leggono e i link portano alle attività', async ({ browser }) => {
@@ -78,6 +78,7 @@ test('la ricerca accetta un alias e propone la forma canonica', async ({ page })
 test('telefono (380 px): a un\'attività in due tocchi, senza scorrimento orizzontale', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 380, height: 780 }, hasTouch: true, isMobile: true });
   const page = await ctx.newPage();
+  await page.addInitScript(() => localStorage.setItem('orfini_vista', 'elenco'));
   await page.goto('/index.html');
   const larghezza = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(await larghezza()).toBeLessThanOrEqual(1);
@@ -166,6 +167,8 @@ test('lo stesso menu in tutte le pagine, con la voce giusta evidenziata', async 
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/\?q=frattali$/);
   await expect.poll(() => visibili(page).count()).toBeLessThan(ATTIVITA.length);
+  // l'interruttore segna la vista in uso solo nella home
+  await expect(page.locator('#barra .om-vista-voce[aria-current="true"]')).toHaveAttribute('data-vista', 'elenco');
 });
 
 for (const tema of ['dark', 'light']) {
