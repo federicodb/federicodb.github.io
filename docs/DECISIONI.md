@@ -201,3 +201,17 @@ Ogni voce: data, decisione, motivo.
 - **In costellazione** titolo e riquadro "Il tuo allenamento" lasciano il posto alla mappa: il titolo resta piccolo in alto, il riquadro si vede solo nell'elenco. Il piè di pagina sta sotto la mappa e si raggiunge dalla legenda ("Informazioni e licenza").
 - **Legenda chiusa in partenza**: aperta copriva la sezione Journal.
 
+## 2026-11-10 — Fase 3: nebulosa in tre dimensioni (indicazioni del docente)
+
+- **"Dobbiamo far vedere una nebulosa in 3D, semantica e interattiva"**, come la mappa stellare da cui il progetto è partito. La costellazione piana della Fase 2 è diventata tridimensionale. La disposizione resta calcolata dal build (`d3-force-3d` al posto di `d3-force`, sempre come dipendenza di sviluppo); il sito disegna in prospettiva su una tela 2D, senza Three.js. `galaxy.html` non è stata toccata.
+- **Rotazione "inerziale, continua e lenta, condizionata solo dall'interazione"**: gira da sola piano; il trascinamento dello sfondo le dà verso e spinta, poi torna alla velocità di crociera. Si ferma quando si legge o si punta una stella. Spostare la vista: due dita, Maiusc + trascinamento, Maiusc + frecce.
+- **Una stella rilasciata resta dove è stata lasciata** (non torna indietro elasticamente). Le collegate la seguono durante il trascinamento e poi si assestano. Lo stato non si salva: a ogni visita la nebulosa riparte uguale, e "Ricentra" la rimette in ordine.
+- **"Pulsante"**: battito lento di stelle e aloni.
+- **Pulsante di pausa** aggiunto per accessibilità, e **"Riduci effetti"** nel menu (chiave `orfini_effetti`, letta da `sito/effetti.js` prima che la pagina si disegni).
+- **Nella vista nebulosa la pagina non scorre** e il piè di pagina è nascosto: si legge nell'elenco, dal link "Informazioni e licenza" della legenda. Motivo: su telefono uno scorrimento involontario spostava la scena sotto il dito.
+- **Le figlie nascoste da lontano non prendono il fuoco da tastiera**: compaiono aprendo il padre, coerentemente con lo zoom semantico. Se una figlia col fuoco torna nascosta, il fuoco passa al padre.
+- **Niente sfondi sfocati sopra la tela** (legenda, comandi): con la tela che si ridisegna a ogni fotogramma costavano più di tutto il resto.
+- **Su schermo verticale** la nebulosa si alza in piedi (x e y scambiate) e le stelle sono disegnate un po' più grandi rispetto alle distanze.
+- **Transizioni tra pagine**: dissolvenza del browser solo tra le pagine con il menu. Le app non dichiarano la transizione (non si toccano), quindi dall'elenco l'espansione della scheda è fatta dalla home prima di aprire la pagina.
+- **Titolo del banner dei cookie** da `h3` a `h2`: nella vista nebulosa era il primo titolo dopo l'`h1`.
+

@@ -2,6 +2,59 @@
 
 Aggiornato a ogni fase. Legenda: ✅ verificato · ⏳ non ancora applicabile · ❌ non passa.
 
+## Fase 3 — Nebulosa 3D, movimento, effetti (2026-11-10)
+
+Su indicazione del docente la costellazione è diventata una **nebulosa in tre dimensioni**: ruota piano con inerzia, pulsa, e una stella trascinata resta dove la si lascia. La Fase 2 qui sotto descrive la versione piana da cui si è partiti.
+
+| Criterio | Esito | Come è stato verificato |
+|---|---|---|
+| Tutti gli URL presenti su `master` rispondono ancora | ✅ | Nessun file cancellato o rinominato; `tests/smoke_sito.spec.js` 118 su 119 (la stessa app 3D in timeout nel giro completo) |
+| Da telefono si arriva a un'attività in tre tocchi | ✅ | Due tocchi: stella, poi attività nella scheda. Test a 380 px con tocco vero |
+| Home ed elenco funzionano con JavaScript spento | ✅ | Test della Fase 1, ancora verde |
+| Tutto raggiungibile da tastiera, con fuoco visibile | ✅ | Tab tra sezioni e parole, Invio apre, Esc chiude; il nodo col fuoco viene portato davanti e la rotazione si ferma; frecce ruotano, Maiusc + frecce spostano. Le figlie si raggiungono dopo aver aperto il padre. Il piè di pagina è nell'elenco (link "Informazioni e licenza" nella legenda) |
+| Contrasto AA nei due temi | ✅ | Test su etichette, legenda e scheda nei due temi |
+| Lighthouse mobile sulla home: prestazioni ≥ 90, accessibilità ≥ 95 | ✅ | Nebulosa: prestazioni **97-100**, accessibilità **96**. Elenco: prestazioni 97, accessibilità 100. Il punto perso è "dimensione dei bersagli": in tre dimensioni due stelle possono sovrapporsi |
+| Mappa fluida a 380 px su un telefono di fascia media | ⚠️ non provato su un telefono vero | Disegnare un fotogramma costa circa 2 ms di JavaScript; 60 fotogrammi al secondo in Chromium senza scheda grafica. Trovato e tolto un collo di bottiglia: i pannelli con sfondo sfocato sopra la tela. Va provata su un telefono reale |
+| Nessuno scorrimento orizzontale | ✅ | Test a 380 px; tutti i nodi dentro lo schermo |
+| `npm run build` passa senza avvisi | ✅ | |
+| Il workflow blocca la pubblicazione se la validazione fallisce | ⚠️ non provato | Come nelle fasi precedenti |
+
+### Limiti chiesti dal brief
+
+| Limite | Esito |
+|---|---|
+| Tutto il movimento si spegne con `prefers-reduced-motion` | ✅ test: la nebulosa si apre ferma, niente voli, niente elasticità |
+| Interruttore "Riduci effetti" nel menu | ✅ sotto "Altro"; vale per tutto il sito e si ricorda. Test |
+| Solo `transform` e `opacity` nelle animazioni CSS | ✅ scheda, pannello, rivelazioni allo scroll, velo di espansione |
+| La mappa si ferma quando la scheda del browser non è visibile | ✅ il ciclo di disegno si interrompe se la pagina non è in primo piano (non c'è un test automatico) |
+| In più: pulsante di pausa | ✅ ferma rotazione, battito e particelle (ciò che si muove da solo per più di 5 secondi deve potersi fermare) |
+
+### Che cosa c'è
+
+- **Tre dimensioni**: `tools/mappa.mjs` usa `d3-force-3d` e salva x, y, z. Le sezioni sono i vertici di un tetraedro schiacciato. Il sito disegna in prospettiva su una tela 2D, senza librerie.
+- **Rotazione inerziale**: gira da sola a 0,045 rad/s (un giro in poco più di due minuti). Trascinando lo sfondo gira con il dito, al rilascio continua e rallenta fino alla velocità di crociera, nel verso dato. Si ferma con una scheda aperta, con il puntatore su una stella, con il fuoco da tastiera, con la pausa.
+- **Stella trascinata**: le collegate la seguono; al rilascio resta esattamente lì e le altre si assestano. "Ricentra" rimette tutto com'era. A ogni visita si riparte dalla disposizione salvata.
+- **Battito**: ogni stella e ogni alone pulsano piano, con una fase propria.
+- **Polvere**: 320 punti attorno alle stelle e una nube per sezione, uguali a ogni visita.
+- **Effetti**: particelle sui legami della stella scelta o puntata; onda verso le vicine al clic; stelle visitate accese e scia delle ultime dieci, salvate nel browser, con "Azzera il percorso" nella legenda.
+- **Stessa cosa in due forme**: cambiando vista, le schede visibili e le parole dei filtri prendono lo stesso nome di transizione della loro stella (View Transitions API) e volano al suo posto. Dove il browser non la supporta il cambio è immediato.
+- **Aprire un'attività dall'elenco**: la scheda si allarga fino a riempire lo schermo, poi si apre la pagina. Tra le pagine del sito che hanno il menu c'è anche la dissolvenza del browser; le app non sono state toccate.
+- **Rivelazioni allo scroll** in Journal, Scuola e Calcolo veloce, dentro `@supports (animation-timeline: view())`.
+
+### Test eseguiti
+
+| Comando | Esito |
+|---|---|
+| `npx playwright test tests/costellazione.spec.js` | 20 su 20 |
+| `npx playwright test tests/elenco.spec.js` | 10 su 10 |
+| `tests/journal`, `offline`, `competenze`, `mappa`, `calcolo_mentale` | 49 su 49 |
+| `npx playwright test tests/smoke_sito.spec.js` | 118 su 119 (stessa app 3D in timeout nel giro completo) |
+| `tests/allenamento.spec.js -g "home|cambia utente"` | 2 su 2 |
+
+Senza test automatico: il battito, le particelle e l'onda (si vedono, non sono misurati); l'aspetto della transizione tra le viste (il test controlla solo che i nomi siano assegnati e poi tolti); la pausa quando la scheda del browser è nascosta; le rivelazioni allo scroll. Nessuna prova su telefono o LIM reali.
+
+Nota sui test: quelli della nebulosa non usano la grafica software (`swiftshader`) degli altri file. Con quella, una tela 2D ridisegnata di continuo scende a pochi fotogrammi al secondo dopo una decina di secondi, e i test sul movimento fallivano per questo.
+
 ## Fase 2 — Costellazione 2D (2026-11-10)
 
 | Criterio | Esito | Come è stato verificato |
