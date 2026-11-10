@@ -40,10 +40,11 @@
         const fermo = barra.classList.contains('om-menu-aperto') || barra.contains(document.activeElement);
         if (y < 80 || fermo || y < ultimo - 6) barra.classList.remove('om-nascosta');
         else if (y > ultimo + 6) { barra.classList.add('om-nascosta'); altro.open = false; }
+        document.documentElement.classList.toggle('om-barra-giu', barra.classList.contains('om-nascosta'));
         if (Math.abs(y - ultimo) > 6) ultimo = y;
     }
     window.addEventListener('scroll', () => { if (!inAttesa) { inAttesa = true; requestAnimationFrame(scorri); } }, { passive: true });
-    barra.addEventListener('focusin', () => barra.classList.remove('om-nascosta'));
+    barra.addEventListener('focusin', () => { barra.classList.remove('om-nascosta'); document.documentElement.classList.remove('om-barra-giu'); });
 
     // ---- "Riduci effetti": spegne rotazione, voli, particelle e transizioni in tutto il sito ----
     const effetti = document.getElementById('om-effetti');

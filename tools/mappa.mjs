@@ -21,11 +21,12 @@ const leggi = (f) => JSON.parse(readFileSync(join(ROOT, f), 'utf8'));
 // così ruotando attorno all'asse verticale resta sempre leggibile.
 export const ANCORE = { attivita: [-820, -300, 160], allenati: [820, -300, -160], journal: [-280, 300, 330], archivio: [280, 300, -330] };
 const R_SEZIONE = 44;
+export const R_SOLE = 78; // la parola Matematica, al centro della nebulosa
 const raggio = (n) => Math.round((9 + 4.6 * Math.sqrt(n)) * 10) / 10;
 
 /** Impronta dei dati da cui dipende la mappa: tools/valida.mjs la confronta con quella salvata */
 export function impronta(attivita, vocabolario) {
-  const dati = [attivita.map((a) => [a.id, a.sezione, a.parole]), vocabolario.map((p) => [p.id, p.padre ?? null]), ANCORE];
+  const dati = [attivita.map((a) => [a.id, a.sezione, a.parole]), vocabolario.map((p) => [p.id, p.padre ?? null]), ANCORE, R_SOLE];
   return createHash('sha256').update(JSON.stringify(dati)).digest('hex').slice(0, 16);
 }
 
@@ -68,7 +69,8 @@ export async function calcola(attivita, vocabolario) {
 
   const affini = legami.map(([a, b, w]) => ({ source: stelle[a], target: stelle[b], distanza: 190 + stelle[a].r + stelle[b].r, forza: Math.min(0.1, 0.02 * w) }));
   const famiglie = stelle.filter((s) => s.padre).map((s) => { const p = stelle[indice.get(s.padre)]; return { source: s, target: p, distanza: s.r + p.r + 56 }; });
-  const sim = forceSimulation([...nodoSezione, ...stelle], 3)
+  const nodoSole = { id: 'sole', fx: 0, fy: 0, fz: 0, x: 0, y: 0, z: 0, r: R_SOLE, fisso: true };
+  const sim = forceSimulation([nodoSole, ...nodoSezione, ...stelle], 3)
     .force('affini', forceLink(affini).distance((m) => m.distanza).strength((m) => m.forza))
     .force('famiglie', forceLink(famiglie).distance((m) => m.distanza).strength(1).iterations(8))
     .force('carica', forceManyBody().strength((n) => (n.fisso ? -900 : -420)).distanceMax(700))
@@ -82,13 +84,14 @@ export async function calcola(attivita, vocabolario) {
   const tondo = (v) => Math.round(v);
   return {
     impronta: impronta(attivita, vocabolario),
+    sole: { x: 0, y: 0, z: 0, r: R_SOLE },
     sezioni: sezioni.map((s) => ({ id: s, x: ANCORE[s][0], y: ANCORE[s][1], z: ANCORE[s][2], r: R_SEZIONE, n: attivita.filter((a) => a.sezione === s).length })),
     parole: stelle.map((s) => ({ id: s.id, x: tondo(s.x), y: tondo(s.y), z: tondo(s.z), r: s.r, n: s.n, sezione: s.sezione, quote: s.quote })),
     legami,
   };
 }
 
-const scrivi = (m) => `{\n  "impronta": ${JSON.stringify(m.impronta)},\n  "sezioni": [\n${m.sezioni.map((s) => '    ' + JSON.stringify(s)).join(',\n')}\n  ],\n  "parole": [\n${m.parole.map((s) => '    ' + JSON.stringify(s)).join(',\n')}\n  ],\n  "legami": ${JSON.stringify(m.legami)}\n}\n`;
+const scrivi = (m) => `{\n  "impronta": ${JSON.stringify(m.impronta)},\n  "sole": ${JSON.stringify(m.sole)},\n  "sezioni": [\n${m.sezioni.map((s) => '    ' + JSON.stringify(s)).join(',\n')}\n  ],\n  "parole": [\n${m.parole.map((s) => '    ' + JSON.stringify(s)).join(',\n')}\n  ],\n  "legami": ${JSON.stringify(m.legami)}\n}\n`;
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   try {

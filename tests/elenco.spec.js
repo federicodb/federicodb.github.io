@@ -36,8 +36,18 @@ test('senza JavaScript: tutte le voci, le sezioni e il menu si leggono e i link 
 
 test('i filtri per sezione e per parola si combinano; un padre comprende le figlie', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(visibili(page)).toHaveCount(ATTIVITA.length);
+  // senza filtri ogni sezione mostra un'anteprima (8 attività, 12 lezioni, 4 note, 6 verifiche); "Mostra tutte" la apre
+  await expect(visibili(page)).toHaveCount(30);
+  const attivita = page.locator('.sezione[data-sezione="attivita"]');
+  await attivita.locator('.mostra-tutte').click();
+  await expect(attivita.locator('.card:visible')).toHaveCount(ATTIVITA.filter((a) => a.sezione === 'attivita').length);
+  await expect(attivita.locator('.mostra-tutte')).toHaveAttribute('aria-expanded', 'true');
+  await attivita.locator('.mostra-tutte').click();
+  await expect(visibili(page)).toHaveCount(30);
+  // le figlie di una parola compaiono solo quando si sceglie il padre
+  await expect(page.locator('.filtri-parole .parola[data-parola="numeri-irrazionali"]')).toBeHidden();
   await page.locator('.filtri-parole .parola[data-parola="numeri"]').click();
+  await expect(page.locator('.filtri-parole .parola[data-parola="numeri-irrazionali"]')).toBeVisible();
   const figlie = new Set(['numeri', ...VOCABOLARIO.filter((p) => p.padre === 'numeri').map((p) => p.id)]);
   const attesi = ATTIVITA.filter((a) => a.parole.some((p) => figlie.has(p)));
   await expect(visibili(page)).toHaveCount(attesi.length);
@@ -52,7 +62,12 @@ test('i filtri per sezione e per parola si combinano; un padre comprende le figl
   await page.reload();
   await expect(visibili(page)).toHaveCount(attesi.filter((a) => a.sezione === 'allenati').length);
   await page.locator('#azzera').click();
-  await expect(visibili(page)).toHaveCount(ATTIVITA.length);
+  await expect(visibili(page)).toHaveCount(30);
+  // la riga delle sezioni resta in alto mentre si scorre
+  await page.mouse.wheel(0, 1600);
+  await expect.poll(async () => (await page.locator('#filtri').boundingBox()).y).toBeLessThan(60);
+  await page.locator('.filtro[data-sezione="journal"]').click();
+  await expect(visibili(page)).toHaveCount(ATTIVITA.filter((a) => a.sezione === 'journal').length);
 });
 
 test('la ricerca accetta un alias e propone la forma canonica', async ({ page }) => {
@@ -82,7 +97,7 @@ test('telefono (380 px): a un\'attività in due tocchi, senza scorrimento orizzo
   await page.goto('/index.html');
   const larghezza = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(await larghezza()).toBeLessThanOrEqual(1);
-  await page.locator('.filtri-parole .parola[data-parola="retta"]').tap();        // primo tocco: la parola
+  await page.locator('.filtri-parole .parola[data-parola="funzione"]').tap();    // primo tocco: la parola
   expect(await larghezza()).toBeLessThanOrEqual(1);
   const prima = visibili(page).first().locator('.card-link');
   const href = await prima.getAttribute('href');
@@ -166,7 +181,8 @@ test('lo stesso menu in tutte le pagine, con la voce giusta evidenziata', async 
   await page.locator('#cerca').fill('frattali');
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/\?q=frattali$/);
-  await expect.poll(() => visibili(page).count()).toBeLessThan(ATTIVITA.length);
+  await expect(page.locator('#esito')).toContainText('ricerca «frattali»');
+  await expect(visibili(page)).toHaveCount(await page.locator('#main-grid .card:not([hidden])').count()); // con un filtro si vede tutto ciò che corrisponde
   // l'interruttore segna la vista in uso solo nella home
   await expect(page.locator('#barra .om-vista-voce[aria-current="true"]')).toHaveAttribute('data-vista', 'elenco');
 });
@@ -181,7 +197,7 @@ for (const tema of ['dark', 'light']) {
       const sopra = (su, giu) => ({ r: su.r * su.a + giu.r * (1 - su.a), g: su.g * su.a + giu.g * (1 - su.a), b: su.b * su.a + giu.b * (1 - su.a), a: 1 });
       const fondo = (el) => { const strati = []; for (let e = el; e; e = e.parentElement) { const c = rgb(getComputedStyle(e).backgroundColor); if (c.a > 0) { strati.push(c); if (c.a === 1) break; } } let f = { r: 255, g: 255, b: 255, a: 1 }; for (const s of strati.reverse()) f = sopra(s, f); return f; };
       const out = [];
-      const sel = '.om-voci a, .om-altro summary, .om-cerca input, .om-vista-voce:not([aria-disabled]), .occhiello, .apertura h1, .apertura-sub, .training-card *, .filtro, .filtro span, .parola:not(.spenta), .parola:not(.spenta) span, #esito, .interruttore, .azzera, .sezione-testa *, .card-tipo, .card-titolo, .card-desc, .card-parole a, .site-footer p, .site-footer a';
+      const sel = '.om-voci a, .om-altro summary, .om-cerca input, .om-vista-voce:not([aria-disabled]), .occhiello, .apertura h1, .apertura-sub, .training-card *, .tessera-testa, .tessera-n, .tessera-desc, .filtro, .filtro span, .parola:not(.spenta), .parola:not(.spenta) span, #esito, .azzera, .mostra-tutte, .filtri-etichetta, .figlie-titolo, .sezione-testa *, .card-tipo, .card-titolo, .card-desc, .card-parole a, .site-footer p, .site-footer a';
       for (const el of document.querySelectorAll(sel)) {
         if (!el.checkVisibility() || !el.textContent.trim() || el.closest('[hidden]')) continue;
         if (![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;

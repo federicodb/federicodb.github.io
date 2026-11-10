@@ -71,13 +71,13 @@ test('si apre la nebulosa: tela disegnata, un pulsante per ogni sezione e parola
   await expect(nodo(page, 'numeri-irrazionali')).toHaveAttribute('aria-label', /numeri irrazionali, \d+ voci/);
   for (const s of ['Attività', 'Allenati', 'Journal', 'Archivio']) await expect(page.locator('.nodo-sezione.con-etichetta', { hasText: s })).toBeVisible();
   const colorati = await page.evaluate(() => { const c = document.getElementById('cielo-tela'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) n++; return n; });
-  expect(colorati).toBeGreaterThan(5000);
+  expect(colorati).toBeGreaterThan(800); // fili e polvere: aloni e parole sono nel foglio di stile, non sulla tela
   // prospettiva: a parità di raggio, una stella più vicina all'osservatore è disegnata più grande
   const scale = await page.evaluate(() => window.omCielo.nodi.map((n) => ({ prof: n.prof, scala: n.scala })).sort((a, b) => a.prof - b.prof));
   expect(scale.at(-1).scala).toBeGreaterThan(scale[0].scala * 1.1);
   const posti = () => page.evaluate(() => window.omCielo.nodi.map((n) => [n.id, Math.round(n.x), Math.round(n.y), Math.round(n.z)]));
   const prima = await posti();
-  expect(prima.slice(4).map(([id, x, y, z]) => ({ id, x, y, z }))).toEqual(MAPPA.parole.map((p) => ({ id: p.id, x: p.x, y: p.y, z: p.z })));
+  expect(prima.filter(([id]) => !id.startsWith('sezione:') && id !== 'sole').map(([id, x, y, z]) => ({ id, x, y, z }))).toEqual(MAPPA.parole.map((p) => ({ id: p.id, x: p.x, y: p.y, z: p.z })));
   await apriFerma(page);
   expect(await posti()).toEqual(prima);
   expect(errori).toEqual([]);
@@ -117,6 +117,68 @@ test('rotazione lenta e inerziale: gira da sola, segue il trascinamento, si ferm
   await apriStella(page, 'caos');
   await expect(page.locator('#scheda')).toBeVisible();
   await fermo(page);
+});
+
+test('il Sole: zoomando molto indietro resta sempre visibile la parola Matematica, e solo quella', async ({ page }) => {
+  await apriFerma(page);
+  const sole = page.locator('.nodo-sole');
+  await expect(sole).toBeVisible();
+  await expect(sole).toHaveText('Matematica');
+  await page.mouse.move(640, 400);
+  for (let i = 0; i < 14; i++) await page.mouse.wheel(0, 260);   // molto più indietro di prima, ma con un limite
+  await fermo(page);
+  const v = await vista(page);
+  expect(v.k).toBeLessThan(v.k0 * 0.14);
+  expect(v.k).toBeGreaterThanOrEqual(v.k0 * 0.12 - 1e-9);           // non all'infinito
+  const luce = (id) => page.evaluate((i) => Number(getComputedStyle(document.querySelector(`.nodo[data-nodo="${i}"]`)).opacity), id);
+  await expect.poll(() => luce('sole')).toBeGreaterThan(0.95);
+  await expect.poll(() => luce('funzione'), { timeout: 8000 }).toBeLessThan(0.03);
+  await expect.poll(() => luce('sezione:journal'), { timeout: 8000 }).toBeLessThan(0.05);
+  expect(await sole.evaluate((el) => el.getBoundingClientRect().width)).toBeGreaterThan(80);   // leggibile, non rimpicciolito
+  // il Sole si apre come ogni nodo: scheda con le quattro sezioni
+  await sole.dispatchEvent('click');
+  await expect(page.locator('#scheda h2')).toHaveText('Matematica');
+  await expect(page.locator('#scheda [data-vai^="sezione:"]')).toHaveCount(4);
+  await page.keyboard.press('Escape');
+  await page.locator('[data-comando="ricentra"]').click();
+  await fermo(page);
+  await expect.poll(() => luce('funzione')).toBeGreaterThan(0.1);
+});
+
+test('le transizioni di luce sono graduali: nessuno scatto di opacità', async ({ page }) => {
+  await apriFerma(page);
+  await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.querySelector('.nodo[data-nodo="polinomi"]')).opacity))).toBeGreaterThan(0.1);
+  // la ricerca spegne le stelle che non corrispondono: l'opacità scende per tappe, non in un colpo
+  const serie = page.evaluate(() => new Promise((ok) => {
+    const el = document.querySelector('.nodo[data-nodo="polinomi"]'), v = [], t0 = performance.now();
+    const g = () => { v.push(Number(getComputedStyle(el).opacity)); if (performance.now() - t0 < 1800) requestAnimationFrame(g); else ok(v); };
+    requestAnimationFrame(g);
+  }));
+  await page.locator('#cerca').fill('mercatore');
+  const v = await serie;
+  expect(v[0]).toBeGreaterThan(v.at(-1) + 0.1);
+  expect(new Set(v.map((x) => x.toFixed(2))).size).toBeGreaterThan(6);          // molti valori intermedi
+  const salto = Math.max(...v.slice(1).map((x, i) => Math.abs(x - v[i])));
+  expect(salto).toBeLessThan(0.2);                                              // mai più di un quinto in un fotogramma
+});
+
+test('simboli matematici: solo simboli, in KaTeX, fissi nello spazio e ben distribuiti', async ({ page }) => {
+  await apriFerma(page);
+  const n = await page.locator('.cielo-simbolo').count();
+  expect(n).toBeGreaterThanOrEqual(24);
+  await expect(page.locator('.cielo-simbolo .katex-html')).toHaveCount(n);       // disegnati da KaTeX, non da un carattere qualsiasi
+  expect(await page.locator('.cielo-simbolo .katex').first().evaluate((el) => getComputedStyle(el.querySelector('.mord, .mop, .mrel, .mbin') || el).fontFamily)).toContain('KaTeX');
+  const testi = await page.locator('.cielo-simbolo').allTextContents();
+  for (const t of testi) { expect(t.trim().length, t).toBeLessThanOrEqual(4); expect(t).not.toMatch(/[$\\=+]/); } // un simbolo, mai una formula
+  const p = await page.evaluate(() => window.omCielo.simboli());
+  let minima = Infinity;
+  for (let i = 0; i < p.length; i++) for (let j = i + 1; j < p.length; j++) minima = Math.min(minima, Math.hypot(p[i][0] - p[j][0], p[i][1] - p[j][1], p[i][2] - p[j][2]));
+  expect(minima).toBeGreaterThan(260);                                           // mai due simboli vicini
+  // sparsi in tutte le direzioni attorno alla nebulosa
+  for (const asse of [0, 1, 2]) { const v = p.map((q) => q[asse]); expect(Math.min(...v)).toBeLessThan(-300); expect(Math.max(...v)).toBeGreaterThan(300); }
+  // fissi: ruotando la nebulosa non cambiano posto nello spazio
+  await page.keyboard.press('ArrowRight');
+  expect(await page.evaluate(() => window.omCielo.simboli())).toEqual(p);
 });
 
 test('zoom semantico: le figlie si leggono solo da vicino', async ({ page }) => {
@@ -234,7 +296,9 @@ test('tastiera: Tab tra i nodi, Invio apre, Esc chiude; il nodo col fuoco viene 
   await apriFerma(page);
   await page.locator('[data-comando="pausa"]').click(); // con la tastiera la nebulosa si ferma da sola: qui la pausa è tolta
   await page.locator('#cerca').focus();
-  for (let i = 0; i < 4; i++) await page.keyboard.press('Tab'); // vista, vista, tema, primo nodo
+  for (let i = 0; i < 4; i++) await page.keyboard.press('Tab'); // vista, vista, tema, Matematica (il Sole è il primo nodo)
+  await expect(page.locator('.nodo-sole')).toBeFocused();
+  await page.keyboard.press('Tab');
   await expect(page.locator('.nodo-sezione').first()).toBeFocused();
   await fermo(page);                                             // il fuoco da tastiera ferma la rotazione
   for (let i = 0; i < 4; i++) await page.keyboard.press('Tab');
@@ -284,15 +348,22 @@ test('elasticità: una stella trascinata porta con sé le collegate e resta dove
   const presa = await stellaLibera(page, `(n) => ${JSON.stringify(padri)}.includes(n.id)`);
   expect(presa).not.toBeNull();
   const figlia = VOCABOLARIO.find((p) => p.padre === presa.id).id;
-  const estranea = await page.evaluate((id) => { const n = window.omCielo.nodi.find((x) => x.id === id); return window.omCielo.nodi.find((x) => x.tipo === 'stella' && x !== n && !n.vicini.has(x.id) && ![...x.vicini.keys()].some((v) => n.vicini.has(v))).id; }, presa.id);
+  // la più lontana nella rete dei fili (almeno tre legami di distanza): si muove, ma molto meno
+  const estranea = await page.evaluate((id) => {
+    const per = new Map(window.omCielo.nodi.map((n) => [n.id, n])), dist = new Map([[id, 0]]), coda = [id];
+    while (coda.length) { const c = coda.shift(); for (const v of per.get(c).vicini.keys()) if (!dist.has(v)) { dist.set(v, dist.get(c) + 1); coda.push(v); } }
+    return window.omCielo.nodi.filter((x) => x.tipo === 'stella' && (dist.get(x.id) ?? 99) >= 3).sort((a, b) => (dist.get(b.id) ?? 99) - (dist.get(a.id) ?? 99))[0].id;
+  }, presa.id);
   await page.mouse.move(presa.x, presa.y);
   await page.mouse.down();
   await page.mouse.move(presa.x + 70, presa.y - 50, { steps: 6 });
   await page.mouse.move(presa.x + 140, presa.y - 100, { steps: 6 });
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(250);
   expect(lontano(await stato(page, presa.id))).toBeGreaterThan(100);
   expect(lontano(await stato(page, figlia))).toBeGreaterThan(40);                                   // la figlia segue
-  expect(lontano(await stato(page, estranea))).toBeLessThan(lontano(await stato(page, figlia)) / 4); // chi non è collegato quasi non si muove
+  expect(lontano(await stato(page, estranea))).toBeLessThan(lontano(await stato(page, figlia)) * 0.45); // chi è lontano nella rete si muove molto meno
+  // al rilascio le collegate rimbalzano: oltrepassano il punto in cui si assesteranno, poi tornano indietro
+  const serie = page.evaluate((i) => new Promise((ok) => { const n = window.omCielo.nodi.find((x) => x.id === i), v = [], t0 = performance.now(); const g = () => { v.push([n.x, n.y, n.z]); if (performance.now() - t0 < 3500) requestAnimationFrame(g); else ok(v); }; requestAnimationFrame(g); }), figlia);
   await page.mouse.up();
   await expect(page.locator('#scheda')).toBeHidden();                                               // trascinare non apre la scheda
   // si assesta e resta lì: la stella non torna al posto d'origine, e sta sotto il punto in cui è stata lasciata
@@ -302,6 +373,14 @@ test('elasticità: una stella trascinata porta con sé le collegate e resta dove
   const r = await page.locator('#cielo').boundingBox();
   expect(Math.hypot(r.x + dopo.sx - (presa.x + 140), r.y + dopo.sy - (presa.y - 100))).toBeLessThan(12);
   expect(lontano(await stato(page, figlia))).toBeGreaterThan(30);                                   // anche la figlia resta vicina al padre
+  const punti = await serie, F = punti.at(-1);
+  const scarti = punti.map((q) => [q[0] - F[0], q[1] - F[1], q[2] - F[2]]);
+  const k0 = scarti.reduce((m, q, i) => (Math.hypot(...q) > Math.hypot(...scarti[m]) ? i : m), 0);   // il punto di massimo scostamento
+  const d0 = Math.hypot(...scarti[k0]);
+  const progresso = scarti.slice(k0).map((q) => (q[0] * scarti[k0][0] + q[1] * scarti[k0][1] + q[2] * scarti[k0][2]) / (d0 * d0));
+  expect(d0).toBeGreaterThan(5);
+  expect(Math.min(...progresso)).toBeLessThan(-0.03);   // oltrepassa il punto d'arrivo: rimbalzo
+  expect(Math.abs(progresso.at(-1))).toBeLessThan(0.02); // e poi si ferma lì
   await page.waitForTimeout(700);
   expect(lontano(await stato(page, presa.id))).toBeCloseTo(lontano(dopo), 3);
   // ricentra: ogni stella torna al posto calcolato dal build

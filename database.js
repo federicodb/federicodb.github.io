@@ -95,6 +95,70 @@ const db = [
         ]
     },
     {
+        "title": "Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie",
+        "excerpt": "Risolutore simbolico passo-passo con Tutor Socratico integrato: metti a confronto la regola dei segni nelle frazionarie con l'intersezione delle soluzioni nei sistemi, senza più fare confusione alla lavagna o sul quaderno.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "3 MEC",
+            "4 EL",
+            "ALGEBRA",
+            "DISEQUAZIONI",
+            "FRAZIONARIE",
+            "LOGICA",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "RISOLUTORE",
+            "SISTEMI",
+            "TUTOR"
+        ],
+        "date": "2026-10-30",
+        "url": "content/apps/disequazioni_frazionarie_vs_sistemi.html",
+        "type": "app",
+        "icon": "🧱",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp",
+        "allenamento": [
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_C2"
+                ]
+            }
+        ],
+        "scheda": "schede/disequazioni_frazionarie_vs_sistemi.html",
+        "journal": [
+            {
+                "titolo": "Frazionaria o sistema? Due regole che si somigliano troppo",
+                "url": "journal/2026-10-30-frazionaria-o-sistema/",
+                "data": "2026-10-30"
+            }
+        ]
+    },
+    {
         "title": "Parabola e disequazioni di secondo grado",
         "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
         "tags": [
@@ -156,70 +220,6 @@ const db = [
             {
                 "titolo": "Disequazioni di secondo grado: la risposta si legge sulla parabola",
                 "url": "journal/2026-10-30-disequazioni-di-secondo-grado-sulla-parabola/",
-                "data": "2026-10-30"
-            }
-        ]
-    },
-    {
-        "title": "Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie",
-        "excerpt": "Risolutore simbolico passo-passo con Tutor Socratico integrato: metti a confronto la regola dei segni nelle frazionarie con l'intersezione delle soluzioni nei sistemi, senza più fare confusione alla lavagna o sul quaderno.",
-        "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "3 MEC",
-            "4 EL",
-            "ALGEBRA",
-            "DISEQUAZIONI",
-            "FRAZIONARIE",
-            "LOGICA",
-            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
-            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "RISOLUTORE",
-            "SISTEMI",
-            "TUTOR"
-        ],
-        "date": "2026-10-30",
-        "url": "content/apps/disequazioni_frazionarie_vs_sistemi.html",
-        "type": "app",
-        "icon": "🧱",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/disequazioni_frazionarie_vs_sistemi.webp",
-        "allenamento": [
-            {
-                "id": "disequazioni-1",
-                "titolo": "Disequazioni di primo grado",
-                "url": "allenamento/#/lezione/disequazioni-1/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K1"
-                ]
-            },
-            {
-                "id": "disequazioni-2",
-                "titolo": "Disequazioni di secondo grado",
-                "url": "allenamento/#/lezione/disequazioni-2/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_K2"
-                ]
-            },
-            {
-                "id": "sistemi-lineari",
-                "titolo": "Sistemi lineari",
-                "url": "allenamento/#/lezione/sistemi-lineari/1",
-                "mat": [
-                    "MAT_A3",
-                    "MAT_C2"
-                ]
-            }
-        ],
-        "scheda": "schede/disequazioni_frazionarie_vs_sistemi.html",
-        "journal": [
-            {
-                "titolo": "Frazionaria o sistema? Due regole che si somigliano troppo",
-                "url": "journal/2026-10-30-frazionaria-o-sistema/",
                 "data": "2026-10-30"
             }
         ]
@@ -2255,101 +2255,6 @@ const db = [
         ]
     },
     {
-        "title": "Mappe & Distorsioni: Mercatore",
-        "excerpt": "Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le aree reali dei paesi.",
-        "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "COORDINATE",
-            "EU:STEM",
-            "GEOGRAFIA",
-            "LAB",
-            "MAT:GEOMETRIA",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "MERCATORE",
-            "PROIEZIONI",
-            "SCALA"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/mercatore_correzione_001_gemini_worksproperly.html",
-        "type": "app",
-        "icon": "🌍",
-        "game_type": "standard",
-        "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.webp",
-        "allenamento": [
-            {
-                "id": "proporzioni",
-                "titolo": "Proporzioni",
-                "url": "allenamento/#/lezione/proporzioni/1",
-                "mat": [
-                    "MAT_K2",
-                    "MAT_C2"
-                ]
-            },
-            {
-                "id": "trigonometria",
-                "titolo": "Trigonometria del triangolo rettangolo",
-                "url": "allenamento/#/lezione/trigonometria/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_C4"
-                ]
-            }
-        ],
-        "scheda": "schede/mercatore_correzione_001_gemini_worksproperly.html"
-    },
-    {
-        "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
-        "excerpt": "Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.",
-        "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "3 MEC",
-            "4 EL",
-            "ALGEBRA",
-            "EU:STEM",
-            "GEOMETRIA",
-            "LAB",
-            "MAT:GEOMETRIA",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "VISUALIZZAZIONE"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/scomp_3d_grafica_002.html",
-        "type": "app",
-        "icon": "🧱",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.webp",
-        "allenamento": [
-            {
-                "id": "prodotti-notevoli",
-                "titolo": "Prodotti notevoli",
-                "url": "allenamento/#/lezione/prodotti-notevoli/1",
-                "mat": [
-                    "MAT_K1",
-                    "MAT_A1"
-                ]
-            },
-            {
-                "id": "scomposizioni",
-                "titolo": "Scomposizioni",
-                "url": "allenamento/#/lezione/scomposizioni/1",
-                "mat": [
-                    "MAT_K1",
-                    "MAT_A3"
-                ]
-            }
-        ],
-        "scheda": "schede/scomp_3d_grafica_002.html"
-    },
-    {
         "title": "Sketch to Pattern: Arte Generativa",
         "excerpt": "Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.",
         "tags": [
@@ -2373,103 +2278,6 @@ const db = [
         "game_type": "standard",
         "thumbnail": "content/assets/thumbnails/sketch_to_pattern_gemini_005.webp",
         "scheda": "schede/sketch_to_pattern_gemini_005.html"
-    },
-    {
-        "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
-        "excerpt": "Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.",
-        "tags": [
-            "3 MEC",
-            "4 EL",
-            "ANGOLI",
-            "FUNZIONI",
-            "GAMIFICATION",
-            "GONIOMETRIA",
-            "LAB",
-            "MAT:ANALISI",
-            "MATEMATICA",
-            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
-            "TRIGONOMETRIA"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/gioco_sin_cos_01.html",
-        "type": "app",
-        "icon": "📈",
-        "game_type": "memory",
-        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.webp",
-        "allenamento": [
-            {
-                "id": "goniometria",
-                "titolo": "Goniometria",
-                "url": "allenamento/#/lezione/goniometria/1",
-                "mat": [
-                    "MAT_K2",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "trigonometria",
-                "titolo": "Trigonometria del triangolo rettangolo",
-                "url": "allenamento/#/lezione/trigonometria/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_C4"
-                ]
-            }
-        ],
-        "scheda": "schede/gioco_sin_cos_01.html",
-        "journal": [
-            {
-                "titolo": "Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare",
-                "url": "journal/2026-11-05-ruote-che-non-sobbalzano/",
-                "data": "2026-11-05"
-            }
-        ]
-    },
-    {
-        "title": "Logic Lab: Insiemi & Venn",
-        "excerpt": "Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.",
-        "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "DIAGRAMMI DI VENN",
-            "EU:STEM",
-            "INSIEMI",
-            "LAB",
-            "LOGICA",
-            "MAT:LOGICA",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/insiemi004.html",
-        "type": "app",
-        "icon": "🔴",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/insiemi004.webp",
-        "allenamento": [
-            {
-                "id": "probabilita",
-                "titolo": "Probabilità",
-                "url": "allenamento/#/lezione/probabilita/1",
-                "mat": [
-                    "MAT_K4",
-                    "MAT_C3"
-                ]
-            },
-            {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
-                "mat": [
-                    "MAT_K4",
-                    "MAT_C3",
-                    "MAT_A2"
-                ]
-            }
-        ],
-        "scheda": "schede/insiemi004.html"
     },
     {
         "title": "Guida 3D: Scomposizione di Polinomi (Algebra Tiles)",
@@ -2520,67 +2328,60 @@ const db = [
         "scheda": "schede/visualizzatore_polinomi_2d_3d_001.html"
     },
     {
-        "title": "Albero di Pitagora: Frattali 3D",
-        "excerpt": "Simulazione WebGL dell'Albero di Pitagora in 3D. Un'esplorazione visiva dei frattali e delle relazioni geometriche tra i quadrati.",
+        "title": "Laboratorio di operazioni tra Frazioni",
+        "excerpt": "Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.",
         "tags": [
             "1 EL",
             "2 EL",
             "2 GP",
-            "3 MEC",
-            "ALGORITMI",
-            "CODING",
+            "ARITMETICA",
             "EU:STEM",
-            "FRATTALI",
-            "GEOMETRIA",
+            "FRAZIONI",
             "LAB",
-            "MAT:GEOMETRIA",
+            "MAT:CALCOLO",
             "MAT:MODELLIZZAZIONE",
             "MATEMATICA",
-            "MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
-            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
-            "PITAGORA",
-            "RICORSIONE",
-            "STAMPA 3D"
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "NUMERI RAZIONALI"
         ],
         "date": "2025-12-08",
-        "url": "content/apps/albero_pitagorico_3d_gemini_001.html",
+        "url": "content/apps/fractions_lab_001.html",
         "type": "app",
-        "icon": "📐",
+        "icon": "🍰",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.webp",
+        "thumbnail": "content/assets/thumbnails/fractions_lab_001.webp",
         "allenamento": [
             {
-                "id": "pitagora",
-                "titolo": "Il teorema di Pitagora",
-                "url": "allenamento/#/lezione/pitagora/1",
+                "id": "frazioni",
+                "titolo": "Frazioni",
+                "url": "allenamento/#/lezione/frazioni/1",
                 "mat": [
-                    "MAT_K3",
-                    "MAT_A4",
-                    "MAT_C4"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             },
             {
-                "id": "aree-perimetri",
-                "titolo": "Aree e perimetri",
-                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "id": "potenze",
+                "titolo": "Proprietà delle potenze",
+                "url": "allenamento/#/lezione/potenze/1",
                 "mat": [
-                    "MAT_K3",
-                    "MAT_A4",
-                    "MAT_C4"
+                    "MAT_K1",
+                    "MAT_A1"
                 ]
             }
         ],
-        "scheda": "schede/albero_pitagorico_3d_gemini_001.html",
+        "scheda": "schede/fractions_lab_001.html",
         "journal": [
             {
-                "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
-                "url": "journal/2026-11-01-il-teorema-di-pitagora-nell-albero/",
+                "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
+                "url": "journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/",
                 "data": "2026-11-01"
             },
             {
-                "titolo": "π non è una frazione (e nemmeno √2)",
-                "url": "journal/2026-10-28-pi-greco-non-e-una-frazione/",
-                "data": "2026-10-28"
+                "titolo": "Il filo di Dedalo: un labirinto da risolvere con la matematica",
+                "url": "journal/2026-10-11-il-filo-di-dedalo/",
+                "data": "2026-10-11"
             }
         ]
     },
@@ -2651,6 +2452,217 @@ const db = [
         ]
     },
     {
+        "title": "Mappe & Distorsioni: Mercatore",
+        "excerpt": "Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le aree reali dei paesi.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "COORDINATE",
+            "EU:STEM",
+            "GEOGRAFIA",
+            "LAB",
+            "MAT:GEOMETRIA",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "MERCATORE",
+            "PROIEZIONI",
+            "SCALA"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/mercatore_correzione_001_gemini_worksproperly.html",
+        "type": "app",
+        "icon": "🌍",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/mercatore_correzione_001_gemini_worksproperly.webp",
+        "allenamento": [
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_C4"
+                ]
+            }
+        ],
+        "scheda": "schede/mercatore_correzione_001_gemini_worksproperly.html"
+    },
+    {
+        "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
+        "excerpt": "Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.",
+        "tags": [
+            "3 MEC",
+            "4 EL",
+            "ANGOLI",
+            "FUNZIONI",
+            "GAMIFICATION",
+            "GONIOMETRIA",
+            "LAB",
+            "MAT:ANALISI",
+            "MATEMATICA",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "TRIGONOMETRIA"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/gioco_sin_cos_01.html",
+        "type": "app",
+        "icon": "📈",
+        "game_type": "memory",
+        "thumbnail": "content/assets/thumbnails/gioco_sin_cos_01.webp",
+        "allenamento": [
+            {
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_C4"
+                ]
+            }
+        ],
+        "scheda": "schede/gioco_sin_cos_01.html",
+        "journal": [
+            {
+                "titolo": "Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare",
+                "url": "journal/2026-11-05-ruote-che-non-sobbalzano/",
+                "data": "2026-11-05"
+            }
+        ]
+    },
+    {
+        "title": "Albero di Pitagora: Frattali 3D",
+        "excerpt": "Simulazione WebGL dell'Albero di Pitagora in 3D. Un'esplorazione visiva dei frattali e delle relazioni geometriche tra i quadrati.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "3 MEC",
+            "ALGORITMI",
+            "CODING",
+            "EU:STEM",
+            "FRATTALI",
+            "GEOMETRIA",
+            "LAB",
+            "MAT:GEOMETRIA",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "PITAGORA",
+            "RICORSIONE",
+            "STAMPA 3D"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/albero_pitagorico_3d_gemini_001.html",
+        "type": "app",
+        "icon": "📐",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/albero_pitagorico_3d_gemini_001.webp",
+        "allenamento": [
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            }
+        ],
+        "scheda": "schede/albero_pitagorico_3d_gemini_001.html",
+        "journal": [
+            {
+                "titolo": "Il teorema di Pitagora, dal triangolo all'albero frattale",
+                "url": "journal/2026-11-01-il-teorema-di-pitagora-nell-albero/",
+                "data": "2026-11-01"
+            },
+            {
+                "titolo": "π non è una frazione (e nemmeno √2)",
+                "url": "journal/2026-10-28-pi-greco-non-e-una-frazione/",
+                "data": "2026-10-28"
+            }
+        ]
+    },
+    {
+        "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
+        "excerpt": "Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "3 MEC",
+            "4 EL",
+            "ALGEBRA",
+            "EU:STEM",
+            "GEOMETRIA",
+            "LAB",
+            "MAT:GEOMETRIA",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "VISUALIZZAZIONE"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/scomp_3d_grafica_002.html",
+        "type": "app",
+        "icon": "🧱",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/scomp_3d_grafica_002.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A3"
+                ]
+            }
+        ],
+        "scheda": "schede/scomp_3d_grafica_002.html"
+    },
+    {
         "title": "Simulazione CA: Fasori & Onde",
         "excerpt": "Simulatore interattivo del comportamento in Corrente Alternata (Sfasamento, Valori Efficaci, Potenza) per il corso di macchine elettriche.",
         "tags": [
@@ -2697,62 +2709,50 @@ const db = [
         "scheda": "schede/corrente_4el_sincos.html"
     },
     {
-        "title": "Laboratorio di operazioni tra Frazioni",
-        "excerpt": "Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.",
+        "title": "Logic Lab: Insiemi & Venn",
+        "excerpt": "Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.",
         "tags": [
             "1 EL",
             "2 EL",
             "2 GP",
-            "ARITMETICA",
+            "DIAGRAMMI DI VENN",
             "EU:STEM",
-            "FRAZIONI",
+            "INSIEMI",
             "LAB",
-            "MAT:CALCOLO",
+            "LOGICA",
+            "MAT:LOGICA",
             "MAT:MODELLIZZAZIONE",
             "MATEMATICA",
-            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
-            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
-            "NUMERI RAZIONALI"
+            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI"
         ],
         "date": "2025-12-08",
-        "url": "content/apps/fractions_lab_001.html",
+        "url": "content/apps/insiemi004.html",
         "type": "app",
-        "icon": "🍰",
+        "icon": "🔴",
         "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/fractions_lab_001.webp",
+        "thumbnail": "content/assets/thumbnails/insiemi004.webp",
         "allenamento": [
             {
-                "id": "frazioni",
-                "titolo": "Frazioni",
-                "url": "allenamento/#/lezione/frazioni/1",
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
                 "mat": [
-                    "MAT_K1",
-                    "MAT_A1"
+                    "MAT_K4",
+                    "MAT_C3"
                 ]
             },
             {
-                "id": "potenze",
-                "titolo": "Proprietà delle potenze",
-                "url": "allenamento/#/lezione/potenze/1",
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
                 "mat": [
-                    "MAT_K1",
-                    "MAT_A1"
+                    "MAT_K4",
+                    "MAT_C3",
+                    "MAT_A2"
                 ]
             }
         ],
-        "scheda": "schede/fractions_lab_001.html",
-        "journal": [
-            {
-                "titolo": "Fractions Lab: le frazioni in torte e sulla retta",
-                "url": "journal/2026-11-01-fractions-lab-frazioni-in-torte-e-sulla-retta/",
-                "data": "2026-11-01"
-            },
-            {
-                "titolo": "Il filo di Dedalo: un labirinto da risolvere con la matematica",
-                "url": "journal/2026-10-11-il-filo-di-dedalo/",
-                "data": "2026-10-11"
-            }
-        ]
+        "scheda": "schede/insiemi004.html"
     },
     {
         "title": "Math Underground: Mappa per la classificazione di Funzioni",

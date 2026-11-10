@@ -8,8 +8,8 @@
 ![Open source](https://img.shields.io/badge/strumenti-open%20source-green.svg)
 
 Orfini Math Lab è un laboratorio artigianale. Le attività nascono in classe, si provano con gli studenti, si correggono e
-a volte si buttano. Il sito raccoglie quello che resta: **41 attività interattive**, **58 lezioni di allenamento**,
-**18 verifiche**, **10 spiegazioni animate**. C'è anche il quaderno di lavoro che racconta come sono nate e come sono andate.
+a volte si buttano. Il sito raccoglie quello che resta: **48 attività e laboratori**, **58 lezioni di allenamento**,
+**15 note del diario di bordo**, **18 verifiche** (**139 voci** in tutto, organizzate attorno a **40 parole chiave**).
 
 ---
 
@@ -37,13 +37,13 @@ a volte si buttano. Il sito raccoglie quello che resta: **41 attività interatti
 
 | Sezione | Che cos'è |
 |---|---|
-| **[Attività](https://federicodb.github.io/)** | Il catalogo delle app, con ricerca e filtri (arcade, simulazioni, memory, infografiche). |
+| **[Esplora — Costellazione ed Elenco](https://federicodb.github.io/)** | La pagina iniziale in due forme: una **nebulosa 3D** interattiva delle 40 parole chiave con *Matematica* (il Sole) al centro, e una **vista Elenco** a dashboard con filtri per sezione, parola chiave e ricerca. |
 | **[Allenati](https://federicodb.github.io/allenamento/)** | Orfini Math Quest: lezioni a piccoli passi, dalla prima alla quinta, che funzionano anche offline. |
-| **[Calcolo veloce](https://federicodb.github.io/calcolo-mentale.html)** | Le tecniche di calcolo mentale con la loro dimostrazione. |
 | **[Journal](https://federicodb.github.io/journal/)** | Il diario di bordo: come nasce un'attività, come è andata in classe, cosa cambia. |
-| **[Mappa](https://federicodb.github.io/galaxy.html)** | La mappa stellare dei temi: un filtro visivo su tutto il laboratorio. |
-| **[Competenze](https://federicodb.github.io/competenze.html)** | La rubrica della Riforma 2017, con le attività e le lezioni per ogni competenza. |
-| **[Archivio](https://federicodb.github.io/verifiche.html)** | Le verifiche, con le loro versioni (file A e B). |
+| **[Archivio](https://federicodb.github.io/verifiche.html)** | Le verifiche già svolte, con le loro versioni (file A e B) per mettersi alla prova su carta. |
+| **[Calcolo veloce](https://federicodb.github.io/calcolo-mentale.html)** | Le tecniche di calcolo mentale con la loro dimostrazione algebrica ed esercizi senza cronometro. |
+| **[Competenze](https://federicodb.github.io/competenze.html)** | La rubrica della Riforma 2017, con le attività, le lezioni e le verifiche per ogni competenza. |
+| **[La Scuola](https://federicodb.github.io/scuola.html)** | Il contesto didattico dell'IPIA «E. Orfini» di Foligno e gli indirizzi di studio. |
 
 ### Le attività
 
@@ -97,17 +97,14 @@ Ogni nota ha:
 
 Si scrive in Markdown: un file in `content/journal/`, e il resto lo fa il build.
 
-### La mappa stellare dei temi
+### La home in due forme: Costellazione 3D ed Elenco
 
-Tutti i temi delle attività in una costellazione 3D, con *Matematica* al centro:
+La pagina iniziale presenta le 139 voci del laboratorio in due viste complementari, commutabili dalla barra in alto mantenendo lo stesso filtro:
 
-- **Temi e legami**: ogni tema è un neurone luminoso, grande quanto il numero di attività che ne parlano. I legami
-  uniscono i temi che compaiono insieme, e un impulso di luce li percorre come un segnale nervoso.
-- **Famiglie**: i temi vicini per argomento formano famiglie dello stesso colore. Nessun tema resta isolato.
-- **Filtro visivo**: tocchi un tema e restano accesi i temi e le attività collegate; tocchi un secondo tema e il filtro
-  si restringe all'intersezione. Dal pannello si apre l'attività o il catalogo già filtrato.
-- **Si gioca**: si trascina un tema e i vicini lo seguono come molle; allontanandosi resta leggibile solo
-  *Matematica* al centro della costellazione.
+- **Costellazione (`sito/costellazione.js`)**: una nebulosa in tre dimensioni calcolata dal build (`data/mappa.json`), identica a ogni visita. Al centro splende il Sole (**Matematica**), attorno a cui ruotano le 4 sezioni (*Attività*, *Allenati*, *Journal*, *Archivio*), le 40 stelle delle parole chiave (con colore e forma geometrica della sezione prevalente) e i simboli matematici in KaTeX sullo sfondo di una cupola stellata.
+  - **Rotazione inerziale ed elasticità plastica**: trascinando lo sfondo la nebulosa gira e prosegue per inerzia; trascinando una stella, quelle collegate la seguono come molle e al rilascio la costellazione si assesta nella nuova forma finché non si preme *Ricentra*.
+  - **Zoom semantico e accessibilità**: da lontano si leggono le sezioni e le parole principali; avvicinandosi (o aprendo un padre) compaiono le parole figlie. Allontanandosi fino al minimo resta visibile solo la parola *Matematica*. Ogni stella è un vero pulsante HTML navigabile da tastiera (`Tab`, `Invio`, `Esc`, frecce) e leggibile dai lettori di schermo.
+- **Elenco (`sito/elenco.js`)**: HTML statico generato dal build (`tools/genera.mjs`), leggibile anche senza JavaScript. In alto una dashboard mostra i progressi personali della Quest e le 4 tessere di sezione con contatori che si aggiornano in tempo reale filtrando per parola chiave (con gerarchia padre/figlie) o cercando nel testo (con riconoscimento degli alias del vocabolario e delle forme singolare/plurale).
 
 ### La rubrica delle competenze
 
@@ -131,14 +128,15 @@ Le parti del sito non sono pagine separate: il build le collega tra loro, a part
 
 ```mermaid
 flowchart LR
-    A["Attività<br/>(41 app)"] -- "Allenati" --> Q["Quest<br/>58 lezioni"]
-    J["Journal<br/>note del diario"] -- "le attività di cui parla" --> A
-    J -- "Mettiti alla prova su carta" --> V["Archivio<br/>verifiche in PDF"]
+    M["Home: Costellazione 3D<br/>ed Elenco (40 parole)"] -- "filtra e apre" --> A["Attività<br/>(48 laboratori)"]
+    M --> Q["Quest<br/>(58 lezioni)"]
+    M --> J["Journal<br/>(15 note del diario)"]
+    M --> V["Archivio<br/>(18 verifiche)"]
+    A -- "Allenati" --> Q
+    J -- "le attività di cui parla" --> A
+    J -- "Mettiti alla prova su carta" --> V
     J -- "competenze richiamate" --> C["Competenze<br/>rubrica Riforma 2017"]
     C -- "attività, lezioni, verifiche per voce" --> A
-    C --> Q
-    C --> V
-    M["Mappa dei temi"] -- "filtro visivo" --> A
     A -- "Scheda da stampare" --> S["Scheda A4<br/>con QR"]
     Q -. "codici anonimi di fine lezione" .-> J
 ```
@@ -160,40 +158,36 @@ flowchart LR
 
 ## Come è costruito
 
-Sito statico su GitHub Pages, senza framework né server. Le app restano file singoli; tutto ciò che collega le parti lo
-genera uno script Python, `build.py`:
+Sito statico su GitHub Pages, senza framework né server. Le app restano file singoli; l'intero sito si costruisce e si valida con un solo comando (`npm run build`, orchestrato da `tools/build.mjs`):
 
-- **legge** le attività (metadati delle pagine, codici di competenza, data) e scrive il catalogo (`database.js`), la
-  sitemap e il blocco SEO della home;
-- **collega** ogni attività alle lezioni di allenamento scelte dal docente (`<meta name="allenamento">`);
-- **genera il Journal** (`journal_build.py`): pagine delle note, copertine controllate e ripulite dai metadati,
-  temi, competenze, verifiche collegate, storia delle attività, esiti anonimi; e le **schede da stampare**;
-- **genera la Mappa** (`mappa_build.py`): temi, legami, famiglie;
-- **scrive il colophon** di tutte le pagine (licenze, ultimo aggiornamento);
-- **controlla e avvisa**: metadati mancanti, immagini chiare o senza descrizione, librerie senza versione.
+1. **`build.py` (con `dati_build.py`, `journal_build.py`, `mappa_build.py`)**:
+   - legge le attività, le lezioni della Quest, le note del Journal e le verifiche, e genera `data/attivita.json` (le 139 voci della home), `database.js` e `sitemap.xml`;
+   - genera il **Journal** (`journal/`), le copertine in WebP ripulite dai metadati e le **40 schede A4 da stampare** con QR;
+   - aggiorna il colophon di tutte le pagine e segnala eventuali avvisi.
+2. **`tools/valida.mjs`**: controlla che ogni voce di `data/attivita.json` e ogni parola o alias di `data/vocabolario.json` siano validi, privi di duplicati e puntino a indirizzi esistenti nel sito.
+3. **`tools/mappa.mjs`**: calcola con un algoritmo deterministico le coordinate 3D `(x, y, z)` di sezioni e stelle e scrive `data/mappa.json`.
+4. **`tools/genera.mjs`**: scrive la barra unica del menu (`tools/parti/menu.html`) in tutte le pagine, e genera in `index.html` le tessere della dashboard, l'elenco completo delle schede (con formule convertite in MathML tramite KaTeX) e i nodi della costellazione.
 
-Il sito funziona anche **senza rete** per ciò che si è già aperto: lo gestisce un service worker. Le librerie esterne
-sono caricate da CDN con la versione fissa; il JSX delle app React è tradotto in anticipo (`tools/compila_jsx.mjs`),
-così il browser non deve scaricare un compilatore.
+Il sito funziona anche **senza rete** per ciò che si è già aperto grazie al service worker (`sw.js`). Il tema scuro (*Lavagna*, predefinito) e il tema chiaro ad alto contrasto (*Carta/LIM*, `sito/tema.css`) sono condivisi tra tutte le pagine e la Quest, insieme all'opzione *Riduci effetti* (`sito/effetti.js`).
 
-**Test**: Playwright per le pagine del sito (`tests/`), test della Quest con verifica simbolica delle risposte
-(`allenamento/`, `npm test`).
+**Test**: Playwright per tutte le pagine del sito (`npm run test:home` per elenco e costellazione, `npx playwright test` per l'intera suite), più i test della Quest con verifica simbolica delle risposte (`allenamento/`).
 
-**Strumenti** (tutti open source): Three.js, KaTeX, Nerdamer, math.js, p5.js, D3, JSXGraph, Chart.js, Tailwind CSS,
-Python con Pillow e Markdown, Playwright.
+**Strumenti** (tutti open source): Three.js, KaTeX (servito localmente), Nerdamer, math.js, p5.js, D3, JSXGraph, Chart.js, Tailwind CSS, Python con Pillow e Markdown, Node.js, Playwright.
 
 ### Per aggiungere qualcosa
 
-- **Un'attività**: un file HTML in `content/apps/` con titolo, descrizione, parole chiave (anche i codici di competenza)
-  e il meta degli allenamenti; poi la miniatura e il build.
-- **Una nota del Journal**: copiare `content/journal/_modello.md`, scrivere, rilanciare il build.
-- **Una lezione della Quest**: copiare `allenamento/activities/_modello.js` e importarla in `activities/catalogo.js`.
+La guida passo-passo è in [`docs/come-aggiungere-attivita.md`](docs/come-aggiungere-attivita.md):
 
-Build senza servizi esterni:
+- **Un'attività**: aggiungere il file HTML in `content/apps/` con `<meta name="parole" content="...">` (usando gli `id` di `data/vocabolario.json`), titolo, descrizione e `<meta name="allenamento">`; poi lanciare `npm run build`.
+- **Una nota del Journal**: copiare `content/journal/_modello.md`, scrivere la nota e lanciare `npm run build`.
+- **Una lezione della Quest**: copiare `allenamento/activities/_modello.js`, includere `descrizione` e `parole`, importarla in `allenamento/activities/catalogo.js` e lanciare `npm run build`.
+
+Build completo e anteprima locale (senza servizi esterni):
 
 ```bash
-.venv/bin/python3 -c "import build; build.GEMINI_API_KEY=''; build.main()"
+npm run build                 # genera catalogo, Journal, mappa 3D, menu e home, e valida tutto
 python3 -m http.server 8080   # anteprima su http://localhost:8080/
+npm run test:home             # esegue i test Playwright di Elenco e Costellazione
 ```
 
 ---

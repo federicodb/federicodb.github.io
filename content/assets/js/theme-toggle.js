@@ -24,6 +24,8 @@
             root.classList.remove('theme-light');
             root.setAttribute('data-theme', 'dark');
         }
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', theme === 'light' ? '#ffffff' : '#050507');
         localStorage.setItem(STORAGE_KEY, theme);
     }
 

@@ -11,6 +11,9 @@
 
 :root {
     color-scheme: dark;
+    interpolate-size: allow-keywords;
+    accent-color: var(--om-accento);
+    scrollbar-color: var(--om-bordo-forte) transparent;
     --om-fondo: #050507;
     --om-superficie: hsl(240, 6%, 9%);
     --om-superficie-2: hsl(240, 6%, 14%);
@@ -30,6 +33,7 @@
     --om-allenati: hsl(152, 70%, 54%);
     --om-journal: hsl(328, 85%, 74%);
     --om-archivio: hsl(40, 95%, 62%);
+    --om-sole: hsl(46, 100%, 66%);
 
     --om-font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --om-font-titoli: 'Syne', 'Inter', system-ui, sans-serif;
@@ -59,6 +63,7 @@ html.theme-light {
     --om-allenati: hsl(155, 90%, 20%);
     --om-journal: hsl(328, 75%, 34%);
     --om-archivio: hsl(28, 95%, 28%);
+    --om-sole: hsl(36, 95%, 27%);
 }
 
 /* --------------------------------------------------------------------------
@@ -67,7 +72,6 @@ html.theme-light {
 
 :root {
     /* New Artistic Desaturated Palette */
-    --primary: hsl(190, 100%, 45%);
     --primary-glow: hsla(190, 100%, 45%, 0.3);
 
     /* New Thematic Palette */
@@ -82,8 +86,8 @@ html.theme-light {
     --bg-card: hsla(240, 6%, 12%, 0.4);
     --glass-border: hsla(0, 0%, 100%, 0.12);
 
-    --primary: hsl(190, 35%, 60%);
     /* Desaturated Lab Cyan */
+    --primary: hsl(190, 35%, 60%);
     --accent: hsl(330, 25%, 65%);
     /* Muted Magenta */
 

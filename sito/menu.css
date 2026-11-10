@@ -149,9 +149,11 @@ html.theme-light .om-luna { display: block; }
     .om-altro[open] summary { background: none; color: var(--om-testo-2); }
     .om-altro-voci { position: static; padding: 0; border: 0; box-shadow: none; background: none; min-width: 0; }
 
-    /* la ricerca è un'icona che si allarga su tutta la barra quando la si tocca */
+    /* la ricerca è un'icona che si allarga su tutta la barra quando la si tocca, e resta visibile se contiene testo */
     .om-cerca { width: 40px; border-color: transparent; background: none; }
     .om-cerca input { width: 0; padding: 0; }
+    .om-cerca:has(input:not(:placeholder-shown)) { width: 116px; background: var(--om-superficie); border-color: var(--om-accento); }
+    .om-cerca:has(input:not(:placeholder-shown)) input { width: auto; padding-right: 10px; }
     .om-cerca:focus-within {
         position: absolute; left: 12px; right: 12px; top: 5px; width: auto; z-index: 2;
         background: var(--om-superficie); border-color: var(--om-accento);
@@ -168,9 +170,10 @@ html.theme-light .om-luna { display: block; }
     font-family: var(--om-font); line-height: 1.6;
     box-shadow: var(--om-ombra); overflow-y: auto; overscroll-behavior: contain;
 }
-.om-pannello::backdrop { background: var(--om-velo); }
+.om-pannello::backdrop { background: var(--om-velo); transition: opacity 0.25s ease; }
 .om-pannello:not([open]):target { display: block; } /* senza JavaScript si apre con l'ancora #chi-sono */
 .om-pannello[open] { animation: om-entra 0.28s cubic-bezier(0.2, 0, 0.2, 1); }
+@starting-style { .om-pannello[open]::backdrop { opacity: 0; } }
 @keyframes om-entra { from { transform: translateX(40px); opacity: 0; } }
 .om-pannello-testa { position: sticky; top: 0; display: flex; justify-content: space-between; gap: 16px; padding: 24px 24px 16px; background: var(--om-superficie); border-bottom: 1px solid var(--om-bordo); }
 .om-occhiello { margin: 0 0 6px; font: 600 0.72rem/1 var(--om-font); letter-spacing: 0.2em; text-transform: uppercase; color: var(--om-accento); }

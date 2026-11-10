@@ -29,7 +29,6 @@
     const suggerimento = document.getElementById('suggerimento');
     const azzera = document.getElementById('azzera');
     const vuoto = document.getElementById('vuoto');
-    const raggruppa = document.getElementById('raggruppa');
     const filtriParole = document.getElementById('filtri-parole');
     const nomiSezione = Object.fromEntries([...document.querySelectorAll('.filtro[data-sezione]')].map((a) => [a.dataset.sezione, a.childNodes[1] ? a.childNodes[1].textContent.trim() : '']));
 
@@ -64,37 +63,54 @@
 
     function applica({ scrivi = true } = {}) {
         const q = norma(stato.q);
-        const pezzi = q ? q.split(' ') : [];
+        const pezzi = q ? radice(stato.q).split(' ') : [];
         const trovate = q ? paroleTrovate(stato.q) : [];
         const daRicerca = new Set(trovate.flatMap((t) => [t.p.id, ...figlie(t.p.id)]));
         const daFiltro = stato.parola ? new Set([stato.parola, ...figlie(stato.parola)]) : null;
 
         let visibili = 0;
         const perParola = new Map();
+        const perSezione = { '': 0, attivita: 0, allenati: 0, journal: 0, archivio: 0 };
         for (const s of schede) {
-            let ok = !stato.sezione || s.sezione === stato.sezione;
-            if (ok && daFiltro) ok = [...s.parole].some((p) => daFiltro.has(p));
-            if (ok && q) ok = pezzi.every((w) => s.testo.includes(w)) || [...s.parole].some((p) => daRicerca.has(p));
+            const okParola = !daFiltro || [...s.parole].some((p) => daFiltro.has(p));
+            const okRicerca = !q || pezzi.every((w) => s.testo.includes(w)) || [...s.parole].some((p) => daRicerca.has(p));
+            const okTema = okParola && okRicerca;
+            if (okTema) {
+                perSezione['']++;
+                perSezione[s.sezione] = (perSezione[s.sezione] || 0) + 1;
+            }
+            const ok = (!stato.sezione || s.sezione === stato.sezione) && okTema;
             s.el.hidden = !ok;
             if (ok) { visibili++; for (const p of s.parole) perParola.set(p, (perParola.get(p) || 0) + 1); }
         }
-        for (const sez of sezioni) sez.hidden = !sez.querySelector('.card:not([hidden])');
+        for (const sez of sezioni) {
+            const cont = sez.querySelector('.sezione-n');
+            if (cont) cont.textContent = String(perSezione[sez.dataset.sezione] ?? 0);
+            sez.hidden = !sez.querySelector('.card:not([hidden])');
+        }
+        griglia.classList.toggle('filtrata', !!(stato.q || stato.parola || stato.sezione));
         vuoto.hidden = visibili > 0;
 
-        // filtri: stato attivo, e parole senza risultati attenuate
-        for (const a of document.querySelectorAll('.filtro[data-sezione]')) {
+        // filtri: stato attivo, conteggi aggiornati e parole senza risultati attenuate
+        for (const a of document.querySelectorAll('.filtro[data-sezione], .tessera-sezione')) {
             if (a.dataset.sezione === stato.sezione) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+            const numEl = a.querySelector('.tessera-n, span:not(.tessera-testa):not(.tessera-desc)');
+            if (numEl) numEl.textContent = String(perSezione[a.dataset.sezione] ?? 0);
         }
+        // le figlie compaiono solo dentro il padre scelto (o quando è scelta una di loro)
+        const padreAttivo = stato.parola ? (parole.get(stato.parola).p || stato.parola) : '';
+        for (const b of document.querySelectorAll('.figlie')) b.hidden = b.dataset.padre !== padreAttivo;
         for (const a of document.querySelectorAll('.filtri-parole .parola')) {
             const id = a.dataset.parola;
+            if (a.classList.contains('padre')) a.classList.toggle('in-famiglia', id === padreAttivo && id !== stato.parola);
             if (id === stato.parola) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
             const n = (perParola.get(id) || 0) + figlie(id).reduce((t, f) => t + (perParola.get(f) || 0), 0);
             a.classList.toggle('spenta', n === 0 && id !== stato.parola);
         }
 
         // su telefono la parola scelta si porta in vista nella riga che scorre
-        const attiva = filtriParole.querySelector('.parola[aria-current="true"]');
-        const riga = filtriParole.querySelector('ul');
+        const attiva = filtriParole.querySelector('.radici .parola[aria-current="true"], .radici .in-famiglia');
+        const riga = filtriParole.querySelector('.radici');
         if (attiva && riga.scrollWidth > riga.clientWidth) riga.scrollLeft += attiva.getBoundingClientRect().left - riga.getBoundingClientRect().left - 16;
 
         // riga di stato
@@ -136,21 +152,21 @@
 
     // ---- eventi ----
     document.addEventListener('click', (e) => {
-        const a = e.target.closest('a[data-parola], a.filtro[data-sezione], #azzera, .vuoto a');
+        const a = e.target.closest('a[data-parola], a.filtro[data-sezione], a.tessera-sezione, #azzera, .vuoto a');
         if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
         e.preventDefault();
         if (a.dataset.parola !== undefined) {
             stato.parola = stato.parola === a.dataset.parola ? '' : a.dataset.parola;
             if (a.dataset.daRicerca) { stato.q = ''; if (cerca) cerca.value = ''; } // dalla ricerca alla parola canonica
         } else if (a.dataset.sezione !== undefined) {
-            stato.sezione = a.dataset.sezione;
+            stato.sezione = (a.classList.contains('tessera-sezione') && stato.sezione === a.dataset.sezione) ? '' : a.dataset.sezione;
         } else {
             stato.q = ''; stato.parola = ''; stato.sezione = '';
             if (cerca) cerca.value = '';
         }
         applica();
         // dalla scheda si torna ai filtri, così si vede cosa è cambiato
-        if (a.closest('.card')) document.getElementById('filtri').scrollIntoView({ block: 'start' });
+        if (a.closest('.card') || window.scrollY > document.getElementById('filtri').offsetTop) document.getElementById('filtri').scrollIntoView({ block: 'start' });
     });
 
     if (cerca) {
@@ -166,31 +182,28 @@
             stato.q = cerca.value.trim();
             applica();
             cerca.blur(); // su telefono chiude la tastiera e mostra i risultati
-            document.getElementById('filtri').scrollIntoView({ block: 'start' });
+            if (document.documentElement.dataset.vista !== 'costellazione') {
+                document.getElementById('filtri').scrollIntoView({ block: 'start' });
+            }
         });
     }
 
-    // ---- raggruppa per sezione (si ricorda nel browser) ----
-    const CHIAVE = 'orfini_elenco_gruppi';
-    let gruppi = true;
-    try { gruppi = localStorage.getItem(CHIAVE) !== 'no'; } catch (e) { /* archivio del browser non disponibile */ }
-    const mostraGruppi = () => {
-        griglia.classList.toggle('raggruppato', gruppi);
-        raggruppa.setAttribute('aria-pressed', String(gruppi));
-    };
-    raggruppa.addEventListener('click', () => {
-        gruppi = !gruppi;
-        try { localStorage.setItem(CHIAVE, gruppi ? 'si' : 'no'); } catch (e) { /* come sopra */ }
-        mostraGruppi();
+    // ---- ogni sezione mostra un'anteprima; "Mostra tutte" la apre. Con un filtro attivo si vede tutto ciò che corrisponde ----
+    griglia.addEventListener('click', (e) => {
+        const b = e.target.closest('.mostra-tutte');
+        if (!b) return;
+        const sez = b.closest('.sezione'), aperta = sez.classList.toggle('aperta');
+        b.setAttribute('aria-expanded', String(aperta));
+        b.textContent = aperta ? 'Mostra meno' : `Mostra tutte le ${sez.querySelectorAll('.card').length}`;
+        if (!aperta) sez.scrollIntoView({ block: 'start' });
     });
-    mostraGruppi();
 
     // ---- su telefono le parole stanno su una riga che scorre; il pulsante le apre tutte ----
     const tutte = document.getElementById('tutte-le-parole');
     tutte.addEventListener('click', () => {
         const aperto = filtriParole.classList.toggle('aperto');
         tutte.setAttribute('aria-expanded', String(aperto));
-        tutte.textContent = aperto ? 'Meno parole' : `Tutte le ${vocabolario.length} parole`;
+        tutte.textContent = aperto ? 'Meno parole' : `Tutte le ${vocabolario.filter((p) => !p.p).length} parole`;
     });
 
     // ---- aprendo un'attività la scheda si allarga fino a riempire lo schermo, poi si apre la pagina ----
@@ -213,7 +226,7 @@
     window.addEventListener('pageshow', () => { for (const v of document.querySelectorAll('.espansione')) v.remove(); });
 
     // la costellazione (sito/costellazione.js) usa la stessa ricerca e gli stessi dati
-    window.omElenco = { norma, vocabolario, parole, figlie, schede, stato, paroleTrovate, applica };
+    window.omElenco = { norma, radice, vocabolario, parole, figlie, schede, stato, paroleTrovate, applica };
 
     // senza filtri nell'indirizzo la pagina è già nello stato giusto: niente lavoro all'avvio
     if (stato.q || stato.parola || stato.sezione) applica({ scrivi: false });

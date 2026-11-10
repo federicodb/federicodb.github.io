@@ -18,6 +18,8 @@ const katex = createRequire(import.meta.url)(join(ROOT, 'content/assets/vendor/k
 const attivita = JSON.parse(leggi('data/attivita.json'));
 const vocabolario = JSON.parse(leggi('data/vocabolario.json'));
 const parole = new Map(vocabolario.map((p) => [p.id, p]));
+// sezione prevalente di ogni parola (dalla mappa): serve al colore semantico al passaggio del mouse
+const sezioneDi = new Map(JSON.parse(leggi('data/mappa.json')).parole.map((p) => [p.id, p.sezione]));
 
 // ---------- pagine con il menu: file -> voce attiva ----------
 const PAGINE_MENU = {
@@ -34,6 +36,8 @@ const SEZIONI = [
   { id: 'journal', nome: 'Journal', frase: 'Il diario di bordo: come nascono le attività e come vanno in classe.', vai: ['journal/', 'Tutte le note'] },
   { id: 'archivio', nome: 'Archivio', frase: 'Le verifiche già svolte, per mettersi alla prova su carta.', vai: ['verifiche.html', 'Apri l\'archivio'] },
 ];
+// quante voci di ogni sezione si vedono prima di "Mostra tutte" (con JavaScript; senza, si vedono tutte)
+const ANTEPRIMA = { attivita: 8, allenati: 12, journal: 4, archivio: 6 };
 const TIPI = {
   arcade: 'Arcade', simulazione: 'Simulazione', memory: 'Memory', immagine: 'Immagine', infografica: 'Infografica',
   video: 'Video', app: 'Esplorazione', lezione: 'Lezione', nota: 'Nota', verifica: 'Verifica',
@@ -92,8 +96,19 @@ function scheda(a, i) {
         <h3 class="card-titolo">${conFormule(a.titolo)}</h3>
         <p class="card-desc">${conFormule(a.descrizione)}</p>
     </a>
-    <ul class="card-parole" aria-label="Parole chiave">${chips}</ul>
+    <ul class="card-parole" role="list" aria-label="Parole chiave">${chips}</ul>
 </li>`;
+}
+
+function tessere() {
+  return SEZIONI.map((s) => {
+    const n = attivita.filter((a) => a.sezione === s.id).length;
+    return `<a class="tessera tessera-sezione" href="?sezione=${s.id}" data-sezione="${s.id}">
+    <span class="tessera-testa">${forma(s.id)}${s.nome}</span>
+    <strong class="tessera-n">${n}</strong>
+    <span class="tessera-desc">${s.frase}</span>
+</a>`;
+  }).join('\n');
 }
 
 function elenco() {
@@ -105,15 +120,15 @@ function elenco() {
   const filtriSezione = [`<a class="filtro" href="./" data-sezione="" aria-current="true">Tutto <span>${attivita.length}</span></a>`]
     .concat(SEZIONI.map((s) => `<a class="filtro" href="?sezione=${s.id}" data-sezione="${s.id}">${forma(s.id)}${s.nome} <span>${perSezione(s.id).length}</span></a>`)).join('\n            ');
 
-  const chip = (p, classe) => `<a class="parola ${classe}" href="?parola=${p.id}" data-parola="${p.id}" title="${esc(p.nomeCompleto)}: ${esc(p.descrizione)}">${esc(classe === 'figlia' ? p.etichetta : p.etichetta)} <span>${conta.get(p.id).size}</span></a>`;
-  const gruppi = vocabolario.filter((p) => !p.padre).map((p) => {
-    const figlie = vocabolario.filter((f) => f.padre === p.id);
-    return figlie.length
-      ? `<li class="famiglia">${chip(p, 'padre')}${figlie.map((f) => chip(f, 'figlia')).join('')}</li>`
-      : `<li>${chip(p, 'sola')}</li>`;
-  });
-  // prima le famiglie (padre e figlie insieme), poi le parole sole
-  const ordinati = [...gruppi.filter((g) => g.startsWith('<li class="famiglia"')), ...gruppi.filter((g) => !g.startsWith('<li class="famiglia"'))];
+  const chip = (p, classe) => `<a class="parola ${classe}" href="?parola=${p.id}" data-parola="${p.id}" data-sezione="${sezioneDi.get(p.id)}" title="${esc(p.nomeCompleto)}: ${esc(p.descrizione)}">${esc(p.etichetta)} <span>${conta.get(p.id).size}</span></a>`;
+  // le parole principali, dalla più ricca: le figlie compaiono su una riga a parte solo quando serve
+  const radici = vocabolario.filter((p) => !p.padre).sort((a, b) => conta.get(b.id).size - conta.get(a.id).size || a.etichetta.localeCompare(b.etichetta, 'it'));
+  const figlieDi = (id) => vocabolario.filter((f) => f.padre === id);
+  const listaRadici = radici.map((p) => `<li>${chip(p, figlieDi(p.id).length ? 'padre' : 'sola')}</li>`).join('\n');
+  const blocchiFiglie = radici.filter((p) => figlieDi(p.id).length).map((p) => `<div class="figlie" data-padre="${p.id}" hidden>
+            <span class="figlie-titolo">Dentro «${esc(p.etichetta)}»</span>
+            <ul>${figlieDi(p.id).map((f) => `<li>${chip(f, 'figlia')}</li>`).join('')}</ul>
+        </div>`).join('\n        ');
 
   const sezioni = SEZIONI.map((s) => {
     const voci = perSezione(s.id);
@@ -123,30 +138,34 @@ function elenco() {
         <p>${s.frase}</p>
         ${s.vai ? `<a class="sezione-vai" href="${s.vai[0]}">${s.vai[1]}</a>` : ''}
     </header>
-    <ul class="griglia">
+    <ul class="griglia" role="list">
 ${voci.map(scheda).join('\n')}
     </ul>
+    ${voci.length > (ANTEPRIMA[s.id] ?? 99) ? `<button type="button" class="mostra-tutte" aria-expanded="false">Mostra tutte le ${voci.length}</button>` : ''}
 </section>`;
   }).join('\n');
 
-  return `<div class="filtri" id="filtri">
+  return `<div class="filtri-attaccati" id="filtri">
     <nav class="filtri-sezione" aria-label="Sezioni">
             ${filtriSezione}
     </nav>
-    <nav class="filtri-parole" id="filtri-parole" aria-label="Parole chiave">
-        <ul>
-${ordinati.join('\n')}
-        </ul>
-        <button type="button" id="tutte-le-parole" class="tutte-le-parole" aria-expanded="false" aria-controls="filtri-parole">Tutte le ${vocabolario.length} parole</button>
-    </nav>
     <div class="filtri-stato">
         <p id="esito" role="status" aria-live="polite">${attivita.length} voci</p>
-        <p id="suggerimento" hidden></p>
-        <button type="button" id="raggruppa" class="interruttore" aria-pressed="true">Raggruppa per sezione</button>
         <a href="./" id="azzera" class="azzera" hidden>Azzera i filtri</a>
     </div>
 </div>
-<div id="main-grid" class="elenco raggruppato">
+<div class="filtri">
+    <nav class="filtri-parole" id="filtri-parole" aria-label="Parole chiave">
+        <p class="filtri-etichetta">Parole chiave</p>
+        <ul class="radici">
+${listaRadici}
+        </ul>
+        ${blocchiFiglie}
+        <button type="button" id="tutte-le-parole" class="tutte-le-parole" aria-expanded="false" aria-controls="filtri-parole">Tutte le ${radici.length} parole</button>
+    </nav>
+    <p id="suggerimento" hidden></p>
+</div>
+<div id="main-grid" class="elenco">
 ${sezioni}
     <p id="vuoto" class="vuoto" hidden>Nessun risultato. Prova con una delle parole chiave qui sopra, oppure <a href="./">azzera i filtri</a>.</p>
 </div>`;
@@ -158,27 +177,35 @@ function vocabolarioPerRicerca() {
 }
 
 // ---------- 3. costellazione ----------
+// simboli matematici che galleggiano nella nebulosa: solo simboli, anche avanzati, disegnati da KaTeX (stessi caratteri di LaTeX)
+const SIMBOLI = ['\\Delta', '\\displaystyle\\int', '\\partial', '\\nabla', '\\displaystyle\\sum', '\\infty', '\\pi', '\\varphi', '\\theta', '\\lambda', '\\Omega', '\\hbar', '\\approx', '\\in', '\\forall', '\\exists',
+  '\\subset', '\\cap', '\\cup', '\\mathbb{R}', '\\mathbb{C}', '\\mathbb{N}', '\\dot{x}', "f'", '\\displaystyle\\oint', '\\perp', '\\angle', '\\aleph', '\\varnothing', '\\propto', '\\displaystyle\\prod', '\\Sigma'];
+const simbolo = (tex) => katex.renderToString(tex, { output: 'html', throwOnError: true });
 function cielo() {
   const mappa = JSON.parse(leggi('data/mappa.json'));
   const nodoSezione = (z) => { const s = SEZIONI.find((x) => x.id === z.id); return `<button type="button" class="nodo nodo-sezione" data-nodo="sezione:${z.id}" data-sezione="${z.id}" aria-label="Sezione ${esc(s.nome)}, ${z.n} voci"><span class="nodo-etichetta">${esc(s.nome)}</span></button>`; };
-  const nodoParola = (m) => { const p = parole.get(m.id); return `<button type="button" class="nodo nodo-stella${p.padre ? ' figlia' : ''}" data-nodo="${m.id}" data-sezione="${m.sezione}" aria-label="${esc(p.nomeCompleto)}, ${m.n} voci"><span class="nodo-etichetta">${esc(p.etichetta)}</span></button>`; };
+  const nodoParola = (m) => { const p = parole.get(m.id); return `<button type="button" class="nodo nodo-stella${p.padre ? ' figlia' : ''}" data-nodo="${m.id}" data-sezione="${m.sezione}" aria-label="${esc(p.nomeCompleto)}, ${m.n} voci">${forma(m.sezione)}<span class="nodo-etichetta">${esc(p.etichetta)}</span></button>`; };
   // ordine di tabulazione: le sezioni, poi ogni padre seguito dalle sue figlie, poi le parole sole
   const ordine = [...mappa.parole].sort((x, y) => vocabolario.findIndex((p) => p.id === x.id) - vocabolario.findIndex((p) => p.id === y.id));
   const dati = {
     sezioni: mappa.sezioni.map((z) => { const s = SEZIONI.find((x) => x.id === z.id); return { ...z, nome: s.nome, frase: s.frase, vai: s.vai }; }),
-    parole: mappa.parole, legami: mappa.legami, tipi: TIPI, forme: FORME,
+    sole: { ...mappa.sole, n: attivita.length }, parole: mappa.parole, legami: mappa.legami, tipi: TIPI, forme: FORME,
   };
   return `<div id="cielo" class="cielo">
     <canvas id="cielo-tela" aria-hidden="true"></canvas>
     <div id="cielo-nodi" class="cielo-nodi" role="group" aria-label="Costellazione: quattro sezioni e ${mappa.parole.length} parole chiave. Invio apre una stella, Esc chiude.">
+        <button type="button" class="nodo nodo-sole" data-nodo="sole" data-sezione="sole" aria-label="Matematica: il centro della nebulosa, tutto il laboratorio, ${attivita.length} voci"><span class="nodo-etichetta">Matematica</span></button>
         ${mappa.sezioni.map(nodoSezione).join('\n        ')}
         ${ordine.map(nodoParola).join('\n        ')}
+    </div>
+    <div class="cielo-simboli" aria-hidden="true">
+        ${SIMBOLI.map((t) => `<span class="cielo-simbolo">${simbolo(t)}</span>`).join('\n        ')}
     </div>
     <p class="cielo-aiuto">Ogni stella è una parola chiave: toccala per vedere le attività. Trascina per ruotare.</p>
     <p id="cielo-stato" class="om-solo-lettori" role="status" aria-live="polite"></p>
     <details class="cielo-legenda" id="cielo-legenda">
         <summary>Legenda</summary>
-        <ul>
+        <ul role="list">
             ${SEZIONI.map((s) => `<li data-sezione="${s.id}">${forma(s.id)}${s.nome}</li>`).join('\n            ')}
         </ul>
         <p>Stella più grande: più voci. Colore e forma: la sezione che ne ha di più; l'anello mostra le altre. Linea più spessa: più voci in comune.</p>
@@ -205,6 +232,7 @@ function main() {
     const prima = leggi(file);
     let dopo = sostituisci(prima, 'MENU', menuPer(voce), file);
     if (file === 'index.html') {
+      dopo = sostituisci(dopo, 'TESSERE', tessere(), file);
       dopo = sostituisci(dopo, 'ELENCO', elenco(), file);
       dopo = sostituisci(dopo, 'VOCABOLARIO', vocabolarioPerRicerca(), file);
       dopo = sostituisci(dopo, 'COSTELLAZIONE', cielo(), file);

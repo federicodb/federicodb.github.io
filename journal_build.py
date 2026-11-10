@@ -913,7 +913,7 @@ def _pagina(root, titolo, descrizione, canonical, immagine, corpo, extra_head=""
     <meta property="og:title" content="{html.escape(titolo)}">
     <meta property="og:description" content="{html.escape(descrizione)}">
     <meta property="og:image" content="{immagine}">
-{extra_head}    <link href="/content/assets/fonts/inter-syne-spacemono-7547e1.css" rel="stylesheet">
+{extra_head}    <link href="/content/assets/fonts/inter-syne-spacemono-bf47f3.css" rel="stylesheet">
     <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
     <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
     <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js"

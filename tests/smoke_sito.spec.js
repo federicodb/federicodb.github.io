@@ -88,8 +88,10 @@ test('home: l\'elenco ha tutte le voci dei dati e la ricerca le riduce', async (
   const indirizzi = await page.locator('#main-grid .card-link').evaluateAll((a) => a.map((x) => decodeURIComponent(x.getAttribute('href'))));
   for (const i of db.filter((x) => x.type !== 'normativa')) expect(indirizzi, i.title).toContain(i.url);
   await page.locator('#cerca').pressSequentially('parabola', { delay: 20 });
-  await expect.poll(() => page.locator('#main-grid .card:visible').count(), { timeout: 15000 }).toBeLessThan(dati.length);
-  expect(await page.locator('#main-grid .card:visible').count()).toBeGreaterThan(3);
+  await expect(page.locator('#esito')).toContainText('ricerca «parabola»', { timeout: 15000 });
+  const trovate = await page.locator('#main-grid .card:visible').count();
+  expect(trovate).toBeGreaterThan(3);
+  expect(trovate).toBeLessThan(dati.length);
   // il vecchio indirizzo del catalogo filtrato (?tag=) vale ancora come ricerca
   await page.goto('/index.html?vista=elenco&tag=frattali');
   await expect.poll(() => page.locator('#main-grid .card:visible').count()).toBeLessThan(dati.length);

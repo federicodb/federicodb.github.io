@@ -34,28 +34,65 @@ html[data-vista="costellazione"] .apertura-sub { display: none; }
 #cielo-tela { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .cielo-nodi { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
 
+/* Ogni parola è il suo nodo: testo luminoso del colore della sezione, con la forma della sezione accanto.
+   Posizione, corpo e luminosità li scrive sito/costellazione.js a ogni fotogramma. */
 .nodo {
-    --d: 30px;
-    position: absolute; left: 0; top: 0; width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
-    padding: 0; border: 0; border-radius: 50%; background: none; color: var(--om-testo); cursor: pointer;
-    font: 500 0.875rem/1.15 var(--om-font); will-change: transform; -webkit-tap-highlight-color: transparent;
+    position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; justify-content: center; gap: 0.32em;
+    min-width: 47px; min-height: 47px; padding: 3px 6px; border: 0; border-radius: 8px; background: none; cursor: pointer;
+    color: var(--sez); font: 800 16px/1.15 var(--om-font-titoli); letter-spacing: -0.01em; white-space: nowrap;
+    opacity: 0; -webkit-tap-highlight-color: transparent; will-change: transform, opacity;
 }
+.nodo .forma { width: 0.5em; height: 0.5em; opacity: 0.9; }
+/* alone dietro la parola: respira piano, ognuno con la sua fase (solo transform e opacity: lavora la scheda grafica) */
+.nodo::before {
+    content: ""; position: absolute; left: 50%; top: 50%; z-index: -1; width: var(--alone, 3em); height: var(--alone, 3em);
+    margin: calc(var(--alone, 3em) / -2) 0 0 calc(var(--alone, 3em) / -2); border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, color-mix(in oklab, var(--sez) 24%, transparent) 0%, color-mix(in oklab, var(--sez) 7%, transparent) 38%, transparent 68%);
+}
+.nodo.pulsa::before { animation: battito 2.6s ease-in-out var(--fase, 0s) infinite alternate; }
+.nodo-sezione::before { background: radial-gradient(circle, color-mix(in oklab, var(--sez) 18%, transparent) 0%, color-mix(in oklab, var(--sez) 5%, transparent) 40%, transparent 68%); }
+.nodo-sezione.pulsa::before { animation-duration: 4.2s; }
+.nodo::after {
+    content: ""; position: absolute; left: 50%; top: 50%; z-index: -1; width: calc(var(--alone, 3em) * 1.25); height: calc(var(--alone, 3em) * 1.25);
+    margin: calc(var(--alone, 3em) * -0.625) 0 0 calc(var(--alone, 3em) * -0.625); border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, color-mix(in oklab, var(--sez) 46%, transparent) 0%, color-mix(in oklab, var(--sez) 13%, transparent) 38%, transparent 68%);
+    opacity: 0; transform: scale(0.85); transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.nodo.vista::after { opacity: 0.45; transform: none; }
+.nodo.scelta::after, .nodo:hover::after, .nodo:focus-visible::after { opacity: 1; transform: scale(1.05); }
+.nodo-sole::after { display: none; }
+html.theme-light .nodo::before { background: radial-gradient(circle, color-mix(in oklab, var(--sez) 16%, transparent) 0%, transparent 68%); }
+html.theme-light .nodo::after { background: radial-gradient(circle, color-mix(in oklab, var(--sez) 34%, transparent) 0%, transparent 70%); }
+@keyframes battito { from { transform: scale(0.82); opacity: 0.6; } to { transform: scale(1.16); opacity: 1; } }
+.cielo.in-pausa .nodo.pulsa::before, html[data-effetti="ridotti"] .nodo.pulsa::before { animation-play-state: paused; }
+.cielo.in-pausa .nodo, .cielo.in-pausa .cielo-simbolo, html[data-effetti="ridotti"] .nodo, html[data-effetti="ridotti"] .cielo-simbolo { will-change: auto; }
+@media (prefers-reduced-motion: reduce) {
+    .nodo.pulsa::before { animation: none; }
+    .nodo, .cielo-simbolo { will-change: auto; }
+}
+.nodo-etichetta { pointer-events: none; transition: text-shadow 0.8s ease; text-shadow: 0 0 0.55em color-mix(in oklab, var(--sez) 28%, transparent), 0 0 2px var(--om-fondo); }
+.nodo.scelta .nodo-etichetta, .nodo:hover .nodo-etichetta, .nodo:focus-visible .nodo-etichetta { text-shadow: 0 0 0.45em color-mix(in oklab, var(--sez) 65%, transparent), 0 0 1.2em color-mix(in oklab, var(--sez) 35%, transparent); }
+html.theme-light .nodo-etichetta { text-shadow: 0 0 3px var(--om-fondo), 0 0 6px var(--om-fondo); }
+.nodo.figlia { font-family: var(--om-font); font-weight: 600; letter-spacing: 0; }
+.nodo-sezione { letter-spacing: -0.02em; }
+.nodo-sezione .forma { display: none; } /* la forma della sezione è disegnata grande sulla tela, sopra il nome */
 .nodo:focus-visible { outline: 3px solid var(--om-fuoco); outline-offset: 3px; }
-.nodo-etichetta {
-    position: absolute; left: 50%; top: calc(100% + 3px); transform: translateX(-50%);
-    padding: 1px 6px; border-radius: 6px; white-space: nowrap; pointer-events: none;
-    background: color-mix(in srgb, var(--om-fondo) 72%, transparent);
-    opacity: 0; transition: opacity 0.18s;
-}
-.nodo.con-etichetta .nodo-etichetta { opacity: 1; }
-.nodo-stella:not(.figlia) .nodo-etichetta { font-weight: 700; }
-.nodo.figlia .nodo-etichetta { color: var(--om-testo-2); font-size: 0.8125rem; }
-.nodo-sezione .nodo-etichetta { opacity: 1; font: 800 1rem/1.1 var(--om-font-titoli); letter-spacing: -0.01em; }
 /* le figlie da lontano: non si vedono, non si toccano e non prendono il fuoco finché non ci si avvicina (aprendo il padre) */
-.nodo.nascosta { visibility: hidden; pointer-events: none; }
-.nodo.spenta .nodo-etichetta { opacity: 0; }
-.nodo.scelta .nodo-etichetta, .nodo:focus-visible .nodo-etichetta, .nodo:hover .nodo-etichetta { opacity: 1; color: var(--om-testo); }
-.nodo.scelta, .nodo:focus-visible, .nodo:hover { z-index: 3000 !important; }
+.nodo.nascosta { visibility: hidden; pointer-events: none; will-change: auto; }
+.nodo.scelta, .nodo:focus-visible, .nodo:hover { z-index: 3000 !important; opacity: 1 !important; }
+
+/* il Sole della nebulosa: la parola Matematica, sempre visibile anche zoomando molto indietro */
+.nodo-sole { --sez: var(--om-sole); font-size: 30px; letter-spacing: -0.02em; color: var(--om-sole); padding: 6px 12px; }
+.nodo-sole .nodo-etichetta { text-shadow: 0 0 0.35em color-mix(in oklab, var(--om-sole) 85%, transparent), 0 0 1em color-mix(in oklab, var(--om-sole) 50%, transparent), 0 0 2px var(--om-fondo); }
+html.theme-light .nodo-sole .nodo-etichetta { text-shadow: 0 0 4px var(--om-fondo), 0 0 10px var(--om-fondo); }
+.nodo-sole::before { background: radial-gradient(circle, color-mix(in oklab, var(--om-sole) 26%, transparent) 0%, color-mix(in oklab, var(--om-sole) 8%, transparent) 40%, transparent 70%); animation-duration: 5s; }
+.nodo.nodo-sole { z-index: 4000 !important; }
+
+/* simboli matematici che galleggiano tra le stelle: solo decorazione, disegnati da KaTeX */
+.cielo-simboli { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.cielo-simbolo { position: absolute; left: 0; top: 0; color: var(--om-testo); font-size: 2.1rem; line-height: 1; opacity: 0; white-space: nowrap; will-change: transform, opacity; }
+.cielo-simbolo .katex { font-size: 1em; }
+html[data-effetti="ridotti"] .cielo-simbolo { transition: none; }
 
 .cielo.usata .cielo-aiuto { display: none; }
 .cielo-aiuto {
@@ -152,9 +189,6 @@ html[data-effetti="ridotti"] [data-comando="pausa"] { display: none; }
     html[data-vista="costellazione"] .apertura h1 { font-size: 0.95rem; white-space: nowrap; }
     .cielo.usata .cielo-aiuto { display: none; }
 .cielo-aiuto { left: 14px; top: 2.4rem; font-size: 0.82rem; }
-    .nodo { font-size: 0.8125rem; }
-    .nodo.figlia .nodo-etichetta { font-size: 0.75rem; }
-    .nodo-sezione .nodo-etichetta { font-size: 0.9rem; }
     .cielo-legenda { left: 10px; bottom: 10px; max-width: calc(100% - 76px); }
     .cielo-comandi { right: 10px; bottom: 10px; }
     .scheda {
@@ -167,9 +201,6 @@ html[data-effetti="ridotti"] [data-comando="pausa"] { display: none; }
 
 /* ---- LIM: etichette leggibili da lontano ---- */
 @media (min-width: 1800px) {
-    .nodo { font-size: 1.125rem; }
-    .nodo.figlia .nodo-etichetta { font-size: 1rem; }
-    .nodo-sezione .nodo-etichetta { font-size: 1.35rem; }
     .cielo.usata .cielo-aiuto { display: none; }
 .cielo-aiuto { font-size: 1.05rem; }
     .cielo-legenda { font-size: 1rem; max-width: 360px; }
@@ -178,9 +209,7 @@ html[data-effetti="ridotti"] [data-comando="pausa"] { display: none; }
 }
 
 html[data-effetti="ridotti"] .scheda { animation: none; }
-html[data-effetti="ridotti"] .nodo-etichetta { transition: none; }
 @media (prefers-reduced-motion: reduce) {
     .scheda { animation: none; }
-    .nodo-etichetta { transition: none; }
 }
 @media print { .cielo { display: none !important; } html[data-vista="costellazione"] #main-grid { display: block; } }
