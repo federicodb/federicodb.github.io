@@ -412,7 +412,7 @@ class DeepContentScanner:
                 from PIL import Image
                 extracted_text = pytesseract.image_to_string(Image.open(file_path), lang='ita+eng')
             except ImportError:
-                print(f"  ⚠️ OCR saltato per {os.path.basename(file_path)}: Moduli Python 'pytesseract' o 'Pillow' mancanti.")
+                print(f"  ℹ️ OCR non installato, {os.path.basename(file_path)} usa i metadati del suo file .json (pytesseract è facoltativo)")
             except Exception as e:
                 pass # Tesseract non installato a livello OS
 
@@ -644,7 +644,9 @@ def data_file(path):
     """ Data di un contenuto senza <meta name="date">: l'ultimo commit che lo tocca (uguale su ogni computer),
         altrimenti la data di modifica del file (contenuto nuovo, non ancora in git) """
     try:
-        out = subprocess.run(["git", "log", "-1", "--format=%cs", "--", path], capture_output=True, text=True, timeout=10).stdout.strip()
+        # i commit con [metadati] nel messaggio (es. l'aggiunta di un <meta>) non contano come aggiornamento del contenuto
+        out = subprocess.run(["git", "log", "-1", "--format=%cs", "--invert-grep", "--fixed-strings", "--grep=[metadati]", "--", path],
+                             capture_output=True, text=True, timeout=10).stdout.strip()
         if re.fullmatch(r"\d{4}-\d{2}-\d{2}", out):
             return out
     except (OSError, subprocess.SubprocessError):
@@ -1107,6 +1109,10 @@ def main():
     
     # Iniezione SEO nell'index.html
     update_index_seo(db_main)
+
+    # Dati della home (elenco e costellazione): data/attivita.json
+    import dati_build
+    dati_build.build_dati(db_main, db_verifiche)
     
     print(f"\n✨ Successo! Salvati {len(db_main)} Laboratori e {len(db_verifiche)} Verifiche.")
 
@@ -1204,6 +1210,10 @@ def update_index_seo(items):
         with open(index_path, 'r', encoding='utf-8') as f:
             content = f.read()
             
+        # la home ha ora l'elenco vero in HTML (tools/genera.mjs): il catalogo nascosto serve solo se ci sono i suoi marcatori
+        if '<!-- SEO_CATALOG_START -->' not in content:
+            return
+
         catalog_html = ""
         seo_count = 0
         for item in items:

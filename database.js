@@ -1312,6 +1312,9 @@ const db = [
         ],
         "title": "Esercitazione GeoGebra: Retta per due punti",
         "url": "https://www.geogebra.org/m/mcfvzdfx",
+        "parole": [
+            "retta"
+        ],
         "excerpt": "Esercitazione interattiva su GeoGebra per lo studio della retta passante per due punti. Esplorazione dinamica dei parametri.",
         "type": "link",
         "icon": "🌐",
@@ -2067,6 +2070,9 @@ const db = [
         "title": "AI Math Assistant: Tutor Didattico Sperimentale",
         "type": "link",
         "url": "https://ais-pre-evi2uqxownrirtwtzubadt-238287108414.europe-west2.run.app/",
+        "parole": [
+            "intelligenza-artificiale"
+        ],
         "excerpt": "Assistente conversazionale basato su modelli linguistici per la didattica della matematica: guida lo studente nel ragionamento socratico, nell'analisi degli errori e nella formulazione di ipotesi.",
         "icon": "🌐",
         "game_type": "sim"
