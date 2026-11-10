@@ -1,0 +1,54 @@
+# Valida i dati e pubblica il sito su GitHub Pages.
+# Parte a ogni push su master. Se la validazione o la generazione falliscono il lavoro si ferma
+# prima della pubblicazione: online resta la versione precedente.
+#
+# Perché funzioni: Settings > Pages > Source = "GitHub Actions" (passo manuale, una volta sola).
+# Il sito passa ancora da Jekyll, come nella pubblicazione classica: stesse pagine, stesse esclusioni di _config.yml.
+name: Valida e pubblica
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  costruisci:
+    name: Valida e costruisci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      # nessun "npm ci": validazione e generazione non hanno dipendenze
+      - name: Valida i dati (parole, alias, indirizzi)
+        run: node tools/valida.mjs
+      - name: Genera menu ed elenco della home
+        run: node tools/genera.mjs
+      - uses: actions/configure-pages@v5
+      - name: Costruisci con Jekyll (come la pubblicazione classica)
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+      - uses: actions/upload-pages-artifact@v3
+
+  pubblica:
+    name: Pubblica
+    needs: costruisci
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
