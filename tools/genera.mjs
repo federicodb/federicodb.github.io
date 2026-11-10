@@ -2,7 +2,8 @@
 // Genera le parti del sito che dipendono dai dati:
 //   1. il menu (tools/parti/menu.html) in tutte le pagine che hanno i marcatori MENU_START / MENU_END;
 //   2. la vista elenco della home, in index.html tra ELENCO_START / ELENCO_END: HTML vero, leggibile senza JavaScript;
-//   3. il vocabolario per la ricerca, in index.html tra VOCABOLARIO_START / VOCABOLARIO_END.
+//   3. il vocabolario per la ricerca, in index.html tra VOCABOLARIO_START / VOCABOLARIO_END;
+//   4. la scena della costellazione (nodi, legenda, comandi e dati di data/mappa.json), tra COSTELLAZIONE_START / COSTELLAZIONE_END.
 // Legge data/attivita.json (scritto da build.py) e data/vocabolario.json (scritto a mano).
 // Uso: node tools/genera.mjs     Non usa la rete, non ha dipendenze, dà sempre lo stesso risultato.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -152,8 +153,45 @@ ${sezioni}
 }
 
 function vocabolarioPerRicerca() {
-  const dati = vocabolario.map((p) => ({ id: p.id, e: p.etichetta, n: p.nomeCompleto, ...(p.padre ? { p: p.padre } : {}), a: p.alias }));
+  const dati = vocabolario.map((p) => ({ id: p.id, e: p.etichetta, n: p.nomeCompleto, ...(p.padre ? { p: p.padre } : {}), a: p.alias, d: p.descrizione }));
   return `<script type="application/json" id="om-vocabolario">${JSON.stringify(dati).replace(/</g, '\\u003c')}</script>`;
+}
+
+// ---------- 3. costellazione ----------
+function cielo() {
+  const mappa = JSON.parse(leggi('data/mappa.json'));
+  const nodoSezione = (z) => { const s = SEZIONI.find((x) => x.id === z.id); return `<button type="button" class="nodo nodo-sezione" data-nodo="sezione:${z.id}" data-sezione="${z.id}" aria-label="Sezione ${esc(s.nome)}, ${z.n} voci"><span class="nodo-etichetta">${esc(s.nome)}</span></button>`; };
+  const nodoParola = (m) => { const p = parole.get(m.id); return `<button type="button" class="nodo nodo-stella${p.padre ? ' figlia' : ''}" data-nodo="${m.id}" data-sezione="${m.sezione}" aria-label="${esc(p.nomeCompleto)}, ${m.n} voci"><span class="nodo-etichetta">${esc(p.etichetta)}</span></button>`; };
+  // ordine di tabulazione: le sezioni, poi ogni padre seguito dalle sue figlie, poi le parole sole
+  const ordine = [...mappa.parole].sort((x, y) => vocabolario.findIndex((p) => p.id === x.id) - vocabolario.findIndex((p) => p.id === y.id));
+  const dati = {
+    sezioni: mappa.sezioni.map((z) => { const s = SEZIONI.find((x) => x.id === z.id); return { ...z, nome: s.nome, frase: s.frase, vai: s.vai }; }),
+    parole: mappa.parole, legami: mappa.legami, tipi: TIPI, forme: FORME,
+  };
+  return `<div id="cielo" class="cielo">
+    <canvas id="cielo-tela" aria-hidden="true"></canvas>
+    <div id="cielo-nodi" class="cielo-nodi" role="group" aria-label="Costellazione: quattro sezioni e ${mappa.parole.length} parole chiave. Invio apre una stella, Esc chiude.">
+        ${mappa.sezioni.map(nodoSezione).join('\n        ')}
+        ${ordine.map(nodoParola).join('\n        ')}
+    </div>
+    <p class="cielo-aiuto">Ogni stella è una parola chiave: toccala per vedere le attività.</p>
+    <p id="cielo-stato" class="om-solo-lettori" role="status" aria-live="polite"></p>
+    <details class="cielo-legenda" id="cielo-legenda">
+        <summary>Legenda</summary>
+        <ul>
+            ${SEZIONI.map((s) => `<li data-sezione="${s.id}">${forma(s.id)}${s.nome}</li>`).join('\n            ')}
+        </ul>
+        <p>Stella più grande: più voci. Colore e forma: la sezione che ne ha di più; l'anello mostra le altre. Linea più spessa: più voci in comune.</p>
+        <p><a href="#piede">Informazioni e licenza</a></p>
+    </details>
+    <div class="cielo-comandi" role="group" aria-label="Comandi della mappa">
+        <button type="button" data-comando="piu" aria-label="Ingrandisci" title="Ingrandisci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button type="button" data-comando="meno" aria-label="Rimpicciolisci" title="Rimpicciolisci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <button type="button" data-comando="ricentra" aria-label="Ricentra la mappa" title="Ricentra"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+    </div>
+    <aside id="scheda" class="scheda" aria-labelledby="scheda-titolo" hidden></aside>
+    <script type="application/json" id="om-mappa">${JSON.stringify(dati).replace(/</g, '\\u003c')}</script>
+</div>`;
 }
 
 // ---------- scrittura ----------
@@ -166,6 +204,7 @@ function main() {
     if (file === 'index.html') {
       dopo = sostituisci(dopo, 'ELENCO', elenco(), file);
       dopo = sostituisci(dopo, 'VOCABOLARIO', vocabolarioPerRicerca(), file);
+      dopo = sostituisci(dopo, 'COSTELLAZIONE', cielo(), file);
     }
     if (dopo !== prima) { writeFileSync(join(ROOT, file), dopo); scritti++; }
   }

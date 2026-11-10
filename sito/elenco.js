@@ -20,7 +20,8 @@
         el,
         sezione: el.dataset.sezione,
         parole: new Set(el.dataset.parole.split(' ')),
-        testo: norma(el.textContent),
+        // il testo per la ricerca si prepara alla prima ricerca, non all'apertura della pagina
+        get testo() { const t = norma(el.textContent); Object.defineProperty(this, 'testo', { value: t }); return t; },
     }));
     const sezioni = [...griglia.querySelectorAll('.sezione')];
     const cerca = document.getElementById('cerca');
@@ -191,6 +192,9 @@
         tutte.setAttribute('aria-expanded', String(aperto));
         tutte.textContent = aperto ? 'Meno parole' : `Tutte le ${vocabolario.length} parole`;
     });
+
+    // la costellazione (sito/costellazione.js) usa la stessa ricerca e gli stessi dati
+    window.omElenco = { norma, vocabolario, parole, figlie, schede, stato, paroleTrovate, applica };
 
     // senza filtri nell'indirizzo la pagina è già nello stato giusto: niente lavoro all'avvio
     if (stato.q || stato.parola || stato.sezione) applica({ scrivi: false });
