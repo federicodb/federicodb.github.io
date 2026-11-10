@@ -4,45 +4,7 @@
    In dark mode (default) queste regole NON hanno alcun effetto.
    ========================================================================== */
 
-html.theme-light {
-    /* Palette chiara ad alto contrasto */
-    --bg-color: #f8fafc;
-    --bg-dark: #f1f5f9;
-    --bg-surface: #ffffff;
-    --bg-card: #ffffff;
-    --glass-border: rgba(15, 23, 42, 0.08);
-
-    /* Testo scuro leggibile */
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --text-on-accent: #ffffff;
-
-    /* Primari e accenti per contrasto su sfondo chiaro */
-    --primary: hsl(190, 85%, 28%);
-    --primary-glow: hsla(190, 85%, 28%, 0.15);
-    --accent: hsl(280, 75%, 45%);
-
-    /* Token Material 3 versione Light */
-    --md-sys-color-outline: rgba(15, 23, 42, 0.15);
-    --md-sys-color-primary: hsl(190, 85%, 28%);
-    --md-sys-color-surface-variant: #f1f5f9;
-    --md-sys-color-on-surface-variant: #1e293b;
-    --md-sys-color-focus-glow: hsla(190, 85%, 28%, 0.15);
-
-    /* Card Themes M3 per Light Mode */
-    --card-blue: #d3e3fd;
-    --card-on-blue: #041e49;
-    --card-green: #c4eed0;
-    --card-on-green: #07210e;
-    --card-red: #f9dedc;
-    --card-on-red: #410e0b;
-    --card-yellow: #fdf2b4;
-    --card-on-yellow: #261d00;
-    --card-purple: #e9ddff;
-    --card-on-purple: #21005d;
-    --card-teal: #bce9eb;
-    --card-on-teal: #001f20;
-}
+/* Le variabili del tema chiaro stanno in sito/tema.css. Qui restano solo le regole dei componenti. */
 
 /* Base Body */
 html.theme-light body {

@@ -112,7 +112,7 @@
                     <div class="cookie-category-header">
                         <span class="cookie-category-title">Cookie Funzionali e Widget Terzi</span>
                         <label class="cookie-toggle">
-                            <input type="checkbox" id="toggle-cookie-functional">
+                            <input type="checkbox" id="toggle-cookie-functional" aria-label="Cookie funzionali e widget di terzi">
                             <span class="cookie-slider"></span>
                         </label>
                     </div>

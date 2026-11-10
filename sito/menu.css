@@ -1,0 +1,195 @@
+/* ==========================================================================
+   ORFINI MATH LAB — BARRA DEL MENU e pannello "Chi sono"
+   Usa solo le variabili --om-… di sito/tema.css. Il markup è in tools/parti/menu.html
+   e viene scritto in ogni pagina da tools/genera.mjs (e da journal_build.py per il Journal).
+   ========================================================================== */
+
+body { padding-top: var(--om-barra-h); }
+html { scroll-padding-top: calc(var(--om-barra-h) + 12px); }
+
+.om-salta {
+    position: fixed; left: 12px; top: 8px; z-index: 1300;
+    padding: 10px 16px; border-radius: 999px;
+    background: var(--om-accento); color: var(--om-su-accento);
+    font: 600 0.95rem/1 var(--om-font); text-decoration: none;
+    transform: translateY(-200%);
+}
+.om-salta:focus { transform: none; }
+
+.om-barra {
+    position: fixed; inset: 0 0 auto 0; z-index: 1200;
+    height: var(--om-barra-h);
+    background: var(--om-barra-fondo);
+    border-bottom: 1px solid var(--om-bordo);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    font-family: var(--om-font);
+    transition: transform 0.28s cubic-bezier(0.2, 0, 0.2, 1);
+}
+.om-barra.om-nascosta { transform: translateY(-101%); }
+.om-barra *, .om-pannello * { box-sizing: border-box; }
+.om-solo-lettori { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.om-barra-in {
+    height: 100%; max-width: var(--om-largo); margin: 0 auto; padding: 0 20px;
+    display: flex; align-items: center; gap: 20px;
+}
+
+.om-marchio { display: flex; align-items: baseline; gap: 8px; text-decoration: none; color: var(--om-testo); flex: none; }
+.om-marchio span { font: 800 1.15rem/1 var(--om-font-titoli); letter-spacing: -0.02em; }
+.om-marchio small { font: 600 0.62rem/1 var(--om-font); letter-spacing: 0.28em; color: var(--om-accento); }
+
+/* ---- voci ---- */
+.om-voci { display: flex; align-items: center; gap: 2px; margin: 0; min-width: 0; }
+.om-voci a, .om-altro summary {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px;
+    border-radius: 999px; color: var(--om-testo-2); text-decoration: none;
+    font: 500 0.95rem/1 var(--om-font); white-space: nowrap; cursor: pointer;
+}
+.om-voci a:hover, .om-altro summary:hover { color: var(--om-testo); background: var(--om-superficie-2); }
+.om-voci a[aria-current="page"] { color: var(--om-testo); font-weight: 700; box-shadow: inset 0 -2px 0 var(--om-accento); border-radius: 0; }
+
+.om-altro { position: relative; }
+.om-altro summary { list-style: none; gap: 6px; }
+.om-altro summary::-webkit-details-marker { display: none; }
+.om-altro summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); }
+.om-altro[open] summary { color: var(--om-testo); background: var(--om-superficie-2); }
+.om-altro-voci {
+    position: absolute; top: calc(100% + 8px); left: 0; min-width: 210px; padding: 8px;
+    display: flex; flex-direction: column; gap: 2px;
+    background: var(--om-superficie); border: 1px solid var(--om-bordo); border-radius: var(--om-raggio);
+    box-shadow: var(--om-ombra);
+}
+.om-altro-voci a { border-radius: var(--om-raggio-s); min-height: 44px; }
+.om-altro-voci a[aria-current="page"] { box-shadow: inset 2px 0 0 var(--om-accento); border-radius: var(--om-raggio-s); }
+
+/* ---- strumenti: ricerca, vista, tema ---- */
+.om-strumenti { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+.om-tasto {
+    display: inline-grid; place-items: center; width: 40px; height: 40px; flex: none;
+    border: 1px solid transparent; border-radius: 999px; background: none; color: var(--om-testo-2); cursor: pointer;
+}
+.om-tasto:hover { color: var(--om-testo); background: var(--om-superficie-2); }
+.om-barra svg, .om-pannello svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.om-cerca {
+    display: flex; align-items: center; height: 40px; width: 220px;
+    border: 1px solid var(--om-bordo); border-radius: 999px; background: var(--om-superficie);
+    color: var(--om-testo-2);
+}
+.om-cerca:focus-within { border-color: var(--om-accento); color: var(--om-testo); }
+.om-cerca label { display: grid; place-items: center; width: 40px; height: 38px; flex: none; cursor: pointer; }
+.om-cerca input {
+    flex: 1; min-width: 0; height: 100%; padding: 0 14px 0 0; border: 0; background: none; outline: none;
+    color: var(--om-testo); font: 400 0.95rem/1 var(--om-font);
+}
+.om-cerca input::placeholder { color: var(--om-testo-2); opacity: 1; }
+
+.om-vista { display: flex; padding: 3px; gap: 2px; border: 1px solid var(--om-bordo); border-radius: 999px; background: var(--om-superficie); }
+.om-vista-voce {
+    display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px;
+    color: var(--om-testo-2); text-decoration: none; font: 500 0.85rem/1 var(--om-font); white-space: nowrap;
+}
+.om-vista-voce svg { width: 17px; height: 17px; }
+a.om-vista-voce:hover { color: var(--om-testo); }
+.om-vista-voce[aria-current="true"] { background: var(--om-accento); color: var(--om-su-accento); font-weight: 700; }
+.om-vista-voce[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
+
+.om-luna { display: none; }
+html.theme-light .om-sole { display: none; }
+html.theme-light .om-luna { display: block; }
+
+.om-apri-menu { display: none; }
+
+/* ---- fuoco visibile, uguale ovunque ---- */
+.om-barra a:focus-visible, .om-barra button:focus-visible, .om-barra summary:focus-visible,
+.om-pannello a:focus-visible, .om-pannello button:focus-visible {
+    outline: 3px solid var(--om-fuoco); outline-offset: 2px;
+}
+.om-cerca:has(input:focus-visible) { outline: 3px solid var(--om-fuoco); outline-offset: 2px; }
+
+/* ---- le righe di ricerca proprie delle pagine (Journal, Archivio, Competenze) scorrono con la pagina ---- */
+#main-nav { position: static; top: auto; }
+
+/* ---- schermi medi: le etichette della vista lasciano posto alle voci ---- */
+@media (max-width: 1180px) {
+    .om-vista-voce span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .om-vista-voce { padding: 0 10px; }
+    .om-cerca { width: 180px; }
+    .om-barra-in { gap: 12px; }
+}
+
+/* ---- telefono e tablet stretto: le voci entrano nel pulsante Menu ---- */
+@media (max-width: 859px) {
+    :root { --om-barra-h: 50px; }
+    .om-barra-in { padding: 0 12px; gap: 8px; }
+    .om-marchio small { display: none; }
+    .om-strumenti { gap: 4px; }
+    .om-apri-menu { display: inline-grid; }
+
+    .om-voci {
+        display: none; position: absolute; top: 100%; left: 0; right: 0;
+        flex-direction: column; align-items: stretch; gap: 2px; padding: 10px 12px 16px;
+        max-height: calc(100dvh - var(--om-barra-h)); overflow-y: auto;
+        background: var(--om-superficie); border-bottom: 1px solid var(--om-bordo); box-shadow: var(--om-ombra);
+    }
+    .om-barra.om-menu-aperto .om-voci { display: flex; }
+    .om-voci a, .om-altro summary { min-height: 48px; font-size: 1.05rem; border-radius: var(--om-raggio-s); }
+    .om-voci a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--om-accento); border-radius: var(--om-raggio-s); }
+    .om-altro summary { color: var(--om-testo-2); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; min-height: 36px; margin-top: 8px; pointer-events: none; }
+    .om-altro summary::after { display: none; }
+    .om-altro[open] summary { background: none; color: var(--om-testo-2); }
+    .om-altro-voci { position: static; padding: 0; border: 0; box-shadow: none; background: none; min-width: 0; }
+
+    /* la ricerca è un'icona che si allarga su tutta la barra quando la si tocca */
+    .om-cerca { width: 40px; border-color: transparent; background: none; }
+    .om-cerca input { width: 0; padding: 0; }
+    .om-cerca:focus-within {
+        position: absolute; left: 12px; right: 12px; top: 5px; width: auto; z-index: 2;
+        background: var(--om-superficie); border-color: var(--om-accento);
+    }
+    .om-cerca:focus-within input { width: auto; padding-right: 14px; font-size: 1rem; }
+}
+
+/* ---- pannello "Chi sono": laterale su PC, dal basso su telefono ---- */
+.om-pannello {
+    position: fixed; inset: 0 0 0 auto; z-index: 1400;
+    width: min(460px, 100vw); height: 100dvh; max-height: none; max-width: none; margin: 0; padding: 0;
+    border: 0; border-left: 1px solid var(--om-bordo);
+    background: var(--om-superficie); color: var(--om-testo);
+    font-family: var(--om-font); line-height: 1.6;
+    box-shadow: var(--om-ombra); overflow-y: auto; overscroll-behavior: contain;
+}
+.om-pannello::backdrop { background: var(--om-velo); }
+.om-pannello:not([open]):target { display: block; } /* senza JavaScript si apre con l'ancora #chi-sono */
+.om-pannello[open] { animation: om-entra 0.28s cubic-bezier(0.2, 0, 0.2, 1); }
+@keyframes om-entra { from { transform: translateX(40px); opacity: 0; } }
+.om-pannello-testa { position: sticky; top: 0; display: flex; justify-content: space-between; gap: 16px; padding: 24px 24px 16px; background: var(--om-superficie); border-bottom: 1px solid var(--om-bordo); }
+.om-occhiello { margin: 0 0 6px; font: 600 0.72rem/1 var(--om-font); letter-spacing: 0.2em; text-transform: uppercase; color: var(--om-accento); }
+.om-pannello h2 { margin: 0; font: 800 1.7rem/1.1 var(--om-font-titoli); letter-spacing: -0.02em; color: var(--om-testo); }
+.om-pannello-ruolo { margin: 8px 0 0; color: var(--om-testo-2); font-size: 0.95rem; }
+.om-pannello-corpo { padding: 20px 24px 40px; font-size: 1.02rem; }
+.om-pannello-corpo p { margin: 0 0 16px; color: var(--om-testo); }
+.om-pannello-corpo a { color: var(--om-accento); text-underline-offset: 3px; }
+.om-pannello h3 { margin: 24px 0 12px; font: 700 0.78rem/1 var(--om-font); letter-spacing: 0.18em; text-transform: uppercase; color: var(--om-testo-2); }
+.om-principi { margin: 0 0 20px; display: grid; gap: 14px; }
+.om-principi dt { font-weight: 700; color: var(--om-testo); }
+.om-principi dd { margin: 2px 0 0; color: var(--om-testo-2); }
+.om-pannello-link { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.om-pannello-link a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--om-bordo-forte); border-radius: 999px; color: var(--om-testo); text-decoration: none; font-weight: 500; font-size: 0.92rem; }
+.om-pannello-link a:hover { border-color: var(--om-accento); color: var(--om-accento); }
+
+@media (max-width: 859px) {
+    .om-pannello { inset: auto 0 0 0; width: 100vw; height: auto; max-height: 88dvh; border-left: 0; border-top: 1px solid var(--om-bordo); border-radius: 20px 20px 0 0; }
+    @keyframes om-entra { from { transform: translateY(40px); opacity: 0; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .om-barra { transition: none; }
+    .om-pannello[open] { animation: none; }
+}
+
+@media print {
+    .om-barra, .om-salta, .om-pannello { display: none !important; }
+    body { padding-top: 0; }
+}

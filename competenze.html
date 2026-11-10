@@ -32,6 +32,7 @@
     <script src="/content/assets/vendor/katex/katex.min.js"></script>
 
     <!-- Project Styles -->
+    <link rel="stylesheet" href="/sito/tema.css">
     <link rel="stylesheet" href="index.css">
     <!-- Anti-FOUC Theme Init -->
     <script>
@@ -41,6 +42,8 @@
         }
     </script>
     <link rel="stylesheet" href="content/assets/style/theme-light.css">
+    <link rel="stylesheet" href="/sito/menu.css">
+    <script src="/sito/menu.js" defer></script>
     <script src="content/assets/js/theme-toggle.js" defer></script>
     <style>
         /* Specific layouts for Competenze */
@@ -334,42 +337,102 @@
 
 <body>
 
+    <!-- MENU_START -->
+    <a class="om-salta" href="#contenuto">Vai al contenuto</a>
+    <header id="barra" class="om-barra">
+        <div class="om-barra-in">
+            <a class="om-marchio" href="/" aria-label="Orfini Math Lab, pagina iniziale"><span>ORFINI</span><small>MATH LAB</small></a>
+            <nav class="om-voci" id="om-voci" aria-label="Sezioni del sito">
+                <a href="/" data-voce="esplora">Esplora</a>
+                <a href="/allenamento/" data-voce="allenati">Allenati</a>
+                <a href="/journal/" data-voce="journal">Journal</a>
+                <a href="/verifiche.html" data-voce="archivio">Archivio</a>
+                <details class="om-altro">
+                    <summary>Altro</summary>
+                    <div class="om-altro-voci">
+                        <a href="/calcolo-mentale.html" data-voce="calcolo">Calcolo veloce</a>
+                        <a href="/competenze.html" data-voce="competenze" aria-current="page">Competenze</a>
+                        <a href="/scuola.html" data-voce="scuola">La Scuola</a>
+                        <a href="#chi-sono" data-apre="chi-sono">Chi sono</a>
+                    </div>
+                </details>
+            </nav>
+            <div class="om-strumenti">
+                <form class="om-cerca" role="search" action="/" method="get">
+                    <label for="cerca" title="Cerca">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+                        <span class="om-solo-lettori">Cerca nel sito</span>
+                    </label>
+                    <input type="search" id="cerca" name="q" placeholder="Cerca un argomento" autocomplete="off" enterkeyhint="search">
+                </form>
+                <div class="om-vista" role="group" aria-label="Vista della pagina iniziale">
+                    <!-- VISTA_COSTELLAZIONE -->
+                    <span class="om-vista-voce" data-vista="costellazione" aria-disabled="true" title="Costellazione: in arrivo">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17 10 7l6 5 3-7"/><circle cx="5" cy="17" r="2"/><circle cx="10" cy="7" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="19" cy="5" r="1.5"/></svg>
+                        <span>Costellazione</span>
+                    </span>
+                    <!-- /VISTA_COSTELLAZIONE -->
+                    <a class="om-vista-voce" href="/?vista=elenco" data-vista="elenco" aria-current="true" title="Elenco">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.3"/><circle cx="4.5" cy="12" r="1.3"/><circle cx="4.5" cy="18" r="1.3"/></svg>
+                        <span>Elenco</span>
+                    </a>
+                </div>
+                <button type="button" id="orfini-theme-toggle" class="om-tasto om-tema" aria-label="Cambia tema: chiaro o scuro" title="Tema chiaro o scuro">
+                    <svg class="om-sole" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+                    <svg class="om-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a6.6 6.6 0 0 0 9.7 9.7z"/></svg>
+                </button>
+                <button type="button" class="om-tasto om-apri-menu" aria-expanded="false" aria-controls="om-voci" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <dialog id="chi-sono" class="om-pannello" aria-labelledby="chi-sono-titolo">
+        <div class="om-pannello-testa">
+            <div>
+                <p class="om-occhiello">Chi sono</p>
+                <h2 id="chi-sono-titolo">Federico De Benedictis</h2>
+                <p class="om-pannello-ruolo">Docente di matematica · IPIA «E. Orfini», Foligno</p>
+            </div>
+            <a class="om-tasto om-chiudi" href="#" data-chiude="chi-sono" aria-label="Chiudi">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </a>
+        </div>
+        <div class="om-pannello-corpo">
+            <p>Insegno matematica (classe A026) all'Istituto Professionale «E. Orfini» di Foligno. Questo sito è il mio laboratorio: qui costruisco le attività che porto in classe, le provo con gli studenti, le correggo e ogni tanto le butto. Quello che resta lo trovi qui.</p>
+            <h3>Come lavoro</h3>
+            <dl class="om-principi">
+                <div><dt>Vedere, toccare, sbagliare</dt><dd>Modelli in 2D e 3D da manipolare, giochi a livelli con aiuti che si tolgono a poco a poco, errori tipici riconosciuti e spiegati invece che soltanto segnati.</dd></div>
+                <div><dt>A mente, prima di tutto</dt><dd>Nell'allenamento i numeri si gestiscono sempre a mente: la difficoltà cresce nel ragionamento, non nel peso dei conti. Nessun cronometro, nessuna classifica tra compagni.</dd></div>
+                <div><dt>Senza etichette</dt><dd>Nessuna attività dice per quale classe è. In quarta si può riprendere un'attività nata per la prima senza che nessuno si senta indietro.</dd></div>
+                <div><dt>Dalla formula all'oggetto</dt><dd>Curve, frattali e ingranaggi escono dallo schermo: li disegna un plotter a penna, li costruisce una stampante 3D.</dd></div>
+                <div><dt>Aperto, non commerciale</dt><dd>Uso solo strumenti open source, e anche l'intelligenza artificiale come un attrezzo in più sul banco di lavoro. Codice e contenuti si possono riusare e adattare citando l'autore, mai a scopo di lucro senza il mio permesso.</dd></div>
+            </dl>
+            <p>Nel <a href="/journal/">Journal</a> racconto come nascono le attività e come cambiano dopo averle provate. Su Instagram, <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener">@meltingmath</a> è il diario quotidiano della sperimentazione tra tecnologia, coding e design.</p>
+            <ul class="om-pannello-link">
+                <li><a href="/journal/">Leggi il Journal</a></li>
+                <li><a href="/scuola.html">La Scuola</a></li>
+                <li><a href="https://github.com/federicodb/federicodb.github.io" target="_blank" rel="noopener">Codice su GitHub</a></li>
+                <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it" target="_blank" rel="license noopener">Licenza CC BY-NC-SA 4.0</a></li>
+            </ul>
+        </div>
+    </dialog>
+    <noscript><style>
+        #raggruppa, #tutte-le-parole { display: none !important; }
+        /* senza JavaScript: su telefono le voci stanno in una riga che scorre, sotto la barra */
+        @media (max-width: 859px) {
+            .om-apri-menu { display: none !important; }
+            .om-voci { display: flex !important; position: static !important; flex-direction: row !important; flex-wrap: wrap; width: 100%; padding: 0 0 8px !important; border: 0 !important; box-shadow: none !important; background: none !important; max-height: none !important; overflow: visible !important; }
+            .om-altro summary { pointer-events: auto !important; }
+            .om-barra-in { flex-wrap: wrap; height: auto !important; }
+            .om-barra { position: static !important; }
+            body { padding-top: 0 !important; }
+        }
+    </style></noscript>
+    <!-- MENU_END -->
+
     <nav id="main-nav">
         <div class="container nav-container">
-            <div class="nav-row-1">
-                <a href="index.html" class="brand">
-                    <span class="brand-title">ORFINI</span>
-                    <span class="brand-sub">DECODIFICA</span>
-                </a>
-
-                <div class="nav-links">
-                    <a href="index.html" class="nav-link">Attività</a>
-                    <a href="allenamento/" class="nav-link nav-link-cta">Allenati</a>
-                    <a href="journal/" class="nav-link">Journal</a>
-                    <a href="calcolo-mentale.html" class="nav-link">Calcolo veloce</a>
-                    <a href="verifiche.html" class="nav-link">Archivio</a>
-                    <a href="galaxy.html" class="nav-link">Mappa</a>
-                    <a href="index.html#about" class="nav-link">Chi Sono</a>
-                    <a href="competenze.html" class="nav-link active">Competenze</a>
-                    <a href="scuola.html" class="nav-link">La Scuola</a>
-                    <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
-                        <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                        <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
 
             <div class="nav-row-2">
                 <div class="search-container">
@@ -400,7 +463,7 @@
         </div>
     </div>
 
-    <main class="container">
+    <main id="contenuto" class="container">
         <div class="competenze-container">
             <aside class="sidebar">
                 <div class="category-menu" id="cat-menu">

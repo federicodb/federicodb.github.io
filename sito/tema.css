@@ -1,0 +1,184 @@
+/* ==========================================================================
+   ORFINI MATH LAB — TEMA
+   L'unico file con le variabili di colore, font e misure del sito.
+   - Scuro (predefinito): fondo AMOLED #050507.
+   - Chiaro: <html class="theme-light">, pensato per LIM e proiettori, alto contrasto.
+   La scelta si ricorda nel browser con la chiave orfini_theme, condivisa con la Quest
+   (content/assets/js/theme-toggle.js).
+   Prima parte: variabili del menu, dell'elenco e della costellazione (--om-…).
+   Seconda parte: variabili storiche delle altre pagine (index.css, journal.css, …).
+   ========================================================================== */
+
+:root {
+    color-scheme: dark;
+    --om-fondo: #050507;
+    --om-superficie: hsl(240, 6%, 9%);
+    --om-superficie-2: hsl(240, 6%, 14%);
+    --om-bordo: hsla(0, 0%, 100%, 0.14);
+    --om-bordo-forte: hsla(0, 0%, 100%, 0.32);
+    --om-testo: hsl(0, 0%, 93%);
+    --om-testo-2: hsl(0, 0%, 70%);
+    --om-accento: hsl(190, 70%, 66%);
+    --om-su-accento: #04141a;
+    --om-fuoco: hsl(48, 100%, 62%);
+    --om-barra-fondo: hsla(240, 12%, 5%, 0.92);
+    --om-velo: hsla(240, 20%, 2%, 0.72);
+    --om-ombra: 0 18px 50px hsla(0, 0%, 0%, 0.6);
+
+    /* un colore per sezione: lo stesso in menu, elenco e costellazione */
+    --om-attivita: hsl(190, 85%, 62%);
+    --om-allenati: hsl(152, 70%, 54%);
+    --om-journal: hsl(328, 85%, 74%);
+    --om-archivio: hsl(40, 95%, 62%);
+
+    --om-font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --om-font-titoli: 'Syne', 'Inter', system-ui, sans-serif;
+    --om-barra-h: 54px;
+    --om-largo: 1320px;
+    --om-raggio: 14px;
+    --om-raggio-s: 8px;
+}
+
+html.theme-light {
+    color-scheme: light;
+    --om-fondo: #ffffff;
+    --om-superficie: #f3f5f9;
+    --om-superficie-2: #e6eaf1;
+    --om-bordo: hsla(222, 47%, 11%, 0.2);
+    --om-bordo-forte: hsla(222, 47%, 11%, 0.5);
+    --om-testo: #0b1220;
+    --om-testo-2: #37445a;
+    --om-accento: hsl(195, 95%, 23%);
+    --om-su-accento: #ffffff;
+    --om-fuoco: hsl(265, 90%, 45%);
+    --om-barra-fondo: hsla(0, 0%, 100%, 0.95);
+    --om-velo: hsla(222, 40%, 12%, 0.45);
+    --om-ombra: 0 18px 50px hsla(222, 40%, 12%, 0.22);
+
+    --om-attivita: hsl(195, 95%, 23%);
+    --om-allenati: hsl(155, 90%, 20%);
+    --om-journal: hsl(328, 75%, 34%);
+    --om-archivio: hsl(28, 95%, 28%);
+}
+
+/* --------------------------------------------------------------------------
+   Variabili storiche (pagine Competenze, Archivio, Scuola, Calcolo veloce, Journal, Mappa)
+   -------------------------------------------------------------------------- */
+
+:root {
+    /* New Artistic Desaturated Palette */
+    --primary: hsl(190, 100%, 45%);
+    --primary-glow: hsla(190, 100%, 45%, 0.3);
+
+    /* New Thematic Palette */
+    --color-math: hsl(280, 85%, 65%);
+    --color-tech: hsl(155, 100%, 50%);
+    --color-citizen: hsl(38, 100%, 60%);
+    --color-soft: hsl(325, 85%, 65%);
+
+    --bg-color: #050507;
+    --bg-dark: hsl(240, 6%, 4%);
+    --bg-surface: hsl(240, 6%, 8%);
+    --bg-card: hsla(240, 6%, 12%, 0.4);
+    --glass-border: hsla(0, 0%, 100%, 0.12);
+
+    --primary: hsl(190, 35%, 60%);
+    /* Desaturated Lab Cyan */
+    --accent: hsl(330, 25%, 65%);
+    /* Muted Magenta */
+
+    --text-main: hsl(0, 0%, 90%);
+    --text-muted: hsl(0, 0%, 55%);
+    --text-on-accent: hsl(240, 6%, 5%);
+
+    /* Editorial Typography */
+    --font-ui: 'Inter', sans-serif;
+    --font-heading: 'Syne', sans-serif;
+    --font-code: 'Space Mono', monospace;
+
+    /* Spaces */
+    --container-max: 1280px;
+    --radius-lg: 32px;
+    --radius-md: 20px;
+    --radius-sm: 8px;
+    /* Card Themes (Material 3 inspired) */
+    --card-blue: #d3e3fd;
+    --card-on-blue: #041e49;
+    --card-green: #c4eed0;
+    --card-on-green: #07210e;
+    --card-red: #f9dedc;
+    --card-on-red: #410e0b;
+    --card-yellow: #fdf2b4;
+    --card-on-yellow: #261d00;
+    --card-purple: #e9ddff;
+    --card-on-purple: #21005d;
+    --card-teal: #bce9eb;
+    --card-on-teal: #001f20;
+
+    --transition: 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+
+    /* Material Design 3 Design Tokens - Lab Edition */
+    --md-sys-color-outline: hsl(240, 5%, 35%);
+    --md-sys-color-primary: hsl(190, 35%, 60%);
+    --md-sys-color-surface-variant: hsla(240, 6%, 15%, 0.6);
+    --md-sys-color-on-surface-variant: hsl(240, 5%, 80%);
+    --md-sys-color-focus-glow: hsla(190, 100%, 45%, 0.15);
+
+    --m3-pill-height: 48px;
+    --m3-search-height: 56px;
+}
+
+[data-theme="dark"] {
+    --card-blue: #0842a0;
+    --card-on-blue: #d3e3fd;
+    --card-green: #0f5223;
+    --card-on-green: #c4eed0;
+    --card-red: #93000a;
+    --card-on-red: #ffdad6;
+    --card-yellow: #5d4200;
+    --card-on-yellow: #fff392;
+    --card-purple: #55339e;
+    --card-on-purple: #e9ddff;
+    --card-teal: #004f50;
+    --card-on-teal: #bce9eb;
+}
+
+html.theme-light {
+    /* Palette chiara ad alto contrasto */
+    --bg-color: #f8fafc;
+    --bg-dark: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --glass-border: rgba(15, 23, 42, 0.08);
+
+    /* Testo scuro leggibile */
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-on-accent: #ffffff;
+
+    /* Primari e accenti per contrasto su sfondo chiaro */
+    --primary: hsl(190, 85%, 28%);
+    --primary-glow: hsla(190, 85%, 28%, 0.15);
+    --accent: hsl(280, 75%, 45%);
+
+    /* Token Material 3 versione Light */
+    --md-sys-color-outline: rgba(15, 23, 42, 0.15);
+    --md-sys-color-primary: hsl(190, 85%, 28%);
+    --md-sys-color-surface-variant: #f1f5f9;
+    --md-sys-color-on-surface-variant: #1e293b;
+    --md-sys-color-focus-glow: hsla(190, 85%, 28%, 0.15);
+
+    /* Card Themes M3 per Light Mode */
+    --card-blue: #d3e3fd;
+    --card-on-blue: #041e49;
+    --card-green: #c4eed0;
+    --card-on-green: #07210e;
+    --card-red: #f9dedc;
+    --card-on-red: #410e0b;
+    --card-yellow: #fdf2b4;
+    --card-on-yellow: #261d00;
+    --card-purple: #e9ddff;
+    --card-on-purple: #21005d;
+    --card-teal: #bce9eb;
+    --card-on-teal: #001f20;
+}
