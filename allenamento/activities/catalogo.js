@@ -128,6 +128,63 @@ export const PREREQ = {
   ...Object.fromEntries(TRUCCHI.filter((t) => t.prereq.length).map((t) => [`calcolo-${t.id}`, t.prereq])),
 };
 
+// PAROLE CHIAVE del sito: collegano ogni lezione alle stelle della home (id di data/vocabolario.json).
+// Una lezione nuova va aggiunta qui; le tecniche di calcolo veloce ricevono da sole 'calcolo-mentale'
+// e si scrivono qui solo se hanno altre parole. Controllo: npm run build nella cartella del sito.
+export const PAROLE = {
+  'vita-reale': ['lavoro'],
+  'lavoro-meccanico': ['lavoro'],
+  'lavoro-elettrico': ['lavoro'],
+  'lavoro-moda': ['lavoro'],
+  'lavoro-grafica': ['lavoro'],
+  'lavoro-odonto': ['lavoro'],
+  'lavoro-socio': ['lavoro'],
+  'numeri-relativi': ['numeri-interi'],
+  'frazioni': ['frazione'],
+  'percentuali': ['percentuale'],
+  'potenze': ['potenze'],
+  'proporzioni': ['proporzione'],
+  'notazione-scientifica': ['potenze', 'unita-di-misura'],
+  'radicali': ['numeri-irrazionali', 'potenze'],
+  'fibonacci': ['fibonacci'],
+  'monomi': ['polinomi'],
+  'prodotti-notevoli': ['prodotti-notevoli'],
+  'scomposizioni': ['scomposizione'],
+  'equazioni-1': ['equazione-primo-grado'],
+  'equazioni-1-speciali': ['equazione-primo-grado', 'frazione'],
+  'disequazioni-1': ['disequazione'],
+  'equazioni-2': ['equazione-secondo-grado'],
+  'disequazioni-2': ['disequazione', 'parabola'],
+  'funzioni-lineari': ['retta'],
+  'retta-pendenza': ['retta'],
+  'rette-parallele': ['retta'],
+  'sistemi-lineari': ['equazione', 'retta'],
+  'aree-perimetri': ['geometria'],
+  'pitagora': ['pitagora'],
+  'similitudine': ['geometria', 'proporzione'],
+  'solidi': ['geometria'],
+  'trigonometria': ['funzione-goniometrica', 'geometria'],
+  'rapporto-aureo': ['fibonacci', 'geometria'],
+  'statistica': ['probabilita'],
+  'probabilita': ['probabilita'],
+  'combinatoria': ['probabilita'],
+  'parabola': ['parabola'],
+  'esponenziali': ['funzione', 'potenze'],
+  'logaritmi': ['logaritmo'],
+  'goniometria': ['funzione-goniometrica'],
+  'studio-funzione': ['studio-di-funzione'],
+  'problemi-scelta': ['modelli', 'retta'],
+  'invalsi-10': ['invalsi'],
+  'invalsi-13': ['invalsi'],
+  'calcolo-somma-per-differenza': ['calcolo-mentale', 'prodotti-notevoli'],
+  'calcolo-percentuali-scambiate': ['calcolo-mentale', 'percentuale'],
+  'calcolo-prova-del-9': ['calcolo-mentale', 'numeri'],
+  'calcolo-ricarico-e-margine': ['calcolo-mentale', 'percentuale'],
+  'calcolo-lavorare-insieme': ['calcolo-mentale', 'frazione'],
+  'calcolo-costo-uguale-guadagno': ['calcolo-mentale', 'percentuale'],
+  'calcolo-triangolo-dei-coefficienti': ['calcolo-mentale', 'prodotti-notevoli'],
+};
+
 export const allActivities = areas.flatMap((a) => a.activities.map((act) => ({ ...act, areaInfo: a, hue: a.hue })));
 export const byId = Object.fromEntries(allActivities.map((a) => [a.id, a]));
 
