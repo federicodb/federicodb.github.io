@@ -172,3 +172,20 @@ Ogni voce: data, decisione, motivo.
 - **Test**: `tests/smoke_sito.spec.js` (ogni app e spiegazione si apre senza errori, link interni, catalogo, verifiche, 404, cookie, niente scorrimento orizzontale a 390 e 1920 px, CDN con versione e integrità). Trovati e corretti: `404.html` più larga del telefono, titolo di `card_frazioni_algebriche_005` chiuso in un commento rotto. Gli screenshot dei test di Math Bubble vanno in `test-results/`.
 - **Pulizie**: `pen_plotter_gcode.js` svuotato e non più caricato (doppione mai usato, URL tenuto); script di patch superati in `tools/legacy/`; tolte due funzioni Python mai chiamate.
 - **Non fatto, di proposito**: nessun file sotto `content/` cancellato (URL pubblici: `pen_plotter_gis.js`, `pen_plotter_modifiers.js`, `ui-animations.css`, 34 miniature orfane, `orfini-math-quest.zip` restano in attesa di decisione); nessuna CSP globale (con decine di app single-file con script inline servirebbe `unsafe-inline` e il guadagno sarebbe minimo a fronte del rischio di rompere app); Pen Plotter non spezzato in moduli (refactoring ampio senza un difetto da correggere).
+
+## 2026-11-09/10 — Home a costellazione, Fasi 0 e 1 (ramo `costellazione`)
+
+- **Quattro sezioni nei dati** (Attività, Allenati, Journal, Archivio): 139 voci. Con le sole 48 della home tutte le stelle avrebbero avuto lo stesso colore.
+- **`build.py` resta la fonte**; `data/attivita.json` è generato (`dati_build.py`). A mano si scrivono solo le parole chiave, accanto al contenuto: `<meta name="parole">` nelle app, `"parole"` nei sidecar, tabella `PAROLE` in `allenamento/activities/catalogo.js`, riga `parole:` nelle note (se manca valgono quelle della prima attività collegata), `data/parole_verifiche.json` per le verifiche. Motivo: nessun titolo scritto due volte.
+- **Vocabolario di 40 parole** in `data/vocabolario.json`, scritto a mano. Una parola con una sola attività ferma la validazione.
+- **Commit con `[metadati]` nel messaggio non cambiano la data di un'attività** (`data_file` in `build.py`). Motivo: l'aggiunta del meta alle 40 app le avrebbe datate tutte a oggi. Attenzione: uno *squash* del ramo perderebbe questa distinzione; il merge va fatto normale.
+- **Menu unico** in `tools/parti/menu.html`, scritto nelle pagine da `tools/genera.mjs` (tra `MENU_START` e `MENU_END`) e da `journal_build.py` per il Journal. Link assoluti dalla radice. Primo livello: Esplora, Allenati, Journal, Archivio; sotto "Altro": Calcolo veloce, Competenze, La Scuola, Chi sono. La Mappa 3D resta raggiungibile dal piè di pagina.
+- **Le righe di ricerca proprie di Journal, Archivio e Competenze restano** sotto la barra e scorrono con la pagina. Nel Journal ci sono quindi due ricerche: quella del sito nella barra e quella delle note.
+- **"Chi sono" è un pannello** (`<dialog>`) presente in ogni pagina con il menu; senza JavaScript si apre con `#chi-sono`. Il testo è una bozza da rivedere.
+- **Variabili del tema in `sito/tema.css`**: spostate lì quelle di `index.css` e di `theme-light.css`. Restano fuori le variabili proprie di `journal.css`, `schede.css`, `calcolo-mentale.css` e della Quest.
+- **La home non carica più `index.css`, `database.js`, `marked`, KaTeX**. Le formule dei titoli diventano MathML durante la generazione. Il catalogo nascosto per i motori di ricerca è stato tolto: ora l'elenco è HTML vero.
+- **Titoli delle verifiche senza la classe** in elenco, come nel Journal.
+- **Pubblicazione**: `.github/workflows/pubblica.yml` valida, genera, costruisce con Jekyll (stesse pagine e stesse esclusioni di oggi) e pubblica. In CI non gira `build.py`: i file che genera sono nel repository, come oggi. Serve il passaggio manuale di Pages a "GitHub Actions".
+- **Librerie**: nessuna libreria nuova nel sito. `lighthouse` è una dipendenza di sviluppo, usata solo per le misure.
+- **Interruttore Costellazione/Elenco**: presente nella barra, con "Costellazione" spenta fino alla Fase 2.
+
