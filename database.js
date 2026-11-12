@@ -5,7 +5,7 @@
 const db = [
     {
         "title": "AstroMath: volo tra le costellazioni della matematica",
-        "excerpt": "AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde attraversando l'anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.",
+        "excerpt": "AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde fermandosi nell'anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.",
         "tags": [
             "1 EL",
             "2 EL",

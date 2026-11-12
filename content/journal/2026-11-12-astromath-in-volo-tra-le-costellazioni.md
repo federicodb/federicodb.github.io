@@ -4,12 +4,12 @@ data: 2026-11-12
 descrizione: Un gioco di esplorazione sul piano cartesiano: ogni stella ha una creatura con una domanda, e si risponde volando attraverso l'anello giusto.
 attivita: astromath
 copertina: media/astromath-manta-parabolica.png
-stato: bozza
+
 ---
 
 ## Cosa è
 
-AstroMath è un gioco di volo sul piano cartesiano. Si guida un piccolo pilota con lo zaino a razzo tra dodici costellazioni, in ordine di programma: numeri, percentuali e proporzioni, calcolo letterale, prodotti notevoli, scomposizioni, equazioni, rette, geometria, dati, radicali e secondo grado, parabola, e infine l'officina.
+AstroMath è un gioco di volo sul piano cartesiano. Si guida un piccolo pilota con lo zaino a razzo tra dodici costellazioni, in ordine di programma: numeri, percentuali e proporzioni, calcolo letterale, prodotti notevoli, scomposizioni, equazioni, rette, geometria, dati, radicali e secondo grado, parabola, e infine la matematica applicata alle attività laboratoriali.
 
 Ogni costellazione ha sei stelle. Avvicinandosi a una stella compare la sua creatura, disegnata con la matematica del suo argomento: la Manta parabolica ha le ali a forma di $y = ax^2$, la Squadra 3-4-5 apre i quadrati sui lati, il Quadrato del binomio si scompone in $a^2$, $2ab$ e $b^2$. La creatura fa una domanda, presa dai generatori della Quest, e attorno alla stella si aprono gli anelli delle risposte: si risponde fermandosi dentro l'anello giusto finché si riempie, oppure scegliendo la risposta e confermandola.
 
