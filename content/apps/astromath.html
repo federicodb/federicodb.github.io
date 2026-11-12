@@ -131,6 +131,7 @@
       html.pannello-destra #inc-fig { grid-area: fig; }
       html.pannello-destra #inc-opzioni { grid-area: opzioni; grid-template-columns: minmax(0, 1fr); align-self: start; }
       html.pannello-destra .inc-piede { grid-area: piede; }
+      html.pannello-destra #inc-opzioni.due-colonne { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       html.pannello-destra #inc-fig svg { max-height: calc(var(--s) * 46dvh); }
     }
     @keyframes rimbalzo-su { from { opacity: 0; transform: translate(-50%, 40px) scale(.94); } }
@@ -504,7 +505,7 @@
     </div>
   </dialog>
 
-  <script type="module" src="astromath_js/main.js?v=20261112_17"></script>
+  <script type="module" src="astromath_js/main.js?v=20261112_19"></script>
   <script src="../assets/js/orfini-shared.js"></script>
 </body>
 </html>

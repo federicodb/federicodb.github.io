@@ -295,7 +295,8 @@ test.describe('AstroMath nel browser', () => {
     await apri(page);
     await avvia(page, 0);
     await incontro(page, 0);
-    await page.waitForTimeout(1500);
+    // gli anelli si attivano dopo 0,9 s di simulazione (senza GPU il tempo simulato scorre più piano)
+    await page.waitForFunction(() => window.__astromath.mondo().incontro?.t > 1.2, null, { timeout: 20000 });
     // attraversare l'anello di corsa: nessuna risposta
     const a = await page.evaluate(() => { const m = window.__astromath.mondo(); return m.incontro.anelli[0]; });
     await page.evaluate((r) => window.__astromath.pilota({ x: r.x - 3, y: r.y, vx: 40, vy: 0 }), a);
@@ -304,7 +305,7 @@ test.describe('AstroMath nel browser', () => {
     expect(await page.evaluate(() => window.__astromath.mondo().incontro.anelli.some((x) => x.via))).toBe(false);
     // fermarsi dentro l'anello finché si riempie: risponde
     await page.evaluate((r) => window.__astromath.pilota({ x: r.x, y: r.y, vx: 0, vy: 0 }), a);
-    await expect.poll(async () => page.evaluate(() => { const m = window.__astromath.mondo(); return !m.incontro || m.incontro.anelli[0].via || m.stelle[0].stato === 'accesa'; }), { timeout: 8000 }).toBe(true);
+    await expect.poll(async () => page.evaluate(() => { const m = window.__astromath.mondo(); return !m.incontro || m.incontro.anelli[0].via || m.stelle[0].stato === 'accesa'; }), { timeout: 20000 }).toBe(true); // senza GPU il secondo di permanenza dura di più
     // un solo tocco sceglie, il pulsante Conferma risponde
     await page.evaluate(() => window.__astromath.pilota({ x: 0, y: 3, vx: 0, vy: 0 }));
     await page.waitForTimeout(1200);

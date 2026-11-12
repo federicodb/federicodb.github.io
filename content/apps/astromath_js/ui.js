@@ -24,6 +24,13 @@ function lunghezzaVisibile(html) {
   return String(html).replace(/<[^>]+>/g, '').replace(/\\(left|right|dfrac|frac|tfrac|cdot|le|ge|vee|wedge|sqrt|text|quad|,|;|!)/g, '').replace(/[${}\\^_]/g, '').length;
 }
 
+/** Testo di un elemento come lo leggerebbe una persona: le formule dalla loro versione MathML, senza sorgente LaTeX */
+function testoLeggibile(el) {
+  const c = el.cloneNode(true);
+  c.querySelectorAll('annotation, .katex-html').forEach((n) => n.remove());
+  return c.textContent.replace(/\s+/g, ' ').trim();
+}
+
 export class UI {
   constructor(az) {
     this.az = az; // azioni del gioco: { rispondi, aiuto, pausa, … }
@@ -154,7 +161,7 @@ export class UI {
       return minimo;
     };
     e.style.setProperty('--s', 1);
-    opz.classList.remove('una-colonna');
+    opz.classList.remove('una-colonna', 'due-colonne');
     const orizzontale = matchMedia('(max-height: 500px)').matches && document.documentElement.classList.contains('pannello-destra');
     if (!orizzontale && restringi() < 0.72 && opz.children.length > 1) { opz.classList.add('una-colonna'); restringi(); }
     if (orizzontale) restringi();
@@ -174,6 +181,8 @@ export class UI {
       e.style.width = 'min(680px, 66vw)';
       this.pannelloAlto = true;
       riduci(0.72);
+      // ultima risorsa: le risposte su due colonne anche nella colonna di destra
+      if (troppo() && opz.children.length > 2) { opz.classList.add('due-colonne'); riduci(0.72); }
     }
     e.style.overflowY = troppo() ? 'auto' : 'hidden'; // ultima risorsa: mai contenuti irraggiungibili
   }
@@ -234,9 +243,9 @@ export class UI {
     d.className = `fumetto ${tipo}`;
     d.innerHTML = `<div class="fumetto-corpo">${html}</div>`; // l'esterno segue l'oggetto, l'interno anima
     this.el.etichette.appendChild(d);
-    tipografa(d);
+    // annuncio per i lettori di schermo: il testo leggibile, mai il sorgente LaTeX della formula
+    tipografa(d, () => { this.el.annuncio.textContent = testoLeggibile(d); });
     this.fumetti.push({ d, o, fino: performance.now() + durata, alto });
-    this.el.annuncio.textContent = d.textContent;
   }
   svuotaFumetti() { this.fumetti.forEach((f) => f.d.remove()); this.fumetti = []; }
 
