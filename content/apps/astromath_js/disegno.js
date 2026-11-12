@@ -5,9 +5,10 @@
 
 import { MONDO } from './mondo.js';
 import { disegnaCreatura } from './creature.js';
+import { disegnaOggetti } from './oggetti.js';
+import { disegnaPilotaPixel, puntiPilota } from './pilota.js';
 
 const TAU = Math.PI * 2;
-const PS = MONDO.scalaPilota; // il pilota disegnato è più grande delle sue unità di disegno
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, t) => a + (b - a) * t;
 
@@ -31,15 +32,22 @@ export function hsl(h, s, l) {
 // ------------------------------------------------------------------------------------------------
 export const SEG = 11; // x1 y1 z1 x2 y2 z2 r g b a w(px)
 export const PT = 8;   // x y z size(unità del mondo) r g b a
+export const RT = 10;  // x y z larghezza altezza rotazione r g b a (rettangoli pieni: la pixel art del pilota)
 
 export class Lista {
-  constructor(maxSeg = 14000, maxPt = 3000) {
+  constructor(maxSeg = 14000, maxPt = 3000, maxRt = 600) {
+    this.rt = new Float32Array(maxRt * RT); this.maxRt = maxRt; this.nRt = 0;
     this.seg = new Float32Array(maxSeg * SEG);
     this.pt = new Float32Array(maxPt * PT);
     this.maxSeg = maxSeg; this.maxPt = maxPt;
     this.nSeg = 0; this.nPt = 0;
   }
-  svuota() { this.nSeg = 0; this.nPt = 0; }
+  svuota() { this.nSeg = 0; this.nPt = 0; this.nRt = 0; }
+  rett(x, y, z, w, h, rot, c, a) {
+    if (this.nRt >= this.maxRt) return;
+    const o = this.nRt++ * RT, r = this.rt;
+    r[o] = x; r[o + 1] = y; r[o + 2] = z; r[o + 3] = w; r[o + 4] = h; r[o + 5] = rot; r[o + 6] = c[0]; r[o + 7] = c[1]; r[o + 8] = c[2]; r[o + 9] = a;
+  }
   linea(x1, y1, z1, x2, y2, z2, c, a, w) {
     if (this.nSeg >= this.maxSeg || a <= 0.003) return;
     const o = this.nSeg++ * SEG, s = this.seg;
@@ -225,6 +233,8 @@ export class Scena {
     this.scia = [];       // ultime posizioni del pilota
     this.sciarpa = null;  // catena di punti con molle
     this.umori = {};      // umore di ogni creatura: { tipo, da }
+    this.verso = 1;       // il pilota guarda a destra (1) o a sinistra (-1)
+    this.salutoFino = 0;  // fino a quando il pilota saluta con la mano
     this.creaProfondita();
     this.qualita = { alone: 1, particelle: 1, polvere: true };
     this.ridotti = false;
@@ -239,6 +249,8 @@ export class Scena {
     // figure geometriche lontane (poligoni regolari e cifre): scorrono più lente, morbide per la sfocatura
     this.lontani = Array.from({ length: 26 }, (_, i) => ({ x: (r() * 2 - 1) * 300, y: -10 + r() * 360, z: -45 - r() * 150, lati: 3 + Math.floor(r() * 6), R: 5 + r() * 12, rot: r() * TAU, vr: (r() - 0.5) * 0.12, dt: Math.floor(r() * 50) }));
   }
+
+  saluta(durata = 1.6) { this.salutoFino = performance.now() / 1000 + durata; }
 
   onda(x, y, forza = 1) { if (!this.ridotti) this.onde.push({ x, y, t: 0, f: forza }); }
 
@@ -267,12 +279,12 @@ export class Scena {
     this.part.densita = this.qualita.particelle * (this.ridotti ? 0.25 : 1);
     this.part.aggiorna(dt);
     const p = mondo.pilota;
+    if (p.vx > 3) this.verso = 1; else if (p.vx < -3) this.verso = -1;
     // fiamme dei razzi
     if (p.spinge > 0.1 && Math.random() < 0.9) {
       const inp = mondo.input, m = Math.hypot(inp.x, inp.y) || 1;
       const dir = Math.atan2(-inp.y / m, -inp.x / m);
-      for (const s of [-1, 1]) {
-        const nx = p.x + s * 0.95 * PS * Math.cos(p.rollio * 0.9), ny = p.y - 0.9 * PS;
+      for (const [nx, ny] of puntiPilota(p, this.verso).ugelli) {
         this.part.emetti(nx, ny, { n: 2, v: 10 + 14 * p.spinge, vita: 0.32, tinta: Math.random() < 0.5 ? [1, 0.55, 0.85] : [1, 0.9, 0.6], size: 0.55, dir, spread: 0.6, z: 0.2 });
       }
     }
@@ -283,7 +295,7 @@ export class Scena {
 
   aggiornaSciarpa(dt, p) {
     const N = 11;
-    const ancora = [p.x - p.rollio * 0.3 * PS, p.y + 1.05 * PS];
+    const ancora = puntiPilota(p, this.verso).collo;
     if (!this.sciarpa) this.sciarpa = Array.from({ length: N }, (_, i) => ({ x: ancora[0], y: ancora[1] - i * 0.4, px: ancora[0], py: ancora[1] - i * 0.4 }));
     const L = 0.18 + 0.62 * clamp(p.energia / p.energiaMax, 0, 1); // la sciarpa è lunga quanto l'energia
     const s = this.sciarpa;
@@ -419,6 +431,9 @@ export class Scena {
       }
     });
 
+    // oggetti liberi del cielo
+    disegnaOggetti(this, mondo.oggetti, ora, { tinta, accento, bianco, oro });
+
     // anelli-risposta
     const inc = mondo.incontro;
     if (inc) {
@@ -464,46 +479,19 @@ export class Scena {
       l.linea(a[0], a[1], -0.1, b[0], b[1], -0.1, tinta, k * 0.5 * clamp(vel / 18, 0.15, 1), 1 + 3 * k);
     }
     this.part.disegna(l);
-    this.disegnaPilota(p, tinta, bianco, oro);
+    this.disegnaPilota(p, tinta);
     // pulviscolo davanti all'obiettivo (per ultimo: sta più vicino di tutto)
     if (!this.ridotti && this.qualita.polvere) for (const q of this.polvere) l.punto(q.x, q.y, q.z, q.size, q.c, q.a);
   }
 
-  disegnaPilota(p, tinta, bianco, oro) {
-    const l = this.lista, pen = this.penna;
-    // sciarpa (energia): un nastro che si assottiglia
-    const s = this.sciarpa;
-    if (s) for (let i = 1; i < s.length; i++) { const k = 1 - i / s.length; l.linea(s[i - 1].x, s[i - 1].y, 0.35, s[i].x, s[i].y, 0.35, tinta, 0.95, 1.4 + 3.6 * k); }
-    const visiera = hsl(195, 95, 62), corpo = [0.92, 0.95, 1];
-    const rot = -p.rollio * 0.32 + (p.aTerra ? 0 : clamp(p.vy / 60, -0.15, 0.15) * -p.rollio);
-    pen.imposta({ x: p.x, y: p.y, s: PS, rot, rollio: p.rollio, z: 0.5, alfa: 1, toni: [corpo, visiera, bianco, oro, tinta] });
-    const sh = Math.sin(p.rollio) * 0.45; // il rollio sposta le parti in profondità: effetto carta
-    // zaino a razzo (dietro)
-    pen.poly([[-1.25 - sh, -0.7], [-0.75 - sh, -0.7], [-0.75 - sh, 0.95], [-1.25 - sh, 0.95]], true, 3, 1.6);
-    pen.poly([[0.75 - sh, -0.7], [1.25 - sh, -0.7], [1.25 - sh, 0.95], [0.75 - sh, 0.95]], true, 3, 1.6);
-    // fiamme
-    if (p.spinge > 0.08) {
-      const f = 0.8 + p.spinge * 1.8 + Math.sin(performance.now() / 40) * 0.25;
-      for (const x of [-1 - sh, 1 - sh]) pen.poly([[x - 0.28, -0.75], [x, -0.75 - f], [x + 0.28, -0.75]], false, 4, 2);
-    }
-    // gambe
-    const passo = p.aTerra ? 0 : Math.sin(performance.now() / 300) * 0.15;
-    pen.poly([[-0.35, -0.85], [-0.5 + passo, -1.8], [-0.85 + passo, -1.95]], false, 0, 2);
-    pen.poly([[0.35, -0.85], [0.5 - passo, -1.8], [0.85 - passo, -1.95]], false, 0, 2);
-    // busto
-    pen.poly([[-0.7, -0.85], [0.7, -0.85], [0.75, 0.9], [-0.75, 0.9]], true, 0, 2.2);
-    pen.poly([[-0.72, -0.35], [0.72, -0.35]], false, 3, 1.6);
-    pen.cerchio(0 + sh * 0.4, 0.3, 0.26, 1, 2, 10);
-    // braccia
-    const br = p.spinge > 0.1 ? 0.35 : 0;
-    pen.poly([[-0.75, 0.8], [-1.35, 0.1 + br], [-1.25, -0.3 + br]], false, 0, 1.8);
-    pen.poly([[0.75, 0.8], [1.35, 0.1 + br], [1.25, -0.3 + br]], false, 0, 1.8);
-    // casco e visiera (la visiera si sposta con il rollio)
-    pen.cerchio(0, 1.75, 0.95, 0, 2.2, 22);
-    const vx = sh * 0.9;
-    pen.poly(Array.from({ length: 13 }, (_, i) => { const a = (i / 12) * TAU; return [vx + Math.cos(a) * 0.6, 1.8 + Math.sin(a) * 0.36]; }), true, 1, 2.2);
-    pen.poly([[0.55, 2.5], [0.95, 3.25]], false, 2, 1.4);
-    l.punto(...pen.tr(0.95, 3.25), 0.5, 0.7, tinta, 0.9);
-    l.punto(p.x, p.y + 0.6 * PS, 0.4, 5 * PS, tinta, 0.08); // alone
+  disegnaPilota(p, tinta) {
+    const l = this.lista;
+    // sciarpa (energia): un nastro che si assottiglia, dietro all'astronauta
+    const sc = this.sciarpa;
+    if (sc) for (let i = 1; i < sc.length; i++) { const k = 1 - i / sc.length; l.linea(sc[i - 1].x, sc[i - 1].y, 0.35, sc[i].x, sc[i].y, 0.35, tinta, 0.95, 1.4 + 3.6 * k); }
+    l.punto(p.x, p.y, 0.4, 7, tinta, 0.1); // alone: stacca la sagoma dal cielo nero
+    const ora = performance.now() / 1000;
+    const rot = this.ridotti ? 0 : clamp(-p.vx / 90, -0.22, 0.22) + (p.aTerra ? 0 : clamp(p.vy / 160, -0.08, 0.08)) * this.verso;
+    disegnaPilotaPixel(l, p, { verso: this.verso, saluta: ora < this.salutoFino, ora, rot, tinta });
   }
 }

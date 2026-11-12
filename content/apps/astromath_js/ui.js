@@ -37,6 +37,12 @@ export class UI {
     };
     this.anelli = [];
     this.corr = [];
+    this.fumetti = []; // fumetti agganciati agli oggetti liberi: { d, o, fino, alto }
+    // annunci per i lettori di schermo (il livello delle etichette è nascosto alla lettura)
+    this.el.annuncio = document.createElement('p');
+    this.el.annuncio.className = 'vh';
+    this.el.annuncio.setAttribute('aria-live', 'polite');
+    document.body.appendChild(this.el.annuncio);
     this.el.incAiuto.addEventListener('click', () => this.az.aiuto());
     this.el.incConferma.addEventListener('click', () => { if (this.selezionata != null) this.az.rispondi(this.selezionata); });
   }
@@ -222,8 +228,30 @@ export class UI {
     for (let i = n; i < pool.length; i++) pool[i].hidden = true;
   }
 
+  /** Fumetto agganciato a un oggetto del cielo (freddure, nomi delle curve): sparisce da solo */
+  fumetto(o, html, { durata = 5200, tipo = '', alto = 7 } = {}) {
+    const d = document.createElement('div');
+    d.className = `fumetto ${tipo}`;
+    d.innerHTML = `<div class="fumetto-corpo">${html}</div>`; // l'esterno segue l'oggetto, l'interno anima
+    this.el.etichette.appendChild(d);
+    tipografa(d);
+    this.fumetti.push({ d, o, fino: performance.now() + durata, alto });
+    this.el.annuncio.textContent = d.textContent;
+  }
+  svuotaFumetti() { this.fumetti.forEach((f) => f.d.remove()); this.fumetti = []; }
+
   etichette(mondo, cam, W, H) {
     this.assi(cam, W, H);
+    const adesso = performance.now();
+    this.fumetti = this.fumetti.filter((f) => {
+      if (adesso > f.fino) { f.d.classList.add('via'); setTimeout(() => f.d.remove(), 400); return false; }
+      const q = cam.proietta(f.o.x, f.o.y + f.alto, 0, W, H);
+      if (!q) { f.d.style.visibility = 'hidden'; return true; }
+      f.d.style.visibility = 'visible';
+      const x = Math.max(110, Math.min(W - 110, q[0]));
+      f.d.style.transform = `translate(${x.toFixed(1)}px, ${q[1].toFixed(1)}px) translate(-50%, -100%)`;
+      return true;
+    });
     const metti = (d, x, y, z = 0) => {
       const q = cam.proietta(x, y, z, W, H);
       if (!q || q[0] < -200 || q[0] > W + 200 || q[1] < -100 || q[1] > H + 100) { d.style.visibility = 'hidden'; return; }

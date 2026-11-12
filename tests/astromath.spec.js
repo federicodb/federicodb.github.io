@@ -84,6 +84,56 @@ test.describe('domande ad anelli (Node, dai generatori della Quest)', () => {
   });
 });
 
+test.describe('oggetti liberi (Node)', () => {
+  test('ogni livello: oggetti lontani da stelle e portale, stessa disposizione con lo stesso seme', async () => {
+    const { LIVELLI } = await import(pathToFileURL(path.join(MODULI, 'livelli.js')).href);
+    const { Mondo, MONDO } = await import(pathToFileURL(path.join(MODULI, 'mondo.js')).href);
+    const { Oggetti } = await import(pathToFileURL(path.join(MODULI, 'oggetti.js')).href);
+    const problemi = [];
+    for (const L of LIVELLI) {
+      const finte = L.forma.map((_, i) => ({ indice: i, livelloQuest: 1, sfida: { opzioni: [] } }));
+      for (const seme of ['a', 'b', 'c']) {
+        const m = new Mondo(L, finte);
+        const og = new Oggetti(m, seme, { segreto: true });
+        const tipi = new Set(og.lista.map((o) => o.tipo));
+        for (const t of ['personaggio', 'molla', 'fuoco', 'buco', 'vento', 'segreto']) if (!tipi.has(t)) problemi.push(`${L.id}/${seme}: manca ${t}`);
+        for (const o of og.lista) {
+          // lontani dalle stelle (anelli compresi: raggio 15) e dal portale
+          const dStella = Math.min(...m.stelle.map((s) => Math.hypot(s.x - o.x, s.y - o.y)));
+          if (dStella < 26 + o.raggio) problemi.push(`${L.id}/${seme}: ${o.tipo} a ${dStella.toFixed(1)} da una stella`);
+          if (Math.hypot(o.x - MONDO.portale.x, o.y - MONDO.portale.y) < 22) problemi.push(`${L.id}/${seme}: ${o.tipo} sul portale`);
+          if (Math.abs(o.x) > MONDO.meta || o.y < 10 || o.y > MONDO.tetto) problemi.push(`${L.id}/${seme}: ${o.tipo} fuori dal cielo`);
+        }
+        const bis = new Oggetti(new Mondo(L, finte), seme, { segreto: true });
+        if (JSON.stringify(bis.lista.map((o) => [o.tipo, o.x0, o.y0, o.chi])) !== JSON.stringify(og.lista.map((o) => [o.tipo, o.x0, o.y0, o.chi]))) problemi.push(`${L.id}/${seme}: disposizione non ripetibile`);
+      }
+    }
+    expect(problemi).toEqual([]);
+  });
+
+  test('freddure e curve: ogni personaggio esiste, ogni formula si compone con KaTeX', async () => {
+    const { FREDDURE, PERSONAGGI } = await import(pathToFileURL(path.join(MODULI, 'freddure.js')).href);
+    const { CURVE } = await import(pathToFileURL(path.join(MODULI, 'oggetti.js')).href);
+    const katex = require(path.join(__dirname, '..', 'allenamento', 'node_modules', 'katex', 'dist', 'katex.js'));
+    const problemi = [];
+    const testi = new Set();
+    for (const f of FREDDURE) {
+      if (!PERSONAGGI.includes(f.chi)) problemi.push(`personaggio sconosciuto: ${f.chi}`);
+      if (testi.has(f.testo)) problemi.push(`doppia: ${f.testo}`);
+      testi.add(f.testo);
+      for (const m of f.testo.matchAll(/\$([^$]+)\$/g)) {
+        try { katex.renderToString(m[1], { throwOnError: true }); } catch (e) { problemi.push(`${f.testo.slice(0, 40)}: ${e.message.slice(0, 60)}`); }
+      }
+      if ((f.testo.match(/\$/g) || []).length % 2) problemi.push(`delimitatori dispari: ${f.testo}`);
+    }
+    for (const c of CURVE) {
+      try { katex.renderToString(c.tex, { throwOnError: true }); } catch (e) { problemi.push(`${c.nome}: ${e.message.slice(0, 60)}`); }
+      for (let k = 0; k <= 20; k++) { const [u, v] = c.f(k / 20); if (!Number.isFinite(u) || !Number.isFinite(v) || Math.abs(u) > 1.01 || Math.abs(v) > 1.01) problemi.push(`${c.nome}: punto fuori da [-1, 1]`); }
+    }
+    expect(problemi).toEqual([]);
+  });
+});
+
 test.describe('AstroMath nel browser', () => {
   test.describe.configure({ retries: 1 });
 
@@ -139,6 +189,39 @@ test.describe('AstroMath nel browser', () => {
       }
       expect((await stato(page)).stelle.every((s) => s === 'accesa')).toBe(true);
     }
+    expect(errori).toEqual([]);
+  });
+
+  test('oggetti liberi: freddura, molla, fuochi, vento, buco nero e dodecaedro fanno il loro effetto', async ({ page }) => {
+    test.setTimeout(120000);
+    const errori = sorveglia(page);
+    await apri(page, URL + '&segreto');
+    await avvia(page, 2);
+    const stati = () => page.evaluate(() => window.__astromath.mondo().oggetti.lista.map((o) => o.tipo + ':' + o.stato));
+    const via = async () => { await page.evaluate(() => window.__astromath.pilota({ x: 0, y: 3, vx: 0, vy: 0 })); await page.waitForTimeout(500); };
+    // freddura: fumetto con il testo, formule disegnate
+    await page.evaluate(() => window.__astromath.vaiOggetto('personaggio'));
+    await expect(page.locator('.fumetto').first()).toBeVisible({ timeout: 10000 });
+    await expectFormuleDisegnate(page, 'fumetto');
+    await via();
+    // molla: il pilota rimbalza (la velocità cambia verso)
+    await page.evaluate(() => window.__astromath.vaiOggetto('molla'));
+    await expect.poll(() => page.evaluate(() => window.__astromath.mondo().pilota.vx), { timeout: 10000 }).toBeGreaterThan(5);
+    await via();
+    // fuochi: esplode, compaiono nome e formula della curva
+    await page.evaluate(() => window.__astromath.vaiOggetto('fuoco'));
+    await expect.poll(stati, { timeout: 10000 }).toContain('fuoco:botto');
+    await expect(page.locator('.fumetto.curva')).toBeVisible({ timeout: 10000 });
+    await expectFormuleDisegnate(page, 'curva');
+    await via();
+    // buco nero: orbita, poi rilancio verso l'alto
+    await page.evaluate(() => window.__astromath.vaiOggetto('buco'));
+    await expect.poll(stati, { timeout: 10000 }).toContain('buco:orbita');
+    await expect.poll(() => page.evaluate(() => window.__astromath.mondo().pilota.vy), { timeout: 20000 }).toBeGreaterThan(20);
+    await via();
+    // dodecaedro d'oro: badge
+    await page.evaluate(() => window.__astromath.vaiOggetto('segreto'));
+    await expect.poll(() => page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('orfini_astromath_v1')).badge)), { timeout: 10000 }).toContain('dodecaedro');
     expect(errori).toEqual([]);
   });
 

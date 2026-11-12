@@ -10,6 +10,7 @@ import { Scena, hsl } from './disegno.js';
 import { creaRenderer } from './render.js';
 import { Audio, vibra } from './audio.js';
 import { UI } from './ui.js';
+import { Oggetti } from './oggetti.js';
 
 const params = new URLSearchParams(location.search);
 const TEST = params.has('test');
@@ -164,11 +165,12 @@ async function avviaLivello(i) {
   audio.avvia();
   iLivello = i;
   const livello = LIVELLI[i];
-  ui.nascondiAvvio(); ui.nascondiFine(); ui.chiudiIncontro();
+  ui.nascondiAvvio(); ui.nascondiFine(); ui.chiudiIncontro(); ui.svuotaFumetti();
   ui.caricamento(true);
-  let stelle;
+  let stelle, seme;
   try {
-    stelle = await generaStelle(livello, { seme: semePartita(livello.id), classe: quest.classe, indirizzo: quest.indirizzo });
+    seme = semePartita(livello.id);
+    stelle = await generaStelle(livello, { seme, classe: quest.classe, indirizzo: quest.indirizzo });
   } catch (e) {
     console.error(e);
     ui.caricamento(true, 'Non riesco a preparare le domande: controlla la connessione e riprova.');
@@ -178,6 +180,8 @@ async function avviaLivello(i) {
   ui.caricamento(false);
   const allenate = stelle.map((s) => stellaAllenata(quest, s.attivita, s.livelloQuest));
   mondo = new Mondo(livello, stelle, { allenate });
+  // oggetti liberi: freddure, molle, fuochi, buco nero, vento (e a volte il dodecaedro d'oro)
+  mondo.oggetti = new Oggetti(mondo, seme, { segreto: TEST && params.has('segreto') ? true : null, sentite: stato.sentite || [] });
   vetrina = null;
   scena.sciarpa = null; scena.scia = []; scena.onde = []; scena.umori = {};
   scena.cam.x = 0; scena.cam.y = 30;
@@ -199,7 +203,7 @@ function tornaAllaMappa() {
   mondo = null;
   pausa = false;
   schermo = 'avvio';
-  ui.pausa(false); ui.nascondiFine(); ui.chiudiIncontro(); ui.mostraGioco(false); ui.nascondiPresentazione();
+  ui.pausa(false); ui.nascondiFine(); ui.chiudiIncontro(); ui.mostraGioco(false); ui.nascondiPresentazione(); ui.svuotaFumetti();
   creaVetrina();
   ui.avvio(stato, quest);
 }
@@ -250,6 +254,7 @@ function gestisci(ev) {
     case 'incontro': {
       const s = mondo.stelle[ev.i];
       audio.suona('incontro');
+      scena.saluta(2);
       vibra(8, vib);
       ui.nascondiPresentazione();
       ui.apriIncontro(s, s.corrente, { nomeCreatura: liv.nomeCreatura, nota: s.allenata ? 'Questa stella l\'hai già conquistata nella Quest: dimostralo anche in volo.' : '' });
@@ -260,6 +265,7 @@ function gestisci(ev) {
     case 'giusta': {
       const s = mondo.stelle[ev.i];
       audio.suona('giusta', { i: ev.i });
+      scena.saluta(1.4);
       vibra(14, vib);
       if (!scena.ridotti) fermoImmagine = 0.07;
       scena.cam.scuoti(0.28);
@@ -310,6 +316,60 @@ function gestisci(ev) {
       ui.avviso('<strong>Costellazione completa!</strong> Vola nel portale in alto, sopra l\'asse y.', { tipo: 'avviso-oro', durata: 5000 });
       break;
     case 'fine': finisciLivello(ev); break;
+    // ---- oggetti liberi ----
+    case 'freddura':
+      ui.fumetto(ev.o, ev.testo);
+      scena.saluta(2.2);
+      audio.suona('freddura');
+      vibra(6, vib);
+      scena.part.emetti(ev.x, ev.y, { n: 14, v: 8, vita: 0.7, tinta, size: 0.6 });
+      stato.stats.freddure = (stato.stats.freddure || 0) + 1;
+      stato.sentite = [...(stato.sentite || []).filter((x) => x !== ev.testo), ev.testo].slice(-200);
+      if (stato.stats.freddure >= 10) premia('spirito');
+      salva(archivio, stato);
+      break;
+    case 'boing':
+      audio.suona('boing');
+      vibra(10, vib);
+      scena.cam.scuoti(0.2);
+      scena.onda(ev.x, ev.y, 0.8);
+      scena.part.emetti(ev.x + ev.nx * 4, ev.y + ev.ny * 4, { n: 18, v: 16, vita: 0.5, tinta: oro, size: 0.6, dir: Math.atan2(ev.ny, ev.nx), spread: 1.6 });
+      break;
+    case 'botto': {
+      audio.suona('botto');
+      vibra([15, 30, 15], vib);
+      scena.cam.scuoti(0.3);
+      scena.onda(ev.x, ev.y, 1.4);
+      // la curva fatta di scintille, poi il suo nome e la sua formula
+      for (let k = 0; k < 64; k++) {
+        const [u, v] = ev.curva.f(k / 64);
+        scena.part.emetti(ev.x + u * 13, ev.y + v * 13, { n: 2, v: 5, vita: 1.6, tinta: k % 2 ? oro : tinta, size: 0.8, g: 2 });
+      }
+      scena.part.emetti(ev.x, ev.y, { n: 40, v: 28, vita: 1, tinta: bianco, size: 0.7 });
+      ui.fumetto(ev.o, `<strong>${ev.curva.nome}</strong>$${ev.curva.tex}$`, { tipo: 'curva', alto: 17, durata: 3800 });
+      stato.curve = [...new Set([...(stato.curve || []), ev.curva.nome])];
+      if (stato.curve.length >= 5) premia('pirotecnico');
+      salva(archivio, stato);
+      break;
+    }
+    case 'vento':
+      audio.suona('vento');
+      scena.part.emetti(ev.x, ev.y, { n: 16, v: 22, vita: 0.6, tinta: bianco, size: 0.5, dir: ev.ang, spread: 0.5 });
+      break;
+    case 'buco': audio.suona('buco'); vibra(25, vib); scena.cam.scuoti(0.15); break;
+    case 'buco-fuori':
+      audio.suona('buco-fuori');
+      scena.onda(ev.x, ev.y, 1);
+      scena.part.emetti(ev.x, ev.y, { n: 30, v: 20, vita: 0.8, tinta, size: 0.7, dir: Math.PI / 2, spread: 1.4 });
+      break;
+    case 'segreto':
+      audio.suona('segreto');
+      vibra([20, 40, 20, 40, 60], vib);
+      scena.part.emetti(ev.x, ev.y, { n: 90, v: 30, vita: 1.8, tinta: oro, size: 1.1, g: 3 });
+      scena.onda(ev.x, ev.y, 1.6);
+      premia('dodecaedro');
+      ui.avviso('<strong>Il dodecaedro d\'oro!</strong> 12 facce pentagonali, 20 vertici, 30 spigoli: $V - S + F = 20 - 30 + 12 = 2$.', { tipo: 'avviso-oro', durata: 6000 });
+      break;
     default: break;
   }
 }
@@ -491,6 +551,9 @@ if (TEST) {
     portale: () => Object.assign(mondo.pilota, { x: MONDO.portale.x, y: MONDO.portale.y, vx: 0, vy: 0 }),
     pilota: (o) => Object.assign(mondo.pilota, o),
     mondo: () => mondo,
+    oggetti: () => (mondo?.oggetti ? mondo.oggetti.lista.map((o) => ({ tipo: o.tipo, chi: o.chi || null, stato: o.stato, x: o.x, y: o.y })) : []),
+    /** porta il pilota sull'oggetto k-esimo del tipo dato */
+    vaiOggetto: (tipo, k = 0) => { const o = mondo.oggetti.lista.filter((x) => x.tipo === tipo)[k]; if (!o) return false; Object.assign(mondo.pilota, { x: o.x + 0.5, y: o.y, vx: tipo === 'molla' ? -12 : 0, vy: 0, aTerra: false }); return true; },
   };
 }
 

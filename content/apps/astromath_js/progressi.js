@@ -21,7 +21,9 @@ export function statoNuovo() {
     livelli: {},
     badge: {},
     giorni: [],
-    stats: { risposte: 0, primoColpo: 0, amente: 0, serieAmente: 0, surf: 0, stelle: 0 },
+    stats: { risposte: 0, primoColpo: 0, amente: 0, serieAmente: 0, surf: 0, stelle: 0, freddure: 0 },
+    sentite: [],   // freddure già ascoltate (si preferiscono quelle nuove)
+    curve: [],     // curve dei fuochi già viste
     impostazioni: { qualita: 'auto', volume: 0.7, vibrazione: true, effetti: null, contrasto: false, joystick: false },
     classifica: [],
   };
@@ -89,6 +91,9 @@ export const BADGE = [
   { id: 'surfista', nome: 'Surfista delle funzioni', desc: 'Tre secondi di fila sul grafico di una funzione.', glifo: '∿', tinta: 190 },
   { id: 'ponte-quest', nome: 'Allenato nella Quest', desc: 'Hai portato in volo una stella già conquistata nella Quest.', glifo: '⚑', tinta: 38 },
   { id: 'ostinato', nome: 'Non mi arrendo', desc: 'Una stella accesa con il problema gemello, dopo due errori.', glifo: '↻', tinta: 330 },
+  { id: 'spirito', nome: 'Spirito matematico', desc: 'Dieci freddure ascoltate in volo.', glifo: '☺', tinta: 300 },
+  { id: 'pirotecnico', nome: 'Pirotecnico', desc: 'Cinque curve diverse accese con i fuochi d\'artificio.', glifo: '✺', tinta: 20 },
+  { id: 'dodecaedro', nome: 'Dodecaedro d\'oro', desc: 'Hai trovato il solido nascosto nel cielo.', glifo: '⬟', tinta: 45 },
   { id: 'biennio', nome: 'Biennio tra le stelle', desc: 'Le costellazioni da «Numeri» a «Dati e previsioni».', glifo: '♁', tinta: 160 },
   { id: 'astromath', nome: 'AstroMath', desc: 'Tutte le costellazioni del cielo.', glifo: 'Ω', tinta: 0 },
 ];

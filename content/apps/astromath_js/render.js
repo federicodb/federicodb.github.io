@@ -4,7 +4,7 @@
 // in somma additiva. Niente post-processing (il bloom costa troppo su GPU integrate e telefoni).
 // Senza WebGL: ripiego su Canvas 2D con la stessa lista e la stessa camera.
 
-import { SEG, PT } from './disegno.js';
+import { SEG, PT, RT } from './disegno.js';
 
 const TINTE_CIELO = [[205, 222, 255], [255, 255, 255], [255, 238, 196], [255, 206, 160]]; // le stesse della home
 
@@ -89,6 +89,21 @@ void main() {
   gl_FragColor = vec4(vCol.rgb * a, a);
 }`;
 
+const VS_RETT = /* glsl */ `
+attribute vec2 quad;
+attribute vec3 rc; attribute vec2 rd; attribute float rr; attribute vec4 rcol;
+varying vec4 vCol;
+void main() {
+  vec2 q = (quad - 0.5) * rd;
+  float c = cos(rr), s = sin(rr);
+  vec3 p = rc + vec3(q.x * c - q.y * s, q.x * s + q.y * c, 0.0);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+  vCol = rcol;
+}`;
+const FS_RETT = /* glsl */ `
+varying vec4 vCol;
+void main() { gl_FragColor = vCol; }`;
+
 class RendererGL {
   constructor(THREE, canvas, opz) {
     this.T = THREE;
@@ -145,6 +160,21 @@ class RendererGL {
     this.uPuntiDin = { scala: this.uPunti.scala, tempo: this.uPunti.tempo, brilla: { value: 0 }, fuoco: this.fuoco, sfoca: this.sfoca, sfocaMax: { value: 1.6 } };
     const mp = new THREE.Points(gP, new THREE.ShaderMaterial({ vertexShader: VS_PUNTI, fragmentShader: FS_PUNTI, uniforms: this.uPuntiDin, ...blend }));
     mp.frustumCulled = false; this.scene.add(mp);
+    // rettangoli pieni (la pixel art del pilota): colori opachi, disegnati sopra a tutto il resto
+    this.maxRt = opz.maxRt || 600;
+    const gR = new THREE.InstancedBufferGeometry();
+    gR.setAttribute('quad', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1], 2));
+    gR.setIndex([0, 1, 2, 0, 2, 3]);
+    this.bufR = new THREE.InstancedInterleavedBuffer(new Float32Array(this.maxRt * RT), RT, 1);
+    this.bufR.setUsage(THREE.DynamicDrawUsage);
+    gR.setAttribute('rc', new THREE.InterleavedBufferAttribute(this.bufR, 3, 0));
+    gR.setAttribute('rd', new THREE.InterleavedBufferAttribute(this.bufR, 2, 3));
+    gR.setAttribute('rr', new THREE.InterleavedBufferAttribute(this.bufR, 1, 5));
+    gR.setAttribute('rcol', new THREE.InterleavedBufferAttribute(this.bufR, 4, 6));
+    gR.instanceCount = 0;
+    this.gR = gR;
+    const mr = new THREE.Mesh(gR, new THREE.ShaderMaterial({ vertexShader: VS_RETT, fragmentShader: FS_RETT, transparent: true, depthTest: false, depthWrite: false }));
+    mr.frustumCulled = false; mr.renderOrder = 10; this.scene.add(mr);
     this.tipo = 'webgl';
   }
 
@@ -189,6 +219,12 @@ class RendererGL {
     this.bufP.addUpdateRange ? this.bufP.addUpdateRange(0, nP * PT) : (this.bufP.updateRange = { offset: 0, count: nP * PT });
     this.bufP.needsUpdate = true;
     this.gP.setDrawRange(0, nP);
+    const nR = Math.min(lista.nRt, this.maxRt);
+    this.bufR.array.set(lista.rt.subarray(0, nR * RT));
+    this.bufR.clearUpdateRanges?.();
+    this.bufR.addUpdateRange ? this.bufR.addUpdateRange(0, nR * RT) : (this.bufR.updateRange = { offset: 0, count: nR * RT });
+    this.bufR.needsUpdate = true;
+    this.gR.instanceCount = nR;
     this.r.render(this.scene, this.camera);
     void T;
   }
@@ -253,6 +289,15 @@ class Renderer2D {
         c.lineWidth = pass === 0 ? S[o + 10] * 3.2 : S[o + 10];
         c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
       }
+    }
+    c.globalCompositeOperation = 'source-over';
+    const R = lista.rt;
+    for (let i = 0; i < lista.nRt; i++) {
+      const o = i * RT, cs = Math.cos(R[o + 5]), sn = Math.sin(R[o + 5]), w = R[o + 3] / 2, h = R[o + 4] / 2;
+      const ang = [[-w, -h], [w, -h], [w, h], [-w, h]].map(([x, y]) => pro(R[o] + x * cs - y * sn, R[o + 1] + x * sn + y * cs, R[o + 2]));
+      if (ang.some((q) => !q)) continue;
+      c.fillStyle = rgba(R[o + 6], R[o + 7], R[o + 8], R[o + 9]);
+      c.beginPath(); c.moveTo(ang[0][0], ang[0][1]); for (let k = 1; k < 4; k++) c.lineTo(ang[k][0], ang[k][1]); c.closePath(); c.fill();
     }
   }
 }

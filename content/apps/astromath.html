@@ -100,6 +100,15 @@
     .et-asse { position: absolute; left: 0; top: 0; font: 400 15px/1 var(--font); color: rgba(235, 240, 255, .6); white-space: nowrap; will-change: transform; }
     .et-lettera { font: italic 400 21px/1 var(--corsivo); color: rgba(240, 244, 255, .85); }
     .et-origine { font: 400 16px/1 var(--font); color: rgba(240, 244, 255, .75); }
+    /* fumetti degli oggetti liberi: freddure dei personaggi e nomi delle curve dei fuochi */
+    .fumetto { position: absolute; left: 0; top: 0; will-change: transform; transition: opacity .35s; }
+    .fumetto-corpo { position: relative; width: max-content; max-width: min(300px, 78vw); padding: 9px 13px; border-radius: 18px 18px 18px 6px; background: rgba(12, 13, 22, .94); border: 1.5px solid hsl(var(--tinta), 90%, 70%); color: var(--testo); font: 400 16px/1.35 var(--font); white-space: normal; transform-origin: 20px 100%; animation: fumetto-entra .45s cubic-bezier(.34, 1.56, .64, 1) both; }
+    .fumetto-corpo::after { content: ''; position: absolute; left: 18px; bottom: -8px; width: 14px; height: 14px; background: rgba(12, 13, 22, .94); border: 1.5px solid hsl(var(--tinta), 90%, 70%); border-top: 0; border-left: 0; transform: rotate(45deg); }
+    .fumetto.curva .fumetto-corpo { border-color: var(--oro); text-align: center; border-radius: 16px; transform-origin: 50% 100%; }
+    .fumetto.curva .fumetto-corpo::after { left: calc(50% - 7px); border-color: var(--oro); }
+    .fumetto.curva strong { display: block; font-weight: 700; color: var(--oro); }
+    .fumetto.via { opacity: 0; }
+    @keyframes fumetto-entra { from { opacity: 0; transform: translateY(14px) scale(.55) rotate(-4deg); } }
     #bussola { position: absolute; left: 0; top: 0; width: 34px; height: 34px; }
     #bussola::before { content: ''; position: absolute; inset: 0; background: var(--accento); clip-path: polygon(100% 50%, 15% 10%, 32% 50%, 15% 90%); filter: drop-shadow(0 0 6px var(--accento)); }
     #bussola.portale::before { background: #fff; }
@@ -495,7 +504,7 @@
     </div>
   </dialog>
 
-  <script type="module" src="astromath_js/main.js?v=20261112_14"></script>
+  <script type="module" src="astromath_js/main.js?v=20261112_17"></script>
   <script src="../assets/js/orfini-shared.js"></script>
 </body>
 </html>

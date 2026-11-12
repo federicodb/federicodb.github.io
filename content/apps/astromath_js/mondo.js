@@ -176,6 +176,7 @@ export class Mondo {
     else if (p.y > MONDO.piedi + 0.1) p.aTerra = false; // staccato dal suolo anche senza decollo (corrente, spinta laterale)
     if (p.aTerra) p.energia = Math.min(p.energiaMax, p.energia + 28 * dt);
 
+    if (this.oggetti) this.oggetti.aggiorna(dt); // oggetti liberi (oggetti.js): freddure, molle, fuochi, buco nero, vento
     this.aggiornaIncontri(dt);
     this.aggiornaArchi(dt);
 
