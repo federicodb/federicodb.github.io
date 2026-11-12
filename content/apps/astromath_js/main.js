@@ -24,9 +24,9 @@ const sitoRidotto = (() => { try { return localStorage.getItem('orfini_effetti')
 const effettiRidotti = () => (stato.impostazioni.effetti ? stato.impostazioni.effetti === 'ridotti' : sitoRidotto || matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 const QUALITA = {
-  alta: { prMax: 1.5, alone: 1, particelle: 1, lineeVelocita: true },
-  media: { prMax: 1.25, alone: 0.8, particelle: 0.6, lineeVelocita: true },
-  bassa: { prMax: 1, alone: 0.45, particelle: 0.3, lineeVelocita: false },
+  alta: { prMax: 1.5, alone: 0.9, particelle: 1, sfoca: 0.2 },
+  media: { prMax: 1.25, alone: 0.75, particelle: 0.6, sfoca: 0.18 },
+  bassa: { prMax: 1, alone: 0.45, particelle: 0.3, sfoca: 0.1 },
 };
 const ORDINE_Q = ['alta', 'media', 'bassa'];
 
@@ -42,9 +42,12 @@ let fermoImmagine = 0;     // hit-stop sulle risposte giuste
 let schermo = 'avvio';
 let qualitaAttiva = 'media';
 let statLivello = null;    // { primoColpo, amente, errori: {attivita: n} }
+let avviate = 0;           // partite avviate (per i test: sapere quando è pronta quella nuova)
 
 const ui = new UI({
   rispondi: (k) => { if (mondo && !pausa) mondo.rispondi(k); },
+  // scegliere non è rispondere: una seconda scelta della stessa risposta vale come conferma
+  seleziona: (k) => { if (!mondo || pausa || !mondo.incontro) return; if (ui.selezionata === k) mondo.rispondi(k); else ui.seleziona(k); },
   aiuto: () => chiediAiuto(),
   avvia: (i) => avviaLivello(i),
   focusTela: () => canvas.focus({ preventScroll: true }),
@@ -56,8 +59,8 @@ const ui = new UI({
 function applicaQualita(q) {
   qualitaAttiva = q;
   const Q = QUALITA[q];
-  renderer?.imposta({ prMax: Q.prMax, alone: effettiRidotti() ? Math.min(Q.alone, 0.6) : Q.alone, brilla: effettiRidotti() ? 0 : 1 });
-  scena.qualita = { alone: Q.alone, particelle: Q.particelle, lineeVelocita: Q.lineeVelocita };
+  renderer?.imposta({ prMax: Q.prMax, alone: effettiRidotti() ? Math.min(Q.alone, 0.6) : Q.alone, brilla: effettiRidotti() ? 0 : 1, sfoca: Q.sfoca });
+  scena.qualita = { alone: Q.alone, particelle: Q.particelle };
   scena.ridotti = effettiRidotti();
   document.documentElement.dataset.effetti = scena.ridotti ? 'ridotti' : 'pieni';
 }
@@ -119,12 +122,18 @@ addEventListener('keydown', (e) => {
   audio.avvia();
   if (e.code === 'Escape' || e.code === 'KeyP') { if (mondo) { impostaPausa(!pausa); e.preventDefault(); } return; }
   if (!mondo || pausa) return;
-  if (/^Digit[1-4]$|^Numpad[1-4]$/.test(e.code) && mondo.incontro) { mondo.rispondi(Number(e.code.slice(-1)) - 1); e.preventDefault(); return; }
+  if (/^Digit[1-4]$|^Numpad[1-4]$/.test(e.code) && mondo.incontro) {
+    const k = Number(e.code.slice(-1)) - 1;
+    if (k < mondo.incontro.anelli.length && !mondo.incontro.anelli[k].via) { if (ui.selezionata === k) mondo.rispondi(k); else ui.seleziona(k); }
+    e.preventDefault(); return;
+  }
+  if ((e.code === 'Enter' || e.code === 'NumpadEnter') && mondo.incontro && ui.selezionata != null) { mondo.rispondi(ui.selezionata); e.preventDefault(); return; }
   if (e.code === 'KeyH') { chiediAiuto(); return; }
   if (TASTI_GIOCO.has(e.code)) {
     // Spazio/frecce non devono attivare il pulsante che ha il fuoco
-    if (document.activeElement && document.activeElement !== document.body && document.activeElement.tagName === 'BUTTON' && !mondo.incontro) document.activeElement.blur();
-    if (document.activeElement?.tagName !== 'BUTTON') e.preventDefault();
+    // in volo Spazio e frecce servono a volare: non devono mai premere un pulsante (nemmeno «Conferma»)
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON') document.activeElement.blur();
+    e.preventDefault();
     tasti.add(e.code);
     ui.nascondiPresentazione();
   }
@@ -136,10 +145,16 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && mon
 // ------------------------------------------------------------------------------------------------
 // Livelli
 // ------------------------------------------------------------------------------------------------
-function semeDelGiorno() {
-  if (params.get('seme')) return params.get('seme');
-  const d = new Date();
-  return `orfini-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+/**
+ * Seme delle domande: nuovo a ogni partita (numeri sempre diversi, stessa difficoltà).
+ * Con ?seme=… nell'indirizzo il docente fa volare tutta la classe sullo stesso cielo: stesse domande per tutti,
+ * e la partita successiva dello stesso studente cambia comunque (contatore delle partite).
+ */
+let partite = 0;
+function semePartita(idLivello) {
+  partite++;
+  const casuale = globalThis.crypto?.getRandomValues ? globalThis.crypto.getRandomValues(new Uint32Array(2)).join('-') : `${Math.random()}-${Date.now()}`;
+  return params.get('seme') ? `${params.get('seme')}|${idLivello}|${partite}` : `${casuale}|${idLivello}`;
 }
 
 async function avviaLivello(i) {
@@ -151,8 +166,7 @@ async function avviaLivello(i) {
   ui.caricamento(true);
   let stelle;
   try {
-    const volte = statoLivello(stato, livello.id).volte;
-    stelle = await generaStelle(livello, { seme: `${semeDelGiorno()}|${volte}`, classe: quest.classe, indirizzo: quest.indirizzo });
+    stelle = await generaStelle(livello, { seme: semePartita(livello.id), classe: quest.classe, indirizzo: quest.indirizzo });
   } catch (e) {
     console.error(e);
     ui.caricamento(true, 'Non riesco a preparare le domande: controlla la connessione e riprova.');
@@ -174,6 +188,7 @@ async function avviaLivello(i) {
   document.documentElement.style.setProperty('--tinta', livello.tinta);
   ui.presenta(stelle.find((s) => s.intro)?.intro, livello.nomeCreatura, livello);
   const nAll = allenate.filter(Boolean).length;
+  avviate++;
   if (nAll) ui.avviso(`<strong>${nAll} ${nAll === 1 ? 'stella già conquistata' : 'stelle già conquistate'} nella Quest</strong>: brillano d'oro. Energia di partenza più alta.`, { tipo: 'avviso-oro' });
   salva(archivio, stato);
 }
@@ -457,12 +472,12 @@ async function avvio() {
 if (TEST) {
   window.__astromath = {
     stato: () => ({
-      schermo, pausa, renderer: renderer?.tipo, qualita: qualitaAttiva, livello: mondo?.livello.id ?? null,
+      schermo, pausa, avviate, renderer: renderer?.tipo, qualita: qualitaAttiva, livello: mondo?.livello.id ?? null,
       stelle: mondo?.stelle.map((s) => s.stato) ?? [], incontro: mondo?.incontro ? mondo.incontro.i : null,
       punti: mondo?.punti ?? 0, portale: !!mondo?.portaleAperto, pilota: mondo ? { ...mondo.pilota, inSurf: !!mondo.pilota.inSurf } : null,
       badge: Object.keys(stato.badge), segmenti: scena.lista.nSeg,
     }),
-    avvia: (i) => avviaLivello(i),
+    avvia: (i) => { avviaLivello(i); },
     /** porta il pilota vicino alla stella i (apre l'incontro) */
     vai: (i) => { const s = mondo.stelle[i]; Object.assign(mondo.pilota, { x: s.x + 4, y: s.y - 4, vx: 0, vy: 0, aTerra: false }); },
     giusta: () => { const s = mondo.stelle[mondo.incontro.i]; mondo.rispondi(s.corrente.opzioni.findIndex((o) => o.giusta)); },

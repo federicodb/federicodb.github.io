@@ -286,6 +286,8 @@ def extract_sidecar_meta(file_path):
 
 # Mappa avanzata per icone contestuali
 ICON_MAP = {
+    # Giochi con un'icona propria (prima delle parole generiche, che vincono in ordine)
+    "astromath": "🚀",
     # Matematica Specifica
     "dedalo": "🏛️", "labirinto": "🏛️", "minotauro": "🐂",
     "frazioni": "🍰", "torta": "🍰", "percentuali": "🍰",

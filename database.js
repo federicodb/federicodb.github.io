@@ -4,6 +4,141 @@
 
 const db = [
     {
+        "title": "AstroMath: volo tra le costellazioni della matematica",
+        "excerpt": "AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde attraversando l'anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "ASTROMATH",
+            "BIENNIO",
+            "CIT_4:COMPETENZA DIGITALE",
+            "COSTELLAZIONI",
+            "EQUAZIONI",
+            "EU:DIGITALE",
+            "EU:STEM",
+            "FRAZIONI",
+            "GAMIFICATION",
+            "LAB",
+            "MAT:CALCOLO",
+            "MAT:MODELLIZZAZIONE",
+            "MAT:PROBLEMSOLVING",
+            "MATEMATICA",
+            "MAT_A1:CALCOLO NEGLI INSIEMI NUMERICI",
+            "MAT_A3:EQUAZIONI E DISEQUAZIONI",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_A4:APPLICARE PROPRIETÀ GEOMETRICHE IN CONTESTI OPERATIVI",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K2:FUNZIONI ELEMENTARI",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "MONOMI",
+            "NUMERI RELATIVI",
+            "PARABOLA",
+            "PENDENZA",
+            "PERCENTUALI",
+            "PIANO CARTESIANO",
+            "PITAGORA",
+            "POTENZE",
+            "PRODOTTI NOTEVOLI",
+            "PROPORZIONI",
+            "RADICALI",
+            "RETTE",
+            "SCOMPOSIZIONI",
+            "VIDEOGIOCO",
+            "VOLO"
+        ],
+        "date": "2026-11-12",
+        "url": "content/apps/astromath.html",
+        "type": "app",
+        "icon": "🚀",
+        "game_type": "arcade",
+        "thumbnail": "content/assets/thumbnails/astromath.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
+                ]
+            },
+            {
+                "id": "percentuali",
+                "titolo": "Percentuali",
+                "url": "allenamento/#/lezione/percentuali/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_K1",
+                    "MAT_A1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "retta-pendenza",
+                "titolo": "Pendenza di una retta",
+                "url": "allenamento/#/lezione/retta-pendenza/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "pitagora",
+                "titolo": "Il teorema di Pitagora",
+                "url": "allenamento/#/lezione/pitagora/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_K4",
+                    "MAT_C3",
+                    "MAT_A2"
+                ]
+            },
+            {
+                "id": "parabola",
+                "titolo": "La parabola",
+                "url": "allenamento/#/lezione/parabola/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            }
+        ],
+        "scheda": "schede/astromath.html",
+        "journal": [
+            {
+                "titolo": "AstroMath: in volo tra le costellazioni della matematica",
+                "url": "journal/2026-11-12-astromath-in-volo-tra-le-costellazioni/",
+                "data": "2026-11-12"
+            }
+        ]
+    },
+    {
         "title": "Cinematismi 3D: ruota quadrata, Reuleaux e Cardano",
         "excerpt": "Generatore di cinematismi dentati stampabili in 3D: ruota quadrata su guida a catenarie con sponde, triangolo di Reuleaux nel foro quadrato e su rulli sotto una piattaforma, coppia di Cardano con ingranaggi a evolvente, planetario a spina di pesce stampato già montato (print in place). Denti generati per inviluppo, solidi unici senza perni, scala per Bambu Lab A1, A1 mini e P2S, esportazione STL e codice OpenSCAD.",
         "tags": [

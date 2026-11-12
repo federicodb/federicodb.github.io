@@ -26,13 +26,14 @@ export class UI {
       hud: $('#hud'), nome: $('#hud-nome'), stelle: $('#hud-stelle'), punti: $('#hud-punti'), energia: $('#hud-energia'),
       comandi: $('#comandi'), etichette: $('#etichette'), bussola: $('#bussola'),
       inc: $('#incontro'), incCreatura: $('#inc-creatura'), incArg: $('#inc-argomento'), incDomanda: $('#inc-domanda'), incFig: $('#inc-fig'),
-      incOpz: $('#inc-opzioni'), incEsito: $('#inc-esito'), incAiuto: $('#inc-aiuto'), incNota: $('#inc-nota'),
+      incOpz: $('#inc-opzioni'), incConferma: $('#inc-conferma'), incEsito: $('#inc-esito'), incAiuto: $('#inc-aiuto'), incNota: $('#inc-nota'),
       intro: $('#intro'), toast: $('#avvisi'), joy: $('#joystick'),
       avvio: $('#schermo-avvio'), fine: $('#schermo-fine'), pausa: $('#schermo-pausa'), caricamento: $('#caricamento'),
     };
     this.anelli = [];
     this.corr = [];
     this.el.incAiuto.addEventListener('click', () => this.az.aiuto());
+    this.el.incConferma.addEventListener('click', () => { if (this.selezionata != null) this.az.rispondi(this.selezionata); });
   }
 
   // ---------------------------------------------------------------- HUD
@@ -66,6 +67,8 @@ export class UI {
     e.incAiuto.hidden = !sfida.aiuto;
     e.incAiuto.disabled = false;
     e.incOpz.innerHTML = '';
+    this.selezionata = null;
+    e.incConferma.hidden = true;
     sfida.opzioni.forEach((o, k) => {
       const li = document.createElement('li');
       const b = document.createElement('button');
@@ -73,7 +76,8 @@ export class UI {
       b.className = 'opz';
       b.innerHTML = `<span class="opz-n" aria-hidden="true">${k + 1}</span><span class="opz-t">${o.label}</span>`;
       b.setAttribute('aria-keyshortcuts', String(k + 1));
-      b.addEventListener('click', () => this.az.rispondi(k));
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => this.az.seleziona(k)); // un tocco sceglie, la conferma risponde
       li.appendChild(b);
       e.incOpz.appendChild(li);
     });
@@ -83,14 +87,24 @@ export class UI {
     this.el.etichette.querySelectorAll('.et-anello').forEach((n) => n.remove());
     this.anelli = sfida.opzioni.map((o, k) => {
       const d = document.createElement('div');
-      d.className = 'et-anello';
+      d.className = `et-anello${/<svg/.test(o.label) ? ' con-figura' : ''}`;
       d.innerHTML = `<span class="opz-n">${k + 1}</span><span class="et-t">${o.label}</span>`;
       this.el.etichette.appendChild(d);
       tipografa(d);
       return d;
     });
   }
+  /** Risposta scelta ma non ancora data: evidenziata, con il pulsante Conferma */
+  seleziona(k) {
+    this.selezionata = k;
+    this.el.incOpz.querySelectorAll('.opz').forEach((b, j) => { b.classList.toggle('scelta', j === k); b.setAttribute('aria-pressed', String(j === k)); });
+    this.anelli.forEach((d, j) => d.classList.toggle('scelta', j === k));
+    const c = this.el.incConferma;
+    c.hidden = k == null;
+    if (k != null) { c.innerHTML = `Conferma la risposta ${k + 1} <kbd>Invio</kbd>`; c.focus({ preventScroll: true }); }
+  }
   scarta(k, perche) {
+    this.seleziona(null);
     const b = this.el.incOpz.querySelectorAll('.opz')[k];
     if (b) { b.disabled = true; b.classList.add('scartata'); }
     if (this.anelli[k]) this.anelli[k].classList.add('scartata');
@@ -102,6 +116,7 @@ export class UI {
     tipografa(this.el.incEsito);
   }
   giusta(k, testo) {
+    this.seleziona(null);
     const b = this.el.incOpz.querySelectorAll('.opz')[k];
     if (b) b.classList.add('giusta');
     this.el.incOpz.querySelectorAll('.opz').forEach((x) => { x.disabled = true; });
@@ -109,6 +124,7 @@ export class UI {
   }
   chiudiIncontro(ritardo = 0) {
     clearTimeout(this._tChiudi);
+    this.seleziona(null);
     const fai = () => { this.el.inc.hidden = true; this.el.etichette.querySelectorAll('.et-anello').forEach((n) => n.remove()); this.anelli = []; };
     if (ritardo) this._tChiudi = setTimeout(fai, ritardo); else fai();
   }
@@ -133,7 +149,9 @@ export class UI {
       d.style.transform = `translate(${q[0].toFixed(1)}px, ${q[1].toFixed(1)}px) translate(-50%, -50%)`;
     };
     const inc = mondo.incontro;
-    if (inc) inc.anelli.forEach((a, k) => { if (this.anelli[k]) { metti(this.anelli[k], a.x, a.y + MONDO.raggioAnello + 2.6); this.anelli[k].classList.toggle('nato', inc.t > a.nasce + 0.3); } });
+    // etichetta sopra l'anello, o sotto per gli anelli sotto la stella (così non copre la creatura e il pilota)
+    const sotto = (a) => a.y < mondo.stelle[inc.i].y - 1;
+    if (inc) inc.anelli.forEach((a, k) => { if (this.anelli[k]) { metti(this.anelli[k], a.x, sotto(a) ? a.y - MONDO.raggioAnello - 2.6 : a.y + MONDO.raggioAnello + 2.6); this.anelli[k].classList.toggle('nato', inc.t > a.nasce + 0.3); } });
     mondo.correnti.forEach((c, k) => { if (!this.corr[k]) return; const xm = (c.x0 + c.x1) / 2; metti(this.corr[k], xm, c.f(xm) + 5); this.corr[k].classList.toggle('attiva', mondo.pilota.inSurf === c); });
     // bussola: verso la stella spenta più vicina, o verso il portale
     const p = mondo.pilota;

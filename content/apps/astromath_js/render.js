@@ -29,53 +29,63 @@ function creaCielo(n, seme = 7) {
 const VS_LINEE = /* glsl */ `
 attribute vec2 quad;
 attribute vec3 ia; attribute vec3 ib; attribute vec4 icol; attribute float iw;
-uniform vec2 res; uniform float pr; uniform float alone;
-varying vec2 vLoc; varying float vLen; varying float vHalf; varying float vGlow; varying vec4 vCol;
+uniform vec2 res; uniform float pr; uniform float alone; uniform float fuoco; uniform float sfoca;
+varying vec2 vLoc; varying float vLen; varying float vHalf; varying float vGlow; varying vec4 vCol; varying float vBlur;
 void main() {
-  vec4 ca = projectionMatrix * modelViewMatrix * vec4(ia, 1.0);
-  vec4 cb = projectionMatrix * modelViewMatrix * vec4(ib, 1.0);
+  vec4 ma = modelViewMatrix * vec4(ia, 1.0), mb = modelViewMatrix * vec4(ib, 1.0);
+  vec4 ca = projectionMatrix * ma;
+  vec4 cb = projectionMatrix * mb;
+  // profondità di campo: a fuoco il piano di gioco, sfocato ciò che sta davanti o dietro
+  float blur = clamp(abs(0.5 * (-ma.z - mb.z) - fuoco) * sfoca, 0.0, 16.0) * pr;
   vec2 sa = (ca.xy / ca.w * 0.5 + 0.5) * res;
   vec2 sb = (cb.xy / cb.w * 0.5 + 0.5) * res;
   vec2 d = sb - sa; float len = length(d);
   vec2 dir = len > 0.001 ? d / len : vec2(1.0, 0.0);
   vec2 nrm = vec2(-dir.y, dir.x);
   float wpx = iw * pr;
-  float glow = (wpx * 2.2 + 3.0 * pr) * alone;
-  float H = wpx * 0.5 + max(glow, pr);
+  float glow = (wpx * 2.0 + 3.0 * pr) * alone + blur * 1.2;
+  float H = wpx * 0.5 + max(glow, pr) + blur;
   vec2 p = mix(sa, sb, quad.x) + dir * (quad.x * 2.0 - 1.0) * H + nrm * quad.y * H;
-  vLoc = vec2(dot(p - sa, dir), quad.y * H); vLen = len; vHalf = max(wpx * 0.5, 0.5 * pr); vGlow = glow; vCol = icol;
+  vLoc = vec2(dot(p - sa, dir), quad.y * H); vLen = len; vHalf = max(wpx * 0.5, 0.5 * pr); vGlow = glow; vBlur = blur;
+  vCol = vec4(icol.rgb, icol.a / (1.0 + blur * 0.09)); // la luce si spande: meno intensa dove è sfocata
   vec4 c = mix(ca, cb, quad.x);
   gl_Position = vec4((p / res * 2.0 - 1.0) * c.w, c.z, c.w);
 }`;
 const FS_LINEE = /* glsl */ `
 uniform float pr;
-varying vec2 vLoc; varying float vLen; varying float vHalf; varying float vGlow; varying vec4 vCol;
+varying vec2 vLoc; varying float vLen; varying float vHalf; varying float vGlow; varying vec4 vCol; varying float vBlur;
 void main() {
   float along = clamp(vLoc.x, 0.0, vLen);
   float d = length(vec2(vLoc.x - along, vLoc.y));
-  float core = 1.0 - smoothstep(vHalf - 0.8 * pr, vHalf + 0.8 * pr, d);
-  float g = vGlow > 0.0 ? exp(-pow(d / (vGlow * 0.5 + 0.001), 2.0)) * 0.32 : 0.0;
+  float morb = 0.8 * pr + vBlur;
+  float core = (1.0 - smoothstep(vHalf - morb, vHalf + morb, d)) * (1.0 - 0.55 * clamp(vBlur / (6.0 * pr), 0.0, 1.0));
+  float g = vGlow > 0.0 ? exp(-pow(d / (vGlow * 0.5 + 0.001), 2.0)) * 0.26 + exp(-pow(d / (vGlow * 1.3 + 0.001), 2.0)) * 0.05 : 0.0;
   float a = vCol.a * (core + g);
   if (a < 0.004) discard;
   gl_FragColor = vec4(vCol.rgb * a, a);
 }`;
 const VS_PUNTI = /* glsl */ `
 attribute float size; attribute vec4 col; attribute float fase;
-uniform float scala; uniform float tempo; uniform float brilla;
-varying vec4 vCol;
+uniform float scala; uniform float tempo; uniform float brilla; uniform float fuoco; uniform float sfoca; uniform float sfocaMax;
+varying vec4 vCol; varying float vBlur;
 void main() {
   vec4 mv = modelViewMatrix * vec4(position, 1.0);
   gl_Position = projectionMatrix * mv;
   float tw = 1.0 - brilla * 0.35 * (0.5 + 0.5 * sin(tempo * 1.7 + fase * 3.0));
-  gl_PointSize = clamp(size * scala / -mv.z, 1.0, 480.0);
-  vCol = vec4(col.rgb, col.a * tw);
+  float b = clamp(abs(-mv.z - fuoco) * sfoca * 0.06, 0.0, sfocaMax);
+  float px = size * scala / -mv.z;
+  gl_PointSize = clamp(px * (1.0 + b * 1.6) + b * 6.0, 1.0, 480.0);
+  vBlur = b;
+  vCol = vec4(col.rgb, col.a * tw / (1.0 + b * 1.8));
 }`;
 const FS_PUNTI = /* glsl */ `
-varying vec4 vCol;
+varying vec4 vCol; varying float vBlur;
 void main() {
   vec2 q = gl_PointCoord * 2.0 - 1.0; float r2 = dot(q, q);
   if (r2 > 1.0) discard;
-  float a = vCol.a * (exp(-r2 * 5.0) * 0.85 + (1.0 - smoothstep(0.0, 0.08, r2)) * 0.6);
+  float nitido = exp(-r2 * 5.0) * 0.85 + (1.0 - smoothstep(0.0, 0.08, r2)) * 0.6;
+  float bokeh = (1.0 - smoothstep(0.55, 1.0, r2)) * 0.55 + exp(-r2 * 2.0) * 0.25; // disco morbido dell'obiettivo
+  float a = vCol.a * mix(nitido, bokeh, clamp(vBlur, 0.0, 1.0));
   gl_FragColor = vec4(vCol.rgb * a, a);
 }`;
 
@@ -99,7 +109,9 @@ class RendererGL {
     gC.setAttribute('size', new THREE.Float32BufferAttribute(cielo.map((s) => s.size), 1));
     gC.setAttribute('col', new THREE.Float32BufferAttribute(cielo.flatMap((s) => [...s.c, s.luce]), 4));
     gC.setAttribute('fase', new THREE.Float32BufferAttribute(cielo.map((s) => s.fase), 1));
-    this.uPunti = { scala: { value: 500 }, tempo: { value: 0 }, brilla: { value: 1 } };
+    this.fuoco = { value: 80 };
+    this.sfoca = { value: 0.18 };
+    this.uPunti = { scala: { value: 500 }, tempo: { value: 0 }, brilla: { value: 1 }, fuoco: this.fuoco, sfoca: this.sfoca, sfocaMax: { value: 0.45 } };
     this.matCielo = new THREE.ShaderMaterial({ vertexShader: VS_PUNTI, fragmentShader: FS_PUNTI, uniforms: this.uPunti, ...blend });
     const pc = new THREE.Points(gC, this.matCielo); pc.frustumCulled = false; this.scene.add(pc);
 
@@ -116,7 +128,7 @@ class RendererGL {
     gL.setAttribute('iw', new THREE.InterleavedBufferAttribute(this.bufL, 1, 10));
     gL.instanceCount = 0;
     this.gL = gL;
-    this.uLinee = { res: { value: new THREE.Vector2(1, 1) }, pr: { value: 1 }, alone: { value: 1 } };
+    this.uLinee = { res: { value: new THREE.Vector2(1, 1) }, pr: { value: 1 }, alone: { value: 1 }, fuoco: this.fuoco, sfoca: this.sfoca };
     const ml = new THREE.Mesh(gL, new THREE.ShaderMaterial({ vertexShader: VS_LINEE, fragmentShader: FS_LINEE, uniforms: this.uLinee, ...blend }));
     ml.frustumCulled = false; this.scene.add(ml);
 
@@ -130,13 +142,14 @@ class RendererGL {
     gP.setAttribute('fase', new THREE.Float32BufferAttribute(new Float32Array(this.maxPt), 1));
     gP.setDrawRange(0, 0);
     this.gP = gP;
-    this.uPuntiDin = { scala: this.uPunti.scala, tempo: this.uPunti.tempo, brilla: { value: 0 } };
+    this.uPuntiDin = { scala: this.uPunti.scala, tempo: this.uPunti.tempo, brilla: { value: 0 }, fuoco: this.fuoco, sfoca: this.sfoca, sfocaMax: { value: 1.6 } };
     const mp = new THREE.Points(gP, new THREE.ShaderMaterial({ vertexShader: VS_PUNTI, fragmentShader: FS_PUNTI, uniforms: this.uPuntiDin, ...blend }));
     mp.frustumCulled = false; this.scene.add(mp);
     this.tipo = 'webgl';
   }
 
-  imposta({ prMax, alone, brilla }) {
+  imposta({ prMax, alone, brilla, sfoca }) {
+    if (sfoca != null) this.sfoca.value = sfoca;
     if (prMax != null) { this.prMax = prMax; this.dimensiona(this.W, this.H, true); }
     if (alone != null) this.alone = alone;
     if (brilla != null) this.brilla = brilla;
@@ -154,7 +167,10 @@ class RendererGL {
   disegna(lista, cam, tempo) {
     const T = this.T;
     this.camera.fov = cam.fov; this.camera.aspect = this.W / this.H; this.camera.updateProjectionMatrix();
-    this.camera.position.set(cam.x + cam.ox, cam.y + cam.oy, cam.d);
+    const o = cam.occhio;
+    this.camera.position.set(o.pos[0], o.pos[1], o.pos[2]);
+    this.camera.lookAt(o.tgt[0], o.tgt[1], o.tgt[2]);
+    this.fuoco.value = Math.hypot(o.pos[0] - o.tgt[0], o.pos[1] - o.tgt[1], o.pos[2] - o.tgt[2]);
     this.uLinee.res.value.set(this.W * this.pr, this.H * this.pr);
     this.uLinee.pr.value = this.pr;
     this.uLinee.alone.value = this.alone;
@@ -208,9 +224,7 @@ class Renderer2D {
     c.globalCompositeOperation = 'source-over';
     c.fillStyle = '#050507'; c.fillRect(0, 0, W, H);
     c.globalCompositeOperation = 'lighter';
-    const f = H / 2 / Math.tan((cam.fov * Math.PI) / 360);
-    const cx = cam.x + cam.ox, cy = cam.y + cam.oy;
-    const pro = (x, y, z) => { const dz = cam.d - z; return dz > 0.1 ? [W / 2 + ((x - cx) * f) / dz, H / 2 - ((y - cy) * f) / dz, f / dz] : null; };
+    const pro = (x, y, z) => cam.proietta(x, y, z, W, H);
     const rgba = (r, g, b, a) => `rgba(${(r * 255) | 0},${(g * 255) | 0},${(b * 255) | 0},${a.toFixed(3)})`;
     for (const s of this.cielo) {
       const q = pro(s.x, s.y, s.z); if (!q || q[0] < -4 || q[0] > W + 4 || q[1] < -4 || q[1] > H + 4) continue;

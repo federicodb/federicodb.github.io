@@ -88,7 +88,8 @@
     .et-anello { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; background: rgba(5,5,9,.86); border: 1.5px solid var(--accento); font-size: 18px; opacity: 0; transition: opacity .3s; }
     .et-anello.nato { opacity: 1; }
     .et-anello.scartata { opacity: .25 !important; text-decoration: line-through; border-color: var(--linea); }
-    .et-anello .opt-fig svg { width: 90px; height: auto; }
+    .et-anello .opt-fig svg { width: 58px; height: auto; display: block; }
+    .et-anello.con-figura { padding: 4px 8px 4px 4px; border-radius: 14px; }
     .opz-n { display: inline-grid; place-items: center; min-width: 28px; height: 28px; border-radius: 50%; background: var(--accento); color: #061016; font: 700 15px var(--mono); flex: none; }
     .et-corrente { padding: 3px 10px; border-radius: 10px; background: rgba(5,5,9,.7); border: 1px solid hsla(var(--tinta), 90%, 65%, .35); color: hsl(var(--tinta), 95%, 80%); font-size: 16px; transition: box-shadow .3s, border-color .3s; }
     .et-corrente.attiva { border-color: var(--accento); box-shadow: 0 0 18px hsla(var(--tinta), 95%, 60%, .55); }
@@ -108,14 +109,20 @@
     #inc-creatura { font: 700 13px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accento); }
     #inc-argomento { font-size: 13px; color: var(--tenue); }
     #inc-nota { margin: 8px 0 0; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,.05); font-size: 15px; color: var(--tenue); }
-    #inc-domanda { margin: 8px 0 10px; font-size: 18px; line-height: 1.45; }
+    #inc-domanda { margin: 8px 0 10px; font-size: 18px; line-height: 1.45; overflow-x: auto; overflow-y: hidden; }
     #inc-domanda .katex-display { margin: .4em 0; }
+    .katex { white-space: nowrap; }
+    .katex-display, .opz-t, .intro-testo .katex-display { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+    .opz-t { min-width: 0; flex: 1; scrollbar-width: thin; }
     #inc-fig { margin: 0 0 10px; }
     #inc-fig svg, .intro-fig svg { max-width: min(100%, 320px); height: auto; display: block; margin: 0 auto; }
-    #inc-opzioni { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 8px; }
+    #inc-opzioni { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 8px; }
     .opz { width: 100%; min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 14px; border: 1px solid var(--linea-forte); background: rgba(255,255,255,.05); text-align: left; cursor: pointer; font-size: 17px; }
     .opz:hover:not(:disabled) { border-color: var(--accento); background: rgba(255,255,255,.1); }
     .opz.scartata { opacity: .4; text-decoration: line-through; }
+    .opz.scelta { border-color: var(--oro); background: hsla(45, 100%, 55%, .14); box-shadow: 0 0 0 2px hsla(45, 100%, 60%, .5); }
+    .et-anello.scelta { border-color: var(--oro); box-shadow: 0 0 14px hsla(45, 100%, 60%, .6); }
+    #inc-conferma kbd { background: rgba(0,0,0,.18); border-color: rgba(0,0,0,.3); color: inherit; }
     .opz.giusta { border-color: var(--si); background: hsla(155, 80%, 45%, .18); }
     .opz .opt-fig svg { width: 120px; height: auto; }
     .inc-piede { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; }
@@ -307,10 +314,11 @@
     <div id="inc-fig" hidden></div>
     <ol id="inc-opzioni"></ol>
     <div class="inc-piede">
+      <button type="button" class="btn btn-primario" id="inc-conferma" hidden>Conferma</button>
       <button type="button" class="btn" id="inc-aiuto">Suggerimento <kbd>H</kbd></button>
       <span id="inc-esito" class="inc-esito" role="status" aria-live="polite"></span>
     </div>
-    <p class="inc-chiave">Vola attraverso l'anello giusto, oppure tocca la risposta o premi <kbd>1</kbd>–<kbd>4</kbd>. Nessun timer: pensa con calma.</p>
+    <p class="inc-chiave">Per rispondere fermati dentro l'anello finché il cerchio d'oro si riempie, oppure scegli la risposta (tocco o <kbd>1</kbd>–<kbd>4</kbd>) e confermala. Nessun timer: pensa con calma.</p>
   </section>
 
   <section id="intro" class="pannello" hidden aria-live="polite"></section>
@@ -437,7 +445,7 @@
     </div>
   </dialog>
 
-  <script type="module" src="astromath_js/main.js?v=20261112_01"></script>
+  <script type="module" src="astromath_js/main.js?v=20261112_06"></script>
   <script src="../assets/js/orfini-shared.js"></script>
 </body>
 </html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="it">
+<!-- ⚠️ GENERATO AUTOMATICAMENTE DA build.py (journal_build.py): modificare la nota in content/journal/ -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>AstroMath: in volo tra le costellazioni della matematica | Journal · Orfini Math Lab</title>
+    <meta name="description" content="Un gioco di esplorazione sul piano cartesiano: ogni stella ha una creatura con una domanda, e si risponde volando attraverso l&#x27;anello giusto.">
+    <meta name="author" content="Prof. Federico De Benedictis">
+    <link rel="canonical" href="https://federicodb.github.io/journal/2026-11-12-astromath-in-volo-tra-le-costellazioni/">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://federicodb.github.io/journal/2026-11-12-astromath-in-volo-tra-le-costellazioni/">
+    <meta property="og:title" content="AstroMath: in volo tra le costellazioni della matematica">
+    <meta property="og:description" content="Un gioco di esplorazione sul piano cartesiano: ogni stella ha una creatura con una domanda, e si risponde volando attraverso l&#x27;anello giusto.">
+    <meta property="og:image" content="https://federicodb.github.io/journal/2026-11-12-astromath-in-volo-tra-le-costellazioni/copertina.webp">
+    <meta property="article:published_time" content="2026-11-12">
+    <meta name="robots" content="noindex">
+    <link href="/content/assets/fonts/inter-syne-spacemono-bf47f3.css" rel="stylesheet">
+    <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
+    <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
+    <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+    <link rel="stylesheet" href="/sito/tema.css">
+    <link rel="stylesheet" href="../../index.css">
+    <link rel="stylesheet" href="../../cookie-consent.css">
+    <script>
+        if (localStorage.getItem('orfini_theme') === 'light') {
+            document.documentElement.classList.add('theme-light');
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+    <link rel="stylesheet" href="../../content/assets/style/theme-light.css">
+    <link rel="stylesheet" href="/sito/menu.css">
+    <script src="/sito/effetti.js"></script>
+    <script src="/sito/menu.js" defer></script>
+    <link rel="stylesheet" href="../../journal.css">
+    <script src="../../content/assets/js/theme-toggle.js" defer></script>
+</head>
+
+<body>
+
+    <a class="om-salta" href="#contenuto">Vai al contenuto</a>
+    <header id="barra" class="om-barra">
+        <div class="om-barra-in">
+            <a class="om-marchio" href="/" aria-label="Orfini Math Lab, pagina iniziale"><span>ORFINI</span><small>MATH LAB</small></a>
+            <nav class="om-voci" id="om-voci" aria-label="Sezioni del sito">
+                <a href="/" data-voce="esplora">Esplora</a>
+                <a href="/allenamento/" data-voce="allenati">Allenati</a>
+                <a href="/journal/" data-voce="journal" aria-current="page">Journal</a>
+                <a href="/verifiche.html" data-voce="archivio">Archivio</a>
+                <details class="om-altro">
+                    <summary>Altro</summary>
+                    <div class="om-altro-voci">
+                        <a href="/calcolo-mentale.html" data-voce="calcolo">Calcolo veloce</a>
+                        <a href="/competenze.html" data-voce="competenze">Competenze</a>
+                        <a href="/scuola.html" data-voce="scuola">La Scuola</a>
+                        <a href="#chi-sono" data-apre="chi-sono">Chi sono</a>
+                        <button type="button" class="om-effetti" id="om-effetti" aria-pressed="false">Riduci effetti</button>
+                    </div>
+                </details>
+            </nav>
+            <div class="om-strumenti">
+                <form class="om-cerca" role="search" action="/" method="get">
+                    <label for="cerca" title="Cerca">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
+                        <span class="om-solo-lettori">Cerca nel sito</span>
+                    </label>
+                    <input type="search" id="cerca" name="q" placeholder="Cerca un argomento" autocomplete="off" enterkeyhint="search">
+                </form>
+                <div class="om-vista" role="group" aria-label="Vista della pagina iniziale">
+                    <a class="om-vista-voce" href="/?vista=costellazione" data-vista="costellazione" title="Costellazione">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17 10 7l6 5 3-7"/><circle cx="5" cy="17" r="2"/><circle cx="10" cy="7" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="19" cy="5" r="1.5"/></svg>
+                        <span>Costellazione</span>
+                    </a>
+                    <a class="om-vista-voce" href="/?vista=elenco" data-vista="elenco" title="Elenco">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.3"/><circle cx="4.5" cy="12" r="1.3"/><circle cx="4.5" cy="18" r="1.3"/></svg>
+                        <span>Elenco</span>
+                    </a>
+                </div>
+                <button type="button" id="orfini-theme-toggle" class="om-tasto om-tema" aria-label="Cambia tema: chiaro o scuro" title="Tema chiaro o scuro">
+                    <svg class="om-sole" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+                    <svg class="om-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a6.6 6.6 0 0 0 9.7 9.7z"/></svg>
+                </button>
+                <button type="button" class="om-tasto om-apri-menu" aria-expanded="false" aria-controls="om-voci" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    <dialog id="chi-sono" class="om-pannello" aria-labelledby="chi-sono-titolo">
+        <div class="om-pannello-testa">
+            <div>
+                <p class="om-occhiello">Chi sono</p>
+                <h2 id="chi-sono-titolo">Federico De Benedictis</h2>
+                <p class="om-pannello-ruolo">Docente di matematica · IPIA «E. Orfini», Foligno</p>
+            </div>
+            <a class="om-tasto om-chiudi" href="#" data-chiude="chi-sono" aria-label="Chiudi">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </a>
+        </div>
+        <div class="om-pannello-corpo">
+            <p>Insegno matematica (classe A026) all'Istituto Professionale «E. Orfini» di Foligno. Questo sito è il mio laboratorio: qui costruisco le attività che porto in classe, le provo con gli studenti, le correggo e ogni tanto le butto. Quello che resta lo trovi qui.</p>
+            <h3>Come lavoro</h3>
+            <dl class="om-principi">
+                <div><dt>Vedere, toccare, sbagliare</dt><dd>Modelli in 2D e 3D da manipolare, giochi a livelli con aiuti che si tolgono a poco a poco, errori tipici riconosciuti e spiegati invece che soltanto segnati.</dd></div>
+                <div><dt>A mente, prima di tutto</dt><dd>Nell'allenamento i numeri si gestiscono sempre a mente: la difficoltà cresce nel ragionamento, non nel peso dei conti. Nessun cronometro, nessuna classifica tra compagni.</dd></div>
+                <div><dt>Senza etichette</dt><dd>Nessuna attività dice per quale classe è. In quarta si può riprendere un'attività nata per la prima senza che nessuno si senta indietro.</dd></div>
+                <div><dt>Dalla formula all'oggetto</dt><dd>Curve, frattali e ingranaggi escono dallo schermo: li disegna un plotter a penna, li costruisce una stampante 3D.</dd></div>
+                <div><dt>Aperto, non commerciale</dt><dd>Uso solo strumenti open source, e anche l'intelligenza artificiale come un attrezzo in più sul banco di lavoro. Codice e contenuti si possono riusare e adattare citando l'autore, mai a scopo di lucro senza il mio permesso.</dd></div>
+            </dl>
+            <p>Nel <a href="/journal/">Journal</a> racconto come nascono le attività e come cambiano dopo averle provate. Su Instagram, <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener">@meltingmath</a> è il diario quotidiano della sperimentazione tra tecnologia, coding e design.</p>
+            <ul class="om-pannello-link">
+                <li><a href="/journal/">Leggi il Journal</a></li>
+                <li><a href="/scuola.html">La Scuola</a></li>
+                <li><a href="https://github.com/federicodb/federicodb.github.io" target="_blank" rel="noopener">Codice su GitHub</a></li>
+                <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it" target="_blank" rel="license noopener">Licenza CC BY-NC-SA 4.0</a></li>
+            </ul>
+        </div>
+    </dialog>
+    <noscript><style>
+        #tutte-le-parole, #om-effetti, .mostra-tutte { display: none !important; }
+        .figlie[hidden] { display: flex !important; }
+        /* senza JavaScript: su telefono le voci stanno in una riga che scorre, sotto la barra */
+        @media (max-width: 859px) {
+            .om-apri-menu { display: none !important; }
+            .om-voci { display: flex !important; position: static !important; flex-direction: row !important; flex-wrap: wrap; width: 100%; padding: 0 0 8px !important; border: 0 !important; box-shadow: none !important; background: none !important; max-height: none !important; overflow: visible !important; }
+            .om-altro summary { pointer-events: auto !important; }
+            .om-barra-in { flex-wrap: wrap; height: auto !important; }
+            .om-barra { position: static !important; }
+            body { padding-top: 0 !important; }
+        }
+    </style></noscript>
+    <nav id="main-nav" aria-label="Cerca nel Journal">
+        <div class="container nav-container">
+            <div class="nav-row-2">
+                <form class="search-filter-wrapper" action="../../journal/" method="get" role="search">
+                    <button type="button" id="filter-burger-btn" class="burger-btn" aria-label="Filtra per attività" aria-expanded="false" aria-controls="filter-dropdown">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="search-container">
+                        <input type="search" id="search-input" name="q" class="search-input" placeholder="Cerca nelle note..." aria-label="Cerca nelle note">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y2="21" x2="16.65" y1="16.65"></line></svg>
+                    </div>
+                </form>
+                <div id="filter-dropdown" class="filter-dropdown">
+                    <div class="filter-group">
+                        <span class="filter-group-title">Filtra per attività</span>
+                        <a class="filter-chip" href="../../journal/" data-attivita="">Tutte le note</a>
+                        <a class="filter-chip" href="../../journal/?attivita=pi_is_irrational" data-attivita="pi_is_irrational">$\pi$ is irrational: perché π non è una frazione</a>
+                        <a class="filter-chip" href="../../journal/?attivita=albero_pitagorico_3d_gemini_001" data-attivita="albero_pitagorico_3d_gemini_001">Albero di Pitagora: Frattali 3D</a>
+                        <a class="filter-chip" href="../../journal/?attivita=mcd_mcm_1el_001" data-attivita="mcd_mcm_1el_001">Arcade Challenge: MCM &amp; MCD</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_scomposizioni_parabola" data-attivita="arcade_challenge_scomposizioni_parabola">Arcade Challenge: Scomposizioni &amp; Parabola</a>
+                        <a class="filter-chip" href="../../journal/?attivita=arcade_challenge_unita_di_misura" data-attivita="arcade_challenge_unita_di_misura">Arcade Challenge: Unità di misura</a>
+                        <a class="filter-chip" href="../../journal/?attivita=astromath" data-attivita="astromath">AstroMath: volo tra le costellazioni della matematica</a>
+                        <a class="filter-chip" href="../../journal/?attivita=ruota_quadrata_cinematismi" data-attivita="ruota_quadrata_cinematismi">Cinematismi 3D: ruota quadrata, Reuleaux e Cardano</a>
+                        <a class="filter-chip" href="../../journal/?attivita=tavola_tart_canva0003" data-attivita="tavola_tart_canva0003">Esploratore Numerico: Pitagora &amp; Tartaglia</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fibonacci_anim" data-attivita="fibonacci_anim">Experience Fibonacci</a>
+                        <a class="filter-chip" href="../../journal/?attivita=functions_lab_008" data-attivita="functions_lab_008">FuncLab AI: Esploratore di Funzioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=gioco_sin_cos_01" data-attivita="gioco_sin_cos_01">GonioMatch: Memory su valori notevoli di funzioni goniometriche</a>
+                        <a class="filter-chip" href="../../journal/?attivita=il-filo-di-dedalo_2.5d_claude_2" data-attivita="il-filo-di-dedalo_2.5d_claude_2">Il Filo di Dedalo: Labirinto Matematico 2.5D</a>
+                        <a class="filter-chip" href="../../journal/?attivita=fractions_lab_001" data-attivita="fractions_lab_001">Laboratorio di operazioni tra Frazioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=disequazioni_frazionarie_vs_sistemi" data-attivita="disequazioni_frazionarie_vs_sistemi">Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_bubble_equazione_della_retta" data-attivita="math_bubble_equazione_della_retta">Math Bubble: la retta esplicita</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_pool_retta_pianocartesiano" data-attivita="math_pool_retta_pianocartesiano">Math Pool: Biliardo Cartesiano e retta</a>
+                        <a class="filter-chip" href="../../journal/?attivita=math_underground003_4el" data-attivita="math_underground003_4el">Math Underground: Mappa per la classificazione di Funzioni</a>
+                        <a class="filter-chip" href="../../journal/?attivita=parabola_e_disequazioni_di_secondo_grado_maggio_2026" data-attivita="parabola_e_disequazioni_di_secondo_grado_maggio_2026">Parabola e disequazioni di secondo grado</a>
+                        <a class="filter-chip" href="../../journal/?attivita=percentuali_001" data-attivita="percentuali_001">Percent Lab</a>
+                        <a class="filter-chip" href="../../journal/?attivita=soglie_particelle_automa_cellulare" data-attivita="soglie_particelle_automa_cellulare">Simulatore di Automi Cellulari e Particelle</a>
+                        <a class="filter-chip" href="../../journal/?attivita=snake_conway_self" data-attivita="snake_conway_self">Snake of Life</a>
+                        <a class="filter-chip" href="../../journal/?attivita=pen_plotter__23v2_8k" data-attivita="pen_plotter__23v2_8k">Studio Plotter CNC</a>
+                        <a class="filter-chip" href="../../journal/?attivita=phi_is_irrational_01" data-attivita="phi_is_irrational_01">φ è irrazionale: il rapporto aureo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container jr" id="contenuto">
+        <p class="jr-back"><a href="../">← Tutte le note</a></p>
+        <div class="jr-layout">
+        <article class="jr-note">
+            <header>
+                <p class="jr-meta"><time datetime="2026-11-12">12 novembre 2026</time> · Prof. Federico De Benedictis</p>
+                <h1>AstroMath: in volo tra le costellazioni della matematica</h1>
+                <p class="jr-lead">Un gioco di esplorazione sul piano cartesiano: ogni stella ha una creatura con una domanda, e si risponde volando attraverso l&#x27;anello giusto.</p>
+                <ul class="jr-tags" aria-label="Temi"><li><a href="../../index.html?tag=astromath">Astromath</a></li><li><a href="../../index.html?tag=costellazioni">Costellazioni</a></li><li><a href="../../index.html?tag=equazioni">Equazioni</a></li><li><a href="../../index.html?tag=frazioni">Frazioni</a></li><li><a href="../../index.html?tag=monomi">Monomi</a></li><li><a href="../../index.html?tag=numeri%20relativi">Numeri relativi</a></li></ul>
+            </header>
+        <p class="jr-flag">Bozza: non ancora pubblicata.</p>
+            <div class="jr-body">
+<h2>Cosa è</h2>
+<p>AstroMath è un gioco di volo sul piano cartesiano. Si guida un piccolo pilota con lo zaino a razzo tra dodici costellazioni, in ordine di programma: numeri, percentuali e proporzioni, calcolo letterale, prodotti notevoli, scomposizioni, equazioni, rette, geometria, dati, radicali e secondo grado, parabola, e infine l'officina.</p>
+<p>Ogni costellazione ha sei stelle. Avvicinandosi a una stella compare la sua creatura, disegnata con la matematica del suo argomento: la Manta parabolica ha le ali a forma di $y = ax^2$, la Squadra 3-4-5 apre i quadrati sui lati, il Quadrato del binomio si scompone in $a^2$, $2ab$ e $b^2$. La creatura fa una domanda, presa dai generatori della Quest, e attorno alla stella si aprono gli anelli delle risposte: si risponde volandoci attraverso, oppure toccando la risposta.</p>
+<p>Non c'è un timer. Dopo due errori arrivano la spiegazione e un problema gemello con numeri nuovi. Quando tutte le stelle sono accese, la costellazione si disegna e in alto si apre il portale per la successiva. Ci sono anche le correnti: grafici di funzione con la loro formula scritta accanto, che portano chi li segue.</p>
+<figure><img loading="lazy" alt="La Manta parabolica chiede il grafico giusto: tre anelli, tre parabole" src="../media/astromath-manta-parabolica.webp"><figcaption>La Manta parabolica chiede il grafico giusto: tre anelli, tre parabole</figcaption></figure>
+<h2>L'idea matematica</h2>
+<p>Il cielo è un piano cartesiano vero, con gli assi numerati: ogni quadretto vale una unità. Le correnti sono funzioni, e la formula si controlla con gli occhi. Sulla corrente $y = \dfrac{1}{2}x + 2$, per $x = 4$ il pilota passa a quota $\dfrac{1}{2}\cdot 4 + 2 = 4$: basta guardare la griglia per verificarlo.</p>
+<section class="jr-studenti"><h2>Per prepararti alla verifica</h2>
+<ul>
+<li>Ogni costellazione corrisponde a un argomento: completa quella della verifica senza usare il suggerimento.</li>
+<li>Alla fine trovi le lezioni della Quest su cui hai sbagliato in volo: parti da quelle.</li>
+<li><strong>Attenzione</strong>: tra le risposte sbagliate ci sono gli errori più comuni, come dimenticare il doppio prodotto in $(a+b)^2$. Se una risposta "sembra quasi giusta", rifai il conto.</li>
+</ul>
+<p><strong>Prova tu.</strong> La parabola $y = (x - 2)(x - 4)$ taglia l'asse $x$ in $2$ e in $4$. Dove si trova il vertice?</p>
+<details>
+<summary>Soluzione</summary>
+<p>Il vertice sta a metà tra gli zeri: $x_V = \dfrac{2 + 4}{2} = 3$. Sostituendo, $y_V = (3 - 2)(3 - 4) = 1 \cdot (-1) = -1$. Il vertice è $V(3;\,-1)$.</p>
+</details>
+<div class="jr-carta"><h3>Mettiti alla prova su carta</h3><p>Verifiche dell'Archivio con esercizi sugli stessi temi. Prova a farle con carta e penna, senza l'app: è lì che si vede se hai capito.</p><ul><li><span>Verifica di maggio 2026: Proprietà delle potenze, Frazioni e percentuali, Proporzioni in elettrotecnica…</span> <a href="../../content/verifiche/1EL/1EL___verifica_15_maggio_2026.pdf" target="_blank" rel="noopener">Apri il PDF</a></li><li><span>Verifica di dicembre 2025: Equazioni di primo grado, Equazioni con prodotti notevoli…</span> <a href="../../content/verifiche/2GP/2GP___verifica_2_dic_2025_filaA.pdf" target="_blank" rel="noopener">Fila A</a> · <a href="../../content/verifiche/2GP/2GP___verifica_2_dic_2025_filaB.pdf" target="_blank" rel="noopener">Fila B</a></li><li><span>Verifica di maggio 2026: Piano cartesiano, Distanza fra due punti, Punto medio, Equazione della retta in forma esplicita, Equazioni…</span> <a href="../../content/verifiche/2GP/2GP___verifica_13_maggio_2026.pdf" target="_blank" rel="noopener">Apri il PDF</a></li></ul></div>
+</section>
+<h2>Come usarla in classe</h2>
+<p>Proposta d'uso: alla LIM una persona pilota e la classe sceglie l'anello a voce, poi si controlla insieme la spiegazione. Sui telefoni si può far partire la stessa costellazione per tutti con lo stesso seme (<code>?seme=</code> nell'indirizzo), così le domande sono uguali e se ne discute dopo. Chi usa la Quest sullo stesso telefono trova d'oro le stelle già conquistate. Per allenarsi: <strong>Numeri relativi</strong>, <strong>Percentuali</strong>, <strong>Prodotti notevoli</strong>, <strong>Equazioni di primo grado</strong>, <strong>Pendenza di una retta</strong>, <strong>Il teorema di Pitagora</strong>, <strong>Statistica</strong>, <strong>La parabola</strong>.</p>
+<h2>A cosa fare attenzione</h2>
+<ul>
+<li><strong>Volare non è rispondere</strong>: conviene fermarsi accanto alla stella, che tiene sospeso il pilota, e fare il conto prima di muoversi verso un anello.</li>
+<li><strong>Il suggerimento</strong> toglie il bonus "a mente" ma non toglie punti: va usato senza paura quando serve.</li>
+</ul>
+
+            </div>
+        </article>
+        <aside class="jr-acts" aria-labelledby="att">
+            <h2 id="att">Le attività di cui parla</h2>
+            <ul><li class="jr-act" style="--jr-accent: hsl(220, 90%, 70%)"><img src="../../content/assets/thumbnails/astromath.webp" alt="" loading="lazy"><div><h3><a href="../../content/apps/astromath.html">AstroMath: volo tra le costellazioni della matematica</a></h3><p>AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde attraversando l&#x27;anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.</p><p class="jr-act-more"><a href="../../allenamento/#/lezione/numeri-relativi/1">Allenati: Numeri relativi</a> · <a href="../../allenamento/#/lezione/percentuali/1">Allenati: Percentuali</a> · <a href="../../allenamento/#/lezione/prodotti-notevoli/1">Allenati: Prodotti notevoli</a> · <a href="../../schede/astromath.html">Scheda da stampare</a></p></div></li></ul>
+            <h2 class="jr-side-title">Competenze in gioco</h2>
+            <ul class="jr-skills"><li><a href="../../competenze.html#MAT_K1"><span class="jr-code">MAT_K1</span> Insiemi numerici e calcolo letterale</a></li><li><a href="../../competenze.html#MAT_K2"><span class="jr-code">MAT_K2</span> Funzioni elementari e loro rappresentazione</a></li><li><a href="../../competenze.html#MAT_K3"><span class="jr-code">MAT_K3</span> Geometria euclidea e analitica</a></li><li><a href="../../competenze.html#MAT_A1"><span class="jr-code">MAT_A1</span> Eseguire calcoli operando con diversi insiemi numerici</a></li><li><a href="../../competenze.html#MAT_A3"><span class="jr-code">MAT_A3</span> Risolvere equazioni, disequazioni e sistemi</a></li><li><a href="../../competenze.html#MAT_A4"><span class="jr-code">MAT_A4</span> Applicare proprietà geometriche in contesti operativi</a></li><li><a href="../../competenze.html#MAT_C2"><span class="jr-code">MAT_C2</span> Utilizzare strategie del pensiero razionale per affrontare situazioni problematiche in contesti reali</a></li><li><a href="../../competenze.html#CIT_4"><span class="jr-code">CIT_4</span> Competenza digitale</a></li></ul>
+            <h2 class="jr-side-title">Potrebbe interessarti anche</h2>
+            <ul class="jr-related"><li><a href="../../content/apps/il-filo-di-dedalo_2.5D_claude_2.html"><img src="../../content/assets/thumbnails/il-filo-di-dedalo_2.5D_claude_2.webp" alt="" loading="lazy"><span>Il Filo di Dedalo: Labirinto Matematico 2.5D</span></a></li><li><a href="../../content/apps/card_frazioni_algebriche_005.html"><img src="../../content/assets/thumbnails/card_frazioni_algebriche_005.webp" alt="" loading="lazy"><span>C.E. Match</span></a></li><li><a href="../../content/apps/cards_polinomi_memory004.html"><img src="../../content/assets/thumbnails/cards_polinomi_memory004.webp" alt="" loading="lazy"><span>Palestra: Memory delle Scomposizioni</span></a></li></ul>
+        </aside>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <span class="brand-title">ORFINI MATH LAB</span>
+                    <p>Laboratorio matematico digitale<br>Istituto Professionale "E. Orfini" · Foligno</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://instagram.com/meltingmath" target="_blank" rel="noopener" class="social-circle" aria-label="Instagram @meltingmath">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="jr-colophon">
+                <p><strong>Un diario di bordo.</strong> Orfini Math Lab raccoglie una sperimentazione didattica di matematica
+                    all'Istituto Professionale "E. Orfini" di Foligno: attività costruite, provate in classe, corrette. Ultimo aggiornamento: <time datetime="2026-11-12">12 novembre 2026</time>.</p>
+                <p>Fatto con strumenti open source, ed è a sua volta un progetto aperto: il codice è pubblico su GitHub.
+                    Si può riusare e adattare citando l'autore, mai a scopo di lucro senza il suo permesso.</p>
+                <ul class="jr-badges" aria-label="Progetto aperto e licenze">
+                    <li><a href="https://github.com/federicodb/federicodb.github.io" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Sorgenti su GitHub</a></li>
+                    <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it" target="_blank" rel="license noopener" title="Codice e contenuti: attribuzione, non commerciale, condividi allo stesso modo"><svg viewBox="0 0 86 22" aria-hidden="true" class="jr-cc"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="9.2"/><path d="M9.6 8.4a3.2 3.2 0 1 0 0 5.2M15.4 8.4a3.2 3.2 0 1 0 0 5.2"/><circle cx="32" cy="11" r="9.2"/><circle cx="32" cy="6.2" r="1.4" fill="currentColor" stroke="none"/><path d="M29.4 9.2h5.2v4.6h-1.6v4.2h-2v-4.2h-1.6z" fill="currentColor" stroke="none"/><circle cx="53" cy="11" r="9.2"/><path d="M56.4 7.6a3.6 3.6 0 1 0 0 6.8M48.8 10h5.4M48.8 12.4h5.4M46.6 4.6l12.8 12.8"/><circle cx="74" cy="11" r="9.2"/><path d="M78.2 11a4.2 4.2 0 1 1-1.3-3"/><path d="M77.3 5.4l-.3 2.8-2.8-.3"/></g></svg>CC BY-NC-SA 4.0 · uso non commerciale</a></li>
+                </ul>
+            </div>
+            <script src="../../content/assets/js/offline.js" defer></script>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Laboratorio Matematico Orfini Foligno · Prof. Federico De Benedictis · <a href="../../privacy-policy.html">Privacy e cookie</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('filter-burger-btn'), menu = document.getElementById('filter-dropdown');
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                btn.setAttribute('aria-expanded', menu.classList.toggle('active'));
+            });
+            document.addEventListener('click', function (e) {
+                if (!menu.contains(e.target)) { menu.classList.remove('active'); btn.setAttribute('aria-expanded', 'false'); }
+            });
+        })();
+    </script>
+    <script src="../../cookie-consent.js"></script>
+</body>
+
+</html>

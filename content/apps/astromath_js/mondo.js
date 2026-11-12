@@ -14,10 +14,11 @@ export const MONDO = {
   spinta: 40,         // accelerazione dei razzi
   attrito: 0.55,
   vmax: 44,
-  consumo: 11,        // energia al secondo a spinta piena
+  consumo: 6,         // energia al secondo a spinta piena (ridotto: si esplora con calma)
   raggioIncontro: 10, // distanza a cui una stella "si accorge" del pilota
   raggioAnelli: 15,
   raggioAnello: 3.4,
+  conferma: 1.0,      // secondi da passare dentro un anello per rispondere
   bolla: 26,          // vicino a una stella in incontro non si cade: si pensa con calma
   scalaPilota: 1.4,   // dimensione del disegno del pilota
   piedi: 2.75,        // dal centro del pilota ai piedi: a terra il centro sta a questa quota
@@ -102,7 +103,8 @@ export class Mondo {
     if (st && Math.hypot(p.x - st.x, p.y - st.y) < MONDO.bolla) {
       // sospensione morbida: niente caduta e, senza comandi, il pilota torna piano al centro della stella
       g = 0;
-      if (mag <= 0.12) { ax += (st.x - p.x) * 4; ay += (st.y - p.y) * 4; }
+      // (non quando è dentro un anello: lì resta fermo per confermare la risposta)
+      if (mag <= 0.12 && !this.incontro.dentro) { ax += (st.x - p.x) * 4; ay += (st.y - p.y) * 4; }
     }
 
     // --- richiamata: tirando su durante una picchiata veloce, la velocità ruota verso l'alto ---
@@ -152,7 +154,10 @@ export class Mondo {
     // --- integrazione (Eulero semi-implicito) ---
     p.vx += ax * dt;
     p.vy += (ay - g) * dt;
-    const k = 1 - MONDO.attrito * dt * (st ? 2.2 : 1);
+    // dentro un anello il pilota viene frenato e trattenuto al centro: fermarsi è facile, passare di corsa non risponde
+    const anello = this.incontro && this.incontro.dentro ? this.incontro.anelli[this.incontro.dentro.k] : null;
+    if (anello && mag <= 0.12) { p.vx += (anello.x - p.x) * 5 * dt; p.vy += (anello.y - p.y) * 5 * dt; }
+    const k = 1 - MONDO.attrito * dt * (anello ? 5 : st ? 2.2 : 1);
     p.vx *= k; p.vy *= k;
     const vn = Math.hypot(p.vx, p.vy);
     if (vn > MONDO.vmax) { p.vx *= MONDO.vmax / vn; p.vy *= MONDO.vmax / vn; }
@@ -199,11 +204,14 @@ export class Mondo {
         this.emetti('incontro-sospeso', { i: inc.i });
         return;
       }
-      if (inc.t > 0.9) {
-        for (const a of inc.anelli) {
-          if (a.via) continue;
-          if (Math.hypot(p.x - a.x, p.y - a.y) < MONDO.raggioAnello) { this.rispondi(a.k); break; }
-        }
+      // risposta volontaria: non basta attraversare un anello, bisogna restarci dentro finché si riempie
+      let dentro = null;
+      if (inc.t > 0.9) for (const a of inc.anelli) if (!a.via && Math.hypot(p.x - a.x, p.y - a.y) < MONDO.raggioAnello) { dentro = a; break; }
+      if (!dentro) inc.dentro = null;
+      else {
+        if (!inc.dentro || inc.dentro.k !== dentro.k) { inc.dentro = { k: dentro.k, carica: 0 }; this.emetti('anello-dentro', { k: dentro.k }); }
+        inc.dentro.carica += dt / MONDO.conferma;
+        if (inc.dentro.carica >= 1) { const k = inc.dentro.k; inc.dentro = null; this.rispondi(k); }
       }
       return;
     }

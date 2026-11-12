@@ -111,12 +111,20 @@ export function scrivi(lista, testo, x, y, z, h, c, a, w = 1.4) {
 // Camera: segue il pilota con una molla, guarda avanti nella direzione del moto,
 // allarga il campo visivo in accelerazione, trema sugli urti (se gli effetti sono pieni)
 // ------------------------------------------------------------------------------------------------
+export const FOV_BASE = 60;   // campo visivo ampio e camera vicina: più prospettiva, parallasse vera tra i piani
+
 export class Camera {
-  constructor() { this.x = 0; this.y = 30; this.vx = 0; this.vy = 0; this.d = 95; this.fov = 50; this.trauma = 0; this.ox = 0; this.oy = 0; this.aspect = 1.6; this.spostamento = [0, 0]; }
+  constructor() {
+    this.x = 0; this.y = 30; this.vx = 0; this.vy = 0; this.d = 80; this.fov = FOV_BASE;
+    this.trauma = 0; this.ox = 0; this.oy = 0; this.aspect = 1.6; this.spostamento = [0, 0];
+    this.inclX = 0; this.inclY = 0; // spostamento laterale dell'occhio: la camera guarda il bersaglio un po' di sbieco
+    this.base();
+  }
   distanzaBase() {
-    // almeno ~70 unità sul lato corto dello schermo (telefono in verticale compreso)
-    const t = Math.tan((50 * Math.PI) / 360);
-    return Math.max(90, 70 / (2 * t * Math.min(1, this.aspect)));
+    // lo stesso campo visibile sul piano di gioco di prima (~84 unità in altezza, ~70 sul lato corto del telefono),
+    // ma da più vicino e con un obiettivo più grandangolare: gli strati lontani scorrono in modo naturale
+    const t = Math.tan((FOV_BASE * Math.PI) / 360);
+    return Math.max(42 / t, 35 / (t * Math.min(1, this.aspect)));
   }
   aggiorna(dt, mondo, ridotti) {
     const p = mondo.pilota;
@@ -136,27 +144,50 @@ export class Camera {
     const ax = w * w * (tx - this.x) - 2 * w * this.vx, ay = w * w * (ty - this.y) - 2 * w * this.vy;
     this.vx += ax * dt; this.vy += ay * dt;
     this.x += this.vx * dt; this.y += this.vy * dt;
-    this.d = lerp(this.d, dVoluta, 1 - Math.exp(-dt * 2));
     const vel = Math.hypot(p.vx, p.vy);
-    const fovVoluto = ridotti ? 50 : 50 + clamp((vel - 12) * 0.28, 0, 8) * (0.4 + 0.6 * p.spinge);
-    this.fov = lerp(this.fov, fovVoluto, 1 - Math.exp(-dt * 3));
+    // in velocità la camera arretra appena e l'obiettivo si apre un poco: niente zoom brusco
+    const corsa = ridotti ? 0 : clamp((vel - 14) / 26, 0, 1);
+    this.d = lerp(this.d, dVoluta * (1 + 0.1 * corsa), 1 - Math.exp(-dt * 1.6));
+    this.fov = lerp(this.fov, FOV_BASE + 5 * corsa, 1 - Math.exp(-dt * 1.6));
+    // l'occhio si sposta piano dalla parte opposta al moto (come un operatore che segue in carrello):
+    // il piano di gioco resta inquadrato, i piani lontani e vicini scorrono con la loro profondità
+    // durante un incontro l'inquadratura si raddrizza quasi del tutto: si legge e si sceglie con calma
+    const calma = inc ? 0.3 : 1;
+    const ix = ridotti ? 0 : clamp(-this.vx * 0.55, -16, 16) * calma, iy = ridotti ? 0 : (clamp(-this.vy * 0.4, -10, 10) - 6) * calma;
+    this.inclX = lerp(this.inclX, ix, 1 - Math.exp(-dt * 1.2));
+    this.inclY = lerp(this.inclY, iy, 1 - Math.exp(-dt * 1.2));
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
     const sh = ridotti ? 0 : this.trauma * this.trauma * 1.6;
     const t = performance.now() / 1000;
     this.ox = sh * (Math.sin(t * 47) + Math.sin(t * 31 + 1.3)) * 0.5;
     this.oy = sh * (Math.sin(t * 43 + 2.1) + Math.sin(t * 29)) * 0.5;
+    this.base();
   }
   scuoti(q) { this.trauma = Math.min(1, this.trauma + q); }
-  /** Proiezione su schermo (px) di un punto del mondo, per le etichette HTML */
-  proietta(x, y, z, W, H) {
-    const f = H / 2 / Math.tan((this.fov * Math.PI) / 360);
-    const dz = this.d - z;
-    if (dz <= 0.1) return null;
-    return [W / 2 + ((x - this.x - this.ox) * f) / dz, H / 2 - ((y - this.y - this.oy) * f) / dz, f / dz];
+  /** Posizione dell'occhio, punto guardato e assi della camera (destra, su, avanti): li usano tutti i disegni */
+  base() {
+    const tgt = [this.x + this.ox, this.y + this.oy, 0];
+    const pos = [tgt[0] + this.inclX, tgt[1] + this.inclY, this.d];
+    const fw = norm3([tgt[0] - pos[0], tgt[1] - pos[1], tgt[2] - pos[2]]);
+    const dx = norm3(cross3(fw, [0, 1, 0]));
+    const su = cross3(dx, fw);
+    this.occhio = { pos, tgt, dx, su, fw };
+    return this.occhio;
   }
-  /** Mezza larghezza e mezza altezza visibili alla profondità z */
-  vista(z) { const hh = (this.d - z) * Math.tan((this.fov * Math.PI) / 360); return [hh * this.aspect, hh]; }
+  /** Proiezione su schermo (px) di un punto del mondo: [x, y, scala px per unità] */
+  proietta(x, y, z, W, H) {
+    const { pos, dx, su, fw } = this.occhio;
+    const v = [x - pos[0], y - pos[1], z - pos[2]];
+    const zc = v[0] * fw[0] + v[1] * fw[1] + v[2] * fw[2];
+    if (zc <= 0.1) return null;
+    const f = H / 2 / Math.tan((this.fov * Math.PI) / 360);
+    return [W / 2 + ((v[0] * dx[0] + v[1] * dx[1] + v[2] * dx[2]) * f) / zc, H / 2 - ((v[0] * su[0] + v[1] * su[1] + v[2] * su[2]) * f) / zc, f / zc];
+  }
+  /** Mezza larghezza e mezza altezza visibili alla profondità z (con margine per l'inclinazione) */
+  vista(z) { const hh = (this.d - z) * Math.tan((this.fov * Math.PI) / 360); return [hh * this.aspect + Math.abs(this.inclX), hh + Math.abs(this.inclY)]; }
 }
+const cross3 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const norm3 = (a) => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
 
 // ------------------------------------------------------------------------------------------------
 // Particelle (scintille, polvere di stelle, fiamme): un unico pool, disegnato come punti morbidi
@@ -193,8 +224,19 @@ export class Scena {
     this.scia = [];       // ultime posizioni del pilota
     this.sciarpa = null;  // catena di punti con molle
     this.umori = {};      // umore di ogni creatura: { tipo, da }
-    this.qualita = { alone: 1, particelle: 1, lineeVelocita: true };
+    this.creaProfondita();
+    this.qualita = { alone: 1, particelle: 1 };
     this.ridotti = false;
+  }
+
+  /** Strati di profondità fissi nel mondo (deterministici): pulviscolo vicino all'obiettivo e figure lontane */
+  creaProfondita() {
+    let sd = 977;
+    const r = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
+    // pulviscolo tra la camera e il piano: scorre più veloce del piano ed è fuori fuoco
+    this.polvere = Array.from({ length: 70 }, () => ({ x: (r() * 2 - 1) * 260, y: -20 + r() * 340, z: 14 + r() * 38, size: 0.8 + r() * 1.6, a: 0.1 + r() * 0.22, c: r() < 0.5 ? [0.75, 0.85, 1] : [1, 0.92, 0.8] }));
+    // figure geometriche lontane (poligoni regolari e cifre): scorrono più lente, morbide per la sfocatura
+    this.lontani = Array.from({ length: 26 }, (_, i) => ({ x: (r() * 2 - 1) * 300, y: -10 + r() * 360, z: -45 - r() * 150, lati: 3 + Math.floor(r() * 6), R: 5 + r() * 12, rot: r() * TAU, vr: (r() - 0.5) * 0.12, cifra: i % 5 === 0 ? String(Math.floor(r() * 10)) : null, dt: Math.floor(r() * 50) }));
   }
 
   onda(x, y, forza = 1) { if (!this.ridotti) this.onde.push({ x, y, t: 0, f: forza }); }
@@ -224,9 +266,6 @@ export class Scena {
     this.part.densita = this.qualita.particelle * (this.ridotti ? 0.25 : 1);
     this.part.aggiorna(dt);
     const p = mondo.pilota;
-    // scia
-    this.scia.push([p.x, p.y + 0.2]);
-    if (this.scia.length > 46) this.scia.shift();
     // fiamme dei razzi
     if (p.spinge > 0.1 && Math.random() < 0.9) {
       const inp = mondo.input, m = Math.hypot(inp.x, inp.y) || 1;
@@ -236,6 +275,8 @@ export class Scena {
         this.part.emetti(nx, ny, { n: 2, v: 10 + 14 * p.spinge, vita: 0.32, tinta: Math.random() < 0.5 ? [1, 0.55, 0.85] : [1, 0.9, 0.6], size: 0.55, dir, spread: 0.6, z: 0.2 });
       }
     }
+    this.scia.push([p.x, p.y + 0.2]);
+    if (this.scia.length > 46) this.scia.shift();
     this.aggiornaSciarpa(dt, p);
   }
 
@@ -273,10 +314,19 @@ export class Scena {
     const tinta = hsl(liv.tinta, 90, 62), tintaChiara = hsl(liv.tinta, 95, 80), oro = hsl(45, 100, 62), bianco = [1, 1, 1];
     const accento = hsl((liv.tinta + 150) % 360, 90, 68);
 
-    // nebulose: grandi chiazze tenui nella tinta del livello, lontane (parallasse vera)
+    // nebulose: grandi chiazze tenui nella tinta del livello, molto lontane (la parallasse la fa la prospettiva)
     for (let i = 0; i < 5; i++) {
       const a = i * 2.399963;
-      l.punto(Math.cos(a) * 260 + cam.x * 0.2, 120 + Math.sin(a) * 160, -420, 260, hsl((liv.tinta + i * 24) % 360, 70, 45), 0.05);
+      l.punto(Math.cos(a) * 320, 120 + Math.sin(a) * 200, -420, 260, hsl((liv.tinta + i * 24) % 360, 70, 45), 0.06);
+    }
+    // figure lontane dietro il piano di gioco
+    const cLont = hsl(liv.tinta, 55, 62);
+    for (const f of this.lontani) {
+      const rot = f.rot + t * f.vr;
+      if (f.cifra) { scrivi(l, f.cifra, f.x, f.y, f.z, f.R, cLont, 0.32, 2); continue; }
+      const pts = [];
+      for (let k = 0; k <= f.lati; k++) { const a = rot + (k * TAU) / f.lati; pts.push([f.x + Math.cos(a) * f.R, f.y + Math.sin(a) * f.R]); }
+      l.poli(pts, f.z, cLont, 0.3, 1.8);
     }
 
     // griglia del piano cartesiano (deformabile)
@@ -392,6 +442,14 @@ export class Scena {
         for (let k = 0; k < 6; k++) { const ang = ora * 0.8 + (k * TAU) / 6; l.linea(a.x + Math.cos(ang) * (r + 0.5), a.y + Math.sin(ang) * (r + 0.5), 0.2, a.x + Math.cos(ang) * (r + 1.3), a.y + Math.sin(ang) * (r + 1.3), 0.2, bianco, 0.6 * nasce, 1.6); }
         const s = mondo.stelle[inc.i];
         l.linea(s.x, s.y, -0.2, a.x, a.y, -0.2, tinta, 0.12 * nasce, 1);
+        // conferma: l'arco dorato si riempie mentre il pilota resta dentro l'anello
+        if (inc.dentro && inc.dentro.k === a.k) {
+          const fin = Math.min(1, inc.dentro.carica) * TAU, R = r + 1.6, n = Math.max(2, Math.ceil(fin / 0.2));
+          const arco = [];
+          for (let j = 0; j <= n; j++) { const ang = Math.PI / 2 - (fin * j) / n; arco.push([a.x + Math.cos(ang) * R, a.y + Math.sin(ang) * R]); }
+          l.poli(arco, 0.25, oro, 0.95, 4);
+          l.punto(a.x, a.y, 0.2, r * 2.4, oro, 0.12 + 0.25 * inc.dentro.carica);
+        }
       }
     }
 
@@ -408,28 +466,17 @@ export class Scena {
       for (let yy = Math.max(0, p.y - 40); yy < P.y - P.r; yy += 6) l.linea(P.x, yy, -1, P.x, yy + 3, -1, tintaChiara, 0.18, 1.6);
     }
 
-    // scia del pilota
+    // scia del pilota (le linee di velocità "a stelle in corsa" sono state tolte su richiesta del docente)
     const vel = Math.hypot(p.vx, p.vy);
     for (let i = 1; i < this.scia.length; i++) {
       const k = i / this.scia.length;
       const a = this.scia[i - 1], b = this.scia[i];
       l.linea(a[0], a[1], -0.1, b[0], b[1], -0.1, tinta, k * 0.5 * clamp(vel / 18, 0.15, 1), 1 + 3 * k);
     }
-
-    // linee di velocità
-    if (this.qualita.lineeVelocita && !this.ridotti && vel > 24) {
-      const al = clamp((vel - 24) / 16, 0, 1) * 0.45, ux = p.vx / vel, uy = p.vy / vel;
-      for (let k = 0; k < 18; k++) {
-        const h1 = Math.sin(k * 12.9898) * 43758.5453, h2 = Math.sin(k * 78.233) * 12345.678;
-        const fx = h1 - Math.floor(h1), fy = h2 - Math.floor(h2);
-        const off = ((t * vel * 0.9 + k * 13) % 60) - 30;
-        const cx = cam.x + (fx - 0.5) * hw * 1.6 - ux * off, cy = cam.y + (fy - 0.5) * hh * 1.6 - uy * off;
-        l.linea(cx, cy, 2, cx - ux * vel * 0.25, cy - uy * vel * 0.25, 2, bianco, al, 1.2);
-      }
-    }
-
     this.part.disegna(l);
     this.disegnaPilota(p, tinta, bianco, oro);
+    // pulviscolo davanti all'obiettivo (per ultimo: sta più vicino di tutto)
+    if (!this.ridotti) for (const q of this.polvere) l.punto(q.x, q.y, q.z, q.size, q.c, q.a);
   }
 
   disegnaPilota(p, tinta, bianco, oro) {

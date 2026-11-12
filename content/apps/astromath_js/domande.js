@@ -179,7 +179,9 @@ export async function generaStelle(livello, { seme = 'astromath', classe = null,
   const q = await caricaQuest();
   q.contesti.setClasse(classe);
   q.contesti.setIndirizzo(indirizzo);
-  const ids = attivitaDelLivello(livello, indirizzo);
+  // le attività del livello si distribuiscono sulle stelle in un ordine diverso a ogni partita
+  // (la difficoltà resta quella della stella: LIVELLO_QUEST)
+  const ids = q.rng.createRng(hash(`${seme}|ordine`)).shuffle(attivitaDelLivello(livello, indirizzo));
   const stelle = [];
   const usati = new Set();
   for (let i = 0; i < STELLE_PER_LIVELLO; i++) {

@@ -215,3 +215,14 @@ Ogni voce: data, decisione, motivo.
 - **Transizioni tra pagine**: dissolvenza del browser solo tra le pagine con il menu. Le app non dichiarano la transizione (non si toccano), quindi dall'elenco l'espansione della scheda è fatta dalla home prima di aprire la pagina.
 - **Titolo del banner dei cookie** da `h3` a `h2`: nella vista nebulosa era il primo titolo dopo l'`h1`.
 
+
+## 2026-11-12 — AstroMath (al posto della bozza «Fly Guy»)
+
+- **Nome e identità propri**: la bozza di Gemini si chiamava come un gioco esistente e lo citava nei crediti; non è mai stata pubblicata ed è stata sostituita da `content/apps/astromath.html` (moduli in `content/apps/astromath_js/`, con `package.json` solo per i test in Node).
+- **Domande dalla Quest, fonte unica**: AstroMath importa i generatori di `allenamento/activities/` e trasforma i passi in sfide ad anelli (`domande.js`): le risposte sbagliate sono gli errori tipici della Quest (`traps`, `why`). Restano nella Quest i tipi da manipolare (place, sort, bins…).
+- **Livelli in ordine di curricolo** (12 costellazioni da Numeri a Parabola, più Officina con l'indirizzo del profilo Quest), 6 stelle con difficoltà 1, 1, 2, 2, 3, 3. Seme nuovo a ogni partita; con `?seme=` la classe vola sullo stesso cielo.
+- **Legame con la Quest in sola lettura** (`orfini_quest_v2`): classe, indirizzo, stelle conquistate (indorano le stelle, sbloccano le costellazioni). AstroMath salva solo in `orfini_astromath_v1`. Nessun nome: sigla di volo generata.
+- **Risposta volontaria, su richiesta del docente**: non basta attraversare un anello, bisogna restarci dentro finché si riempie; tocco e tasti 1–4 scelgono soltanto, poi si conferma. Nessun timer; ×1,2 senza suggerimento; dopo due errori spiegazione e problema gemello.
+- **Grafica**: Three.js 0.160.0 da CDN con `integrity` (la 0.186 non ha un file minificato statico su cui l'SRI regga), shader nostri per linee al neon e punti, niente post-processing; profondità di campo nello shader, camera prospettica che segue in carrello (parallasse vera), alone moderato (il docente lo ha trovato eccessivo). Ripiego su Canvas 2D senza WebGL. Tolte le linee di velocità, tenuta la scia del pilota.
+- **Etichette dei poligoni della Quest** (`allenamento/js/gfx/svg.js`, `polygon`): posizionate sulla normale esterna del lato / bisettrice esterna del vertice, allontanate finché non toccano lati né altre etichette; il riquadro si allarga se serve.
+- **Scheda da stampare corta e keywords ridotte** (6 codici MAT, 8 allenamenti): con tutti i codici la scheda superava le due pagine A4.

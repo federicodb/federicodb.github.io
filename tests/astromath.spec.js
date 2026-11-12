@@ -26,16 +26,22 @@ async function apri(page, url = URL) {
 
 const stato = (page) => page.evaluate(() => window.__astromath.stato());
 
+/** Formule spezzate su più righe nel pannello o sulle etichette degli anelli (una formula in linea a capo ha più rettangoli) */
+const formuleACapo = (page) => page.evaluate(() => [...document.querySelectorAll('#incontro .katex, #etichette .katex')]
+  .filter((k) => !k.closest('.katex-display') && k.offsetParent && k.getClientRects().length > 1)
+  .map((k) => k.textContent.slice(0, 40)));
+
 async function avvia(page, i) {
+  const prima = (await stato(page)).avviate;
   await page.evaluate((k) => window.__astromath.avvia(k), i);
-  await page.waitForFunction(() => window.__astromath.stato().schermo === 'volo', null, { timeout: 30000 });
+  await page.waitForFunction((n) => { const s = window.__astromath.stato(); return s.schermo === 'volo' && s.avviate > n; }, prima, { timeout: 30000 });
   const ok = page.locator('#intro-ok');
   if (await ok.isVisible()) await ok.click();
 }
 
 async function incontro(page, i) {
   await page.evaluate((k) => window.__astromath.vai(k), i);
-  await page.waitForFunction((k) => window.__astromath.stato().incontro === k, i, { timeout: 8000 });
+  await page.waitForFunction((k) => window.__astromath.stato().incontro === k, i, { timeout: 20000 }); // largo: senza GPU i fotogrammi sono lenti
   await expect(page.locator('#incontro')).toBeVisible();
 }
 
@@ -118,6 +124,7 @@ test.describe('AstroMath nel browser', () => {
       for (let i = 0; i < 6; i++) {
         await incontro(page, i);
         await expectFormuleDisegnate(page, `livello ${L}, stella ${i}`);
+        expect(await formuleACapo(page), `livello ${L}, stella ${i}: formule a capo`).toEqual([]);
         await page.evaluate(() => window.__astromath.giusta());
         await page.waitForTimeout(300);
         await page.evaluate(() => window.__astromath.pilota({ x: 0, y: 3, vx: 0, vy: 0 })); // via dalla stella
@@ -126,6 +133,21 @@ test.describe('AstroMath nel browser', () => {
       expect((await stato(page)).stelle.every((s) => s === 'accesa')).toBe(true);
     }
     expect(errori).toEqual([]);
+  });
+
+  test('ogni partita ha numeri nuovi, alla stessa difficoltà', async ({ page }) => {
+    test.setTimeout(60000);
+    await apri(page);
+    const domande = () => page.evaluate(() => window.__astromath.mondo().stelle.map((s) => `${s.livelloQuest}|${s.sfida.prompt}`));
+    await avvia(page, 0);
+    const prima = await domande();
+    await avvia(page, 0);
+    const seconda = await domande();
+    expect(seconda).not.toEqual(prima);
+    // stessa difficoltà: i livelli Quest delle sei stelle non cambiano
+    expect(seconda.map((d) => d.split('|')[0])).toEqual(prima.map((d) => d.split('|')[0]));
+    const uguali = prima.filter((d, i) => d === seconda[i]).length;
+    expect(uguali).toBeLessThanOrEqual(1);
   });
 
   test('legame con la Quest: legge, sblocca e indora le stelle, ma non scrive mai', async ({ page }) => {
@@ -164,13 +186,45 @@ test.describe('AstroMath nel browser', () => {
     expect((await stato(page)).pilota.y).toBeGreaterThan(y0 + 3);
     await incontro(page, 0);
     const giusta = await page.evaluate(() => { const m = window.__astromath.mondo(); return m.stelle[m.incontro.i].corrente.opzioni.findIndex((o) => o.giusta); });
+    // il numero sceglie soltanto; Invio conferma
     await page.keyboard.press(`Digit${giusta + 1}`);
+    await expect(page.locator('.opz.scelta')).toHaveCount(1);
+    await page.waitForTimeout(300);
+    expect((await stato(page)).stelle[0]).toBe('spenta');
+    await page.keyboard.press('Enter');
     await expect.poll(async () => (await stato(page)).stelle[0]).toBe('accesa');
     await page.keyboard.press('KeyP');
     await expect(page.locator('#schermo-pausa')).toBeVisible();
     expect((await stato(page)).pausa).toBe(true);
     await page.keyboard.press('Escape');
     await expect(page.locator('#schermo-pausa')).toBeHidden();
+  });
+
+  test('risposta volontaria: passare in un anello o toccare una volta non risponde', async ({ page }) => {
+    test.setTimeout(60000);
+    await apri(page);
+    await avvia(page, 0);
+    await incontro(page, 0);
+    await page.waitForTimeout(1500);
+    // attraversare l'anello di corsa: nessuna risposta
+    const a = await page.evaluate(() => { const m = window.__astromath.mondo(); return m.incontro.anelli[0]; });
+    await page.evaluate((r) => window.__astromath.pilota({ x: r.x - 3, y: r.y, vx: 40, vy: 0 }), a);
+    await page.waitForTimeout(700);
+    expect((await stato(page)).stelle[0]).toBe('spenta');
+    expect(await page.evaluate(() => window.__astromath.mondo().incontro.anelli.some((x) => x.via))).toBe(false);
+    // fermarsi dentro l'anello finché si riempie: risponde
+    await page.evaluate((r) => window.__astromath.pilota({ x: r.x, y: r.y, vx: 0, vy: 0 }), a);
+    await expect.poll(async () => page.evaluate(() => { const m = window.__astromath.mondo(); return !m.incontro || m.incontro.anelli[0].via || m.stelle[0].stato === 'accesa'; }), { timeout: 8000 }).toBe(true);
+    // un solo tocco sceglie, il pulsante Conferma risponde
+    await page.evaluate(() => window.__astromath.pilota({ x: 0, y: 3, vx: 0, vy: 0 }));
+    await page.waitForTimeout(1200);
+    await incontro(page, 1);
+    const k = await page.evaluate(() => { const m = window.__astromath.mondo(); return m.stelle[1].corrente.opzioni.findIndex((o) => o.giusta); });
+    await page.locator('#inc-opzioni .opz').nth(k).click();
+    await page.waitForTimeout(300);
+    expect((await stato(page)).stelle[1]).toBe('spenta');
+    await page.locator('#inc-conferma').click();
+    await expect.poll(async () => (await stato(page)).stelle[1]).toBe('accesa');
   });
 
   test('due errori: spiegazione e problema gemello, poi la stella si accende lo stesso', async ({ page }) => {
@@ -219,6 +273,7 @@ test.describe('AstroMath nel browser', () => {
     }
     await incontro(page, 0);
     await expectFormuleDisegnate(page, 'telefono');
+    expect(await formuleACapo(page)).toEqual([]);
     await ctx.close();
   });
 });
