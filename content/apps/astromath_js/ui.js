@@ -158,8 +158,14 @@ export class UI {
     e.style.maxHeight = '';
     riduci(0.82);
     this.pannelloAlto = false;
+    e.style.width = '';
     if (troppo() && !document.documentElement.classList.contains('pannello-destra')) {
       e.style.maxHeight = 'calc(76dvh - env(safe-area-inset-bottom))';
+      this.pannelloAlto = true;
+      riduci(0.72);
+    } else if (troppo()) {
+      // a destra (telefono in orizzontale) non si può salire: il pannello si allarga e si riduce ancora un poco
+      e.style.width = 'min(680px, 66vw)';
       this.pannelloAlto = true;
       riduci(0.72);
     }

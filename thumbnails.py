@@ -208,6 +208,15 @@ def main():
             
             # Se esiste già, salta (Incremental build)
             if os.path.exists(thumb_path):
+                # Miniatura fatta a mano (es. una scena di gioco): <meta name="miniatura" content="fissa"> la conserva
+                if file.lower().endswith('.html'):
+                    try:
+                        with open(file_path, encoding='utf-8', errors='ignore') as fh:
+                            if 'name="miniatura" content="fissa"' in fh.read(6000):
+                                count_skip += 1
+                                continue
+                    except OSError:
+                        pass
                 # Opzionale: controlla data modifica per rigenerare se file originale è più nuovo
                 if os.path.getmtime(file_path) <= os.path.getmtime(thumb_path):
                     count_skip += 1

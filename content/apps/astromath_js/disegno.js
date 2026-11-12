@@ -139,6 +139,7 @@ export class Camera {
       tx += this.spostamento[0] * hw; ty += this.spostamento[1] * hh;
     }
     if (mondo.finito || mondo.portaleAperto) dVoluta *= 1.12;
+    dVoluta *= this.allarga || 1;
     // molla smorzata criticamente
     const w = 3.2;
     const ax = w * w * (tx - this.x) - 2 * w * this.vx, ay = w * w * (ty - this.y) - 2 * w * this.vy;

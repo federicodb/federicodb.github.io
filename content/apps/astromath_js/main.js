@@ -13,6 +13,7 @@ import { UI } from './ui.js';
 
 const params = new URLSearchParams(location.search);
 const TEST = params.has('test');
+const FOTO = TEST && params.has('foto'); // per le miniature: inquadratura del solo mondo, senza spazio per il pannello
 const archivio = (() => { try { const k = '__am'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return localStorage; } catch { const m = new Map(); return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: (k) => m.delete(k) }; } })();
 
 const stato = carica(archivio);
@@ -375,7 +376,8 @@ function fotogramma(ora) {
   // stessa regola per la camera e per il CSS (classe pannello-destra): schermi larghi e telefoni in orizzontale
   const destra = (W >= 1000 && W / H >= 4 / 3) || (H <= 500 && W > H);
   if (destra !== document.documentElement.classList.contains('pannello-destra')) { document.documentElement.classList.toggle('pannello-destra', destra); ui.adatta(); }
-  scena.cam.spostamento = destra ? [H <= 500 ? 0.42 : 0.3, 0] : [0, ui.pannelloAlto ? -0.58 : -0.3]; // pannello più largo in orizzontale, più alto se serve
+  if (FOTO) { scena.cam.spostamento = [0, 0]; scena.cam.allarga = Number(params.get('foto')) || 1.3; } else
+  scena.cam.spostamento = destra ? [H <= 500 ? (ui.pannelloAlto ? 0.55 : 0.42) : 0.3, 0] : [0, ui.pannelloAlto ? -0.58 : -0.3]; // pannello più largo in orizzontale, più alto se serve
   const m = mondo || vetrina;
   if (!m) return;
   if (mondo && !pausa) {
