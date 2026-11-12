@@ -12,11 +12,16 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 // Formule: KaTeX locale (auto-render). Se non è ancora pronto, si aspetta l'evento della pagina.
 // ------------------------------------------------------------------------------------------------
 const DELIM = [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }];
-export function tipografa(el) {
+export function tipografa(el, poi) {
   if (!el) return;
-  const fai = () => { try { window.renderMathInElement(el, { delimiters: DELIM, throwOnError: false }); } catch (e) { console.warn('KaTeX', e); } };
+  const fai = () => { try { window.renderMathInElement(el, { delimiters: DELIM, throwOnError: false }); } catch (e) { console.warn('KaTeX', e); } if (poi) poi(); };
   if (window.renderMathInElement) fai();
   else window.addEventListener('katex-pronto', fai, { once: true });
+}
+
+/** Lunghezza approssimativa del testo come si vedrà (senza comandi LaTeX e tag) */
+function lunghezzaVisibile(html) {
+  return String(html).replace(/<[^>]+>/g, '').replace(/\\(left|right|dfrac|frac|tfrac|cdot|le|ge|vee|wedge|sqrt|text|quad|,|;|!)/g, '').replace(/[${}\\^_]/g, '').length;
 }
 
 export class UI {
@@ -78,17 +83,20 @@ export class UI {
       b.setAttribute('aria-keyshortcuts', String(k + 1));
       b.setAttribute('aria-pressed', 'false');
       b.addEventListener('click', () => this.az.seleziona(k)); // un tocco sceglie, la conferma risponde
+      li.style.setProperty('--i', k);
       li.appendChild(b);
       e.incOpz.appendChild(li);
     });
     e.inc.hidden = false;
-    tipografa(e.inc);
+    tipografa(e.inc, () => this.adatta());
     // etichette sugli anelli
     this.el.etichette.querySelectorAll('.et-anello').forEach((n) => n.remove());
     this.anelli = sfida.opzioni.map((o, k) => {
       const d = document.createElement('div');
-      d.className = `et-anello${/<svg/.test(o.label) ? ' con-figura' : ''}`;
-      d.innerHTML = `<span class="opz-n">${k + 1}</span><span class="et-t">${o.label}</span>`;
+      // sull'anello solo il numero quando la risposta è una frase lunga: il testo intero è nel pannello
+      const lunga = !/<svg/.test(o.label) && lunghezzaVisibile(o.label) > 14;
+      d.className = `et-anello${/<svg/.test(o.label) ? ' con-figura' : ''}${lunga ? ' solo-numero' : ''}`;
+      d.innerHTML = lunga ? `<span class="opz-n">${k + 1}</span>` : `<span class="opz-n">${k + 1}</span><span class="et-t">${o.label}</span>`;
       this.el.etichette.appendChild(d);
       tipografa(d);
       return d;
@@ -113,7 +121,49 @@ export class UI {
   esito(html, tipo = '') {
     this.el.incEsito.innerHTML = html;
     this.el.incEsito.className = `inc-esito ${tipo}`;
-    tipografa(this.el.incEsito);
+    tipografa(this.el.incEsito, () => this.adatta());
+  }
+
+  /**
+   * Il pannello deve mostrare tutto, in verticale e in orizzontale, senza tagli né scorrimenti:
+   * 1) ogni formula troppo larga si rimpicciolisce nella sua casella (mai a capo, mai tagliata);
+   * 2) se le opzioni non stanno affiancate senza diventare minuscole, si mettono in colonna;
+   * 3) se il pannello è ancora troppo alto, si riduce tutto in proporzione.
+   */
+  adatta() {
+    const e = this.el.inc;
+    if (e.hidden) return;
+    const opz = this.el.incOpz;
+    const restringi = () => {
+      let minimo = 1;
+      const pezzi = [...e.querySelectorAll('.opz-t'), ...e.querySelectorAll('#inc-domanda .katex-display > .katex'), ...e.querySelectorAll('#inc-domanda > .katex, #inc-domanda p > .katex')];
+      for (const el of pezzi) {
+        el.style.fontSize = '';
+        const box = el.classList.contains('opz-t') ? el : el.parentElement;
+        // larghezza vera del contenuto: per le formule in linea e in display conta il disegno KaTeX, non il contenitore
+        const largo = el.classList.contains('opz-t') ? el.scrollWidth : (el.querySelector('.katex-html') || el).getBoundingClientRect().width;
+        const posto = box.clientWidth - (el.classList.contains('opz-t') ? 0 : 2);
+        if (posto > 0 && largo > posto) { const k = Math.max(0.45, (posto / largo) * 0.98); el.style.fontSize = `${k}em`; minimo = Math.min(minimo, k); }
+      }
+      return minimo;
+    };
+    e.style.setProperty('--s', 1);
+    opz.classList.remove('una-colonna');
+    const orizzontale = matchMedia('(max-height: 500px)').matches && document.documentElement.classList.contains('pannello-destra');
+    if (!orizzontale && restringi() < 0.72 && opz.children.length > 1) { opz.classList.add('una-colonna'); restringi(); }
+    if (orizzontale) restringi();
+    const troppo = () => e.scrollHeight > e.clientHeight + 1;
+    const riduci = (minimo) => { let sc = 1; e.style.setProperty('--s', 1); restringi(); while (troppo() && sc > minimo) { sc = Math.round((sc - 0.05) * 100) / 100; e.style.setProperty('--s', sc); restringi(); } };
+    // prima a metà schermo, con testo ancora comodo; se non basta il pannello sale (in verticale) fino a tre quarti
+    e.style.maxHeight = '';
+    riduci(0.82);
+    this.pannelloAlto = false;
+    if (troppo() && !document.documentElement.classList.contains('pannello-destra')) {
+      e.style.maxHeight = 'calc(76dvh - env(safe-area-inset-bottom))';
+      this.pannelloAlto = true;
+      riduci(0.72);
+    }
+    e.style.overflowY = troppo() ? 'auto' : 'hidden'; // ultima risorsa: mai contenuti irraggiungibili
   }
   giusta(k, testo) {
     this.seleziona(null);
@@ -141,7 +191,33 @@ export class UI {
       return d;
     });
   }
+  /** Numeri sugli assi e lettere x, y, O: testo serif (KaTeX_Main), agganciato alla griglia */
+  assi(cam, W, H) {
+    const pool = (this._assi ||= []);
+    let n = 0;
+    const metti = (testo, x, y, cls) => {
+      const q = cam.proietta(x, y, -6, W, H);
+      if (!q || q[0] < -30 || q[0] > W + 30 || q[1] < -30 || q[1] > H + 30) return;
+      let d = pool[n];
+      if (!d) { d = document.createElement('span'); this.el.etichette.appendChild(d); pool.push(d); }
+      if (d._t !== testo) { d.textContent = testo; d._t = testo; }
+      if (d.className !== cls) d.className = cls;
+      d.style.transform = `translate(${q[0].toFixed(1)}px, ${q[1].toFixed(1)}px) translate(-50%, -50%) scale(${Math.min(1.25, Math.max(0.6, q[2] / 9)).toFixed(2)})`;
+      d.hidden = false;
+      n++;
+    };
+    const [hw, hh] = cam.vista(-6);
+    const meno = (k) => (k < 0 ? `\u2212${-k}` : String(k));
+    for (let gx = Math.ceil((cam.x - hw) / 10) * 10; gx <= cam.x + hw; gx += 10) if (gx !== 0 && Math.abs(gx) <= 150) metti(meno(gx / 10), gx, -2.6, 'et-asse');
+    for (let gy = Math.max(10, Math.ceil((cam.y - hh) / 10) * 10); gy <= cam.y + hh; gy += 10) metti(String(gy / 10), -2.4, gy, 'et-asse et-asse-y');
+    metti('O', -1.8, -2.4, 'et-asse et-origine');
+    metti('x', MONDO.meta + 5, 2.4, 'et-asse et-lettera');
+    metti('y', 2.6, MONDO.tetto + 5, 'et-asse et-lettera');
+    for (let i = n; i < pool.length; i++) pool[i].hidden = true;
+  }
+
   etichette(mondo, cam, W, H) {
+    this.assi(cam, W, H);
     const metti = (d, x, y, z = 0) => {
       const q = cam.proietta(x, y, z, W, H);
       if (!q || q[0] < -200 || q[0] > W + 200 || q[1] < -100 || q[1] > H + 100) { d.style.visibility = 'hidden'; return; }

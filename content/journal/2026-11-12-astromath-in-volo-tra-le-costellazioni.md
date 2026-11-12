@@ -11,7 +11,7 @@ stato: bozza
 
 AstroMath è un gioco di volo sul piano cartesiano. Si guida un piccolo pilota con lo zaino a razzo tra dodici costellazioni, in ordine di programma: numeri, percentuali e proporzioni, calcolo letterale, prodotti notevoli, scomposizioni, equazioni, rette, geometria, dati, radicali e secondo grado, parabola, e infine l'officina.
 
-Ogni costellazione ha sei stelle. Avvicinandosi a una stella compare la sua creatura, disegnata con la matematica del suo argomento: la Manta parabolica ha le ali a forma di $y = ax^2$, la Squadra 3-4-5 apre i quadrati sui lati, il Quadrato del binomio si scompone in $a^2$, $2ab$ e $b^2$. La creatura fa una domanda, presa dai generatori della Quest, e attorno alla stella si aprono gli anelli delle risposte: si risponde volandoci attraverso, oppure toccando la risposta.
+Ogni costellazione ha sei stelle. Avvicinandosi a una stella compare la sua creatura, disegnata con la matematica del suo argomento: la Manta parabolica ha le ali a forma di $y = ax^2$, la Squadra 3-4-5 apre i quadrati sui lati, il Quadrato del binomio si scompone in $a^2$, $2ab$ e $b^2$. La creatura fa una domanda, presa dai generatori della Quest, e attorno alla stella si aprono gli anelli delle risposte: si risponde fermandosi dentro l'anello giusto finché si riempie, oppure scegliendo la risposta e confermandola.
 
 Non c'è un timer. Dopo due errori arrivano la spiegazione e un problema gemello con numeri nuovi. Quando tutte le stelle sono accese, la costellazione si disegna e in alto si apre il portale per la successiva. Ci sono anche le correnti: grafici di funzione con la loro formula scritta accanto, che portano chi li segue.
 

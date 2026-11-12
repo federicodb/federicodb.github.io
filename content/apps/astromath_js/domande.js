@@ -97,7 +97,7 @@ const chiaveEspr = (s) => normalizzaEspr(s).replace(/\s+/g, '');
  */
 export function aAnelli(step, rng, h) {
   if (!step || step.board || (step.chart && !step.fig)) return null;
-  const base = { prompt: step.prompt || '', fig: step.fig || null, spiegazione: step.explain || '', aiuto: step.hint || '' };
+  const base = { prompt: senzaIstruzioniScritte(step.prompt || ''), fig: step.fig || null, spiegazione: step.explain || '', aiuto: step.hint || '' };
   let opzioni = null;
 
   if (step.type === 'choice' && Array.isArray(step.options) && step.options.length >= 2) {
@@ -163,6 +163,14 @@ export function aAnelli(step, rng, h) {
   }
   if (!opzioni || opzioni.length < 2 || opzioni.filter((o) => o.giusta).length !== 1) return null;
   return { tipo: step.type, ...base, opzioni };
+}
+
+/** Le istruzioni per la risposta scritta della Quest non servono quando si sceglie tra opzioni */
+export function senzaIstruzioniScritte(p) {
+  return String(p)
+    .replace(/\s*Puoi rispondere[^.?!]*[.?!]/gi, '')
+    .replace(/\s*Scrivi (le soluzioni|i due valori|i valori|la risposta|il risultato)[^.?!$]*(\$[^$]*\$[^.?!$]*)?[.?!]?\s*$/i, '')
+    .trim();
 }
 
 /** Il primo passo "learn" di una lezione: come la creatura presenta l'idea */

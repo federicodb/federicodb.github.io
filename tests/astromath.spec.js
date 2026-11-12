@@ -26,6 +26,12 @@ async function apri(page, url = URL) {
 
 const stato = (page) => page.evaluate(() => window.__astromath.stato());
 
+/** Formule che escono dalla loro casella (pannello o etichetta dell'anello), anche in altezza: frazioni ed esponenti compresi */
+const formuleTagliate = (page) => page.evaluate(() => [...document.querySelectorAll('#incontro .opz')].flatMap((b, k) => {
+  const r = b.getBoundingClientRect();
+  return [...b.querySelectorAll('.katex-html')].filter((f) => { const q = f.getBoundingClientRect(); return q.top < r.top - 0.5 || q.bottom > r.bottom + 0.5 || q.left < r.left - 0.5 || q.right > r.right + 0.5; }).map(() => `opzione ${k + 1}`);
+}));
+
 /** Formule spezzate su più righe nel pannello o sulle etichette degli anelli (una formula in linea a capo ha più rettangoli) */
 const formuleACapo = (page) => page.evaluate(() => [...document.querySelectorAll('#incontro .katex, #etichette .katex')]
   .filter((k) => !k.closest('.katex-display') && k.offsetParent && k.getClientRects().length > 1)
@@ -125,6 +131,7 @@ test.describe('AstroMath nel browser', () => {
         await incontro(page, i);
         await expectFormuleDisegnate(page, `livello ${L}, stella ${i}`);
         expect(await formuleACapo(page), `livello ${L}, stella ${i}: formule a capo`).toEqual([]);
+        expect(await formuleTagliate(page), `livello ${L}, stella ${i}: formule tagliate`).toEqual([]);
         await page.evaluate(() => window.__astromath.giusta());
         await page.waitForTimeout(300);
         await page.evaluate(() => window.__astromath.pilota({ x: 0, y: 3, vx: 0, vy: 0 })); // via dalla stella
@@ -255,6 +262,47 @@ test.describe('AstroMath nel browser', () => {
     await expect.poll(async () => (await stato(page)).stelle[0]).toBe('accesa');
     expect(errori).toEqual([]);
   });
+
+  for (const [nome, viewport, stelle] of [['verticale', { width: 375, height: 700 }, [0, 1, 2, 3, 4, 5]], ['orizzontale', { width: 740, height: 360 }, [0, 2, 4]]]) {
+    test(`telefono in ${nome}: in ogni costellazione tutte le opzioni e le formule si vedono per intero`, async ({ browser }) => {
+      test.setTimeout(600000);
+      const ctx = await browser.newContext({ viewport, isMobile: true, hasTouch: true });
+      const page = await ctx.newPage();
+      await apri(page);
+      const problemi = [];
+      for (let L = 0; L < 12; L++) {
+        await avvia(page, L);
+        for (const i of stelle) {
+          await incontro(page, i);
+          await page.waitForTimeout(900); // animazioni d'ingresso del pannello e delle opzioni
+          const p = await page.evaluate(() => {
+            const pan = document.getElementById('incontro').getBoundingClientRect();
+            const cmd = document.getElementById('comandi').getBoundingClientRect();
+            const fuori = [];
+            if (pan.bottom > innerHeight + 1 || pan.top < -1) fuori.push('pannello fuori schermo');
+            if (!(pan.right <= cmd.left || cmd.right <= pan.left || pan.bottom <= cmd.top || cmd.bottom <= pan.top)) fuori.push('pannello sopra i comandi');
+            document.querySelectorAll('#incontro .opz').forEach((b, k) => {
+              const r = b.getBoundingClientRect();
+              if (r.top < pan.top - 1 || r.bottom > pan.bottom + 1 || r.left < pan.left - 1 || r.right > pan.right + 1) fuori.push(`opzione ${k + 1} fuori dal pannello`);
+              const t = b.querySelector('.opz-t');
+              if (t.scrollWidth > t.clientWidth + 1) fuori.push(`opzione ${k + 1} tagliata`);
+              // anche in altezza: frazioni ed esponenti devono stare dentro la casella
+              for (const f of b.querySelectorAll('.katex-html')) { const q = f.getBoundingClientRect(); if (q.top < r.top - 0.5 || q.bottom > r.bottom + 0.5 || q.left < r.left - 0.5 || q.right > r.right + 0.5) fuori.push(`opzione ${k + 1}: formula tagliata`); }
+            });
+            return fuori;
+          });
+          const aCapo = await formuleACapo(page);
+          if (p.length || aCapo.length) problemi.push(`livello ${L}, stella ${i}: ${[...p, ...aCapo.map((f) => 'a capo: ' + f)].join('; ')}`);
+          await page.evaluate(() => window.__astromath.giusta());
+          await page.waitForTimeout(250);
+          await page.evaluate(() => window.__astromath.pilota({ x: 0, y: 3, vx: 0, vy: 0 }));
+          await page.waitForTimeout(1700);
+        }
+      }
+      expect(problemi).toEqual([]);
+      await ctx.close();
+    });
+  }
 
   test('telefono in verticale: niente scorrimento orizzontale, HUD e comandi non si coprono', async ({ browser }) => {
     test.setTimeout(60000);

@@ -24,9 +24,9 @@ const sitoRidotto = (() => { try { return localStorage.getItem('orfini_effetti')
 const effettiRidotti = () => (stato.impostazioni.effetti ? stato.impostazioni.effetti === 'ridotti' : sitoRidotto || matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 const QUALITA = {
-  alta: { prMax: 1.5, alone: 0.9, particelle: 1, sfoca: 0.2 },
-  media: { prMax: 1.25, alone: 0.75, particelle: 0.6, sfoca: 0.18 },
-  bassa: { prMax: 1, alone: 0.45, particelle: 0.3, sfoca: 0.1 },
+  alta: { prMax: 1.5, alone: 0.9, particelle: 1, sfoca: 0.2, polvere: true },
+  media: { prMax: 1.25, alone: 0.5, particelle: 0.6, sfoca: 0.08, polvere: false },
+  bassa: { prMax: 1, alone: 0.35, particelle: 0.3, sfoca: 0.04, polvere: false },
 };
 const ORDINE_Q = ['alta', 'media', 'bassa'];
 
@@ -60,7 +60,7 @@ function applicaQualita(q) {
   qualitaAttiva = q;
   const Q = QUALITA[q];
   renderer?.imposta({ prMax: Q.prMax, alone: effettiRidotti() ? Math.min(Q.alone, 0.6) : Q.alone, brilla: effettiRidotti() ? 0 : 1, sfoca: Q.sfoca });
-  scena.qualita = { alone: Q.alone, particelle: Q.particelle };
+  scena.qualita = { alone: Q.alone, particelle: Q.particelle, polvere: Q.polvere };
   scena.ridotti = effettiRidotti();
   document.documentElement.dataset.effetti = scena.ridotti ? 'ridotti' : 'pieni';
 }
@@ -139,6 +139,7 @@ addEventListener('keydown', (e) => {
   }
 });
 addEventListener('keyup', (e) => tasti.delete(e.code));
+addEventListener('resize', () => ui.adatta()); // rotazione del telefono: il pannello si riadatta
 addEventListener('blur', () => { tasti.clear(); joy.attivo = false; ui.joystick(false); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && mondo && !pausa) impostaPausa(true); });
 
@@ -371,7 +372,10 @@ function fotogramma(ora) {
   const W = innerWidth, H = innerHeight;
   renderer.dimensiona(W, H);
   // pannello della domanda: a destra sugli schermi larghi (stesso criterio del CSS), altrimenti in basso
-  scena.cam.spostamento = W >= 1000 && W / H >= 4 / 3 ? [0.3, 0] : [0, -0.42];
+  // stessa regola per la camera e per il CSS (classe pannello-destra): schermi larghi e telefoni in orizzontale
+  const destra = (W >= 1000 && W / H >= 4 / 3) || (H <= 500 && W > H);
+  if (destra !== document.documentElement.classList.contains('pannello-destra')) { document.documentElement.classList.toggle('pannello-destra', destra); ui.adatta(); }
+  scena.cam.spostamento = destra ? [H <= 500 ? 0.42 : 0.3, 0] : [0, ui.pannelloAlto ? -0.58 : -0.3]; // pannello più largo in orizzontale, più alto se serve
   const m = mondo || vetrina;
   if (!m) return;
   if (mondo && !pausa) {

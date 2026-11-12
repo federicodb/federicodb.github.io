@@ -225,7 +225,7 @@ export class Scena {
     this.sciarpa = null;  // catena di punti con molle
     this.umori = {};      // umore di ogni creatura: { tipo, da }
     this.creaProfondita();
-    this.qualita = { alone: 1, particelle: 1 };
+    this.qualita = { alone: 1, particelle: 1, polvere: true };
     this.ridotti = false;
   }
 
@@ -236,7 +236,7 @@ export class Scena {
     // pulviscolo tra la camera e il piano: scorre più veloce del piano ed è fuori fuoco
     this.polvere = Array.from({ length: 70 }, () => ({ x: (r() * 2 - 1) * 260, y: -20 + r() * 340, z: 14 + r() * 38, size: 0.8 + r() * 1.6, a: 0.1 + r() * 0.22, c: r() < 0.5 ? [0.75, 0.85, 1] : [1, 0.92, 0.8] }));
     // figure geometriche lontane (poligoni regolari e cifre): scorrono più lente, morbide per la sfocatura
-    this.lontani = Array.from({ length: 26 }, (_, i) => ({ x: (r() * 2 - 1) * 300, y: -10 + r() * 360, z: -45 - r() * 150, lati: 3 + Math.floor(r() * 6), R: 5 + r() * 12, rot: r() * TAU, vr: (r() - 0.5) * 0.12, cifra: i % 5 === 0 ? String(Math.floor(r() * 10)) : null, dt: Math.floor(r() * 50) }));
+    this.lontani = Array.from({ length: 26 }, (_, i) => ({ x: (r() * 2 - 1) * 300, y: -10 + r() * 360, z: -45 - r() * 150, lati: 3 + Math.floor(r() * 6), R: 5 + r() * 12, rot: r() * TAU, vr: (r() - 0.5) * 0.12, dt: Math.floor(r() * 50) }));
   }
 
   onda(x, y, forza = 1) { if (!this.ridotti) this.onde.push({ x, y, t: 0, f: forza }); }
@@ -317,13 +317,12 @@ export class Scena {
     // nebulose: grandi chiazze tenui nella tinta del livello, molto lontane (la parallasse la fa la prospettiva)
     for (let i = 0; i < 5; i++) {
       const a = i * 2.399963;
-      l.punto(Math.cos(a) * 320, 120 + Math.sin(a) * 200, -420, 260, hsl((liv.tinta + i * 24) % 360, 70, 45), 0.06);
+      l.punto(Math.cos(a) * 320, 120 + Math.sin(a) * 200, -420, 260, hsl((liv.tinta + i * 24) % 360, 70, 45), 0.06 * Math.min(1, this.qualita.alone));
     }
     // figure lontane dietro il piano di gioco
     const cLont = hsl(liv.tinta, 55, 62);
     for (const f of this.lontani) {
       const rot = f.rot + t * f.vr;
-      if (f.cifra) { scrivi(l, f.cifra, f.x, f.y, f.z, f.R, cLont, 0.32, 2); continue; }
       const pts = [];
       for (let k = 0; k <= f.lati; k++) { const a = rot + (k * TAU) / f.lati; pts.push([f.x + Math.cos(a) * f.R, f.y + Math.sin(a) * f.R]); }
       l.poli(pts, f.z, cLont, 0.3, 1.8);
@@ -352,20 +351,10 @@ export class Scena {
         prev = q;
       }
     }
-    // tacche e numeri sugli assi (1 unità del grafico = 10 unità del mondo), lettere x, y, O
-    for (let gx = x0; gx <= x1; gx += 10) {
-      if (gx === 0 || Math.abs(gx) > 150) continue;
-      l.linea(gx, -0.8, zg, gx, 0.8, zg, bianco, 0.4, 1.4);
-      scrivi(l, String(gx / 10), gx - 0.7, -3.4, zg, 1.8, bianco, 0.35, 1.2);
-    }
-    for (let gy = Math.max(10, y0); gy <= y1; gy += 10) {
-      l.linea(-0.8, gy, zg, 0.8, gy, zg, bianco, 0.4, 1.4);
-      scrivi(l, String(gy / 10), -3.6 - String(gy / 10).length * 0.6, gy - 0.9, zg, 1.8, bianco, 0.35, 1.2);
-    }
-    scrivi(l, 'O', -2.6, -3.4, zg, 1.8, bianco, 0.5, 1.4);
-    scrivi(l, 'x', MONDO.meta + 4, 1.2, zg, 2.6, bianco, 0.6, 1.8);
+    // tacche sugli assi (1 unità del grafico = 10 unità del mondo) e frecce; numeri e lettere sono testo serif (ui.js)
+    for (let gx = x0; gx <= x1; gx += 10) if (gx !== 0 && Math.abs(gx) <= 150) l.linea(gx, -0.8, zg, gx, 0.8, zg, bianco, 0.4, 1.4);
+    for (let gy = Math.max(10, y0); gy <= y1; gy += 10) l.linea(-0.8, gy, zg, 0.8, gy, zg, bianco, 0.4, 1.4);
     l.poli([[MONDO.meta + 1, -1.2], [MONDO.meta + 3, 0], [MONDO.meta + 1, 1.2]], zg, bianco, 0.6, 2);
-    scrivi(l, 'y', 1.6, MONDO.tetto + 4, zg, 2.6, bianco, 0.6, 1.8);
     l.poli([[-1.2, MONDO.tetto + 1], [0, MONDO.tetto + 3], [1.2, MONDO.tetto + 1]], zg, bianco, 0.6, 2);
 
     // correnti: il grafico e le linee di flusso che scorrono
@@ -476,7 +465,7 @@ export class Scena {
     this.part.disegna(l);
     this.disegnaPilota(p, tinta, bianco, oro);
     // pulviscolo davanti all'obiettivo (per ultimo: sta più vicino di tutto)
-    if (!this.ridotti) for (const q of this.polvere) l.punto(q.x, q.y, q.z, q.size, q.c, q.a);
+    if (!this.ridotti && this.qualita.polvere) for (const q of this.polvere) l.punto(q.x, q.y, q.z, q.size, q.c, q.a);
   }
 
   disegnaPilota(p, tinta, bianco, oro) {

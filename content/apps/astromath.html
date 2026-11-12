@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#050507">
   <title>AstroMath: volo tra le costellazioni della matematica</title>
-  <meta name="description" content="AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde attraversando l'anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.">
+  <meta name="description" content="AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde fermandosi nell'anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.">
   <meta name="keywords" content="AstroMath, Matematica, Gamification, Videogioco, Volo, Costellazioni, Piano cartesiano, Numeri relativi, Frazioni, Potenze, Percentuali, Proporzioni, Monomi, Prodotti notevoli, Scomposizioni, Equazioni, Rette, Pendenza, Pitagora, Radicali, Parabola, Mat:Calcolo, Mat:Modellizzazione, Mat:ProblemSolving, EU:STEM, EU:Digitale, CIT_4:COMPETENZA DIGITALE, Lab, 1 EL, 2 EL, Biennio, MAT_K1:Insiemi numerici e calcolo letterale, MAT_K2:Funzioni elementari, MAT_K3:Geometria euclidea e analitica, MAT_A1:Calcolo negli insiemi numerici, MAT_A3:Equazioni e Disequazioni, MAT_C2:Pensiero razionale in contesti reali">
   <meta name="allenamento" content="numeri-relativi, percentuali, prodotti-notevoli, equazioni-1, retta-pendenza, pitagora, statistica, parabola">
   <meta name="parole" content="numeri, frazione, potenze, percentuale, proporzione, polinomi, prodotti-notevoli, scomposizione, equazione-primo-grado, retta, geometria, pitagora, probabilita, equazione-secondo-grado, parabola">
@@ -13,7 +13,7 @@
   <meta property="og:title" content="AstroMath — Orfini Math Lab">
   <meta property="og:description" content="Volo tra le costellazioni della matematica: creature, anelli-risposta, badge. Domande dalla Quest, senza timer.">
 
-  <link rel="stylesheet" href="/content/assets/fonts/inter-spacemono-1669ae.css">
+  <link rel="stylesheet" href="/content/assets/fonts/inter-syne-spacemono-bf47f3.css">
   <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
   <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
   <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js" onload="window.dispatchEvent(new Event('katex-pronto'))"></script>
@@ -42,8 +42,9 @@
       --si: hsl(155, 80%, 55%);
       --no: hsl(340, 90%, 72%);
       --r: 16px;
-      --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-      --mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+      --font: 'KaTeX_Main', 'Latin Modern Roman', 'CMU Serif', 'Computer Modern', Georgia, serif;
+      --mono: 'KaTeX_Main', 'Latin Modern Roman', 'CMU Serif', Georgia, serif; /* anche i numeri sono serif, come in LaTeX */
+      --corsivo: 'KaTeX_Math', 'KaTeX_Main', Georgia, serif;
       /* variabili delle figure della Quest */
       --surface: #11131c; --line: rgba(255,255,255,0.14); --text: #eef1f7; --muted: #a7afc0;
       --c1: hsl(190, 95%, 55%); --c2: hsl(280, 85%, 70%); --c3: hsl(38, 100%, 60%);
@@ -65,7 +66,7 @@
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5em; min-height: 48px; padding: .7em 1.2em; border-radius: 999px; border: 1px solid var(--linea-forte); background: rgba(255,255,255,.06); cursor: pointer; font-weight: 600; transition: background .15s, border-color .15s, transform .1s; text-decoration: none; color: var(--testo); }
     .btn:hover { background: rgba(255,255,255,.12); border-color: var(--accento); }
     .btn:active { transform: scale(.97); }
-    .btn-primario { background: var(--accento); color: #061016; border-color: transparent; font-weight: 800; }
+    .btn-primario { background: var(--accento); color: #061016; border-color: transparent; font-weight: 700; }
     .btn-primario:hover { background: hsl(var(--tinta), 95%, 74%); }
     .btn-primario span { font-weight: 600; }
     .btn-icona { width: 48px; height: 48px; padding: 0; border-radius: 14px; background: var(--pannello); }
@@ -93,6 +94,10 @@
     .opz-n { display: inline-grid; place-items: center; min-width: 28px; height: 28px; border-radius: 50%; background: var(--accento); color: #061016; font: 700 15px var(--mono); flex: none; }
     .et-corrente { padding: 3px 10px; border-radius: 10px; background: rgba(5,5,9,.7); border: 1px solid hsla(var(--tinta), 90%, 65%, .35); color: hsl(var(--tinta), 95%, 80%); font-size: 16px; transition: box-shadow .3s, border-color .3s; }
     .et-corrente.attiva { border-color: var(--accento); box-shadow: 0 0 18px hsla(var(--tinta), 95%, 60%, .55); }
+    /* numeri e lettere degli assi: serif come in LaTeX (x e y in corsivo matematico) */
+    .et-asse { position: absolute; left: 0; top: 0; font: 400 15px/1 var(--font); color: rgba(235, 240, 255, .6); white-space: nowrap; will-change: transform; }
+    .et-lettera { font: italic 400 21px/1 var(--corsivo); color: rgba(240, 244, 255, .85); }
+    .et-origine { font: 400 16px/1 var(--font); color: rgba(240, 244, 255, .75); }
     #bussola { position: absolute; left: 0; top: 0; width: 34px; height: 34px; }
     #bussola::before { content: ''; position: absolute; inset: 0; background: var(--accento); clip-path: polygon(100% 50%, 15% 10%, 32% 50%, 15% 90%); filter: drop-shadow(0 0 6px var(--accento)); }
     #bussola.portale::before { background: #fff; }
@@ -101,37 +106,69 @@
 
     /* ---------------- incontro ---------------- */
     .pannello { background: var(--pannello-2); border: 1px solid var(--linea-forte); border-radius: var(--r); box-shadow: 0 20px 60px rgba(0,0,0,.55); }
-    #incontro { position: fixed; z-index: 30; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(640px, calc(100vw - 24px)); max-height: 46vh; overflow: auto; padding: 14px 18px 16px; border-top: 3px solid var(--accento); }
-    @media (min-width: 1000px) and (min-aspect-ratio: 4/3) {
-      #incontro { left: auto; right: 16px; bottom: auto; top: 88px; transform: none; width: 400px; max-height: calc(100vh - 110px); }
+    #incontro { --s: 1; position: fixed; z-index: 30; left: 50%; bottom: max(10px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(640px, calc(100vw - 20px)); max-height: 50dvh; overflow: hidden; padding: .75em 1em .85em; border-top: 3px solid var(--accento); border-radius: 22px; font-size: calc(16px * var(--s)); animation: rimbalzo-su .55s cubic-bezier(.34, 1.56, .64, 1) both; }
+    html.pannello-destra #incontro { left: auto; right: 12px; bottom: auto; top: 84px; transform: none; width: min(420px, 44vw); max-height: calc(100dvh - 96px); animation-name: rimbalzo-lato; }
+    /* telefono in orizzontale: a destra, sotto i pulsanti di gioco (che restano sempre raggiungibili) */
+    /* telefono in orizzontale: a destra, sotto i pulsanti di gioco; due colonne (domanda e figura | risposte) */
+    @media (max-height: 500px) {
+      html.pannello-destra #incontro { top: calc(max(10px, env(safe-area-inset-top)) + 58px); bottom: 8px; max-height: calc(100dvh - 76px); width: min(600px, 58vw);
+        display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: .8em; align-content: start;
+        grid-template-areas: "testa testa" "nota nota" "domanda opzioni" "fig opzioni" "piede piede"; }
+      html.pannello-destra .inc-testa { grid-area: testa; }
+      html.pannello-destra #inc-nota { grid-area: nota; }
+      html.pannello-destra #inc-domanda { grid-area: domanda; }
+      html.pannello-destra #inc-fig { grid-area: fig; }
+      html.pannello-destra #inc-opzioni { grid-area: opzioni; grid-template-columns: minmax(0, 1fr); align-self: start; }
+      html.pannello-destra .inc-piede { grid-area: piede; }
+      html.pannello-destra #inc-fig svg { max-height: calc(var(--s) * 46dvh); }
     }
+    @keyframes rimbalzo-su { from { opacity: 0; transform: translate(-50%, 40px) scale(.94); } }
+    @keyframes rimbalzo-lato { from { opacity: 0; transform: translateX(40px) scale(.94); } }
     .inc-testa { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
     #inc-creatura { font: 700 13px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accento); }
     #inc-argomento { font-size: 13px; color: var(--tenue); }
     #inc-nota { margin: 8px 0 0; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,.05); font-size: 15px; color: var(--tenue); }
-    #inc-domanda { margin: 8px 0 10px; font-size: 18px; line-height: 1.45; overflow-x: auto; overflow-y: hidden; }
+    #inc-domanda { margin: 6px 0 8px; font-size: 1.12em; line-height: 1.4; }
     #inc-domanda .katex-display { margin: .4em 0; }
     .katex { white-space: nowrap; }
-    .katex-display, .opz-t, .intro-testo .katex-display { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
-    .opz-t { min-width: 0; flex: 1; scrollbar-width: thin; }
+    .katex-display { margin: .3em 0; overflow: visible; }
+    .opz-t { min-width: 0; flex: 1; overflow: visible; padding: .2em 0; line-height: 1.25; } /* niente tagli: le frazioni sono più alte della riga */
+    .adatta { display: inline-block; white-space: nowrap; transform-origin: left center; }
     #inc-fig { margin: 0 0 10px; }
-    #inc-fig svg, .intro-fig svg { max-width: min(100%, 320px); height: auto; display: block; margin: 0 auto; }
-    #inc-opzioni { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 8px; }
-    .opz { width: 100%; min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 14px; border: 1px solid var(--linea-forte); background: rgba(255,255,255,.05); text-align: left; cursor: pointer; font-size: 17px; }
+    .intro-fig svg { max-width: min(100%, 320px); height: auto; display: block; margin: 0 auto; }
+    /* la figura della domanda non ruba il posto alle risposte: altezza legata allo schermo e alla scala del pannello */
+    #inc-fig svg { display: block; margin: 0 auto; width: auto; max-width: 100%; height: auto; max-height: calc(var(--s) * 24dvh); }
+    html.pannello-destra #inc-fig svg { max-height: calc(var(--s) * 30dvh); }
+    #inc-opzioni { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45em; }
+    #inc-opzioni.una-colonna { grid-template-columns: minmax(0, 1fr); }
+    #inc-opzioni li { animation: spunta .5s cubic-bezier(.34, 1.56, .64, 1) both; animation-delay: calc(var(--i, 0) * 70ms + 120ms); }
+    @keyframes spunta { from { opacity: 0; transform: translateY(12px) scale(.86); } }
+    .opz { width: 100%; min-height: 2.75em; display: flex; align-items: center; gap: .5em; padding: .35em .6em .35em .35em; border-radius: 16px; border: 1px solid var(--linea-forte); background: rgba(255,255,255,.05); text-align: left; cursor: pointer; font-size: 1.06em; transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), border-color .15s, background .15s; }
+    .opz:active:not(:disabled) { transform: scale(.95); }
+    .opz.scelta { animation: boing .45s cubic-bezier(.34, 1.56, .64, 1); }
+    .opz.scartata { animation: tremolio .4s ease-in-out; }
+    .opz.giusta { animation: salto .6s cubic-bezier(.34, 1.56, .64, 1); }
+    @keyframes boing { 40% { transform: scale(1.07) rotate(-1deg); } 70% { transform: scale(.97); } }
+    @keyframes tremolio { 20%, 60% { transform: translateX(-5px) rotate(-1deg); } 40%, 80% { transform: translateX(5px) rotate(1deg); } }
+    @keyframes salto { 35% { transform: translateY(-8px) scale(1.06); } 65% { transform: translateY(2px) scale(.98); } }
     .opz:hover:not(:disabled) { border-color: var(--accento); background: rgba(255,255,255,.1); }
     .opz.scartata { opacity: .4; text-decoration: line-through; }
     .opz.scelta { border-color: var(--oro); background: hsla(45, 100%, 55%, .14); box-shadow: 0 0 0 2px hsla(45, 100%, 60%, .5); }
+    .et-anello.solo-numero { padding: 4px; gap: 0; }
     .et-anello.scelta { border-color: var(--oro); box-shadow: 0 0 14px hsla(45, 100%, 60%, .6); }
     #inc-conferma kbd { background: rgba(0,0,0,.18); border-color: rgba(0,0,0,.3); color: inherit; }
     .opz.giusta { border-color: var(--si); background: hsla(155, 80%, 45%, .18); }
-    .opz .opt-fig svg { width: 120px; height: auto; }
+    /* grafici come risposte: misurati in em, così si riducono insieme al testo quando serve */
+    .opz .opt-fig svg { display: block; height: 5.4em; width: auto; max-width: 100%; }
     .inc-piede { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; }
     #inc-aiuto { min-height: 44px; font-size: 15px; }
     .inc-esito { font-size: 15px; color: var(--tenue); flex: 1 1 220px; }
     .inc-esito.si { color: var(--si); }
     .inc-esito.no { color: var(--no); }
     .inc-esito.aiuto { color: var(--oro); }
-    .inc-chiave { font-size: 13px; color: var(--tenue); margin: 8px 0 0; }
+    .inc-chiave { font-size: .8em; color: var(--tenue); margin: 6px 0 0; }
+    #inc-aiuto, #inc-conferma { min-height: 2.6em; padding: .4em 1em; font-size: .95em; }
+    #incontro .opz-n { min-width: 1.6em; height: 1.6em; font-size: .85em; }
 
     #intro { position: fixed; z-index: 35; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(560px, calc(100vw - 24px)); max-height: 70vh; overflow: auto; padding: 18px 20px; border-top: 3px solid var(--accento); }
     #intro h2 { margin: 2px 0 6px; font-size: 22px; }
@@ -149,10 +186,14 @@
     @keyframes entra { from { opacity: 0; transform: translateY(-10px); } }
 
     /* ---------------- schermate ---------------- */
+    /* Presentazione dell'attività (avvio, fine, pausa, impostazioni): i font standard del sito.
+       Il serif in stile LaTeX resta solo dentro il gioco (HUD, domande, assi). */
+    .schermo, dialog, #caricamento { --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; --mono: 'Space Mono', ui-monospace, monospace; --titolo: 'Syne', 'Inter', sans-serif; font-family: var(--font); }
+    .schermo h1, .schermo h2, dialog h2 { font-family: var(--titolo); }
     .schermo { position: fixed; inset: 0; z-index: 50; overflow-y: auto; overscroll-behavior: contain; background: linear-gradient(180deg, rgba(5,5,7,.55) 0%, rgba(5,5,7,.82) 38%, rgba(5,5,7,.95) 100%); }
     .schermo-dentro { width: min(1080px, 100%); margin: 0 auto; padding: 96px 16px 48px; }
     .marchio { font: 700 13px var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--accento); margin: 0; }
-    .logo { margin: .1em 0 .1em; font: 800 clamp(44px, 9vw, 92px)/1 var(--font); letter-spacing: -.035em; }
+    .logo { margin: .1em 0 .1em; font: 800 clamp(44px, 9vw, 92px)/1 var(--titolo); letter-spacing: -.035em; }
     .logo span { color: var(--accento); }
     .slogan { margin: .4em 0 1.2em; font-size: clamp(17px, 2.2vw, 21px); color: var(--tenue); max-width: 40em; }
     .eroe-azioni { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
@@ -217,6 +258,13 @@
     input[type=range] { width: 100%; accent-color: var(--accento); }
     .nota-piccola { font-size: 13px; color: var(--tenue); margin: 4px 0 0; }
 
+    @media (max-width: 640px), (max-height: 500px) {
+      .inc-chiave { display: none; }                 /* la spiegazione dei comandi sta nella schermata d'avvio */
+      #inc-creatura { font-size: 12px; }
+      #inc-argomento { font-size: 12px; }
+      .opz-n { min-width: 24px; height: 24px; font-size: 13px; }
+      .inc-piede { margin-top: 6px; }
+    }
     @media (max-width: 640px) {
       /* sul telefono l'HUD scende sotto il pulsante "home" e lascia la riga in alto ai comandi */
       #hud { left: 16px; top: calc(max(18px, env(safe-area-inset-top)) + 66px); }
@@ -330,7 +378,7 @@
     <div class="schermo-dentro">
       <p class="marchio">Orfini Math Lab</p>
       <h1 class="logo" id="titolo-gioco">Astro<span>Math</span></h1>
-      <p class="slogan">Vola sul piano cartesiano tra le costellazioni della matematica. Ogni stella ha una creatura con una domanda: rispondi attraversando l'anello giusto e accendi la costellazione.</p>
+      <p class="slogan">Vola sul piano cartesiano tra le costellazioni della matematica. Ogni stella ha una creatura con una domanda: fermati nell'anello della risposta giusta e accendi la costellazione.</p>
       <div class="eroe-azioni">
         <button type="button" class="btn btn-primario btn-grande" id="btn-vola" data-livello="0">Vola</button>
         <span class="pilota"><small>Sigla di volo</small> <span id="sigla">FALCO-π</span> <button type="button" class="btn" id="btn-sigla">Cambia</button></span>
@@ -350,7 +398,7 @@
           <h2>Come si risponde</h2>
           <ul>
             <li>Avvicinati a una stella: la sua creatura ti fa una domanda.</li>
-            <li>Attraversa l'anello giusto, oppure tocca la risposta o premi <kbd>1</kbd>–<kbd>4</kbd>.</li>
+            <li>Fermati dentro l'anello giusto finché il cerchio d'oro si riempie, oppure scegli la risposta (tocco o <kbd>1</kbd>–<kbd>4</kbd>) e confermala.</li>
             <li>Nessun timer. Senza suggerimento la stella vale ×1,2.</li>
             <li>Dopo due errori: la spiegazione e un problema gemello.</li>
           </ul>
@@ -445,7 +493,7 @@
     </div>
   </dialog>
 
-  <script type="module" src="astromath_js/main.js?v=20261112_06"></script>
+  <script type="module" src="astromath_js/main.js?v=20261112_13"></script>
   <script src="../assets/js/orfini-shared.js"></script>
 </body>
 </html>
