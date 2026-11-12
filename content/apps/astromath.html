@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050507">
+  <title>AstroMath: volo tra le costellazioni della matematica</title>
+  <meta name="description" content="AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde attraversando l'anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.">
+  <meta name="keywords" content="AstroMath, Matematica, Gamification, Videogioco, Volo, Costellazioni, Piano cartesiano, Numeri relativi, Frazioni, Potenze, Percentuali, Proporzioni, Monomi, Prodotti notevoli, Scomposizioni, Equazioni, Rette, Pendenza, Pitagora, Radicali, Parabola, Mat:Calcolo, Mat:Modellizzazione, Mat:ProblemSolving, EU:STEM, EU:Digitale, CIT_4:COMPETENZA DIGITALE, Lab, 1 EL, 2 EL, Biennio, MAT_K1:Insiemi numerici e calcolo letterale, MAT_K2:Funzioni elementari, MAT_K3:Geometria euclidea e analitica, MAT_A1:Calcolo negli insiemi numerici, MAT_A3:Equazioni e Disequazioni, MAT_C2:Pensiero razionale in contesti reali">
+  <meta name="allenamento" content="numeri-relativi, percentuali, prodotti-notevoli, equazioni-1, retta-pendenza, pitagora, statistica, parabola">
+  <meta name="parole" content="numeri, frazione, potenze, percentuale, proporzione, polinomi, prodotti-notevoli, scomposizione, equazione-primo-grado, retta, geometria, pitagora, probabilita, equazione-secondo-grado, parabola">
+  <meta name="date" content="2026-11-12">
+  <meta property="og:title" content="AstroMath — Orfini Math Lab">
+  <meta property="og:description" content="Volo tra le costellazioni della matematica: creature, anelli-risposta, badge. Domande dalla Quest, senza timer.">
+
+  <link rel="stylesheet" href="/content/assets/fonts/inter-spacemono-1669ae.css">
+  <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
+  <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
+  <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js" onload="window.dispatchEvent(new Event('katex-pronto'))"></script>
+  <script type="importmap">
+  {
+    "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js" },
+    "integrity": { "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js": "sha384-8/hf5tabFfIo0BPku31TKUvGIKpWGYaMwNtlSNqNyZzXgZCMd4lnOGWbJElML9dv" }
+  }
+  </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js" integrity="sha384-8/hf5tabFfIo0BPku31TKUvGIKpWGYaMwNtlSNqNyZzXgZCMd4lnOGWbJElML9dv" crossorigin="anonymous">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --tinta: 190;
+      --bg: #050507;
+      --pannello: rgba(9, 10, 16, 0.93);
+      --pannello-2: rgba(16, 18, 28, 0.96);
+      --linea: rgba(255, 255, 255, 0.12);
+      --linea-forte: rgba(255, 255, 255, 0.24);
+      --testo: #eef1f7;
+      --tenue: #a7afc0;
+      --accento: hsl(var(--tinta), 95%, 66%);
+      --accento-scuro: hsl(var(--tinta), 70%, 22%);
+      --oro: hsl(45, 100%, 64%);
+      --si: hsl(155, 80%, 55%);
+      --no: hsl(340, 90%, 72%);
+      --r: 16px;
+      --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'Space Mono', ui-monospace, 'SFMono-Regular', monospace;
+      /* variabili delle figure della Quest */
+      --surface: #11131c; --line: rgba(255,255,255,0.14); --text: #eef1f7; --muted: #a7afc0;
+      --c1: hsl(190, 95%, 55%); --c2: hsl(280, 85%, 70%); --c3: hsl(38, 100%, 60%);
+      --good: hsl(155, 85%, 48%); --bad: hsl(330, 85%, 66%); --font-ui: var(--font); --font-num: var(--mono);
+    }
+    :root:not([data-theme="light"]) { color-scheme: dark; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #050507; } }
+    :root[data-theme="dark"] { --bg: #050507; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--testo); font: 400 16px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+    body { overflow: hidden; }
+    button { font: inherit; color: inherit; }
+    a { color: var(--accento); }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 3px solid var(--accento); outline-offset: 2px; }
+
+    #tela { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; display: block; touch-action: none; outline: none; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5em; min-height: 48px; padding: .7em 1.2em; border-radius: 999px; border: 1px solid var(--linea-forte); background: rgba(255,255,255,.06); cursor: pointer; font-weight: 600; transition: background .15s, border-color .15s, transform .1s; text-decoration: none; color: var(--testo); }
+    .btn:hover { background: rgba(255,255,255,.12); border-color: var(--accento); }
+    .btn:active { transform: scale(.97); }
+    .btn-primario { background: var(--accento); color: #061016; border-color: transparent; font-weight: 800; }
+    .btn-primario:hover { background: hsl(var(--tinta), 95%, 74%); }
+    .btn-primario span { font-weight: 600; }
+    .btn-icona { width: 48px; height: 48px; padding: 0; border-radius: 14px; background: var(--pannello); }
+    .btn-icona svg { width: 22px; height: 22px; }
+    .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    /* ---------------- HUD ---------------- */
+    #hud { position: fixed; top: max(18px, env(safe-area-inset-top)); left: 92px; z-index: 20; display: grid; gap: 6px; pointer-events: none; }
+    .hud-riga { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 14px; background: var(--pannello); border: 1px solid var(--linea); }
+    #hud-nome { font-weight: 700; font-size: 15px; max-width: 38vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hud-stelle { font: 700 15px var(--mono); color: var(--oro); white-space: nowrap; }
+    #hud-punti { font: 700 15px var(--mono); color: var(--accento); }
+    #hud-energia { --e: 1; height: 6px; border-radius: 6px; background: rgba(255,255,255,.1); overflow: hidden; }
+    #hud-energia::after { content: ''; display: block; height: 100%; width: calc(var(--e) * 100%); background: var(--accento); border-radius: 6px; transition: width .2s; }
+    #comandi { position: fixed; top: max(18px, env(safe-area-inset-top)); right: 16px; z-index: 20; display: flex; gap: 8px; }
+
+    /* ---------------- etichette agganciate al mondo ---------------- */
+    #etichette { position: fixed; inset: 0; z-index: 10; pointer-events: none; overflow: hidden; }
+    .et-anello, .et-corrente { position: absolute; left: 0; top: 0; will-change: transform; white-space: nowrap; }
+    .et-anello { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; background: rgba(5,5,9,.86); border: 1.5px solid var(--accento); font-size: 18px; opacity: 0; transition: opacity .3s; }
+    .et-anello.nato { opacity: 1; }
+    .et-anello.scartata { opacity: .25 !important; text-decoration: line-through; border-color: var(--linea); }
+    .et-anello .opt-fig svg { width: 90px; height: auto; }
+    .opz-n { display: inline-grid; place-items: center; min-width: 28px; height: 28px; border-radius: 50%; background: var(--accento); color: #061016; font: 700 15px var(--mono); flex: none; }
+    .et-corrente { padding: 3px 10px; border-radius: 10px; background: rgba(5,5,9,.7); border: 1px solid hsla(var(--tinta), 90%, 65%, .35); color: hsl(var(--tinta), 95%, 80%); font-size: 16px; transition: box-shadow .3s, border-color .3s; }
+    .et-corrente.attiva { border-color: var(--accento); box-shadow: 0 0 18px hsla(var(--tinta), 95%, 60%, .55); }
+    #bussola { position: absolute; left: 0; top: 0; width: 34px; height: 34px; }
+    #bussola::before { content: ''; position: absolute; inset: 0; background: var(--accento); clip-path: polygon(100% 50%, 15% 10%, 32% 50%, 15% 90%); filter: drop-shadow(0 0 6px var(--accento)); }
+    #bussola.portale::before { background: #fff; }
+    #joystick { position: fixed; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: 50%; border: 2px solid hsla(var(--tinta), 90%, 70%, .45); z-index: 15; pointer-events: none; }
+    #joystick > span { position: absolute; left: 40px; top: 40px; width: 40px; height: 40px; border-radius: 50%; background: hsla(var(--tinta), 95%, 70%, .5); }
+
+    /* ---------------- incontro ---------------- */
+    .pannello { background: var(--pannello-2); border: 1px solid var(--linea-forte); border-radius: var(--r); box-shadow: 0 20px 60px rgba(0,0,0,.55); }
+    #incontro { position: fixed; z-index: 30; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(640px, calc(100vw - 24px)); max-height: 46vh; overflow: auto; padding: 14px 18px 16px; border-top: 3px solid var(--accento); }
+    @media (min-width: 1000px) and (min-aspect-ratio: 4/3) {
+      #incontro { left: auto; right: 16px; bottom: auto; top: 88px; transform: none; width: 400px; max-height: calc(100vh - 110px); }
+    }
+    .inc-testa { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+    #inc-creatura { font: 700 13px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accento); }
+    #inc-argomento { font-size: 13px; color: var(--tenue); }
+    #inc-nota { margin: 8px 0 0; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,.05); font-size: 15px; color: var(--tenue); }
+    #inc-domanda { margin: 8px 0 10px; font-size: 18px; line-height: 1.45; }
+    #inc-domanda .katex-display { margin: .4em 0; }
+    #inc-fig { margin: 0 0 10px; }
+    #inc-fig svg, .intro-fig svg { max-width: min(100%, 320px); height: auto; display: block; margin: 0 auto; }
+    #inc-opzioni { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 8px; }
+    .opz { width: 100%; min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border-radius: 14px; border: 1px solid var(--linea-forte); background: rgba(255,255,255,.05); text-align: left; cursor: pointer; font-size: 17px; }
+    .opz:hover:not(:disabled) { border-color: var(--accento); background: rgba(255,255,255,.1); }
+    .opz.scartata { opacity: .4; text-decoration: line-through; }
+    .opz.giusta { border-color: var(--si); background: hsla(155, 80%, 45%, .18); }
+    .opz .opt-fig svg { width: 120px; height: auto; }
+    .inc-piede { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 10px; flex-wrap: wrap; }
+    #inc-aiuto { min-height: 44px; font-size: 15px; }
+    .inc-esito { font-size: 15px; color: var(--tenue); flex: 1 1 220px; }
+    .inc-esito.si { color: var(--si); }
+    .inc-esito.no { color: var(--no); }
+    .inc-esito.aiuto { color: var(--oro); }
+    .inc-chiave { font-size: 13px; color: var(--tenue); margin: 8px 0 0; }
+
+    #intro { position: fixed; z-index: 35; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(560px, calc(100vw - 24px)); max-height: 70vh; overflow: auto; padding: 18px 20px; border-top: 3px solid var(--accento); }
+    #intro h2 { margin: 2px 0 6px; font-size: 22px; }
+    .intro-chi { margin: 0; font: 700 13px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--accento); }
+    .intro-testo { font-size: 17px; }
+    .intro-fig { margin: 10px 0; }
+    #intro .btn { margin-top: 12px; }
+
+    /* ---------------- avvisi ---------------- */
+    #avvisi { position: fixed; z-index: 40; top: 86px; left: 50%; transform: translateX(-50%); display: grid; gap: 8px; width: min(460px, calc(100vw - 24px)); pointer-events: none; }
+    .avviso { display: block; padding: 10px 14px; border-radius: 14px; background: var(--pannello-2); border: 1px solid var(--linea-forte); font-size: 15px; animation: entra .35s ease-out; transition: opacity .5s, transform .5s; }
+    .avviso.via { opacity: 0; transform: translateY(-8px); }
+    .avviso-oro { border-color: var(--oro); }
+    .avviso-badge { display: flex; gap: 12px; align-items: center; border-color: hsl(var(--h), 90%, 65%); }
+    @keyframes entra { from { opacity: 0; transform: translateY(-10px); } }
+
+    /* ---------------- schermate ---------------- */
+    .schermo { position: fixed; inset: 0; z-index: 50; overflow-y: auto; overscroll-behavior: contain; background: linear-gradient(180deg, rgba(5,5,7,.55) 0%, rgba(5,5,7,.82) 38%, rgba(5,5,7,.95) 100%); }
+    .schermo-dentro { width: min(1080px, 100%); margin: 0 auto; padding: 96px 16px 48px; }
+    .marchio { font: 700 13px var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--accento); margin: 0; }
+    .logo { margin: .1em 0 .1em; font: 800 clamp(44px, 9vw, 92px)/1 var(--font); letter-spacing: -.035em; }
+    .logo span { color: var(--accento); }
+    .slogan { margin: .4em 0 1.2em; font-size: clamp(17px, 2.2vw, 21px); color: var(--tenue); max-width: 40em; }
+    .eroe-azioni { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .btn-grande { min-height: 58px; padding: .8em 1.6em; font-size: 19px; }
+    .pilota { display: inline-flex; align-items: center; gap: 10px; padding: 6px 6px 6px 16px; border-radius: 999px; border: 1px solid var(--linea); background: var(--pannello); }
+    .pilota small { color: var(--tenue); }
+    #sigla { font: 700 17px var(--mono); color: var(--oro); }
+    .griglia-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; margin: 28px 0; }
+    .scheda { padding: 16px 18px; border-radius: var(--r); background: var(--pannello); border: 1px solid var(--linea); }
+    .scheda h2 { margin: 0 0 6px; font-size: 18px; }
+    .scheda p, .scheda li { color: var(--tenue); font-size: 15px; }
+    .scheda ul { margin: 0; padding-left: 1.1em; }
+    kbd { font: 600 13px var(--mono); padding: 1px 6px; border-radius: 6px; border: 1px solid var(--linea-forte); background: rgba(255,255,255,.06); color: var(--testo); }
+    .titolo-sez { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 34px 0 12px; }
+    .titolo-sez h2 { margin: 0; font-size: 22px; }
+    .titolo-sez span { color: var(--tenue); font: 600 14px var(--mono); }
+    #mappa-livelli { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+    .livello { --h: 190; position: relative; display: grid; gap: 2px; text-align: left; padding: 14px 14px 12px 54px; min-height: 104px; border-radius: var(--r); border: 1px solid hsla(var(--h), 80%, 60%, .3); background: linear-gradient(135deg, hsla(var(--h), 70%, 30%, .28), rgba(9,10,16,.92) 70%); cursor: pointer; transition: border-color .15s, transform .15s; }
+    .livello:hover:not(:disabled) { border-color: hsl(var(--h), 90%, 65%); transform: translateY(-2px); }
+    .livello.completo { border-color: hsla(var(--h), 90%, 65%, .7); }
+    .livello.chiuso { opacity: .5; cursor: not-allowed; filter: saturate(.4); }
+    .liv-num { position: absolute; left: 14px; top: 14px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 14px var(--mono); background: hsl(var(--h), 90%, 65%); color: #061016; }
+    .liv-nome { font-weight: 700; font-size: 17px; }
+    .liv-sotto { font-size: 14px; color: var(--tenue); }
+    .liv-stato { font: 600 13px var(--mono); color: var(--oro); margin-top: 4px; }
+    .livello.chiuso .liv-stato { font: 400 13px var(--font); color: var(--tenue); }
+    .badge-lista { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 8px; }
+    .badge { --h: 50; display: grid; grid-template-columns: 40px 1fr; column-gap: 10px; align-items: center; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--linea); background: var(--pannello); opacity: .45; }
+    .badge.preso { opacity: 1; border-color: hsla(var(--h), 90%, 65%, .55); }
+    .badge-glifo { grid-row: span 2; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 20px; background: hsla(var(--h), 80%, 50%, .2); color: hsl(var(--h), 95%, 72%); border: 1px solid hsla(var(--h), 90%, 65%, .5); }
+    .badge-nome { font-weight: 700; font-size: 15px; }
+    .badge-desc { font-size: 13px; color: var(--tenue); }
+    .avviso .badge-glifo { flex: none; }
+    #classifica { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+    #classifica li { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.04); font-size: 15px; }
+    #classifica li span:first-child { font-family: var(--mono); color: var(--oro); }
+    #classifica li.vuota { display: block; color: var(--tenue); }
+    .piede { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--tenue); font-size: 14px; }
+
+    #schermo-fine .schermo-dentro, #schermo-pausa .schermo-dentro { max-width: 640px; }
+    .fine-card { padding: 24px; }
+    .fine-card h1 { margin: 6px 0 14px; font-size: clamp(26px, 5vw, 36px); line-height: 1.15; }
+    .numeri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 16px; }
+    .numeri div { padding: 12px; border-radius: 12px; background: rgba(255,255,255,.05); }
+    .numeri dt { font-size: 13px; color: var(--tenue); }
+    .numeri dd { margin: 0; font: 700 26px var(--mono); color: var(--accento); }
+    .fine-card h2 { font-size: 17px; margin: 18px 0 8px; }
+    #fine-ripasso { margin: 0; padding-left: 1.1em; }
+    #fine-ripasso li { margin: 4px 0; }
+    .ripasso-nota { color: var(--tenue); font-size: 14px; }
+    .fine-azioni { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    #caricamento { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: rgba(5,5,7,.6); }
+    #caricamento p { padding: 14px 20px; border-radius: 14px; background: var(--pannello-2); border: 1px solid var(--linea); }
+
+    dialog { border: 1px solid var(--linea-forte); border-radius: var(--r); background: var(--pannello-2); color: var(--testo); width: min(480px, calc(100vw - 24px)); padding: 20px; }
+    dialog::backdrop { background: rgba(0,0,0,.6); }
+    dialog h2 { margin: 0 0 12px; }
+    fieldset { border: 1px solid var(--linea); border-radius: 12px; margin: 0 0 12px; padding: 10px 12px; }
+    legend { font-weight: 700; padding: 0 6px; }
+    fieldset label { display: flex; gap: 10px; align-items: center; min-height: 40px; cursor: pointer; }
+    input[type=radio], input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accento); }
+    input[type=range] { width: 100%; accent-color: var(--accento); }
+    .nota-piccola { font-size: 13px; color: var(--tenue); margin: 4px 0 0; }
+
+    @media (max-width: 640px) {
+      /* sul telefono l'HUD scende sotto il pulsante "home" e lascia la riga in alto ai comandi */
+      #hud { left: 16px; top: calc(max(18px, env(safe-area-inset-top)) + 66px); }
+      #hud-nome { max-width: 46vw; font-size: 14px; }
+      #avvisi { top: 150px; }
+      .hud-riga { padding: 6px 10px; gap: 8px; }
+      #comandi .btn-icona { width: 44px; height: 44px; }
+      #inc-domanda { font-size: 17px; }
+      .numeri dd { font-size: 21px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+    html[data-effetti="ridotti"] .avviso { animation: none; }
+
+    /* figure SVG generate dalla Quest (stessi stili di allenamento/css/app.css) */
+    /* FIGURE_QUEST_INIZIO */
+    .g { display: block; font-family: var(--font-ui); }
+    .g .g-grid { stroke: var(--line); stroke-width: 1; }
+    .g .g-axis { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+    .g .g-arrowhead { fill: var(--muted); }
+    .g .g-tick { fill: var(--muted); font-size: 11.5px; font-family: var(--font-num); }
+    .g .g-axname { fill: var(--muted); font-size: 13px; font-style: italic; }
+    .g .g-lbl { fill: var(--text); font-size: 14px; font-weight: 600; }
+    .g .g-lbl-sm { fill: var(--text); font-size: 12px; font-weight: 600; }
+    .g .g-vtx { fill: var(--text); font-size: 14px; font-weight: 700; font-style: italic; }
+    .g .g-fn1 { stroke: var(--c1); stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .g .g-fn2 { stroke: var(--c2); stroke-width: 3; fill: none; stroke-linecap: round; }
+    .g .g-fn3 { stroke: var(--c3); stroke-width: 3; fill: none; }
+    .g .g-fnl1 { fill: var(--c1); font-size: 12px; font-weight: 700; }
+    .g .g-fnl2 { fill: var(--c2); font-size: 12px; font-weight: 700; }
+    .g .g-pt { fill: var(--c3); stroke: var(--bg); stroke-width: 2; }
+    .g .g-pt-note { fill: var(--text); }
+    .g .g-note { fill: var(--text); font-size: 12.5px; font-weight: 700; font-family: var(--font-num); }
+    .g .g-halo { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+    .g .g-pt.open { fill: var(--surface); stroke: var(--c3); stroke-width: 2.5; }
+    .g .g-seg { stroke: var(--text); stroke-width: 2; fill: none; }
+    .g .g-guide { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 4; }
+    .g .g-region { fill: color-mix(in srgb, var(--c4) 28%, transparent); }
+    .g .g-range { stroke: var(--c4); stroke-width: 6; stroke-linecap: round; }
+    .g .g-shape { stroke: var(--text); stroke-width: 2; stroke-linejoin: round; }
+    .g .g-nofill { fill: none; }
+    .g .g-fill1 { fill: color-mix(in srgb, var(--c1) 22%, transparent); }
+    .g .g-fill1b { fill: color-mix(in srgb, var(--c1) 32%, transparent); }
+    .g .g-fill1c { fill: color-mix(in srgb, var(--c1) 14%, transparent); }
+    .g .g-fill2 { fill: color-mix(in srgb, var(--c2) 22%, transparent); }
+    .g .g-fill2c { fill: color-mix(in srgb, var(--c2) 34%, transparent); }
+    .g .g-fill3 { fill: color-mix(in srgb, var(--c3) 30%, transparent); }
+    .g .g-cell { fill: var(--surface-2); stroke: var(--line); }
+    .g .g-hidden { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; }
+    .g .g-dim { stroke: var(--muted); stroke-width: 1.4; }
+    .g .g-mark { stroke: var(--text); stroke-width: 1.6; fill: none; }
+    .g .g-arc { stroke: var(--c3); stroke-width: 2.5; fill: none; }
+    .g .g-cos { stroke: var(--c1); stroke-width: 4; stroke-linecap: round; }
+    .g .g-sin { stroke: var(--c2); stroke-width: 4; stroke-linecap: round; }
+    .g .g-node { fill: var(--surface-2); stroke: var(--line); stroke-width: 1.5; }
+    .g .g-bar0 { fill: var(--c1); } .g .g-bar1 { fill: var(--c2); } .g .g-bar2 { fill: var(--c3); } .g .g-bar3 { fill: var(--c4); }
+    .g-table-wrap { overflow-x: auto; max-width: 100%; }
+    .g-table { border-collapse: collapse; font-family: var(--font-num); font-variant-numeric: tabular-nums; margin: 0 auto; }
+    .g-table th, .g-table td { border: 1px solid var(--line); padding: 8px 12px; text-align: center; }
+    .g-table th { background: var(--surface-2); font-family: var(--font-ui); font-weight: 600; }
+    .g-table caption { color: var(--muted); font-size: 0.9375rem; margin-bottom: 6px; font-family: var(--font-ui); }
+    .g-table .hl { color: var(--accent); }
+    .g .pb-full { fill: var(--surface-3); }
+    .g .pb-paid { fill: var(--accent); transition: width 0.12s ease; }
+    .g .pb-paid.ok { fill: var(--good); }
+    .g .pb-tick { stroke: var(--bg); stroke-width: 2; opacity: 0.6; }
+    /* FIGURE_QUEST_FINE */
+  </style>
+</head>
+<body>
+  <canvas id="tela" aria-label="Il cielo di AstroMath: il pilota vola tra le stelle della costellazione"></canvas>
+  <div id="etichette" aria-hidden="true" hidden><div id="bussola" hidden></div></div>
+  <div id="joystick" aria-hidden="true" hidden><span></span></div>
+
+  <header id="hud" hidden>
+    <div class="hud-riga">
+      <span id="hud-nome">Numeri</span>
+      <span class="hud-stelle" aria-label="Stelle accese">★ <span id="hud-stelle">0/6</span></span>
+      <span id="hud-punti" aria-label="Punti">0</span>
+    </div>
+    <div id="hud-energia" role="meter" aria-label="Energia dei razzi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"></div>
+  </header>
+
+  <nav id="comandi" aria-label="Comandi di gioco" hidden>
+    <button type="button" class="btn btn-icona" id="btn-audio" aria-pressed="false" title="Audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span class="vh">Audio</span></button>
+    <button type="button" class="btn btn-icona" id="btn-impostazioni" title="Impostazioni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span class="vh">Impostazioni</span></button>
+    <button type="button" class="btn btn-icona" id="btn-pausa" title="Pausa (P)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><span class="vh">Pausa</span></button>
+  </nav>
+
+  <section id="incontro" class="pannello" hidden aria-label="Incontro con la creatura">
+    <div class="inc-testa"><span id="inc-creatura"></span><span id="inc-argomento"></span></div>
+    <p id="inc-nota" hidden></p>
+    <div id="inc-domanda"></div>
+    <div id="inc-fig" hidden></div>
+    <ol id="inc-opzioni"></ol>
+    <div class="inc-piede">
+      <button type="button" class="btn" id="inc-aiuto">Suggerimento <kbd>H</kbd></button>
+      <span id="inc-esito" class="inc-esito" role="status" aria-live="polite"></span>
+    </div>
+    <p class="inc-chiave">Vola attraverso l'anello giusto, oppure tocca la risposta o premi <kbd>1</kbd>–<kbd>4</kbd>. Nessun timer: pensa con calma.</p>
+  </section>
+
+  <section id="intro" class="pannello" hidden aria-live="polite"></section>
+  <div id="avvisi" aria-live="polite"></div>
+  <div id="caricamento" hidden><p role="status">Preparo la costellazione…</p></div>
+
+  <!-- schermata d'avvio -->
+  <section id="schermo-avvio" class="schermo" aria-labelledby="titolo-gioco">
+    <div class="schermo-dentro">
+      <p class="marchio">Orfini Math Lab</p>
+      <h1 class="logo" id="titolo-gioco">Astro<span>Math</span></h1>
+      <p class="slogan">Vola sul piano cartesiano tra le costellazioni della matematica. Ogni stella ha una creatura con una domanda: rispondi attraversando l'anello giusto e accendi la costellazione.</p>
+      <div class="eroe-azioni">
+        <button type="button" class="btn btn-primario btn-grande" id="btn-vola" data-livello="0">Vola</button>
+        <span class="pilota"><small>Sigla di volo</small> <span id="sigla">FALCO-π</span> <button type="button" class="btn" id="btn-sigla">Cambia</button></span>
+      </div>
+
+      <div class="griglia-info">
+        <div class="scheda">
+          <h2>Come si vola</h2>
+          <ul>
+            <li>Trascina sullo schermo, o usa le frecce (<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, <kbd>Spazio</kbd> per salire).</li>
+            <li>La sciarpa è la tua energia: si ricarica a terra, sulle correnti e con le risposte giuste.</li>
+            <li>Picchiata e poi su: la velocità diventa quota.</li>
+            <li>Le correnti sono grafici di funzione: seguile e ti portano.</li>
+          </ul>
+        </div>
+        <div class="scheda">
+          <h2>Come si risponde</h2>
+          <ul>
+            <li>Avvicinati a una stella: la sua creatura ti fa una domanda.</li>
+            <li>Attraversa l'anello giusto, oppure tocca la risposta o premi <kbd>1</kbd>–<kbd>4</kbd>.</li>
+            <li>Nessun timer. Senza suggerimento la stella vale ×1,2.</li>
+            <li>Dopo due errori: la spiegazione e un problema gemello.</li>
+          </ul>
+        </div>
+        <div class="scheda">
+          <h2>Quest e AstroMath</h2>
+          <p id="quest-legame"></p>
+        </div>
+      </div>
+
+      <div class="titolo-sez"><h2>Le costellazioni</h2><span>in ordine di curricolo</span></div>
+      <div id="mappa-livelli"></div>
+
+      <div class="titolo-sez"><h2>Badge</h2><span id="badge-conteggio"></span></div>
+      <ul class="badge-lista" id="badge-griglia"></ul>
+
+      <div class="titolo-sez"><h2>Record su questo dispositivo</h2><span>solo sigle, nessun nome</span></div>
+      <ol id="classifica"></ol>
+
+      <div class="piede">
+        <button type="button" class="btn" id="btn-impostazioni-avvio">Impostazioni</button>
+        <a class="btn" href="/allenamento/">Apri la Quest</a>
+        <span>I progressi restano solo in questo browser.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- fine livello -->
+  <section id="schermo-fine" class="schermo" hidden aria-labelledby="fine-titolo">
+    <div class="schermo-dentro">
+      <div class="pannello fine-card">
+        <p class="marchio">AstroMath</p>
+        <h1 id="fine-titolo">Costellazione completa</h1>
+        <dl class="numeri">
+          <div><dt>Punti</dt><dd id="fine-punti">0</dd></div>
+          <div><dt>Al primo colpo</dt><dd id="fine-primo">0/6</dd></div>
+          <div><dt>A mente</dt><dd id="fine-amente">0</dd></div>
+        </dl>
+        <div id="fine-badge-blocco"><h2>Badge nuovi</h2><ul class="badge-lista" id="fine-badge"></ul></div>
+        <h2>Per allenarti nella Quest</h2>
+        <ul id="fine-ripasso"></ul>
+        <div class="fine-azioni">
+          <button type="button" class="btn btn-primario" id="btn-prossimo">Prossima costellazione</button>
+          <button type="button" class="btn" id="btn-rigioca">Rigioca con numeri nuovi</button>
+          <button type="button" class="btn" id="btn-card">Scarica la card</button>
+          <button type="button" class="btn" id="btn-mappa-fine">Mappa</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- pausa -->
+  <section id="schermo-pausa" class="schermo" hidden aria-label="Pausa">
+    <div class="schermo-dentro">
+      <div class="pannello fine-card">
+        <h1>Pausa</h1>
+        <div class="fine-azioni">
+          <button type="button" class="btn btn-primario" id="btn-riprendi">Riprendi</button>
+          <button type="button" class="btn" id="btn-ricomincia">Ricomincia la costellazione</button>
+          <button type="button" class="btn" id="btn-impostazioni-pausa">Impostazioni</button>
+          <button type="button" class="btn" id="btn-mappa">Torna alla mappa</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <dialog id="dlg-impostazioni" aria-labelledby="titolo-imp">
+    <h2 id="titolo-imp">Impostazioni</h2>
+    <fieldset>
+      <legend>Qualità grafica</legend>
+      <label><input type="radio" name="qualita" value="auto"> Automatica (scende se il dispositivo fatica)</label>
+      <label><input type="radio" name="qualita" value="alta"> Alta</label>
+      <label><input type="radio" name="qualita" value="media"> Media</label>
+      <label><input type="radio" name="qualita" value="bassa"> Leggera</label>
+    </fieldset>
+    <fieldset>
+      <legend>Effetti</legend>
+      <label><input type="radio" name="effetti" value="sito"> Come nel resto del sito</label>
+      <label><input type="radio" name="effetti" value="pieni"> Pieni (scuotimenti, onde, scintille)</label>
+      <label><input type="radio" name="effetti" value="ridotti"> Ridotti</label>
+    </fieldset>
+    <fieldset>
+      <legend>Suono e vibrazione</legend>
+      <label for="imp-volume">Volume</label>
+      <input type="range" id="imp-volume" name="volume" min="0" max="1" step="0.05">
+      <label><input type="checkbox" name="vibrazione"> Vibrazione sulle risposte</label>
+      <p class="nota-piccola" id="vibrazione-nota" hidden>Questo browser non permette la vibrazione (su iPhone non è disponibile).</p>
+    </fieldset>
+    <div class="fine-azioni">
+      <button type="button" class="btn btn-primario" id="btn-chiudi-impostazioni">Fatto</button>
+      <button type="button" class="btn" id="btn-cancella">Cancella i miei progressi</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="astromath_js/main.js?v=20261112_01"></script>
+  <script src="../assets/js/orfini-shared.js"></script>
+</body>
+</html>

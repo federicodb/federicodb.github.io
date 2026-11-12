@@ -259,13 +259,10 @@ export function polygon(o) {
   const oy = (H - (maxy - miny) * s) / 2;
   const P = ([x, y]) => [ox + (x - minx) * s, H - oy - (y - miny) * s];
   const pts = o.pts.map(P);
-  const cx = pts.reduce((a, p) => a + p[0], 0) / pts.length;
-  const cy = pts.reduce((a, p) => a + p[1], 0) / pts.length;
   let g = `<polygon class="${o.fill || 'g-fill1'} g-shape" points="${pts.map((p) => p.map(r2).join(',')).join(' ')}"/>`;
   for (const e of o.extra || []) {
     const [a, b] = e.seg.map(P);
     g += `<line class="${e.cls || 'g-seg'}" x1="${r2(a[0])}" y1="${r2(a[1])}" x2="${r2(b[0])}" y2="${r2(b[1])}"${e.dash ? ' stroke-dasharray="5 4"' : ''}/>`;
-    if (e.label) g += text((a[0] + b[0]) / 2 + (e.dx || 10), (a[1] + b[1]) / 2 + (e.dy || 0), e.label, 'g-lbl', 'start');
   }
   (o.right || []).forEach((i) => {
     const p = pts[i];
@@ -276,22 +273,90 @@ export function polygon(o) {
     const k = 12;
     g += `<polyline class="g-mark" points="${r2(p[0] + u[0] * k)},${r2(p[1] + u[1] * k)} ${r2(p[0] + (u[0] + v[0]) * k)},${r2(p[1] + (u[1] + v[1]) * k)} ${r2(p[0] + v[0] * k)},${r2(p[1] + v[1] * k)}"/>`;
   });
+  // Etichette posizionate in modo rigoroso: ogni etichetta è un rettangolo (misura stimata del testo)
+  // spostato lungo la normale esterna del lato (o la bisettrice esterna del vertice) finché non tocca
+  // nessun lato del poligono, nessun segmento extra e nessun'altra etichetta. Il riquadro si allarga se serve.
+  const segmenti = pts.map((p, i) => [p, pts[(i + 1) % pts.length]]).concat((o.extra || []).map((e) => e.seg.map(P)));
+  const occupati = [];
+  /** Prima posizione libera lungo la direzione `dir` partendo da `base`: { r (rettangolo), t (distanza), libero } */
+  const cerca = (lab, base, dir) => {
+    const [w, h] = misuraTesto(lab, 14);
+    let t = 5 + Math.abs(dir[0]) * w / 2 + Math.abs(dir[1]) * h / 2;
+    let r;
+    for (let k = 0; k < 60; k++, t += 1.5) {
+      const c = [base[0] + dir[0] * t, base[1] + dir[1] * t];
+      r = [c[0] - w / 2 - 3, c[1] - h / 2 - 3, c[0] + w / 2 + 3, c[1] + h / 2 + 3];
+      if (!segmenti.some(([a, b]) => segTagliaRett(a, b, r)) && !occupati.some((q) => rettSovrapposti(q, r))) return { r, t, libero: true };
+    }
+    return { r, t, libero: false };
+  };
+  const scrivi = (lab, r, cls) => { occupati.push(r); g += text((r[0] + r[2]) / 2, (r[1] + r[3]) / 2, lab, cls); };
+  const metti = (lab, base, dir, cls) => scrivi(lab, cerca(lab, base, dir).r, cls);
+  // etichette dei segmenti extra (altezze, diagonali): dal lato del segmento dove c'è posto più vicino
+  for (const e of o.extra || []) {
+    if (!e.label) continue;
+    const [a, b] = e.seg.map(P);
+    const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], n = norm([b[1] - a[1], a[0] - b[0]]);
+    const [x, y] = [cerca(e.label, m, n), cerca(e.label, m, [-n[0], -n[1]])];
+    const migliore = x.libero !== y.libero ? (x.libero ? x : y) : x.t <= y.t ? x : y;
+    scrivi(e.label, migliore.r, 'g-lbl');
+  }
   (o.sides || []).forEach((lab, i) => {
     if (!lab) return;
     const a = pts[i];
     const b = pts[(i + 1) % pts.length];
-    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
-    const out = norm([mx - cx, my - cy]);
-    g += text(mx + out[0] * 16, my + out[1] * 16, lab, 'g-lbl');
+    const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    let n = norm([b[1] - a[1], a[0] - b[0]]);              // normale al lato
+    if (dentroPoligono([m[0] + n[0] * 2, m[1] + n[1] * 2], pts)) n = [-n[0], -n[1]]; // verso l'esterno
+    metti(lab, m, n, 'g-lbl');
   });
   (o.vertices || []).forEach((lab, i) => {
     if (!lab) return;
     const p = pts[i];
-    const out = norm([p[0] - cx, p[1] - cy]);
-    g += text(p[0] + out[0] * 14, p[1] + out[1] * 14, lab, 'g-vtx');
+    const u = norm([pts[(i + pts.length - 1) % pts.length][0] - p[0], pts[(i + pts.length - 1) % pts.length][1] - p[1]]);
+    const v = norm([pts[(i + 1) % pts.length][0] - p[0], pts[(i + 1) % pts.length][1] - p[1]]);
+    let d = Math.hypot(u[0] + v[0], u[1] + v[1]) > 1e-6 ? norm([-(u[0] + v[0]), -(u[1] + v[1])]) : [u[1], -u[0]]; // bisettrice esterna
+    if (dentroPoligono([p[0] + d[0] * 2, p[1] + d[1] * 2], pts)) d = [-d[0], -d[1]];
+    metti(lab, p, d, 'g-vtx');
   });
+  // riquadro: tutto il disegno, etichette comprese, con un margine
+  const xs2 = pts.map((p) => p[0]).concat(...occupati.map((r) => [r[0], r[2]]));
+  const ys2 = pts.map((p) => p[1]).concat(...occupati.map((r) => [r[1], r[3]]));
+  const vx0 = Math.min(0, Math.min(...xs2) - 4), vy0 = Math.min(0, Math.min(...ys2) - 4);
+  const vx1 = Math.max(W, Math.max(...xs2) + 4), vy1 = Math.max(H, Math.max(...ys2) + 4);
+  if (vx0 < 0 || vy0 < 0 || vx1 > W || vy1 > H) {
+    return `<svg class="g g-fig" viewBox="${r2(vx0)} ${r2(vy0)} ${r2(vx1 - vx0)} ${r2(vy1 - vy0)}" role="img" aria-label="${esc(o.alt || 'Figura')}" preserveAspectRatio="xMidYMid meet">${g}</svg>`;
+  }
   return wrap(W, H, g, o.alt || 'Figura', 'g-fig');
 }
+
+/** Misura prudente di un'etichetta (testo semigrassetto, cifre e unità): larghezza e altezza in px */
+function misuraTesto(s, fs) {
+  let w = 0;
+  for (const ch of String(s)) w += /[\s.,:;'’()|]/.test(ch) ? 0.32 : /[mwMW]/.test(ch) ? 0.9 : /[²³]/.test(ch) ? 0.4 : 0.62;
+  return [Math.max(fs * 0.62, w * fs), fs * 1.2];
+}
+/** Il punto è dentro il poligono? (pari-dispari: vale anche per poligoni non convessi) */
+function dentroPoligono([x, y], pts) {
+  let dentro = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const [xi, yi] = pts[i], [xj, yj] = pts[j];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) dentro = !dentro;
+  }
+  return dentro;
+}
+/** Il segmento a-b entra nel rettangolo r = [x0, y0, x1, y1]? (ritaglio di Liang-Barsky) */
+function segTagliaRett(a, b, r) {
+  const dx = b[0] - a[0], dy = b[1] - a[1];
+  let t0 = 0, t1 = 1;
+  for (const [p, q] of [[-dx, a[0] - r[0]], [dx, r[2] - a[0]], [-dy, a[1] - r[1]], [dy, r[3] - a[1]]]) {
+    if (p === 0) { if (q < 0) return false; continue; }
+    const t = q / p;
+    if (p < 0) { if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; }
+  }
+  return t0 <= t1;
+}
+const rettSovrapposti = (a, b) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
 const norm = ([x, y]) => {
   const l = Math.hypot(x, y) || 1;
   return [x / l, y / l];
