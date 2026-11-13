@@ -1283,5 +1283,138 @@ const db_verifiche = [
                 "label": "Versione Unica"
             }
         ]
+    },
+    {
+        "title": "Verifica Classe 1 EL, Marzo 2025",
+        "excerpt": "Verifica sommativa su monomi e calcolo letterale: espressioni con potenze, prodotti e quozienti di monomi, area di figure composte scritta con monomi (con un piccolo problema sulle misure), traduzione in simboli di frasi con somme, differenze, quadrati e radici. Tempo: 50 min, calcolatrice e appunti ammessi.",
+        "tags": [
+            "1 EL",
+            "AREE E PERIMETRI",
+            "LINGUAGGIO SIMBOLICO",
+            "MAT_A1:ESEGUIRE CALCOLI OPERANDO CON DIVERSI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MONOMI E CALCOLO LETTERALE",
+            "POTENZE",
+            "RETTA"
+        ],
+        "date": "2025-03-04",
+        "group_ref": "1_el_2025-03-04_monomi_e_calcolo_letterale",
+        "version_label": "Versione Unica",
+        "url": "content/verifiche/1EL/1EL___verifica_4marzo2025.pdf",
+        "type": "document",
+        "icon": "📄",
+        "game_type": "document",
+        "thumbnail": "content/assets/thumbnails/1EL___verifica_4marzo2025.webp",
+        "allenamento": [
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "potenze",
+                "titolo": "Proprietà delle potenze",
+                "url": "allenamento/#/lezione/potenze/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "monomi",
+                "titolo": "Monomi e polinomi",
+                "url": "allenamento/#/lezione/monomi/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ],
+        "versions": [
+            {
+                "url": "content/verifiche/1EL/1EL___verifica_4marzo2025.pdf",
+                "date": "2025-03-04",
+                "label": "Versione Unica"
+            }
+        ]
+    },
+    {
+        "title": "Verifica Classe 1 EL, Febbraio 2025",
+        "excerpt": "Verifica sommativa su monomi e calcolo letterale (Fila A): semplificazione di espressioni con potenze di monomi, monomi mancanti in un'uguaglianza, monomi simili, uguali e opposti, tabella con quadrato di binomio e somma per differenza, aree e perimetri dei pezzi del Tetris espressi con monomi. Tempo: 60 min, calcolatrice e appunti ammessi.",
+        "tags": [
+            "1 EL",
+            "AREE E PERIMETRI",
+            "MAT_A1:ESEGUIRE CALCOLI OPERANDO CON DIVERSI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MONOMI E CALCOLO LETTERALE",
+            "POTENZE",
+            "PRODOTTI NOTEVOLI",
+            "RETTA"
+        ],
+        "date": "2025-02-10",
+        "group_ref": "1_el_2026-02-10_monomi_e_calcolo_letterale",
+        "version_label": "Versione Unica",
+        "url": "content/verifiche/1GP/1EL___verifica_10_febbraio_25_A.pdf",
+        "type": "document",
+        "icon": "📄",
+        "game_type": "document",
+        "thumbnail": "content/assets/thumbnails/1EL___verifica_10_febbraio_25_A.webp",
+        "allenamento": [
+            {
+                "id": "prodotti-notevoli",
+                "titolo": "Prodotti notevoli",
+                "url": "allenamento/#/lezione/prodotti-notevoli/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "numeri-relativi",
+                "titolo": "Numeri relativi",
+                "url": "allenamento/#/lezione/numeri-relativi/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "potenze",
+                "titolo": "Proprietà delle potenze",
+                "url": "allenamento/#/lezione/potenze/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "calcolo-vicino-a-100",
+                "titolo": "Numeri vicini a 100",
+                "url": "allenamento/#/lezione/calcolo-vicino-a-100/1",
+                "mat": [
+                    "MAT_A1",
+                    "MAT_K1"
+                ]
+            }
+        ],
+        "versions": [
+            {
+                "url": "content/verifiche/1GP/1EL___verifica_10_febbraio_25_A.pdf",
+                "date": "2025-02-10",
+                "label": "Versione Unica"
+            }
+        ]
     }
 ];
