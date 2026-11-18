@@ -1,0 +1,3014 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Bicicletta Poligonale e la Strada a Catenaria</title>
+  <link rel="icon" href="data:," />
+
+  <meta name="description" content="Una bicicletta con le ruote a poligono regolare (dal triangolo a 36 lati) corre in 3D su una strada fatta di archi di catenaria capovolta: il mozzo resta sempre alla stessa quota. Cursore dei lati, vista di profilo, tour automatico, luce del giorno e della notte.">
+  <meta name="keywords" content="Ruota quadrata, Ruote poligonali, Catenaria, Coseno iperbolico, Poligoni regolari, Apotema, Funzione pari, Modello matematico, Three.js, MAT_K3:Geometria, MAT_K4:Funzioni, 1 EL, 2 EL, 3 EL, 4 EL, 5 EL">
+  <meta name="allenamento" content="esponenziali, goniometria, aree-perimetri">
+  <meta name="parole" content="geometria, funzione, modelli">
+  <meta name="date" content="2026-11-17">
+  <meta name="miniatura" content="fissa">
+  <script src="../assets/js/orfini-shared.js"></script>
+
+  <!-- three.js r160 (licenza MIT) da CDN con versione esatta e integrity; il service worker lo conserva per l'uso offline -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js",
+      "three/addons/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js",
+      "three/addons/lines/Line2.js": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/Line2.js",
+      "three/addons/lines/LineGeometry.js": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineGeometry.js",
+      "three/addons/lines/LineSegments2.js": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineSegments2.js",
+      "three/addons/lines/LineSegmentsGeometry.js": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineSegmentsGeometry.js",
+      "three/addons/lines/LineMaterial.js": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineMaterial.js"
+    },
+    "integrity": {
+      "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js": "sha384-8/hf5tabFfIo0BPku31TKUvGIKpWGYaMwNtlSNqNyZzXgZCMd4lnOGWbJElML9dv",
+      "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js": "sha384-qlO/ZugKPxAQUAvTlQoo0QECzxJIJySZmCF/DHdb2Xn/hHndFwX/vfUAC9Hbk6LP",
+      "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/Line2.js": "sha384-svIqR2W/RlXb3d4T+bDn3JO+LXLbacA7GpMAUDJxTOFyZmVogvDRaOS7KZBRxcxc",
+      "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineGeometry.js": "sha384-nfFqbe33KO97I7jZXjW73quBqqskqqj64WZycLNDzn0GGGI3aoWLZzuy8i0jeYmU",
+      "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineSegments2.js": "sha384-epB9Xs4LhC0LT3tq/nQusGJE1Gxn2aaDSW3t/VKDoeZBvl9/tPqn2Hm0GQgXN0Fw",
+      "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineSegmentsGeometry.js": "sha384-HoyMSjfTC9HwQuRWVnmRh6XaXt8ZedLc03GaOyFmHtZNZd56Npb28nD2Km2fbibP",
+      "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineMaterial.js": "sha384-pnL8jGtvPyBMlYz7fiKoo6kShhYl3fVGbcaK9nwF3h1fcLjWMpiPC1/y7jcn2ysZ"
+    }
+  }
+  </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js" integrity="sha384-8/hf5tabFfIo0BPku31TKUvGIKpWGYaMwNtlSNqNyZzXgZCMd4lnOGWbJElML9dv" crossorigin="anonymous">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js" integrity="sha384-qlO/ZugKPxAQUAvTlQoo0QECzxJIJySZmCF/DHdb2Xn/hHndFwX/vfUAC9Hbk6LP" crossorigin="anonymous">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/Line2.js" integrity="sha384-svIqR2W/RlXb3d4T+bDn3JO+LXLbacA7GpMAUDJxTOFyZmVogvDRaOS7KZBRxcxc" crossorigin="anonymous">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineGeometry.js" integrity="sha384-nfFqbe33KO97I7jZXjW73quBqqskqqj64WZycLNDzn0GGGI3aoWLZzuy8i0jeYmU" crossorigin="anonymous">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineSegments2.js" integrity="sha384-epB9Xs4LhC0LT3tq/nQusGJE1Gxn2aaDSW3t/VKDoeZBvl9/tPqn2Hm0GQgXN0Fw" crossorigin="anonymous">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineSegmentsGeometry.js" integrity="sha384-HoyMSjfTC9HwQuRWVnmRh6XaXt8ZedLc03GaOyFmHtZNZd56Npb28nD2Km2fbibP" crossorigin="anonymous">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/lines/LineMaterial.js" integrity="sha384-pnL8jGtvPyBMlYz7fiKoo6kShhYl3fVGbcaK9nwF3h1fcLjWMpiPC1/y7jcn2ysZ" crossorigin="anonymous">
+
+  <style>
+    /* Inter e JetBrains Mono (licenza SIL OFL), copie locali del sito: nessuna richiesta a Google */
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 100 900; font-display: swap; src: url(../assets/fonts/files/6ab57b19c69b5042.woff2) format('woff2'); }
+    @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 100 800; font-display: swap; src: url(../assets/fonts/files/0a7197f9e2dd7a3d.woff2) format('woff2'); }
+    :root {
+      --paper-bg: #f6f5f0;
+      --paper-dock: rgba(246, 245, 240, 0.94);
+      --ink-primary: #1c1c1b;
+      --ink-secondary: #6a6862;
+      --ink-line: #161615;
+      --ink-border: rgba(22, 22, 21, 0.18);
+      --accent-orange: #ff7a00;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Grana carta SVG al 5% in multiply + leggera vignettatura */
+    #paper-grain-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 48%, rgba(22, 22, 21, 0) 62%, rgba(22, 22, 21, 0.11) 100%);
+    }
+
+    #paper-grain-overlay::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* 4.1 Intro su fondo carta con tratto inchiostro e mozzo arancione */
+    #intro-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.6s ease;
+    }
+
+    #intro-screen.hidden-intro {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro-svg {
+      margin-bottom: 1.5rem;
+      overflow: visible;
+    }
+
+    .intro-title {
+      margin: 0;
+      font-size: clamp(1.45rem, 3vw, 1.95rem);
+      font-weight: 400;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--ink-primary);
+    }
+
+    .intro-subtitle {
+      margin: 0.45rem 0 0;
+      font-size: 0.84rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--ink-secondary);
+    }
+
+    #intro-loader-box {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.25s ease;
+    }
+
+    .progress-track {
+      width: 196px;
+      height: 3px;
+      background: rgba(22, 22, 21, 0.15);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    #intro-progress-bar {
+      height: 100%;
+      width: 4%;
+      background: var(--accent-orange);
+      border-radius: 999px;
+      transition: width 0.12s linear;
+    }
+
+    #intro-progress-text {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-secondary);
+    }
+
+    #btn-start-sim {
+      margin-top: 1.4rem;
+      padding: 0.85rem 2.7rem;
+      border-radius: 999px;
+      background: var(--ink-primary);
+      color: var(--paper-bg);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1.5px solid var(--ink-primary);
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(22, 22, 21, 0.14);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, border-color 0.2s ease, opacity 0.4s ease;
+    }
+
+    #btn-start-sim.is-loading {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+    }
+
+    #btn-start-sim:hover,
+    #btn-start-sim:focus-visible {
+      transform: translateY(-2px);
+      background: var(--accent-orange);
+      border-color: var(--accent-orange);
+      color: var(--paper-bg);
+      outline: none;
+    }
+
+    #btn-start-sim:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* 4.2 Dock in stile cartoncino: fondo carta 88%, bordo sottile, pulsanti inchiostro */
+    #bottom-dock {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      width: min(94vw, 560px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    #bottom-dock.dock-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 14px);
+    }
+
+    .dock-panel {
+      background: var(--paper-dock);
+      border: 1px solid var(--ink-border);
+      border-radius: 18px;
+      box-shadow: 0 12px 32px rgba(22, 22, 21, 0.12);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .dock-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--ink-primary);
+      background: var(--ink-primary);
+      color: var(--paper-bg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.12s ease;
+    }
+
+    .dock-btn:hover,
+    .dock-btn:focus-visible {
+      background: var(--accent-orange);
+      border-color: var(--accent-orange);
+      color: var(--paper-bg);
+      outline: none;
+    }
+
+    .dock-btn:active {
+      transform: scale(0.95);
+    }
+
+    .dock-btn-secondary {
+      background: var(--ink-primary);
+      color: var(--paper-bg);
+      border-color: var(--ink-primary);
+      opacity: 0.86;
+    }
+
+    .dock-btn-secondary.active {
+      opacity: 1;
+      background: var(--accent-orange);
+      border-color: var(--accent-orange);
+      color: var(--paper-bg);
+    }
+
+    .slider-block {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .slider-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      margin-bottom: 2px;
+      gap: 8px;
+    }
+
+    .slider-title {
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .poly-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--accent-orange);
+      text-transform: capitalize;
+    }
+
+    #mini-poly-svg {
+      flex-shrink: 0;
+      overflow: visible;
+    }
+
+    .slider-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--ink-secondary);
+      margin-top: -2px;
+    }
+
+    /* 4.3 Cursore: traccia sottile inchiostro al 20%, riempimento arancione, pollice 24px, touch 44px */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 44px;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+      --fill-pct: 3.03%;
+    }
+
+    input[type="range"]:focus-visible {
+      outline: 2px solid var(--accent-orange);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(
+        90deg,
+        var(--accent-orange) 0%,
+        var(--accent-orange) var(--fill-pct),
+        rgba(22, 22, 21, 0.20) var(--fill-pct),
+        rgba(22, 22, 21, 0.20) 100%
+      );
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-orange);
+      border: 2px solid var(--paper-bg);
+      margin-top: -10px;
+      box-shadow: 0 2px 6px rgba(22, 22, 21, 0.28);
+      transition: transform 0.12s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover,
+    input[type="range"]:focus-visible::-webkit-slider-thumb {
+      transform: scale(1.1);
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(22, 22, 21, 0.20);
+    }
+
+    input[type="range"]::-moz-range-progress {
+      height: 4px;
+      border-radius: 999px;
+      background: var(--accent-orange);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-orange);
+      border: 2px solid var(--paper-bg);
+      box-shadow: 0 2px 6px rgba(22, 22, 21, 0.28);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+
+    /* ===== v16: barra superiore, chip, suggerimento ===== */
+    #top-bar {
+      position: fixed;
+      top: 16px;
+      left: 88px; /* a sinistra il pulsante di ritorno al sito (orfini-shared.js) */
+      right: 18px;
+      z-index: 20;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      pointer-events: none;
+      transition: opacity 0.6s ease 0.5s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s;
+    }
+
+    #top-bar.ui-hidden {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 9px 14px 9px 13px;
+      border-radius: 14px;
+      border: 1px solid var(--ink-border);
+      background: var(--paper-dock);
+      box-shadow: 0 6px 18px rgba(22, 22, 21, 0.08);
+    }
+
+    .brand-mark {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: var(--ink-primary);
+      white-space: nowrap;
+    }
+
+    .brand-mark::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 10px;
+      border-radius: 50%;
+      background: var(--accent-orange);
+      vertical-align: 1px;
+    }
+
+    .brand-readout {
+      font-size: 11px;
+      line-height: 1.55;
+      letter-spacing: 0.02em;
+      color: var(--ink-primary);
+      opacity: 0.78;
+      white-space: nowrap;
+    }
+
+    .brand-readout b {
+      font-weight: 600;
+      color: var(--accent-orange);
+    }
+
+    body.night-ui .chip-btn,
+    body.night-ui .brand {
+      border-color: rgba(246, 245, 240, 0.34);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip-btn {
+      height: 36px;
+      padding: 0 13px 0 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      border: 1px solid var(--ink-border);
+      background: var(--paper-dock);
+      color: var(--ink-primary);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(22, 22, 21, 0.08);
+      transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.12s ease;
+    }
+
+    .chip-btn svg {
+      flex-shrink: 0;
+    }
+
+    .chip-btn.icon-only {
+      width: 36px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    .chip-btn:hover,
+    .chip-btn:focus-visible {
+      border-color: var(--ink-primary);
+      outline: none;
+    }
+
+    .chip-btn:focus-visible {
+      box-shadow: 0 0 0 2px var(--paper-bg), 0 0 0 4px var(--accent-orange);
+    }
+
+    .chip-btn:active {
+      transform: scale(0.96);
+    }
+
+    .chip-btn.active {
+      background: var(--ink-primary);
+      border-color: var(--ink-primary);
+      color: var(--paper-bg);
+    }
+
+    .chip-btn.active svg {
+      color: var(--accent-orange);
+    }
+
+    #hint-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 118px;
+      transform: translateX(-50%);
+      z-index: 19;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(28, 28, 27, 0.82);
+      color: var(--paper-bg);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    #hint-toast.hint-hidden {
+      opacity: 0;
+      transform: translate(-50%, 6px);
+    }
+
+    kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid rgba(246, 245, 240, 0.35);
+      margin: 0 1px;
+    }
+
+    @media (max-width: 720px) {
+      .chip-btn .chip-label { display: none; }
+      .chip-btn { width: 36px; padding: 0; justify-content: center; }
+      .brand-readout .readout-extra { display: none; }
+      #hint-toast { display: none; }
+    }
+
+    @media (max-width: 520px) {
+      .slider-title { display: none; }
+      .slider-header { justify-content: flex-end; }
+      .slider-scale { display: none; }
+      .dock-panel { gap: 10px; padding: 8px 10px; }
+    }
+
+    /* Telefono in orizzontale: dock compatto che non copre i punti di contatto */
+    @media (max-height: 480px) {
+      #bottom-dock { bottom: 8px; width: min(70vw, 460px); }
+      .dock-panel { padding: 5px 10px; gap: 10px; border-radius: 14px; }
+      .dock-btn { width: 38px; height: 38px; }
+      .slider-scale, .slider-title { display: none; }
+      .slider-header { justify-content: flex-end; margin-bottom: -6px; }
+      input[type="range"] { height: 34px; }
+      .brand-readout .readout-extra { display: none; }
+      #hint-toast { display: none; }
+    }
+
+    body.lite #paper-grain-overlay::before { display: none; }
+
+    /* Cursore velocità */
+    #bottom-dock { width: min(94vw, 720px); }
+    .speed-block { flex: 0 0 168px; }
+    .speed-badge {
+      border: 0;
+      background: transparent;
+      padding: 2px 4px;
+      margin: -2px -4px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-orange);
+      cursor: pointer;
+    }
+    .speed-badge.is-default { color: var(--ink-primary); opacity: 0.7; cursor: default; }
+    .speed-badge:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 1px; }
+    @media (max-width: 720px) {
+      .speed-block { flex-basis: 104px; }
+      .speed-block .slider-scale { display: none; }
+    }
+    @media (max-height: 480px) {
+      #bottom-dock { width: min(86vw, 580px); }
+      .speed-block .slider-scale { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Introduzione su fondo carta con tratto inchiostro e mozzo arancione -->
+  <div id="intro-screen">
+    <svg id="intro-wheel-svg" width="152" height="152" viewBox="-70 -70 140 140" class="intro-svg" aria-hidden="true">
+      <line x1="-66" y1="0" x2="66" y2="0" stroke="rgba(255,122,0,0.42)" stroke-width="1.2" stroke-dasharray="3 3" />
+      <circle cx="0" cy="0" r="48" fill="none" stroke="rgba(22,22,21,0.16)" stroke-width="1" stroke-dasharray="3 3" />
+      <g id="intro-spokes"></g>
+      <polygon id="intro-poly" fill="rgba(255,122,0,0.08)" stroke="#161615" stroke-width="2.4" stroke-linejoin="round" />
+      <g id="intro-vertices"></g>
+      <circle cx="0" cy="0" r="4.5" fill="#ff7a00" />
+    </svg>
+
+    <h1 class="intro-title">poly-cycle</h1>
+    <p class="intro-subtitle">Ruote poligonali su strada a catenaria</p>
+
+    <div id="intro-loader-box" role="status" aria-live="polite">
+      <div class="progress-track">
+        <div id="intro-progress-bar"></div>
+      </div>
+      <span id="intro-progress-text" class="mono">Inizializzazione · 4%</span>
+    </div>
+
+    <button id="btn-start-sim" type="button" class="is-loading" disabled aria-label="Avvia la simulazione 3D">
+      Start
+    </button>
+  </div>
+
+  <div id="canvas-container"></div>
+  <div id="paper-grain-overlay" aria-hidden="true"></div>
+
+  <!-- Barra superiore: marchio, lettura matematica, azioni -->
+  <header id="top-bar" class="ui-hidden">
+    <div class="brand">
+      <span class="brand-mark">poly-cycle</span>
+      <span id="readout" class="mono brand-readout" aria-live="polite"></span>
+    </div>
+    <div class="top-actions">
+      <button id="btn-tour" type="button" class="chip-btn" aria-pressed="false" title="Tour automatico (T)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 21,12 5,21"></polygon></svg>
+        <span class="chip-label">Tour</span>
+      </button>
+      <button id="btn-light" type="button" class="chip-btn" title="Cambia la luce (L)" aria-label="Cambia la luce">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2"></circle>
+          <path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"></path>
+        </svg>
+        <span id="label-light" class="chip-label">Luce: auto</span>
+      </button>
+      <button id="btn-geo" type="button" class="chip-btn active" aria-pressed="true" title="Mostra o nascondi la geometria (G)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 17c2.6-7 5.4-7 8 0c2.6-7 5.4-7 8 0c1-2.6 2-4.3 4-5"></path>
+          <line x1="2" y1="6" x2="22" y2="6" stroke-dasharray="2.5 2.5"></line>
+        </svg>
+        <span class="chip-label">Geometria</span>
+      </button>
+      <button id="btn-fullscreen" type="button" class="chip-btn icon-only" title="Schermo intero (F)" aria-label="Schermo intero">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="hint-toast" class="hint-hidden" aria-hidden="true">
+    Trascina per orbitare · rotella per lo zoom · <kbd>←</kbd><kbd>→</kbd> lati · <kbd>+</kbd><kbd>−</kbd> velocità · <kbd>spazio</kbd> pausa
+  </div>
+
+  <!-- Dock controlli in stile cartoncino -->
+  <div id="bottom-dock" class="dock-hidden" role="region" aria-label="Controlli simulazione">
+    <div class="dock-panel">
+      <button id="btn-play-pause" type="button" class="dock-btn"
+        aria-label="Metti in pausa o riprendi la simulazione (Barra spaziatrice)" aria-pressed="false" title="Pausa / Riprendi (Spazio)">
+        <svg id="icon-pause" width="16" height="16" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+          <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+        </svg>
+        <svg id="icon-play" width="16" height="16" class="hidden" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <polygon points="6,4 20,12 6,20"></polygon>
+        </svg>
+      </button>
+
+      <div class="slider-block">
+        <div class="slider-header">
+          <label for="slider-sides" class="slider-title">Ruota poligonale</label>
+          <span class="poly-badge" aria-live="polite">
+            <svg id="mini-poly-svg" width="16" height="16" viewBox="-10 -10 20 20" aria-hidden="true">
+              <polygon id="mini-poly-shape" points="" fill="rgba(255,122,0,0.16)" stroke="#ff7a00" stroke-width="1.6" stroke-linejoin="round" />
+              <circle cx="0" cy="0" r="1.4" fill="#ff7a00" />
+            </svg>
+            <span id="label-sides" class="mono">quadrato (4)</span>
+          </span>
+        </div>
+        <input id="slider-sides" type="range" min="3" max="36" step="1" value="4"
+          aria-label="Numero di lati della ruota poligonale (Frecce sinistra e destra)" aria-valuemin="3" aria-valuemax="36" aria-valuenow="4" />
+        <div class="slider-scale mono" aria-hidden="true">
+          <span>3 · triangolo</span>
+          <span>36 · quasi un cerchio</span>
+        </div>
+      </div>
+
+      <div class="slider-block speed-block">
+        <div class="slider-header">
+          <label for="slider-speed" class="slider-title">Velocità</label>
+          <button id="speed-value" type="button" class="speed-badge mono is-default" title="Torna a 1× (tasto 0 o doppio clic sul cursore)" aria-label="Riporta la velocità a 1×">1,0×</button>
+        </div>
+        <input id="slider-speed" type="range" min="0" max="100" step="1" value="68"
+          aria-label="Velocità dell'animazione (tasti + e −, 0 per tornare a 1×)" />
+        <div class="slider-scale mono" aria-hidden="true">
+          <span>0,1×</span>
+          <span>3×</span>
+        </div>
+      </div>
+
+      <button id="btn-profile-view" type="button" class="dock-btn dock-btn-secondary"
+        aria-label="Attiva o disattiva la vista di profilo (P)" aria-pressed="false" title="Vista di profilo (P)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="6.5" cy="15.5" r="3.5"></circle>
+          <circle cx="17.5" cy="15.5" r="3.5"></circle>
+          <path d="M6.5 15.5L10.5 9.5H15L17.5 15.5"></path>
+          <line x1="2" y1="15.5" x2="22" y2="15.5" stroke-dasharray="2 2"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Avvio immediato dell'animazione SVG iniziale -->
+  <script>
+    (function () {
+      const polyEl = document.getElementById('intro-poly');
+      const spokesEl = document.getElementById('intro-spokes');
+      const verticesEl = document.getElementById('intro-vertices');
+      if (!polyEl || !spokesEl || !verticesEl) return;
+
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const MAX_PTS = 8;
+      const spokeNodes = [];
+      const vertexNodes = [];
+      const svgNS = 'http://www.w3.org/2000/svg';
+
+      for (let i = 0; i < MAX_PTS; i++) {
+        const line = document.createElementNS(svgNS, 'line');
+        line.setAttribute('x1', '0');
+        line.setAttribute('y1', '0');
+        line.setAttribute('stroke', 'rgba(22,22,21,0.22)');
+        line.setAttribute('stroke-width', '1.1');
+        spokesEl.appendChild(line);
+        spokeNodes.push(line);
+
+        const dot = document.createElementNS(svgNS, 'circle');
+        dot.setAttribute('r', '2.4');
+        dot.setAttribute('fill', '#161615');
+        verticesEl.appendChild(dot);
+        vertexNodes.push(dot);
+      }
+
+      const sequence = [3, 4, 5, 6, 8, 6, 4];
+      const radius = 48;
+      const stepDuration = 1250;
+      const startTime = performance.now();
+
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+
+      function renderIntroFrame(now) {
+        if (window.__INTRO_STOPPED__) return;
+
+        const elapsed = prefersReducedMotion ? 0 : Math.max(0, now - startTime);
+        const totalCycles = elapsed / stepDuration;
+        const stepIdx = Math.floor(totalCycles) % sequence.length;
+        const nextIdx = (stepIdx + 1) % sequence.length;
+        const localT = totalCycles - Math.floor(totalCycles);
+        const blend = easeInOutCubic(localT);
+
+        const nFrom = prefersReducedMotion ? 4 : sequence[stepIdx];
+        const nTo = prefersReducedMotion ? 4 : sequence[nextIdx];
+        const spin = elapsed * 0.00145 - Math.PI / 2;
+        const pts = [];
+
+        for (let k = 0; k < MAX_PTS; k++) {
+          const idxFrom = Math.min(k, nFrom - 1);
+          const idxTo = Math.min(k, nTo - 1);
+          const aFrom = (idxFrom / nFrom) * Math.PI * 2;
+          const aTo = (idxTo / nTo) * Math.PI * 2;
+
+          let diff = aTo - aFrom;
+          while (diff > Math.PI) diff -= Math.PI * 2;
+          while (diff < -Math.PI) diff += Math.PI * 2;
+
+          const angle = aFrom + diff * blend + spin;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius;
+          const xf = x.toFixed(2);
+          const yf = y.toFixed(2);
+
+          pts.push(xf + ',' + yf);
+          spokeNodes[k].setAttribute('x2', xf);
+          spokeNodes[k].setAttribute('y2', yf);
+          vertexNodes[k].setAttribute('cx', xf);
+          vertexNodes[k].setAttribute('cy', yf);
+        }
+
+        polyEl.setAttribute('points', pts.join(' '));
+        if (!prefersReducedMotion) {
+          requestAnimationFrame(renderIntroFrame);
+        }
+      }
+
+      requestAnimationFrame(renderIntroFrame);
+
+      // Se la barra resta ferma per 25 s, lo si dice invece di lasciare l'attesa muta
+      var lastText = '', still = 0;
+      var watchdog = setInterval(function () {
+        var t = document.getElementById('intro-progress-text');
+        if (!t || (window.__polyCycle && window.__polyCycle.state.simReady)) { clearInterval(watchdog); return; }
+        still = t.textContent === lastText ? still + 1 : 0;
+        lastText = t.textContent;
+        if (still >= 5) {
+          t.textContent = 'Caricamento non riuscito · ricarica la pagina o usa Chrome, Edge o Firefox aggiornati';
+          clearInterval(watchdog);
+        }
+      }, 5000);
+    })();
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { Line2 } from 'three/addons/lines/Line2.js';
+    import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+    import { LineSegments2 } from 'three/addons/lines/LineSegments2.js';
+    import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
+    import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+
+    // Nebbia radiale con curva "aerea": cresce subito, poi si posa dolcemente a zero contrasto.
+    // Calcolata sulla distanza vera (non sulla profondità lungo l'asse della camera), così ai bordi
+    // dello schermo un oggetto è già del tutto nella nebbia quando il paesaggio lo accende o lo spegne.
+    THREE.ShaderChunk.fog_vertex = '#ifdef USE_FOG\n\tvFogDepth = length( mvPosition.xyz );\n#endif';
+    THREE.ShaderChunk.fog_fragment = THREE.ShaderChunk.fog_fragment.replace(
+      'float fogFactor = smoothstep( fogNear, fogFar, vFogDepth );',
+      'float fogT = clamp( ( vFogDepth - fogNear ) / ( fogFar - fogNear ), 0.0, 1.0 );\n\t\tfloat fogFactor = 1.0 - pow( 1.0 - fogT, 1.6 );'
+    );
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // =========================================================================
+    // PALETTE VINCOLATA ("Carta, inchiostro e un solo accento")
+    // =========================================================================
+    const PALETTE = {
+      paper: 0xf6f5f0,
+      mannequin: 0xd9d8d1,
+      roadSide: 0x9c9b94,
+      terrain: 0xc2c0b8,
+      vegLight: 0xb0aea6,
+      vegMid: 0x8e8c85,
+      vegDark: 0x6a6862,
+      rimDark: 0x454542,
+      frame: 0x1c1c1b,
+      ink: 0x161615,
+      accent: 0xff7a00,
+      skyDayHorizon: 0xeeede7,
+      skyDayZenith: 0xdcdad2,
+      skyTwilight: 0xe8cdb8,
+      skyNightHorizon: 0x2b2a28,
+      skyNightZenith: 0x1f1f1e,
+      sun: 0xfff6e0,
+      moon: 0xf1efe8
+    };
+
+    // =========================================================================
+    // 1. SCENA, RENDERER, CAMERA, VISTE
+    // =========================================================================
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(PALETTE.skyDayHorizon);
+    scene.fog = new THREE.Fog(PALETTE.skyDayHorizon, 6, 190);
+
+    // Vista di tre quarti quasi orizzontale (lascia un terzo di quadro al cielo) e profilo "piatto"
+    const VIEWS = {
+      quarter: { pos: new THREE.Vector3(2.75, 1.95, 6.25), target: new THREE.Vector3(0.75, 1.15, 0), fov: 40 },
+      profile: { pos: new THREE.Vector3(0.9, 1.3, 13.0), target: new THREE.Vector3(0.9, 1.15, 0), fov: 24 }
+    };
+
+    const camera = new THREE.PerspectiveCamera(VIEWS.quarter.fov, window.innerWidth / window.innerHeight, 0.1, 460);
+    camera.position.set(5.4, 3.4, 13.2); // posizione larga prima dell'avvicinamento allo Start
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.NoToneMapping;
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.minDistance = 2.6;
+    controls.maxDistance = 24;
+    controls.maxPolarAngle = Math.PI * 0.497;
+    controls.target.copy(VIEWS.quarter.target);
+    controls.update();
+
+    // =========================================================================
+    // 2. LUCI (calibrate perché la carta illuminata resti bianca: dir·cos + emi ≈ π)
+    // =========================================================================
+    const hemiLight = new THREE.HemisphereLight(PALETTE.paper, PALETTE.roadSide, 1.6);
+    scene.add(hemiLight);
+
+    const dirLight = new THREE.DirectionalLight(PALETTE.paper, 2.0);
+    dirLight.position.set(14, 24, 16);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.set(2048, 2048);
+    dirLight.shadow.camera.near = 2;
+    dirLight.shadow.camera.far = 70;
+    const dShadow = 4.6;
+    dirLight.shadow.camera.left = -dShadow;
+    dirLight.shadow.camera.right = dShadow;
+    dirLight.shadow.camera.top = dShadow;
+    dirLight.shadow.camera.bottom = -dShadow;
+    dirLight.shadow.bias = -0.0004;
+    dirLight.shadow.normalBias = 0.025;
+    scene.add(dirLight);
+    scene.add(dirLight.target);
+
+    const rimLight = new THREE.DirectionalLight(PALETTE.mannequin, 0.5);
+    rimLight.position.set(-14, 10, -14);
+    scene.add(rimLight);
+
+    // =========================================================================
+    // 3. STATO & MATEMATICA (invariata) DELLA RUOTA POLIGONALE E DELLA CATENARIA
+    // =========================================================================
+    const FIXED_R = 0.88;
+    const FIXED_WHEELBASE = 2.15;
+    const FIXED_SPEED = 2.45;
+    const ROAD_BASE_Y = -0.90;     // fondo della soletta stradale, uguale per ogni n
+    const TERRAIN_BED_Y = -0.42;   // quota del terreno accanto alla strada
+    const ROAD_HALF_Z = 0.72;
+
+    const state = {
+      sides: 4,
+      targetSides: 4,
+      sidesTransitionT: 1.0,
+      distanceX: 0.0,
+      isPlaying: true,
+      simReady: false,
+      introDismissed: false,
+      solarTime: 0.21,
+      lightMode: 'auto',
+      showGeometry: true,
+      lastTime: performance.now(),
+      slowFrameStreak: 0,
+      needsRender: true,
+      profileView: false,
+      cameraAnim: null,
+      tour: null,
+      viewPristine: true,
+      lightAnim: null,
+      speedMul: 1.0,
+      camLift: 0,
+      manualClock: false
+    };
+
+    function computeCatenaryParams(n, R = FIXED_R) {
+      const alpha = Math.PI / n;
+      const apothem = R * Math.cos(alpha);
+      const halfWidth = apothem * Math.log((1 + Math.sin(alpha)) / Math.cos(alpha));
+      return {
+        n,
+        R,
+        alpha,
+        apothem,
+        halfWidth,
+        archWidth: 2 * halfWidth
+      };
+    }
+
+    function evalCatenaryY(localX, n, R = FIXED_R) {
+      const { apothem: a, halfWidth } = computeCatenaryParams(n, R);
+      const xClamped = Math.max(-halfWidth, Math.min(halfWidth, localX));
+      return R - a * Math.cosh(xClamped / a);
+    }
+
+    function evalCatenarySlope(localX, n, R = FIXED_R) {
+      const { apothem: a, halfWidth } = computeCatenaryParams(n, R);
+      const xClamped = Math.max(-halfWidth, Math.min(halfWidth, localX));
+      return -Math.sinh(xClamped / a);
+    }
+    function computeWheelRollingState(worldX, n, R = FIXED_R) {
+      const { archWidth: W, halfWidth } = computeCatenaryParams(n, R);
+      const k = Math.floor((worldX + halfWidth) / W);
+      const localX = worldX - k * W;
+      const slope = evalCatenarySlope(localX, n, R);
+      const slopeAngle = Math.atan(slope);
+      const baseStepAngle = k * ((2 * Math.PI) / n);
+      return {
+        k,
+        localX,
+        axleY: R,
+        rotZ: -baseStepAngle + slopeAngle
+      };
+    }
+
+    // Tabella dei parametri per n: stesse formule, nessuna allocazione dentro il loop
+    const CAT = [];
+    for (let n = 3; n <= 36; n++) {
+      const p = computeCatenaryParams(n, FIXED_R);
+      CAT[n] = { a: p.apothem, hw: p.halfWidth, W: p.archWidth, step: (2 * Math.PI) / n };
+    }
+    function rollRotFast(worldX, n) {
+      const c = CAT[n];
+      const k = Math.floor((worldX + c.hw) / c.W);
+      return -k * c.step + Math.atan(-Math.sinh((worldX - k * c.W) / c.a));
+    }
+    function roadYFast(worldX, n) {
+      const c = CAT[n];
+      const k = Math.floor((worldX + c.hw) / c.W);
+      return FIXED_R - c.a * Math.cosh((worldX - k * c.W) / c.a);
+    }
+
+    // =========================================================================
+    // 4. MATERIALI (Lambert, più leggeri) & CONTORNO A INCHIOSTRO "A GUSCIO"
+    // =========================================================================
+    const lam = (color) => new THREE.MeshLambertMaterial({ color, flatShading: true });
+    const matPaper = lam(PALETTE.paper);
+    const matMannequin = lam(PALETTE.mannequin);
+    const matRoadSide = lam(PALETTE.roadSide);
+    const matRimDark = lam(PALETTE.rimDark);
+    const matFrame = lam(PALETTE.frame);
+    const matAccentOrange = lam(PALETTE.accent);
+    const matTerrainFlat = lam(PALETTE.terrain);
+    const matTerrain = new THREE.MeshLambertMaterial({ color: PALETTE.terrain, flatShading: true, vertexColors: true });
+    const matVegLight = lam(PALETTE.vegLight);
+    const matVegMid = lam(PALETTE.vegMid);
+    const matVegDark = lam(PALETTE.vegDark);
+
+    // Contorno del soggetto: guscio rovesciato espanso lungo le normali, spessore costante in pixel.
+    // Segue la sagoma da qualunque punto di vista e costa una sola passata senza geometria aggiuntiva.
+    const hullUniforms = {
+      uPx: { value: 1.9 },
+      uPxScale: { value: 1.0 },
+      uColor: { value: new THREE.Color(PALETTE.ink) }
+    };
+    const matHull = new THREE.ShaderMaterial({
+      uniforms: hullUniforms,
+      side: THREE.BackSide,
+      vertexShader: `
+        uniform float uPx;
+        uniform float uPxScale;
+        void main() {
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vec3 n = normalize(normalMatrix * normal);
+          mv.xyz += n * (uPx * uPxScale * max(0.0, -mv.z));
+          gl_Position = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        void main() {
+          gl_FragColor = vec4(uColor, 1.0);
+          #include <colorspace_fragment>
+        }
+      `
+    });
+    function updateHullScale() {
+      hullUniforms.uPxScale.value = (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) * 0.5)) / window.innerHeight;
+    }
+    updateHullScale();
+
+    function addInkHull(mesh) {
+      const hull = new THREE.Mesh(mesh.geometry, matHull);
+      hull.userData.isHull = true;
+      mesh.add(hull);
+      return hull;
+    }
+    // Compatibilità con le parti del modello che chiedono un contorno
+    const thickInkSubject = null;
+    function attachThickOutline(mesh) { return addInkHull(mesh); }
+
+    const lineMaterials = [];
+    function makeLineMaterial(params) {
+      const mat = new LineMaterial(Object.assign({
+        resolution: new THREE.Vector2(window.innerWidth, window.innerHeight)
+      }, params));
+      lineMaterials.push(mat);
+      return mat;
+    }
+    const thickInkRoad = makeLineMaterial({ color: PALETTE.ink, linewidth: 1.5, fog: true });
+
+    function createLowPolyTube(p1, p2, rBottom, rTop, radialSegs, material) {
+      const dir = new THREE.Vector3().subVectors(p2, p1);
+      const len = dir.length();
+      const geo = new THREE.CylinderGeometry(rTop, rBottom, len, radialSegs, 1);
+      const mesh = new THREE.Mesh(geo, material);
+      mesh.position.copy(p1).addScaledVector(dir, 0.5);
+      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    // Fonde un gruppo statico in una mesh per materiale più un solo guscio di contorno
+    function bakeGroupToMerged(group) {
+      group.updateMatrixWorld(true);
+      const inv = new THREE.Matrix4().copy(group.matrixWorld).invert();
+      const rel = new THREE.Matrix4();
+      const byMat = new Map();
+      const all = [];
+      group.traverse((o) => {
+        if (!o.isMesh || o.userData.isHull) return;
+        const g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+        Object.keys(g.attributes).forEach((k) => {
+          if (k !== 'position' && k !== 'normal') g.deleteAttribute(k);
+        });
+        g.applyMatrix4(rel.multiplyMatrices(inv, o.matrixWorld));
+        if (!byMat.has(o.material)) byMat.set(o.material, []);
+        byMat.get(o.material).push(g);
+        all.push(g);
+      });
+      const out = new THREE.Group();
+      byMat.forEach((list, mat) => {
+        const mesh = new THREE.Mesh(mergeBufferGeometriesSimple(list), mat);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        out.add(mesh);
+      });
+      const hull = new THREE.Mesh(mergeBufferGeometriesSimple(all), matHull);
+      hull.userData.isHull = true;
+      out.add(hull);
+      all.forEach((g) => g.dispose());
+      group.traverse((o) => { if (o.isMesh && !o.userData.isHull) o.geometry.dispose(); });
+      return out;
+    }
+
+    // =========================================================================
+    // 5. CIELO: CUPOLA A GRADIENTE, SOLE, LUNA FALCATA, STELLE, PRESET DI LUCE
+    // =========================================================================
+    const skyUniforms = {
+      uHorizonColor: { value: new THREE.Color(PALETTE.skyDayHorizon) },
+      uZenithColor: { value: new THREE.Color(PALETTE.skyDayZenith) }
+    };
+    const skyDome = new THREE.Mesh(
+      new THREE.SphereGeometry(280, 32, 20),
+      new THREE.ShaderMaterial({
+        uniforms: skyUniforms,
+        side: THREE.BackSide,
+        depthWrite: false,
+        fog: false,
+        vertexShader: `
+          varying float vElev;
+          void main() {
+            vElev = clamp(normalize(position).y, 0.0, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 uHorizonColor;
+          uniform vec3 uZenithColor;
+          varying float vElev;
+          void main() {
+            gl_FragColor = vec4(mix(uHorizonColor, uZenithColor, pow(vElev, 0.55)), 1.0);
+            #include <colorspace_fragment>
+          }
+        `
+      })
+    );
+    scene.add(skyDome);
+
+    const sunMat = new THREE.MeshBasicMaterial({
+      color: PALETTE.sun, transparent: true, opacity: 1.0, depthWrite: false, fog: false
+    });
+    const sunDisc = new THREE.Mesh(new THREE.CircleGeometry(10.5, 48), sunMat);
+    scene.add(sunDisc);
+
+    const moonUniforms = {
+      uColor: { value: new THREE.Color(PALETTE.moon) },
+      uOpacity: { value: 0.0 }
+    };
+    const moonDisc = new THREE.Mesh(
+      new THREE.CircleGeometry(7.2, 48),
+      new THREE.ShaderMaterial({
+        uniforms: moonUniforms,
+        transparent: true,
+        depthWrite: false,
+        fog: false,
+        vertexShader: `
+          varying vec2 vUv;
+          void main() {
+            vUv = uv * 2.0 - 1.0;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 uColor;
+          uniform float uOpacity;
+          varying vec2 vUv;
+          void main() {
+            if (length(vUv) > 1.0) discard;
+            if (length(vUv - vec2(0.42, 0.14)) < 0.86) discard;
+            if (uOpacity < 0.005) discard;
+            gl_FragColor = vec4(uColor, uOpacity);
+            #include <colorspace_fragment>
+          }
+        `
+      })
+    );
+    scene.add(moonDisc);
+
+    const STAR_COUNT = 180;
+    const starPositions = new Float32Array(STAR_COUNT * 3);
+    for (let i = 0; i < STAR_COUNT; i++) {
+      const s1 = Math.sin(i * 12.9898 + 4.1414) * 43758.5453;
+      const s2 = Math.sin(i * 78.233 + 1.9191) * 24634.6345;
+      const u = s1 - Math.floor(s1);
+      const v = s2 - Math.floor(s2);
+      const theta = u * Math.PI * 2;
+      const phi = Math.acos(0.03 + 0.95 * v);
+      starPositions[i * 3] = 245 * Math.sin(phi) * Math.cos(theta);
+      starPositions[i * 3 + 1] = 245 * Math.cos(phi);
+      starPositions[i * 3 + 2] = 245 * Math.sin(phi) * Math.sin(theta);
+    }
+    const starsGeo = new THREE.BufferGeometry();
+    starsGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starsMat = new THREE.PointsMaterial({
+      color: PALETTE.moon, size: 2.2, sizeAttenuation: false,
+      transparent: true, opacity: 0.0, depthWrite: false, fog: false
+    });
+    const starField = new THREE.Points(starsGeo, starsMat);
+    scene.add(starField);
+
+    // Preset di luce: istanti del ciclo scelti perché sole o luna restino in quadro
+    const LIGHT_MODES = ['auto', 'alba', 'giorno', 'tramonto', 'notte'];
+    const LIGHT_PRESETS = { alba: 0.026, giorno: 0.21, tramonto: 0.474, notte: 0.56 };
+
+    const _colSun = new THREE.Color(PALETTE.paper);
+    const _colMoon = new THREE.Color(PALETTE.moon);
+    const _colDayHorizon = new THREE.Color(PALETTE.skyDayHorizon);
+    const _colDayZenith = new THREE.Color(PALETTE.skyDayZenith);
+    const _colTwilight = new THREE.Color(PALETTE.skyTwilight);
+    const _colNightHorizon = new THREE.Color(PALETTE.skyNightHorizon);
+    const _colNightZenith = new THREE.Color(PALETTE.skyNightZenith);
+    const _curHorizon = new THREE.Color();
+    const _curZenith = new THREE.Color();
+    let nightUiActive = false;
+
+    function updateAstronomicalCycle(dt) {
+      if (state.lightMode === 'auto') {
+        if (state.isPlaying && !prefersReducedMotion) {
+          state.solarTime = (state.solarTime + dt * 0.0085) % 1.0;
+        }
+      } else {
+        // Passaggio al preset lungo il verso più breve, ease-in-out di durata fissa: nessun lampo
+        const la = state.lightAnim;
+        if (la) {
+          la.t = Math.min(1.0, la.t + dt / la.dur);
+          state.solarTime = (((la.from + la.delta * easeInOutCubic(la.t)) % 1.0) + 1.0) % 1.0;
+          if (la.t >= 1.0) state.lightAnim = null;
+          state.needsRender = true;
+        }
+      }
+
+      const sunAngle = state.solarTime * Math.PI * 2;
+      const sunX = -Math.cos(sunAngle) * 95.5 - 40.5;
+      const sunY = Math.sin(sunAngle) * 190;
+      sunDisc.position.set(sunX, sunY, -240);
+      sunDisc.lookAt(camera.position);
+
+      const moonAngle = sunAngle + Math.PI;
+      const moonX = -Math.cos(moonAngle) * 95.5 - 40.5;
+      const moonY = Math.sin(moonAngle) * 120;
+      moonDisc.position.set(moonX, moonY, -235);
+      moonDisc.lookAt(camera.position);
+
+      const sunElev = Math.sin(sunAngle);
+      const moonElev = Math.sin(moonAngle);
+      const dayFactor = THREE.MathUtils.smoothstep(sunElev, -0.22, 0.30);
+      const twilightFactor = Math.pow(Math.max(0, 1.0 - Math.abs(sunElev) / 0.30), 1.4);
+
+      _curHorizon.copy(_colNightHorizon).lerp(_colDayHorizon, dayFactor).lerp(_colTwilight, twilightFactor * 0.72);
+      _curZenith.copy(_colNightZenith).lerp(_colDayZenith, dayFactor).lerp(_colTwilight, twilightFactor * 0.26);
+
+      skyUniforms.uHorizonColor.value.copy(_curHorizon);
+      skyUniforms.uZenithColor.value.copy(_curZenith);
+      scene.background.copy(_curHorizon);
+      scene.fog.color.copy(_curHorizon); // la nebbia segue sempre l'orizzonte
+      updateHorizonPalette(dayFactor);
+
+      sunMat.opacity = THREE.MathUtils.smoothstep(sunElev, -0.06, 0.06);
+      moonUniforms.uOpacity.value = THREE.MathUtils.smoothstep(moonElev, -0.05, 0.10) * THREE.MathUtils.lerp(0.96, 0.25, dayFactor);
+      starsMat.opacity = THREE.MathUtils.smoothstep(-sunElev, 0.04, 0.30) * 0.9;
+
+      // Dissolvenza incrociata sole/luna: la direzionale passa da zero all'orizzonte, senza scatti
+      const sunStrength = THREE.MathUtils.smoothstep(sunElev, 0.0, 0.26);
+      const moonStrength = THREE.MathUtils.smoothstep(moonElev, 0.0, 0.26);
+      if (sunStrength >= moonStrength) {
+        dirLight.position.set(-sunX * 0.16, Math.max(7, sunY * 0.2), 18);
+        dirLight.intensity = 2.0 * sunStrength;
+        dirLight.color.copy(_colSun).lerp(_colTwilight, twilightFactor * 0.85);
+      } else {
+        dirLight.position.set(-moonX * 0.16, Math.max(7, moonY * 0.3), 18);
+        dirLight.intensity = 0.85 * moonStrength;
+        dirLight.color.copy(_colMoon);
+      }
+      hemiLight.intensity = THREE.MathUtils.lerp(0.68, 1.6, dayFactor) + (1.0 - Math.max(sunStrength, moonStrength)) * 0.3;
+
+      const wantNightUi = dayFactor < 0.42;
+      if (wantNightUi !== nightUiActive) {
+        nightUiActive = wantNightUi;
+        document.body.classList.toggle('night-ui', wantNightUi);
+      }
+    }
+
+    // =========================================================================
+    // 6. BICICLETTA: TELAIO FUSO IN POCHE MESH, PEDIVELLE, EVIDENZE GEOMETRICHE
+    // =========================================================================
+    const bikeGroup = new THREE.Group();
+    scene.add(bikeGroup);
+
+    const frameGroup = new THREE.Group();
+    bikeGroup.add(frameGroup);
+
+    const halfWB = FIXED_WHEELBASE * 0.5;
+    const rearHubPos = new THREE.Vector3(-halfWB, FIXED_R, 0);
+    const frontHubPos = new THREE.Vector3(halfWB, FIXED_R, 0);
+    const bbPos = new THREE.Vector3(-0.14, FIXED_R - 0.04, 0);
+    const seatClusterPos = new THREE.Vector3(-0.34, FIXED_R + 0.72, 0);
+    const seatPos = new THREE.Vector3(-0.42, FIXED_R + 1.03, 0);
+    const headBottomPos = new THREE.Vector3(0.56, FIXED_R + 0.96, 0);
+    const headTopPos = new THREE.Vector3(0.50, FIXED_R + 1.18, 0);
+    const stemPos = new THREE.Vector3(0.55, FIXED_R + 1.24, 0);
+
+    function buildStaticBicycleFrame() {
+      frameGroup.add(createLowPolyTube(bbPos, seatClusterPos, 0.042, 0.038, 6, matFrame));
+      frameGroup.add(createLowPolyTube(bbPos, headBottomPos, 0.048, 0.044, 6, matFrame));
+      frameGroup.add(createLowPolyTube(seatClusterPos, headTopPos, 0.038, 0.040, 6, matFrame));
+      frameGroup.add(createLowPolyTube(headBottomPos, headTopPos, 0.052, 0.052, 6, matFrame));
+
+      frameGroup.add(createLowPolyTube(seatClusterPos, seatPos, 0.026, 0.026, 6, matRimDark));
+      const saddleGeo = new THREE.BoxGeometry(0.36, 0.065, 0.17);
+      const saddleMesh = new THREE.Mesh(saddleGeo, matFrame);
+      saddleMesh.position.set(seatPos.x - 0.01, seatPos.y + 0.03, 0);
+      saddleMesh.rotation.z = 0.05;
+      saddleMesh.castShadow = true;
+      attachThickOutline(saddleMesh, 20, thickInkSubject);
+      frameGroup.add(saddleMesh);
+
+      [-1, 1].forEach((side) => {
+        const zDrop = side * 0.165;
+        const zPivot = side * 0.055;
+        const csStart = new THREE.Vector3(bbPos.x, bbPos.y, zPivot);
+        const csEnd = new THREE.Vector3(rearHubPos.x, rearHubPos.y, zDrop);
+        const ssStart = new THREE.Vector3(seatClusterPos.x, seatClusterPos.y - 0.02, zPivot);
+        frameGroup.add(createLowPolyTube(csStart, csEnd, 0.024, 0.020, 6, matRimDark));
+        frameGroup.add(createLowPolyTube(ssStart, csEnd, 0.022, 0.018, 6, matFrame));
+      });
+
+      const crownCenter = new THREE.Vector3(0.60, FIXED_R + 0.94, 0);
+      frameGroup.add(createLowPolyTube(headBottomPos, crownCenter, 0.036, 0.034, 6, matFrame));
+      const crownBar = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.048, 0.38), matFrame);
+      crownBar.position.copy(crownCenter);
+      crownBar.castShadow = true;
+      attachThickOutline(crownBar, 20, thickInkSubject);
+      frameGroup.add(crownBar);
+
+      [-1, 1].forEach((side) => {
+        const zFork = side * 0.165;
+        const forkTop = new THREE.Vector3(crownCenter.x, crownCenter.y, zFork);
+        const forkTip = new THREE.Vector3(frontHubPos.x, frontHubPos.y, zFork);
+        frameGroup.add(createLowPolyTube(forkTop, forkTip, 0.030, 0.024, 6, matFrame));
+      });
+
+      frameGroup.add(createLowPolyTube(headTopPos, stemPos, 0.030, 0.028, 6, matFrame));
+      const barCenter = new THREE.Vector3(stemPos.x + 0.02, stemPos.y + 0.03, 0);
+      const barLeft = new THREE.Vector3(barCenter.x - 0.04, barCenter.y + 0.03, -0.35);
+      const barRight = new THREE.Vector3(barCenter.x - 0.04, barCenter.y + 0.03, 0.35);
+      frameGroup.add(createLowPolyTube(barCenter, barLeft, 0.020, 0.018, 6, matFrame));
+      frameGroup.add(createLowPolyTube(barCenter, barRight, 0.020, 0.018, 6, matFrame));
+
+      [-1, 1].forEach((side) => {
+        const gripStart = new THREE.Vector3(barCenter.x - 0.04, barCenter.y + 0.03, side * 0.25);
+        const gripEnd = new THREE.Vector3(barCenter.x - 0.05, barCenter.y + 0.03, side * 0.39);
+        frameGroup.add(createLowPolyTube(gripStart, gripEnd, 0.024, 0.024, 6, matRimDark));
+      });
+
+      const chainring = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.145, 0.145, 0.022, 12),
+        matRimDark
+      );
+      chainring.rotation.x = Math.PI / 2;
+      chainring.position.set(bbPos.x, bbPos.y, 0.065);
+      attachThickOutline(chainring, 20, thickInkSubject);
+      frameGroup.add(chainring);
+    }
+    buildStaticBicycleFrame();
+
+    // Telaio statico: da ~45 chiamate di disegno a 3
+    bikeGroup.remove(frameGroup);
+    bikeGroup.add(bakeGroupToMerged(frameGroup));
+
+    // Mozzi arancioni: l'unico colore della scena sta sul punto che viaggia in linea retta
+    [-halfWB, halfWB].forEach((hx) => {
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.056, 0.37, 12), matAccentOrange);
+      cap.rotation.x = Math.PI / 2;
+      cap.position.set(hx, FIXED_R, 0);
+      addInkHull(cap);
+      bikeGroup.add(cap);
+    });
+
+    // Pedivelle e pedali articolati
+    const crankGroup = new THREE.Group();
+    crankGroup.position.copy(bbPos);
+    bikeGroup.add(crankGroup);
+
+    const CRANK_LEN = 0.24;
+    const PEDAL_Z = 0.23;
+
+    const leftCrankArm = createLowPolyTube(
+      new THREE.Vector3(0, 0, -0.07),
+      new THREE.Vector3(0, -CRANK_LEN, -PEDAL_Z + 0.03),
+      0.022, 0.018, 6, matFrame
+    );
+    const rightCrankArm = createLowPolyTube(
+      new THREE.Vector3(0, 0, 0.07),
+      new THREE.Vector3(0, CRANK_LEN, PEDAL_Z - 0.03),
+      0.022, 0.018, 6, matFrame
+    );
+    crankGroup.add(leftCrankArm, rightCrankArm);
+
+    function createPedalMesh() {
+      const p = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.026, 0.095), matRimDark);
+      p.castShadow = true;
+      attachThickOutline(p, 20, thickInkSubject);
+      return p;
+    }
+    const leftPedal = createPedalMesh();
+    const rightPedal = createPedalMesh();
+    leftPedal.position.set(0, -CRANK_LEN, -PEDAL_Z);
+    rightPedal.position.set(0, CRANK_LEN, PEDAL_Z);
+    crankGroup.add(leftPedal, rightPedal);
+    addInkHull(leftCrankArm);
+    addInkHull(rightCrankArm);
+
+    // Evidenze geometriche (tasto G): traiettoria rettilinea del mozzo, scia di un vertice, punti di contatto
+    const geoGroup = new THREE.Group();
+    scene.add(geoGroup);
+
+    const HUB_LINE_HALF = 7.5;
+    // Due tratti, prima e dopo le ruote: dentro le ruote parlano i mozzi arancioni
+    const hubLineGeo = new LineSegmentsGeometry();
+    hubLineGeo.setPositions([
+      -HUB_LINE_HALF, FIXED_R, 0, -(FIXED_WHEELBASE * 0.5 + FIXED_R + 0.06), FIXED_R, 0,
+      FIXED_WHEELBASE * 0.5 + FIXED_R + 0.06, FIXED_R, 0, HUB_LINE_HALF, FIXED_R, 0
+    ]);
+    const hubLineMat = makeLineMaterial({
+      color: PALETTE.accent, linewidth: 2.0, dashed: true, dashSize: 0.22, gapSize: 0.16, transparent: true, opacity: 0.95
+    });
+    const hubLine = new LineSegments2(hubLineGeo, hubLineMat);
+    hubLine.computeLineDistances();
+    geoGroup.add(hubLine);
+
+    const TRAIL_SEGMENTS = 168;
+    const TRAIL_LENGTH = 7.0;
+    const trailGeo = new LineGeometry();
+    trailGeo.setPositions(new Float32Array((TRAIL_SEGMENTS + 1) * 3));
+    const trailMat = makeLineMaterial({ color: PALETTE.accent, linewidth: 2.6, transparent: true, opacity: 0.9 });
+    const trailLine = new Line2(trailGeo, trailMat);
+    trailLine.frustumCulled = false;
+    geoGroup.add(trailLine);
+    const trailBuffer = trailGeo.attributes.instanceStart.data; // [x0,y0,z0,x1,y1,z1] per segmento
+
+    // La scia è disegnata dal bottone arancione sul vertice, come una penna: corre appena fuori dalla
+    // faccia della ruota (lato rivolto alla camera) e, dove incontrerebbe mozzo o foderi del telaio,
+    // si scosta dolcemente verso l'esterno e ci passa davanti. Non attraversa mai la ruota né il telaio.
+    const TRAIL_BASE_Z = 0.097;
+    // [x0, y0, z0, x1, y1, z1, raggio] in coordinate della bici: ingombri da scavalcare
+    const TRAIL_CLEAR = [
+      [-halfWB, FIXED_R, 0.19, -halfWB, FIXED_R, 0.19, 0.085],                  // mozzo e perno
+      [-0.14, FIXED_R - 0.04, 0.055, -halfWB, FIXED_R, 0.165, 0.032],           // fodero basso
+      [-0.34, FIXED_R + 0.70, 0.055, -halfWB, FIXED_R, 0.165, 0.032],          // fodero alto
+    ];
+    // Pedivella lato camera: va da z 0,07 (attacco) a 0,20 (pedale). La scia la scavalca solo vicino
+    // all'attacco, dove la pedivella è più interna della scia; più in fuori le passa dietro, come al pedale e al piede.
+    const TRAIL_ARM = { x0: -0.14, y0: FIXED_R - 0.04, x1: 0, y1: 0 };
+    function updateTrailCrankClearance(side) {
+      // Stessa legge della pedivella in updateSimulationFrame, calcolata qui per non avere un frame di ritardo
+      const raw = -(state.distanceX / FIXED_R) * 1.45;
+      const ang = raw - 0.08 * Math.sin(2 * raw);
+      const ly = side * 0.24; // CRANK_LEN: la pedivella destra (+z) parte verso l'alto, la sinistra verso il basso
+      TRAIL_ARM.x1 = TRAIL_ARM.x0 - ly * Math.sin(ang);
+      TRAIL_ARM.y1 = TRAIL_ARM.y0 + ly * Math.cos(ang);
+    }
+    function trailZ(x, y) {
+      let z = TRAIL_BASE_Z;
+      for (let k = 0; k < TRAIL_CLEAR.length; k++) {
+        const c = TRAIL_CLEAR[k];
+        const dx = c[3] - c[0], dy = c[4] - c[1];
+        const L2 = dx * dx + dy * dy;
+        const t = L2 > 0 ? THREE.MathUtils.clamp(((x - c[0]) * dx + (y - c[1]) * dy) / L2, 0, 1) : 0;
+        const d = Math.hypot(x - (c[0] + dx * t), y - (c[1] + dy * t));
+        const w = 1 - THREE.MathUtils.smoothstep(d, c[6], c[6] + 0.13);
+        if (w > 0) {
+          const need = c[2] + (c[5] - c[2]) * t + 0.045;
+          z = Math.max(z, TRAIL_BASE_Z + (need - TRAIL_BASE_Z) * w);
+        }
+      }
+      // Attacco della pedivella
+      const ax = TRAIL_ARM.x1 - TRAIL_ARM.x0, ay = TRAIL_ARM.y1 - TRAIL_ARM.y0;
+      const t = THREE.MathUtils.clamp(((x - TRAIL_ARM.x0) * ax + (y - TRAIL_ARM.y0) * ay) / (ax * ax + ay * ay), 0, 1);
+      const armZ = 0.07 + 0.13 * t;
+      if (armZ < TRAIL_BASE_Z + 0.04) {
+        const d = Math.hypot(x - (TRAIL_ARM.x0 + ax * t), y - (TRAIL_ARM.y0 + ay * t));
+        const w = 1 - THREE.MathUtils.smoothstep(d, 0.028, 0.09);
+        if (w > 0) z = Math.max(z, TRAIL_BASE_Z + (armZ + 0.042 - TRAIL_BASE_Z) * w);
+      }
+      return z;
+    }
+
+    function updateVertexTrail(n) {
+      const arr = trailBuffer.array;
+      const D = state.distanceX;
+      const phase = -Math.PI / 2 - Math.PI / n;
+      const side = camera.position.z >= 0 ? 1 : -1;
+      updateTrailCrankClearance(side);
+      let px = 0, py = 0, pz = 0;
+      for (let i = 0; i <= TRAIL_SEGMENTS; i++) {
+        const cx = D - halfWB - (TRAIL_LENGTH * i) / TRAIL_SEGMENTS; // dove si trovava il mozzo posteriore
+        const ang = phase + rollRotFast(cx, n);
+        const x = cx - D + FIXED_R * Math.cos(ang);
+        const y = FIXED_R + FIXED_R * Math.sin(ang);
+        const z = side * trailZ(x, y);
+        if (i > 0) {
+          const o = (i - 1) * 6;
+          arr[o] = px; arr[o + 1] = py; arr[o + 2] = pz;
+          arr[o + 3] = x; arr[o + 4] = y; arr[o + 5] = z;
+        }
+        px = x; py = y; pz = z;
+      }
+      trailBuffer.needsUpdate = true;
+    }
+
+    const contactDotGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.016, 14);
+    contactDotGeo.rotateX(Math.PI / 2);
+    const contactDots = [];
+    [-halfWB, halfWB].forEach((hx) => {
+      [-1, 1].forEach((side) => {
+        const dot = new THREE.Mesh(contactDotGeo, matAccentOrange);
+        dot.position.set(hx, 0, side * 0.076);
+        dot.userData.hx = hx;
+        geoGroup.add(dot);
+        contactDots.push(dot);
+      });
+    });
+
+    // =========================================================================
+    // 7. RUOTE (una mesh per materiale) & STRADA A CATENARIA ISTANZIATA
+    // =========================================================================
+    const rearWheelGroup = new THREE.Group();
+    rearWheelGroup.position.copy(rearHubPos);
+    bikeGroup.add(rearWheelGroup);
+
+    const frontWheelGroup = new THREE.Group();
+    frontWheelGroup.position.copy(frontHubPos);
+    bikeGroup.add(frontWheelGroup);
+
+    // Vertice tracciato dalla scia: un bottone arancione su entrambe le facce della ruota posteriore
+    const trackMarker = new THREE.Group();
+    const trackMarkerGeo = new THREE.CylinderGeometry(0.045, 0.045, 0.02, 14);
+    trackMarkerGeo.rotateX(Math.PI / 2);
+    [-1, 1].forEach((side) => {
+      const m = new THREE.Mesh(trackMarkerGeo, matAccentOrange);
+      m.position.z = side * 0.087; // faccia esterna a 0,097: da lì parte la scia
+      addInkHull(m);
+      trackMarker.add(m);
+    });
+    rearWheelGroup.add(trackMarker);
+
+    const roadGroup = new THREE.Group();
+    scene.add(roadGroup);
+
+    const prebuiltWheels = new Map();
+    const prebuiltRoadArches = new Map();
+    let activeCachedN = null;
+
+    function createSinglePolygonWheel(n, R = FIXED_R) {
+      const tmp = new THREE.Group();
+      const rimThickness = Math.max(0.055, Math.min(0.095, R * 0.095));
+      const innerR = R - rimThickness;
+      const depth = 0.13;
+      const phaseOffset = -Math.PI / 2 - Math.PI / n;
+
+      const outerShape = new THREE.Shape();
+      const holePath = new THREE.Path();
+      const vertices = [];
+      for (let i = 0; i < n; i++) {
+        const theta = phaseOffset + (i / n) * Math.PI * 2;
+        const c = Math.cos(theta), s = Math.sin(theta);
+        vertices.push(new THREE.Vector2(c * R, s * R));
+        if (i === 0) {
+          outerShape.moveTo(c * R, s * R);
+          holePath.moveTo(c * innerR, s * innerR);
+        } else {
+          outerShape.lineTo(c * R, s * R);
+          holePath.lineTo(c * innerR, s * innerR);
+        }
+      }
+      outerShape.closePath();
+      holePath.closePath();
+      outerShape.holes.push(holePath);
+
+      const rimGeo = new THREE.ExtrudeGeometry(outerShape, { depth, bevelEnabled: false, curveSegments: 1 });
+      rimGeo.translate(0, 0, -depth * 0.5);
+      tmp.add(new THREE.Mesh(rimGeo, matRimDark));
+
+      const hubGeo = new THREE.CylinderGeometry(0.078, 0.078, 0.24, 12);
+      hubGeo.rotateX(Math.PI / 2);
+      tmp.add(new THREE.Mesh(hubGeo, matAccentOrange));
+
+      // Un puntino carta su ogni vertice, come nel disegno dell'intro
+      const dotR = 0.024;
+      const midR = R - rimThickness * 0.5;
+      for (let i = 0; i < (n <= 16 ? n : 0); i++) {
+        const theta = phaseOffset + (i / n) * Math.PI * 2;
+        const dotGeo = new THREE.CylinderGeometry(dotR, dotR, depth + 0.012, 8);
+        dotGeo.rotateX(Math.PI / 2);
+        const dot = new THREE.Mesh(dotGeo, matPaper);
+        dot.position.set(Math.cos(theta) * midR, Math.sin(theta) * midR, 0);
+        tmp.add(dot);
+      }
+
+      // Raggi: uno per vertice fino a 12 lati, poi diradati (al massimo 18)
+      const step = n <= 12 ? 1 : Math.ceil(n / 18);
+      let spokeIdx = 0;
+      for (let i = 0; i < n; i += step) {
+        const v = vertices[i];
+        const sideZ = (spokeIdx++ % 2 === 0 ? 1 : -1) * 0.032;
+        tmp.add(createLowPolyTube(
+          new THREE.Vector3(0, 0, sideZ),
+          new THREE.Vector3(v.x * 0.94, v.y * 0.94, 0),
+          0.014, 0.014, 5, matRimDark
+        ));
+      }
+      return bakeGroupToMerged(tmp);
+    }
+
+    // Un solo arco per ogni n, ripetuto con InstancedMesh su ±132 m.
+    // Piano superiore carta, fianchi grigi come una sezione tagliata, linee a inchiostro su bordi e cuspidi.
+    function buildSingleArchInstancedRoad(n, R = FIXED_R) {
+      const { apothem: a, halfWidth, archWidth: W } = computeCatenaryParams(n, R);
+      const samplesPerArch = Math.max(8, Math.round(36 / Math.sqrt(n)));
+
+      const positions = [];
+      const topIndices = [];
+      const sideIndices = [];
+      const rowStride = 4;
+      for (let s = 0; s <= samplesPerArch; s++) {
+        const localX = -halfWidth + (s / samplesPerArch) * W;
+        const y = R - a * Math.cosh(localX / a);
+        positions.push(
+          localX, ROAD_BASE_Y, -ROAD_HALF_Z,
+          localX, y, -ROAD_HALF_Z,
+          localX, y, ROAD_HALF_Z,
+          localX, ROAD_BASE_Y, ROAD_HALF_Z
+        );
+        if (s < samplesPerArch) {
+          const r0 = s * rowStride;
+          const r1 = (s + 1) * rowStride;
+          topIndices.push(r0 + 1, r0 + 2, r1 + 2, r0 + 1, r1 + 2, r1 + 1);
+          sideIndices.push(r0 + 2, r0 + 3, r1 + 3, r0 + 2, r1 + 3, r1 + 2);
+          sideIndices.push(r0 + 0, r0 + 1, r1 + 1, r0 + 0, r1 + 1, r1 + 0);
+        }
+      }
+
+      const archGeo = new THREE.BufferGeometry();
+      archGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      archGeo.setIndex(topIndices.concat(sideIndices));
+      archGeo.addGroup(0, topIndices.length, 0);
+      archGeo.addGroup(topIndices.length, sideIndices.length, 1);
+      archGeo.computeVertexNormals();
+
+      // Archi su ±122 m (poco oltre la nebbia), divisi in blocchi di ~24 m: i blocchi fuori campo non si disegnano
+      const archCountHalf = Math.ceil(122.0 / W) + 1;
+      const instanceCount = archCountHalf * 2 + 1;
+      const perBlock = Math.max(1, Math.round(24.0 / W));
+
+      const drawCusp = n <= 16; // oltre, le giunzioni diventerebbero un tratteggio fitto
+      const segmentsPerArch = samplesPerArch * 2 + (drawCusp ? 1 : 0);
+      const holder = new THREE.Group();
+      const dummy = new THREE.Object3D();
+      for (let k0 = -archCountHalf; k0 <= archCountHalf; k0 += perBlock) {
+        const k1 = Math.min(archCountHalf, k0 + perBlock - 1);
+        const count = k1 - k0 + 1;
+        const instancedMesh = new THREE.InstancedMesh(archGeo, [matPaper, matVegLight], count);
+        // Ombre solo dai blocchi vicini alla bici: il resto della strada è fuori dal riquadro d'ombra
+        instancedMesh.castShadow = k0 * W - halfWidth < 9.0 && (k1 + 1) * W + halfWidth > -9.0;
+        instancedMesh.receiveShadow = true;
+        const edgeSegments = new Float32Array(count * segmentsPerArch * 6);
+        let instIdx = 0;
+        let c = 0;
+      for (let k = k0; k <= k1; k++) {
+        const offsetX = k * W;
+        dummy.position.set(offsetX, 0, 0);
+        dummy.updateMatrix();
+        instancedMesh.setMatrixAt(instIdx++, dummy.matrix);
+
+        const cuspX = positions[0] + offsetX;
+        const cuspY = positions[1 * 3 + 1];
+        if (drawCusp) {
+          edgeSegments[c++] = cuspX; edgeSegments[c++] = cuspY; edgeSegments[c++] = -ROAD_HALF_Z;
+          edgeSegments[c++] = cuspX; edgeSegments[c++] = cuspY; edgeSegments[c++] = ROAD_HALF_Z;
+        }
+
+        for (let s = 0; s < samplesPerArch; s++) {
+          const i0 = (s * rowStride + 1) * 3;
+          const i1 = ((s + 1) * rowStride + 1) * 3;
+          const x0 = positions[i0] + offsetX, y0 = positions[i0 + 1];
+          const x1 = positions[i1] + offsetX, y1 = positions[i1 + 1];
+          edgeSegments[c++] = x0; edgeSegments[c++] = y0; edgeSegments[c++] = -ROAD_HALF_Z;
+          edgeSegments[c++] = x1; edgeSegments[c++] = y1; edgeSegments[c++] = -ROAD_HALF_Z;
+          edgeSegments[c++] = x0; edgeSegments[c++] = y0; edgeSegments[c++] = ROAD_HALF_Z;
+          edgeSegments[c++] = x1; edgeSegments[c++] = y1; edgeSegments[c++] = ROAD_HALF_Z;
+        }
+      }
+        instancedMesh.instanceMatrix.needsUpdate = true;
+        instancedMesh.computeBoundingSphere();
+        const lineGeo = new LineSegmentsGeometry();
+        lineGeo.setPositions(edgeSegments);
+        lineGeo.computeBoundingSphere();
+        holder.add(instancedMesh, new LineSegments2(lineGeo, thickInkRoad));
+      }
+      return holder;
+    }
+
+    function ensurePolygonCached(n) {
+      if (!prebuiltWheels.has(n)) {
+        prebuiltWheels.set(n, {
+          rear: createSinglePolygonWheel(n, FIXED_R),
+          front: createSinglePolygonWheel(n, FIXED_R)
+        });
+      }
+      if (!prebuiltRoadArches.has(n)) {
+        prebuiltRoadArches.set(n, buildSingleArchInstancedRoad(n, FIXED_R));
+      }
+    }
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+    const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const easeOutBack = (t) => 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2);
+
+    // Cambio lati: la ruota "scatta" in posizione con un lieve rimbalzo e gli archi crescono dalle cuspidi
+    function applySidesTransition() {
+      const t = state.sidesTransitionT;
+      const pair = prebuiltWheels.get(activeCachedN);
+      const road = prebuiltRoadArches.get(activeCachedN);
+      if (!pair || !road) return;
+      // La sagoma resta esatta (il contatto con la strada non si perde mai): pulsa solo lo spessore
+      const wz = 0.35 + 0.65 * easeOutBack(t);
+      pair.rear.scale.set(1, 1, wz);
+      pair.front.scale.set(1, 1, wz);
+    }
+
+    function setPolygonSides(n, animateChange = true) {
+      ensurePolygonCached(n);
+      if (activeCachedN === n) return;
+      if (activeCachedN !== null) {
+        const prev = prebuiltWheels.get(activeCachedN);
+        rearWheelGroup.remove(prev.rear);
+        frontWheelGroup.remove(prev.front);
+        roadGroup.remove(prebuiltRoadArches.get(activeCachedN));
+      }
+      const next = prebuiltWheels.get(n);
+      rearWheelGroup.add(next.rear);
+      frontWheelGroup.add(next.front);
+      roadGroup.add(prebuiltRoadArches.get(n));
+      activeCachedN = n;
+      state.sides = n;
+
+      const phase = -Math.PI / 2 - Math.PI / n;
+      trackMarker.position.set(Math.cos(phase) * FIXED_R, Math.sin(phase) * FIXED_R, 0);
+
+      state.sidesTransitionT = animateChange && !prefersReducedMotion ? 0.0 : 1.0;
+      applySidesTransition();
+      state.needsRender = true;
+    }
+
+    // =========================================================================
+    // 8. MANICHINO ARTICOLATO LOW-POLY (cinematica inversa, zero allocazioni nel loop)
+    // =========================================================================
+    const riderGroup = new THREE.Group();
+    bikeGroup.add(riderGroup);
+
+    const PELVIS_BASE_Y = seatPos.y + 0.168; // 2,4 cm più bassa: la gamba non arriva mai a fine corsa
+    const pelvisGroup = new THREE.Group();
+    pelvisGroup.position.set(seatPos.x + 0.01, PELVIS_BASE_Y, 0);
+    riderGroup.add(pelvisGroup);
+
+    function createLathePart(points, radialSegs, mat, outlineAngle = 18) {
+      const geo = new THREE.LatheGeometry(points, radialSegs);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      if (outlineAngle > 0) attachThickOutline(mesh, outlineAngle, thickInkSubject);
+      return mesh;
+    }
+
+    function createJointSphere(r, mat = matRoadSide) {
+      const mesh = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), mat);
+      mesh.castShadow = true;
+      attachThickOutline(mesh, 22, thickInkSubject);
+      return mesh;
+    }
+
+    const pelvisPts = [
+      new THREE.Vector2(0.001, -0.13),
+      new THREE.Vector2(0.115, -0.115),
+      new THREE.Vector2(0.130, 0.0),
+      new THREE.Vector2(0.105, 0.085),
+      new THREE.Vector2(0.001, 0.095)
+    ];
+    pelvisGroup.add(createLathePart(pelvisPts, 8, matMannequin));
+
+    const waistRing = createLathePart([
+      new THREE.Vector2(0.095, -0.045),
+      new THREE.Vector2(0.112, 0.0),
+      new THREE.Vector2(0.095, 0.045)
+    ], 8, matRoadSide);
+    waistRing.position.set(0, 0.11, 0);
+    pelvisGroup.add(waistRing);
+
+    const torsoGroup = new THREE.Group();
+    torsoGroup.position.set(0, 0.13, 0);
+    torsoGroup.rotation.z = -0.34;
+    pelvisGroup.add(torsoGroup);
+
+    const chestPts = [
+      new THREE.Vector2(0.001, 0.0),
+      new THREE.Vector2(0.112, 0.02),
+      new THREE.Vector2(0.155, 0.34),
+      new THREE.Vector2(0.138, 0.43),
+      new THREE.Vector2(0.001, 0.45)
+    ];
+    const chestMesh = createLathePart(chestPts, 8, matMannequin);
+    chestMesh.scale.set(0.84, 1.0, 1.18);
+    torsoGroup.add(chestMesh);
+
+    const neckMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.060, 0.09, 8), matRoadSide);
+    neckMesh.position.set(0, 0.485, 0);
+    neckMesh.castShadow = true;
+    attachThickOutline(neckMesh, 20, thickInkSubject);
+    torsoGroup.add(neckMesh);
+
+    const headPivot = new THREE.Group();
+    headPivot.position.set(0, 0.525, 0);
+    headPivot.rotation.z = 0.28;
+    torsoGroup.add(headPivot);
+
+    const headPts = [
+      new THREE.Vector2(0.001, 0.0),
+      new THREE.Vector2(0.068, 0.035),
+      new THREE.Vector2(0.096, 0.135),
+      new THREE.Vector2(0.092, 0.215),
+      new THREE.Vector2(0.058, 0.265),
+      new THREE.Vector2(0.001, 0.280)
+    ];
+    // Testa manichino in colore carta (#f6f5f0)
+    const headMesh = createLathePart(headPts, 8, matPaper);
+    headMesh.scale.set(1.04, 1.0, 0.92);
+    headPivot.add(headMesh);
+
+    const _ikUnitX = new THREE.Vector3(1, 0, 0);
+    const _ikDir = new THREE.Vector3();
+
+    function solve2BoneIKInto(outVec, rootPos, targetPos, len1, len2, bendSign) {
+      // IK a due segmenti in 3D: il piano di flessione contiene la direzione radice-bersaglio
+      const dx = targetPos.x - rootPos.x;
+      const dy = targetPos.y - rootPos.y;
+      const dz = targetPos.z - rootPos.z;
+      const distRaw = Math.hypot(dx, dy, dz);
+      const maxReach = (len1 + len2) * 0.996;
+      const minReach = Math.abs(len1 - len2) + 0.02;
+      const dist = THREE.MathUtils.clamp(distRaw, minReach, maxReach);
+
+      const cosAlpha = THREE.MathUtils.clamp(
+        (len1 * len1 + dist * dist - len2 * len2) / (2 * len1 * dist),
+        -1, 1
+      );
+      const alpha = Math.acos(cosAlpha);
+      const inv = 1 / Math.max(1e-6, distRaw);
+      const ux = dx * inv, uy = dy * inv, uz = dz * inv;
+      // Direzione di flessione: perpendicolare a u nel piano verticale, verso indicato da bendSign
+      let px = -uy * bendSign, py = ux * bendSign, pz = 0;
+      const pd = px * ux + py * uy + pz * uz;
+      px -= pd * ux; py -= pd * uy; pz -= pd * uz;
+      const pl = 1 / Math.max(1e-6, Math.hypot(px, py, pz));
+      const ca = Math.cos(alpha) * len1, sa = Math.sin(alpha) * len1 * pl;
+      outVec.set(
+        rootPos.x + ux * ca + px * sa,
+        rootPos.y + uy * ca + py * sa,
+        rootPos.z + uz * ca + pz * sa
+      );
+      return outVec;
+    }
+
+    function createLimbSegment(len, rTop, rBottom, mat = matMannequin) {
+      const pts = [
+        new THREE.Vector2(0.001, 0),
+        new THREE.Vector2(rTop, len * 0.12),
+        new THREE.Vector2((rTop + rBottom) * 0.54, len * 0.5),
+        new THREE.Vector2(rBottom, len * 0.88),
+        new THREE.Vector2(0.001, len)
+      ];
+      const geo = new THREE.LatheGeometry(pts, 8);
+      geo.rotateZ(-Math.PI / 2);
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      attachThickOutline(mesh, 20, thickInkSubject);
+      return mesh;
+    }
+
+    function positionLimbBetween(mesh, pA, pB) {
+      _ikDir.subVectors(pB, pA);
+      const len = _ikDir.length();
+      mesh.position.copy(pA);
+      if (len > 1e-5) {
+        mesh.quaternion.setFromUnitVectors(_ikUnitX, _ikDir.normalize());
+      }
+    }
+
+    const UPPER_ARM_LEN = 0.42;
+    const FOREARM_LEN = 0.50; // spalla-manopola misura 0,88 m in 3D
+    const THIGH_LEN = 0.72;
+    const SHIN_LEN = 0.70;
+
+    // Vettori temporanei pre-allocati per la cinematica inversa (2.6)
+    const _shoulderWorld = new THREE.Vector3();
+    const _handTarget = new THREE.Vector3();
+    const _elbowWorld = new THREE.Vector3();
+    const _hipWorld = new THREE.Vector3();
+    const _pedalTopTarget = new THREE.Vector3();
+    const _kneeWorld = new THREE.Vector3();
+
+    const limbs = [-1, 1].map((side) => {
+      const shoulderJoint = createJointSphere(0.048);
+      const elbowJoint = createJointSphere(0.038);
+      const upperArm = createLimbSegment(UPPER_ARM_LEN, 0.046, 0.038);
+      const forearm = createLimbSegment(FOREARM_LEN, 0.038, 0.030);
+      const handMesh = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.048, 0.056), matPaper);
+      handMesh.castShadow = true;
+      attachThickOutline(handMesh, 20, thickInkSubject);
+
+      const hipJoint = createJointSphere(0.054);
+      const kneeJoint = createJointSphere(0.044);
+      const ankleJoint = createJointSphere(0.034);
+      const thigh = createLimbSegment(THIGH_LEN, 0.064, 0.048);
+      const shin = createLimbSegment(SHIN_LEN, 0.048, 0.036);
+      const footMesh = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.048, 0.075), matRimDark);
+      footMesh.castShadow = true;
+      attachThickOutline(footMesh, 20, thickInkSubject);
+
+      riderGroup.add(
+        shoulderJoint, elbowJoint, upperArm, forearm, handMesh,
+        hipJoint, kneeJoint, ankleJoint, thigh, shin, footMesh
+      );
+
+      return {
+        side,
+        shoulderJoint, elbowJoint, upperArm, forearm, handMesh,
+        hipJoint, kneeJoint, ankleJoint, thigh, shin, footMesh
+      };
+    });
+
+    function updateMannequinKinematics(crankAngle, bobY, torsoPitch) {
+      pelvisGroup.position.y = PELVIS_BASE_Y + bobY;
+      torsoGroup.rotation.z = -0.34 + torsoPitch;
+      headPivot.rotation.z = 0.28 - torsoPitch * 0.75;
+      riderGroup.updateMatrixWorld(true);
+
+      for (let i = 0; i < limbs.length; i++) {
+        const L = limbs[i];
+        const s = L.side;
+
+        _shoulderWorld.set(0.02, 0.39, s * 0.195).applyMatrix4(torsoGroup.matrixWorld);
+        bikeGroup.worldToLocal(_shoulderWorld);
+
+        // Bersaglio mano allineato direttamente alle manopole del manubrio
+        _handTarget.set(stemPos.x - 0.025, stemPos.y + 0.062, s * 0.32);
+        solve2BoneIKInto(_elbowWorld, _shoulderWorld, _handTarget, UPPER_ARM_LEN, FOREARM_LEN, -1);
+
+        L.shoulderJoint.position.copy(_shoulderWorld);
+        L.elbowJoint.position.copy(_elbowWorld);
+        positionLimbBetween(L.upperArm, _shoulderWorld, _elbowWorld);
+        positionLimbBetween(L.forearm, _elbowWorld, _handTarget);
+        L.handMesh.position.copy(_handTarget);
+        L.handMesh.rotation.z = -0.22;
+        _hipWorld.set(0.01, -0.05, s * 0.135).applyMatrix4(pelvisGroup.matrixWorld);
+        bikeGroup.worldToLocal(_hipWorld);
+
+        // 1. BUG: fase corretta a 90° affinché la caviglia coincida con il pedale su tutti i 360°
+        const sidePhase = crankAngle + s * Math.PI / 2;
+        _pedalTopTarget.set(
+          bbPos.x + Math.cos(sidePhase) * CRANK_LEN + 0.015,
+          bbPos.y + Math.sin(sidePhase) * CRANK_LEN + 0.048,
+          s * PEDAL_Z
+        );
+        solve2BoneIKInto(_kneeWorld, _hipWorld, _pedalTopTarget, THIGH_LEN, SHIN_LEN, 1);
+
+        L.hipJoint.position.copy(_hipWorld);
+        L.kneeJoint.position.copy(_kneeWorld);
+        L.ankleJoint.position.copy(_pedalTopTarget);
+        positionLimbBetween(L.thigh, _hipWorld, _kneeWorld);
+        positionLimbBetween(L.shin, _kneeWorld, _pedalTopTarget);
+
+        L.footMesh.position.set(
+          _pedalTopTarget.x + 0.032,
+          _pedalTopTarget.y - 0.018,
+          s * PEDAL_Z
+        );
+        L.footMesh.rotation.z = Math.sin(sidePhase) * 0.10;
+      }
+    }
+
+    // =========================================================================
+    // 9. ORIZZONTE A SAGOME, TERRENO E VEGETAZIONE
+    // =========================================================================
+    const landscapeGroup = new THREE.Group();
+    scene.add(landscapeGroup);
+
+    const CHUNK_LEN = 96;
+    const CHUNK_WIDTH = 260;
+    const TOTAL_BIOME_MODULES = 6;
+
+    const infiniteGroundBase = new THREE.Mesh(new THREE.PlaneGeometry(540, 540), matTerrainFlat);
+    infiniteGroundBase.rotation.x = -Math.PI / 2;
+    infiniteGroundBase.position.y = TERRAIN_BED_Y - 0.15;
+    infiniteGroundBase.receiveShadow = true;
+    scene.add(infiniteGroundBase);
+
+    // Tre catene di monti basse e piatte che ricevono la stessa nebbia del paesaggio:
+    // la scala tonale resta continua dal primo piano all'orizzonte, e sole e luna restano in vista.
+    const RIDGE_NEAR_R = 130;
+    const matRidge = new THREE.MeshBasicMaterial({ color: PALETTE.vegMid, side: THREE.DoubleSide });
+    const _baseRidgeColor = new THREE.Color(PALETTE.vegMid);
+    function updateHorizonPalette(dayFactor) {
+      // Non sono illuminati: il tono segue la luce del giorno, la nebbia fa il resto
+      matRidge.color.copy(_baseRidgeColor).multiplyScalar(THREE.MathUtils.lerp(0.42, 1.0, dayFactor));
+    }
+
+    function createSilhouetteMountains(radius, baseHeight, ampA, ampB, phase) {
+      const geo = new THREE.CylinderGeometry(radius, radius, 1, 128, 1, true);
+      const pos = geo.attributes.position;
+      const baseY = TERRAIN_BED_Y - 4.0;
+      for (let i = 0; i < pos.count; i++) {
+        if (pos.getY(i) > 0) {
+          const ang = Math.atan2(pos.getZ(i), pos.getX(i));
+          const ridge = (Math.sin(ang * 5.0 + phase) * 0.5 + 0.5) * ampA +
+                        (Math.cos(ang * 11.0 - phase * 1.4) * 0.5 + 0.5) * ampB +
+                        (Math.sin(ang * 23.0 + phase * 2.3) * 0.5 + 0.5) * ampB * 0.35;
+          pos.setY(i, baseY + baseHeight + ridge);
+        } else {
+          pos.setY(i, baseY - 12.0);
+        }
+      }
+      const mesh = new THREE.Mesh(geo, matRidge);
+      mesh.matrixAutoUpdate = false;
+      return mesh;
+    }
+    scene.add(createSilhouetteMountains(172, 11.0, 14.0, 7.5, 0.4));
+    scene.add(createSilhouetteMountains(150, 8.0, 10.0, 5.5, 1.9));
+    scene.add(createSilhouetteMountains(RIDGE_NEAR_R, 5.0, 7.0, 4.0, 3.3));
+
+    function createSeededRng(seed) {
+      let s = seed % 2147483647;
+      if (s <= 0) s += 2147483646;
+      return function () {
+        s = (s * 16807) % 2147483647;
+        return (s - 1) / 2147483646;
+      };
+    }
+
+    function hash2D(ix, iz) {
+      const n = Math.sin(ix * 127.1 + iz * 311.7) * 43758.5453123;
+      return n - Math.floor(n);
+    }
+
+    function valueNoise2D(x, z) {
+      const ix = Math.floor(x);
+      const iz = Math.floor(z);
+      const fx = x - ix;
+      const fz = z - iz;
+      const ux = fx * fx * (3 - 2 * fx);
+      const uz = fz * fz * (3 - 2 * fz);
+      const a = hash2D(ix, iz);
+      const b = hash2D(ix + 1, iz);
+      const c = hash2D(ix, iz + 1);
+      const d = hash2D(ix + 1, iz + 1);
+      return a + (b - a) * ux + (c - a) * uz + (a - b - c + d) * ux * uz;
+    }
+
+    function fbm2D(x, z) {
+      return (
+        0.55 * valueNoise2D(x, z) +
+        0.30 * valueNoise2D(x * 2.07 + 13.1, z * 2.07 + 7.4) +
+        0.15 * valueNoise2D(x * 4.13 + 29.3, z * 4.13 + 19.8)
+      );
+    }
+
+    function ridgedNoise2D(x, z) {
+      const v1 = 1.0 - Math.abs(valueNoise2D(x, z) * 2.0 - 1.0);
+      const v2 = 1.0 - Math.abs(valueNoise2D(x * 2.1 + 5.3, z * 2.1 - 3.9) * 2.0 - 1.0);
+      return v1 * v1 * 0.68 + v2 * v2 * 0.32;
+    }
+
+    function getBiomeTerrainHeight(biomeIndex, lx, lz) {
+      const roadBedY = TERRAIN_BED_Y;
+      const absZ = Math.abs(lz);
+      // Lato camera (+z): prato aperto fino a 10 m, cosi' la vista resta libera; lato opposto: rilievo che sale dolcemente
+      const roadClearance = lz > 0
+        ? THREE.MathUtils.smoothstep(lz, 24.0, 70.0)
+        : THREE.MathUtils.smoothstep(absZ, 2.2, 30.0);
+
+      const distFromEdgeX = Math.max(0, CHUNK_LEN * 0.5 - Math.abs(lx));
+      const edgeBlend = 1.0 - THREE.MathUtils.smoothstep(distFromEdgeX, 0.0, 14.0);
+
+      let relief = 0;
+      if (biomeIndex === 0) {
+        const gentle = (fbm2D(lx * 0.015 + 1.2, lz * 0.015 - 0.8) - 0.48) * 3.8;
+        const outerRise = THREE.MathUtils.smoothstep(absZ, 34, 128) * 8.5;
+        relief = Math.max(-0.15, gentle) + outerRise;
+      } else if (biomeIndex === 1) {
+        const hills = (fbm2D(lx * 0.022 + 4.3, lz * 0.022 + 2.1) - 0.42) * 14.0;
+        const knolls = (fbm2D(lx * 0.055 - 2.1, lz * 0.055 + 6.4) - 0.5) * 3.4;
+        const outerRise = THREE.MathUtils.smoothstep(absZ, 26, 128) * 16.0;
+        relief = Math.max(-0.25, hills) + knolls + outerRise;
+      } else if (biomeIndex === 2) {
+        const valley = (fbm2D(lx * 0.020 + 8.1, lz * 0.022 - 3.7) - 0.40) * 19.0;
+        const detail = (fbm2D(lx * 0.060 - 4.4, lz * 0.060 + 5.2) - 0.5) * 4.5;
+        const outerRise = THREE.MathUtils.smoothstep(absZ, 22, 128) * 21.0;
+        relief = Math.max(-0.30, valley) + detail + outerRise;
+      } else if (biomeIndex === 3) {
+        const peaks = ridgedNoise2D(lx * 0.018 + 2.7, lz * 0.019 - 5.1) * 30.0;
+        const crags = (fbm2D(lx * 0.065 + 1.9, lz * 0.065 + 3.3) - 0.45) * 6.0;
+        const sideWall = THREE.MathUtils.smoothstep(absZ, 14, 126) * 28.0;
+        relief = Math.max(0, peaks - 4.0) + crags + sideWall;
+      } else if (biomeIndex === 4) {
+        const duneWave = Math.sin(lx * 0.085 + lz * 0.055 + fbm2D(lx * 0.025, lz * 0.025) * 4.2);
+        const duneCrest = (1.0 - Math.abs(duneWave)) * 6.5;
+        const macroDune = (fbm2D(lx * 0.016 - 6.3, lz * 0.018 + 4.9) - 0.35) * 11.5;
+        const outerMesa = THREE.MathUtils.smoothstep(absZ, 34, 128) * 13.0;
+        relief = Math.max(0, macroDune) + duneCrest + outerMesa;
+      } else {
+        const mesa = (fbm2D(lx * 0.019 - 9.2, lz * 0.020 - 4.1) - 0.46) * 9.0;
+        const outerRise = THREE.MathUtils.smoothstep(absZ, 30, 128) * 11.0;
+        relief = Math.max(-0.20, mesa) + outerRise;
+      }
+
+      const transitionRelief = THREE.MathUtils.smoothstep(absZ, 28, 128) * 10.0;
+      // Tetto morbido a 12 m: il rilievo non copre mai cielo, sole e sagome dell'orizzonte
+      const blendedRelief = 12.0 * Math.tanh(THREE.MathUtils.lerp(relief, transitionRelief, edgeBlend) / 12.0);
+      return roadBedY + roadClearance * blendedRelief;
+    }
+
+    function mergeBufferGeometriesSimple(geos) {
+      let totalVerts = 0;
+      let totalIndices = 0;
+      for (const g of geos) {
+        totalVerts += g.attributes.position.count;
+        totalIndices += g.index ? g.index.count : g.attributes.position.count;
+      }
+      const posArr = new Float32Array(totalVerts * 3);
+      const normArr = new Float32Array(totalVerts * 3);
+      const idxArr = new Uint32Array(totalIndices);
+
+      let vOffset = 0;
+      let iOffset = 0;
+      for (const g of geos) {
+        const p = g.attributes.position.array;
+        const n = g.attributes.normal.array;
+        posArr.set(p, vOffset * 3);
+        normArr.set(n, vOffset * 3);
+
+        if (g.index) {
+          const idx = g.index.array;
+          for (let i = 0; i < idx.length; i++) idxArr[iOffset + i] = idx[i] + vOffset;
+          iOffset += idx.length;
+        } else {
+          const count = g.attributes.position.count;
+          for (let i = 0; i < count; i++) idxArr[iOffset + i] = i + vOffset;
+          iOffset += count;
+        }
+        vOffset += g.attributes.position.count;
+      }
+      const merged = new THREE.BufferGeometry();
+      merged.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+      merged.setAttribute('normal', new THREE.BufferAttribute(normArr, 3));
+      // Indice solo se serve: per vertici gia' non indicizzati sarebbe un elenco 0..n inutile
+      if (geos.some((g) => g.index)) merged.setIndex(new THREE.BufferAttribute(idxArr, 1));
+      return merged;
+    }
+
+    function pushTransformedGeometry(targetList, sourceGeo, matrix) {
+      const g = sourceGeo.index ? sourceGeo.toNonIndexed() : sourceGeo.clone();
+      g.applyMatrix4(matrix);
+      g.computeVertexNormals();
+      targetList.push(g);
+    }
+
+    const primCone7 = new THREE.ConeGeometry(1, 1, 7);
+    const primCone6 = new THREE.ConeGeometry(1, 1, 6);
+    const primIco1 = new THREE.IcosahedronGeometry(1, 1);
+    const primIco0 = new THREE.IcosahedronGeometry(1, 0);
+    const primCyl6 = new THREE.CylinderGeometry(0.68, 1.0, 1, 6);
+    const primCyl7 = new THREE.CylinderGeometry(0.85, 1.0, 1, 7);
+    const primBox = new THREE.BoxGeometry(1, 1, 1);
+
+    // 2.5 Generatore incrementale dei biomi a budget di tempo (~8 ms per frame)
+    function createBiomeBuilder(biomeIndex, seed) {
+      const rng = createSeededRng(seed);
+      const group = new THREE.Group();
+      group.userData.biomeIndex = biomeIndex;
+
+      // Terreno in 16 tessere (4 in x per 4 fasce in z): il motore scarta quelle fuori campo,
+      // e quelle oltre la nebbia vengono spente a ogni frame
+      const halfW = CHUNK_WIDTH * 0.5;
+      const TX = 4;
+      const mapZ = (vzRaw) => {
+        const t = vzRaw / halfW;
+        const a = Math.abs(t);
+        return Math.sign(t) * (0.08 * a + 0.92 * Math.pow(a, 2.35)) * halfW; // fitto vicino alla strada, rado lontano
+      };
+      const Z_SPLIT = mapZ(halfW * 0.5);
+      const tileOf = (x, z) => {
+        const ix = THREE.MathUtils.clamp(Math.floor((x / CHUNK_LEN + 0.5) * TX), 0, TX - 1);
+        const iz = z < -Z_SPLIT ? 0 : z < 0 ? 1 : z < Z_SPLIT ? 2 : 3;
+        return iz * TX + ix;
+      };
+      const tiles = [];
+      group.userData.tiles = tiles;
+      for (let iz = 0; iz < 4; iz++) {
+        for (let ix = 0; ix < TX; ix++) {
+          const geo = new THREE.PlaneGeometry(CHUNK_LEN / TX, halfW * 0.5, 8, 22);
+          geo.rotateX(-Math.PI / 2);
+          geo.translate(-CHUNK_LEN * 0.5 + (ix + 0.5) * (CHUNK_LEN / TX), 0, (-0.75 + iz * 0.5) * halfW);
+          const pos = geo.attributes.position;
+          const toneArr = new Float32Array(pos.count * 3);
+          for (let i = 0; i < pos.count; i++) {
+            const vx = pos.getX(i);
+            const vz = mapZ(pos.getZ(i));
+            pos.setZ(i, vz);
+            pos.setY(i, getBiomeTerrainHeight(biomeIndex, vx, vz));
+            // Leggera variazione di tono, come una carta non uniforme (raccordata ai bordi del modulo)
+            const edge = THREE.MathUtils.smoothstep(CHUNK_LEN * 0.5 - Math.abs(vx), 0.0, 12.0);
+            const tone = THREE.MathUtils.lerp(0.99, 0.92 + 0.14 * fbm2D(vx * 0.05 + biomeIndex * 7.3, vz * 0.05), edge);
+            toneArr[i * 3] = toneArr[i * 3 + 1] = toneArr[i * 3 + 2] = tone;
+          }
+          geo.setAttribute('color', new THREE.BufferAttribute(toneArr, 3));
+          geo.deleteAttribute('uv');
+          geo.computeVertexNormals();
+          geo.computeBoundingSphere();
+
+          const tile = new THREE.Group();
+          const terrainMesh = new THREE.Mesh(geo, matTerrain);
+          terrainMesh.receiveShadow = true;
+          terrainMesh.matrixAutoUpdate = false;
+          tile.add(terrainMesh);
+          tile.userData.cx = geo.boundingSphere.center.x;
+          tile.userData.cz = geo.boundingSphere.center.z;
+          tile.userData.r = geo.boundingSphere.radius + 14.0; // margine per le chiome degli alberi
+          group.add(tile);
+          tiles.push(tile);
+        }
+      }
+
+      const darkGeos = [];
+      const midGeos = [];
+      const lightGeos = [];
+      const dummy = new THREE.Object3D();
+
+      function addPart(list, prim, px, py, pz, sx, sy, sz, rx = 0, ry = 0, rz = 0) {
+        dummy.position.set(px, py, pz);
+        dummy.scale.set(sx, sy, sz);
+        dummy.rotation.set(rx, ry, rz);
+        dummy.updateMatrix();
+        pushTransformedGeometry(list, prim, dummy.matrix);
+        list[list.length - 1].userData.tile = tileOf(px, pz);
+      }
+
+      const targetObjectsByBiome = [230, 320, 400, 310, 190, 220];
+      const targetObjects = targetObjectsByBiome[biomeIndex] || 420;
+      let placed = 0;
+      let attempts = 0;
+      let finalized = false;
+
+      // Ciuffi d'erba in primo piano: danno scala e senso di velocita'
+      for (let i = 0; i < 170; i++) {
+        const tx = (rng() - 0.5) * (CHUNK_LEN - 1.0);
+        const tz = (rng() < 0.5 ? -1 : 1) * (1.75 + Math.pow(rng(), 1.5) * 8.5);
+        const th = 0.07 + rng() * 0.16;
+        const ty = getBiomeTerrainHeight(biomeIndex, tx, tz);
+        addPart(rng() < 0.6 ? lightGeos : midGeos, primCone6, tx, ty + th * 0.5, tz, th * 0.5, th, th * 0.5, 0, rng() * 6.28, (rng() - 0.5) * 0.3);
+      }
+
+      return {
+        step(budgetMs = 7.5) {
+          const t0 = performance.now();
+          while (placed < targetObjects && attempts < 3600) {
+            if (performance.now() - t0 >= budgetMs) return false;
+            attempts++;
+            const lx = (rng() - 0.5) * (CHUNK_LEN - 3.0);
+            const sideSign = rng() < 0.5 ? 1 : -1;
+            const zNorm = Math.pow(rng(), 0.7);
+            const lz = sideSign > 0 ? 18.0 + zNorm * 100.0 : -(14.0 + zNorm * 104.0);
+
+            const groundY = getBiomeTerrainHeight(biomeIndex, lx, lz) - 0.03;
+            // Corridoio libero dietro la strada: gli alberi partono a 14 m e crescono allontanandosi
+            const s = (0.62 + rng() * 0.6) * THREE.MathUtils.lerp(0.45, 1.0, THREE.MathUtils.smoothstep(Math.abs(lz), 14.0, 36.0));
+            const rotY = rng() * Math.PI * 2;
+            const rType = rng();
+
+            if (biomeIndex === 4) {
+              if (rType < 0.44) {
+                const h = (3.4 + rng() * 2.8) * s;
+                const r = 0.24 * s;
+                addPart(midGeos, primCyl7, lx, groundY + h * 0.5, lz, r, h, r, 0, rotY, 0);
+                addPart(midGeos, primIco1, lx, groundY + h, lz, r * 0.92, r * 0.92, r * 0.92, 0, rotY, 0);
+                const armDir = Math.cos(rotY);
+                const armZ = Math.sin(rotY);
+                const armH1 = h * 0.48;
+                addPart(midGeos, primCyl7, lx + armDir * r * 1.6, groundY + armH1, lz + armZ * r * 1.6, r * 0.75, r * 2.2, r * 0.75, 0, rotY, Math.PI * 0.48);
+                addPart(midGeos, primCyl7, lx + armDir * r * 2.5, groundY + armH1 + h * 0.18, lz + armZ * r * 2.5, r * 0.72, h * 0.34, r * 0.72, 0, rotY, 0);
+              } else if (rType < 0.82) {
+                const rx = (1.1 + rng() * 1.4) * s;
+                const ry = (0.55 + rng() * 0.7) * s;
+                addPart(lightGeos, primIco0, lx, groundY + ry * 0.35, lz, rx, ry, rx * 0.82, rng() * 0.4, rotY, rng() * 0.3);
+              } else {
+                const bh = (0.75 + rng() * 0.55) * s;
+                addPart(darkGeos, primIco0, lx, groundY + bh * 0.35, lz, bh * 1.1, bh * 0.75, bh, 0, rotY, 0);
+              }
+            } else if (biomeIndex === 3) {
+              if (rType < 0.52) {
+                const totalH = (8.0 + rng() * 5.2) * s;
+                const trunkH = totalH * 0.24;
+                addPart(darkGeos, primCyl6, lx, groundY + trunkH * 0.5, lz, 0.24 * s, trunkH, 0.24 * s, 0, rotY, 0);
+                const tiers = 5;
+                for (let t = 0; t < tiers; t++) {
+                  const frac = t / (tiers - 1);
+                  const tierR = (2.15 * (1 - frac * 0.66) + 0.32) * s;
+                  const tierH = (totalH * 0.34) * (1 - frac * 0.24);
+                  const tierY = groundY + trunkH * 0.75 + frac * (totalH * 0.66) + tierH * 0.4;
+                  const target = t % 2 === 0 ? darkGeos : midGeos;
+                  addPart(target, primCone7, lx, tierY, lz, tierR, tierH, tierR, (rng() - 0.5) * 0.08, rotY + t * 0.7, (rng() - 0.5) * 0.08);
+                }
+              } else if (rType < 0.96) {
+                const rx = (1.2 + rng() * 1.6) * s;
+                const ry = (0.7 + rng() * 0.9) * s;
+                addPart(midGeos, primIco0, lx, groundY + ry * 0.38, lz, rx, ry, rx * 0.85, rng() * 0.5, rotY, rng() * 0.4);
+              } else {
+                const bw = 3.2 * s;
+                const bh = 2.0 * s;
+                const bd = 2.6 * s;
+                addPart(lightGeos, primBox, lx, groundY + bh * 0.5, lz, bw, bh, bd, 0, rotY, 0);
+                addPart(darkGeos, primCone6, lx, groundY + bh + bh * 0.45, lz, bw * 0.82, bh * 0.95, bd * 0.82, 0, rotY + Math.PI / 4, 0);
+              }
+            } else {
+              const deciduousRatio = biomeIndex === 2 ? 0.42 : 0.56;
+              if (rType < deciduousRatio) {
+                const totalH = (7.2 + rng() * 4.5) * s;
+                const trunkH = totalH * 0.46;
+                const trunkR = 0.24 * s;
+                addPart(darkGeos, primCyl6, lx, groundY + trunkH * 0.5, lz, trunkR, trunkH, trunkR, 0, rotY, 0);
+                const crownBaseY = groundY + trunkH * 0.88;
+                const mainR = (1.85 + rng() * 0.65) * s;
+                const mainLeaf = rng() < 0.5 ? lightGeos : midGeos;
+                addPart(mainLeaf, primIco1, lx, crownBaseY + mainR * 0.75, lz, mainR * 1.15, mainR * 0.95, mainR * 1.05, 0.2, rotY, 0.15);
+                const subR = mainR * 0.72;
+                const bx = Math.cos(rotY) * mainR * 0.62;
+                const bz = Math.sin(rotY) * mainR * 0.62;
+                addPart(midGeos, primIco1, lx + bx, crownBaseY + mainR * 0.92, lz + bz, subR, subR * 0.9, subR, -0.2, rotY + 1.1, 0.2);
+              } else if (rType < 0.82) {
+                const totalH = (7.6 + rng() * 4.8) * s;
+                const trunkH = totalH * 0.24;
+                addPart(darkGeos, primCyl6, lx, groundY + trunkH * 0.5, lz, 0.23 * s, trunkH, 0.23 * s, 0, rotY, 0);
+                const tiers = 4;
+                for (let t = 0; t < tiers; t++) {
+                  const frac = t / (tiers - 1);
+                  const tierR = (2.1 * (1 - frac * 0.62) + 0.35) * s;
+                  const tierH = (totalH * 0.36) * (1 - frac * 0.22);
+                  const tierY = groundY + trunkH * 0.78 + frac * (totalH * 0.62) + tierH * 0.4;
+                  addPart(t % 2 === 0 ? midGeos : darkGeos, primCone7, lx, tierY, lz, tierR, tierH, tierR, 0, rotY + t * 0.65, 0);
+                }
+              } else if (rType < 0.94) {
+                const rx = (0.85 + rng() * 1.15) * s;
+                const ry = (0.45 + rng() * 0.55) * s;
+                addPart(midGeos, primIco0, lx, groundY + ry * 0.35, lz, rx, ry, rx * 0.8, rng() * 0.5, rotY, rng() * 0.3);
+              } else {
+                const stumpH = 0.82 * s;
+                addPart(darkGeos, primCyl6, lx, groundY + stumpH * 0.5, lz, 0.30 * s, stumpH, 0.30 * s, 0, rotY, 0);
+                addPart(lightGeos, primIco0, lx + 0.75 * s, groundY + 0.45 * s, lz + 0.45 * s, 0.85 * s, 0.65 * s, 0.85 * s, 0.3, rotY, 0.2);
+              }
+            }
+            placed++;
+          }
+
+          if (!finalized) {
+            finalized = true;
+            // Una mesh per materiale e per tessera
+            [[darkGeos, matVegDark], [midGeos, matVegMid], [lightGeos, matVegLight]].forEach(([list, mat]) => {
+              const byTile = new Map();
+              for (const g of list) {
+                const k = g.userData.tile;
+                if (!byTile.has(k)) byTile.set(k, []);
+                byTile.get(k).push(g);
+              }
+              byTile.forEach((geos, k) => {
+                const mesh = new THREE.Mesh(mergeBufferGeometriesSimple(geos), mat);
+                mesh.receiveShadow = true;
+                mesh.matrixAutoUpdate = false;
+                mesh.geometry.computeBoundingSphere();
+                tiles[k].add(mesh);
+              });
+              list.forEach((g) => g.dispose());
+            });
+          }
+          return true;
+        },
+        group
+      };
+    }
+
+    const landscapeChunks = [];
+
+    // =========================================================================
+    // 10. PRECARICAMENTO A BUDGET DI TEMPO & WARM-UP GPU
+    // =========================================================================
+    const introScreen = document.getElementById('intro-screen');
+    const introLoaderBox = document.getElementById('intro-loader-box');
+    const introProgressBar = document.getElementById('intro-progress-bar');
+    const introProgressText = document.getElementById('intro-progress-text');
+    const btnStartSim = document.getElementById('btn-start-sim');
+    const bottomDock = document.getElementById('bottom-dock');
+    const topBar = document.getElementById('top-bar');
+    const hintToast = document.getElementById('hint-toast');
+
+    function setPreloadProgress(pct, label) {
+      const clamped = Math.min(100, Math.max(0, Math.round(pct)));
+      introProgressBar.style.width = clamped + '%';
+      introProgressText.textContent = label + ' · ' + clamped + '%';
+    }
+
+    function runIncrementalPreload() {
+      const biomeNames = ['Pianura', 'Colline', 'Foresta', 'Montagne', 'Deserto', 'Altopiano'];
+      let biomeIdx = 0;
+      let currentBiomeBuilder = null;
+      let polyCursor = 3;
+      let compiled = false;
+
+      setPolygonSides(4, false);
+      updateSimulationFrame(0);
+      setPreloadProgress(8, 'Calibrazione cinematica');
+
+      function nextPreloadStep() {
+        const frameStart = performance.now();
+
+        if (biomeIdx < TOTAL_BIOME_MODULES) {
+          if (!currentBiomeBuilder) {
+            currentBiomeBuilder = createBiomeBuilder(biomeIdx, 104729 + biomeIdx * 7919);
+          } else if (currentBiomeBuilder.step(7.5)) {
+            const mod = currentBiomeBuilder.group;
+            mod.visible = false;
+            landscapeGroup.add(mod);
+            landscapeChunks.push(mod);
+            currentBiomeBuilder = null;
+            biomeIdx++;
+          }
+          setPreloadProgress(8 + (biomeIdx / TOTAL_BIOME_MODULES) * 56, 'Bioma ' + biomeNames[Math.min(biomeIdx, TOTAL_BIOME_MODULES - 1)]);
+          requestAnimationFrame(nextPreloadStep);
+          return;
+        }
+
+        if (polyCursor <= 36) {
+          while (polyCursor <= 36 && performance.now() - frameStart < 7.5) {
+            ensurePolygonCached(polyCursor);
+            polyCursor++;
+          }
+          setPreloadProgress(64 + ((polyCursor - 3) / 34) * 34, 'Archi di catenaria n = ' + Math.min(36, polyCursor));
+          requestAnimationFrame(nextPreloadStep);
+          return;
+        }
+
+        if (!compiled) {
+          compiled = true;
+          updateSimulationFrame(0);
+          renderer.compile(scene, camera);
+          renderer.render(scene, camera);
+          state.simReady = true;
+          state.needsRender = true;
+          setPreloadProgress(100, 'Pronto');
+
+          introLoaderBox.style.opacity = '0';
+          setTimeout(() => {
+            introLoaderBox.style.display = 'none';
+            btnStartSim.disabled = false;
+            btnStartSim.classList.remove('is-loading');
+            btnStartSim.focus({ preventScroll: true });
+          }, 180);
+        }
+      }
+      requestAnimationFrame(nextPreloadStep);
+    }
+
+    // =========================================================================
+    // 11. INTERFACCIA: LATI, VISTE, LUCE, TOUR, SCHERMO INTERO, TASTIERA
+    // =========================================================================
+    const btnPlayPause = document.getElementById('btn-play-pause');
+    const iconPause = document.getElementById('icon-pause');
+    const iconPlay = document.getElementById('icon-play');
+    const sliderSides = document.getElementById('slider-sides');
+    const labelSides = document.getElementById('label-sides');
+    const miniPolyShape = document.getElementById('mini-poly-shape');
+    const btnProfileView = document.getElementById('btn-profile-view');
+    const btnTour = document.getElementById('btn-tour');
+    const btnLight = document.getElementById('btn-light');
+    const labelLight = document.getElementById('label-light');
+    const btnGeo = document.getElementById('btn-geo');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+    const readoutEl = document.getElementById('readout');
+
+    const POLYGON_NAMES_IT = {
+      3: 'triangolo', 4: 'quadrato', 5: 'pentagono', 6: 'esagono', 7: 'ettagono', 8: 'ottagono',
+      9: 'ennagono', 10: 'decagono', 11: 'endecagono', 12: 'dodecagono'
+    };
+    const fmtIt = (v, d = 2) => v.toFixed(d).replace('.', ',');
+
+    function getPolygonNameItalian(n) {
+      return POLYGON_NAMES_IT[n] ? `${POLYGON_NAMES_IT[n]} (${n})` : `${n} lati`;
+    }
+
+    function updatePolygonBadgeUI(n) {
+      const text = getPolygonNameItalian(n);
+      labelSides.textContent = text;
+      sliderSides.setAttribute('aria-valuenow', String(n));
+      sliderSides.setAttribute('aria-valuetext', text);
+      sliderSides.style.setProperty('--fill-pct', (((n - 3) / 33) * 100).toFixed(2) + '%');
+
+      const pts = [];
+      const phase = -Math.PI / 2 - Math.PI / n;
+      for (let i = 0; i < n; i++) {
+        const a = phase + (i / n) * Math.PI * 2;
+        pts.push((Math.cos(a) * 7.6).toFixed(2) + ',' + (Math.sin(a) * 7.6).toFixed(2));
+      }
+      miniPolyShape.setAttribute('points', pts.join(' '));
+
+      const c = CAT[n];
+      readoutEl.innerHTML =
+        `n = <b>${n}</b> · arco <b>${fmtIt(c.W)} m</b>` +
+        `<span class="readout-extra"> · y = R − a·cosh(x/a), a = ${fmtIt(c.a)} m</span>` +
+        `<br><span class="readout-extra">quota del mozzo: ${fmtIt(FIXED_R)} m, costante` +
+        (n === 3 ? ' · con 3 lati il vertice successivo taglia l\u2019arco seguente' : '') + `</span>`;
+    }
+    updatePolygonBadgeUI(4);
+
+    // Velocità: scala logaritmica 0,1× – 3×, con aggancio a 1×
+    const sliderSpeed = document.getElementById('slider-speed');
+    const speedValue = document.getElementById('speed-value');
+    const SPEED_MIN = 0.1;
+    const SPEED_MAX = 3.0;
+    const speedFromSlider = (v) => SPEED_MIN * Math.pow(SPEED_MAX / SPEED_MIN, v / 100);
+    const sliderFromSpeed = (m) => (Math.log(m / SPEED_MIN) / Math.log(SPEED_MAX / SPEED_MIN)) * 100;
+
+    function setSpeed(mul) {
+      mul = THREE.MathUtils.clamp(mul, SPEED_MIN, SPEED_MAX);
+      if (Math.abs(mul - 1) < 0.045) mul = 1;
+      state.speedMul = mul;
+      const v = sliderFromSpeed(mul);
+      sliderSpeed.value = String(Math.round(v));
+      sliderSpeed.style.setProperty('--fill-pct', v.toFixed(2) + '%');
+      const text = fmtIt(mul, mul < 1 ? 2 : 1) + '×';
+      speedValue.textContent = text;
+      sliderSpeed.setAttribute('aria-valuetext', text);
+      speedValue.classList.toggle('is-default', mul === 1);
+    }
+    setSpeed(1);
+
+    function applySides(n) {
+      n = THREE.MathUtils.clamp(n, 3, 36);
+      if (n === state.targetSides) return;
+      state.targetSides = n;
+      sliderSides.value = String(n);
+      updatePolygonBadgeUI(n);
+      setPolygonSides(n, true);
+    }
+
+    // Su schermi stretti o verticali la camera arretra finché la bici entra tutta nel quadro
+    const _fitPos = new THREE.Vector3();
+    function fittedViewPos(view) {
+      const baseDist = view.pos.distanceTo(view.target);
+      const k = Math.min(THREE.MathUtils.clamp(1.45 / camera.aspect, 1.0, 2.8), controls.maxDistance / baseDist);
+      return _fitPos.copy(view.pos).sub(view.target).multiplyScalar(k).add(view.target);
+    }
+
+    function startCameraTransition(view, duration = 0.9) {
+      if (prefersReducedMotion || duration <= 0) {
+        camera.position.copy(fittedViewPos(view));
+        controls.target.copy(view.target);
+        camera.fov = view.fov;
+        camera.updateProjectionMatrix();
+        updateHullScale();
+        controls.update();
+        state.cameraAnim = null;
+        state.needsRender = true;
+        return;
+      }
+      state.cameraAnim = {
+        fromPos: camera.position.clone(),
+        toPos: fittedViewPos(view).clone(),
+        fromTarget: controls.target.clone(),
+        toTarget: view.target,
+        fromFov: camera.fov,
+        toFov: view.fov,
+        elapsed: 0,
+        duration
+      };
+      state.needsRender = true;
+    }
+
+    function setView(name, duration = 0.9) {
+      state.profileView = name === 'profile';
+      state.viewPristine = true;
+      btnProfileView.classList.toggle('active', state.profileView);
+      btnProfileView.setAttribute('aria-pressed', String(state.profileView));
+      startCameraTransition(VIEWS[name], duration);
+    }
+
+    function togglePlayPause() {
+      state.isPlaying = !state.isPlaying;
+      btnPlayPause.setAttribute('aria-pressed', String(!state.isPlaying));
+      iconPause.classList.toggle('hidden', !state.isPlaying);
+      iconPlay.classList.toggle('hidden', state.isPlaying);
+      if (!state.isPlaying) stopTour();
+      state.needsRender = true;
+    }
+
+    function setLightMode(mode) {
+      state.lightMode = mode;
+      if (mode !== 'auto') {
+        let delta = LIGHT_PRESETS[mode] - state.solarTime;
+        delta -= Math.round(delta);
+        state.lightAnim = { from: state.solarTime, delta, t: prefersReducedMotion ? 1.0 : 0.0, dur: 1.2 + 7.0 * Math.abs(delta) };
+        if (prefersReducedMotion) state.solarTime = LIGHT_PRESETS[mode];
+      } else {
+        state.lightAnim = null;
+      }
+      labelLight.textContent = 'Luce: ' + mode;
+      btnLight.classList.toggle('active', mode !== 'auto');
+      state.needsRender = true;
+    }
+
+    function setGeometryVisible(v) {
+      state.showGeometry = v;
+      geoGroup.visible = v;
+      trackMarker.visible = v;
+      btnGeo.classList.toggle('active', v);
+      btnGeo.setAttribute('aria-pressed', String(v));
+      state.needsRender = true;
+    }
+
+    // Tour automatico: dal triangolo al quasi-cerchio alternando le due viste
+    const TOUR_STEPS = [
+      { n: 3, view: 'quarter' }, { n: 4 }, { n: 5 }, { n: 6, view: 'profile' }, { n: 8 },
+      { n: 12, view: 'quarter' }, { n: 20 }, { n: 36, view: 'profile' }, { n: 4, view: 'quarter' }
+    ];
+    const TOUR_STEP_SECONDS = 3.6;
+
+    function startTour() {
+      if (!state.isPlaying) togglePlayPause();
+      state.tour = { idx: -1, t: TOUR_STEP_SECONDS };
+      btnTour.classList.add('active');
+      btnTour.setAttribute('aria-pressed', 'true');
+    }
+    function stopTour() {
+      if (!state.tour) return;
+      state.tour = null;
+      btnTour.classList.remove('active');
+      btnTour.setAttribute('aria-pressed', 'false');
+    }
+    function updateTour(dt) {
+      const tour = state.tour;
+      if (!tour) return;
+      tour.t += dt;
+      if (tour.t < TOUR_STEP_SECONDS) return;
+      tour.t = 0;
+      tour.idx = (tour.idx + 1) % TOUR_STEPS.length;
+      const stepDef = TOUR_STEPS[tour.idx];
+      applySides(stepDef.n);
+      if (stepDef.view) setView(stepDef.view, 1.4);
+    }
+
+    function hideHint() {
+      hintToast.classList.add('hint-hidden');
+    }
+
+    function toggleFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    }
+
+    btnStartSim.addEventListener('click', () => {
+      if (!state.simReady || state.introDismissed) return;
+      state.introDismissed = true;
+      window.__INTRO_STOPPED__ = true;
+      introScreen.classList.add('hidden-intro');
+      bottomDock.classList.remove('dock-hidden');
+      topBar.classList.remove('ui-hidden');
+      btnStartSim.blur();
+      setView('quarter', 2.2);
+      setTimeout(() => hintToast.classList.remove('hint-hidden'), 2400);
+      setTimeout(hideHint, 10500);
+    });
+
+    btnPlayPause.addEventListener('click', togglePlayPause);
+    btnProfileView.addEventListener('click', () => { stopTour(); setView(state.profileView ? 'quarter' : 'profile'); });
+    btnTour.addEventListener('click', () => { if (state.tour) stopTour(); else startTour(); });
+    btnLight.addEventListener('click', () => {
+      setLightMode(LIGHT_MODES[(LIGHT_MODES.indexOf(state.lightMode) + 1) % LIGHT_MODES.length]);
+    });
+    btnGeo.addEventListener('click', () => setGeometryVisible(!state.showGeometry));
+    btnFullscreen.addEventListener('click', toggleFullscreen);
+
+    sliderSpeed.addEventListener('input', (e) => setSpeed(speedFromSlider(parseFloat(e.target.value))));
+    sliderSpeed.addEventListener('dblclick', () => setSpeed(1));
+    speedValue.addEventListener('click', () => setSpeed(1));
+
+    sliderSides.addEventListener('input', (e) => {
+      const n = parseInt(e.target.value, 10);
+      if (Number.isNaN(n)) return;
+      stopTour();
+      applySides(n);
+    });
+
+    // Un gesto sull'area 3D interrompe tour e animazioni di camera: comanda sempre chi guarda
+    controls.addEventListener('start', () => {
+      state.cameraAnim = null;
+      state.viewPristine = false;
+      stopTour();
+      hideHint();
+    });
+    controls.addEventListener('change', () => { state.needsRender = true; });
+
+    window.addEventListener('keydown', (e) => {
+      if (!state.introDismissed || e.metaKey || e.ctrlKey || e.altKey) return;
+      const onButton = document.activeElement && document.activeElement.tagName === 'BUTTON';
+      switch (e.code) {
+        case 'Space':
+          if (onButton) return;
+          e.preventDefault();
+          togglePlayPause();
+          break;
+        case 'ArrowRight': case 'ArrowUp':
+          if (document.activeElement === sliderSides) return;
+          e.preventDefault(); stopTour(); applySides(state.targetSides + 1);
+          break;
+        case 'ArrowLeft': case 'ArrowDown':
+          if (document.activeElement === sliderSides) return;
+          e.preventDefault(); stopTour(); applySides(state.targetSides - 1);
+          break;
+        case 'KeyP': stopTour(); setView(state.profileView ? 'quarter' : 'profile'); break;
+        case 'KeyT': if (state.tour) stopTour(); else startTour(); break;
+        case 'KeyL': btnLight.click(); break;
+        case 'KeyG': setGeometryVisible(!state.showGeometry); break;
+        case 'KeyF': toggleFullscreen(); break;
+        case 'Equal': case 'NumpadAdd': setSpeed(state.speedMul * 1.25); break;
+        case 'Minus': case 'NumpadSubtract': setSpeed(state.speedMul / 1.25); break;
+        case 'Digit0': case 'Numpad0': setSpeed(1); break;
+        default: return;
+      }
+      hideHint();
+    });
+
+    window.addEventListener('resize', () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(QUALITY.tier >= 1 ? 1 : fullPixelRatio()); // anche quando la finestra cambia monitor
+      renderer.setSize(w, h);
+      for (let i = 0; i < lineMaterials.length; i++) lineMaterials[i].resolution.set(w, h);
+      updateHullScale();
+      if (state.introDismissed && state.viewPristine) setView(state.profileView ? 'profile' : 'quarter', 0);
+      state.needsRender = true;
+    });
+
+    // =========================================================================
+    // 12. LOOP: SIMULAZIONE, CAMERA, RENDERING SOLO QUANDO SERVE
+    // =========================================================================
+    function updateSimulationFrame(dt) {
+      if (state.isPlaying) state.distanceX += FIXED_SPEED * state.speedMul * dt;
+
+      if (state.sidesTransitionT < 1.0) {
+        state.sidesTransitionT = Math.min(1.0, state.sidesTransitionT + dt / 0.32);
+        applySidesTransition();
+      }
+
+      const n = state.sides;
+      const W = CAT[n].W;
+      roadGroup.position.x = -(((state.distanceX % W) + W) % W);
+
+      // Paesaggio: visibile solo il modulo il cui bordo più vicino è entro 140 m
+      if (landscapeChunks.length > 0) {
+        const count = landscapeChunks.length;
+        const centerSlot = Math.round(state.distanceX / CHUNK_LEN);
+        for (let i = 0; i < count; i++) landscapeChunks[i].visible = false;
+        for (let offset = -2; offset <= 2; offset++) {
+          const worldSlot = centerSlot + offset;
+          const relCenterX = worldSlot * CHUNK_LEN - state.distanceX;
+          if (Math.abs(relCenterX) - CHUNK_LEN * 0.5 <= 200.0) { // tutti e cinque i moduli: i nuovi entrano a 192 m, oltre la nebbia
+            const chunk = landscapeChunks[((worldSlot % count) + count) % count];
+            chunk.visible = true;
+            chunk.position.x = relCenterX;
+            const tiles = chunk.userData.tiles;
+            const fogFar = scene.fog.far;
+            for (let t = 0; t < tiles.length; t++) {
+              const u = tiles[t].userData;
+              const wx = relCenterX + u.cx;
+              // Spenta solo quando è interamente oltre la nebbia: nessuna comparsa visibile
+              tiles[t].visible = Math.hypot(wx - camera.position.x, u.cz - camera.position.z) - u.r < fogFar;
+            }
+          }
+        }
+      }
+
+      const rearX = state.distanceX - halfWB;
+      const frontX = state.distanceX + halfWB;
+      rearWheelGroup.rotation.z = rollRotFast(rearX, n);
+      frontWheelGroup.rotation.z = rollRotFast(frontX, n);
+
+      if (state.showGeometry) {
+        const rearY = roadYFast(rearX, n);
+        const frontY = roadYFast(frontX, n);
+        for (let i = 0; i < contactDots.length; i++) {
+          contactDots[i].position.y = (contactDots[i].userData.hx < 0 ? rearY : frontY) + 0.045;
+        }
+        hubLineMat.dashOffset = state.distanceX % 0.38;
+        updateVertexTrail(n);
+      }
+
+      const rawCrankAngle = -(state.distanceX / FIXED_R) * 1.45;
+      const crankAngle = rawCrankAngle - 0.08 * Math.sin(2 * rawCrankAngle);
+      crankGroup.rotation.z = crankAngle;
+      leftPedal.rotation.z = -crankAngle;
+      rightPedal.rotation.z = -crankAngle;
+
+      updateMannequinKinematics(crankAngle, Math.abs(Math.sin(crankAngle)) * 0.004, Math.sin(crankAngle) * 0.012);
+      updateAstronomicalCycle(dt);
+    }
+
+    function getActiveGroundHeightAtWorld(wx, wz) {
+      const roadBedY = TERRAIN_BED_Y;
+      if (landscapeChunks.length === 0) return roadBedY;
+
+      const worldX = wx + state.distanceX;
+      const slot = Math.round(worldX / CHUNK_LEN);
+      const localX = worldX - slot * CHUNK_LEN;
+      const biomeIdx = ((slot % landscapeChunks.length) + landscapeChunks.length) % landscapeChunks.length;
+      return Math.max(roadBedY, getBiomeTerrainHeight(biomeIdx, localX, wz));
+    }
+
+    function clampCameraAboveTerrain() {
+      const cx = camera.position.x;
+      const cz = camera.position.z;
+      // Campiona il punto della camera e un piccolo intorno (r = 0.65 m) per evitare tagli del near-plane sulle scarpate
+      const h0 = getActiveGroundHeightAtWorld(cx, cz);
+      const h1 = getActiveGroundHeightAtWorld(cx + 0.65, cz);
+      const h2 = getActiveGroundHeightAtWorld(cx - 0.65, cz);
+      const h3 = getActiveGroundHeightAtWorld(cx, cz + 0.65);
+      const h4 = getActiveGroundHeightAtWorld(cx, cz - 0.65);
+      const minSafeY = Math.max(h0, h1, h2, h3, h4) + 0.85;
+
+      // Sollevamento temporaneo: viene tolto all'inizio del frame successivo, la camera non sale a cricchetto
+      if (camera.position.y < minSafeY) {
+        state.camLift = minSafeY - camera.position.y;
+        camera.position.y = minSafeY;
+        state.needsRender = true;
+      }
+    }
+
+    function updateCameraAnimation(dt) {
+      const anim = state.cameraAnim;
+      if (!anim) return;
+      anim.elapsed += dt;
+      const t = Math.min(1.0, anim.elapsed / anim.duration);
+      const ease = easeInOutCubic(t);
+      camera.position.lerpVectors(anim.fromPos, anim.toPos, ease);
+      controls.target.lerpVectors(anim.fromTarget, anim.toTarget, ease);
+      if (anim.fromFov !== anim.toFov) {
+        camera.fov = THREE.MathUtils.lerp(anim.fromFov, anim.toFov, ease);
+        camera.updateProjectionMatrix();
+        updateHullScale();
+      }
+      if (t >= 1.0) state.cameraAnim = null;
+      state.needsRender = true;
+    }
+
+    function renderFrame(dt, draw = true) {
+      updateTour(dt);
+      updateCameraAnimation(dt);
+      if (state.camLift > 0) { camera.position.y -= state.camLift; state.camLift = 0; }
+      const controlsMoved = controls.update();
+      clampCameraAboveTerrain();
+      // In pausa e a camera ferma non si ridisegna nulla
+      if (state.isPlaying || controlsMoved || state.needsRender || state.sidesTransitionT < 1.0) {
+        state.needsRender = false;
+        updateSimulationFrame(dt);
+        if (draw) renderer.render(scene, camera);
+        return true;
+      }
+      return false;
+    }
+
+    // Qualità adattiva: 0 = piena; 1 = pixel ratio 1; 2 = ombre leggere e niente grana.
+    // Scende se la media resta sopra ~24 ms per 2 s; riprova a salire dopo 10 s fluidi,
+    // ma un gradino che ha già fallito non viene ritentato.
+    const QUALITY = { tier: 0, ema: 16.7, slowMs: 0, fastMs: 0, failed: new Set(), lastUpgradeAt: -1 };
+    const fullPixelRatio = () => Math.min(window.devicePixelRatio || 1, 1.5);
+
+    function applyQualityTier(tier) {
+      QUALITY.tier = tier;
+      renderer.setPixelRatio(tier >= 1 ? 1 : fullPixelRatio());
+      const lite = tier >= 2;
+      if (lite !== (renderer.shadowMap.type === THREE.PCFShadowMap)) {
+        renderer.shadowMap.type = lite ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
+        dirLight.shadow.mapSize.setScalar(lite ? 1024 : 2048);
+        if (dirLight.shadow.map) { dirLight.shadow.map.dispose(); dirLight.shadow.map = null; }
+        scene.traverse((o) => {
+          if (o.material) [].concat(o.material).forEach((m) => { m.needsUpdate = true; });
+        });
+      }
+      document.body.classList.toggle('lite', lite);
+      QUALITY.ema = 16.7;
+      QUALITY.slowMs = QUALITY.fastMs = 0;
+      state.needsRender = true;
+    }
+
+    function trackQuality(rawMs) {
+      if (rawMs > 250) return; // scheda nascosta o pausa del sistema: non è lentezza
+      QUALITY.ema += (rawMs - QUALITY.ema) * 0.06;
+      const now = performance.now();
+      if (QUALITY.ema > 24) {
+        QUALITY.slowMs += rawMs; QUALITY.fastMs = 0;
+        if (QUALITY.slowMs > 2000 && QUALITY.tier < 2) {
+          if (now - QUALITY.lastUpgradeAt < 6000) QUALITY.failed.add(QUALITY.tier);
+          applyQualityTier(QUALITY.tier + 1);
+        }
+      } else if (QUALITY.ema < 18.5) {
+        QUALITY.fastMs += rawMs; QUALITY.slowMs = 0;
+        if (QUALITY.fastMs > 10000 && QUALITY.tier > 0 && !QUALITY.failed.has(QUALITY.tier - 1)) {
+          QUALITY.lastUpgradeAt = now;
+          applyQualityTier(QUALITY.tier - 1);
+        }
+      } else {
+        QUALITY.slowMs = QUALITY.fastMs = 0;
+      }
+    }
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+      const rawMs = now - state.lastTime;
+      const dt = Math.min(0.05, Math.max(0.001, rawMs * 0.001));
+      state.lastTime = now;
+      // Dietro l'intro opaca non si disegna nulla
+      if (!state.simReady || state.manualClock || !state.introDismissed) return;
+
+      if (renderFrame(dt)) trackQuality(rawMs);
+    }
+
+    // Aggancio per test automatici e demo guidate dalla console
+    window.__polyCycle = {
+      THREE, state, camera, controls, renderer, scene, CAT, VIEWS,
+      applySides, setSpeed, setView, setLightMode, setGeometryVisible, startTour, stopTour, togglePlayPause,
+      computeWheelRollingState, evalCatenaryY, rollRotFast,
+      QUALITY, applyQualityTier, rearWheelGroup, frontWheelGroup, crankGroup, leftPedal, rightPedal, limbs, bikeGroup, geoGroup,
+      stepFrame(dt, draw = true) { state.needsRender = true; return renderFrame(dt, draw); }
+    };
+
+    runIncrementalPreload();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

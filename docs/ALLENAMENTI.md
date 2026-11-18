@@ -31,6 +31,7 @@ Questa tabella è un promemoria rigenerabile, non la fonte.
 | Guida 3D: Scomposizione di Polinomi (Algebra Tiles) | `visualizzatore polinomi 2d 3d 001.html` | Scomposizioni, Prodotti notevoli | `scomposizioni, prodotti-notevoli` |
 | Il Filo di Dedalo: Labirinto Matematico 2.5D | `il-filo-di-dedalo_2.5D_claude_2.html` | nessuno | `nessuno` |
 | Il metodo di esaustione | `esaustione_01.html` | Aree e perimetri, Radicali | `aree-perimetri, radicali` |
+| La Bicicletta Poligonale e la Strada a Catenaria | `la_bicicletta_poligonale_e_la_strada_a_catenaria.html` | Esponenziali, Goniometria, Aree e perimetri | `esponenziali, goniometria, aree-perimetri` |
 | Laboratorio di operazioni tra Frazioni | `fractions_lab_001.html` | Frazioni, Proprietà delle potenze | `frazioni, potenze` |
 | Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie | `disequazioni_frazionarie_vs_sistemi.html` | Disequazioni di primo grado, Disequazioni di secondo grado, Sistemi lineari | `disequazioni-1, disequazioni-2, sistemi-lineari` |
 | Le fasi della Luna | `le_fasi_della_luna.html` | nessuno | `nessuno` |

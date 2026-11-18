@@ -2,7 +2,7 @@
 titolo: Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare
 data: 2026-11-05
 descrizione: Una ruota quadrata che rotola senza scossoni, un triangolo che gira in un foro quadrato, un planetario stampato già montato: dietro ogni meccanismo c'è una funzione, e il pezzo si stampa davvero.
-attivita: ruota_quadrata_cinematismi, gioco_sin_cos_01, functions_lab_008
+attivita: ruota_quadrata_cinematismi, la_bicicletta_poligonale_e_la_strada_a_catenaria, gioco_sin_cos_01, functions_lab_008
 copertina: media/cinematismi-ruota-quadrata.png
 stato: bozza
 ---
@@ -37,6 +37,22 @@ Negli altri meccanismi a compensare la rotazione è un'altra idea:
 
 ![Il planetario da stampare già montato: sole giallo, quattro satelliti, corona con le prese per le dita](media/cinematismi-planetario.png)
 
+## Un'altra rappresentazione: la bicicletta poligonale
+
+La stessa idea si può guardare in un modo diverso, senza ingranaggi né stampante: nella [bicicletta poligonale](/content/apps/la_bicicletta_poligonale_e_la_strada_a_catenaria.html) un ciclista pedala in 3D su due ruote a poligono regolare, lungo una strada fatta di archi di catenaria. Un cursore cambia il numero di lati, da $3$ a $36$, e la strada si ricostruisce da sola; la vista di profilo e il tour automatico mostrano il moto da vicino.
+
+![Vista di profilo con ruote esagonali: il mozzo resta sulla linea arancione tratteggiata, mentre un vertice disegna archi](media/bicicletta-poligonale-profilo.png)
+
+Qui la ruota non è più solo un quadrato e la formula diventa generale. Se $R$ è la distanza tra il mozzo e un vertice e $n$ il numero di lati, l'**apotema** (la distanza tra il mozzo e il centro di un lato) è
+
+$$a = R\cos\frac{\pi}{n},$$
+
+e ogni arco della strada è $y = R - a\cosh\frac{x}{a}$: un lato appoggiato in piano sta in cima all'arco, un vertice cade nell'avvallamento tra due archi. Il mozzo resta sempre a quota $R$, qualunque sia $n$. In più ogni arco è lungo quanto un lato, perché la ruota rotola senza strisciare.
+
+Con tanti lati l'apotema si avvicina a $R$, gli archi si appiattiscono e la strada diventa quasi piatta: con $36$ lati la ruota sembra un cerchio. Con $3$ lati invece il vertice successivo attraversa l'arco seguente, e l'app lo segnala: il triangolo è il caso limite.
+
+La differenza tra le due app è nel punto di vista. I cinematismi partono dall'oggetto da costruire e da stampare; la bicicletta parte dal **modello**: si cambia un numero e si vede subito che cosa resta uguale (la quota del mozzo) e che cosa cambia (larghezza e altezza degli archi).
+
 Per vederlo in movimento c'è la [spiegazione animata](/content/apps/ruota_quadrata_cinematismi_spiegazione.html), una scena per meccanismo; le regole e cinque esercizi sono nella [scheda da stampare](/schede/ruota_quadrata_cinematismi.html).
 
 **Il filo rosso.** La ruota quadrata è il rovescio della [ruota che misura π](../2026-10-28-pi-greco-non-e-una-frazione/): lì la strada è piatta e la ruota rotonda, qui è la strada a cambiare forma. Lo spigolo del quadrato sta a mezza diagonale dal centro, e la diagonale è quella del [teorema di Pitagora](../2026-11-01-il-teorema-di-pitagora-nell-albero/). Parità, minimo e simmetria di $\cosh$ sono le domande dello [studio di funzione](../2026-11-01-lo-studio-di-funzione-con-funclab/). E il planetario si monta solo se la somma dei denti di sole e corona si divide per il numero di satelliti: è aritmetica da [MCM e MCD](../2026-10-25-arcade-challenge-mcm-mcd/): multipli e divisori decidono se i denti tornano al loro posto.
@@ -58,7 +74,7 @@ Corona: $16 + 2 \cdot 8 = 32$ denti. Montaggio: $(16 + 32) : 4 = 48 : 4 = 12$, u
 
 ## Come usarla in classe
 
-Una proposta per un'ora alla LIM: si parte dal quadrato su strada piatta e si chiede alla classe di quanto sale il centro (la risposta passa per Pitagora). Poi si apre la ruota quadrata e si fa notare che la linea del centro resta dritta: che curva serve per la strada? Il grafico e la formula arrivano dopo, come risposta a una domanda.
+Una proposta per un'ora alla LIM: si parte dal quadrato su strada piatta e si chiede alla classe di quanto sale il centro (la risposta passa per Pitagora). Poi si apre la ruota quadrata e si fa notare che la linea del centro resta dritta: che curva serve per la strada? Il grafico e la formula arrivano dopo, come risposta a una domanda. Per generalizzare si passa alla bicicletta poligonale: si chiede alla classe che cosa succede alla strada con sei lati, poi con trenta, e si controlla col cursore.
 
 Il secondo passo è **stampare**: la guida e la ruota sono due pezzi soli, senza perni, e la ruota rotola tra le sponde. Il planetario esce dalla stampante già montato e si sblocca girando il sole: è un oggetto che passa di mano in mano mentre si contano i giri per verificare la formula di Willis. Chi vuole andare oltre apre il codice OpenSCAD e cerca dove sta scritta la formula della catenaria.
 

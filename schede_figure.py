@@ -774,5 +774,45 @@ def ruota_catenaria():
     return _svg(640, 222, "".join(out), "Ruota quadrata sulle gobbe a catenaria e le funzioni degli altri cinematismi")
 
 
+def ruota_poligonale():
+    """ Ruota pentagonale (raggio R, apotema a = R·cos(π/n)) sugli archi y = R − a·cosh(x/a):
+        il mozzo resta sulla retta tratteggiata; accanto le regole per n lati """
+    n, R, x0, yc = 5, 48, 20, 70
+    al = math.pi / n
+    a = R * math.cos(al)
+    per = 2 * a * math.asinh(math.tan(al))
+    archi = 5
+    strada = []
+    x = x0
+    while x <= x0 + archi * per + 0.01:
+        xl = (x - x0) % per - per / 2
+        strada.append((x, yc + a * math.cosh(xl / a)))
+        x += 1
+    fondo = yc + R + 40
+    out = [_path(strada + [(x0 + archi * per, fondo), (x0, fondo)], INK, 1.6, FILL, True),
+           _line(x0, yc, x0 + archi * per, yc, ACC2, 1.4, "5 4")]
+    xl = 10
+    cx, ang = x0 + 2.5 * per + xl, math.atan(math.sinh(xl / a))
+    vert = [(cx + R * math.cos(math.pi / 2 - al + 2 * al * k + ang), yc + R * math.sin(math.pi / 2 - al + 2 * al * k + ang))
+            for k in range(n)]
+    vx, vy = vert[2]
+    out += [_path(vert, ACC, 2.2, "white", True), _dot(cx, yc, 4),
+            _line(cx, yc, cx + a * math.cos(math.pi / 2 + ang), yc + a * math.sin(math.pi / 2 + ang), INK, 1, "3 3"),
+            _line(cx, yc, vx, vy, INK, 1, "3 3"),
+            _t(cx + 8, yc + 30, "a", 12, "start", italic=True),
+            _t((cx + vx) / 2 + 4, (yc + vy) / 2 - 4, "R", 12, "start", italic=True),
+            _t(x0 + archi * per / 2, fondo + 22, "y = R − a · cosh(x / a)", 14, color=ACC, weight=700),
+            _t(x0 + archi * per / 2, 14, "il mozzo resta a quota R", 12.5, color=ACC2, weight=600)]
+    tx = 320
+    righe = (("Apotema", "a = R · cos(180° / n)"),
+             ("Un arco", "lungo quanto un lato della ruota"),
+             ("Un giro di ruota", "n archi = il perimetro del poligono"),
+             ("Tanti lati", "a si avvicina a R: la strada si appiattisce"))
+    for i, (titolo, testo) in enumerate(righe):
+        y = 40 + i * 44
+        out += [_t(tx, y, titolo, 13, "start", ACC, 700), _t(tx, y + 18, testo, 12, "start")]
+    return _svg(640, 222, "".join(out), "Ruota pentagonale sugli archi di catenaria e le regole per una ruota di n lati")
+
+
 FIGURE = {name: fn for name, fn in globals().items() if callable(fn) and not name.startswith("_") and name.islower()
           and name not in ("FIGURE",)}

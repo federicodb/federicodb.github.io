@@ -4,6 +4,72 @@
 
 const db = [
     {
+        "title": "La Bicicletta Poligonale e la Strada a Catenaria",
+        "excerpt": "Una bicicletta con le ruote a poligono regolare (dal triangolo a 36 lati) corre in 3D su una strada fatta di archi di catenaria capovolta: il mozzo resta sempre alla stessa quota. Cursore dei lati, vista di profilo, tour automatico, luce del giorno e della notte.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "3 EL",
+            "4 EL",
+            "5 EL",
+            "APOTEMA",
+            "CATENARIA",
+            "COSENO IPERBOLICO",
+            "FUNZIONE PARI",
+            "MAT_K3:GEOMETRIA",
+            "MAT_K4:FUNZIONI",
+            "MODELLO MATEMATICO",
+            "POLIGONI REGOLARI",
+            "RUOTA QUADRATA",
+            "RUOTE POLIGONALI",
+            "THREE.JS"
+        ],
+        "date": "2026-11-17",
+        "url": "content/apps/la_bicicletta_poligonale_e_la_strada_a_catenaria.html",
+        "type": "app",
+        "icon": "🧩",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/la_bicicletta_poligonale_e_la_strada_a_catenaria.webp",
+        "allenamento": [
+            {
+                "id": "esponenziali",
+                "titolo": "Esponenziali",
+                "url": "allenamento/#/lezione/esponenziali/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "aree-perimetri",
+                "titolo": "Aree e perimetri",
+                "url": "allenamento/#/lezione/aree-perimetri/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            }
+        ],
+        "scheda": "schede/la_bicicletta_poligonale_e_la_strada_a_catenaria.html",
+        "journal": [
+            {
+                "titolo": "Ruote che non sobbalzano: la catenaria, Reuleaux e gli ingranaggi da stampare",
+                "url": "journal/2026-11-05-ruote-che-non-sobbalzano/",
+                "data": "2026-11-05"
+            }
+        ]
+    },
+    {
         "title": "AstroMath: volo tra le costellazioni della matematica",
         "excerpt": "AstroMath: videogioco di esplorazione in volo tra dodici costellazioni della matematica, dai numeri relativi alla parabola. Ogni stella ha una creatura che pone una domanda generata dalla Quest: si risponde fermandosi nell'anello giusto, senza timer. Livelli in ordine di curricolo, badge, correnti a forma di grafico di funzione e collegamento con i progressi della Quest.",
         "tags": [
