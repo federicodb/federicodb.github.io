@@ -26,6 +26,7 @@ Questa tabella è un promemoria rigenerabile, non la fonte.
 | Esploratore Grafico: Operazioni con i Polinomi | `operazioni_polinomi_graph.html` | Monomi e polinomi, Prodotti notevoli | `monomi, prodotti-notevoli` |
 | Esploratore Numerico: Pitagora & Tartaglia | `tavola_tart_canva0003.html` | Il triangolo dei coefficienti, Il teorema di Pitagora, Prodotti notevoli | `calcolo-triangolo-dei-coefficienti, pitagora, prodotti-notevoli` |
 | Experience Fibonacci | `fibonacci_anim.html` | Successione di Fibonacci, Rapporto aureo e sezione aurea | `fibonacci, rapporto-aureo` |
+| FullControl Studio | `fullcontrol_studio.html` | Goniometria, Trigonometria del triangolo rettangolo, Solidi e volumi | `goniometria, trigonometria, solidi` |
 | FuncLab AI: Esploratore di Funzioni | `functions_lab_008.html` | Funzioni lineari, La parabola, Studio di funzione | `funzioni-lineari, parabola, studio-funzione` |
 | GonioMatch: Memory su valori notevoli di funzioni goniometriche | `gioco_sin_cos_01.html` | Goniometria, Trigonometria del triangolo rettangolo | `goniometria, trigonometria` |
 | Guida 3D: Scomposizione di Polinomi (Algebra Tiles) | `visualizzatore polinomi 2d 3d 001.html` | Scomposizioni, Prodotti notevoli | `scomposizioni, prodotti-notevoli` |
@@ -45,6 +46,7 @@ Questa tabella è un promemoria rigenerabile, non la fonte.
 | Parabola e disequazioni di secondo grado | `parabola e disequazioni di secondo grado maggio 2026.html` | Disequazioni di secondo grado, Equazioni di secondo grado, La parabola | `disequazioni-2, equazioni-2, parabola` |
 | Percent Lab | `percentuali_001.html` | Percentuali, Percentuali che si scambiano, Guadagni e perdite in percentuale | `percentuali, calcolo-percentuali-scambiate, calcolo-ricarico-e-margine` |
 | Prodotti Notevoli: dimostrazioni geometriche 2D e 3D | `dimostrazione_geometrica_prodotti_notevoli.html` | Prodotti notevoli, Solidi e volumi | `prodotti-notevoli, solidi` |
+| Proporzionalità diretta e inversa | `proporzionalita_diretta_inversa.html` | Proporzionalità diretta e inversa, Proporzioni | `proporzionalita, proporzioni` |
 | Random Walk 3D: Hypercaos & Chromatic Memory | `random_walk.html` | Probabilità | `probabilita` |
 | Simulatore di Automi Cellulari e Particelle | `soglie_particelle_automa_cellulare.html` | nessuno | `nessuno` |
 | Simulazione CA: Fasori & Onde | `corrente_4el_sincos.html` | Goniometria, Trigonometria del triangolo rettangolo | `goniometria, trigonometria` |
@@ -52,4 +54,5 @@ Questa tabella è un promemoria rigenerabile, non la fonte.
 | Snake of Life | `snake_conway_self.html` | nessuno | `nessuno` |
 | Studio Plotter CNC | `pen_plotter__23v2_8K.html` | nessuno | `nessuno` |
 | Teoria dei giochi e valutazione consapevole | `voto_cosapevole.2.5.html` | Statistica, Probabilità, Problemi di scelta | `statistica, probabilita, problemi-scelta` |
+| Tetracubi 3D: gioco e puzzle da stampare | `tetracubi_3d.html` | Solidi e volumi, Proporzionalità diretta e inversa | `solidi, proporzionalita` |
 | φ è irrazionale: il rapporto aureo | `phi_is_irrational_01.html` | Rapporto aureo e sezione aurea, Successione di Fibonacci | `rapporto-aureo, fibonacci` |

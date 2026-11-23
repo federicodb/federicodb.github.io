@@ -226,3 +226,12 @@ Ogni voce: data, decisione, motivo.
 - **Grafica**: Three.js 0.160.0 da CDN con `integrity` (la 0.186 non ha un file minificato statico su cui l'SRI regga), shader nostri per linee al neon e punti, niente post-processing; profondità di campo nello shader, camera prospettica che segue in carrello (parallasse vera), alone moderato (il docente lo ha trovato eccessivo). Ripiego su Canvas 2D senza WebGL. Tolte le linee di velocità, tenuta la scia del pilota.
 - **Etichette dei poligoni della Quest** (`allenamento/js/gfx/svg.js`, `polygon`): posizionate sulla normale esterna del lato / bisettrice esterna del vertice, allontanate finché non toccano lati né altre etichette; il riquadro si allarga se serve.
 - **Scheda da stampare corta e keywords ridotte** (6 codici MAT, 8 allenamenti): con tutti i codici la scheda superava le due pagine A4.
+
+## 2026-11-23 — Tetracubi 3D e FullControl Studio (tinkering e stampa 3D)
+
+- **Tetracubi 3D al posto di «TETRIS³»**: nome e colori dei pezzi del gioco commerciale sono marchi; restano il genere (pezzi da 4 cubi in un pozzo 3D) e il gioco com'era. Palette del sito, chiavi `orfini_tetracubi_*`. Sorgenti in `tools/tetracubi_3d/` (in `content/` il build avrebbe pubblicato `src/index.html` come app).
+- **Scala di stampa fissa, indicata dal docente**: i pezzi più alti escono alti 20 mm (51,54% della geometria a 20 mm); niente ingrandimento automatico per riempire il piatto. Chi li vuole più grandi li scala nello slicer.
+- **FullControl Studio con licenza GNU GPL v3** (scelta del docente): usa FullControl (GPL v3), quindi è un'eccezione alla CC BY-NC-SA, dichiarata in `LICENSE`, in `fullcontrol_studio_js/LICENZA.txt` e nella Guida dell'app. Pyodide e `pydantic` si scaricano all'avvio: a scuola internet c'è.
+- **Avanzamento stampa per segmenti, non per percorsi**: la parete di un vaso a spirale è un solo percorso e compariva tutta insieme al 100%.
+- **Allenamenti**: Tetracubi → Solidi e volumi, Proporzionalità; FullControl → Goniometria, Trigonometria (pendenza per l'ugello = arcotangente), Solidi e volumi.
+- Note del Journal in bozza; copertine da momenti di gioco (partita in corso, vaso a metà stampa).
