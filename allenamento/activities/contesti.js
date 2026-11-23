@@ -109,6 +109,7 @@ export const INDIRIZZI = [
     ],
     focus: {
       proporzioni: 'Scale del disegno tecnico e rapporti di trasmissione',
+      proporzionalita: 'Ruote dentate, giri del mandrino e tempi ciclo',
       'notazione-scientifica': 'Tolleranze e grandezze molto piccole',
       pitagora: 'Quote e diagonali nei pezzi meccanici',
       solidi: 'Volumi e masse dei pezzi',
@@ -166,6 +167,7 @@ export const INDIRIZZI = [
     ],
     focus: {
       proporzioni: 'Legge di Ohm e proporzionalità diretta e inversa',
+      proporzionalita: 'Legge di Ohm, energia e autonomia delle batterie',
       'notazione-scientifica': 'Milliampere, microfarad, gigahertz',
       'equazioni-1': 'Ricavare una grandezza da una formula',
       'funzioni-lineari': 'Caratteristica di un resistore e tariffe dell\'energia',
@@ -222,6 +224,7 @@ export const INDIRIZZI = [
     ],
     focus: {
       proporzioni: 'Scale del figurino e sviluppo delle taglie',
+      proporzionalita: 'Consumo di tessuto, tempi di cucitura, altezza delle pezze',
       percentuali: 'Ricarichi, sconti e scarti di tessuto',
       'aree-perimetri': 'Consumo di tessuto e piazzamento',
       similitudine: 'Ingrandire e ridurre un cartamodello',
@@ -277,6 +280,7 @@ export const INDIRIZZI = [
     ],
     focus: {
       proporzioni: 'Formati, rapporti d\'aspetto e ridimensionamenti',
+      proporzionalita: 'Risoluzione di stampa, griglie e tempi di download',
       percentuali: 'Preventivi, IVA e risultati delle campagne',
       similitudine: 'Ingrandire un\'immagine senza deformarla',
       'notazione-scientifica': 'Pixel, byte e visualizzazioni',
@@ -333,6 +337,7 @@ export const INDIRIZZI = [
     ],
     focus: {
       proporzioni: 'Dosi di polvere e liquido, scale dei modelli',
+      proporzionalita: 'Rapporto acqua-gesso, leghe e tempi di lavoro',
       percentuali: 'Composizione delle leghe e ritiro dei materiali',
       'notazione-scientifica': 'Micron e precisione degli scanner',
       solidi: 'Volumi e masse dei manufatti',
@@ -389,6 +394,7 @@ export const INDIRIZZI = [
     focus: {
       percentuali: 'Dati sulla popolazione e sui servizi',
       proporzioni: 'Diluizioni, porzioni e ricette per la mensa',
+      proporzionalita: 'Diluizioni, porzioni a testa e turni di lavoro',
       statistica: 'Indagini sul territorio, medie e grafici',
       probabilita: 'Leggere rischi e previsioni',
       'funzioni-lineari': 'Tariffe e costi dei servizi',

@@ -191,7 +191,7 @@ function verifyInteractive(step, where) {
 
 // F. calcolo mentale: nelle attività con numeri per classe i risultati restano "da fare a mente"
 //    (al massimo due decimali, nessun numero enorme), a ogni classe
-const MENTALE = new Set(['percentuali', 'proporzioni', 'statistica', 'probabilita']);
+const MENTALE = new Set(['percentuali', 'proporzioni', 'proporzionalita', 'statistica', 'probabilita']);
 function verifyMental(step, where) {
   if (step.type !== 'number' || typeof step.answer !== 'number') return;
   const a = step.answer;

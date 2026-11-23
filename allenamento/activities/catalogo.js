@@ -11,6 +11,7 @@ import frazioni from './numeri/frazioni.js';
 import percentuali from './numeri/percentuali.js';
 import potenze from './numeri/potenze.js';
 import proporzioni from './numeri/proporzioni.js';
+import proporzionalita from './numeri/proporzionalita.js';
 import notazione from './numeri/notazione-scientifica.js';
 import radicali from './numeri/radicali.js';
 import fibonacci from './numeri/fibonacci.js';
@@ -56,7 +57,7 @@ import { TRUCCHI } from './calcolo/trucchi.js';
 export const areas = [
   // matematica al lavoro: si vede solo l'attività dell'indirizzo scelto (o quella della vita reale)
   { id: 'lavoro', title: 'Matematica al lavoro', summary: 'Problemi veri del tuo indirizzo.', hue: 18, mat: 'MAT_C2', activities: [vita, meccanico, elettrico, moda, grafica, odonto, socio] },
-  { id: 'numeri', title: 'Numeri', summary: 'Numeri relativi, frazioni, percentuali, potenze, radicali, Fibonacci.', hue: 190, mat: 'MAT_K1', activities: [relativi, frazioni, percentuali, potenze, proporzioni, notazione, radicali, fibonacci] },
+  { id: 'numeri', title: 'Numeri', summary: 'Numeri relativi, frazioni, percentuali, potenze, proporzionalità, radicali, Fibonacci.', hue: 190, mat: 'MAT_K1', activities: [relativi, frazioni, percentuali, potenze, proporzioni, proporzionalita, notazione, radicali, fibonacci] },
   { id: 'polinomi', title: 'Polinomi', summary: 'Il calcolo con le lettere.', hue: 255, mat: 'MAT_K1', activities: [monomi, prodotti, scomposizioni] },
   { id: 'equazioni', title: 'Equazioni e disequazioni', summary: 'Primo e secondo grado.', hue: 285, mat: 'MAT_A3', activities: [eq1, eq1s, dis1, eq2, dis2] },
   { id: 'rette', title: 'Funzioni lineari e rette', summary: 'Grafici, pendenze, rette nel piano.', hue: 160, mat: 'MAT_K2', activities: [lineari, pendenza, parallele] },
@@ -98,6 +99,7 @@ export const PREREQ = {
   frazioni: ['numeri-relativi'],
   percentuali: ['frazioni'],
   proporzioni: ['frazioni'],
+  proporzionalita: ['proporzioni'],
   'notazione-scientifica': ['potenze'],
   radicali: ['potenze'],
   fibonacci: ['frazioni'],
@@ -144,6 +146,7 @@ export const PAROLE = {
   'percentuali': ['percentuale'],
   'potenze': ['potenze'],
   'proporzioni': ['proporzione'],
+  'proporzionalita': ['proporzione', 'funzione', 'modelli'],
   'notazione-scientifica': ['potenze', 'unita-di-misura'],
   'radicali': ['numeri-irrazionali', 'potenze'],
   'fibonacci': ['fibonacci'],
