@@ -1,0 +1,106 @@
+{
+  "printers": {
+    "p2s": {
+      "materials": {
+        "PLA": {
+          "file": "p2s_PLA.gcode.3mf",
+          "nozzle": 220,
+          "bed": 55,
+          "filament_profile": "Bambu PLA Basic @BBL P2S",
+          "filament_type": "PLA"
+        },
+        "PETG": {
+          "file": "p2s_PETG.gcode.3mf",
+          "nozzle": 255,
+          "bed": 70,
+          "filament_profile": "Generic PETG @BBL P2S",
+          "filament_type": "PETG"
+        },
+        "TPU": {
+          "file": "p2s_TPU.gcode.3mf",
+          "nozzle": 230,
+          "bed": 35,
+          "filament_profile": "Bambu TPU 95A HF @BBL P2S",
+          "filament_type": "TPU"
+        },
+        "PLA_MATTE": {
+          "file": "p2s_PLA_MATTE.gcode.3mf",
+          "nozzle": 220,
+          "bed": 55,
+          "filament_profile": "Bambu PLA Matte @BBL P2S",
+          "filament_type": "PLA"
+        }
+      },
+      "model_id": "N7"
+    },
+    "a1_mini": {
+      "materials": {
+        "PLA": {
+          "file": "a1_mini_PLA.gcode.3mf",
+          "nozzle": 220,
+          "bed": 65,
+          "filament_profile": "Bambu PLA Basic @BBL A1M",
+          "filament_type": "PLA"
+        },
+        "PETG": {
+          "file": "a1_mini_PETG.gcode.3mf",
+          "nozzle": 255,
+          "bed": 70,
+          "filament_profile": "Generic PETG @BBL A1M",
+          "filament_type": "PETG"
+        },
+        "TPU": {
+          "file": "a1_mini_TPU.gcode.3mf",
+          "nozzle": 230,
+          "bed": 30,
+          "filament_profile": "Bambu TPU 95A HF @BBL A1M",
+          "filament_type": "TPU"
+        },
+        "PLA_MATTE": {
+          "file": "a1_mini_PLA_MATTE.gcode.3mf",
+          "nozzle": 220,
+          "bed": 65,
+          "filament_profile": "Bambu PLA Matte @BBL A1M",
+          "filament_type": "PLA"
+        }
+      },
+      "model_id": "N1"
+    },
+    "a1": {
+      "materials": {
+        "PLA": {
+          "file": "a1_PLA.gcode.3mf",
+          "nozzle": 220,
+          "bed": 65,
+          "filament_profile": "Bambu PLA Basic @BBL A1",
+          "filament_type": "PLA"
+        },
+        "PETG": {
+          "file": "a1_PETG.gcode.3mf",
+          "nozzle": 255,
+          "bed": 80,
+          "filament_profile": "Generic PETG @BBL A1",
+          "filament_type": "PETG"
+        },
+        "TPU": {
+          "file": "a1_TPU.gcode.3mf",
+          "nozzle": 230,
+          "bed": 45,
+          "filament_profile": "Bambu TPU 95A HF @BBL A1",
+          "filament_type": "TPU"
+        },
+        "PLA_MATTE": {
+          "file": "a1_PLA_MATTE.gcode.3mf",
+          "nozzle": 220,
+          "bed": 65,
+          "filament_profile": "Bambu PLA Matte @BBL A1",
+          "filament_type": "PLA"
+        }
+      },
+      "model_id": "N2S"
+    }
+  },
+  "profiles_version": "02.09.00.83",
+  "generated": "2026-11-20",
+  "park_rules": "vedi PARK_RULES in bin/build_bambu_templates.py e parkLines() in webapp/export_3mf.js"
+}

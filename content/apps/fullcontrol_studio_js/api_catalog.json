@@ -1,0 +1,4133 @@
+{
+  "generated_at": "2026-11-18T20:38:28.609347+00:00",
+  "total": 125,
+  "categories": [
+    "State Objects",
+    "Geometry Shapes",
+    "Geometry Arcs",
+    "Geometry Waves",
+    "Geometry Polar",
+    "Geometry Move",
+    "Geometry Reflect",
+    "Geometry Ramping",
+    "Geometry Segmentation",
+    "Geometry Travel",
+    "Geometry Measure",
+    "Extra Functions",
+    "Lab Geometry",
+    "Lab Multi-Axis",
+    "Lab Infinaxis",
+    "Lab ControlCode"
+  ],
+  "items": [
+    {
+      "name": "Buildplate",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "Buildplate(temp: int | None = None, wait: bool | None = False)",
+      "params": [
+        {
+          "name": "temp",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "wait",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "This class represents a build plate used in 3D printing.",
+      "snippet": "steps.append(fc.Buildplate(temp=60, wait=False))"
+    },
+    {
+      "name": "Extruder",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "Extruder(on: bool | None = None, units: str | None = None, dia_feed: float | None = None, relative_gcode: bool | None = None, volume_to_e: float | None = None, total_volume: float | None = None, total_volume_ref: float | None = None, travel_format: str | None = None)",
+      "params": [
+        {
+          "name": "on",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "units",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "dia_feed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "relative_gcode",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "volume_to_e",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "total_volume",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "total_volume_ref",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_format",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents an extruder in a 3D printer.",
+      "snippet": "steps.append(fc.Extruder(on=True))"
+    },
+    {
+      "name": "ExtrusionGeometry",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "ExtrusionGeometry(area_model: str | None = None, width: float | None = None, height: float | None = None, diameter: float | None = None, area: float | None = None)",
+      "params": [
+        {
+          "name": "area_model",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "width",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "height",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "diameter",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "area",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents the geometric description of the printed extrudate.",
+      "snippet": "steps.append(fc.ExtrusionGeometry(area_model=\"rectangle\", width=0.45, height=0.2))"
+    },
+    {
+      "name": "Fan",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "Fan(speed_percent: int | None = None)",
+      "params": [
+        {
+          "name": "speed_percent",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "This class represents a generic fan component",
+      "snippet": "steps.append(fc.Fan(speed_percent=100))"
+    },
+    {
+      "name": "GcodeComment",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "GcodeComment(text: str | None = None, end_of_previous_line_text: str | None = None)",
+      "params": [
+        {
+          "name": "text",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "end_of_previous_line_text",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "A class that represents a Gcode comment.",
+      "snippet": "steps.append(fc.GcodeComment(text=\"--- Section ---\"))"
+    },
+    {
+      "name": "GcodeControls",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "GcodeControls(printer_name: str | None = None, initialization_data: dict | None = {}, save_as: str | None = None, include_date: bool | None = True)",
+      "params": [
+        {
+          "name": "printer_name",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "include_date",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Control to adjust the style and initialization of the gcode.",
+      "snippet": "gcode = fc.transform(steps, \"gcode\", fc.GcodeControls(printer_name=\"generic\"))"
+    },
+    {
+      "name": "Hotend",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "Hotend(temp: int | None = None, wait: bool | None = False, tool: int | None = None)",
+      "params": [
+        {
+          "name": "temp",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "wait",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "tool",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "A class representing a generic hotend.",
+      "snippet": "steps.append(fc.Hotend(temp=220, wait=True))"
+    },
+    {
+      "name": "ManualGcode",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "ManualGcode(text: str | None = None)",
+      "params": [
+        {
+          "name": "text",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Custom Gcode class that allows adding a new line of Gcode defined by the 'text' attribute.",
+      "snippet": "steps.append(fc.ManualGcode(text=\"M400 ; wait for moves\"))"
+    },
+    {
+      "name": "PlotAnnotation",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "PlotAnnotation(point: Point | None = None, label: str | None = None)",
+      "params": [
+        {
+          "name": "point",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "label",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents an annotation for a plot.",
+      "snippet": "steps.append(fc.PlotAnnotation(point=fc.Point(x=CX, y=CY, z=0.2), label=\"Start\"))"
+    },
+    {
+      "name": "PlotControls",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "PlotControls(color_type: str | None = 'z_gradient', line_width: float | None = None, style: str | None = None, tube_type: str | None = 'flow', tube_sides: int | None = 4, zoom: float | None = 1, hide_annotations: bool | None = False, hide_travel: bool | None = False, hide_axes: bool | None = False, neat_for_publishing: bool | None = False, raw_data: bool | None = False, return_fig: bool | None = False, printer_name: str | None = 'generic', initialization_data: dict | None = {})",
+      "params": [
+        {
+          "name": "color_type",
+          "default": "'z_gradient'",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "line_width",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "style",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "tube_type",
+          "default": "'flow'",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "tube_sides",
+          "default": "4",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "zoom",
+          "default": "1",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "hide_annotations",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "hide_travel",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "hide_axes",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "neat_for_publishing",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "raw_data",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "return_fig",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "printer_name",
+          "default": "'generic'",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Control class to adjust the style of the plot.",
+      "snippet": "fc.transform(steps, \"plot\", fc.PlotControls(color_type=\"z_gradient\"))"
+    },
+    {
+      "name": "Point",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "Point(x: float | None = None, y: float | None = None, z: float | None = None, color: list | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "color",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents the x, y, z position of the nozzle.",
+      "snippet": "steps.append(fc.Point(x=CX, y=CY, z=0.2))"
+    },
+    {
+      "name": "Printer",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "Printer(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, always_print_F: bool | None = None, always_print_xyz: bool | None = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_F",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_xyz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "A class that represents a 3D printer.",
+      "snippet": "steps.append(fc.Printer(print_speed=1800, travel_speed=6000))"
+    },
+    {
+      "name": "PrinterCommand",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "PrinterCommand(id: str | None = None)",
+      "params": [
+        {
+          "name": "id",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents a command to be executed by a printer.",
+      "snippet": "steps.append(fc.PrinterCommand(id=\"home\"))"
+    },
+    {
+      "name": "StationaryExtrusion",
+      "module": "fullcontrol.combinations.gcode_and_visualize.classes",
+      "category": "State Objects",
+      "kind": "class",
+      "signature": "StationaryExtrusion(volume: float, speed: int)",
+      "params": [
+        {
+          "name": "volume",
+          "default": null,
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed",
+          "default": null,
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents stationary extrusion in a 3D printer.",
+      "snippet": "steps.append(fc.StationaryExtrusion(volume=15, speed=180))"
+    },
+    {
+      "name": "circleXY",
+      "module": "fullcontrol.geometry.shapes",
+      "category": "Geometry Shapes",
+      "kind": "function",
+      "signature": "circleXY(centre: Point, radius: float, start_angle: float, segments: int = 100, cw: bool = False) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": "100",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "cw",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY circle with the specified number of segments (defaulting to 100), centred about a Point, with the given radius, starting at the specified polar angle (radians), and with the z-position the same as that of the centre Point.",
+      "snippet": "steps.extend(fc.circleXY(fc.Point(x=CX, y=CY, z=0.2), radius=20, start_angle=0, segments=64))"
+    },
+    {
+      "name": "circleXY_3pt",
+      "module": "fullcontrol.geometry.shapes",
+      "category": "Geometry Shapes",
+      "kind": "function",
+      "signature": "circleXY_3pt(pt1: Point, pt2: Point, pt3: Point, start_angle: float = None, start_at_first_point: bool = None, segments: int = 100, cw: bool = False) -> list",
+      "params": [
+        {
+          "name": "pt1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "pt2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "pt3",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_at_first_point",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": "100",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "cw",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY circle with the specified number of segments (defaulting to 100), defined by three points that the circle passes through. The start point in the returned list of points is defined by a polar angle (radians) or by setting start_at_first_point = True. The z-position is the same as that of pt1. Returns a list of Points.",
+      "snippet": "steps.extend(fc.circleXY_3pt(fc.Point(x=CX - 20, y=CY, z=0.2), fc.Point(x=CX, y=CY + 20, z=0.2), fc.Point(x=CX + 20, y=CY, z=0.2), segments=64))"
+    },
+    {
+      "name": "ellipseXY",
+      "module": "fullcontrol.geometry.shapes",
+      "category": "Geometry Shapes",
+      "kind": "function",
+      "signature": "ellipseXY(centre: Point, a: float, b: float, start_angle: float, segments: int = 100, cw: bool = False) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "a",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "b",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": "100",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "cw",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY ellipse with the specified number of segments (defaulting to 100), centred about a Point, with the given width (a) and height (b), starting at the specified polar angle (in radians), and with the z-position the same as that of the centre Point. Returns a list of Points representing the ellipse.",
+      "snippet": "steps.extend(fc.ellipseXY(fc.Point(x=CX, y=CY, z=0.2), a=25, b=15, start_angle=0, segments=64))"
+    },
+    {
+      "name": "helixZ",
+      "module": "fullcontrol.geometry.shapes",
+      "category": "Geometry Shapes",
+      "kind": "function",
+      "signature": "helixZ(centre: Point, start_radius: float, end_radius: float, start_angle: float, n_turns: float, pitch_z: float, segments: int, cw: bool = False) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "end_radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "n_turns",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "pitch_z",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "cw",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a helix in the Z direction with the specified number of segments and turns (partial turns permitted), centred about the Point centre, sized based on the start and end radius, starting at the specified polar angle (radians), defaulting to counter-clockwise.",
+      "snippet": "steps.extend(fc.helixZ(fc.Point(x=CX, y=CY, z=0.2), start_radius=20, end_radius=20, start_angle=0, n_turns=10, pitch_z=0.25, segments=640))"
+    },
+    {
+      "name": "polygonXY",
+      "module": "fullcontrol.geometry.shapes",
+      "category": "Geometry Shapes",
+      "kind": "function",
+      "signature": "polygonXY(centre: Point, enclosing_radius: float, start_angle: float, sides: int, cw: bool = False) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "enclosing_radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "sides",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "cw",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY polygon with the specified number of sides, centered about a Point, sized based on the enclosing radius, starting at the specified polar angle (radians). The default direction is counter-clockwise.",
+      "snippet": "steps.extend(fc.polygonXY(fc.Point(x=CX, y=CY, z=0.2), enclosing_radius=20, start_angle=0, sides=6))"
+    },
+    {
+      "name": "rectangleXY",
+      "module": "fullcontrol.geometry.shapes",
+      "category": "Geometry Shapes",
+      "kind": "function",
+      "signature": "rectangleXY(start_point: Point, x_size: float, y_size: float, cw: bool = False) -> list",
+      "params": [
+        {
+          "name": "start_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "x_size",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "y_size",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "cw",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D XY rectangle starting and ending at a given Point (5 points returned), with specified size.",
+      "snippet": "steps.extend(fc.rectangleXY(fc.Point(x=CX - 20, y=CY - 20, z=0.2), x_size=40, y_size=40))"
+    },
+    {
+      "name": "spiralXY",
+      "module": "fullcontrol.geometry.shapes",
+      "category": "Geometry Shapes",
+      "kind": "function",
+      "signature": "spiralXY(centre: Point, start_radius: float, end_radius: float, start_angle: float, n_turns: float, segments: int, cw: bool = False) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "end_radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "n_turns",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "cw",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY spiral with the specified number of segments and turns (partial turns permitted), centred about a Point, defaulting to anti-clockwise.",
+      "snippet": "steps.extend(fc.spiralXY(fc.Point(x=CX, y=CY, z=0.2), start_radius=5, end_radius=25, start_angle=0, n_turns=6, segments=240))"
+    },
+    {
+      "name": "arcXY",
+      "module": "fullcontrol.geometry.arcs",
+      "category": "Geometry Arcs",
+      "kind": "function",
+      "signature": "arcXY(centre: Point, radius: float, start_angle: float, arc_angle: float, segments: int = 100) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "arc_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": "100",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY arc with angles defined in radians and z-position the same as that of the centre point.",
+      "snippet": "steps.extend(fc.arcXY(fc.Point(x=CX, y=CY, z=0.2), radius=20, start_angle=0, arc_angle=3.14159, segments=32))"
+    },
+    {
+      "name": "arcXY_3pt",
+      "module": "fullcontrol.geometry.arcs",
+      "category": "Geometry Arcs",
+      "kind": "function",
+      "signature": "arcXY_3pt(pt1: Point, pt2: Point, pt3: Point, segments: int = 100) -> list",
+      "params": [
+        {
+          "name": "pt1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "pt2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "pt3",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": "100",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY arc passing through three specified points.",
+      "snippet": "steps.extend(fc.arcXY_3pt(fc.Point(x=CX - 20, y=CY, z=0.2), fc.Point(x=CX, y=CY + 15, z=0.2), fc.Point(x=CX + 20, y=CY, z=0.2), segments=32))"
+    },
+    {
+      "name": "elliptical_arcXY",
+      "module": "fullcontrol.geometry.arcs",
+      "category": "Geometry Arcs",
+      "kind": "function",
+      "signature": "elliptical_arcXY(centre: Point, a: float, b: float, start_angle: float, arc_angle: float, segments: int = 100) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "a",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "b",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "arc_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": "100",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a 2D-XY elliptical arc with z-position the same as that of the centre point Args: centre (Point): The centre point of the arc. a (float): The x-width of the ellipse. b (float): The y-height of the ellipse. start_angle (float): The starting polar angle of the arc in radians. arc_angle (float): The angle of the arc in radians. segments (int, optional): The number of segments to divide the arc into. Defaults to 100.",
+      "snippet": "steps.extend(fc.elliptical_arcXY(fc.Point(x=CX, y=CY, z=0.2), a=25, b=12, start_angle=0, arc_angle=3.14159, segments=48))"
+    },
+    {
+      "name": "variable_arcXY",
+      "module": "fullcontrol.geometry.arcs",
+      "category": "Geometry Arcs",
+      "kind": "function",
+      "signature": "variable_arcXY(centre: Point, start_radius: float, start_angle: float, arc_angle: float, segments: int = 100, radius_change: float = 0, z_change: float = 0) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "arc_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": "100",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius_change",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "z_change",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a arc with optionally varying radius and z-position. angles are defined in radians. z-position starts the same as that of the centre point and increased by z_change.",
+      "snippet": "steps.extend(fc.variable_arcXY(fc.Point(x=CX, y=CY, z=0.2), start_radius=15, start_angle=0, arc_angle=3.14159, segments=48, radius_change=10, z_change=2.0))"
+    },
+    {
+      "name": "sinewaveXYpolar",
+      "module": "fullcontrol.geometry.waves",
+      "category": "Geometry Waves",
+      "kind": "function",
+      "signature": "sinewaveXYpolar(start_point: Point, direction_polar: float, amplitude: float, period_length: float, periods: int, segments_per_period: int = 16, extra_half_period: bool = False, phase_shift: float = 0) -> list",
+      "params": [
+        {
+          "name": "start_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "direction_polar",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "amplitude",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "period_length",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "periods",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments_per_period",
+          "default": "16",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extra_half_period",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "phase_shift",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a sine wave with the set number of periods, starting at the start_point, with a given wave direction (polar angle in radians), given amplitude, with the distance between the midpoint of each line of the sine wave set by line_spacing. Optionally, an extra half period can be added and the wave can be phase-shifted.",
+      "snippet": "steps.extend(fc.sinewaveXYpolar(fc.Point(x=CX - 30, y=CY, z=0.2), direction_polar=0, amplitude=4, period_length=10, periods=6, segments_per_period=16))"
+    },
+    {
+      "name": "squarewaveXY",
+      "module": "fullcontrol.geometry.waves",
+      "category": "Geometry Waves",
+      "kind": "function",
+      "signature": "squarewaveXY(start_point: Point, direction_vector: Vector, amplitude: float, line_spacing: float, periods: int, extra_half_period: bool = False, extra_end_line: bool = False) -> list",
+      "params": [
+        {
+          "name": "start_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "direction_vector",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "amplitude",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "line_spacing",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "periods",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extra_half_period",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extra_end_line",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a square wave with the set number of periods, starting at the start_point, with a given wave direction (dictated by xy components of a Vector), given amplitude, with the distance between each line of the square wave set by line_spacing. Optionally, an extra half period and/or one extra line (top/bottom of square wave) can be added. Return a list of Points.",
+      "snippet": "steps.extend(fc.squarewaveXY(fc.Point(x=CX - 30, y=CY, z=0.2), direction_vector=fc.Vector(x=1, y=0), amplitude=4, line_spacing=4, periods=5))"
+    },
+    {
+      "name": "squarewaveXYpolar",
+      "module": "fullcontrol.geometry.waves",
+      "category": "Geometry Waves",
+      "kind": "function",
+      "signature": "squarewaveXYpolar(start_point: Point, direction_polar: float, amplitude: float, line_spacing: float, periods: int, extra_half_period: bool = False, extra_end_line: bool = False) -> list",
+      "params": [
+        {
+          "name": "start_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "direction_polar",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "amplitude",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "line_spacing",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "periods",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extra_half_period",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extra_end_line",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a squarewave with the set number of periods, starting at the start_point, with a given wave direction (polar angle in radians), given amplitude, with the distance between each line of the squarewave set by line_spacing. Optionally, an extra half period and/or one extra line (top/bottom of squrewave) can be added. Return a list of Points.",
+      "snippet": "steps.extend(fc.squarewaveXYpolar(fc.Point(x=CX - 30, y=CY, z=0.2), direction_polar=0, amplitude=4, line_spacing=4, periods=5))"
+    },
+    {
+      "name": "trianglewaveXYpolar",
+      "module": "fullcontrol.geometry.waves",
+      "category": "Geometry Waves",
+      "kind": "function",
+      "signature": "trianglewaveXYpolar(start_point: Point, direction_polar: float, amplitude: float, tip_separation: float, periods: int, extra_half_period: bool = False) -> list",
+      "params": [
+        {
+          "name": "start_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "direction_polar",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "amplitude",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "tip_separation",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "periods",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extra_half_period",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a triangle wave with the set number of periods, starting at the start_point, with a given wave direction (polar angle in radians), given amplitude, with the distance between neighbouring tips of the wave set by tip_separation. Optionally, an extra half period can be added. Return a list of Points.",
+      "snippet": "steps.extend(fc.trianglewaveXYpolar(fc.Point(x=CX - 30, y=CY, z=0.2), direction_polar=0, amplitude=4, tip_separation=6, periods=6))"
+    },
+    {
+      "name": "point_to_polar",
+      "module": "fullcontrol.geometry.polar",
+      "category": "Geometry Polar",
+      "kind": "function",
+      "signature": "point_to_polar(target_point: Point, origin_point: Point) -> PolarPoint",
+      "params": [
+        {
+          "name": "target_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "origin_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Convert a Cartesian point to polar coordinates. Find polar radius and angle (radians: 0 to 2pi) in XY plane of the given target point relative to a given origin Point.",
+      "snippet": "pp = fc.point_to_polar(fc.Point(x=CX + 20, y=CY, z=0.2), fc.Point(x=CX, y=CY, z=0.2))"
+    },
+    {
+      "name": "polar_to_point",
+      "module": "fullcontrol.geometry.polar",
+      "category": "Geometry Polar",
+      "kind": "function",
+      "signature": "polar_to_point(centre: Point, radius: float, angle: float) -> Point",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Convert polar coordinates to Cartesian coordinates. Point XY coordinates of a point based on polar angle (radians) and radius from a centre point. The new Point has z = centre.z",
+      "snippet": "steps.append(fc.polar_to_point(fc.Point(x=CX, y=CY, z=0.2), radius=20, angle=1.5708))"
+    },
+    {
+      "name": "polar_to_vector",
+      "module": "fullcontrol.geometry.polar",
+      "category": "Geometry Polar",
+      "kind": "function",
+      "signature": "polar_to_vector(length: float, angle: float) -> Vector",
+      "params": [
+        {
+          "name": "length",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Convert polar coordinates to a vector. Find an xy Vector based on an angle (radians) and length defined in polar coordinates.",
+      "snippet": "vec = fc.polar_to_vector(length=10, angle=0.7854)"
+    },
+    {
+      "name": "PolarPoint",
+      "module": "fullcontrol.geometry.polar",
+      "category": "Geometry Polar",
+      "kind": "class",
+      "signature": "PolarPoint(radius: float, angle: float)",
+      "params": [
+        {
+          "name": "radius",
+          "default": null,
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "angle",
+          "default": null,
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents a point in polar coordinates.",
+      "snippet": "pp = fc.PolarPoint(radius=20, angle=0.7854)"
+    },
+    {
+      "name": "move",
+      "module": "fullcontrol.geometry.move",
+      "category": "Geometry Move",
+      "kind": "function",
+      "signature": "move(geometry: Point | list, vector: Vector, copy: bool = False, copy_quantity: int = 2) -> Point | list",
+      "params": [
+        {
+          "name": "geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "vector",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "copy",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "copy_quantity",
+          "default": "2",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Move 'geometry' (a Point or list of steps including Points) by 'vector'.",
+      "snippet": "steps = fc.move(steps, fc.Vector(x=0, y=0, z=0.2), copy=True, copy_quantity=5)"
+    },
+    {
+      "name": "move_polar",
+      "module": "fullcontrol.geometry.move_polar",
+      "category": "Geometry Move",
+      "kind": "function",
+      "signature": "move_polar(geometry: Point | list, centre: Point, radius: float, angle: float, copy: bool = False, copy_quantity: int = 2) -> Point | list",
+      "params": [
+        {
+          "name": "geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "copy",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "copy_quantity",
+          "default": "2",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Move 'geometry' (a Point or list of steps including Points) about a centre point by the given radius and angle (in radians) relative to the current radius and angle of each Point.",
+      "snippet": "steps = fc.move_polar(steps, fc.Point(x=CX, y=CY), radius=0, angle=0.5236, copy=True, copy_quantity=6)"
+    },
+    {
+      "name": "Vector",
+      "module": "fullcontrol.geometry.vector",
+      "category": "Geometry Move",
+      "kind": "class",
+      "signature": "Vector(x: float | None = None, y: float | None = None, z: float | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "A vector defined by x, y, and z distances.",
+      "snippet": "vec = fc.Vector(x=0, y=0, z=0.2)"
+    },
+    {
+      "name": "reflectXY",
+      "module": "fullcontrol.geometry.reflect",
+      "category": "Geometry Reflect",
+      "kind": "function",
+      "signature": "reflectXY(p: Point, p1_reflect: Point, p2_reflect: Point) -> Point",
+      "params": [
+        {
+          "name": "p",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "p1_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "p2_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Reflects the x and y values of a Point about a line defined by two Points.",
+      "snippet": "mirrored = fc.reflectXY(fc.Point(x=CX - 10, y=CY, z=0.2), fc.Point(x=CX, y=0), fc.Point(x=CX, y=100))"
+    },
+    {
+      "name": "reflectXY_mc",
+      "module": "fullcontrol.geometry.reflect",
+      "category": "Geometry Reflect",
+      "kind": "function",
+      "signature": "reflectXY_mc(p: Point, m_reflect: float, c_reflect: float) -> Point",
+      "params": [
+        {
+          "name": "p",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "m_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "c_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Reflects the x and y values of a Point about a line defined by m and c.",
+      "snippet": "mirrored = fc.reflectXY_mc(fc.Point(x=CX - 10, y=CY, z=0.2), m_reflect=1, c_reflect=0)"
+    },
+    {
+      "name": "reflectXYpolar",
+      "module": "fullcontrol.geometry.reflect_polar",
+      "category": "Geometry Reflect",
+      "kind": "function",
+      "signature": "reflectXYpolar(p: Point, p_reflect: Point, angle_reflect: float) -> Point",
+      "params": [
+        {
+          "name": "p",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "p_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Reflects the x and y values of a point about a line defined by a point and polar angle (radians).",
+      "snippet": "mirrored = fc.reflectXYpolar(fc.Point(x=CX - 10, y=CY, z=0.2), fc.Point(x=CX, y=CY), angle_reflect=1.5708)"
+    },
+    {
+      "name": "ramp_polar",
+      "module": "fullcontrol.geometry.ramping",
+      "category": "Geometry Ramping",
+      "kind": "function",
+      "signature": "ramp_polar(steplist: list, centre: Point, radius_change: float = 0, angle_change: float = 0) -> list",
+      "params": [
+        {
+          "name": "steplist",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius_change",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_change",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Linearly changes the angle (radians) and radius of a list of Points about a given centre point.",
+      "snippet": "steps = fc.ramp_polar(steps, fc.Point(x=CX, y=CY), radius_change=5.0, angle_change=0.0)"
+    },
+    {
+      "name": "ramp_xyz",
+      "module": "fullcontrol.geometry.ramping",
+      "category": "Geometry Ramping",
+      "kind": "function",
+      "signature": "ramp_xyz(steplist: list, x_change: float = 0, y_change: float = 0, z_change: float = 0) -> list",
+      "params": [
+        {
+          "name": "steplist",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "x_change",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "y_change",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "z_change",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Linearly increase x/y/z values of a list of Points by x_change/y_change/z_change.",
+      "snippet": "steps = fc.ramp_xyz(steps, z_change=2.0)"
+    },
+    {
+      "name": "segmented_line",
+      "module": "fullcontrol.geometry.segmentation",
+      "category": "Geometry Segmentation",
+      "kind": "function",
+      "signature": "segmented_line(point1: Point, point2: Point, segments: int) -> list",
+      "params": [
+        {
+          "name": "point1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Return a list of Points linearly spaced between the start Point and end Point. The total number of Points in the list is segments+1.",
+      "snippet": "steps.extend(fc.segmented_line(fc.Point(x=CX - 20, y=CY, z=0.2), fc.Point(x=CX + 20, y=CY, z=0.2), segments=20))"
+    },
+    {
+      "name": "segmented_path",
+      "module": "fullcontrol.geometry.segmentation",
+      "category": "Geometry Segmentation",
+      "kind": "function",
+      "signature": "segmented_path(points: list, segments: int) -> int",
+      "params": [
+        {
+          "name": "points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Calculate a segmented path (equidistant points) based on a list of points and the desired number of segments.",
+      "snippet": "steps = fc.segmented_path(steps, segments=50)"
+    },
+    {
+      "name": "travel_to",
+      "module": "fullcontrol.geometry.travel_to",
+      "category": "Geometry Travel",
+      "kind": "function",
+      "signature": "travel_to(geometry: Point | list) -> list",
+      "params": [
+        {
+          "name": "geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Returns a list of objects to turn extrusion off, travel to a point, then turn extrusion on.",
+      "snippet": "steps.extend(fc.travel_to(fc.Point(x=CX + 20, y=CY + 20, z=0.2)))"
+    },
+    {
+      "name": "angleXY_between_3_points",
+      "module": "fullcontrol.geometry.measure",
+      "category": "Geometry Measure",
+      "kind": "function",
+      "signature": "angleXY_between_3_points(start_point: Point, mid_point: Point, end_point: Point) -> float",
+      "params": [
+        {
+          "name": "start_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "mid_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "end_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Returns the angle from start_point to end_point, about mid_point.",
+      "snippet": "ang = fc.angleXY_between_3_points(fc.Point(x=CX + 10, y=CY), fc.Point(x=CX, y=CY), fc.Point(x=CX, y=CY + 10))"
+    },
+    {
+      "name": "BoundingBox",
+      "module": "fullcontrol.visualize.bounding_box",
+      "category": "Geometry Measure",
+      "kind": "class",
+      "signature": "BoundingBox(minx: float | None = None, midx: float | None = None, maxx: float | None = None, rangex: float | None = None, miny: float | None = None, midy: float | None = None, maxy: float | None = None, rangey: float | None = None, minz: float | None = None, midz: float | None = None, maxz: float | None = None, rangez: float | None = None)",
+      "params": [
+        {
+          "name": "minx",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "midx",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "maxx",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "rangex",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "miny",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "midy",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "maxy",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "rangey",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "minz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "midz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "maxz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "rangez",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents the geometric measures of a bounding box, including mid values and ranges.",
+      "snippet": "bb = fc.BoundingBox()\nbb.calc_bounds(steps)"
+    },
+    {
+      "name": "centreXY_3pt",
+      "module": "fullcontrol.geometry.midpoint",
+      "category": "Geometry Measure",
+      "kind": "function",
+      "signature": "centreXY_3pt(pt1: Point, pt2: Point, pt3: Point) -> Point",
+      "params": [
+        {
+          "name": "pt1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "pt2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "pt3",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Calculate the centre point of a circle passing through three points.",
+      "snippet": "c = fc.centreXY_3pt(fc.Point(x=CX - 10, y=CY, z=0.2), fc.Point(x=CX, y=CY + 10, z=0.2), fc.Point(x=CX + 10, y=CY, z=0.2))"
+    },
+    {
+      "name": "distance",
+      "module": "fullcontrol.geometry.measure",
+      "category": "Geometry Measure",
+      "kind": "function",
+      "signature": "distance(point1: Point, point2: Point) -> float",
+      "params": [
+        {
+          "name": "point1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Calculate the Euclidean distance between two points in 3D space.",
+      "snippet": "d = fc.distance(fc.Point(x=0, y=0, z=0), fc.Point(x=10, y=0, z=0))"
+    },
+    {
+      "name": "interpolated_point",
+      "module": "fullcontrol.geometry.midpoint",
+      "category": "Geometry Measure",
+      "kind": "function",
+      "signature": "interpolated_point(point1: Point, point2: Point, interpolation_fraction: float) -> Point",
+      "params": [
+        {
+          "name": "point1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "interpolation_fraction",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Return an interpolated point a fraction of the way from point1 to point2.",
+      "snippet": "pt = fc.interpolated_point(fc.Point(x=CX - 10, y=CY, z=0.2), fc.Point(x=CX + 10, y=CY, z=0.2), interpolation_fraction=0.25)"
+    },
+    {
+      "name": "midpoint",
+      "module": "fullcontrol.geometry.midpoint",
+      "category": "Geometry Measure",
+      "kind": "function",
+      "signature": "midpoint(point1: Point, point2: Point) -> Point",
+      "params": [
+        {
+          "name": "point1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Return the mid-point between two points.",
+      "snippet": "mid = fc.midpoint(fc.Point(x=CX - 10, y=CY, z=0.2), fc.Point(x=CX + 10, y=CY, z=0.2))"
+    },
+    {
+      "name": "path_length",
+      "module": "fullcontrol.geometry.measure",
+      "category": "Geometry Measure",
+      "kind": "function",
+      "signature": "path_length(points: list) -> float",
+      "params": [
+        {
+          "name": "points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Calculates the total length of a path defined by a list of points.",
+      "snippet": "print(\"Length:\", fc.path_length(steps))"
+    },
+    {
+      "name": "check",
+      "module": "fullcontrol.check",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "check(steps: list)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Check a list of steps and report what type of classes are included and whether the list is 2D. FullControl requires it to be 1D for processing.",
+      "snippet": "fc.check(steps)"
+    },
+    {
+      "name": "export_design",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "export_design(steps: list, filename: str)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "filename",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Export design (list of steps) to a JSON file.",
+      "snippet": "fc.export_design(steps, \"my_design\")"
+    },
+    {
+      "name": "find_extruder_state",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "find_extruder_state(steps)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Finds final extruder state if any changes occur in steps. Can be used to find extruder state for use with first_print_point and last_print_point.",
+      "snippet": "ext_on = fc.find_extruder_state(steps)"
+    },
+    {
+      "name": "first_point",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "first_point(steps: list, fully_defined: bool = True) -> Point",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "fully_defined",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Return the first Point in the list.",
+      "snippet": "p0 = fc.first_point(steps)"
+    },
+    {
+      "name": "first_print_point",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "first_print_point(steps, extruder)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extruder",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Returns first point in steps where the extruder is on, the initial extruder state should be set.",
+      "snippet": "p_start = fc.first_print_point(steps, extruder=fc.Extruder(on=True))"
+    },
+    {
+      "name": "fix",
+      "module": "fullcontrol.check",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "fix(steps: list, result_type: str, controls)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "result_type",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "controls",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Validate and normalize a list of steps (flattening nested lists and filling initial XYZ) before gcode or plot generation.",
+      "snippet": "steps = fc.fix(steps, \"gcode\", fc.GcodeControls())"
+    },
+    {
+      "name": "flatten",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "flatten(steps: list) -> list",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Takes a list in which some elements are lists in the second dimension. Returns a flattened 1D list.",
+      "snippet": "steps = fc.flatten(steps)"
+    },
+    {
+      "name": "import_design",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "import_design(fc_module_handle, filename: str)",
+      "params": [
+        {
+          "name": "fc_module_handle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "filename",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Import a previously exported design (list of steps).",
+      "snippet": "steps = fc.import_design(fc, \"my_design\")"
+    },
+    {
+      "name": "last_point",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "last_point(steps: list, fully_defined: bool = True) -> Point",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "fully_defined",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Return the last Point in the list.",
+      "snippet": "pn = fc.last_point(steps)"
+    },
+    {
+      "name": "last_print_point",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "last_print_point(steps, extruder)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extruder",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Returns last point in steps where the extruder is on, the initial extruder state should be set.",
+      "snippet": "p_end = fc.last_print_point(steps, extruder=fc.Extruder(on=True))"
+    },
+    {
+      "name": "linspace",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "linspace(start: float, end: float, number_of_points: int) -> list",
+      "params": [
+        {
+          "name": "start",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "end",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "number_of_points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate evenly spaced floats from start to end.",
+      "snippet": "vals = fc.linspace(0.0, 10.0, 11)"
+    },
+    {
+      "name": "points_only",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "points_only(steps: list, track_xyz: bool = True) -> list",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "track_xyz",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Converts steps of Points and control to only Points and returns a new list.",
+      "snippet": "pts = fc.points_only(steps, track_xyz=True)"
+    },
+    {
+      "name": "relative_point",
+      "module": "fullcontrol.extra_functions",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "relative_point(reference: Point | list, x_offset: float, y_offset: float, z_offset: float)",
+      "params": [
+        {
+          "name": "reference",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "x_offset",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "y_offset",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "z_offset",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Returns an fc.Point object with x, y, z positions relative to a reference point.",
+      "snippet": "steps.append(fc.relative_point(steps, x_offset=10, y_offset=0, z_offset=0))"
+    },
+    {
+      "name": "transform",
+      "module": "fullcontrol.combinations.gcode_and_visualize.common",
+      "category": "Extra Functions",
+      "kind": "function",
+      "signature": "transform(steps: list, result_type: str, controls: GcodeControls | PlotControls = None, show_tips: bool = True)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "result_type",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "controls",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "show_tips",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Transform a fullcontrol design (a list of class instances) into the specified result_type.",
+      "snippet": "gcode = fc.transform(steps, \"gcode\", fc.GcodeControls(printer_name=\"generic\"))"
+    },
+    {
+      "name": "angleZ",
+      "module": "lab.fullcontrol.geometry.spherical",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "angleZ(start_point: Point, end_point: Point) -> float",
+      "params": [
+        {
+          "name": "start_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "end_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "return the angle (radians) of a line down from the Z axis",
+      "snippet": "import lab.fullcontrol as fclab\naz = fclab.angleZ(fc.Point(x=0, y=0, z=0), fc.Point(x=10, y=0, z=10))"
+    },
+    {
+      "name": "arc_sinewaveXY",
+      "module": "lab.fullcontrol.geometry.arc_waves",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "arc_sinewaveXY(centre: Point, radius: float, amplitude: float, start_angle: float, arc_angle: float, periods: int, segments_per_period: int = 16, extra_half_period: bool = False, phase_shift: float = 0) -> list",
+      "params": [
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "amplitude",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "start_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "arc_angle",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "periods",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments_per_period",
+          "default": "16",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extra_half_period",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "phase_shift",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Generate a sine wave with the set number of periods, starting at the start_point, with a given wave direction (polar angle in radians), given amplitude, with the distance between the midpoint of each line of the sine wave set by line_spacing. Optionally, an extra half period can be added and the wave can be phase-shifted.",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.arc_sinewaveXY(fc.Point(x=CX, y=CY, z=0.2), radius=20, amplitude=2.5, start_angle=0, arc_angle=3.14159, periods=8))"
+    },
+    {
+      "name": "bezier",
+      "module": "lab.fullcontrol.geometry.bezier",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "bezier(control_points, num_points = 10, end_point = True)",
+      "params": [
+        {
+          "name": "control_points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "num_points",
+          "default": "10",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "end_point",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "returns a bezier curve with num_points based on the supplied control points, ending on the final control point if end_point is True. returns list of points in curve",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.bezier([fc.Point(x=CX - 25, y=CY - 15, z=0.2), fc.Point(x=CX, y=CY + 30, z=0.2), fc.Point(x=CX + 25, y=CY - 15, z=0.2)], num_points=40))"
+    },
+    {
+      "name": "bezier_through_points",
+      "module": "lab.fullcontrol.geometry.bezier",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "bezier_through_points(control_points, num_points = 10, iteration_fraction = 0.5, iterations = 20)",
+      "params": [
+        {
+          "name": "control_points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "num_points",
+          "default": "10",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "iteration_fraction",
+          "default": "0.5",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "iterations",
+          "default": "20",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "create a bezier curve that approximately passes through the control points. control points are iteratively moved to get the bezier curve to pass closer to each control point with each iteration. iteration fraction indicates how far to move the control points in each iteration, relative to the distance between the nearest point of the bezier curve to the control point.",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.bezier_through_points([fc.Point(x=CX - 20, y=CY, z=0.2), fc.Point(x=CX, y=CY + 20, z=0.2), fc.Point(x=CX + 20, y=CY, z=0.2)], num_points=40))"
+    },
+    {
+      "name": "bezierXYdiscrete",
+      "module": "lab.fullcontrol.geometry.bezier",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "bezierXYdiscrete(control_points, num_points = 10, end_point = True)",
+      "params": [
+        {
+          "name": "control_points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "num_points",
+          "default": "10",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "end_point",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "legacy function - use bezier() instead",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.bezierXYdiscrete([fc.Point(x=CX - 20, y=CY, z=0.2), fc.Point(x=CX, y=CY + 20, z=0.2), fc.Point(x=CX + 20, y=CY, z=0.2)], num_points=30))"
+    },
+    {
+      "name": "catmull_rom_spline",
+      "module": "lab.fullcontrol.geometry.other_splines",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "catmull_rom_spline(control_points, num_points = 10, tension = 0.5)",
+      "params": [
+        {
+          "name": "control_points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "num_points",
+          "default": "10",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "tension",
+          "default": "0.5",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "return a list of points following a catmull-rom spline that passes through the control points. control the smoothness with tension (higher value is smoother - e.g. 0.5).",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.catmull_rom_spline([fc.Point(x=CX - 20, y=CY, z=0.2), fc.Point(x=CX, y=CY + 20, z=0.2), fc.Point(x=CX + 20, y=CY, z=0.2)], num_points=40, tension=0.5))"
+    },
+    {
+      "name": "constant_polar_angle_with_c",
+      "module": "lab.fullcontrol.geometry.orient",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "constant_polar_angle_with_c(points: list, centre: Point, initial_c: float = 0)",
+      "params": [
+        {
+          "name": "points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "centre",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "initial_c",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "adjust c rotation for a list of points to ensure all points are rotated (by c) to have the same polar angle in the XY plane relative to the centre point. Set initial_c (degreed) to adjust the desired initial orientation",
+      "snippet": "import lab.fullcontrol as fclab\nsteps = fclab.constant_polar_angle_with_c(steps, fc.Point(x=CX, y=CY))"
+    },
+    {
+      "name": "convex_pathsXY",
+      "module": "lab.fullcontrol.geometry.convex",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "convex_pathsXY(path1: list, path2: list, lines: int, vary_speed: bool = False, speed_ref: float = None, width_ref: float = None, travel: bool = True, zigzag: bool = False, overextrusion_percent: float = 0) -> list",
+      "params": [
+        {
+          "name": "path1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "path2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "lines",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "vary_speed",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "speed_ref",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "width_ref",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "travel",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "zigzag",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "overextrusion_percent",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "generate a series of paths to fill the space between supplied path1 and path2 with streamlined lines of continuously varying extrusion width. the points in each path are directly interpolated between. if vary_speed=True, the reference speed and extrusion width must be supplied, and the speed of the nozzle will continuously vary to maintain contant volumetric flowrate. if travel==True (default), there will be travel from the end of each path to the beginning of the next. set zigzag==True to alternate the printing direction of each path. set overextrusion_percent > 0 to overextrude to improve lateral bonding between paths. research study: https://www.researchgate.net/publication/346098541",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.convex_pathsXY(path1, path2, lines=10))"
+    },
+    {
+      "name": "crossing_lines_check_XY",
+      "module": "lab.fullcontrol.geometry.intersect",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "crossing_lines_check_XY(point_a1: Point, point_a2: Point, point_b1: Point, point_b2: Point) -> bool",
+      "params": [
+        {
+          "name": "point_a1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_a2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_b1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_b2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "check if two lines cross within their length, one defined by Points a1,a2, the other by b1,b2. only x and y components are considered. return true if they cross",
+      "snippet": "import lab.fullcontrol as fclab\ncrosses = fclab.crossing_lines_check_XY(p1, p2, p3, p4)"
+    },
+    {
+      "name": "fill_base_full",
+      "module": "lab.fullcontrol.geometry.fill",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "fill_base_full(steps: list, segments_per_layer: int, solid_layers: int, extrusion_width: float)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments_per_layer",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "solid_layers",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extrusion_width",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "see fill_base_simple for an explanation of how this work",
+      "snippet": "import lab.fullcontrol as fclab\nbase_steps = fclab.fill_base_full(steps, segments_per_layer=64, solid_layers=2, extrusion_width=0.45)"
+    },
+    {
+      "name": "fill_base_simple",
+      "module": "lab.fullcontrol.geometry.fill",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "fill_base_simple(steps: list, segments_per_layer: int, solid_layers: int, extrusion_width: float)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "segments_per_layer",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "solid_layers",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extrusion_width",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "take a vase_mode list of steps, calculate a convex fill for the first layer, which is identified based on the first (segments_per_layer+1) points. Then, for each layer, for the required number of solid layers, print the first layer's solid fill (outwards-in) using the convex function, then travel back to the last point of the layer. The first layer is copied because the convex function is computationally demanding, which is fine for parts where the first few layers are similar. If the outline is changing a lot over the first few layers, use fill_base_full instead, which finds the outline for each solid layer and used that to create the solid fill using the convex function for each new outline.",
+      "snippet": "import lab.fullcontrol as fclab\nbase_steps = fclab.fill_base_simple(steps, segments_per_layer=64, solid_layers=2, extrusion_width=0.45)"
+    },
+    {
+      "name": "line_intersection_by_points_XY",
+      "module": "lab.fullcontrol.geometry.intersect",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "line_intersection_by_points_XY(point_a1: Point, point_a2: Point, point_b1: Point, point_b2: Point) -> Point",
+      "params": [
+        {
+          "name": "point_a1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_a2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_b1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_b2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "find the intersection point between two lines, one defined by Points a1, a2, the other by b1, b2. only x and y components are considered. return intersection Point with z value the same as Point p1",
+      "snippet": "import lab.fullcontrol as fclab\ni_pt = fclab.line_intersection_by_points_XY(p1, p2, p3, p4)"
+    },
+    {
+      "name": "line_intersection_by_polar_XY",
+      "module": "lab.fullcontrol.geometry.intersect",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "line_intersection_by_polar_XY(point1: Point, angle1: float, point2: Point, angle2: float) -> Point",
+      "params": [
+        {
+          "name": "point1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "find the intersection point between two polar lines, defined by Points point1, angle1, and point2, angle2. only x and y components are considered. return intersection Point with z value the same as Point p1",
+      "snippet": "import lab.fullcontrol as fclab\ni_pt = fclab.line_intersection_by_polar_XY(p1, angle1=0.0, point2=p2, angle2=1.5708)"
+    },
+    {
+      "name": "loop_between_lines",
+      "module": "lab.fullcontrol.geometry.loop_between_lines",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "loop_between_lines(point_a1: Point, point_a2: Point, point_b1: Point, point_b2: Point, extension: float, travel: bool = False, retract: bool = False, num_points: int = 10, linearity: int = 0) -> list",
+      "params": [
+        {
+          "name": "point_a1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_a2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_b1",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_b2",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "extension",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "travel",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "retract",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "num_points",
+          "default": "10",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "linearity",
+          "default": "0",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "move along a bezier curve to get from the end of one line to the beginning of the next line. first line defined by point_a1 and point_a2. second line defined by point_b1 and point_b2. bezier starts at point_a2, ends at point_b1, and has control points that are directly extended from lines a and b by the distance of the 'extension' parameter. 'linearity' (0 to 10) defines how close the loop gets to the control points (10 = directly through them). returns a list of fc.Points if travel=False, otherwise, returns a list of points and fc.Extruders to turn extrusion off at point_a2 and on at point_b1 (with retraction if retract=True).",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.loop_between_lines(p1, p2, p3, p4, extension=5.0))"
+    },
+    {
+      "name": "offset_path",
+      "module": "lab.fullcontrol.geometry.offset_path",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "offset_path(points: list, offset: float, flip: bool = False, repeats: int = 1, arc_outer_corners: bool = False, arc_segments: int = 8, travel: bool = False, include_original: bool = False) -> list",
+      "params": [
+        {
+          "name": "points",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "offset",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "flip",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "repeats",
+          "default": "1",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "arc_outer_corners",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "arc_segments",
+          "default": "8",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "travel",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "include_original",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "return an offset path (list of Points) defined by the parameter 'points' and 'offset'. parameter 'flip' changes the direction of the offset. multiple offset paths can be generated by setting 'repeats' > 1. external corners can be given a radii by setting 'arc_outer_corners' as True. 'arc_segments' controls the number of segments for the newly created arcs. set 'travel' to True to travel to the first point in each offset path quickly without extruding, resulting in the returned list including Point and Extuder objects. 'include_original' can be used to include the original path as well as offset paths in the returned list.",
+      "snippet": "import lab.fullcontrol as fclab\nsteps = fclab.offset_path(steps, offset=0.8, repeats=2)"
+    },
+    {
+      "name": "point_to_spherical",
+      "module": "lab.fullcontrol.geometry.spherical",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "point_to_spherical(origin_point: Point, target_point: Point) -> SphericalPoint",
+      "params": [
+        {
+          "name": "origin_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "target_point",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "find spherical coordiantes (radius, angle_xy and angle_z) for a Point relative to a given origin Point. angle_xy is zero if oriented towards +x. angle_z is zero if oriented towards +z. return a SphericalPoint, accessed with .radius, .angle_xy and .angle_z",
+      "snippet": "import lab.fullcontrol as fclab\nsp = fclab.point_to_spherical(fc.Point(x=CX, y=CY, z=0), fc.Point(x=CX + 10, y=CY, z=10))"
+    },
+    {
+      "name": "reflectXYpolar_list",
+      "module": "lab.fullcontrol.geometry.reflectXYpolar_list",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "reflectXYpolar_list(steps: list, p_reflect: Point, angle_reflect: float) -> list",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "p_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_reflect",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "creates a reverse-ordered copy of the supplied steplist and applies the reflectXYpolar function to all Points in the list. Elements that are not Points cause an error for now because the position of commands in the list may need to change (e.g. turning extrusion on or off)",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.extend(fclab.reflectXYpolar_list(steps, fc.Point(x=CX, y=CY), angle_reflect=1.5708))"
+    },
+    {
+      "name": "rotate",
+      "module": "lab.fullcontrol.geometry.rotate",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "rotate(geometry: Point | list, axis_start: Point, axis_end_or_direction: Point | str, angle_rad: float, copy: bool = False, copy_quantity: int = 2) -> Point | list",
+      "params": [
+        {
+          "name": "geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "axis_start",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "axis_end_or_direction",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_rad",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "copy",
+          "default": "False",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "copy_quantity",
+          "default": "2",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "rotate 'geometry' (a Point or list of steps including Points) about an axis by a defined angle (radians). the axis is defined by two points for the axis_start and axis_end or by one point for axis_start and a direction 'x', 'y' or 'z'. elements in a list that are not Points pass through and are replicated without modification. if copy==True, multiple copies of 'geometry' are created, each offset by 'vector' from the previous copy. 'copy_quantity' includes the position of the original geometry. return the new geometry as a list (original geometry is not edited).",
+      "snippet": "import lab.fullcontrol as fclab\nsteps = fclab.rotate(steps, fc.Point(x=CX, y=CY, z=0), \"z\", 0.7854)"
+    },
+    {
+      "name": "setup_p",
+      "module": "lab.fullcontrol.p_r",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "setup_p()",
+      "params": [],
+      "doc": "return P function for concise definition of fc.Points",
+      "snippet": "import lab.fullcontrol as fclab\nP = fclab.setup_p()\nsteps.append(P(CX, CY, 0.2))"
+    },
+    {
+      "name": "setup_r",
+      "module": "lab.fullcontrol.p_r",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "setup_r(steps)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "return R function for concise definition of fc.Points relative to the last point in the supplied list",
+      "snippet": "import lab.fullcontrol as fclab\nR = fclab.setup_r(steps)\nsteps.append(R(10, 0, 0))"
+    },
+    {
+      "name": "spherical_to_point",
+      "module": "lab.fullcontrol.geometry.spherical",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "spherical_to_point(origin: Point, radius: float, angle_xy: float, angle_z: float) -> Point",
+      "params": [
+        {
+          "name": "origin",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "radius",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_xy",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_z",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "find x y z coordinates of a Point based on the angle in xy plane (zero means oriented towards +x), the angle 'down' from the z axis (zero means oriented in Z) and the radius. all angles are in radians. returns a Point",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.append(fclab.spherical_to_point(fc.Point(x=CX, y=CY, z=0), radius=20, angle_xy=0, angle_z=0.7854))"
+    },
+    {
+      "name": "spherical_to_vector",
+      "module": "lab.fullcontrol.geometry.spherical",
+      "category": "Lab Geometry",
+      "kind": "function",
+      "signature": "spherical_to_vector(length: float, angle_xy: float, angle_z: float) -> Vector",
+      "params": [
+        {
+          "name": "length",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_xy",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "angle_z",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "return an xy Vector based on spherical coordinates. return a Vector",
+      "snippet": "import lab.fullcontrol as fclab\nvec = fclab.spherical_to_vector(length=10, angle_xy=0, angle_z=0.7854)"
+    },
+    {
+      "name": "FiveAxisGcodeControls",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZBC.controls",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FiveAxisGcodeControls(bc_intercept: Point | None = Point(x=0.0, y=0.0, z=0.0), initialization_data: dict | None = {}, save_as: str | None = None)",
+      "params": [
+        {
+          "name": "bc_intercept",
+          "default": "Point(x=0.0, y=0.0, z=0.0)",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "control to adjust the style and initialization of the gcode",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nsteps.append(fiveaxis.FiveAxisGcodeControls(bc_intercept=Point(x=0.0, y=0.0, z=0.0), initialization_data={}))"
+    },
+    {
+      "name": "FiveAxisGcodeControls",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZC0B1.controls",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FiveAxisGcodeControls(b_offset_x: float | None = 0, b_offset_z: float | None = None, c_offset_x: float | None = 0, c_offset_y: float | None = 0, initialization_data: dict | None = {}, save_as: str | None = None)",
+      "params": [
+        {
+          "name": "b_offset_x",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_x",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_y",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "control to adjust the style and initialization of the gcode",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nsteps.append(fiveaxisC0B1.FiveAxisGcodeControls(b_offset_x=0, b_offset_z=None))"
+    },
+    {
+      "name": "FiveAxisPoint",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZBC.point",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FiveAxisPoint(x: float | None = None, y: float | None = None, z: float | None = None, b: float | None = None, c: float | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "generic gcode Point with 5-axis aspects added/modified",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nsteps.append(fiveaxis.FiveAxisPoint(x=None, y=None))"
+    },
+    {
+      "name": "FiveAxisPoint",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZC0B1.point",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FiveAxisPoint(x: float | None = None, y: float | None = None, z: float | None = None, b: float | None = None, c: float | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "generic gcode Point with 5-axis aspects added/modified",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nsteps.append(fiveaxisC0B1.FiveAxisPoint(x=None, y=None))"
+    },
+    {
+      "name": "FiveAxisPrinter",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZBC.printer",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FiveAxisPrinter(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, bc_intercept: Point | None = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "bc_intercept",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "generic gcode Printer with 5-axis aspects added/modified",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nsteps.append(fiveaxis.FiveAxisPrinter(print_speed=None, travel_speed=None))"
+    },
+    {
+      "name": "FiveAxisPrinter",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZC0B1.printer",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FiveAxisPrinter(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, b_offset_x: float | None = None, b_offset_z: float | None = None, c_offset_x: float | None = None, c_offset_y: float | None = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "generic gcode Printer with 5-axis aspects added/modified",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nsteps.append(fiveaxisC0B1.FiveAxisPrinter(print_speed=None, travel_speed=None))"
+    },
+    {
+      "name": "FourAxisGcodeControls",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZB.controls",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FourAxisGcodeControls(b_offset_x: float | None = 0, b_offset_z: float | None = None, initialization_data: dict | None = {}, save_as: str | None = None)",
+      "params": [
+        {
+          "name": "b_offset_x",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "control to adjust the style and initialization of the gcode",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nsteps.append(fouraxis.FourAxisGcodeControls(b_offset_x=0, b_offset_z=None))"
+    },
+    {
+      "name": "FourAxisPoint",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZB.point",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FourAxisPoint(x: float | None = None, y: float | None = None, z: float | None = None, b: float | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "generic gcode Point with 4-axis aspects added/modified",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nsteps.append(fouraxis.FourAxisPoint(x=None, y=None))"
+    },
+    {
+      "name": "FourAxisPrinter",
+      "module": "lab.fullcontrol.multiaxis.gcode.XYZB.printer",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "FourAxisPrinter(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, b_offset_x: float | None = None, b_offset_z: float | None = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "generic gcode Printer with 5-axis aspects added/modified",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nsteps.append(fouraxis.FourAxisPrinter(print_speed=None, travel_speed=None))"
+    },
+    {
+      "name": "GcodeControls",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZB.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "GcodeControls(printer_name: str | None = None, initialization_data: dict | None = {}, save_as: str | None = None, include_date: bool | None = True, b_offset_x: float | None = 0, b_offset_z: float | None = None)",
+      "params": [
+        {
+          "name": "printer_name",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "include_date",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_x",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "control to adjust the style and initialization of the gcode",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nsteps.append(fouraxis.GcodeControls(printer_name=None, initialization_data={}))"
+    },
+    {
+      "name": "GcodeControls",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZBC.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "GcodeControls(printer_name: str | None = None, initialization_data: dict | None = {}, save_as: str | None = None, include_date: bool | None = True, bc_intercept: Point | None = Point(x=0.0, y=0.0, z=0.0))",
+      "params": [
+        {
+          "name": "printer_name",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "include_date",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "bc_intercept",
+          "default": "Point(x=0.0, y=0.0, z=0.0)",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "control to adjust the style and initialization of the gcode",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nsteps.append(fiveaxis.GcodeControls(printer_name=None, initialization_data={}))"
+    },
+    {
+      "name": "GcodeControls",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZC0B1.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "GcodeControls(printer_name: str | None = None, initialization_data: dict | None = {}, save_as: str | None = None, include_date: bool | None = True, b_offset_x: float | None = 0, b_offset_z: float | None = None, c_offset_x: float | None = 0, c_offset_y: float | None = 0)",
+      "params": [
+        {
+          "name": "printer_name",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "include_date",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_x",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_x",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_y",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "control to adjust the style and initialization of the gcode",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nsteps.append(fiveaxisC0B1.GcodeControls(printer_name=None, initialization_data={}))"
+    },
+    {
+      "name": "Point",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZB.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "Point(x: float | None = None, y: float | None = None, z: float | None = None, color: list | None = None, b: float | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "color",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "x y z b position of the nozzle. if any of xyzb are not defined, the nozzle will not move in that direction. optionally, for visualization purposes, color can be defined [r,g,b] [0-1,0-1,0-1] ... see PlotControls documentation for 'color_type",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nsteps.append(fouraxis.Point(x=None, y=None))"
+    },
+    {
+      "name": "Point",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZBC.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "Point(x: float | None = None, y: float | None = None, z: float | None = None, color: list | None = None, b: float | None = None, c: float | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "color",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "x y z b c position of the nozzle. if any of xyzbc are not defined, the nozzle will not move in that direction. optionally, for visualization purposes, color can be defined [r,g,b] [0-1,0-1,0-1] ... see PlotControls documentation for 'color_type",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nsteps.append(fiveaxis.Point(x=None, y=None))"
+    },
+    {
+      "name": "Point",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZC0B1.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "Point(x: float | None = None, y: float | None = None, z: float | None = None, color: list | None = None, b: float | None = None, c: float | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "color",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "x y z b c position of the nozzle. if any of xyzbc are not defined, the nozzle will not move in that direction. optionally, for visualization purposes, color can be defined [r,g,b] [0-1,0-1,0-1] ... see PlotControls documentation for 'color_type",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nsteps.append(fiveaxisC0B1.Point(x=None, y=None))"
+    },
+    {
+      "name": "Printer",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZB.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "Printer(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, always_print_F: bool | None = None, always_print_xyz: bool | None = None, b_offset_x: float | None = None, b_offset_z: float | None = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_F",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_xyz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "set print_speed and travel_speed of the 3D printer and the axis location. see documentation for info about other attributes",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nsteps.append(fouraxis.Printer(print_speed=None, travel_speed=None))"
+    },
+    {
+      "name": "Printer",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZBC.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "Printer(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, always_print_F: bool | None = None, always_print_xyz: bool | None = None, bc_intercept: Point | None = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_F",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_xyz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "bc_intercept",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "set print_speed and travel_speed of the 3D printer and the BC intercept point. see documentation for info about other attributes",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nsteps.append(fiveaxis.Printer(print_speed=None, travel_speed=None))"
+    },
+    {
+      "name": "Printer",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZC0B1.classes",
+      "category": "Lab Multi-Axis",
+      "kind": "class",
+      "signature": "Printer(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, always_print_F: bool | None = None, always_print_xyz: bool | None = None, b_offset_x: float | None = None, b_offset_z: float | None = None, c_offset_x: float | None = None, c_offset_y: float | None = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_F",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_xyz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "b_offset_z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "c_offset_y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "set print_speed and travel_speed of the 3D printer and the axis location. see documentation for info about other attributes",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nsteps.append(fiveaxisC0B1.Printer(print_speed=None, travel_speed=None))"
+    },
+    {
+      "name": "transform",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZB.common",
+      "category": "Lab Multi-Axis",
+      "kind": "function",
+      "signature": "transform(steps: list, result_type: str, controls: GcodeControls | PlotControls = None, show_tips: bool = True)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "result_type",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "controls",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "show_tips",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "transform a fullcontrol design (a list of function class instances) into result_type \"gcode\" or \"plot\". Optionally, GcodeControls or PlotControls can be passed to control how the gcode or plot are generated.",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nfouraxis.transform(steps=..., result_type=...)"
+    },
+    {
+      "name": "transform",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZBC.common",
+      "category": "Lab Multi-Axis",
+      "kind": "function",
+      "signature": "transform(steps: list, result_type: str, controls: GcodeControls | PlotControls = None, show_tips: bool = True)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "result_type",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "controls",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "show_tips",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "transform a fullcontrol design (a list of function class instances) into result_type \"gcode\" or \"plot\". Optionally, GcodeControls or PlotControls can be passed to control how the gcode or plot are generated.",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nfiveaxis.transform(steps=..., result_type=...)"
+    },
+    {
+      "name": "transform",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZC0B1.common",
+      "category": "Lab Multi-Axis",
+      "kind": "function",
+      "signature": "transform(steps: list, result_type: str, controls: GcodeControls | PlotControls = None, show_tips: bool = True)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "result_type",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "controls",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "show_tips",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "transform a fullcontrol design (a list of function class instances) into result_type \"gcode\" or \"plot\". Optionally, GcodeControls or PlotControls can be passed to control how the gcode or plot are generated.",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nfiveaxisC0B1.transform(steps=..., result_type=...)"
+    },
+    {
+      "name": "xyz_add_b",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZB.xyz_add_b",
+      "category": "Lab Multi-Axis",
+      "kind": "function",
+      "signature": "xyz_add_b(xyz_geometry: Point | list) -> Point | list",
+      "params": [
+        {
+          "name": "xyz_geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "covert geometry with xyz attributes and methods to include axis-b attributes (=None) and axis-b methods",
+      "snippet": "import lab.fullcontrol.fouraxis as fouraxis\nfouraxis.xyz_add_b(xyz_geometry=...)"
+    },
+    {
+      "name": "xyz_add_bc",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZBC.xyz_add_bc",
+      "category": "Lab Multi-Axis",
+      "kind": "function",
+      "signature": "xyz_add_bc(xyz_geometry: Point | list) -> Point | list",
+      "params": [
+        {
+          "name": "xyz_geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "covert geometry with xyz attributes and methods to include bc attributes (=None) and bc methods",
+      "snippet": "import lab.fullcontrol.fiveaxis as fiveaxis\nfiveaxis.xyz_add_bc(xyz_geometry=...)"
+    },
+    {
+      "name": "xyz_add_bc",
+      "module": "lab.fullcontrol.multiaxis.combinations.gcode_and_visualize.XYZC0B1.xyz_add_bc",
+      "category": "Lab Multi-Axis",
+      "kind": "function",
+      "signature": "xyz_add_bc(xyz_geometry: Point | list) -> Point | list",
+      "params": [
+        {
+          "name": "xyz_geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "covert geometry with xyz attributes and methods to include bc attributes (=None) and bc methods",
+      "snippet": "import lab.fullcontrol.fiveaxisC0B1 as fiveaxisC0B1\nfiveaxisC0B1.xyz_add_bc(xyz_geometry=...)"
+    },
+    {
+      "name": "Axis",
+      "module": "lab.fullcontrol.infinaxis.axis",
+      "category": "Lab Infinaxis",
+      "kind": "class",
+      "signature": "Axis(name: str | None = None, type: str | None = None, active: float = 0, orientation: float = 1, offset: Point | None = None)",
+      "params": [
+        {
+          "name": "name",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "type",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "active",
+          "default": "0",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "orientation",
+          "default": "1",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "offset",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Defines a linear or rotational kinematic axis for dynamic multi-axis (infinaxis) chains.",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\nb_axis = infinaxis.Axis(name=\"B\", type=\"B\", active=0)"
+    },
+    {
+      "name": "configure_point",
+      "module": "lab.fullcontrol.infinaxis.point",
+      "category": "Lab Infinaxis",
+      "kind": "function",
+      "signature": "configure_point(head_chain = None, bed_chain = None)",
+      "params": [
+        {
+          "name": "head_chain",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "bed_chain",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Return a Point class whose extra constructor fields map to configured axes.",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\nAxisPoint = infinaxis.configure_point(head_chain=[infinaxis.Axis(name='B', type='B')])"
+    },
+    {
+      "name": "gcode",
+      "module": "lab.fullcontrol.infinaxis.steps2gcode",
+      "category": "Lab Infinaxis",
+      "kind": "function",
+      "signature": "gcode(steps: list, gcode_controls: GcodeControls = GcodeControls(printer_name=None, initialization_data={}, save_as=None, include_date=True, bed_center=Point(x=0.0, y=0.0, z=0.0, color=None), head_chain=[], bed_chain=[], xyz_orientation=[1, 1, 1], inverse_time_feedrate=False, planning_axes_mono=False, planning_axes_tripple=False, planning_axes_names=['m'], verbose=False, f_round=True))",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "gcode_controls",
+          "default": "GcodeControls(printer_name=None, initialization_data={}, save_as=None, include_date=True, bed_center=Point(x=0.0, y=0.0, z=0.0, color=None), head_chain=[], bed_chain=[], xyz_orientation=[1, 1, 1], inverse_time_feedrate=False, planning_axes_mono=False, planning_axes_tripple=False, planning_axes_names=['m'], verbose=False, f_round=True)",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "return a gcode string generated from a list of steps",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\ngcode_str = infinaxis.gcode(steps, infinaxis.GcodeControls())"
+    },
+    {
+      "name": "GcodeControls",
+      "module": "lab.fullcontrol.infinaxis.controls",
+      "category": "Lab Infinaxis",
+      "kind": "class",
+      "signature": "GcodeControls(printer_name: str | None = None, initialization_data: dict | None = {}, save_as: str | None = None, include_date: bool | None = True, bed_center: Point | None = Point(x=0.0, y=0.0, z=0.0, color=None), head_chain: list = [], bed_chain: list = [], xyz_orientation: list | None = [1, 1, 1], inverse_time_feedrate: bool | None = False, planning_axes_mono: bool | None = False, planning_axes_tripple: bool | None = False, planning_axes_names: list[str] | None = ['m'], verbose: bool | None = False, f_round: bool | None = True)",
+      "params": [
+        {
+          "name": "printer_name",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "save_as",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "include_date",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "bed_center",
+          "default": "Point(x=0.0, y=0.0, z=0.0, color=None)",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "head_chain",
+          "default": "[]",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "bed_chain",
+          "default": "[]",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "xyz_orientation",
+          "default": "[1, 1, 1]",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "inverse_time_feedrate",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "planning_axes_mono",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "planning_axes_tripple",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "planning_axes_names",
+          "default": "['m']",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "verbose",
+          "default": "False",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "f_round",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "control to adjust the style and initialization of the gcode",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\ncontrols = infinaxis.GcodeControls(head_chain=[infinaxis.Axis(name='B', type='B')])"
+    },
+    {
+      "name": "Point",
+      "module": "lab.fullcontrol.infinaxis.point",
+      "category": "Lab Infinaxis",
+      "kind": "class",
+      "signature": "Point(x: float | None = None, y: float | None = None, z: float | None = None, color: list | None = None, axes: dict | None = None)",
+      "params": [
+        {
+          "name": "x",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "y",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "z",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "color",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "axes",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Represents the nozzle XYZ position together with dynamic custom axis coordinates for infinaxis.",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\nsteps.append(infinaxis.Point(x=0, y=0, z=0.2, axes={\"B\": 15.0}))"
+    },
+    {
+      "name": "Printer",
+      "module": "lab.fullcontrol.infinaxis.printer",
+      "category": "Lab Infinaxis",
+      "kind": "class",
+      "signature": "Printer(print_speed: float | None = None, travel_speed: float | None = None, command_list: dict | None = None, new_command: dict | None = None, speed_changed: bool | None = None, always_print_F: bool | None = None, always_print_xyz: bool | None = None, bed_center: Point = None, post_ik_offset: Point = None, head_chain: list = None, bed_chain: list = None, xyz_orientation: list = None, inverse_time_feedrate: bool = None, planning_axes_mono: bool = None, planning_axes_tripple: bool = None, planning_axes_names: list[str] = None, verbose: bool = None, f_round: bool = None)",
+      "params": [
+        {
+          "name": "print_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "command_list",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "new_command",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "speed_changed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_F",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "always_print_xyz",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "bed_center",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "post_ik_offset",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "head_chain",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "bed_chain",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "xyz_orientation",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "inverse_time_feedrate",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "planning_axes_mono",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "planning_axes_tripple",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "planning_axes_names",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "verbose",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "f_round",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "generic gcode Printer with infinaxis aspects added/modified",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\nsteps.append(infinaxis.Printer(print_speed=1200, travel_speed=4000))"
+    },
+    {
+      "name": "transform",
+      "module": "lab.fullcontrol.infinaxis.common",
+      "category": "Lab Infinaxis",
+      "kind": "function",
+      "signature": "transform(steps: list, result_type: str, controls: GcodeControls | PlotControls = None, show_tips: bool = True)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "result_type",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "controls",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "show_tips",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "transform a fullcontrol design (a list of function class instances) into result_type \"gcode\" or \"plot\". Optionally, GcodeControls or PlotControls can be passed to control how the gcode or plot are generated.",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\ngcode_str = infinaxis.transform(steps, \"gcode\", infinaxis.GcodeControls())"
+    },
+    {
+      "name": "xyz_add_axes",
+      "module": "lab.fullcontrol.infinaxis.xyz_add_axes",
+      "category": "Lab Infinaxis",
+      "kind": "function",
+      "signature": "xyz_add_axes(xyz_geometry: Point | list, point_class = <class 'Point'>) -> Point | list",
+      "params": [
+        {
+          "name": "xyz_geometry",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "point_class",
+          "default": "<class 'lab.fullcontrol.infinaxis.point.Point'>",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "convert xyz geometry points to infinaxis Points",
+      "snippet": "import lab.fullcontrol.infinaxis as infinaxis\nsteps = infinaxis.xyz_add_axes(steps)"
+    },
+    {
+      "name": "CodeControls",
+      "module": "lab.fullcontrol.controlcode_formats.controls",
+      "category": "Lab ControlCode",
+      "kind": "class",
+      "signature": "CodeControls(code_format: str | None = None, controls: GcodeControls | None = None, filename: str | None = 'my_design')",
+      "params": [
+        {
+          "name": "code_format",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "controls",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "filename",
+          "default": "'my_design'",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Controls to adjust the language/format of a generated set of instructions (i.e. machine control code)",
+      "snippet": "import lab.fullcontrol as fclab\nfclab.transform(steps, \"control_code\", fclab.CodeControls(code_format=\"3mf\", controls=fc.GcodeControls(printer_name=\"bambulab_x1\"), filename=\"design\"))"
+    },
+    {
+      "name": "controlcode",
+      "module": "lab.fullcontrol.controlcode_formats.steps2controlcode",
+      "category": "Lab ControlCode",
+      "kind": "function",
+      "signature": "controlcode(steps: list, model_controls: CodeControls, show_tips: bool)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "model_controls",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "show_tips",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Convert a list of FullControl steps into a machine control-code format (e.g. Bambu Lab .3mf) using CodeControls.",
+      "snippet": "from lab.fullcontrol.controlcode_formats.steps2controlcode import controlcode\ncontrolcode(steps, fclab.CodeControls(code_format=\"3mf\", controls=fc.GcodeControls(printer_name=\"bambulab_x1\")), show_tips=True)"
+    },
+    {
+      "name": "gcode_to_bambu_3mf",
+      "module": "lab.fullcontrol.controlcode_formats.steps2controlcode",
+      "category": "Lab ControlCode",
+      "kind": "function",
+      "signature": "gcode_to_bambu_3mf(gcode: str, new_3mf_file: str)",
+      "params": [
+        {
+          "name": "gcode",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "new_3mf_file",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Convert gcode to bambu 3mf",
+      "snippet": "from lab.fullcontrol.controlcode_formats.steps2controlcode import gcode_to_bambu_3mf\ngcode_to_bambu_3mf(gcode, \"output_model\")"
+    },
+    {
+      "name": "Laser",
+      "module": "lab.fullcontrol.laser.laser",
+      "category": "Lab ControlCode",
+      "kind": "class",
+      "signature": "Laser(on: bool | None = None, constant_power: float | None = None, dynamic_power: float | None = None, cutting_speed: float | None = None, travel_speed: float | None = None, spotsize: float | None = None)",
+      "params": [
+        {
+          "name": "on",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "constant_power",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "dynamic_power",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "cutting_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "travel_speed",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "spotsize",
+          "default": "None",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "A object to control the state of the laser",
+      "snippet": "import lab.fullcontrol as fclab\nsteps.append(fclab.Laser(on=True, constant_power=500, cutting_speed=1200, travel_speed=4000, spotsize=0.2))"
+    },
+    {
+      "name": "ModelControls",
+      "module": "lab.fullcontrol.geometry_model.controls",
+      "category": "Lab ControlCode",
+      "kind": "class",
+      "signature": "ModelControls(stl_filename: str | None = '3d_model', include_date: bool | None = True, tube_shape: str | None = 'rectangle', tube_type: str | None = 'flow', stl_type: str | None = 'ascii', stls_combined: bool | None = True, initialization_data: dict | None = {})",
+      "params": [
+        {
+          "name": "stl_filename",
+          "default": "'3d_model'",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "include_date",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "tube_shape",
+          "default": "'rectangle'",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "tube_type",
+          "default": "'flow'",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "stl_type",
+          "default": "'ascii'",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "stls_combined",
+          "default": "True",
+          "kind": "KEYWORD_ONLY"
+        },
+        {
+          "name": "initialization_data",
+          "default": "{}",
+          "kind": "KEYWORD_ONLY"
+        }
+      ],
+      "doc": "Controls to adjust the style of a generated 3D model.",
+      "snippet": "import lab.fullcontrol as fclab\nfclab.transform(steps, \"3d_model\", fclab.ModelControls(stl_filename=\"model\"))"
+    },
+    {
+      "name": "transform",
+      "module": "lab.fullcontrol.transform",
+      "category": "Lab ControlCode",
+      "kind": "function",
+      "signature": "transform(steps: list, result_type: str, controls: ModelControls | GcodeControls | CodeControls = None, show_tips: bool = True)",
+      "params": [
+        {
+          "name": "steps",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "result_type",
+          "default": null,
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "controls",
+          "default": "None",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        },
+        {
+          "name": "show_tips",
+          "default": "True",
+          "kind": "POSITIONAL_OR_KEYWORD"
+        }
+      ],
+      "doc": "Transform a fullcontrol design (a list of function class instances) into various output formats. Optionally, Controls can be passed to control how the output is generated.",
+      "snippet": "import lab.fullcontrol as fclab\nfclab.transform(steps, \"3d_model\", fclab.ModelControls())"
+    }
+  ]
+}
