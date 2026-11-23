@@ -4,7 +4,6 @@ data: 2026-11-23
 descrizione: Un vaso da stampare in 3D disegnato con seno, coseno e qualche cursore: si vede il filo che sale a elica, si controlla la pendenza per l'ugello e si legge il codice Python che genera il percorso.
 attivita: fullcontrol_studio
 copertina: media/fullcontrol-vaso-a-meta.png
-stato: bozza
 ---
 
 ## Cosa è

@@ -4,7 +4,6 @@ data: 2026-11-23
 descrizione: Un gioco a strati con i tetramini fatti di cubi e un laboratorio che divide un cubo in pezzi da 4 cubetti e li prepara per la stampa 3D: contare, ruotare nello spazio e capire che cosa succede al volume quando si ingrandisce.
 attivita: tetracubi_3d
 copertina: media/tetracubi-partita.png
-stato: bozza
 ---
 
 ## Cosa è
