@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Tetracubi 3D: gioco con i sette tetramini fatti di cubi, da ruotare su tre assi e incastrare in un pozzo tridimensionale, e laboratorio che divide un cubo in pezzi da 4 cubetti e li esporta in un file 3MF da stampare in 3D come puzzle.">
+<meta name="keywords" content="Tetracubi, Tetramini, Policubi, Puzzle, Gioco, Rotazioni, Visione spaziale, Volume, Cubo, Scomposizione di un solido, Scala, Stampa 3D, 3MF, Bambu Lab, Tinkering, MAT_K3:Geometria euclidea e analitica, MAT_C2:Pensiero razionale in contesti reali, MAT_C4:Modelli Geometrici e Spaziali, IND_C3:Fabbricazione Digitale 3D, CIT_4:Competenza Digitale, 1 EL, 2 EL, Biennio">
+<meta name="allenamento" content="solidi, proporzionalita">
+<meta name="parole" content="geometria, unita-di-misura, stampa-3d, algoritmi">
+<meta name="date" content="2026-11-23">
+<!-- miniatura catturata a mano (laboratorio in azione), da non rigenerare con thumbnails.py -->
+<meta name="miniatura" content="fissa">
+<meta name="theme-color" content="#05070d">
+<title>Tetracubi 3D: gioco e puzzle da stampare</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2305070d'/%3E%3Crect x='4' y='16' width='8' height='8' fill='%2322d3ee'/%3E%3Crect x='12' y='16' width='8' height='8' fill='%2322d3ee'/%3E%3Crect x='20' y='16' width='8' height='8' fill='%2322d3ee'/%3E%3Crect x='12' y='8' width='8' height='8' fill='%23b45bff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/fonts/spacegrotesk-100e1b.css">
+<style>
+:root{
+  --bg:#05070d;
+  --panel:#0b111d;
+  --panel2:#121b2c;
+  --line:#1d2a40;
+  --ink:#e9eef7;
+  --dim:#8fa1bd;
+  --accent:#22d3ee;
+  --accent-ink:#04141a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--ink);overflow:hidden;
+  font-family:"Space Grotesk",system-ui,sans-serif;
+  -webkit-user-select:none;user-select:none;
+}
+[hidden]{display:none!important}
+button{font-family:inherit;cursor:pointer;border-radius:0}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+#stage,#stage canvas{position:fixed;inset:0;display:block}
+
+/* ---- barra superiore ---- */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;pointer-events:none;
+}
+#topbar h1{font-size:21px;font-weight:700;letter-spacing:-.02em}
+#topbar h1 .back{pointer-events:auto;color:var(--dim);text-decoration:none;margin-right:4px;padding:4px 6px}
+#topbar h1 .back:hover,#topbar h1 .back:focus-visible{color:var(--accent)}
+.note a{color:var(--accent)}
+.labQ{border-left:2px solid var(--accent);padding-left:10px;color:var(--ink)}
+.labQuest a{color:var(--accent)}
+.topbtns{display:flex;gap:8px;pointer-events:auto}
+.topbtns button{
+  background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  padding:8px 14px;font-size:14px;
+}
+.topbtns button:hover{background:#182540}
+
+/* ---- pannelli ---- */
+.panel{
+  position:fixed;z-index:15;background:var(--panel);
+  border:1px solid var(--line);padding:14px 16px;
+  transition:opacity .25s;
+}
+.lbl{font-size:12px;color:var(--dim);display:block;margin-bottom:2px}
+.val{font-weight:700;font-variant-numeric:tabular-nums}
+#stats{left:18px;top:72px;width:158px}
+#stats .big{font-size:34px;line-height:1.1;display:block;margin-bottom:12px}
+#stats .mid{font-size:19px;display:block;margin-bottom:12px}
+#stats .row{display:flex;gap:18px}
+#stats .row .val{font-size:19px}
+#side{right:18px;top:72px;width:166px}
+#side .lbl{margin-top:10px}
+#side .lbl:first-child{margin-top:0}
+#side canvas{display:block;margin-top:4px}
+
+/* ---- suggerimenti tasti ---- */
+#hints{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+  z-index:15;color:var(--dim);font-size:13px;text-align:center;
+  max-width:92vw;transition:opacity .25s;
+}
+#hints kbd{
+  font-family:inherit;background:var(--panel2);border:1px solid var(--line);
+  padding:1px 6px;color:var(--ink);font-size:12px;
+}
+
+/* ---- popup punteggio ---- */
+#popups{position:fixed;left:50%;top:24%;z-index:25;pointer-events:none}
+.popup{
+  position:absolute;left:0;transform:translateX(-50%);white-space:nowrap;
+  font-size:30px;font-weight:700;color:var(--ink);
+  animation:pop .95s ease-out forwards;
+}
+.popup small{font-size:.6em;color:var(--accent);font-weight:500;margin-right:8px}
+@keyframes pop{
+  0%{opacity:0;transform:translateX(-50%) translateY(12px) scale(.85)}
+  18%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-48px) scale(1)}
+}
+
+/* ---- overlay ---- */
+.overlay{
+  position:fixed;inset:0;z-index:30;display:grid;place-items:center;
+  background:rgba(4,7,12,.87);padding:20px;overflow:auto;
+}
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  padding:36px 40px;max-width:600px;width:100%;
+}
+.card h2{font-size:clamp(42px,7vw,64px);font-weight:700;letter-spacing:-.03em;line-height:1}
+.card h2 sup{font-size:.55em}
+.card .sub{color:var(--dim);font-size:16px;line-height:1.5;margin:14px 0 22px;max-width:46ch}
+.sizes{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.sizebtn{
+  background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  padding:10px 16px;font-size:15px;text-align:left;line-height:1.35;
+}
+.sizebtn small{display:block;color:var(--dim);font-size:12px}
+.sizebtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.sizebtn[aria-pressed="true"] small{color:var(--accent-ink)}
+.keys{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:14px}
+.keys td{padding:5px 0;vertical-align:top}
+.keys td:first-child{width:172px;color:var(--ink)}
+.keys td:last-child{color:var(--dim)}
+.keys kbd{
+  font-family:inherit;background:var(--panel2);border:1px solid var(--line);
+  padding:1px 7px;font-size:13px;color:var(--ink);white-space:nowrap;
+}
+.primary{
+  display:block;width:100%;background:var(--accent);border:1px solid var(--accent);
+  color:var(--accent-ink);font-size:18px;font-weight:700;padding:14px 24px;
+}
+.primary:hover{background:#5ee2f5;border-color:#5ee2f5}
+.note{margin-top:16px;font-size:12px;color:var(--dim)}
+.finalstats{display:flex;gap:28px;margin:20px 0 26px;flex-wrap:wrap}
+.finalstats .val{font-size:30px;display:block}
+#newRecord{
+  display:inline-block;background:var(--accent);color:var(--accent-ink);
+  font-size:13px;font-weight:700;padding:4px 10px;margin-bottom:14px;
+}
+#pauseOv .card{text-align:center;max-width:380px;cursor:pointer}
+#pauseOv h2{font-size:40px}
+#pauseOv p{color:var(--dim);margin-top:12px;font-size:15px}
+
+/* ---- controlli touch ---- */
+#touch{display:none;position:fixed;inset:auto 0 0 0;z-index:22;pointer-events:none;
+  justify-content:space-between;align-items:flex-end;padding:0 16px 18px}
+#touch button{
+  pointer-events:auto;background:var(--panel2);border:1px solid var(--line);
+  color:var(--ink);width:54px;height:54px;font-size:19px;touch-action:none;
+}
+#touch button:active{background:#1c2c4e}
+#dpad{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:6px}
+#dpad .up{grid-area:1/2}#dpad .left{grid-area:2/1}#dpad .right{grid-area:2/3}#dpad .down{grid-area:3/2}
+#tacts{display:grid;grid-template-columns:repeat(3,54px);gap:6px}
+#tacts .wide{grid-column:1/4;width:auto;height:50px;font-size:15px;font-weight:700;
+  background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#tacts .hold{grid-column:1/4;width:auto;height:40px;font-size:13px}
+#tacts button small{display:block;font-size:9px;color:var(--dim)}
+
+/* ---- rotazioni ±90° (desktop) ---- */
+#rotPad{position:fixed;right:18px;bottom:14px;z-index:16;display:none;
+  grid-template-columns:repeat(3,46px);gap:6px}
+#rotPad button{background:var(--panel2);border:1px solid var(--line);color:var(--ink);
+  height:40px;font-size:14px}
+#rotPad button:hover{background:#182540}
+body[data-state="playing"] #rotPad,body[data-state="clearing"] #rotPad{display:grid}
+@media (pointer:coarse){#rotPad{display:none!important}}
+
+/* ---- laboratorio ---- */
+#labPanel,#labTimeline{display:none}
+body[data-mode="lab"] #labPanel{display:block}
+body[data-mode="lab"] #labTimeline{display:flex}
+body[data-mode="lab"] #stats,body[data-mode="lab"] #side,body[data-mode="lab"] #hints,
+body[data-mode="lab"] #touch,body[data-mode="lab"] #rotPad,body[data-mode="lab"] #btnPause,
+body[data-mode="lab"] #btnRestart{display:none!important}
+body[data-mode="lab"] #startOv,body[data-mode="lab"] #pauseOv,body[data-mode="lab"] #overOv{display:none}
+#labPanel{left:18px;top:72px;width:250px;max-height:calc(100vh - 100px);overflow:auto}
+.labTitle{font-size:20px;font-weight:700;margin-bottom:12px}
+#labPanel select{width:100%;background:var(--panel2);border:1px solid var(--line);
+  color:var(--ink);padding:8px;font-family:inherit;font-size:14px;margin-bottom:12px;border-radius:0}
+#labPanel .primary{font-size:15px;padding:11px 16px;margin-bottom:10px}
+.labNote{font-size:12px;color:var(--dim);line-height:1.45;margin-bottom:12px}
+#labStats{font-size:13px;margin-bottom:12px}
+#labStats .srow{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+#labStats .srow span:first-child{color:var(--dim)}
+#labStats .srow span:last-child{font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.labViews{display:flex;gap:6px;margin-bottom:12px}
+.labViews button{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:8px;font-size:13px}
+.labViews button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#btnBackGame{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);padding:9px;font-size:13px}
+#labTimeline{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:16;
+  background:var(--panel);border:1px solid var(--line);padding:12px 16px;
+  align-items:center;gap:18px;max-width:94vw;flex-wrap:wrap;justify-content:center}
+#btnPlayAsm{background:var(--accent);border:1px solid var(--accent);color:var(--accent-ink);
+  font-weight:700;padding:9px 18px;font-size:14px}
+.sliderRow{display:flex;align-items:center;gap:10px}
+.sliderRow .lbl{margin:0;white-space:nowrap}
+.sliderRow input{width:200px;accent-color:var(--accent)}
+#labTip{position:fixed;z-index:40;background:var(--panel2);border:1px solid var(--line);
+  color:var(--ink);font-size:12px;padding:5px 9px;pointer-events:none}
+@media (max-width:760px){
+  #labPanel{left:12px;top:58px;width:206px;padding:10px 12px}
+  .sliderRow input{width:130px}
+  #labTimeline{gap:10px;padding:10px 12px;bottom:12px}
+}
+/* telefono: il pannello del laboratorio diventa un foglio in basso, il solido resta visibile sopra */
+@media (max-width:600px){
+  #topbar{align-items:flex-start;gap:8px}
+  #topbar h1{font-size:15px;white-space:nowrap}
+  .topbtns{flex-wrap:wrap;justify-content:flex-end;gap:6px}
+  #labPanel{left:0;right:0;top:auto;bottom:0;width:auto;max-height:44vh;border-left:0;border-right:0;border-bottom:0}
+  #labTimeline{bottom:calc(44vh + 8px);gap:8px 12px;padding:8px 10px}
+  .sliderRow input{width:110px}
+  body #stats,body #side{top:118px}
+}
+
+/* ---- stati ---- */
+body[data-state="menu"] #stats,body[data-state="menu"] #side,
+body[data-state="menu"] #hints,body[data-state="menu"] #touch{opacity:0;pointer-events:none}
+body[data-state="over"] #hints{opacity:0}
+
+@media (pointer:coarse){
+  body[data-state="playing"] #touch,body[data-state="clearing"] #touch{display:flex}
+  #hints{display:none}
+}
+@media (max-width:760px){
+  #topbar{padding:10px 12px}
+  #topbar h1{font-size:17px}
+  .topbtns button{padding:6px 9px;font-size:12px}
+  #stats{left:12px;top:58px;width:126px;padding:10px 12px}
+  #stats .big{font-size:26px}
+  #side{right:12px;top:58px;width:132px;padding:10px 12px;transform:scale(.62);transform-origin:top right}
+  .card{padding:26px 22px}
+  .keys td:first-child{width:130px}
+}
+@media (prefers-reduced-motion:reduce){
+  .popup{animation-duration:.4s}
+  .panel{transition:none}
+}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+  },
+  "integrity": {
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js": "sha384-qOubuRxWZ0I7rXTjcuhcKNHKvPM7q0ztN8/82sJnxnyKS0OXTeB5FsIcysc2T9EY",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/controls/OrbitControls.js": "sha384-aJoe4qqS/DgF2jh9njAuvA6QIveJYoCuYOfYjdFY8P3eawzmc9bEQ40jq2TvOyuP",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/geometries/RoundedBoxGeometry.js": "sha384-S52/WAm3DaIIFna675h5dmavqea/akLlPFtPdnzgWWhnz+/nMqR6PPsSXPOd8Gpw",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/postprocessing/EffectComposer.js": "sha384-L+Ns9skCAqjab7aG8LH5VLknBCoENW7p37sOj39jnITwlWZFabWc29JwzgYf6ygy",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/postprocessing/MaskPass.js": "sha384-SDM80tiGflO8UDV/QzR/mASjcc/+wF7KfRVFNHJUIPcTctwoPI8GoWVTlccZw7V4",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/postprocessing/OutputPass.js": "sha384-pAQ55aG4oXjA92n2goVLMWU14Ik/bNUs29MfxOM6meGyGzTJoFm7WxEU0D0SqsNI",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/postprocessing/Pass.js": "sha384-gSqIFh8vMmp1veyOysIS3KPVUl/A5JPefYvW4b89OeYeW0bwkrjN7qcC1h0XJK/K",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/postprocessing/RenderPass.js": "sha384-JBzMcXwTgF2e9tw3AU4+jg+nVDdl7hTHlT0C5qZVa/1DUUe/KIm4L3e2jorIH28/",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/postprocessing/ShaderPass.js": "sha384-zetU6HhR/vTtgSvnS9DE+GQPZhVT/ZOSLa/1+DSM6rkM9hvBgQWr9bCEosZt93ch",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/postprocessing/UnrealBloomPass.js": "sha384-NLbvCtTvm5zjFCKW1mFWUjcnFLVOn258z3hKOAoYCXJ1DtQO54I+x5LPquFbIig+",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/shaders/CopyShader.js": "sha384-kzVlcj2amFaRNIWZ5zE0PmIN+QTNWWvrgKk31S8N/7w0nf7Qq3xqxHRLbD2UPPSl",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/shaders/LuminosityHighPassShader.js": "sha384-a6qrIDfNt1Ss7Z4VtgMalz9gq8H/Up3lSSf1Agc4HRaDMvNd9eP9k7DckAv5JxQF",
+    "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/shaders/OutputShader.js": "sha384-CdpJL3xlIkjJQAbzgyazSoOx+/oBcwUCsBVSU25SKy8/PEdYEn24U+4mnmx3R4YX"
+  }
+}
+</script>
+</head>
+<body data-state="menu" data-mode="game">
+
+<div id="stage"></div>
+
+<header id="topbar">
+  <h1><a class="back" href="../../index.html" aria-label="Torna ai laboratori">←</a> Tetracubi 3D</h1>
+  <div class="topbtns">
+    <button id="btnPause" type="button">Pausa</button>
+    <button id="btnMute" type="button">Audio: sì</button>
+    <button id="btnOrbit" type="button">Orbita: sì</button>
+    <button id="btnCam" type="button">Camera</button>
+    <button id="btnLab" type="button">Laboratorio</button>
+    <button id="btnRestart" type="button">Ricomincia</button>
+  </div>
+</header>
+
+<aside id="stats" class="panel" aria-label="Statistiche">
+  <span class="lbl">Punti</span><span id="score" class="val big">0</span>
+  <span class="lbl">Record</span><span id="best" class="val mid">0</span>
+  <div class="row">
+    <div><span class="lbl">Livello</span><span id="level" class="val">1</span></div>
+    <div><span class="lbl">Strati</span><span id="lines" class="val">0</span></div>
+  </div>
+</aside>
+
+<aside id="side" class="panel" aria-label="Pezzi">
+  <span class="lbl">Prossimi</span>
+  <canvas id="next" width="132" height="264"></canvas>
+  <span class="lbl">Riserva · C</span>
+  <canvas id="hold" width="132" height="104"></canvas>
+</aside>
+
+<div id="hints">
+  <kbd>←↑↓→</kbd> muovi · <kbd>Q/E</kbd> <kbd>W/S</kbd> <kbd>A/D</kbd> ruota ·
+  <kbd>Spazio</kbd> caduta · <kbd>Shift</kbd> discesa · <kbd>C</kbd> riserva ·
+  <kbd>P</kbd> pausa · trascina per orbitare
+</div>
+
+<div id="popups" aria-live="polite"></div>
+
+<div id="touch">
+  <div id="dpad">
+    <button type="button" class="up" data-act="up" aria-label="Avanti">↑</button>
+    <button type="button" class="left" data-act="left" aria-label="Sinistra">←</button>
+    <button type="button" class="right" data-act="right" aria-label="Destra">→</button>
+    <button type="button" class="down" data-act="down" aria-label="Indietro">↓</button>
+  </div>
+  <div id="tacts">
+    <button type="button" data-act="rotX+">X+<small>ruota</small></button>
+    <button type="button" data-act="rotY+">Y+<small>ruota</small></button>
+    <button type="button" data-act="rotZ+">Z+<small>ruota</small></button>
+    <button type="button" data-act="rotX-">X−<small>ruota</small></button>
+    <button type="button" data-act="rotY-">Y−<small>ruota</small></button>
+    <button type="button" data-act="rotZ-">Z−<small>ruota</small></button>
+    <button type="button" class="hold" data-act="hold">Riserva</button>
+    <button type="button" class="wide" data-act="drop">Caduta</button>
+  </div>
+</div>
+
+<div id="rotPad" aria-label="Ruota di ±90°">
+  <button type="button" data-act="rotX+">X+</button>
+  <button type="button" data-act="rotY+">Y+</button>
+  <button type="button" data-act="rotZ+">Z+</button>
+  <button type="button" data-act="rotX-">X−</button>
+  <button type="button" data-act="rotY-">Y−</button>
+  <button type="button" data-act="rotZ-">Z−</button>
+</div>
+
+<aside id="labPanel" class="panel" aria-label="Laboratorio set 3D">
+  <h2 class="labTitle">Un cubo in pezzi</h2>
+  <label class="lbl" for="labShape">Forma del solido</label>
+  <select id="labShape">
+    <option value="444" selected>Cubo 4×4×4 · 16 pezzi</option>
+    <option value="442">Blocco 4×4×2 · 8 pezzi</option>
+    <option value="432">Blocco 4×3×2 · 6 pezzi</option>
+    <option value="222">Cubo 2×2×2 · 2 pezzi</option>
+  </select>
+  <label class="lbl" for="labPrinter">Stampante (piatto)</label>
+  <select id="labPrinter">
+    <option value="mini">Bambu Lab A1 mini · 180 mm</option>
+    <option value="a1" selected>Bambu Lab A1 · 256 mm</option>
+    <option value="p2s">Bambu Lab P2S · 256 mm</option>
+  </select>
+  <button id="btnGen" class="primary" type="button">Genera set casuale</button>
+  <p class="labNote">Il solido viene diviso a caso in pezzi da 4 cubetti.
+  I pezzi nascono dal solido, quindi si rimontano sempre senza vuoti.
+  Il cubo 2 × 2 × 2 è il puzzle più piccolo: due pezzi uguali.</p>
+  <p class="labNote labQ"><b>Prova a rispondere.</b> Un cubo 3 × 3 × 3 si
+  può dividere in pezzi da 4 cubetti? Conta i cubetti prima di provarci.</p>
+  <p class="labNote labQuest">Allenati nella Quest:
+  <a href="../../allenamento/#/lezione/solidi/1">Solidi e volumi</a> ·
+  <a href="../../allenamento/#/lezione/proporzionalita/1">Proporzionalità</a></p>
+  <div id="labStats"></div>
+  <div class="labViews" role="group" aria-label="Vista">
+    <button id="viewPuzzle" type="button" aria-pressed="true">Puzzle</button>
+    <button id="viewPlate" type="button" aria-pressed="false">Piatto</button>
+  </div>
+  <button id="btnDownload" class="primary" type="button">Scarica 3MF</button>
+  <p class="labNote">I pezzi più alti escono alti 20 mm: se li vuoi più grandi,
+  scalali in Bambu Studio. Ogni pezzo è già appoggiato sul lato più piatto,
+  quindi non servono supporti. Per il PLA: strati da 0,28 mm, riempimento 15%.</p>
+  <button id="btnBackGame" type="button">Torna al gioco</button>
+</aside>
+
+<div id="labTimeline">
+  <button id="btnPlayAsm" type="button">Monta</button>
+  <div class="sliderRow">
+    <span class="lbl">Montaggio</span>
+    <input id="asmSlider" type="range" min="0" max="1000" value="1000" aria-label="Timeline di montaggio">
+  </div>
+  <div class="sliderRow">
+    <span class="lbl">Esplodi</span>
+    <input id="expSlider" type="range" min="0" max="100" value="0" aria-label="Esplosione omnidirezionale">
+  </div>
+</div>
+<div id="labTip" hidden></div>
+
+<div id="startOv" class="overlay">
+  <div class="card">
+    <h2>Tetracubi 3D</h2>
+    <p class="sub">I sette tetramini, fatti di cubi, cadono in un pozzo a tre dimensioni.
+    Ruotali su tre assi e riempi uno strato intero per farlo sparire.</p>
+    <div class="sizes" role="group" aria-label="Dimensione del pozzo">
+      <button type="button" class="sizebtn" data-size="classic" aria-pressed="true">Classica<small>pozzo 5 × 5 × 12</small></button>
+      <button type="button" class="sizebtn" data-size="large" aria-pressed="false">Grande<small>pozzo 7 × 7 × 14</small></button>
+    </div>
+    <table class="keys">
+      <tr><td><kbd>← ↑ ↓ →</kbd></td><td>muovi il pezzo (relativo alla camera)</td></tr>
+      <tr><td><kbd>Q/E</kbd> · <kbd>W/S</kbd> · <kbd>A/D</kbd></td><td>ruota su Y · X · Z</td></tr>
+      <tr><td><kbd>Spazio</kbd> · <kbd>Shift</kbd></td><td>caduta istantanea · discesa lenta</td></tr>
+      <tr><td><kbd>C</kbd> · <kbd>P</kbd></td><td>riserva · pausa</td></tr>
+      <tr><td>mouse / dito</td><td>trascina per orbitare, rotella o pizzico per lo zoom</td></tr>
+    </table>
+    <button id="btnPlay" class="primary" type="button">Gioca</button>
+    <p class="note">Three.js (licenza MIT) · Space Grotesk (licenza OFL) · <a href="../../index.html">torna ai laboratori</a></p>
+  </div>
+</div>
+
+<div id="pauseOv" class="overlay" hidden>
+  <div class="card">
+    <h2>Pausa</h2>
+    <p>Premi <strong>P</strong> o clicca qui per riprendere.</p>
+  </div>
+</div>
+
+<div id="overOv" class="overlay" hidden>
+  <div class="card">
+    <span id="newRecord" hidden>Nuovo record</span>
+    <h2>Fine partita</h2>
+    <div class="finalstats">
+      <div><span class="lbl">Punti</span><span id="finalScore" class="val">0</span></div>
+      <div><span class="lbl">Strati</span><span id="finalLines" class="val">0</span></div>
+      <div><span class="lbl">Livello</span><span id="finalLevel" class="val">1</span></div>
+      <div><span class="lbl">Record</span><span id="finalBest" class="val">0</span></div>
+    </div>
+    <button id="btnAgain" class="primary" type="button">Rigioca</button>
+  </div>
+</div>
+
+<noscript><p style="position:fixed;inset:0;display:grid;place-items:center">Questo gioco richiede JavaScript.</p></noscript>
+
+<div id="bootErr" class="overlay" hidden>
+  <div class="card">
+    <h2 style="font-size:32px">Impossibile avviare il gioco</h2>
+    <p class="sub">La grafica 3D arriva da internet al primo avvio.
+    Controlla la connessione e ricarica la pagina.</p>
+  </div>
+</div>
+<script>
+setTimeout(function () {
+  if (!window.__tcAvviato) document.getElementById('bootErr').hidden = false;
+}, 8000);
+</script>
+<script type="module">
+/*INLINE:game.js*/
+/*INLINE:lab.js*/
+window.__tcAvviato = true;
+document.getElementById('bootErr').hidden = true;
+</script>
+</body>
+</html>
