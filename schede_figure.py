@@ -843,5 +843,73 @@ def proporzionalita_confronto():
     return _svg(620, 232, "".join(out), "Proporzionalità diretta, inversa e retta con quota fissa a confronto")
 
 
+def _iso_cubetti(celle, ox, oy, s, colore_di):
+    """ Cubetti in assonometria isometrica. celle: (x, y, z) con y verso l'alto; colore_di(cella) → (r, g, b).
+        Ordine dal fondo al davanti (somma delle coordinate crescente): si vedono sopra, destra e fronte. """
+    c30, s30 = math.cos(math.pi / 6) * s, 0.5 * s
+
+    def p(x, y, z):
+        return (ox + (x - z) * c30, oy + (x + z) * s30 - y * s)
+
+    out = []
+    for (x, y, z) in sorted(celle, key=lambda c: (c[0] + c[1] + c[2], c[1])):
+        r, g, b = colore_di((x, y, z))
+        facce = [
+            ([p(x, y + 1, z), p(x + 1, y + 1, z), p(x + 1, y + 1, z + 1), p(x, y + 1, z + 1)], 0.16),  # sopra
+            ([p(x + 1, y, z), p(x + 1, y + 1, z), p(x + 1, y + 1, z + 1), p(x + 1, y, z + 1)], 0.42),  # destra
+            ([p(x, y, z + 1), p(x + 1, y, z + 1), p(x + 1, y + 1, z + 1), p(x, y + 1, z + 1)], 0.28),  # fronte
+        ]
+        for pts, a in facce:
+            d = " ".join(f"{u:.1f},{v:.1f}" for u, v in pts)
+            col = "#%02x%02x%02x" % tuple(round(c * a + 255 * (1 - a)) for c in (r, g, b))  # pieno: niente facce nascoste in trasparenza
+            out.append(f'<polygon points="{d}" fill="{col}" stroke="{INK}" stroke-width="1" stroke-linejoin="round"/>')
+    return "".join(out)
+
+
+def tetracubi_cubo():
+    """ Due tetracubi uguali (Torre) che formano il cubo 2×2×2, e il cubo 4×4×4 = 16 pezzi da 4 cubetti """
+    blu, arancio = (11, 114, 133), (194, 65, 12)
+    torre_a = [(0, 0, 1), (0, 1, 0), (0, 1, 1), (1, 1, 1)]
+    torre_b = [(0, 0, 0), (1, 0, 0), (1, 0, 1), (1, 1, 0)]
+    out = [_t(105, 22, "due pezzi uguali", 14, weight=700),
+           _iso_cubetti([(x - 2.3, y, z + 0.4) for x, y, z in torre_b], 105, 118, 30, lambda c: arancio),
+           _iso_cubetti([(x + 1.3, y + 0.4, z - 0.8) for x, y, z in torre_a], 105, 118, 30, lambda c: blu),
+           _t(105, 206, "4 + 4 cubetti", 13, color=ACC, weight=700),
+           _t(300, 22, "cubo 2 × 2 × 2", 14, weight=700),
+           _iso_cubetti(torre_a + torre_b, 300, 128, 34, lambda c: blu if c in torre_a else arancio),
+           _t(300, 206, "2 · 2 · 2 = 8 = 2 · 4", 13, color=ACC, weight=700),
+           _t(505, 22, "cubo 4 × 4 × 4", 14, weight=700),
+           _iso_cubetti([(x, y, z) for x in range(4) for y in range(4) for z in range(4)], 505, 112, 17, lambda c: blu),
+           _t(505, 206, "4 · 4 · 4 = 64 = 16 · 4", 13, color=ACC, weight=700),
+           _t(310, 232, "3 · 3 · 3 = 27 non è un multiplo di 4: quel cubo non si divide in pezzi da 4 cubetti", 12, color="#333")]
+    return _svg(620, 244, "".join(out), "Due tetracubi uguali formano il cubo 2 per 2 per 2; il cubo 4 per 4 per 4 contiene 16 pezzi")
+
+
+def vaso_polare():
+    """ Uno strato del vaso visto dall'alto, r(θ) = R + A·sin(6θ), e il filo a elica visto di lato """
+    out = []
+    cx, cy, k = 120, 120, 2.6
+    R, A, n = 30, 4, 6
+    out.append(_path([(cx + R * k * math.cos(t / 90 * math.pi), cy - R * k * math.sin(t / 90 * math.pi)) for t in range(181)],
+                     INK, 1, "none") .replace('stroke-width="1"', 'stroke-width="1" stroke-dasharray="4 3"'))
+    out.append(_path([(cx + (R + A * math.sin(n * t / 180 * math.pi)) * k * math.cos(t / 180 * math.pi),
+                       cy - (R + A * math.sin(n * t / 180 * math.pi)) * k * math.sin(t / 180 * math.pi)) for t in range(361)],
+                     ACC, 2.2, FILL, True))
+    t0 = 15 / 180 * math.pi  # dove sin(6θ) = 1
+    rx, ry = cx + (R + A) * k * math.cos(t0), cy - (R + A) * k * math.sin(t0)
+    out += [_line(cx, cy, rx, ry, ACC2, 1.4), _dot(cx, cy, 3, INK), _dot(rx, ry, 4, ACC2),
+            _t(cx, 18, "uno strato visto dall'alto", 14, weight=700),
+            _t(cx, 224, "r = R + A · sin(6θ)", 13, color=ACC, weight=700),
+            _t(cx + 36, cy - 2, "r", 13, "start", ACC2, 700)]
+    ax = _Assi(300, 34, 290, 170, (-40, 40), (0, 6.4))
+    pts = [ax.p(R * math.cos(t / 40 * math.pi), t / 80) for t in range(0, 501)]
+    (ox, oy), (_, top) = ax.p(0, 0), ax.p(0, 6.4)
+    out += [_line(300, oy, 590, oy, INK, 1.3), _t(584, oy - 6, "x", 12, "end", italic=True),
+            _line(ox, oy, ox, top, INK, 1.3), _t(ox + 8, top + 12, "z", 12, "start", italic=True),
+            _path(pts, ACC, 1.6), _t(445, 18, "il filo sale a elica, visto di lato", 14, weight=700),
+            _t(445, 224, "x = r · cos θ   ·   ogni giro sale di uno strato", 13, color=ACC, weight=700)]
+    return _svg(620, 236, "".join(out), "Uno strato del vaso in coordinate polari e il filo a elica visto di lato")
+
+
 FIGURE = {name: fn for name, fn in globals().items() if callable(fn) and not name.startswith("_") and name.islower()
           and name not in ("FIGURE",)}
