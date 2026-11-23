@@ -814,5 +814,34 @@ def ruota_poligonale():
     return _svg(640, 222, "".join(out), "Ruota pentagonale sugli archi di catenaria e le regole per una ruota di n lati")
 
 
+def proporzionalita_confronto():
+    """ Tre legami a confronto: diretta (rapporto costante, triangoli simili), inversa (prodotto costante,
+        rettangoli di uguale area), lineare con quota fissa (y non proporzionale a x, lo è y − q) """
+    out = []
+    pannelli = [
+        ("diretta", "y : x = 2", "y = 2x"),
+        ("inversa", "x · y = 12", "y = 12 : x"),
+        ("lineare, quota fissa", "(y − 3) : x = 2", "y = 2x + 3"),
+    ]
+    for i, (nome, resta, legge) in enumerate(pannelli):
+        x0 = 18 + i * 200
+        ax = _Assi(x0, 34, 170, 150, (0, 7), (0, 13))
+        out += [ax.griglia(1, False), _t(x0 + 85, 20, nome, 14, weight=700)]
+        if i == 0:
+            out += [_path([ax.p(0, 0), ax.p(3, 0), ax.p(3, 6)], ACC, 1.3, FILL, True),
+                    _path([ax.p(0, 0), ax.p(6, 0), ax.p(6, 12)], ACC, 1.1, "none", True),
+                    ax.curva(lambda x: 2 * x, 0, 6.5), _dot(*ax.p(3, 6)), _dot(*ax.p(6, 12))]
+        elif i == 1:
+            out += [_rect(*ax.p(0, 6), ax.p(2, 0)[0] - ax.p(0, 0)[0], ax.p(0, 0)[1] - ax.p(0, 6)[1], FILL, ACC, 1.2),
+                    _rect(*ax.p(0, 2), ax.p(6, 0)[0] - ax.p(0, 0)[0], ax.p(0, 0)[1] - ax.p(0, 2)[1], "none", ACC, 1.2),
+                    ax.curva(lambda x: 12 / x, 0.95, 7), _dot(*ax.p(2, 6)), _dot(*ax.p(6, 2))]
+        else:
+            out += [ax.curva(lambda x: 2 * x + 3, 0, 5), _dot(*ax.p(0, 3), 3.5, ACC2), _dot(*ax.p(4, 11)),
+                    _line(*ax.p(0, 0), *ax.p(4, 11), ACC2, 1.2, "4 3"),
+                    _t(ax.p(0, 3)[0] + 8, ax.p(0, 3)[1] + 4, "q = 3", 12, "start", ACC2)]
+        out += [_t(x0 + 85, 204, resta, 13, color=ACC, weight=700), _t(x0 + 85, 222, legge, 12)]
+    return _svg(620, 232, "".join(out), "Proporzionalità diretta, inversa e retta con quota fissa a confronto")
+
+
 FIGURE = {name: fn for name, fn in globals().items() if callable(fn) and not name.startswith("_") and name.islower()
           and name not in ("FIGURE",)}

@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proporzionalità diretta e inversa</title>
+  <link rel="icon" href="data:," />
+  <meta name="description" content="Laboratorio sulla proporzionalità: sposta il punto, raddoppia x e prevedi che cosa fa y. Rapporto costante (diretta, con k positivo o negativo), prodotto costante (inversa) e il tranello della quota fissa, con casi reali della vita di tutti i giorni e dei laboratori.">
+  <meta name="keywords" content="Proporzionalità diretta, Proporzionalità inversa, Rapporto costante, Prodotto costante, Costante di proporzionalità, Retta per l'origine, Iperbole, Quota fissa, Legge di Ohm, Ruote dentate, MAT_K2:Funzioni elementari, MAT_A2:Rappresentare dati e funzioni, MAT_C2:Pensiero razionale, 1 EL, 2 EL">
+  <meta name="allenamento" content="proporzionalita, proporzioni">
+  <meta name="parole" content="proporzione, funzione, modelli">
+  <meta name="date" content="2026-11-23">
+  <meta name="miniatura" content="fissa">
+  <meta name="theme-color" content="#000000">
+  <!-- Tema chiaro/scuro condiviso con la home (chiave orfini_theme): applicato prima del rendering -->
+  <script>
+    if (localStorage.getItem('orfini_theme') === 'light') {
+      document.documentElement.classList.add('theme-light');
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  </script>
+  <script src="../assets/js/theme-toggle.js" defer></script>
+  <link href="/content/assets/fonts/atkinsonhyperlegible-bricolagegrotesque-817534.css" rel="stylesheet">
+  <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
+  <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
+  <script defer src="/content/assets/vendor/katex/contrib/auto-render.min.js"></script>
+  <style>
+    /* ===== Tema del sito: nero AMOLED (default) e chiaro ===== */
+    :root {
+      --bg: #000000;
+      --surface: #0b0b0e;
+      --surface-2: #131318;
+      --surface-3: #1d1d24;
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #ececf1;
+      --text-2: #c9c9d2;
+      --muted: #a2a2ad;
+      --primary: hsl(190, 100%, 45%);
+      --primary-soft: hsla(190, 100%, 45%, 0.14);
+      --on-primary: #00161c;
+      /* Colori con significato, uguali in tutta l'app */
+      --c-d: #38bdf8;   /* proporzionalità diretta */
+      --c-i: #fbbf24;   /* proporzionalità inversa */
+      --c-n: #c4b5fd;   /* lineare con quota fissa: y non è proporzionale a x */
+      --c-ok: #34d399;
+      --c-bad: #fb7185;
+      --grid: rgba(255, 255, 255, 0.09);
+      --axis: rgba(255, 255, 255, 0.55);
+      --sans: 'Atkinson Hyperlegible', system-ui, sans-serif;
+      --title: 'Bricolage Grotesque', 'Atkinson Hyperlegible', sans-serif;
+      color-scheme: dark;
+    }
+    html.theme-light {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --surface-2: #f0f2f5;
+      --surface-3: #e3e6eb;
+      --border: rgba(15, 23, 42, 0.14);
+      --text: #12141a;
+      --text-2: #2c313b;
+      --muted: #4f5664;
+      --primary: hsl(190, 90%, 30%);
+      --primary-soft: hsla(190, 90%, 30%, 0.12);
+      --on-primary: #ffffff;
+      --c-d: #0369a1;
+      --c-i: #b45309;
+      --c-n: #6d28d9;
+      --c-ok: #047857;
+      --c-bad: #be123c;
+      --grid: rgba(15, 23, 42, 0.1);
+      --axis: rgba(15, 23, 42, 0.6);
+      color-scheme: light;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.5;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+    button, input { font: inherit; color: inherit; }
+    .num { font-variant-numeric: tabular-nums; }
+    [hidden] { display: none !important; }
+
+    /* ===== Intestazione ===== */
+    .app-header { border-bottom: 1px solid var(--border); background: var(--surface); padding: 10px 16px; }
+    .head-in { max-width: 1500px; margin: 0 auto; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+    .head-left { min-width: 0; }
+    .head-left, .head-right { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+    .back { color: var(--muted); text-decoration: none; font-size: 15px; padding: 6px 4px; }
+    .back:hover { color: var(--text); }
+    h1 { font-family: var(--title); font-size: clamp(20px, 2.3vw, 27px); font-weight: 800; letter-spacing: -.01em; margin: 0; }
+    .orfini-theme-toggle {
+      width: 40px; height: 40px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer;
+    }
+    .orfini-theme-toggle svg { width: 18px; height: 18px; }
+    .orfini-theme-toggle .theme-icon-moon { display: none; }
+    html.theme-light .orfini-theme-toggle .theme-icon-sun { display: none; }
+    html.theme-light .orfini-theme-toggle .theme-icon-moon { display: block; }
+
+    .tabs { max-width: 1500px; margin: 0 auto; padding: 10px 16px 0; display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab-btn {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px;
+      border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--muted);
+      font-weight: 700; cursor: pointer;
+    }
+    .tab-btn .n { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--surface-3); font-size: 14px; }
+    .tab-btn[aria-selected="true"] { color: var(--text); border-color: var(--primary); background: var(--primary-soft); }
+    .tab-btn[aria-selected="true"] .n { background: var(--primary); color: var(--on-primary); }
+
+    main { flex: 1; width: 100%; max-width: 1500px; margin: 0 auto; padding: 12px 16px 24px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+    h2 { font-family: var(--title); font-size: clamp(19px, 1.9vw, 23px); margin: 0 0 6px; }
+    h3 { font-size: 17px; margin: 0 0 8px; }
+    p { margin: 0 0 10px; }
+    .muted { color: var(--muted); }
+
+    /* ===== Laboratorio ===== */
+    .lab { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: 14px; align-items: start; }
+    .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .mode {
+      --c: var(--c-d);
+      text-align: left; min-height: 64px; padding: 10px 12px; border-radius: 12px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface-2);
+    }
+    .mode[data-mode="i"] { --c: var(--c-i); }
+    .mode[data-mode="n"] { --c: var(--c-n); }
+    .mode b { display: block; color: var(--c); font-size: 17px; }
+    .mode span { color: var(--text-2); font-size: 15px; }
+    .mode[aria-pressed="true"] { border: 2px solid var(--c); background: color-mix(in srgb, var(--c) 12%, var(--surface-2)); }
+
+    .graph-wrap { position: relative; }
+    svg.graph { display: block; width: 100%; height: auto; touch-action: none; user-select: none; }
+    .lab svg.graph { cursor: ew-resize; }
+    svg.graph text { font-family: var(--sans); fill: var(--muted); font-size: var(--fs, 15px); }
+    svg.graph .lbl { fill: var(--text); font-weight: 700; font-size: calc(var(--fs, 15px) * 1.08); paint-order: stroke; stroke: var(--surface); stroke-width: 5px; stroke-linejoin: round; }
+    .graph-note { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; margin-top: 8px; font-size: 15px; color: var(--muted); }
+    .graph-note strong { color: var(--accent, var(--c-d)); }
+
+    .side { display: flex; flex-direction: column; gap: 12px; }
+    .formula { --c: var(--accent, var(--c-d)); border: 2px solid color-mix(in srgb, var(--c) 60%, transparent); background: color-mix(in srgb, var(--c) 8%, var(--surface)); }
+    .formula .what { color: var(--c); font-weight: 700; font-size: 15px; }
+    .formula .big { font-size: clamp(20px, 2vw, 26px); min-height: 2.6em; display: flex; align-items: center; overflow-x: auto; overflow-y: hidden; }
+    .formula .law { color: var(--text-2); font-size: 16px; }
+
+    .ctrl { display: grid; gap: 12px; }
+    .ctrl label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-weight: 700; }
+    .ctrl output { font-weight: 700; color: var(--text); }
+    input[type="range"] { width: 100%; height: 36px; accent-color: var(--accent, var(--c-d)); cursor: pointer; margin: 0; }
+
+    .ops { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .ops-title { font-weight: 700; margin-right: 4px; }
+    .btn {
+      min-height: 44px; min-width: 56px; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-weight: 700;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    }
+    .btn:hover:not(:disabled) { border-color: var(--text-2); }
+    .btn:disabled { opacity: .35; cursor: not-allowed; }
+    .btn.primary { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+    .ctrl label.switch { justify-content: flex-start; font-weight: 400; }
+    .switch { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; color: var(--text-2); cursor: pointer; }
+    .switch input { width: 20px; height: 20px; accent-color: var(--primary); }
+
+    .predict { border: 1px dashed var(--primary); border-radius: 12px; padding: 12px; background: var(--primary-soft); }
+    .predict .choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .feedback { border-radius: 12px; padding: 10px 12px; border: 1px solid var(--border); background: var(--surface-2); }
+    .feedback.ok { border-color: var(--c-ok); }
+    .feedback.bad { border-color: var(--c-bad); }
+    .feedback .tag { font-weight: 700; }
+    .feedback.ok .tag { color: var(--c-ok); }
+    .feedback.bad .tag { color: var(--c-bad); }
+
+    table.tab { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 16px; }
+    table.tab th, table.tab td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--border); }
+    table.tab th { color: var(--muted); font-weight: 700; }
+    table.tab th:first-child, table.tab td:first-child { text-align: left; }
+    table.tab .const { color: var(--accent); font-weight: 700; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+    table.tab tr.now td { color: var(--text); font-weight: 700; background: var(--surface-3); }
+    table.tab tr.prima td:first-child::after { content: ' prima'; color: var(--muted); font-weight: 400; font-size: 14px; }
+    .tab-note { font-size: 15px; color: var(--muted); margin: 6px 0 0; }
+
+    /* ===== Casi reali ===== */
+    .cases { display: grid; grid-template-columns: minmax(250px, 320px) minmax(0, 1fr); gap: 14px; align-items: start; }
+    .case-list { display: flex; flex-direction: column; gap: 6px; }
+    .case-group { color: var(--muted); font-size: 14px; font-weight: 700; margin: 10px 0 2px; }
+    .case-group:first-child { margin-top: 0; }
+    .case-btn {
+      --c: var(--c-d);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left;
+      min-height: 48px; padding: 8px 12px; border-radius: 12px; cursor: pointer;
+      border: 1px solid var(--border); border-left: 4px solid var(--c); background: var(--surface);
+    }
+    .case-btn[data-tipo="i"] { --c: var(--c-i); }
+    .case-btn[data-tipo="n"] { --c: var(--c-n); }
+    .case-btn small { color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .case-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 12%, var(--surface)); border-color: var(--c); }
+    .case-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 14px; align-items: start; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 14px; font-weight: 700; color: var(--accent); border: 1px solid var(--accent); margin-bottom: 8px; }
+    .result { border-radius: 12px; padding: 12px; background: var(--surface-2); border: 1px solid var(--border); }
+    .result .val { font-size: clamp(24px, 2.6vw, 32px); font-weight: 700; color: var(--accent); }
+    .rel { font-size: 18px; overflow-x: auto; overflow-y: hidden; }
+
+    /* ===== Allenati ===== */
+    .train { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 14px; align-items: start; }
+    .quest-link { display: inline-flex; align-items: center; min-height: 48px; padding: 10px 18px; border-radius: 12px; background: var(--primary); color: var(--on-primary); font-weight: 700; text-decoration: none; margin: 4px 8px 8px 0; }
+    .quest-link.ghost { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+    details.q { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--surface); }
+    details.q + details.q { margin-top: 8px; }
+    details.q summary { cursor: pointer; font-weight: 700; list-style: none; }
+    details.q summary::-webkit-details-marker { display: none; }
+    details.q summary::after { content: 'Mostra la risposta'; display: block; margin-top: 6px; color: var(--primary); font-weight: 400; font-size: 15px; }
+    details.q[open] summary::after { content: 'Nascondi la risposta'; }
+    details.q .ans { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); color: var(--text-2); }
+    .mini-table { border-collapse: collapse; margin: 8px 0; font-variant-numeric: tabular-nums; }
+    .mini-table td { border: 1px solid var(--border); padding: 4px 12px; text-align: center; }
+    .mini-table td:first-child { color: var(--muted); }
+
+    .katex { font-size: 1.08em; }
+
+    @media (min-width: 1051px) {
+      .lab > .card:first-child { position: sticky; top: 10px; }
+    }
+    @media (max-width: 1050px) {
+      .lab, .cases, .case-detail, .train { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 560px) {
+      body { font-size: 16px; }
+      .modes { grid-template-columns: 1fr; }
+      .mode { min-height: 52px; }
+      .card { padding: 12px; }
+      table.tab th, table.tab td { padding: 5px 6px; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .btn, .mode, .case-btn, .tab-btn { transition: border-color .15s ease, background-color .15s ease; }
+    }
+    @media print {
+      :root, html.theme-light { --bg: #fff; --surface: #fff; --surface-2: #fff; --surface-3: #eee; --text: #000; --text-2: #111; --muted: #333; --border: #999; --grid: #ddd; --axis: #000; }
+      .tabs, .orfini-theme-toggle, .back, .ops, .switch, input[type="range"] { display: none !important; }
+      .card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="head-in">
+      <div class="head-left">
+        <a class="back" href="../../index.html">← Laboratori</a>
+        <h1>Proporzionalità diretta e inversa</h1>
+      </div>
+      <div class="head-right">
+        <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sezioni">
+    <button class="tab-btn" role="tab" id="tab-lab" aria-controls="panel-lab" aria-selected="true" data-tab="lab"><span class="n">1</span>Laboratorio</button>
+    <button class="tab-btn" role="tab" id="tab-casi" aria-controls="panel-casi" aria-selected="false" data-tab="casi" tabindex="-1"><span class="n">2</span>Casi reali</button>
+    <button class="tab-btn" role="tab" id="tab-allenati" aria-controls="panel-allenati" aria-selected="false" data-tab="allenati" tabindex="-1"><span class="n">3</span>Allenati</button>
+  </nav>
+
+  <main>
+    <!-- ================= 1. LABORATORIO ================= -->
+    <section id="panel-lab" role="tabpanel" aria-labelledby="tab-lab">
+      <div class="modes" role="group" aria-label="Tipo di legame">
+        <button class="mode" data-mode="d" aria-pressed="true"><b>Diretta</b><span>resta uguale il rapporto: y : x = k</span></button>
+        <button class="mode" data-mode="i" aria-pressed="false"><b>Inversa</b><span>resta uguale il prodotto: x · y = k</span></button>
+        <button class="mode" data-mode="n" aria-pressed="false"><b>Lineare</b><span>quota fissa: y = mx + q</span></button>
+      </div>
+
+      <div class="lab">
+        <div class="card">
+          <div class="graph-wrap">
+            <svg id="lab-graph" class="graph" viewBox="0 0 640 440" role="img" tabindex="0" aria-label="Grafico"></svg>
+          </div>
+          <div class="graph-note">
+            <span>Trascina il punto (o usa le frecce ← →) per cambiare x.</span>
+            <strong id="lab-insight"></strong>
+          </div>
+        </div>
+
+        <div class="side">
+          <div class="card formula" id="lab-formula">
+            <div class="what" id="formula-what"></div>
+            <div class="big" id="formula-big"></div>
+            <div class="law" id="formula-law"></div>
+          </div>
+
+          <div class="card ctrl">
+            <div>
+              <label for="k-range"><span id="k-name">Costante k</span><output id="k-out" class="num"></output></label>
+              <input id="k-range" type="range" />
+            </div>
+            <div id="q-row" hidden>
+              <label for="q-range"><span>Quota fissa q</span><output id="q-out" class="num"></output></label>
+              <input id="q-range" type="range" min="1" max="18" step="1" value="3" />
+            </div>
+            <div>
+              <label for="x-range"><span>x</span><output id="x-out" class="num"></output></label>
+              <input id="x-range" type="range" step="0.5" />
+            </div>
+            <div class="ops" role="group" aria-label="Cambia x di un fattore">
+              <span class="ops-title">Cambia x:</span>
+              <button class="btn" data-op="2" data-dir="mul">× 2</button>
+              <button class="btn" data-op="2" data-dir="div">÷ 2</button>
+              <button class="btn" data-op="3" data-dir="mul">× 3</button>
+              <button class="btn" data-op="3" data-dir="div">÷ 3</button>
+            </div>
+            <label class="switch"><input type="checkbox" id="predict-on" checked /> Prima di vedere, fammi prevedere che cosa fa y</label>
+            <div class="predict" id="predict" hidden aria-live="polite">
+              <div id="predict-q"></div>
+              <div class="choices" id="predict-choices"></div>
+            </div>
+            <div class="feedback" id="feedback" hidden aria-live="polite"></div>
+          </div>
+
+          <div class="card">
+            <h3>Tabella</h3>
+            <table class="tab" id="lab-table">
+              <thead><tr><th>x</th><th>y</th><th id="th-ratio">y : x</th><th id="th-prod">x · y</th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <p class="tab-note" id="tab-note"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. CASI REALI ================= -->
+    <section id="panel-casi" role="tabpanel" aria-labelledby="tab-casi" hidden>
+      <div class="cases">
+        <div class="case-list" id="case-list" role="group" aria-label="Scegli un caso"></div>
+        <div class="card">
+          <div class="case-detail">
+            <div>
+              <span class="badge" id="case-badge"></span>
+              <h2 id="case-title"></h2>
+              <p id="case-text"></p>
+              <div class="ctrl">
+                <div>
+                  <label for="case-p"><span id="case-p-name"></span><output id="case-p-out" class="num"></output></label>
+                  <input id="case-p" type="range" />
+                </div>
+                <div>
+                  <label for="case-x"><span id="case-x-name"></span><output id="case-x-out" class="num"></output></label>
+                  <input id="case-x" type="range" />
+                </div>
+              </div>
+              <div class="result" style="margin-top:12px">
+                <div class="muted" id="case-y-name"></div>
+                <div class="val num" id="case-y"></div>
+                <div class="rel" id="case-rel"></div>
+              </div>
+              <p class="tab-note" id="case-double" style="font-size:16px;color:var(--text-2)"></p>
+            </div>
+            <div>
+              <svg id="case-graph" class="graph" viewBox="0 0 640 440" role="img" aria-label="Grafico del caso"></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3. ALLENATI ================= -->
+    <section id="panel-allenati" role="tabpanel" aria-labelledby="tab-allenati" hidden>
+      <div class="train">
+        <div class="card">
+          <h2>Esercizi sempre nuovi</h2>
+          <p>Nella Quest di Orfini Math Lab l'attività <b>Proporzionalità diretta e inversa</b> ha cinque livelli: il test del raddoppio, tabelle e costante, problemi di tutti i giorni, problemi del tuo laboratorio, grafici e formule. A ogni partita i numeri cambiano, e si fanno a mente.</p>
+          <a class="quest-link" href="../../allenamento/#/lezione/proporzionalita/1">Allenati nella Quest</a>
+          <a class="quest-link ghost" href="../../allenamento/#/lezione/proporzioni/1">Ripassa le proporzioni</a>
+        </div>
+        <div>
+          <h2>Domande per la classe</h2>
+          <p class="muted">Da discutere insieme, alla lavagna: prima si ragiona, poi si apre la risposta.</p>
+          <details class="q">
+            <summary>Che legame c'è tra x e y in questa tabella?
+              <table class="mini-table"><tr><td>x</td><td>2</td><td>3</td><td>6</td><td>12</td></tr><tr><td>y</td><td>18</td><td>12</td><td>6</td><td>3</td></tr></table>
+            </summary>
+            <div class="ans">Proporzionalità <b>inversa</b>: il prodotto resta uguale, $2 \cdot 18 = 3 \cdot 12 = 6 \cdot 6 = 12 \cdot 3 = 36$. Quindi $y = \dfrac{36}{x}$.</div>
+          </details>
+          <details class="q">
+            <summary>“Se x aumenta e y diminuisce, allora è una proporzionalità inversa.” Vero?</summary>
+            <div class="ans">No. Con $y = 10 - x$ la y scende, ma passando da $x = 1$ a $x = 2$ va da 9 a 8: non si dimezza, e il prodotto non resta uguale. E con $y = -2x$ la y scende ma è una proporzionalità <b>diretta</b>, con $k = -2$: raddoppiando x raddoppia anche y. Conta che cosa resta uguale, non se la y sale o scende.</div>
+          </details>
+          <details class="q">
+            <summary>Una retta passa per l'origine e per il punto $P(4;\,-10)$. Che legame descrive?</summary>
+            <div class="ans">Una proporzionalità <b>diretta</b> con costante negativa: $k = \dfrac{y}{x} = \dfrac{-10}{4} = -\dfrac{5}{2}$, cioè $y = -\dfrac{5}{2}x$. Ogni retta per l'origine (non verticale) è una proporzionalità diretta.</div>
+          </details>
+          <details class="q">
+            <summary>Un abbonamento costa 30 € di attivazione più 20 € al mese. Il costo è direttamente proporzionale ai mesi?</summary>
+            <div class="ans">No. Con 1 mese si pagano 50 €, con 2 mesi 70 €: non il doppio. Il rapporto cambia ($50 : 1 = 50$, $70 : 2 = 35$). La legge $C = 20m + 30$ è una retta, ma non passa per l'origine: colpa della quota fissa. Sono proporzionali, invece, gli aumenti: ogni mese in più costa sempre 20 €.</div>
+          </details>
+          <details class="q">
+            <summary>3 operai finiscono un lavoro in 8 ore. Quante ore servono a 6 operai, allo stesso ritmo?</summary>
+            <div class="ans">4 ore, non 16. Il doppio degli operai dimezza il tempo: il lavoro totale resta $3 \cdot 8 = 24$ ore-operaio, e $24 : 6 = 4$.</div>
+          </details>
+          <details class="q">
+            <summary>Un robot assembla 4 pezzi al minuto, sempre allo stesso ritmo. Quale formula lega i pezzi y ai minuti x?</summary>
+            <div class="ans">$y = 4x$: proporzionalità diretta con $k = 4$ pezzi al minuto. In 10 minuti, 40 pezzi; in mezz'ora, 120.</div>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+'use strict';
+// =====================================================================
+// Strumenti: numeri in formato italiano, frazioni esatte, KaTeX
+// =====================================================================
+const MENO = '−';
+const esatto2 = (v) => Math.abs(v * 100 - Math.round(v * 100)) < 1e-9;
+/** Numero in italiano (virgola), al massimo 2 decimali; con "≈" se arrotondato */
+function fmt(v, { approx = true } = {}) {
+  const r = Math.round(v * 100) / 100;
+  const s = r.toLocaleString('it-IT', { maximumFractionDigits: 2 }).replace('-', MENO);
+  return (approx && !esatto2(v) ? '≈ ' : '') + s;
+}
+function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a; }
+/** Valore in LaTeX: decimale se esatto, altrimenti frazione ridotta (denominatori fino a 200) */
+function tex(v) {
+  if (esatto2(v)) return (Math.round(v * 100) / 100).toLocaleString('it-IT', { maximumFractionDigits: 2 }).replace(',', '{,}');
+  for (let d = 2; d <= 200; d++) {
+    const n = Math.round(v * d);
+    if (Math.abs(n / d - v) < 1e-9) {
+      const g = gcd(n, d);
+      return `${n < 0 ? '-' : ''}\\dfrac{${Math.abs(n) / g}}{${d / g}}`;
+    }
+  }
+  return '\\approx ' + fmt(v, { approx: false }).replace(MENO, '-').replace(',', '{,}');
+}
+function render(el, latex) {
+  if (window.katex) katex.render(latex, el, { throwOnError: false, displayMode: false });
+  else el.textContent = '';
+}
+const $ = (id) => document.getElementById(id);
+
+// =====================================================================
+// Piano cartesiano in SVG
+// =====================================================================
+const NS = 'http://www.w3.org/2000/svg';
+const W = 640, H = 440, PL = 52, PR = 18, PT = 16, PB = 40;
+function niceStep(range) {
+  const raw = range / 8, p = 10 ** Math.floor(Math.log10(raw)), m = raw / p;
+  return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+}
+function el(name, attrs, text) {
+  const e = document.createElementNS(NS, name);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text != null) e.textContent = text;
+  return e;
+}
+/**
+ * Disegna un grafico. o = { xmin, xmax, ymin, ymax, color, f, from, to, point, ghost, figure, k, q, xname, yname, step, ystep }
+ * figure: 'tri' (triangolo del rapporto), 'rect' (rettangolo del prodotto), 'quota' (quota fissa)
+ */
+function drawGraph(svg, o) {
+  svg.textContent = '';
+  const u = Math.max(1, Math.min(2.2, (0.78 * W) / (svg.clientWidth || W)));
+  svg.style.setProperty('--fs', `${15 * u}px`);
+  svg._last = o;
+  const sx = (W - PL - PR) / (o.xmax - o.xmin), sy = (H - PT - PB) / (o.ymax - o.ymin);
+  const X = (x) => PL + (x - o.xmin) * sx, Y = (y) => H - PB - (y - o.ymin) * sy;
+  svg._toX = (px) => o.xmin + (px - PL) / sx;
+  const xs = o.step || niceStep(o.xmax - o.xmin), ys = o.ystep || niceStep(o.ymax - o.ymin);
+  const g = el('g', {});
+  // griglia ed etichette
+  for (let x = Math.ceil(o.xmin / xs) * xs; x <= o.xmax + 1e-9; x += xs) {
+    g.append(el('line', { x1: X(x), y1: PT, x2: X(x), y2: H - PB, stroke: 'var(--grid)' }));
+    if (Math.abs(x) > 1e-9) g.append(el('text', { x: X(x), y: Math.min(H - PB, Math.max(PT, Y(0))) + 6 + 14 * u, 'text-anchor': 'middle' }, fmt(x, { approx: false })));
+  }
+  for (let y = Math.ceil(o.ymin / ys) * ys; y <= o.ymax + 1e-9; y += ys) {
+    g.append(el('line', { x1: PL, y1: Y(y), x2: W - PR, y2: Y(y), stroke: 'var(--grid)' }));
+    if (Math.abs(y) > 1e-9) g.append(el('text', { x: PL - 8, y: Y(y) + 5, 'text-anchor': 'end' }, fmt(y, { approx: false })));
+  }
+  // assi
+  const y0 = Math.min(H - PB, Math.max(PT, Y(0)));
+  g.append(el('line', { x1: PL, y1: y0, x2: W - PR + 4, y2: y0, stroke: 'var(--axis)', 'stroke-width': 1.6 }));
+  g.append(el('line', { x1: X(0), y1: H - PB, x2: X(0), y2: PT - 4, stroke: 'var(--axis)', 'stroke-width': 1.6 }));
+  g.append(el('text', { x: PL - 8, y: y0 + 20, 'text-anchor': 'end' }, '0'));
+  g.append(el('text', { x: W - PR, y: y0 - 8, 'text-anchor': 'end', class: 'lbl' }, o.xname || 'x'));
+  g.append(el('text', { x: X(0) + 10, y: o.ymax <= 0 ? H - PB - 10 : PT + 16 * u, class: 'lbl' }, o.yname || 'y'));
+  svg.append(g);
+
+  const clip = el('clipPath', { id: svg.id + '-clip' });
+  clip.append(el('rect', { x: PL, y: PT, width: W - PL - PR, height: H - PT - PB }));
+  svg.append(clip);
+  const plot = el('g', { 'clip-path': `url(#${svg.id}-clip)` });
+  svg.append(plot);
+
+  const fig = (p, ghost) => {
+    if (!p) return;
+    const dash = ghost ? '6 5' : 'none';
+    const fillOp = ghost ? 0 : 0.16;
+    if (o.figure === 'tri') {
+      plot.append(el('path', { d: `M${X(0)},${Y(0)} L${X(p.x)},${Y(0)} L${X(p.x)},${Y(p.y)} Z`, fill: o.color, 'fill-opacity': fillOp, stroke: o.color, 'stroke-width': 2, 'stroke-dasharray': dash }));
+    } else if (o.figure === 'rect') {
+      plot.append(el('rect', { x: X(0), y: Y(p.y), width: X(p.x) - X(0), height: Y(0) - Y(p.y), fill: o.color, 'fill-opacity': fillOp, stroke: o.color, 'stroke-width': 2, 'stroke-dasharray': dash }));
+    } else if (o.figure === 'quota') {
+      plot.append(el('line', { x1: X(0), y1: Y(0), x2: X(p.x), y2: Y(p.y), stroke: o.color, 'stroke-width': 1.5, 'stroke-dasharray': '3 5', opacity: ghost ? 0.5 : 0.9 }));
+    }
+  };
+  fig(o.ghost, true);
+  fig(o.point, false);
+  if (o.figure === 'rect' && o.point && o.cells) {
+    // caselle unitarie dentro il rettangolo: si contano
+    for (let i = 1; i < o.point.x - 1e-9; i++) plot.append(el('line', { x1: X(i), y1: Y(0), x2: X(i), y2: Y(o.point.y), stroke: o.color, 'stroke-opacity': 0.35 }));
+    for (let j = 1; j < o.point.y - 1e-9; j++) plot.append(el('line', { x1: X(0), y1: Y(j), x2: X(o.point.x), y2: Y(j), stroke: o.color, 'stroke-opacity': 0.35 }));
+  }
+  if (o.figure === 'quota') {
+    plot.append(el('circle', { cx: X(0), cy: Y(o.q), r: 6, fill: o.color }));
+    plot.append(el('text', { x: X(0) + 12, y: Y(o.q) - 8, class: 'lbl', style: `fill:${o.color}` }, `quota fissa q = ${fmt(o.q)}`));
+  }
+
+  // curva
+  const pts = [];
+  const from = o.from ?? o.xmin, to = o.to ?? o.xmax;
+  for (let i = 0; i <= 240; i++) {
+    const x = from + ((to - from) * i) / 240, y = o.f(x);
+    if (Number.isFinite(y)) pts.push(`${X(x).toFixed(1)},${Y(Math.max(o.ymin - 50, Math.min(o.ymax + 50, y))).toFixed(1)}`);
+  }
+  plot.append(el('polyline', { points: pts.join(' '), fill: 'none', stroke: o.color, 'stroke-width': 3.5, 'stroke-linejoin': 'round' }));
+
+  // punti
+  const dot = (p, ghost) => {
+    if (!p) return;
+    const inside = p.y >= o.ymin && p.y <= o.ymax;
+    if (!inside) return;
+    plot.append(el('circle', { cx: X(p.x), cy: Y(p.y), r: (ghost ? 7 : 10) * Math.min(u, 1.6), fill: ghost ? 'var(--surface)' : o.color, stroke: ghost ? o.color : 'var(--text)', 'stroke-width': 2.5, 'stroke-dasharray': ghost ? '4 3' : 'none' }));
+  };
+  dot(o.ghost, true);
+  dot(o.point, false);
+  if (o.point && o.labels) {
+    const p = o.point, below = p.y < 0;
+    if (o.figure === 'tri') {
+      plot.append(el('text', { x: (X(0) + X(p.x)) / 2, y: Y(0) + (below ? -10 : 22), 'text-anchor': 'middle', class: 'lbl', style: `fill:${o.color}` }, `x = ${fmt(p.x)}`));
+      plot.append(el('text', { x: X(p.x) + 14, y: (Y(0) + Y(p.y)) / 2 + 5, class: 'lbl', style: `fill:${o.color}` }, `y = ${fmt(p.y)}`));
+    } else if (o.figure === 'rect') {
+      const cx = (X(0) + X(p.x)) / 2, cy = (Y(0) + Y(Math.min(p.y, o.ymax))) / 2;
+      const t = el('text', { x: cx, y: cy + 6, 'text-anchor': 'middle', class: 'lbl' }, `area = ${fmt(p.x * p.y)}`);
+      plot.append(t);
+    } else {
+      plot.append(el('text', { x: X(p.x) + 14, y: Y(p.y) + 5, class: 'lbl', style: `fill:${o.color}` }, `(${fmt(p.x)}; ${fmt(p.y)})`));
+    }
+  }
+}
+
+// =====================================================================
+// 1. LABORATORIO
+// =====================================================================
+const K_INV = [4, 6, 8, 9, 10, 12, 16, 18, 20, 24];
+const lab = { mode: 'd', kd: 2, ki: 12, kn: 1.5, q: 3, x: 3, ghost: null, pending: null };
+const kOf = () => (lab.mode === 'd' ? lab.kd : lab.mode === 'i' ? lab.ki : lab.kn);
+const fOf = (x) => (lab.mode === 'd' ? lab.kd * x : lab.mode === 'i' ? lab.ki / x : lab.kn * x + lab.q);
+const COLORS = { d: '--c-d', i: '--c-i', n: '--c-n' };
+const accent = (m) => getComputedStyle(document.documentElement).getPropertyValue(COLORS[m]).trim();
+
+/** Intervallo di x in cui il punto resta nel grafico */
+function xRange() {
+  if (lab.mode === 'd') return [0.5, Math.min(10, Math.floor((20 / Math.abs(lab.kd)) * 2) / 2)];
+  if (lab.mode === 'i') return [Math.max(0.5, Math.ceil((lab.ki / 12) * 2) / 2), 12];
+  const lim = lab.kn > 0 ? (20 - lab.q) / lab.kn : (lab.q - 0.5) / -lab.kn;   // il punto resta tra y = 0,5 e y = 20
+  return [0.5, Math.min(10, Math.floor(lim * 2) / 2)];
+}
+function graphBox() {
+  if (lab.mode === 'd') return lab.kd > 0 ? { xmin: 0, xmax: 10, ymin: 0, ymax: 20 } : { xmin: 0, xmax: 10, ymin: -20, ymax: 0 };
+  if (lab.mode === 'i') return { xmin: 0, xmax: 12, ymin: 0, ymax: 12, step: 1, ystep: 1 };
+  return { xmin: 0, xmax: 10, ymin: 0, ymax: 20 };
+}
+function clampX() {
+  const [a, b] = xRange();
+  lab.x = Math.min(b, Math.max(a, lab.x));
+  if (lab.ghost && (lab.ghost.x < a || lab.ghost.x > b)) lab.ghost = null;
+}
+
+function setupSliders() {
+  const k = $('k-range');
+  if (lab.mode === 'd') { k.min = -4; k.max = 4; k.step = 0.5; k.value = lab.kd; $('k-name').textContent = 'Costante k (anche negativa)'; }
+  else if (lab.mode === 'i') { k.min = 0; k.max = K_INV.length - 1; k.step = 1; k.value = K_INV.indexOf(lab.ki); $('k-name').textContent = 'Costante k (il prodotto)'; }
+  else { k.min = -2.5; k.max = 2.5; k.step = 0.5; k.value = lab.kn; $('k-name').textContent = 'Pendenza m (anche negativa)'; }
+  $('q-range').value = lab.q;
+  $('q-row').hidden = lab.mode !== 'n';
+  syncX();
+}
+function syncX() {
+  const [a, b] = xRange(), xr = $('x-range');
+  xr.min = a; xr.max = b; xr.value = lab.x;
+}
+
+function updateLab() {
+  clampX();
+  const m = lab.mode, k = kOf(), x = lab.x, y = fOf(x);
+  const color = accent(m);
+  document.documentElement.style.setProperty('--accent', color);
+  $('k-out').textContent = fmt(k);
+  $('q-out').textContent = fmt(lab.q);
+  $('x-out').textContent = fmt(x);
+
+  const box = graphBox();
+  drawGraph($('lab-graph'), {
+    ...box, color, f: fOf, from: m === 'i' ? 0.3 : 0, to: box.xmax,
+    point: { x, y }, ghost: lab.ghost ? { x: lab.ghost.x, y: fOf(lab.ghost.x) } : null,
+    figure: m === 'd' ? 'tri' : m === 'i' ? 'rect' : 'quota', q: lab.q, labels: true, cells: true,
+  });
+  const law = m === 'd' ? `y = ${fmt(k)}x` : m === 'i' ? `y = ${fmt(k)} : x` : `y = ${fmt(k)}x + ${fmt(lab.q)}`.replace('+ −', '− ');
+  $('lab-graph').setAttribute('aria-label', `Grafico di ${law}. Punto con x = ${fmt(x)} e y = ${fmt(y)}.`);
+
+  // formula
+  if (m === 'd') {
+    $('formula-what').textContent = 'Resta uguale il rapporto';
+    render($('formula-big'), `\\dfrac{y}{x} = \\dfrac{${tex(y)}}{${tex(x)}} = ${tex(k)}`);
+    $('formula-law').textContent = `Legge: ${law}. Qualunque x scegli, y : x vale sempre ${fmt(k)}.`;
+    $('lab-insight').textContent = k > 0 ? 'Retta che passa per l\'origine.' : 'Retta per l\'origine che scende: k è negativo, ma la proporzionalità è diretta.';
+  } else if (m === 'i') {
+    $('formula-what').textContent = 'Resta uguale il prodotto';
+    render($('formula-big'), `x \\cdot y = ${tex(x)} \\cdot ${tex(y)} = ${tex(k)}`);
+    $('formula-law').textContent = `Legge: ${law}. Il rettangolo cambia forma, ma la sua area resta ${fmt(k)}.`;
+    $('lab-insight').textContent = 'Ramo di iperbole: si avvicina agli assi senza toccarli.';
+  } else {
+    $('formula-what').textContent = 'y non è proporzionale a x: lo è y − q';
+    render($('formula-big'), `\\dfrac{y - q}{x} = \\dfrac{${tex(y)} - ${tex(lab.q)}}{${tex(x)}} = ${tex(k)}`);
+    $('formula-law').textContent = `Legge: ${law}. Qui y : x vale ${fmt(y / x)} e cambia quando sposti x: per colpa della quota fissa, y non è proporzionale a x. Sono proporzionali, invece, y − q e x, e le variazioni: ogni passo di 1 su x cambia y sempre di ${fmt(k)} (Δy = m · Δx).`;
+    $('lab-insight').textContent = 'Retta che non passa per l\'origine: la linea tratteggiata dall\'origine al punto cambia pendenza.';
+  }
+
+  // pulsanti × e ÷
+  const [a, b] = xRange();
+  document.querySelectorAll('[data-op]').forEach((btn) => {
+    const f = +btn.dataset.op, nx = btn.dataset.dir === 'mul' ? x * f : x / f;
+    btn.disabled = nx < a - 1e-9 || nx > b + 1e-9 || Math.abs(nx * 2 - Math.round(nx * 2)) > 1e-9 || !!lab.pending;
+  });
+
+  updateTable();
+}
+
+function updateTable() {
+  const m = lab.mode, k = kOf();
+  const [a, b] = xRange();
+  const base = (m === 'i' ? [1, 2, 3, 4, 6, 12] : [1, 2, 3, 4, 5]).filter((v) => v >= a && v <= b);
+  const set = new Map(base.map((v) => [v, '']));
+  set.set(lab.x, 'now');
+  if (lab.ghost) set.set(lab.ghost.x, set.get(lab.ghost.x) === 'now' ? 'now' : 'prima');
+  const rows = [...set.entries()].sort((p, q) => p[0] - q[0]);
+  const ratioC = m === 'd' ? 'const' : '', prodC = m === 'i' ? 'const' : '';
+  $('th-ratio').className = ratioC;
+  $('th-prod').className = prodC;
+  $('lab-table').querySelector('tbody').innerHTML = rows.map(([x, cls]) => {
+    const y = fOf(x);
+    return `<tr class="${cls}"><td>${fmt(x)}</td><td>${fmt(y)}</td><td class="${ratioC}">${fmt(y / x)}</td><td class="${prodC}">${fmt(x * y)}</td></tr>`;
+  }).join('');
+  $('tab-note').textContent = m === 'd' ? `Colonna evidenziata: y : x vale sempre ${fmt(k)}.`
+    : m === 'i' ? `Colonna evidenziata: x · y vale sempre ${fmt(k)}.`
+    : `y : x cambia, quindi y non è proporzionale a x. Resta uguale (y − q) : x = ${fmt(k)}: tolta la quota fissa, torna la proporzionalità diretta.`;
+}
+
+// --- cambiare x di un fattore, con previsione ---
+function verdict(oldY, newY, f, dir) {
+  const r = newY / oldY;
+  if (Math.abs(r - (dir === 'mul' ? f : 1 / f)) < 1e-9) return 'same';
+  if (Math.abs(r - (dir === 'mul' ? 1 / f : f)) < 1e-9) return 'opp';
+  return 'other';
+}
+const opName = (f, dir) => (dir === 'mul' ? `si moltiplica per ${f}` : `si divide per ${f}`);
+const oppName = (f, dir) => (dir === 'mul' ? `si divide per ${f}` : `si moltiplica per ${f}`);
+
+function doOp(f, dir) {
+  const oldX = lab.x, newX = dir === 'mul' ? oldX * f : oldX / f;
+  if ($('predict-on').checked) {
+    lab.pending = { f, dir, oldX, newX };
+    $('feedback').hidden = true;
+    $('predict').hidden = false;
+    $('predict-q').innerHTML = `x passa da <b>${fmt(oldX)}</b> a <b>${fmt(newX)}</b> (${dir === 'mul' ? '×' : '÷'} ${f}). Secondo te, y…`;
+    const ch = [['same', opName(f, dir)], ['opp', oppName(f, dir)], ['other', `né ${dir === 'mul' ? '×' : '÷'} ${f} né il contrario`]];
+    $('predict-choices').innerHTML = ch.map(([v, t]) => `<button class="btn" data-guess="${v}">${t}</button>`).join('');
+    $('predict-choices').querySelector('button').focus();
+    updateLab();
+  } else apply(f, dir, null);
+}
+
+function apply(f, dir, guess) {
+  const oldX = lab.x, newX = dir === 'mul' ? oldX * f : oldX / f;
+  const oldY = fOf(oldX), newY = fOf(newX);
+  lab.ghost = { x: oldX };
+  lab.x = newX;
+  lab.pending = null;
+  $('predict').hidden = true;
+  syncX();
+  const v = verdict(oldY, newY, f, dir);
+  const what = v === 'same' ? opName(f, dir) : v === 'opp' ? oppName(f, dir) : `cambia, ma non ${opName(f, dir)}: ${fmt(newY)} : ${fmt(oldY)} ${esatto2(newY / oldY) ? '=' : '≈'} ${fmt(newY / oldY, { approx: false })}`;
+  let why = lab.mode === 'd' ? `Proporzionalità diretta: il rapporto resta ${fmt(lab.kd)}, quindi y fa lo stesso di x.`
+    : lab.mode === 'i' ? `Proporzionalità inversa: il prodotto resta ${fmt(lab.ki)}, quindi y fa il contrario di x.`
+    : `Colpa della quota fissa q = ${fmt(lab.q)}, che resta anche quando x cambia. Sono proporzionali però le variazioni: x è ${newX > oldX ? 'aumentato' : 'diminuito'} di ${fmt(Math.abs(newX - oldX))}, y è ${newY > oldY ? 'aumentato' : 'diminuito'} di ${fmt(Math.abs(newY - oldY))} = ${fmt(Math.abs(lab.kn))} · ${fmt(Math.abs(newX - oldX))}.`;
+  if (lab.mode === 'n' && v !== 'other') why = `Questa volta è una coincidenza di questi numeri, non una regola: prova con un'altra x. ${why}`;
+  if (lab.mode === 'd' && lab.kd < 0) why += ' La y è negativa e scende, ma raddoppia insieme a x: la proporzionalità è diretta.';
+  const fb = $('feedback');
+  fb.hidden = false;
+  fb.className = 'feedback' + (guess ? (guess === v ? ' ok' : ' bad') : '');
+  fb.innerHTML = `${guess ? `<span class="tag">${guess === v ? 'Giusto.' : 'Non proprio.'}</span> ` : ''}y passa da <b>${fmt(oldY)}</b> a <b>${fmt(newY)}</b>: ${what}. ${why}`;
+  updateLab();
+}
+
+function setMode(m) {
+  lab.mode = m;
+  lab.ghost = null;
+  lab.pending = null;
+  $('predict').hidden = true;
+  $('feedback').hidden = true;
+  document.querySelectorAll('.mode').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  lab.x = 3;   // ogni modalità riparte da x = 3: tutti i pulsanti × e ÷ sono disponibili
+  setupSliders();
+  updateLab();
+}
+
+function initLab() {
+  document.querySelectorAll('.mode').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  $('k-range').addEventListener('input', (e) => {
+    const v = +e.target.value;
+    if (lab.mode === 'd') {
+      lab.kd = v === 0 ? (lab.kd > 0 ? -0.5 : 0.5) : v;   // k = 0 non è una proporzionalità: si salta
+      e.target.value = lab.kd;
+    } else if (lab.mode === 'i') lab.ki = K_INV[v];
+    else {
+      lab.kn = v === 0 ? (lab.kn > 0 ? -0.5 : 0.5) : v;
+      e.target.value = lab.kn;
+      fitQ();
+    }
+    lab.ghost = null;
+    syncX();
+    updateLab();
+    syncX();
+  });
+  $('q-range').addEventListener('input', (e) => { lab.q = +e.target.value; fitQ(); lab.ghost = null; updateLab(); syncX(); });
+  $('x-range').addEventListener('input', (e) => { lab.x = +e.target.value; lab.ghost = null; cancelPredict(); updateLab(); });
+  document.querySelectorAll('[data-op]').forEach((b) => b.addEventListener('click', () => doOp(+b.dataset.op, b.dataset.dir)));
+  $('predict-choices').addEventListener('click', (e) => {
+    const g = e.target.closest('[data-guess]');
+    if (g && lab.pending) apply(lab.pending.f, lab.pending.dir, g.dataset.guess);
+  });
+
+  // trascinare il punto (anche con il dito o con la penna della LIM)
+  const svg = $('lab-graph');
+  const toSvgX = (ev) => {
+    const pt = svg.createSVGPoint();
+    pt.x = ev.clientX; pt.y = ev.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse()).x;
+  };
+  const moveTo = (ev) => {
+    const [a, b] = xRange();
+    lab.x = Math.min(b, Math.max(a, Math.round(svg._toX(toSvgX(ev)) * 2) / 2));
+    lab.ghost = null;
+    cancelPredict();
+    syncX();
+    updateLab();
+  };
+  svg.addEventListener('pointerdown', (ev) => { svg.setPointerCapture(ev.pointerId); svg._drag = true; moveTo(ev); });
+  svg.addEventListener('pointermove', (ev) => { if (svg._drag) moveTo(ev); });
+  svg.addEventListener('pointerup', () => { svg._drag = false; });
+  svg.addEventListener('pointercancel', () => { svg._drag = false; });
+  svg.addEventListener('keydown', (ev) => {
+    if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+    ev.preventDefault();
+    const [a, b] = xRange();
+    lab.x = Math.min(b, Math.max(a, Math.round((lab.x + (ev.key === 'ArrowRight' ? 0.5 : -0.5)) * 2) / 2));
+    lab.ghost = null;
+    cancelPredict();
+    syncX();
+    updateLab();
+  });
+  setupSliders();
+  updateLab();
+}
+/** Lineare: la quota fissa si adatta alla pendenza, così x può arrivare almeno a 4 restando nel grafico */
+function fitQ() {
+  lab.q = lab.kn > 0 ? Math.min(lab.q, 20 - 4 * lab.kn) : Math.max(lab.q, Math.ceil(-4 * lab.kn + 0.5));
+  $('q-range').value = lab.q;
+}
+function cancelPredict() {
+  $('feedback').hidden = true;
+  if (!lab.pending) return;
+  lab.pending = null;
+  $('predict').hidden = true;
+}
+
+// =====================================================================
+// 2. CASI REALI
+// =====================================================================
+const GRUPPI = { vita: 'Tutti i giorni', lab: 'Nei laboratori', scienze: 'Scienze' };
+const CASI = [
+  { gruppo: 'vita', tipo: 'd', titolo: 'Rifornimento di carburante',
+    testo: 'Alla pompa il prezzo al litro è fisso: spesa e litri sono direttamente proporzionali, e il rapporto spesa : litri è proprio il prezzo al litro.',
+    p: { nome: 'Prezzo al litro', unit: '€/L', min: 1.6, max: 2.2, step: 0.05, def: 1.85 },
+    x: { nome: 'Litri', unit: 'L', min: 5, max: 60, step: 5, def: 20 },
+    y: { nome: 'Spesa', unit: '€' }, f: (x, p) => p * x },
+  { gruppo: 'vita', tipo: 'i', titolo: 'Viaggio su un tragitto fisso',
+    testo: 'Sullo stesso tragitto, più si va veloci meno tempo serve: velocità e tempo sono inversamente proporzionali, e il loro prodotto è la distanza.',
+    p: { nome: 'Distanza', unit: 'km', min: 120, max: 360, step: 60, def: 240 },
+    x: { nome: 'Velocità media', unit: 'km/h', min: 40, max: 120, step: 10, def: 80 },
+    y: { nome: 'Tempo di viaggio', unit: 'ore' }, f: (x, p) => p / x,
+    fy: (y) => { const h = Math.floor(y + 1e-9), mi = Math.round((y - h) * 60); return `${h} h${mi ? ` ${mi} min` : ''}`; } },
+  { gruppo: 'vita', tipo: 'i', titolo: 'Un regalo diviso tra amici',
+    testo: 'Il prezzo del regalo è fisso: più amici partecipano, meno paga ciascuno. Amici e quota a testa sono inversamente proporzionali.',
+    p: { nome: 'Prezzo del regalo', unit: '€', min: 60, max: 180, step: 12, def: 120 },
+    x: { nome: 'Amici', unit: '', min: 2, max: 12, step: 1, def: 4 },
+    y: { nome: 'Quota a testa', unit: '€' }, f: (x, p) => p / x },
+  { gruppo: 'vita', tipo: 'n', titolo: 'Abbonamento con attivazione',
+    testo: 'Si paga una quota di attivazione e poi 20 € al mese. Il costo totale non è proporzionale ai mesi: con il doppio dei mesi non si paga il doppio, per colpa della quota fissa. Sono proporzionali, invece, gli aumenti: ogni mese in più costa sempre 20 €.',
+    p: { nome: 'Quota di attivazione', unit: '€', min: 10, max: 50, step: 10, def: 30 },
+    x: { nome: 'Mesi', unit: '', min: 1, max: 12, step: 1, def: 3 },
+    y: { nome: 'Costo totale', unit: '€' }, f: (x, p) => 20 * x + p, legge: (p) => `C = 20m + ${p}` },
+  { gruppo: 'lab', ind: 'Meccanico', tipo: 'i', titolo: 'Ruote dentate',
+    testo: 'La ruota motrice gira sempre allo stesso modo. Più denti ha la ruota condotta, più lentamente gira: denti e giri al minuto sono inversamente proporzionali, e il prodotto denti · giri resta uguale.',
+    p: { nome: 'Denti · giri della motrice', unit: '', min: 1200, max: 3600, step: 600, def: 2400 },
+    x: { nome: 'Denti della condotta', unit: '', min: 12, max: 60, step: 6, def: 24 },
+    y: { nome: 'Giri al minuto della condotta', unit: 'giri/min' }, f: (x, p) => p / x },
+  { gruppo: 'lab', ind: 'Elettrico', tipo: 'd', titolo: 'Legge di Ohm',
+    testo: 'In un resistore la corrente è direttamente proporzionale alla tensione: I = V : R. Con R in kΩ, la corrente è in mA. La costante è 1 : R.',
+    p: { nome: 'Resistenza R', unit: 'kΩ', min: 1, max: 6, step: 1, def: 2 },
+    x: { nome: 'Tensione V', unit: 'V', min: 1, max: 24, step: 1, def: 12 },
+    y: { nome: 'Corrente I', unit: 'mA' }, f: (x, p) => x / p },
+  { gruppo: 'lab', ind: 'Moda', tipo: 'd', titolo: 'Tessuto per un ordine di gonne',
+    testo: 'Ogni gonna dello stesso modello consuma gli stessi metri di tessuto: capi e metri sono direttamente proporzionali.',
+    p: { nome: 'Metri per gonna', unit: 'm', min: 1, max: 2.5, step: 0.25, def: 1.5 },
+    x: { nome: 'Gonne', unit: '', min: 1, max: 20, step: 1, def: 8 },
+    y: { nome: 'Tessuto', unit: 'm' }, f: (x, p) => p * x },
+  { gruppo: 'lab', ind: 'Grafica', tipo: 'i', titolo: 'Risoluzione di stampa',
+    testo: 'Una foto ha sempre gli stessi pixel. Più pixel si mettono in ogni centimetro, più piccola esce la stampa: risoluzione e larghezza sono inversamente proporzionali.',
+    p: { nome: 'Pixel in larghezza', unit: 'px', min: 1200, max: 4800, step: 600, def: 2400 },
+    x: { nome: 'Pixel per cm', unit: 'px/cm', min: 40, max: 240, step: 20, def: 120 },
+    y: { nome: 'Larghezza della stampa', unit: 'cm' }, f: (x, p) => p / x },
+  { gruppo: 'lab', ind: 'Odontotecnico', tipo: 'd', titolo: 'Acqua e gesso',
+    testo: 'Il gesso va impastato sempre con lo stesso rapporto acqua : polvere: millilitri di acqua e grammi di gesso sono direttamente proporzionali.',
+    p: { nome: 'Rapporto acqua : polvere', unit: 'ml/g', min: 0.2, max: 0.35, step: 0.01, def: 0.25 },
+    x: { nome: 'Gesso', unit: 'g', min: 50, max: 400, step: 50, def: 100 },
+    y: { nome: 'Acqua', unit: 'ml' }, f: (x, p) => p * x },
+  { gruppo: 'lab', ind: 'Socio-sanitario', tipo: 'i', titolo: 'La torta della merenda',
+    testo: 'La stessa torta viene divisa in parti uguali tra gli ospiti: più ospiti, porzioni più piccole. Ospiti e grammi a testa sono inversamente proporzionali.',
+    p: { nome: 'Peso della torta', unit: 'g', min: 600, max: 1200, step: 100, def: 900 },
+    x: { nome: 'Ospiti', unit: '', min: 2, max: 20, step: 1, def: 6 },
+    y: { nome: 'Porzione a testa', unit: 'g' }, f: (x, p) => p / x },
+  { gruppo: 'scienze', tipo: 'd', titolo: 'Salire in quota',
+    testo: 'In atmosfera standard la temperatura scende di circa 6,5 °C per ogni km di salita. La variazione di temperatura è direttamente proporzionale al dislivello, con costante negativa: la y scende, ma il rapporto resta uguale.',
+    p: { nome: 'Costante k', unit: '°C/km', min: -9, max: -4, step: 0.5, def: -6.5 },
+    x: { nome: 'Dislivello', unit: 'km', min: 0.5, max: 4, step: 0.5, def: 2 },
+    y: { nome: 'Variazione di temperatura', unit: '°C' }, f: (x, p) => p * x },
+];
+let casoAttivo = 0;
+const minuscola = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+const conUnita = (v, u) => `${fmt(v)}${u ? ' ' + u : ''}`;
+
+function initCasi() {
+  let html = '', ultimo = '';
+  CASI.forEach((c, i) => {
+    if (c.gruppo !== ultimo) { html += `<div class="case-group">${GRUPPI[c.gruppo]}</div>`; ultimo = c.gruppo; }
+    const t = { d: 'diretta', i: 'inversa', n: 'lineare' }[c.tipo];
+    html += `<button class="case-btn" data-caso="${i}" data-tipo="${c.tipo}" aria-pressed="false"><span>${c.titolo}</span><small>${c.ind ? c.ind + ' · ' : ''}${t}</small></button>`;
+  });
+  $('case-list').innerHTML = html;
+  $('case-list').addEventListener('click', (e) => { const b = e.target.closest('[data-caso]'); if (b) selectCaso(+b.dataset.caso); });
+  $('case-p').addEventListener('input', updateCaso);
+  $('case-x').addEventListener('input', updateCaso);
+  selectCaso(0);
+}
+
+function selectCaso(i) {
+  casoAttivo = i;
+  const c = CASI[i];
+  document.querySelectorAll('.case-btn').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.caso === i)));
+  for (const [id, s] of [['case-p', c.p], ['case-x', c.x]]) Object.assign($(id), { min: s.min, max: s.max, step: s.step, value: s.def });
+  $('case-p-name').textContent = c.p.nome;
+  $('case-x-name').textContent = c.x.nome;
+  $('case-y-name').textContent = c.y.nome;
+  $('case-title').textContent = c.titolo;
+  $('case-text').textContent = c.testo;
+  $('case-badge').textContent = c.tipo === 'd' ? 'Proporzionalità diretta' : c.tipo === 'i' ? 'Proporzionalità inversa' : 'Lineare, con quota fissa';
+  updateCaso();
+}
+
+function updateCaso() {
+  const c = CASI[casoAttivo];
+  const p = +$('case-p').value, x = +$('case-x').value, y = c.f(x, p);
+  const color = accent(c.tipo);
+  $('panel-casi').style.setProperty('--accent', color);
+  $('case-p-out').textContent = conUnita(p, c.p.unit);
+  $('case-x-out').textContent = conUnita(x, c.x.unit);
+  $('case-y').textContent = c.fy ? c.fy(y) : conUnita(y, c.y.unit);
+
+  // relazione: che cosa resta uguale
+  if (c.tipo === 'd') render($('case-rel'), `\\dfrac{y}{x} = \\dfrac{${tex(y)}}{${tex(x)}} = ${tex(y / x)}`);
+  else if (c.tipo === 'i') render($('case-rel'), `x \\cdot y = ${tex(x)} \\cdot ${tex(y)} = ${tex(x * y)}`);
+  else {
+    const x2 = x * 2 <= c.x.max ? x * 2 : x / 2, y2 = c.f(x2, p);
+    render($('case-rel'), `\\dfrac{${tex(y)}}{${tex(x)}} ${esatto2(y / x) ? '=' : '\\approx'} ${tex(Math.round(y / x * 100) / 100)} \\quad \\text{ma} \\quad \\dfrac{${tex(y2)}}{${tex(x2)}} ${esatto2(y2 / x2) ? '=' : '\\approx'} ${tex(Math.round(y2 / x2 * 100) / 100)}`);
+  }
+
+  // il test del raddoppio sul caso
+  const su = x * 2 <= c.x.max;
+  const x2 = su ? x * 2 : x / 2, y2 = c.f(x2, p);
+  const r = y2 / y;
+  const op = su ? '× 2' : '÷ 2', opp = su ? '÷ 2' : '× 2';
+  const fa = Math.abs(r - (su ? 2 : 0.5)) < 1e-9 ? `${op}, come x`
+    : Math.abs(r - (su ? 0.5 : 2)) < 1e-9 ? `${opp}: il contrario di x`
+    : 'né × 2 né ÷ 2';
+  const fy = (v) => (c.fy ? c.fy(v) : conUnita(v, c.y.unit));
+  $('case-double').textContent = `Prova del raddoppio. ${c.x.nome}: da ${conUnita(x, c.x.unit)} a ${conUnita(x2, c.x.unit)} (${op}). ${c.y.nome}: da ${fy(y)} a ${fy(y2)} (${fa}).`;
+
+  // grafico con assi stabili (calcolati sui valori estremi del parametro)
+  let lo = 0, hi = 0;
+  for (const pp of [c.p.min, c.p.max]) for (let i = 0; i <= 40; i++) {
+    const xx = c.x.min + ((c.x.max - c.x.min) * i) / 40, yy = c.f(xx, pp);
+    lo = Math.min(lo, yy); hi = Math.max(hi, yy);
+  }
+  if (c.tipo === 'i') hi = Math.min(hi, c.f(c.x.min, c.p.max));
+  const st = niceStep(hi - lo);
+  drawGraph($('case-graph'), {
+    xmin: 0, xmax: c.x.max, ymin: Math.floor(lo / st) * st, ymax: Math.ceil(hi / st) * st,
+    color, f: (xx) => c.f(xx, p), from: c.tipo === 'i' ? c.x.min / 2 : 0, to: c.x.max,
+    point: { x, y }, figure: c.tipo === 'd' ? 'tri' : c.tipo === 'i' ? 'rect' : 'quota', q: c.tipo === 'n' ? p : 0,
+    xname: c.x.nome, yname: c.y.nome,
+  });
+  $('case-graph').setAttribute('aria-label', `${c.titolo}: con ${c.x.nome.toLowerCase()} ${conUnita(x, c.x.unit)}, ${c.y.nome.toLowerCase()} ${c.fy ? c.fy(y) : conUnita(y, c.y.unit)}.`);
+}
+
+// =====================================================================
+// Schede e avvio
+// =====================================================================
+function initTabs() {
+  const tabs = [...document.querySelectorAll('.tab-btn')];
+  const show = (btn) => {
+    tabs.forEach((b) => {
+      const on = b === btn;
+      b.setAttribute('aria-selected', String(on));
+      b.tabIndex = on ? 0 : -1;
+      $('panel-' + b.dataset.tab).hidden = !on;
+    });
+    if (btn.dataset.tab === 'lab') updateLab();
+    if (btn.dataset.tab === 'casi') updateCaso();
+  };
+  tabs.forEach((b, i) => {
+    b.addEventListener('click', () => show(b));
+    b.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      n.focus(); show(n);
+    });
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (window.renderMathInElement) {
+    renderMathInElement($('panel-allenati'), { delimiters: [{ left: '$', right: '$', display: false }], throwOnError: false });
+  }
+  initTabs();
+  initLab();
+  initCasi();
+  // al cambio di dimensione testi e punti si riscalano
+  const ro = new ResizeObserver(() => { if (!$('panel-lab').hidden) updateLab(); if (!$('panel-casi').hidden) updateCaso(); });
+  ro.observe($('lab-graph')); ro.observe($('case-graph'));
+  // al cambio di tema i colori del grafico si aggiornano
+  new MutationObserver(() => { updateLab(); updateCaso(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+});
+</script>
+</body>
+</html>
