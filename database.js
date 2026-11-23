@@ -60,6 +60,143 @@ const db = [
         ]
     },
     {
+        "title": "FullControl Studio",
+        "excerpt": "FullControl Studio: si disegna un oggetto da stampare in 3D (vaso, spirale, forme a onda) muovendo dei cursori, e ogni cursore cambia il percorso che l'ugello seguirà strato per strato. Si vede il percorso in 3D, si controllano altezza e pendenza, si legge il codice Python FullControl che lo genera e si esporta per Bambu Lab A1 mini, A1 e P2S.",
+        "tags": [
+            "3 EL",
+            "4 EL",
+            "5 EL",
+            "BAMBU LAB",
+            "COORDINATE CILINDRICHE",
+            "ELICA",
+            "FULLCONTROL",
+            "FUNZIONI GONIOMETRICHE",
+            "G-CODE",
+            "IND_C3:FABBRICAZIONE DIGITALE 3D",
+            "MAT_K2:FUNZIONI ELEMENTARI",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "MODELLAZIONE PARAMETRICA",
+            "ONDA",
+            "PERCORSO UTENSILE",
+            "PYTHON",
+            "STAMPA 3D",
+            "TINKERING",
+            "VASO"
+        ],
+        "date": "2026-11-23",
+        "url": "content/apps/fullcontrol_studio.html",
+        "type": "app",
+        "icon": "📈",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/fullcontrol_studio.webp",
+        "allenamento": [
+            {
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            }
+        ],
+        "scheda": "schede/fullcontrol_studio.html",
+        "journal": [
+            {
+                "titolo": "FullControl Studio: il vaso è un percorso",
+                "url": "journal/2026-11-23-fullcontrol-studio-il-vaso-e-un-percorso/",
+                "data": "2026-11-23"
+            }
+        ]
+    },
+    {
+        "title": "Tetracubi 3D: gioco e puzzle da stampare",
+        "excerpt": "Tetracubi 3D: gioco con i sette tetramini fatti di cubi, da ruotare su tre assi e incastrare in un pozzo tridimensionale, e laboratorio che divide un cubo in pezzi da 4 cubetti e li esporta in un file 3MF da stampare in 3D come puzzle.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "3 MF",
+            "BAMBU LAB",
+            "BIENNIO",
+            "CIT_4:COMPETENZA DIGITALE",
+            "CUBO",
+            "GIOCO",
+            "IND_C3:FABBRICAZIONE DIGITALE 3D",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MAT_C4:MODELLI GEOMETRICI E SPAZIALI",
+            "MAT_C4:UTILIZZARE CONCETTI E MODELLI GEOMETRICI PER INTERPRETARE LA REALTÀ E GESTIRE CONFIGURAZIONI SPAZIALI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K3:GEOMETRIA EUCLIDEA E ANALITICA",
+            "POLICUBI",
+            "PUZZLE",
+            "ROTAZIONI",
+            "SCALA",
+            "SCOMPOSIZIONE DI UN SOLIDO",
+            "STAMPA 3D",
+            "TETRACUBI",
+            "TETRAMINI",
+            "TINKERING",
+            "VISIONE SPAZIALE",
+            "VOLUME"
+        ],
+        "date": "2026-11-23",
+        "url": "content/apps/tetracubi_3d.html",
+        "type": "app",
+        "icon": "🎮",
+        "game_type": "memory",
+        "thumbnail": "content/assets/thumbnails/tetracubi_3d.webp",
+        "allenamento": [
+            {
+                "id": "solidi",
+                "titolo": "Solidi e volumi",
+                "url": "allenamento/#/lezione/solidi/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_A4",
+                    "MAT_C4"
+                ]
+            },
+            {
+                "id": "proporzionalita",
+                "titolo": "Proporzionalità diretta e inversa",
+                "url": "allenamento/#/lezione/proporzionalita/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_A2",
+                    "MAT_C2"
+                ]
+            }
+        ],
+        "scheda": "schede/tetracubi_3d.html",
+        "journal": [
+            {
+                "titolo": "Tetracubi 3D: un cubo che si smonta in pezzi da quattro",
+                "url": "journal/2026-11-23-tetracubi-un-cubo-in-pezzi-da-quattro/",
+                "data": "2026-11-23"
+            }
+        ]
+    },
+    {
         "title": "La Bicicletta Poligonale e la Strada a Catenaria",
         "excerpt": "Una bicicletta con le ruote a poligono regolare (dal triangolo a 36 lati) corre in 3D su una strada fatta di archi di catenaria capovolta: il mozzo resta sempre alla stessa quota. Cursore dei lati, vista di profilo, tour automatico, luce del giorno e della notte.",
         "tags": [
