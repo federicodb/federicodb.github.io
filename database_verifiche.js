@@ -348,19 +348,20 @@ const db_verifiche = [
                 ]
             },
             {
+                "id": "proporzionalita",
+                "titolo": "Proporzionalità diretta e inversa",
+                "url": "allenamento/#/lezione/proporzionalita/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
                 "id": "statistica",
                 "titolo": "Statistica",
                 "url": "allenamento/#/lezione/statistica/1",
                 "mat": [
                     "MAT_A2"
-                ]
-            },
-            {
-                "id": "esponenziali",
-                "titolo": "Esponenziali",
-                "url": "allenamento/#/lezione/esponenziali/1",
-                "mat": [
-                    "MAT_K2"
                 ]
             }
         ],

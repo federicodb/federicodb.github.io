@@ -4,6 +4,62 @@
 
 const db = [
     {
+        "title": "Proporzionalità diretta e inversa",
+        "excerpt": "Laboratorio sulla proporzionalità: sposta il punto, raddoppia x e prevedi che cosa fa y. Rapporto costante (diretta, con k positivo o negativo), prodotto costante (inversa) e il tranello della quota fissa, con casi reali della vita di tutti i giorni e dei laboratori.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "COSTANTE DI PROPORZIONALITÀ",
+            "IPERBOLE",
+            "LEGGE DI OHM",
+            "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
+            "MAT_C2:PENSIERO RAZIONALE",
+            "MAT_K2:FUNZIONI ELEMENTARI",
+            "PRODOTTO COSTANTE",
+            "PROPORZIONALITÀ DIRETTA",
+            "PROPORZIONALITÀ INVERSA",
+            "QUOTA FISSA",
+            "RAPPORTO COSTANTE",
+            "RETTA PER L'ORIGINE",
+            "RUOTE DENTATE"
+        ],
+        "date": "2026-11-23",
+        "url": "content/apps/proporzionalita_diretta_inversa.html",
+        "type": "app",
+        "icon": "🧩",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/proporzionalita_diretta_inversa.webp",
+        "allenamento": [
+            {
+                "id": "proporzionalita",
+                "titolo": "Proporzionalità diretta e inversa",
+                "url": "allenamento/#/lezione/proporzionalita/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_A2",
+                    "MAT_C2"
+                ]
+            },
+            {
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_C2"
+                ]
+            }
+        ],
+        "scheda": "schede/proporzionalita_diretta_inversa.html",
+        "journal": [
+            {
+                "titolo": "Proporzionalità: che cosa resta uguale",
+                "url": "journal/2026-11-23-proporzionalita-che-cosa-resta-uguale/",
+                "data": "2026-11-23"
+            }
+        ]
+    },
+    {
         "title": "La Bicicletta Poligonale e la Strada a Catenaria",
         "excerpt": "Una bicicletta con le ruote a poligono regolare (dal triangolo a 36 lati) corre in 3D su una strada fatta di archi di catenaria capovolta: il mozzo resta sempre alla stessa quota. Cursore dei lati, vista di profilo, tour automatico, luce del giorno e della notte.",
         "tags": [
@@ -1697,9 +1753,9 @@ const db = [
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "proporzionalita",
+                "titolo": "Proporzionalità diretta e inversa",
+                "url": "allenamento/#/lezione/proporzionalita/1",
                 "mat": [
                     "MAT_K2"
                 ]
@@ -2320,17 +2376,18 @@ const db = [
                 ]
             },
             {
-                "id": "proporzioni",
-                "titolo": "Proporzioni",
-                "url": "allenamento/#/lezione/proporzioni/1",
+                "id": "proporzionalita",
+                "titolo": "Proporzionalità diretta e inversa",
+                "url": "allenamento/#/lezione/proporzionalita/1",
                 "mat": [
+                    "MAT_A2",
                     "MAT_K2"
                 ]
             },
             {
-                "id": "equazioni-2",
-                "titolo": "Equazioni di secondo grado",
-                "url": "allenamento/#/lezione/equazioni-2/1",
+                "id": "proporzioni",
+                "titolo": "Proporzioni",
+                "url": "allenamento/#/lezione/proporzioni/1",
                 "mat": [
                     "MAT_K2"
                 ]
