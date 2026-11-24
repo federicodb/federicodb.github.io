@@ -12,9 +12,21 @@ python3 tools/tetracubi_3d/compila.py   # index.html + game.js + lab.js → cont
   quindi il puzzle si rimonta sempre), dispone i pezzi sul piatto ed esporta il 3MF.
 
 Scelte da non disfare:
-- **Dimensione di stampa fissa**: i pezzi più alti (due cubi) escono alti 20 mm, cioè la geometria con cubi da 20 mm
-  e gioco 0,2 mm scalata del 51,54% (`SCALA` in `lab.js`). Chi li vuole più grandi li scala in Bambu Studio.
-  Niente ingrandimento automatico fino a riempire il piatto.
+- **Dimensione di stampa fissa**: i pezzi più alti (due cubi) escono alti 20 mm a scala 100%: passo del cubetto
+  `UNITA` = (20 + 0,2) / 2 = 10,1 mm, gioco 0,2 mm fra pezzi (`CLEARANCE`). Chi li vuole più grandi li scala in
+  Bambu Studio. Niente ingrandimento automatico fino a riempire il piatto.
+- **Stampabilità**: ogni pezzo è un blocco pieno; i cubetti sono gusci smussati (`chamferBox` in `game.js`) che si
+  compenetrano di `SOVRAPP` = 0,4 mm, con smusso `SMUSSO` = 0,8 mm a 45°: fra cubetti resta una scanalatura di 0,4 mm.
+  Nessuno sbalzo oltre 45° (verificato da `tests/tetracubi.spec.js`). L'anteprima usa la stessa geometria.
+- Passaggio laboratorio → stampante: (x, y, z) → (x, −z, y), una rotazione (mai uno specchio: Vite+ e Vite− si scambierebbero).
+- **Codice del set** (`444-7KQ2M`: forma + 5 caratteri del seme): stesso codice, stesso set e stesse istruzioni;
+  nel nome del 3MF e del PDF; `?set=CODICE` apre il laboratorio.
+- **Istruzioni PDF**: ordine di montaggio calcolato smontando il solido (ogni pezzo esce in linea retta), pagine
+  disegnate su canvas e impacchettate in un PDF minimo con JPEG (nessuna libreria). I pezzi sono numerati in quell'ordine.
+- Gioco: i cubetti di uno stesso pezzo restano uniti anche dopo l'atterraggio (`pid`); discesa automatica con
+  cursore Velocità (×0,5…×2 sull'intervallo del livello) o guidata (scende solo con Shift, Spazio o «Scendi»).
 - Nome e colori propri (palette del sito), non quelli di giochi commerciali.
-- Chiavi salvate: `orfini_tetracubi_record`, `orfini_tetracubi_pozzo`, `orfini_tetracubi_muto`.
-- Gancio di prova: `window.__lab.info()` (pezzi, copertura, `maxPrintH`, `scala`) ed `exportBase64()`.
+- Chiavi salvate: `orfini_tetracubi_record` (e `_record_guidata`), `orfini_tetracubi_pozzo`, `orfini_tetracubi_muto`,
+  `orfini_tetracubi_modo`, `orfini_tetracubi_velocita`.
+- Ganci di prova: `window.__lab` (`info()`, `plan()`, `printMeshes()`, `open(codice)`, `pdfBase64()`, `exportBase64()`)
+  e `window.__t3` (`setModo`, `setVelocita`, `gravMs`, `stepDown`). Test: `npx playwright test tests/tetracubi.spec.js`.

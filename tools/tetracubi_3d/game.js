@@ -3,7 +3,6 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -42,12 +41,18 @@ const DAS = 160, ARR = 45, LOCK_DELAY = 500, MAX_RESETS = 12;
 
 let W = 5, D = 5, H = 12;
 let grid = new Uint8Array(W * D * H);
+let pid = new Int32Array(W * D * H);   // numero del pezzo che occupa la cella (0 = nessuno)
+let pieceSeq = 0;
 let state = 'menu';           // menu | playing | clearing | paused | over
 let cur = null;               // { type, cells, x, y, z }
 let queue = [], bag = [];
 let holdType = null, holdUsed = false;
 let score = 0, lines = 0, level = 1;
-let best = +(localStorage.getItem('orfini_tetracubi_record') || 0);
+let modo = localStorage.getItem('orfini_tetracubi_modo') === 'guidata' ? 'guidata' : 'auto';
+let velocita = Math.min(2, Math.max(.5, +(localStorage.getItem('orfini_tetracubi_velocita') || 1) || 1));
+// record separati: la discesa guidata non gareggia con quella automatica
+const recordKey = () => modo === 'guidata' ? 'orfini_tetracubi_record_guidata' : 'orfini_tetracubi_record';
+let best = +(localStorage.getItem(recordKey()) || 0);
 let fallAcc = 0, lockTimer = 0, lockResets = 0, softDrop = false;
 let clearing = null;
 let selectedSize = localStorage.getItem('orfini_tetracubi_pozzo') || 'classic';
@@ -171,8 +176,97 @@ composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
 /* materiali e geometrie condivise */
-const geo = new RoundedBoxGeometry(.96, .96, .96, 3, .07);
-const edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(.99, .99, .99));
+/* Cubetto smussato. I sei bit di `mask` dicono quali facce toccano un cubetto
+   dello stesso pezzo (+x, -x, +y, -y, +z, -z): lì il cubetto si allunga di `ov`
+   dentro il vicino e lo smusso resta una scanalatura sottile, così il pezzo si
+   legge come un blocco unico in cui i cubetti si contano ancora. Le facce libere
+   rientrano di `inset`. Gli smussi sono a 45°: la stessa forma va in stampa. */
+const DIRS6 = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+function maskOf(cells, c) {
+  const set = cells instanceof Set ? cells : new Set(cells.map(k => k.join(',')));
+  let m = 0;
+  DIRS6.forEach((d, i) => { if (set.has([c[0] + d[0], c[1] + d[1], c[2] + d[2]].join(','))) m |= 1 << i; });
+  return m;
+}
+function chamferBox(mask, inset, ov, ch) {
+  const lo = [0, 1, 2].map(a => -.5 + (mask & (1 << (2 * a + 1)) ? -ov : inset));
+  const hi = [0, 1, 2].map(a => .5 + (mask & (1 << (2 * a)) ? ov : -inset));
+  const ctr = [0, 1, 2].map(a => (lo[a] + hi[a]) / 2);
+  const verts = [], tris = [], ids = new Map();
+  // V(s, a): vertice dell'angolo s (bit per asse) sulla faccia perpendicolare all'asse a
+  const V = (s, a) => {
+    const k = s * 3 + a;
+    if (!ids.has(k)) {
+      ids.set(k, verts.length);
+      verts.push([0, 1, 2].map(b => {
+        const up = (s >> b) & 1;
+        return b === a ? (up ? hi[b] : lo[b]) : (up ? hi[b] - ch : lo[b] + ch);
+      }));
+    }
+    return ids.get(k);
+  };
+  const poly = q => {
+    const P = q.map(i => verts[i]);
+    const c = [0, 1, 2].map(b => P.reduce((t, p) => t + p[b], 0) / P.length);
+    const u = P[1].map((x, b) => x - P[0][b]), v = P[2].map((x, b) => x - P[0][b]);
+    const n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+    const out = n[0] * (c[0] - ctr[0]) + n[1] * (c[1] - ctr[1]) + n[2] * (c[2] - ctr[2]) > 0;
+    const r = out ? q : q.slice().reverse();
+    for (let i = 1; i < r.length - 1; i++) tris.push([r[0], r[i], r[i + 1]]);
+  };
+  const S = (bits) => bits[0] | (bits[1] << 1) | (bits[2] << 2);
+  for (let a = 0; a < 3; a++) {
+    const b = (a + 1) % 3, c = (a + 2) % 3;
+    for (const sa of [0, 1]) {
+      // faccia (a, sa)
+      const corner = (sb, sc) => { const t = []; t[a] = sa; t[b] = sb; t[c] = sc; return S(t); };
+      poly([V(corner(0, 0), a), V(corner(1, 0), a), V(corner(1, 1), a), V(corner(0, 1), a)]);
+      // smusso fra la faccia (a, sa) e la faccia (b, sb), lungo l'asse c
+      for (const sb of [0, 1]) poly([V(corner(sb, 0), a), V(corner(sb, 0), b), V(corner(sb, 1), b), V(corner(sb, 1), a)]);
+    }
+  }
+  for (let s = 0; s < 8; s++) poly([V(s, 0), V(s, 1), V(s, 2)]);
+  return { verts, tris };
+}
+const geoCache = new Map();
+function cellGeometry(mask, inset, ov, ch) {
+  const key = [mask, inset, ov, ch].join('|');
+  if (!geoCache.has(key)) {
+    const { verts, tris } = chamferBox(mask, inset, ov, ch);
+    const pos = [];
+    for (const t of tris) for (const i of t) pos.push(...verts[i]);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.computeVertexNormals();
+    geoCache.set(key, g);
+  }
+  return geoCache.get(key);
+}
+const GAME_CUBE = { inset: .02, ov: .055, ch: .08 };
+const gameGeo = mask => cellGeometry(mask, GAME_CUBE.inset, GAME_CUBE.ov, GAME_CUBE.ch);
+const geo = gameGeo(0);
+// contorno per il fantasma: solo gli spigoli fra due facce libere
+const edgeCache = new Map();
+function ghostEdges(mask) {
+  if (!edgeCache.has(mask)) {
+    const free = (a, s) => !(mask & (1 << (2 * a + (s ? 0 : 1))));
+    const pts = [], h = .495;
+    for (let a = 0; a < 3; a++) {
+      const b = (a + 1) % 3, c = (a + 2) % 3;
+      for (const sb of [0, 1]) for (const sc of [0, 1]) {
+        if (!free(b, sb) || !free(c, sc)) continue;
+        for (const sa of [0, 1]) {
+          const p = []; p[a] = sa ? h : -h; p[b] = sb ? h : -h; p[c] = sc ? h : -h;
+          pts.push(...p);
+        }
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+    edgeCache.set(mask, g);
+  }
+  return edgeCache.get(mask);
+}
 const footGeo = new THREE.PlaneGeometry(.9, .9);
 const mats = {}, activeMats = {}, ghostMats = {}, footMats = {}, ghostEdgeMats = {};
 for (const t of TYPES) {
@@ -268,7 +362,13 @@ function rebuildLocked() {
       for (let x = 0; x < W; x++) {
         const v = grid[idx(x, y, z)];
         if (!v) continue;
-        const m = new THREE.Mesh(geo, mats[TYPES[v - 1]]);
+        const p = pid[idx(x, y, z)];
+        let mask = 0;
+        if (p) DIRS6.forEach((d, i) => {
+          const X = x + d[0], Y = y + d[1], Z = z + d[2];
+          if (X >= 0 && X < W && Y >= 0 && Y < H && Z >= 0 && Z < D && pid[idx(X, Y, Z)] === p) mask |= 1 << i;
+        });
+        const m = new THREE.Mesh(gameGeo(mask), mats[TYPES[v - 1]]);
         m.position.set(...cellToWorld(x, y, z));
         m.castShadow = m.receiveShadow = true;
         m.userData = { x, y, z };
@@ -300,20 +400,23 @@ function refill() {
   }
 }
 
-function buildActive() {
+function fillActive() {
   activeGroup.clear();
+  const set = new Set(cur.cells.map(c => c.join(',')));
   for (const c of cur.cells) {
-    const m = new THREE.Mesh(geo, activeMats[cur.type]);
+    const m = new THREE.Mesh(gameGeo(maskOf(set, c)), activeMats[cur.type]);
     m.position.set(...c);
     m.castShadow = true;
     activeGroup.add(m);
   }
+}
+function buildActive() {
+  fillActive();
   activeGroup.position.set(...cellToWorld(cur.x, cur.y, cur.z));
 }
 
-function updateActiveOffsets() {
-  activeGroup.children.forEach((m, i) => m.position.set(...cur.cells[i]));
-}
+// dopo una rotazione cambiano le facce di contatto: si rifanno i cubetti
+function updateActiveOffsets() { fillActive(); }
 
 function refreshGhost() {
   ghostGroup.clear();
@@ -335,10 +438,11 @@ function refreshGhost() {
     }
     if (gy < cur.y) {
       const pos = cellToWorld(gx, gy + c[1], gz);
-      const m = new THREE.Mesh(geo, ghostMats[cur.type]);
+      const mask = maskOf(cur.cells, c);
+      const m = new THREE.Mesh(gameGeo(mask), ghostMats[cur.type]);
       m.position.set(...pos);
       ghostGroup.add(m);
-      const e = new THREE.LineSegments(edgeGeo, ghostEdgeMats[cur.type]);
+      const e = new THREE.LineSegments(ghostEdges(mask), ghostEdgeMats[cur.type]);
       e.position.set(...pos);
       ghostGroup.add(e);
     }
@@ -423,6 +527,13 @@ function hardDrop() {
   lockPiece();
 }
 
+// un passo verso il basso; se il pezzo è già appoggiato, si ferma lì
+function stepDown() {
+  if (state !== 'playing' || !cur) return;
+  if (tryMove(0, -1, 0)) { score++; updateHud(); sfx.move(); }
+  else lockPiece();
+}
+
 function doHold() {
   if (state !== 'playing' || !cur || holdUsed) return;
   const t = cur.type;
@@ -435,10 +546,12 @@ function doHold() {
 
 function lockPiece() {
   let topOut = false;
+  pieceSeq++;
   for (const c of cur.cells) {
     const X = cur.x + c[0], Y = cur.y + c[1], Z = cur.z + c[2];
     if (Y >= H) { topOut = true; continue; }
     grid[idx(X, Y, Z)] = TYPES.indexOf(cur.type) + 1;
+    pid[idx(X, Y, Z)] = pieceSeq;
   }
   cur = null;
   activeGroup.clear(); ghostGroup.clear(); footGroup.clear();
@@ -473,14 +586,17 @@ function updateClear(dt) {
 function finishClear() {
   const n = clearing.layers.length;
   const ls = new Set(clearing.layers);
-  const ng = new Uint8Array(W * D * H);
+  const ng = new Uint8Array(W * D * H), np = new Int32Array(W * D * H);
   let ny = 0;
   for (let y = 0; y < H; y++) {
     if (ls.has(y)) continue;
-    for (let z = 0; z < D; z++) for (let x = 0; x < W; x++) ng[idx(x, ny, z)] = grid[idx(x, y, z)];
+    for (let z = 0; z < D; z++) for (let x = 0; x < W; x++) {
+      ng[idx(x, ny, z)] = grid[idx(x, y, z)];
+      np[idx(x, ny, z)] = pid[idx(x, y, z)];
+    }
     ny++;
   }
-  grid = ng;
+  grid = ng; pid = np;
   rebuildLocked();
   lines += n;
   level = 1 + Math.floor(lines / 10);
@@ -504,17 +620,23 @@ function popup(n, pts) {
   el.addEventListener('animationend', () => el.remove());
 }
 
-const gravMs = () => Math.max(70, Math.round(820 * Math.pow(.82, level - 1)));
+// Discesa automatica: l'intervallo si accorcia col livello; il cursore Velocità
+// lo moltiplica (×0,5 … ×2), quindi la crescita col livello resta la stessa.
+// Discesa guidata: il pezzo resta fermo finché non lo si fa scendere.
+const gravMs = () => Math.max(45, Math.round(820 * Math.pow(.82, level - 1) / velocita));
 
 function stepPlay(dt) {
   if (!cur) return;
+  const fermo = modo === 'guidata' && !softDrop;
   if (grounded()) {
     fallAcc = 0;
+    if (fermo) { lockTimer = 0; return; }
     lockTimer += dt;
     if (lockTimer >= LOCK_DELAY) lockPiece();
     return;
   }
   lockTimer = 0;
+  if (fermo) { fallAcc = 0; return; }
   fallAcc += dt;
   const iv = softDrop ? 40 : gravMs();
   while (fallAcc >= iv) {
@@ -680,6 +802,7 @@ document.querySelectorAll('#touch button, #rotPad button').forEach(b => {
   const fire = () => {
     unlockAudio();
     if (act === 'drop') hardDrop();
+    else if (act === 'step') stepDown();
     else if (act === 'hold') doHold();
     else if (act.startsWith('rot')) tryRotate(act[3].toLowerCase(), act[4] === '+' ? 1 : -1);
     else {
@@ -690,7 +813,7 @@ document.querySelectorAll('#touch button, #rotPad button').forEach(b => {
   b.addEventListener('pointerdown', e => {
     e.preventDefault();
     fire();
-    if (TOUCH_DIRS[act]) to = setTimeout(() => { iv = setInterval(fire, 110); }, 220);
+    if (TOUCH_DIRS[act] || act === 'step') to = setTimeout(() => { iv = setInterval(fire, 110); }, 220);
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev =>
     b.addEventListener(ev, () => { clearTimeout(to); clearInterval(iv); iv = null; }));
@@ -714,6 +837,8 @@ function startGame() {
   const sz = SIZES[selectedSize] || SIZES.classic;
   W = sz.W; D = sz.D; H = sz.H;
   grid = new Uint8Array(W * D * H);
+  pid = new Int32Array(W * D * H); pieceSeq = 0;
+  best = +(localStorage.getItem(recordKey()) || 0);
   score = 0; lines = 0; level = 1;
   holdType = null; holdUsed = false;
   queue = []; bag = []; cur = null; clearing = null;
@@ -737,7 +862,7 @@ function gameOver() {
   orbitOn = !reducedMotion;
   paintOrbit();
   const record = score > best;
-  if (record) { best = score; localStorage.setItem('orfini_tetracubi_record', best); }
+  if (record) { best = score; localStorage.setItem(recordKey(), best); }
   $('newRecord').hidden = !record;
   $('finalScore').textContent = score;
   $('finalLines').textContent = lines;
@@ -762,22 +887,50 @@ function resetView() {
   else resetCamera();
 }
 
-document.querySelectorAll('.sizebtn').forEach(b => {
+document.querySelectorAll('.sizebtn[data-size]').forEach(b => {
   if (b.dataset.size === selectedSize) {
-    document.querySelectorAll('.sizebtn').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    document.querySelectorAll('.sizebtn[data-size]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
   }
   b.addEventListener('click', () => {
     selectedSize = b.dataset.size;
     localStorage.setItem('orfini_tetracubi_pozzo', selectedSize);
-    document.querySelectorAll('.sizebtn').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    document.querySelectorAll('.sizebtn[data-size]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     const sz = SIZES[selectedSize];
     W = sz.W; D = sz.D; H = sz.H;
     grid = new Uint8Array(W * D * H);
+    pid = new Int32Array(W * D * H);
     buildWell();
     resetCamera();
     seedMenuStack();
   });
 });
+
+/* discesa: automatica (con cursore della velocità) o guidata */
+const speedEl = $('speed'), speedVal = $('speedVal');
+function paintModo() {
+  document.body.dataset.discesa = modo;
+  document.querySelectorAll('.modebtn').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.modo === modo)));
+  speedEl.value = Math.round(velocita * 100);
+  speedVal.textContent = '×' + velocita.toLocaleString('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  bestEl.textContent = Math.max(best, score);
+}
+function setModo(m) {
+  modo = m === 'guidata' ? 'guidata' : 'auto';
+  localStorage.setItem('orfini_tetracubi_modo', modo);
+  best = +(localStorage.getItem(recordKey()) || 0);
+  paintModo();
+}
+function setVelocita(v) {
+  velocita = Math.min(2, Math.max(.5, v));
+  localStorage.setItem('orfini_tetracubi_velocita', String(velocita));
+  paintModo();
+}
+document.querySelectorAll('.modebtn').forEach(b => b.addEventListener('click', () => setModo(b.dataset.modo)));
+speedEl.addEventListener('input', () => setVelocita(speedEl.value / 100));
+// dopo il trascinamento il cursore lascia le frecce al gioco
+speedEl.addEventListener('change', () => speedEl.blur());
+speedEl.addEventListener('pointerup', () => speedEl.blur());
+paintModo();
 
 /* pila decorativa dietro il menu */
 function seedMenuStack() {
@@ -811,6 +964,8 @@ window.__t3 = {
   set: (x, y, z, v) => { grid[idx(x, y, z)] = v; rebuildLocked(); },
   get state() { return state; }, get score() { return score; },
   get lines() { return lines; }, get cur() { return cur; },
+  setModo, setVelocita, gravMs, stepDown,
+  get modo() { return modo; }, get velocita() { return velocita; },
 };
 if (location.hash === '#play') startGame();
 

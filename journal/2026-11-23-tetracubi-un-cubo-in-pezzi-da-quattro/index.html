@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tetracubi 3D: un cubo che si smonta in pezzi da quattro | Journal · Orfini Math Lab</title>
-    <meta name="description" content="Un gioco a strati con i tetramini fatti di cubi e un laboratorio che divide un cubo in pezzi da 4 cubetti e li prepara per la stampa 3D: contare, ruotare nello spazio e capire che cosa succede al volume quando si ingrandisce.">
+    <meta name="description" content="Un gioco a strati con i tetramini fatti di cubi e un laboratorio che divide un cubo in pezzi da 4 cubetti, li prepara per la stampa 3D e scrive le istruzioni per rimontarlo: contare, ruotare nello spazio e capire che cosa succede al volume quando si ingrandisce.">
     <meta name="author" content="Prof. Federico De Benedictis">
     <link rel="canonical" href="https://federicodb.github.io/journal/2026-11-23-tetracubi-un-cubo-in-pezzi-da-quattro/">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://federicodb.github.io/journal/2026-11-23-tetracubi-un-cubo-in-pezzi-da-quattro/">
     <meta property="og:title" content="Tetracubi 3D: un cubo che si smonta in pezzi da quattro">
-    <meta property="og:description" content="Un gioco a strati con i tetramini fatti di cubi e un laboratorio che divide un cubo in pezzi da 4 cubetti e li prepara per la stampa 3D: contare, ruotare nello spazio e capire che cosa succede al volume quando si ingrandisce.">
+    <meta property="og:description" content="Un gioco a strati con i tetramini fatti di cubi e un laboratorio che divide un cubo in pezzi da 4 cubetti, li prepara per la stampa 3D e scrive le istruzioni per rimontarlo: contare, ruotare nello spazio e capire che cosa succede al volume quando si ingrandisce.">
     <meta property="og:image" content="https://federicodb.github.io/journal/2026-11-23-tetracubi-un-cubo-in-pezzi-da-quattro/copertina.webp">
     <meta property="article:published_time" content="2026-11-23">
     <link href="/content/assets/fonts/inter-syne-spacemono-bf47f3.css" rel="stylesheet">
@@ -185,22 +185,25 @@
             <header>
                 <p class="jr-meta"><time datetime="2026-11-23">23 novembre 2026</time> · Prof. Federico De Benedictis</p>
                 <h1>Tetracubi 3D: un cubo che si smonta in pezzi da quattro</h1>
-                <p class="jr-lead">Un gioco a strati con i tetramini fatti di cubi e un laboratorio che divide un cubo in pezzi da 4 cubetti e li prepara per la stampa 3D: contare, ruotare nello spazio e capire che cosa succede al volume quando si ingrandisce.</p>
+                <p class="jr-lead">Un gioco a strati con i tetramini fatti di cubi e un laboratorio che divide un cubo in pezzi da 4 cubetti, li prepara per la stampa 3D e scrive le istruzioni per rimontarlo: contare, ruotare nello spazio e capire che cosa succede al volume quando si ingrandisce.</p>
                 <ul class="jr-tags" aria-label="Temi"><li><a href="../../index.html?tag=bambu%20lab">Bambu lab</a></li><li><a href="../../index.html?tag=cubo">Cubo</a></li><li><a href="../../index.html?tag=gioco">Gioco</a></li><li><a href="../../index.html?tag=policubi">Policubi</a></li><li><a href="../../index.html?tag=puzzle">Puzzle</a></li><li><a href="../../index.html?tag=rotazioni">Rotazioni</a></li></ul>
             </header>
             <div class="jr-body">
 <h2>Cosa è</h2>
 <p>Due attività nella stessa pagina.</p>
 <ul>
-<li><strong>Il gioco</strong>: i sette tetramini, fatti di cubi, cadono in un pozzo a tre dimensioni. Si ruotano di 90° attorno a tre assi e si incastrano; uno strato pieno sparisce. Il pozzo può essere $5 \times 5$ o $7 \times 7$.</li>
-<li><strong>Il laboratorio "Un cubo in pezzi"</strong>: si sceglie un solido (cubo $4 \times 4 \times 4$, blocchi $4 \times 4 \times 2$ e $4 \times 3 \times 2$, cubo $2 \times 2 \times 2$) e l'app lo divide a caso in pezzi da 4 cubetti. Un cursore smonta e rimonta il puzzle, un altro lo fa esplodere; la vista <strong>Piatto</strong> mostra i pezzi come usciranno dalla stampante. Il file 3MF si apre in Bambu Studio e si stampa senza supporti.</li>
+<li><strong>Il gioco</strong>: i sette tetramini, fatti di cubi, cadono in un pozzo a tre dimensioni. Si ruotano di 90° attorno a tre assi e si incastrano; uno strato pieno sparisce. Il pozzo può essere $5 \times 5$ o $7 \times 7$. La discesa è <strong>automatica</strong>, con un cursore che rallenta o accelera la velocità del livello raggiunto, oppure <strong>guidata</strong>: il pezzo resta fermo finché non lo si fa scendere, e c'è tutto il tempo per ruotarlo.</li>
+<li><strong>Il laboratorio "Un cubo in pezzi"</strong>: si sceglie un solido (cubo $4 \times 4 \times 4$, blocchi $4 \times 4 \times 2$ e $4 \times 3 \times 2$, cubo $2 \times 2 \times 2$) e l'app lo divide a caso in pezzi da 4 cubetti. Un cursore smonta e rimonta il puzzle, un altro lo fa esplodere; la vista <strong>Piatto</strong> mostra i pezzi come usciranno dalla stampante. Il file 3MF si apre in Bambu Studio e si stampa senza supporti; il PDF delle <strong>istruzioni</strong> mostra passo per passo come rimontare il solido.</li>
+<li><strong>Il codice del set</strong>: ogni set ha un codice, per esempio <code>444-7KQ2M</code>, che finisce nel nome del 3MF e del PDF. Riscrivendolo nel laboratorio si ritrova lo stesso set, con le stesse istruzioni.</li>
 </ul>
-<figure><img loading="lazy" alt="Una partita in corso: un pezzo verde scende mentre gli strati in basso si riempiono" src="../media/tetracubi-partita.webp"><figcaption>Una partita in corso: un pezzo verde scende mentre gli strati in basso si riempiono</figcaption></figure>
+<figure><img loading="lazy" alt="Una partita in corso: un pezzo azzurro scende mentre gli strati in basso si riempiono" src="../media/tetracubi-partita.webp"><figcaption>Una partita in corso: un pezzo azzurro scende mentre gli strati in basso si riempiono</figcaption></figure>
 <h2>L'idea matematica: contare i cubetti</h2>
 <p>Un <strong>tetracubo</strong> è un pezzo di 4 cubetti uniti faccia contro faccia. Il conto del laboratorio è sempre in vista: $4 \cdot 4 \cdot 4 = 64 = 16 \cdot 4$. Un solido si divide in tetracubi solo se il numero dei suoi cubetti è un <strong>multiplo di 4</strong>: il cubo $3 \times 3 \times 3$ ha $27$ cubetti, e quindi non si può. È una condizione necessaria ma non sufficiente: il conto può tornare e l'incastro non esserci.</p>
-<p>Il laboratorio non cerca la soluzione: parte dalla soluzione. Divide il solido e poi mescola i pezzi, quindi il puzzle si rimonta sempre.</p>
+<p>Il laboratorio non cerca la soluzione: parte dalla soluzione. Divide il solido e poi mescola i pezzi, quindi il puzzle si rimonta sempre. Per le istruzioni lo smonta al contrario: toglie ogni volta un pezzo che esce in linea retta senza urtare gli altri, cominciando dall'alto. Letta all'indietro, quella sequenza è il montaggio, e ogni pezzo entra dalla parte da cui era uscito.</p>
 <figure><img loading="lazy" alt="Il montaggio a metà: i pezzi tornano al loro posto dentro il contorno del cubo" src="../media/tetracubi-montaggio.webp"><figcaption>Il montaggio a metà: i pezzi tornano al loro posto dentro il contorno del cubo</figcaption></figure>
+<figure><img loading="lazy" alt="Due passi delle istruzioni: il pezzo nuovo è colorato, quelli già montati sono grigi, la freccia indica da dove entra" src="../media/tetracubi-istruzioni.webp"><figcaption>Due passi delle istruzioni: il pezzo nuovo è colorato, quelli già montati sono grigi, la freccia indica da dove entra</figcaption></figure>
 <p><strong>Girare nello spazio.</strong> Nel piano i tetramini J e L sono uno lo specchio dell'altro, e nessuna rotazione li sovrappone. Nello spazio sì: basta capovolgere il pezzo, come si gira una pagina. Lo stesso vale per S e Z. Le due <strong>Viti</strong> del laboratorio invece restano diverse anche in 3D: sono speculari come la mano destra e la sinistra.</p>
+<p><strong>Stampare senza supporti.</strong> Ogni pezzo è un blocco pieno, appoggiato sul lato più piatto. Fra un cubetto e l'altro resta solo una scanalatura sottile, con le pareti inclinate di $45°$. La stampante costruisce ogni strato su quello sotto: su una parete a $45°$ ogni strato si sposta in fuori di quanto è alto, perché $\tan 45° = 1$. Con strati alti $0{,}2$ mm e un filo largo $0{,}4$ mm, metà del filo poggia ancora sullo strato sotto, e non servono supporti.</p>
 <p><strong>Ingrandire.</strong> I pezzi più alti escono dalla stampante alti $20$ mm, cioè il lato di un cubetto è circa $10$ mm. Se in Bambu Studio si raddoppia la scala, ogni lato raddoppia, ma il volume diventa $2^3 = 8$ volte più grande: otto volte la plastica e, più o meno, otto volte il tempo.</p>
 <figure><img loading="lazy" alt="La vista Piatto: i sedici pezzi disposti in file, ognuno appoggiato sul lato più piatto" src="../media/tetracubi-piatto.webp"><figcaption>La vista Piatto: i sedici pezzi disposti in file, ognuno appoggiato sul lato più piatto</figcaption></figure>
 <section class="jr-studenti"><h2>Per prepararti alla verifica</h2>
@@ -218,11 +221,12 @@
 </section>
 <h2>Come usarla in classe</h2>
 <p>Una proposta per iniziare: alla LIM si apre il laboratorio sul cubo $2 \times 2 \times 2$, il puzzle più piccolo, e si chiede alla classe quanti pezzi servono e perché sono uguali. Poi si passa al cubo $4 \times 4 \times 4$ e alla domanda del pannello: il cubo $3 \times 3 \times 3$ si può dividere in pezzi da 4? La risposta arriva contando, prima ancora di provare.</p>
-<p>Il passo successivo è la stampa: secondo la stima dell'app, il set di sedici pezzi si stampa in meno di un'ora, e poi passa di mano in mano. Rimontare il cubo è un esercizio di visione spaziale, e il gioco allena la stessa abilità: ruotare un pezzo nella testa prima di farlo sullo schermo.</p>
+<p>Il passo successivo è la stampa: secondo la stima dell'app, il set di sedici pezzi si stampa in meno di un'ora. Con il set si stampano le istruzioni, e il codice si scrive sul sacchetto: i gruppi si scambiano i set e rimontano il cubo seguendo i passi, poi provano senza istruzioni. Rimontare il cubo è un esercizio di visione spaziale, e il gioco allena la stessa abilità: ruotare un pezzo nella testa prima di farlo sullo schermo. Per chi comincia c'è la discesa guidata, che toglie la fretta.</p>
 <p>Il filo con le altre attività: la scala che fa crescere il volume come il cubo del lato è il rovescio della <a href="../2026-11-23-proporzionalita-che-cosa-resta-uguale/">proporzionalità diretta</a>, perché il volume <strong>non</strong> è proporzionale al lato. Per un altro oggetto da stampare e far girare ci sono le <a href="../2026-11-05-ruote-che-non-sobbalzano/">ruote che non sobbalzano</a>. Le regole e quattro esercizi sono nella <a href="/schede/tetracubi_3d.html">scheda da stampare</a>. Per allenarsi: <strong>Solidi e volumi</strong> e <strong>Proporzionalità diretta e inversa</strong> nella Quest.</p>
 <h2>A cosa fare attenzione</h2>
 <ul>
-<li><strong>Il gioco tra i pezzi</strong> è di $0{,}2$ mm alla scala piena e si riduce con la scala: con una stampante poco tarata i pezzi possono entrare a fatica. Conviene provare prima il cubo $2 \times 2 \times 2$.</li>
+<li><strong>Il gioco tra i pezzi</strong> è di $0{,}2$ mm alla dimensione proposta: con una stampante poco tarata i pezzi possono entrare a fatica. Conviene provare prima il cubo $2 \times 2 \times 2$.</li>
+<li><strong>Pezzi con la stessa forma sono uguali</strong>: nelle istruzioni conta la forma, non il colore. Se un pezzo non entra, va girato come nel disegno piccolo accanto al numero del passo.</li>
 <li><strong>Il conto non basta</strong>: che i cubetti siano un multiplo di 4 è necessario, non sufficiente. È un buon momento per distinguere le due parole.</li>
 <li><strong>Nel gioco le frecce si muovono rispetto alla camera</strong>: se la vista ruota, cambia anche la direzione delle frecce, e all'inizio confonde.</li>
 </ul>

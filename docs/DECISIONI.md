@@ -230,7 +230,14 @@ Ogni voce: data, decisione, motivo.
 ## 2026-11-23 — Tetracubi 3D e FullControl Studio (tinkering e stampa 3D)
 
 - **Tetracubi 3D al posto di «TETRIS³»**: nome e colori dei pezzi del gioco commerciale sono marchi; restano il genere (pezzi da 4 cubi in un pozzo 3D) e il gioco com'era. Palette del sito, chiavi `orfini_tetracubi_*`. Sorgenti in `tools/tetracubi_3d/` (in `content/` il build avrebbe pubblicato `src/index.html` come app).
-- **Scala di stampa fissa, indicata dal docente**: i pezzi più alti escono alti 20 mm (51,54% della geometria a 20 mm); niente ingrandimento automatico per riempire il piatto. Chi li vuole più grandi li scala nello slicer.
+- **Scala di stampa fissa, indicata dal docente**: i pezzi più alti escono alti 20 mm; niente ingrandimento automatico per riempire il piatto. Chi li vuole più grandi li scala nello slicer.
+
+## 2026-11-24 — Tetracubi 3D: stampabilità, istruzioni, discesa guidata
+
+- **Pezzi pieni al posto dei cubetti uniti da ponticelli**: i vecchi cubi arrotondati, staccati da solchi e tenuti insieme da ponti di 0,24 unità, erano fragili e avevano sbalzi sotto i solchi. Ora ogni cubetto è un guscio smussato a 45° che si compenetra col vicino; resta una scanalatura di 0,4 mm per contare i cubetti. Il file esce già a 20 mm (scala 100%) con gioco 0,2 mm reale: prima il gioco si riduceva a 0,1 mm con la scala del 51,54%.
+- **Rotazione, non specchio**, nel passaggio al sistema della stampante: il vecchio scambio y/z rispecchiava i pezzi (Vite+ stampata come Vite−).
+- **Codice del set e istruzioni PDF**: il set nasce da un seme, quindi un codice breve lo ricostruisce; il PDF è fatto in casa (canvas + JPEG), senza librerie. L'ordine di montaggio viene dallo smontaggio in linea retta, che con la scelta golosa non si blocca.
+- **Gioco**: cubetti dello stesso pezzo uniti (stessa geometria della stampa, smussi più piccoli); discesa guidata su richiesta del docente, con record separato; cursore Velocità che moltiplica la velocità del livello senza cambiarne la crescita.
 - **FullControl Studio con licenza GNU GPL v3** (scelta del docente): usa FullControl (GPL v3), quindi è un'eccezione alla CC BY-NC-SA, dichiarata in `LICENSE`, in `fullcontrol_studio_js/LICENZA.txt` e nella Guida dell'app. Pyodide e `pydantic` si scaricano all'avvio: a scuola internet c'è.
 - **Avanzamento stampa per segmenti, non per percorsi**: la parete di un vaso a spirale è un solo percorso e compariva tutta insieme al 100%.
 - **Allenamenti**: Tetracubi → Solidi e volumi, Proporzionalità; FullControl → Goniometria, Trigonometria (pendenza per l'ugello = arcotangente), Solidi e volumi.
