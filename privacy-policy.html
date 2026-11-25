@@ -2,89 +2,427 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Informativa sulla Privacy & Cookie Policy - Laboratorio Matematico Orfini</title>
     <meta name="description" content="Informativa sul trattamento dei dati personali e cookie policy conforme al GDPR ed alle linee guida del Garante italiano per il Laboratorio Matematico Orfini Foligno.">
+    <link rel="icon" href="/sito/icona.svg" type="image/svg+xml">
+    <link href="/content/assets/fonts/inter-syne-spacemono-bf47f3.css" rel="stylesheet">
     <link rel="stylesheet" href="/sito/tema.css">
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="cookie-consent.css">
+    <script src="/sito/effetti.js"></script>
+    <script>
+        try {
+            if (localStorage.getItem('orfini_theme') === 'light') {
+                document.documentElement.classList.add('theme-light');
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        } catch (e) { /* archivio del browser non disponibile */ }
+    </script>
+    <script src="content/assets/js/theme-toggle.js" defer></script>
+    <style>
+        body {
+            background-color: var(--om-fondo);
+            color: var(--om-testo);
+            font-family: var(--om-font);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            line-height: 1.65;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--om-fuoco);
+            outline-offset: 2px;
+        }
+
+        .privacy-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: var(--om-barra-fondo);
+            border-bottom: 1px solid var(--om-bordo);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .privacy-header-inner {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .privacy-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--om-font-titoli);
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--om-accento);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            transition: opacity 0.2s ease;
+        }
+
+        .privacy-brand:hover {
+            opacity: 0.85;
+        }
+
+        .privacy-header-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .privacy-theme-btn {
+            display: inline-grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            background: var(--om-superficie-2);
+            border: 1px solid var(--om-bordo);
+            color: var(--om-testo-2);
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .privacy-theme-btn:hover {
+            color: var(--om-testo);
+            border-color: var(--om-bordo-forte);
+        }
+
+        .privacy-theme-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .om-luna { display: none; }
+        html.theme-light .om-sole { display: none; }
+        html.theme-light .om-luna { display: block; }
+
+        .privacy-back-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 14px;
+            border-radius: var(--om-raggio-s);
+            background: var(--om-superficie-2);
+            border: 1px solid var(--om-bordo);
+            color: var(--om-testo);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .privacy-back-link:hover {
+            border-color: var(--om-accento);
+        }
+
+        .privacy-main {
+            width: 100%;
+            max-width: 896px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex: 1;
+        }
+
+        .privacy-card {
+            background: var(--om-superficie);
+            border: 1px solid var(--om-bordo);
+            border-radius: var(--om-raggio);
+            padding: 36px;
+            box-shadow: var(--om-ombra);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .privacy-title {
+            font-family: var(--om-font-titoli);
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 800;
+            color: var(--om-testo);
+            margin: 0 0 8px;
+            line-height: 1.15;
+        }
+
+        .privacy-meta {
+            font-family: var(--font-code, ui-monospace, monospace);
+            font-size: 0.8rem;
+            color: var(--om-testo-2);
+            margin: 0;
+        }
+
+        .privacy-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .privacy-section h2 {
+            font-family: var(--om-font-titoli);
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--om-accento);
+            border-bottom: 1px solid var(--om-bordo);
+            padding-bottom: 8px;
+            margin: 0;
+        }
+
+        .privacy-section p {
+            font-size: 0.95rem;
+            color: var(--om-testo-2);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        .privacy-section strong {
+            color: var(--om-testo);
+        }
+
+        .privacy-callout {
+            background: var(--om-superficie-2);
+            border: 1px solid var(--om-bordo);
+            border-radius: var(--om-raggio-s);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .privacy-callout h3 {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--om-allenati, var(--om-accento));
+            margin: 0;
+        }
+
+        .privacy-callout p,
+        .privacy-callout li {
+            font-size: 0.85rem;
+            color: var(--om-testo-2);
+            line-height: 1.55;
+        }
+
+        .privacy-callout ul {
+            margin: 0;
+            padding-left: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .privacy-callout code {
+            font-family: var(--font-code, ui-monospace, monospace);
+            background: var(--om-fondo);
+            color: var(--om-testo);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--om-bordo);
+            font-size: 0.82em;
+        }
+
+        .privacy-actions {
+            padding-top: 6px;
+        }
+
+        .privacy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--om-accento);
+            color: var(--om-su-accento);
+            border: 1px solid var(--om-accento);
+            border-radius: var(--om-raggio-s);
+            padding: 11px 20px;
+            font-family: var(--om-font);
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: filter 0.2s ease, transform 0.15s ease;
+        }
+
+        .privacy-btn:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+
+        .privacy-footer {
+            border-top: 1px solid var(--om-bordo);
+            background: var(--om-fondo);
+            padding: 28px 0 32px;
+            color: var(--om-testo-2);
+            font-size: 0.82rem;
+        }
+
+        .privacy-footer .jr-colophon {
+            color: var(--om-testo-2);
+        }
+
+        .privacy-footer .jr-colophon strong {
+            color: var(--om-testo);
+        }
+
+        .privacy-footer .jr-badges a {
+            color: var(--om-testo-2);
+            border-color: var(--om-bordo);
+        }
+
+        .privacy-footer .jr-badges a:hover {
+            color: var(--om-testo);
+            border-color: var(--om-bordo-forte);
+        }
+
+        .privacy-footer-bar {
+            max-width: var(--container-max, 1280px);
+            margin: 0 auto;
+            padding: 16px 40px 0;
+            border-top: 1px solid var(--om-bordo);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .privacy-footer .orfini-cookie-footer-link {
+            color: var(--om-testo-2);
+        }
+
+        .privacy-footer .orfini-cookie-footer-link:hover {
+            color: var(--om-accento);
+        }
+
+        @media (max-width: 768px) {
+            .privacy-footer-bar {
+                padding: 16px 24px 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .privacy-main {
+                padding: 24px 16px;
+            }
+
+            .privacy-card {
+                padding: 22px 18px;
+                gap: 22px;
+            }
+        }
+
+        html[data-effetti="ridotti"] * {
+            transition: none !important;
+            animation: none !important;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .privacy-brand,
+            .privacy-theme-btn,
+            .privacy-back-link,
+            .privacy-btn {
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body>
 
     <!-- Header minimale -->
-    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-lg font-bold text-indigo-400 hover:text-indigo-300 transition flex items-center gap-2">
+    <header class="privacy-header">
+        <div class="privacy-header-inner">
+            <a href="index.html" class="privacy-brand">
                 <span>📐</span> Laboratorio Matematico Orfini
             </a>
-            <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
-                ← Torna alla Home
-            </a>
+            <div class="privacy-header-actions">
+                <button type="button" id="orfini-theme-toggle" class="privacy-theme-btn" aria-label="Cambia tema: chiaro o scuro" title="Tema chiaro o scuro">
+                    <svg class="om-sole" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+                    <svg class="om-luna" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a6.6 6.6 0 0 0 9.7 9.7z"/></svg>
+                </button>
+                <a href="index.html" class="privacy-back-link">
+                    ← Torna alla Home
+                </a>
+            </div>
         </div>
     </header>
 
     <!-- Contenuto Principale Informativa Legale -->
-    <main class="max-w-4xl mx-auto px-4 py-10 flex-1">
-        <article class="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 md:p-10 space-y-8 shadow-xl">
+    <main class="privacy-main">
+        <article class="privacy-card">
             <div>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-white mb-2">Informativa sulla Privacy & Cookie Policy</h1>
-                <p class="text-xs text-slate-400 font-mono">Ultimo aggiornamento: Novembre 2026 | Conforme al Regolamento UE 2016/679 (GDPR)</p>
+                <h1 class="privacy-title">Informativa sulla Privacy & Cookie Policy</h1>
+                <p class="privacy-meta">Ultimo aggiornamento: Novembre 2026 | Conforme al Regolamento UE 2016/679 (GDPR)</p>
             </div>
 
-            <section class="space-y-3">
-                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">1. Titolarità del Trattamento</h2>
-                <p class="text-sm text-slate-300 leading-relaxed">
+            <section class="privacy-section">
+                <h2>1. Titolarità del Trattamento</h2>
+                <p>
                     Il <strong>Laboratorio Matematico Orfini Foligno</strong> è un progetto didattico, creativo ed open source dedicato alla visualizzazione interattiva della matematica, della fisica e della modellazione 3D vettoriale per le scuole superiori. Questo sito è ospitato su piattaforma statica GitHub Pages ed opera nel pieno rispetto del principio di minimizzazione dei dati.
                 </p>
-            </div>
+            </section>
 
-            <section class="space-y-3">
-                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">2. Tipologia di Dati Trattati e Cookie Tecnici</h2>
-                <p class="text-sm text-slate-300 leading-relaxed">
+            <section class="privacy-section">
+                <h2>2. Tipologia di Dati Trattati e Cookie Tecnici</h2>
+                <p>
                     Il sito è <strong>esclusivamente statico client-side</strong> (HTML/JS nativo). Nessun dato personale identificativo viene raccolto, memorizzato o inviato a server remoti.
                 </p>
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Cookie Tecnici e Memoria Locale (`localStorage`)</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
+                <div class="privacy-callout">
+                    <h3>Cookie Tecnici e Memoria Locale (<code>localStorage</code>)</h3>
+                    <p>
                         Utilizziamo esclusivamente memorizzazione tecnica di prima parte (local storage del browser) per consentire le seguenti funzionalità essenziali:
                     </p>
-                    <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+                    <ul>
                         <li><strong>Memorizzazione dello stato delle applicazioni</strong> (es. parametri 3D del Pen Plotter, impostazioni dei generatori vettoriali).</li>
                         <li><strong>Registro del Consenso Privacy</strong> (chiave <code>orfini_cookie_consent</code> per salvare le scelte espresse nel banner).</li>
                     </ul>
                 </div>
             </section>
 
-            <section class="space-y-3">
-                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">3. Blocco Preventivo e Gestione dei Cookie di Terze Parti</h2>
-                <p class="text-sm text-slate-300 leading-relaxed">
+            <section class="privacy-section">
+                <h2>3. Blocco Preventivo e Gestione dei Cookie di Terze Parti</h2>
+                <p>
                     Nessun cookie analitico o tracciante di terze parti viene caricato all'atterraggio sulla pagina. In conformità alle direttive del Garante Privacy Italiano, gli script o widget non essenziali rimangono preventivamente bloccati finché non viene prestato un consenso esplicito e revocabile in qualsiasi momento.
                 </p>
             </section>
 
-            <section class="space-y-3">
-                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">3-bis. Servizi esterni usati dalle pagine</h2>
-                <p class="text-sm text-slate-300 leading-relaxed">
+            <section class="privacy-section">
+                <h2>3-bis. Servizi esterni usati dalle pagine</h2>
+                <p>
                     <strong>Caratteri tipografici</strong>: sono copie ospitate sul sito stesso; nessuna richiesta viene inviata a Google Fonts.
                 </p>
-                <p class="text-sm text-slate-300 leading-relaxed">
+                <p>
                     <strong>Librerie open source</strong> (per esempio KaTeX, Three.js, Chart.js, Tailwind CSS): sono scaricate da reti pubbliche di distribuzione (cdn.jsdelivr.net, unpkg.com, cdnjs.cloudflare.com, cdn.tailwindcss.com). Come per qualunque file scaricato dalla rete, questi servizi ricevono l'indirizzo IP e i dati tecnici del browser; il sito non imposta cookie per loro e non invia altri dati. Le librerie sono richieste con la versione esatta e, dove possibile, con un controllo di integrità che ne impedisce la sostituzione.
                 </p>
-                <p class="text-sm text-slate-300 leading-relaxed">
+                <p>
                     <strong>FuncLab AI</strong> è un'applicazione ospitata su Google AI Studio (Google LLC), che usa il modello Gemini per disegnare le funzioni descritte a parole. Viene caricata solo dopo un clic esplicito sul pulsante della pagina, oppure se nelle preferenze sono stati accettati i contenuti funzionali di terze parti. Da quel momento si applica l'informativa di Google. Si consiglia di non scrivere dati personali nelle richieste.
                 </p>
-                <p class="text-sm text-slate-300 leading-relaxed">
+                <p>
                     <strong>Orfini Math Quest</strong>: profili, progressi e codici restano nella memoria del dispositivo (localStorage). Escono solo quando lo studente decide di condividere il codice dei progressi o di esportare i dati.
                 </p>
             </section>
 
-            <section class="space-y-3">
-                <h2 class="text-lg font-bold text-indigo-300 border-b border-slate-800 pb-2">4. Diritti dell'Interessato e Modifica del Consenso</h2>
-                <p class="text-sm text-slate-300 leading-relaxed">
+            <section class="privacy-section">
+                <h2>4. Diritti dell'Interessato e Modifica del Consenso</h2>
+                <p>
                     In qualità di utente o studente, puoi in qualsiasi momento verificare, modificare o revocare il consenso fornito cliccando sul pulsante sottostante o tramite il link presente nel footer di ogni pagina del sito:
                 </p>
-                <div class="pt-2">
-                    <button onclick="if(window.OrfiniConsent) window.OrfiniConsent.openSettings();" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-lg flex items-center gap-2">
+                <div class="privacy-actions">
+                    <button type="button" onclick="if(window.OrfiniConsent) window.OrfiniConsent.openSettings();" class="privacy-btn">
                         <span>⚙️ Gestisci Preferenze Cookie</span>
                     </button>
                 </div>
@@ -93,7 +431,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-900 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <footer class="privacy-footer">
         <div class="container" style="text-align:left">
         <!-- COLOPHON_START -->
             <div class="jr-colophon">
@@ -109,9 +447,9 @@
             <script src="content/assets/js/offline.js" defer></script>
         <!-- COLOPHON_END -->
         </div>
-        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div class="privacy-footer-bar">
             <span>© Laboratorio Matematico Orfini Foligno - Software Libero & Didattica Aperta</span>
-            <button onclick="if(window.OrfiniConsent) window.OrfiniConsent.openSettings();" class="orfini-cookie-footer-link">
+            <button type="button" onclick="if(window.OrfiniConsent) window.OrfiniConsent.openSettings();" class="orfini-cookie-footer-link">
                 Gestione Cookie & Privacy
             </button>
         </div>

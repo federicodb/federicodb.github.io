@@ -302,7 +302,7 @@
         <!-- Selezione Grado -->
         <div class="bg-gray-800/50 p-1 rounded-lg flex">
             <button id="btn-deg2"
-                class="flex-1 py-1.5 rounded-md text-xs font-bold transition bg-blue-600 text-on-background shadow-sm">2D
+                class="flex-1 py-1.5 rounded-md text-xs font-bold transition bg-blue-600 text-white shadow-sm">2D
                 (Area)</button>
             <button id="btn-deg3"
                 class="flex-1 py-1.5 rounded-md text-xs font-medium transition text-gray-400 hover:text-white hover:bg-gray-700">3D
@@ -320,11 +320,11 @@
         <!-- Azioni -->
         <div class="flex gap-2">
             <button id="btn-visualize"
-                class="flex-1 bg-green-600 hover:bg-green-500 text-on-background font-bold py-2 px-4 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
+                class="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow transition text-sm flex items-center justify-center gap-2">
                 <span>▶</span> Genera
             </button>
             <button id="btn-random"
-                class="bg-purple-600 hover:bg-purple-500 text-on-background py-2 px-4 rounded-lg shadow transition"
+                class="bg-amber-600 hover:bg-amber-500 text-white py-2 px-4 rounded-lg shadow transition"
                 title="Random">
                 🎲
             </button>
@@ -653,11 +653,11 @@
             const baseClass = "flex-1 py-1.5 rounded-md text-xs transition shadow-sm";
 
             if (d === 2) {
-                b2.className = baseClass + " bg-blue-600 text-on-background font-bold";
+                b2.className = baseClass + " bg-blue-600 text-white font-bold";
                 b3.className = baseClass + " text-gray-400 hover:text-white hover:bg-gray-700 font-medium";
                 viewTog.checked = false;
             } else {
-                b3.className = baseClass + " bg-blue-600 text-on-background font-bold";
+                b3.className = baseClass + " bg-blue-600 text-white font-bold";
                 b2.className = baseClass + " text-gray-400 hover:text-white hover:bg-gray-700 font-medium";
                 viewTog.checked = true;
             }

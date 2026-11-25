@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Challenge: Scomposizione di Polinomi (PRO)</title>
+    <title>Sfida 3D: Scomposizione di Polinomi</title>
     <meta name="description"
-        content="Versione PRO della sfida 3D sui polinomi: Ghost Target, X-Ray mode e variabili dinamiche.">
-    <meta name="keywords" content="Matematica, Algebra, Polinomi, Scomposizione, 3D, Nerdamer, 1 EL, PRO">
+        content="Scomponi i polinomi algebricamente e confronta la tua risposta con il modello 3D di blocchi e volumi: sfida a cinque esercizi su quattro livelli di difficoltà.">
+    <meta name="keywords" content="Matematica, Algebra, Polinomi, Scomposizione, 3D, Nerdamer, 1 EL">
     <meta name="allenamento" content="scomposizioni, prodotti-notevoli, monomi">
     <meta name="parole" content="scomposizione">
     <meta name="date" content="2026-05-27">
@@ -35,7 +35,7 @@
             --m3-surface: #000000;
             --m3-on-surface: #E6E1E5;
             --m3-surface-container: #121212;
-            --m3-primary: #D0BCFF;
+            --m3-primary: #22D3EE;
             --m3-outline: #49454F;
             --m3-error: #F2B8B5;
             --m3-success: #B4E197;
@@ -196,13 +196,13 @@
     <!-- Overlay Accesso -->
     <div id="login-overlay" class="full-overlay">
         <div class="m3-card-overlay">
-            <h1 class="text-3xl font-black text-white mb-2 tracking-tighter uppercase">Lab Access</h1>
+            <h1 class="text-3xl font-black text-white mb-2 tracking-tighter uppercase">Accesso Laboratorio</h1>
             <p class="text-zinc-500 text-sm mb-10 font-medium tracking-wide">IDENTIFICAZIONE STUDENTE</p>
             <div class="flex flex-col gap-4 mb-10">
                 <input type="text" id="user-name" class="m3-input-pill" placeholder="Nome">
                 <input type="text" id="user-class" class="m3-input-pill" placeholder="Classe">
             </div>
-            <button class="btn-action bg-[#D0BCFF] text-black w-full" onclick="initUser()">
+            <button class="btn-action bg-[#22D3EE] text-black w-full" onclick="initUser()">
                 <span class="material-icons">bolt</span> AVVIA SESSIONE
             </button>
         </div>
@@ -215,7 +215,7 @@
             <h2 class="text-2xl font-bold text-white mb-2 uppercase">Livello Superato</h2>
             <p class="text-zinc-500 text-sm mb-10">Hai completato correttamente 5 esercizi. Come vuoi procedere ora?</p>
             <div class="flex flex-col gap-4">
-                <button id="next-level-btn" class="btn-action bg-[#D0BCFF] text-black w-full" onclick="advanceLevel()">
+                <button id="next-level-btn" class="btn-action bg-[#22D3EE] text-black w-full" onclick="advanceLevel()">
                     <span class="material-icons">trending_up</span> PROSSIMO LIVELLO
                 </button>
                 <button class="btn-action border border-[#49454F] text-white w-full" onclick="stayInLevel()">
@@ -301,17 +301,17 @@
 <div class="flex justify-between items-center mb-4">
             <div>
                 <div class="text-xl font-bold tracking-tight text-white uppercase">ORFINI <span
-                        class="text-[#D0BCFF] text-xs font-black tracking-widest ml-1">MATH LAB</span></div>
-                <div id="user-info" class="text-[9px] text-zinc-500 font-mono uppercase">Unidentified</div>
+                        class="text-[#22D3EE] text-xs font-black tracking-widest ml-1">MATH LAB</span></div>
+                <div id="user-info" class="text-[9px] text-zinc-500 font-mono uppercase">Studente</div>
             </div>
             <div class="text-right">
                 <div id="score" class="text-xl font-black text-white">0</div>
-                <div class="text-[8px] text-zinc-600 uppercase font-bold tracking-widest">XP Points</div>
+                <div class="text-[8px] text-zinc-600 uppercase font-bold tracking-widest">Punti</div>
             </div>
         </div>
 
         <nav class="flex flex-wrap gap-2">
-            <button class="m3-chip active" id="chip-training" onclick="setMode('training')">Training</button>
+            <button class="m3-chip active" id="chip-training" onclick="setMode('training')">Allenamento</button>
             <button class="m3-chip" id="chip-base" onclick="setMode('base')">Base</button>
             <button class="m3-chip" id="chip-medio" onclick="setMode('medio')">Medio</button>
             <button class="m3-chip" id="chip-avanzato" onclick="setMode('avanzato')">Avanzato</button>
@@ -343,9 +343,9 @@
                     <div class="flex gap-4 w-full justify-center" id="controls-standard">
                         <button id="btn-xray" class="btn-action border border-cyan-500/30 text-cyan-400"
                             onclick="toggleXray()">
-                            <span class="material-icons">visibility</span> X-RAY
+                            <span class="material-icons">visibility</span> TRASPARENZA
                         </button>
-                        <button class="btn-action bg-[#D0BCFF] text-black px-12" onclick="validate()">
+                        <button class="btn-action bg-[#22D3EE] text-black px-12" onclick="validate()">
                             <span class="material-icons">task_alt</span> VERIFICA
                         </button>
                     </div>
@@ -365,12 +365,12 @@
         <aside class="lg:col-span-4 flex flex-col gap-6">
             <div class="bg-[#000] border border-[#1a1a1a] rounded-[32px] p-6 h-full flex flex-col">
                 <h3 class="text-[9px] font-black text-zinc-600 uppercase mb-8 flex items-center gap-2 tracking-[0.2em]">
-                    <span class="material-icons text-sm">history</span> Session History
+                    <span class="material-icons text-sm">history</span> Cronologia Sessione
                 </h3>
                 <div id="history" class="space-y-4 flex-grow overflow-y-auto pr-2"></div>
 
                 <div class="mt-8 pt-8 border-t border-[#1a1a1a]">
-                    <h3 class="text-[9px] font-black text-zinc-600 uppercase mb-4 tracking-[0.2em]">Leaderboard</h3>
+                    <h3 class="text-[9px] font-black text-zinc-600 uppercase mb-4 tracking-[0.2em]">Classifica</h3>
                     <div id="leaderboard" class="space-y-3"></div>
                 </div>
             </div>
@@ -380,7 +380,7 @@
     <script>
         nerdamer.set('RESERVE_NAMES', ['x', 'y', 'z']);
         const COLORS = {
-            x3: 0xD0BCFF, // Purple (Vol 3)
+            x3: 0x22D3EE, // Cyan (Vol 3)
             x2: 0x3399FF, // Blue (Vol 2)
             x1: 0xB4E197, // Green (Vol 1)
             u: 0xFFD700   // Gold (Unit)
@@ -461,10 +461,10 @@
                 '10-28-28': 0x3399FF, // x^2 (Blue)
                 '10-22-22': 0x33B5FF, // y^2 (Light Blue)
                 '10-16-16': 0x33FFB5, // z^2 (Cyan-Green)
-                '10-22-28': 0x8833FF, // xy (Purple)
+                '10-22-28': 0xF472B6, // xy (Pink)
                 '10-16-28': 0xFF33AA, // xz (Pink)
                 '10-16-22': 0xFF8833, // yz (Orange)
-                '28-28-28': 0xD0BCFF, // x^3 (Light Purple)
+                '28-28-28': 0x22D3EE, // x^3 (Cyan)
                 '22-22-22': 0xFFBCD0, // y^3 (Light Pink)
                 '16-16-16': 0xD0FFBC, // z^3 (Light Green)
                 '16-22-28': 0xFF5555  // xyz (Red)
@@ -786,10 +786,10 @@
             document.getElementById('leaderboard').innerHTML = b.map((e, i) => `
                 <div class="flex justify-between items-center bg-[#0a0a0a] p-3 rounded-2xl border border-[#222]">
                     <div class="flex items-center gap-3">
-                        <span class="text-[10px] font-black text-[#D0BCFF]">#${i + 1}</span>
+                        <span class="text-[10px] font-black text-[#22D3EE]">#${i + 1}</span>
                         <div class="text-left text-xs font-bold text-white uppercase">${e.n} <span class="text-[8px] text-zinc-600 block">${e.c}</span></div>
                     </div>
-                    <div class="font-bold text-xs text-[#D0BCFF]">${e.s}</div>
+                    <div class="font-bold text-xs text-[#22D3EE]">${e.s}</div>
                 </div>`).join('');
         }
 

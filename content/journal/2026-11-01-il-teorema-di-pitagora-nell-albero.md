@@ -55,6 +55,6 @@ Con l'**Analisi algoritmo** si legge lo pseudocodice: è un buon esempio di rico
 
 ## A cosa fare attenzione
 
-- **Il frattale affascina**: conviene fermarsi al primo livello finché il teorema non è chiaro.
+- **Il frattale attira subito l'attenzione**: conviene fermarsi al primo livello finché il teorema non è chiaro.
 - **Seno e coseno**: compaiono nelle formule dell'app; in prima e seconda si possono leggere come "le parti del lato" senza nominarli.
 - **Livelli alti**: oltre 9-10 livelli il modello 3D diventa pesante sui computer lenti.

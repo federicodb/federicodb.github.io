@@ -40,7 +40,7 @@ $7 + 11 = 18$, poi $11 + 18 = 29$. $\dfrac{13}{8} = 1{,}625$, poco più di $\var
 
 ## Come usarla in classe
 
-Si può aprire con **Experience Fibonacci**, tra girasoli e fillotassi, per la meraviglia: un numero che compare nelle piante. Poi l'app su **φ irrazionale**: le frazioni di Fibonacci si avvicinano a $\varphi$ una sopra e una sotto, senza mai raggiungerlo.
+Si può aprire con l'animazione su **Fibonacci**, tra girasoli e fillotassi, per mostrare un numero che compare nelle piante. Poi l'app su **φ irrazionale**: le frazioni di Fibonacci si avvicinano a $\varphi$ una sopra e una sotto, senza mai raggiungerlo.
 
 Gli allenamenti nuovi chiudono il cerchio:
 

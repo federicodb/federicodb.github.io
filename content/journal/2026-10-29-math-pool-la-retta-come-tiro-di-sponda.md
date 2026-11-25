@@ -54,4 +54,4 @@ Si gioca bene a coppie: uno calcola, l'altro controlla, poi ci si scambia. I sei
 
 - **I segni nella pendenza** quando le coordinate sono negative: $\dfrac{2-(-2)}{7-3}$ si sbaglia facilmente.
 - **La verifica della buca** viene spesso saltata. È invece il passo che dà senso a tutto: un punto sta sulla retta se le sue coordinate rendono vera l'equazione.
-- **Il 3D è affascinante, ma il conto viene prima del tiro.**
+- **Il 3D attira l'occhio, ma il conto viene prima del tiro.**

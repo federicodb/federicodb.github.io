@@ -529,7 +529,7 @@
                         <aside className="w-full md:w-1/3 max-w-md bg-surface border-r border-outline-variant flex flex-col shadow-xl z-20 h-full">
                             <div className="p-6 border-b border-outline-variant flex justify-between items-center">
                                 <div>
-                                    <h1 className="text-3xl font-black text-on-background tracking-tight">FactorMatch <span className="text-primary text-lg">Pro</span></h1>
+                                    <h1 className="text-3xl font-black text-on-background tracking-tight">FactorMatch</h1>
                                     <p className="text-xs text-outline-variant uppercase font-bold tracking-widest mt-1">Scomposizioni Polinomiali</p>
                                 </div>
                                 <button onClick={toggleTheme} className="p-2 rounded-full bg-surface-container text-primary hover:bg-outline-variant transition-colors">
@@ -571,7 +571,7 @@
                                 <div className="bg-background rounded-2xl border border-outline-variant p-4">
                                     <div className="flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant">
                                         <div className="text-yellow-500">{Icons.Trophy}</div>
-                                        <span className="font-bold text-xs uppercase tracking-wide text-outline-variant">Hall of Fame</span>
+                                        <span className="font-bold text-xs uppercase tracking-wide text-outline-variant">Classifica</span>
                                     </div>
                                     <div className="max-h-40 overflow-y-auto scroller space-y-2">
                                         {lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 text-on-background">Nessun dato</div>}
@@ -605,7 +605,7 @@
                                     <div className="flex items-center gap-4 mb-6 md:mb-8 shrink-0">
                                         <div className="p-4 bg-surface-container text-primary rounded-2xl">{Icons.Book}</div>
                                         <div>
-                                            <h2 className="text-2xl md:text-3xl font-black text-on-background">BRIEFING OPERATIVO</h2>
+                                            <h2 className="text-2xl md:text-3xl font-black text-on-background">Guida rapida</h2>
                                             <p className="text-outline-variant font-medium">Metodi di Scomposizione</p>
                                         </div>
                                     </div>
@@ -618,7 +618,7 @@
                                             </div>
                                         </div>
                                         <div className="space-y-4">
-                                            <h3 className="font-bold text-outline-variant text-xs uppercase tracking-widest border-b border-outline-variant pb-2">Database Pattern</h3>
+                                            <h3 className="font-bold text-outline-variant text-xs uppercase tracking-widest border-b border-outline-variant pb-2">Tipi di scomposizione</h3>
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                                 {BRIEFING_ITEMS.map((item, idx) => (
                                                     <div key={idx} className={`p-3 rounded-xl border-2 transition-colors flex flex-col justify-center min-h-[120px] w-full ${item.color}`}>
@@ -739,7 +739,7 @@
                                             {Icons.Zap} RADDOPPIA
                                         </button>
                                         <button onClick={saveAndExit} className="w-full py-3 bg-surface border-2 border-outline-variant text-on-background rounded-2xl font-bold hover:bg-surface-container transition-colors">
-                                            SALVA E ESCI
+                                            SALVA ED ESCI
                                         </button>
                                     </div>
                                 </div>
@@ -766,7 +766,7 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-    <script data-jsx-compilato="2d3434e6c64e">
+    <script data-jsx-compilato="fb2d6db2243e">
 // Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
 document.addEventListener('DOMContentLoaded', function () {
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
@@ -1362,9 +1362,7 @@ function App() {
       className: "p-6 border-b border-outline-variant flex justify-between items-center"
     }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
       className: "text-3xl font-black text-on-background tracking-tight"
-    }, "FactorMatch ", /*#__PURE__*/React.createElement("span", {
-      className: "text-primary text-lg"
-    }, "Pro")), /*#__PURE__*/React.createElement("p", {
+    }, "FactorMatch"), /*#__PURE__*/React.createElement("p", {
       className: "text-xs text-outline-variant uppercase font-bold tracking-widest mt-1"
     }, "Scomposizioni Polinomiali")), /*#__PURE__*/React.createElement("button", {
       onClick: toggleTheme,
@@ -1426,7 +1424,7 @@ function App() {
       className: "text-yellow-500"
     }, Icons.Trophy), /*#__PURE__*/React.createElement("span", {
       className: "font-bold text-xs uppercase tracking-wide text-outline-variant"
-    }, "Hall of Fame")), /*#__PURE__*/React.createElement("div", {
+    }, "Classifica")), /*#__PURE__*/React.createElement("div", {
       className: "max-h-40 overflow-y-auto scroller space-y-2"
     }, lb.length === 0 && /*#__PURE__*/React.createElement("div", {
       className: "text-xs text-center py-4 opacity-40 text-on-background"
@@ -1470,7 +1468,7 @@ function App() {
       className: "p-4 bg-surface-container text-primary rounded-2xl"
     }, Icons.Book), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
       className: "text-2xl md:text-3xl font-black text-on-background"
-    }, "BRIEFING OPERATIVO"), /*#__PURE__*/React.createElement("p", {
+    }, "Guida rapida"), /*#__PURE__*/React.createElement("p", {
       className: "text-outline-variant font-medium"
     }, "Metodi di Scomposizione"))), /*#__PURE__*/React.createElement("div", {
       className: "space-y-6 flex-1 overflow-y-auto scroller pr-2"
@@ -1486,7 +1484,7 @@ function App() {
       className: "space-y-4"
     }, /*#__PURE__*/React.createElement("h3", {
       className: "font-bold text-outline-variant text-xs uppercase tracking-widest border-b border-outline-variant pb-2"
-    }, "Database Pattern"), /*#__PURE__*/React.createElement("div", {
+    }, "Tipi di scomposizione"), /*#__PURE__*/React.createElement("div", {
       className: "grid grid-cols-2 md:grid-cols-3 gap-4"
     }, BRIEFING_ITEMS.map(function (item, idx) {
       return /*#__PURE__*/React.createElement("div", {
@@ -1606,7 +1604,7 @@ function App() {
     }, Icons.Zap, " RADDOPPIA"), /*#__PURE__*/React.createElement("button", {
       onClick: saveAndExit,
       className: "w-full py-3 bg-surface border-2 border-outline-variant text-on-background rounded-2xl font-bold hover:bg-surface-container transition-colors"
-    }, "SALVA E ESCI")))), view === 'final' && /*#__PURE__*/React.createElement("div", {
+    }, "SALVA ED ESCI")))), view === 'final' && /*#__PURE__*/React.createElement("div", {
       className: "fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95"
     }, /*#__PURE__*/React.createElement("div", {
       className: "text-center text-on-background"

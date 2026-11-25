@@ -7,9 +7,9 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <title>Percent Lab - Calcolo di percentuali</title>
+    <title>Percent Lab: Calcolo di percentuali</title>
     <meta name="description"
-        content="Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.">
+        content="Calcola e visualizza le percentuali su griglie e barre, esercita il calcolo mentale su sconti e ricarichi e affronta i quiz a tempo.">
     <meta name="keywords" content="Matematica, Aritmetica, Percentuali, Calcolo Mentale, Gamification, 1 EL, MAT_K1:Insiemi numerici e calcolo letterale, MAT_A1:Calcolo negli insiemi numerici, MAT_C2:Pensiero razionale in contesti reali">
     <meta name="allenamento" content="percentuali, calcolo-percentuali-scambiate, calcolo-ricarico-e-margine">
     <meta name="parole" content="percentuale, calcolo-mentale">
@@ -17,9 +17,6 @@
     <!-- Shared Orfini Design System -->
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
     <script src="../assets/js/orfini-shared.js"></script>
-
-    <meta name="description"
-        content="Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.">
 
     <!-- React & Tailwind -->
     <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js?sw2" integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z" crossorigin="anonymous" crossorigin></script>
@@ -35,7 +32,7 @@
             --bg-surface: #ffffff;
             --text-main: #0f172a;
             --border: #e2e8f0;
-            --accent-primary: #4f46e5;
+            --accent-primary: #0891b2;
             --accent-success: #10b981;
         }
 
@@ -46,8 +43,8 @@
             /* Gray 900 */
             --text-main: #f8fafc;
             --border: #1f2937;
-            --accent-primary: #6366f1;
-            /* Indigo 500 */
+            --accent-primary: #06b6d4;
+            /* Cyan 500 */
             --accent-success: #34d399;
             /* Emerald 400 */
         }
@@ -280,7 +277,7 @@
                     <div className="absolute w-full h-3 bg-surface-variant dark:bg-slate-700 rounded-full overflow-hidden">
                         {/* Track Fill */}
                         <div
-                            className="h-full bg-indigo-500 transition-all duration-75 ease-out"
+                            className="h-full bg-cyan-500 transition-all duration-75 ease-out"
                             style={{ width: `${percentage}%` }}
                         />
 
@@ -294,7 +291,7 @@
 
                     {/* Thumb Visivo (Fake) */}
                     <div
-                        className="absolute h-7 w-7 bg-surface rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-2 border-indigo-500 pointer-events-none transition-all duration-75 ease-out transform group-active:scale-110"
+                        className="absolute h-7 w-7 bg-surface rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-2 border-cyan-500 pointer-events-none transition-all duration-75 ease-out transform group-active:scale-110"
                         style={{ left: `calc(${percentage}% - 14px)` }}
                     ></div>
 
@@ -333,7 +330,7 @@
                         <div className="flex justify-between items-start z-10">
                             <div>
                                 <h2 className="text-sm font-bold uppercase tracking-wider text-outline-variant dark:text-slate-400 mb-1">Laboratorio</h2>
-                                <div className="text-3xl md:text-4xl font-black tracking-tight text-indigo-500">
+                                <div className="text-3xl md:text-4xl font-black tracking-tight text-cyan-500">
                                     {formatNum(result)}
                                 </div>
                                 <div className="text-xs md:text-sm font-medium opacity-70 mt-1">
@@ -347,7 +344,7 @@
                             <button
                                 onClick={() => setIsSwapped(!isSwapped)}
                                 className={`p-3 rounded-xl border transition-all active:scale-95 flex flex-col items-center gap-1
-                                    ${isSwapped ? 'bg-indigo-600 border-indigo-500 text-on-background shadow-lg shadow-indigo-500/20' : 'bg-slate-800 border-outline-variant text-outline-variant hover:text-white'}`}
+                                    ${isSwapped ? 'bg-cyan-600 border-cyan-500 text-on-background shadow-lg shadow-cyan-500/20' : 'bg-slate-800 border-outline-variant text-outline-variant hover:text-white'}`}
                             >
                                 <Icon path={icons.swap} className="w-5 h-5" />
                                 <span className="text-[9px] font-bold uppercase">Inverti</span>
@@ -362,7 +359,7 @@
                                     <svg className="w-full h-full transform -rotate-90">
                                         <circle cx="50%" cy="50%" r={r} stroke="currentColor" strokeWidth="8" fill="transparent" className="text-on-surface-variant dark:text-slate-800" />
                                         <circle cx="50%" cy="50%" r={r} stroke="currentColor" strokeWidth="8" fill="transparent"
-                                            className="text-indigo-500 transition-all duration-300 ease-out"
+                                            className="text-cyan-500 transition-all duration-300 ease-out"
                                             strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
                                         />
                                     </svg>
@@ -375,7 +372,7 @@
                                 <div className="flex-1">
                                     <div className="flex justify-between mb-2">
                                         <label className="text-xs font-bold uppercase opacity-60">Percentuale</label>
-                                        <span className="text-xs font-mono font-bold text-indigo-400">{perc.toFixed(1)}%</span>
+                                        <span className="text-xs font-mono font-bold text-cyan-400">{perc.toFixed(1)}%</span>
                                     </div>
                                     <SmartSlider value={perc} onChange={setPerc} step={0.5} />
                                     <div className="flex justify-between mt-1 px-1">
@@ -394,7 +391,7 @@
                                         inputMode="decimal"
                                         value={base}
                                         onChange={(e) => setBase(Number(e.target.value))}
-                                        className="bg-slate-900/50 border border-outline-variant rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-indigo-500 transition-colors"
+                                        className="bg-slate-900/50 border border-outline-variant rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-cyan-500 transition-colors"
                                     />
                                     <div className="flex gap-1 shrink-0">
                                         {[100, 200, 500].map(v => (
@@ -412,17 +409,17 @@
                     <div className="mt-4 md:mt-6">
                         <div
                             onClick={() => setShowTips(!showTips)}
-                            className="flex items-center justify-between cursor-pointer group py-3 px-4 glass border-l-4 border-indigo-500/50 hover:border-indigo-500 transition-all mb-2"
+                            className="flex items-center justify-between cursor-pointer group py-3 px-4 glass border-l-4 border-cyan-500/50 hover:border-cyan-500 transition-all mb-2"
                         >
                             <div className="flex items-center gap-3">
-                                <div className={`p-1.5 rounded-lg transition-colors ${showTips ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 group-hover:text-indigo-400'}`}>
+                                <div className={`p-1.5 rounded-lg transition-colors ${showTips ? 'bg-cyan-500 text-white' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400'}`}>
                                     <Icon path={icons.brain} className="w-4 h-4" />
                                 </div>
                                 <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-200 transition-colors">
                                     Trucchi per il calcolo mentale
                                 </h3>
                             </div>
-                            <div className={`text-slate-500 transition-all duration-300 ${showTips ? 'rotate-180 text-indigo-400' : ''}`}>
+                            <div className={`text-slate-500 transition-all duration-300 ${showTips ? 'rotate-180 text-cyan-400' : ''}`}>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </div>
                         </div>
@@ -431,10 +428,10 @@
                             {[
                                 { t: "10%", d: "Sposta virgola ←", f: "10% di 450 = 45", c: "border-emerald-500" },
                                 { t: "50%", d: "Dimezza il numero", f: "50% di 80 = 40", c: "border-blue-500" },
-                                { t: "25%", d: "Metà della metà", f: "Metà 40 è 20", c: "border-purple-500" },
+                                { t: "25%", d: "Metà della metà", f: "Metà 40 è 20", c: "border-amber-500" },
                                 { t: "5%", d: "Metà del 10%", f: "10% è 8 → 5% è 4", c: "border-amber-500" },
                                 { t: "1%", d: "Sposta virgola ←←", f: "1% di 300 = 3", c: "border-pink-500" },
-                                { t: "Swap", d: "Inverti i numeri", f: "8% di 25 → 25% di 8", c: "border-indigo-500" }
+                                { t: "Swap", d: "Inverti i numeri", f: "8% di 25 → 25% di 8", c: "border-cyan-500" }
                             ].map((trick, i) => (
                                 <div key={i} className={`glass p-4 border-l-4 ${trick.c} bg-opacity-40 hover:bg-opacity-100 transition-all cursor-default`}>
                                     <div className="font-bold text-xs uppercase mb-1 opacity-80">{trick.t}</div>
@@ -510,8 +507,8 @@
                     <div className="flex flex-col items-center justify-center h-full text-center animate-pop p-6">
                         <div className="text-6xl mb-6">🏆</div>
                         <h2 className="text-3xl font-black mb-2 text-on-background">Quiz Terminato</h2>
-                        <p className="text-outline-variant mb-8">Punteggio finale: <strong className="text-indigo-400 text-xl">{score}/{TOTAL_Q}</strong></p>
-                        <button onClick={onBack} className="w-full max-w-xs py-4 bg-indigo-600 rounded-xl font-bold text-on-background shadow-lg shadow-indigo-500/30 active:scale-95 transition">
+                        <p className="text-outline-variant mb-8">Punteggio finale: <strong className="text-cyan-400 text-xl">{score}/{TOTAL_Q}</strong></p>
+                        <button onClick={onBack} className="w-full max-w-xs py-4 bg-cyan-600 rounded-xl font-bold text-on-background shadow-lg shadow-cyan-500/30 active:scale-95 transition">
                             Torna alla Dashboard
                         </button>
                     </div>
@@ -525,11 +522,11 @@
                     {/* Progress */}
                     <div className="flex gap-1 mb-8">
                         {[...Array(TOTAL_Q)].map((_, i) => (
-                            <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < qIndex ? 'bg-indigo-500' : i === qIndex ? 'bg-white' : 'bg-slate-700'}`}></div>
+                            <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i < qIndex ? 'bg-cyan-500' : i === qIndex ? 'bg-white' : 'bg-slate-700'}`}></div>
                         ))}
                     </div>
 
-                    <div className="glass p-8 md:p-10 text-center border-t-4 border-indigo-500 relative bg-opacity-90 backdrop-blur-md">
+                    <div className="glass p-8 md:p-10 text-center border-t-4 border-cyan-500 relative bg-opacity-90 backdrop-blur-md">
                         <div className="text-xs font-bold uppercase tracking-widest text-outline-variant mb-4">Domanda {qIndex + 1}</div>
 
                         <h3 className="text-xl md:text-2xl font-bold mb-8 leading-snug min-h-[4rem] flex items-center justify-center">
@@ -547,11 +544,11 @@
                                 className={`w-full bg-surface border-2 rounded-2xl py-4 text-center text-3xl font-bold outline-none transition-all
                                     ${gameState === 'correct' ? 'border-emerald-500 text-emerald-500' :
                                         gameState === 'wrong' ? 'border-red-500 text-red-500' :
-                                            'border-slate-700 focus:border-indigo-500'}`}
+                                            'border-slate-700 focus:border-cyan-500'}`}
                             />
 
                             {gameState === 'playing' && input && (
-                                <button type="submit" className="absolute right-3 top-3 bottom-3 aspect-square bg-indigo-600 rounded-xl flex items-center justify-center text-on-background animate-pop">
+                                <button type="submit" className="absolute right-3 top-3 bottom-3 aspect-square bg-cyan-600 rounded-xl flex items-center justify-center text-on-background animate-pop">
                                     <Icon path={icons.check} />
                                 </button>
                             )}
@@ -584,7 +581,7 @@
                     {/* Header Mobile-Friendly */}
                     <header className="shrink-0 h-16 px-4 flex items-center justify-between border-b border-slate-700/50 backdrop-blur-md sticky top-0 z-50 bg-body/80">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-on-background font-black shadow-lg shadow-indigo-500/20">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-600 flex items-center justify-center text-on-background font-black shadow-lg shadow-cyan-500/20">
                                 %
                             </div>
                             <h1 className="font-bold text-lg tracking-tight hidden md:block">Percent Lab</h1>
@@ -592,7 +589,7 @@
 
                         <div className="flex bg-slate-800/50 p-1 rounded-lg">
                             <button onClick={() => setView('lab')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${view === 'lab' ? 'bg-white text-on-background shadow-sm' : 'text-slate-400'}`}>Lab</button>
-                            <button onClick={() => setView('quiz')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${view === 'quiz' ? 'bg-indigo-500 text-on-background shadow-sm' : 'text-slate-400'}`}>Quiz</button>
+                            <button onClick={() => setView('quiz')} className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${view === 'quiz' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400'}`}>Quiz</button>
                         </div>
 
                         {/* Theme Toggle Removed */}
@@ -624,7 +621,7 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-    <script data-jsx-compilato="b8c90ddda888">
+    <script data-jsx-compilato="5851984286d9">
 // Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
 document.addEventListener('DOMContentLoaded', function () {
 function _toConsumableArray(a) { return _arrayWithoutHoles(a) || _iterableToArray(a) || _unsupportedIterableToArray(a) || _nonIterableSpread(); }
@@ -690,7 +687,7 @@ var SmartSlider = function SmartSlider(_ref2) {
   }, /*#__PURE__*/React.createElement("div", {
     className: "absolute w-full h-3 bg-surface-variant dark:bg-slate-700 rounded-full overflow-hidden"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "h-full bg-indigo-500 transition-all duration-75 ease-out",
+    className: "h-full bg-cyan-500 transition-all duration-75 ease-out",
     style: {
       width: "".concat(percentage, "%")
     }
@@ -706,7 +703,7 @@ var SmartSlider = function SmartSlider(_ref2) {
       }
     });
   }))), /*#__PURE__*/React.createElement("div", {
-    className: "absolute h-7 w-7 bg-surface rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-2 border-indigo-500 pointer-events-none transition-all duration-75 ease-out transform group-active:scale-110",
+    className: "absolute h-7 w-7 bg-surface rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.3)] border-2 border-cyan-500 pointer-events-none transition-all duration-75 ease-out transform group-active:scale-110",
     style: {
       left: "calc(".concat(percentage, "% - 14px)")
     }
@@ -755,7 +752,7 @@ var Visualizer = function Visualizer(_ref3) {
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
     className: "text-sm font-bold uppercase tracking-wider text-outline-variant dark:text-slate-400 mb-1"
   }, "Laboratorio"), /*#__PURE__*/React.createElement("div", {
-    className: "text-3xl md:text-4xl font-black tracking-tight text-indigo-500"
+    className: "text-3xl md:text-4xl font-black tracking-tight text-cyan-500"
   }, formatNum(result)), /*#__PURE__*/React.createElement("div", {
     className: "text-xs md:text-sm font-medium opacity-70 mt-1"
   }, isSwapped ? /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("strong", {
@@ -766,7 +763,7 @@ var Visualizer = function Visualizer(_ref3) {
     onClick: function onClick() {
       return setIsSwapped(!isSwapped);
     },
-    className: "p-3 rounded-xl border transition-all active:scale-95 flex flex-col items-center gap-1\n                                    ".concat(isSwapped ? 'bg-indigo-600 border-indigo-500 text-on-background shadow-lg shadow-indigo-500/20' : 'bg-slate-800 border-outline-variant text-outline-variant hover:text-white')
+    className: "p-3 rounded-xl border transition-all active:scale-95 flex flex-col items-center gap-1\n                                    ".concat(isSwapped ? 'bg-cyan-600 border-cyan-500 text-on-background shadow-lg shadow-cyan-500/20' : 'bg-slate-800 border-outline-variant text-outline-variant hover:text-white')
   }, /*#__PURE__*/React.createElement(Icon, {
     path: icons.swap,
     className: "w-5 h-5"
@@ -795,7 +792,7 @@ var Visualizer = function Visualizer(_ref3) {
     stroke: "currentColor",
     strokeWidth: "8",
     fill: "transparent",
-    className: "text-indigo-500 transition-all duration-300 ease-out",
+    className: "text-cyan-500 transition-all duration-300 ease-out",
     strokeDasharray: circ,
     strokeDashoffset: offset,
     strokeLinecap: "round"
@@ -808,7 +805,7 @@ var Visualizer = function Visualizer(_ref3) {
   }, /*#__PURE__*/React.createElement("label", {
     className: "text-xs font-bold uppercase opacity-60"
   }, "Percentuale"), /*#__PURE__*/React.createElement("span", {
-    className: "text-xs font-mono font-bold text-indigo-400"
+    className: "text-xs font-mono font-bold text-cyan-400"
   }, perc.toFixed(1), "%")), /*#__PURE__*/React.createElement(SmartSlider, {
     value: perc,
     onChange: setPerc,
@@ -838,7 +835,7 @@ var Visualizer = function Visualizer(_ref3) {
     onChange: function onChange(e) {
       return setBase(Number(e.target.value));
     },
-    className: "bg-slate-900/50 border border-outline-variant rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-indigo-500 transition-colors"
+    className: "bg-slate-900/50 border border-outline-variant rounded-lg py-2 px-4 text-xl font-bold w-full focus:outline-none focus:border-cyan-500 transition-colors"
   }), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-1 shrink-0"
   }, [100, 200, 500].map(function (v) {
@@ -855,18 +852,18 @@ var Visualizer = function Visualizer(_ref3) {
     onClick: function onClick() {
       return setShowTips(!showTips);
     },
-    className: "flex items-center justify-between cursor-pointer group py-3 px-4 glass border-l-4 border-indigo-500/50 hover:border-indigo-500 transition-all mb-2"
+    className: "flex items-center justify-between cursor-pointer group py-3 px-4 glass border-l-4 border-cyan-500/50 hover:border-cyan-500 transition-all mb-2"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-3"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "p-1.5 rounded-lg transition-colors ".concat(showTips ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-400 group-hover:text-indigo-400')
+    className: "p-1.5 rounded-lg transition-colors ".concat(showTips ? 'bg-cyan-500 text-white' : 'bg-slate-800 text-slate-400 group-hover:text-cyan-400')
   }, /*#__PURE__*/React.createElement(Icon, {
     path: icons.brain,
     className: "w-4 h-4"
   })), /*#__PURE__*/React.createElement("h3", {
     className: "text-xs font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-200 transition-colors"
   }, "Trucchi per il calcolo mentale")), /*#__PURE__*/React.createElement("div", {
-    className: "text-slate-500 transition-all duration-300 ".concat(showTips ? 'rotate-180 text-indigo-400' : '')
+    className: "text-slate-500 transition-all duration-300 ".concat(showTips ? 'rotate-180 text-cyan-400' : '')
   }, /*#__PURE__*/React.createElement("svg", {
     width: "16",
     height: "16",
@@ -894,7 +891,7 @@ var Visualizer = function Visualizer(_ref3) {
     t: "25%",
     d: "Metà della metà",
     f: "Metà 40 è 20",
-    c: "border-purple-500"
+    c: "border-amber-500"
   }, {
     t: "5%",
     d: "Metà del 10%",
@@ -909,7 +906,7 @@ var Visualizer = function Visualizer(_ref3) {
     t: "Swap",
     d: "Inverti i numeri",
     f: "8% di 25 → 25% di 8",
-    c: "border-indigo-500"
+    c: "border-cyan-500"
   }].map(function (trick, i) {
     return /*#__PURE__*/React.createElement("div", {
       key: i,
@@ -1034,10 +1031,10 @@ var QuizGame = function QuizGame(_ref4) {
     }, "Quiz Terminato"), /*#__PURE__*/React.createElement("p", {
       className: "text-outline-variant mb-8"
     }, "Punteggio finale: ", /*#__PURE__*/React.createElement("strong", {
-      className: "text-indigo-400 text-xl"
+      className: "text-cyan-400 text-xl"
     }, score, "/", TOTAL_Q)), /*#__PURE__*/React.createElement("button", {
       onClick: onBack,
-      className: "w-full max-w-xs py-4 bg-indigo-600 rounded-xl font-bold text-on-background shadow-lg shadow-indigo-500/30 active:scale-95 transition"
+      className: "w-full max-w-xs py-4 bg-cyan-600 rounded-xl font-bold text-on-background shadow-lg shadow-cyan-500/30 active:scale-95 transition"
     }, "Torna alla Dashboard"));
   }
   if (!question) return null;
@@ -1048,10 +1045,10 @@ var QuizGame = function QuizGame(_ref4) {
   }, _toConsumableArray(Array(TOTAL_Q)).map(function (_, i) {
     return /*#__PURE__*/React.createElement("div", {
       key: i,
-      className: "h-1 flex-1 rounded-full transition-colors ".concat(i < qIndex ? 'bg-indigo-500' : i === qIndex ? 'bg-white' : 'bg-slate-700')
+      className: "h-1 flex-1 rounded-full transition-colors ".concat(i < qIndex ? 'bg-cyan-500' : i === qIndex ? 'bg-white' : 'bg-slate-700')
     });
   })), /*#__PURE__*/React.createElement("div", {
-    className: "glass p-8 md:p-10 text-center border-t-4 border-indigo-500 relative bg-opacity-90 backdrop-blur-md"
+    className: "glass p-8 md:p-10 text-center border-t-4 border-cyan-500 relative bg-opacity-90 backdrop-blur-md"
   }, /*#__PURE__*/React.createElement("div", {
     className: "text-xs font-bold uppercase tracking-widest text-outline-variant mb-4"
   }, "Domanda ", qIndex + 1), /*#__PURE__*/React.createElement("h3", {
@@ -1070,10 +1067,10 @@ var QuizGame = function QuizGame(_ref4) {
     },
     placeholder: "?",
     disabled: gameState !== 'playing',
-    className: "w-full bg-surface border-2 rounded-2xl py-4 text-center text-3xl font-bold outline-none transition-all\n                                    ".concat(gameState === 'correct' ? 'border-emerald-500 text-emerald-500' : gameState === 'wrong' ? 'border-red-500 text-red-500' : 'border-slate-700 focus:border-indigo-500')
+    className: "w-full bg-surface border-2 rounded-2xl py-4 text-center text-3xl font-bold outline-none transition-all\n                                    ".concat(gameState === 'correct' ? 'border-emerald-500 text-emerald-500' : gameState === 'wrong' ? 'border-red-500 text-red-500' : 'border-slate-700 focus:border-cyan-500')
   }), gameState === 'playing' && input && /*#__PURE__*/React.createElement("button", {
     type: "submit",
-    className: "absolute right-3 top-3 bottom-3 aspect-square bg-indigo-600 rounded-xl flex items-center justify-center text-on-background animate-pop"
+    className: "absolute right-3 top-3 bottom-3 aspect-square bg-cyan-600 rounded-xl flex items-center justify-center text-on-background animate-pop"
   }, /*#__PURE__*/React.createElement(Icon, {
     path: icons.check
   }))), /*#__PURE__*/React.createElement("div", {
@@ -1119,7 +1116,7 @@ var App = function App() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-3"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-on-background font-black shadow-lg shadow-indigo-500/20"
+    className: "w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-600 flex items-center justify-center text-on-background font-black shadow-lg shadow-cyan-500/20"
   }, "%"), /*#__PURE__*/React.createElement("h1", {
     className: "font-bold text-lg tracking-tight hidden md:block"
   }, "Percent Lab")), /*#__PURE__*/React.createElement("div", {
@@ -1133,7 +1130,7 @@ var App = function App() {
     onClick: function onClick() {
       return setView('quiz');
     },
-    className: "px-4 py-1.5 rounded-md text-xs font-bold transition-all ".concat(view === 'quiz' ? 'bg-indigo-500 text-on-background shadow-sm' : 'text-slate-400')
+    className: "px-4 py-1.5 rounded-md text-xs font-bold transition-all ".concat(view === 'quiz' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400')
   }, "Quiz"))), /*#__PURE__*/React.createElement("main", {
     className: "flex-1 overflow-y-auto overflow-x-hidden p-4 no-scrollbar"
   }, /*#__PURE__*/React.createElement("div", {

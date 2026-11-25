@@ -32,6 +32,8 @@ jobs:
       # nessun "npm ci": validazione e generazione non hanno dipendenze
       - name: Valida i dati (parole, alias, indirizzi)
         run: node tools/valida.mjs
+      - name: Controllo Anti-AI Slop
+        run: node tools/anti_slop.mjs
       - name: Genera menu ed elenco della home
         run: node tools/genera.mjs
       - uses: actions/configure-pages@v5

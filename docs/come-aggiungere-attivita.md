@@ -22,7 +22,7 @@ Per un'app nuova restano validi i passi di sempre: `<title>`, `description`, `ke
 npm run build
 ```
 
-Fa quattro cose in ordine: `build.py` (catalogo, Journal, schede, Mappa 3D, sitemap, `data/attivita.json`), la validazione, la disposizione della costellazione (`data/mappa.json`), poi menu, elenco e costellazione della home. Se aggiungi o togli parole, le stelle si risistemano da sole. Deve finire con **"Build completato senza avvisi"**.
+Fa cinque cose in ordine: `build.py` (catalogo, Journal, schede, Mappa 3D, sitemap, `data/attivita.json`), la validazione (`tools/valida.mjs`), la disposizione della costellazione (`data/mappa.json`), il controllo Anti-AI Slop (`tools/anti_slop.mjs`, vedi `docs/ANTI_SLOP.md`), poi menu, elenco e costellazione della home. Se aggiungi o togli parole, le stelle si risistemano da sole. Deve finire con **"Build completato senza avvisi"**.
 
 Per guardare il risultato: `python3 -m http.server 8080` e apri `http://localhost:8080/`.
 

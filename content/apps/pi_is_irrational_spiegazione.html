@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>π is irrational in un minuto</title>
-<meta name="description" content="Animazione di un minuto che spiega perché π non è una frazione attraverso le quattro tappe dell'app π is irrational (Orfini Math Lab): la ruota, l'unità comune, le due lancette, le cifre.">
+<title>π è irrazionale in un minuto</title>
+<meta name="description" content="Animazione di un minuto che spiega perché π non è una frazione attraverso le quattro tappe dell'app π è irrazionale (Orfini Math Lab): la ruota, l'unità comune, le due lancette, le cifre.">
 <link rel="stylesheet" href="/content/assets/fonts/inter-syne-spacemono-e3e4cc.css">
 <style>
 /* Layout: schermo 16:9, barra comandi, sottotitoli, testo completo. Nero AMOLED come l'app. */
@@ -71,7 +71,7 @@ section.tx h2{font-family:var(--disp);font-weight:800;font-size:24px;margin:0}
 <div class="wrap">
   <header>
     <div class="eyebrow"><a href="https://federicodb.github.io/index.html">← Orfini Math Lab</a> · Numeri irrazionali · Biennio</div>
-    <h1><span>π</span> is irrational in un minuto</h1>
+    <h1><span>π</span> è irrazionale in un minuto</h1>
     <p class="lead">Un minuto per capire perché π non si può scrivere come frazione: la ruota che si srotola, il pezzetto che non misura mai tutto, le lancette che non tornano, le cifre che non si ripetono.</p>
   </header>
 
@@ -182,7 +182,7 @@ const PIDIG = (() => {
 /* ---------- scena: intro ---------- */
 function sIntro(u) {
   pop(640, 215, prog(u, 0, .7), () => T('π', 0, 0, 200, CY, { w: 800 }));
-  A(prog(u, .5, 1)); T('is irrational', 640, 365, 56, TX, { f: DISP, w: 800 }); A(1);
+  A(prog(u, .5, 1)); T('è irrazionale', 640, 365, 56, TX, { f: DISP, w: 800 }); A(1);
   A(prog(u, 1, 1.6)); T('Perché π non si può scrivere come frazione?', 640, 435, 30, T2, { w: 500 }); A(1);
   TAPPE.forEach((t, i) => {
     pop(640 + (i - 1.5) * 280, 560, prog(u, 1.6 + i * .25, 2.2 + i * .25), () => {

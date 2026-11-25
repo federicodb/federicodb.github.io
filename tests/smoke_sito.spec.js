@@ -159,3 +159,9 @@ test('librerie da CDN con versione esatta e controllo di integrità; nessun font
   }
   expect(problemi).toEqual([]);
 });
+
+test('nessun residuo AI-slop semantico o estetico (tools/anti_slop.mjs)', () => {
+  const { spawnSync } = require('child_process');
+  const r = spawnSync(process.execPath, [path.join(ROOT, 'tools/anti_slop.mjs')], { cwd: ROOT, encoding: 'utf8' });
+  expect(r.status, (r.stdout || '') + (r.stderr || '')).toBe(0);
+});

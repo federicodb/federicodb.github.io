@@ -33,5 +33,6 @@ passo('Catalogo, Journal, schede, Mappa (build.py, senza Gemini)', python, ['-c'
 passo('Validazione dei dati', process.execPath, ['tools/valida.mjs', '--senza-mappa']);
 passo('Disposizione della costellazione', process.execPath, ['tools/mappa.mjs']);
 passo('Controllo della mappa', process.execPath, ['tools/valida.mjs']);
+passo('Controllo Anti-AI Slop (semantico ed estetico)', process.execPath, ['tools/anti_slop.mjs']);
 passo('Menu, elenco e costellazione della home', process.execPath, ['tools/genera.mjs']);
 console.log(avvisi ? `\n⚠️ Build completato con ${avvisi} ${avvisi === 1 ? 'avviso' : 'avvisi'}: leggi le righe segnate qui sopra.` : '\n✓ Build completato senza avvisi.');

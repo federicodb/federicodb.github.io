@@ -11,7 +11,7 @@
     <script src="../assets/js/orfini-shared.js"></script>
 
     <meta name="description"
-        content="Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.">
+        content="Disegna a mano libera sul riquadro sinistro e regola semplificazione del tratto, distanza dei punti e densità per generare pattern geometrici con triangolazione di Delaunay esportabili in PNG e SVG.">
     <meta name="keywords"
         content="Arte, Tecnologia, Coding, Creatività, Pattern, Geometria, Tinkering, Lab, EU:Digitale, EU:Culturale">
     <meta name="allenamento" content="nessuno">
@@ -21,8 +21,6 @@
     <!-- 2. FIX MOBILE -->
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
-    <title>Trasformatore di Disegno Live</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -359,7 +357,7 @@
         <div class="flex justify-between items-center bg-surface p-4 rounded-xl shadow-sm">
             <div>
                 <h1 class="text-xl md:text-2xl font-bold text-on-background">✍️ Sketch to Pattern</h1>
-                <p class="text-xs text-gray-500">Arte Generativa Live</p>
+                <p class="text-xs text-gray-500">Dal tratto libero alla triangolazione di Delaunay</p>
             </div>
 
         </div>
@@ -526,7 +524,7 @@
                     }
 
                     // Update Drawing Context Stroke
-                    dCtx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.9)" : "#4f46e5";
+                    dCtx.strokeStyle = isDark ? "rgba(255, 255, 255, 0.9)" : "#0891b2";
                     dCtx.lineWidth = 2;
 
                     redrawLeftCanvas();
@@ -668,7 +666,7 @@
                     // Re-scale internal drawing resolution to match visual size (so coordinates match mouse pos)
                     drawingCanvas.width = dRect.width; drawingCanvas.height = dRect.height;
                     patternCanvas.width = dRect.width; patternCanvas.height = dRect.height;
-                    dCtx.strokeStyle = "#4f46e5"; dCtx.lineWidth = 2;
+                    dCtx.strokeStyle = "#0891b2"; dCtx.lineWidth = 2;
 
                     redrawLeftCanvas(); updatePatternCanvas();
                 }

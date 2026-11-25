@@ -554,7 +554,7 @@ const db = [
     },
     {
         "title": "Parabola e disequazioni di secondo grado",
-        "excerpt": "Ambiente di studio sinottico per lo studio delle disequazioni di secondo grado. Include scomposizione in fattori, metodo del delta, diagrammi dei segni e visualizzazione grafica della parabola in tempo reale.",
+        "excerpt": "Inserisci una disequazione di secondo grado o scegline una pronta, prova a scomporla e confronta metodo del Δ, parabola e quadro dei segni per trovare gli intervalli soluzione senza errori sul verso.",
         "tags": [
             "3 MEC",
             "4 EL",
@@ -573,7 +573,7 @@ const db = [
         "url": "content/apps/parabola e disequazioni di secondo grado maggio 2026.html",
         "type": "app",
         "icon": "🧱",
-        "game_type": "standard",
+        "game_type": "document",
         "thumbnail": "content/assets/thumbnails/parabola e disequazioni di secondo grado maggio 2026.webp",
         "allenamento": [
             {
@@ -620,7 +620,7 @@ const db = [
     },
     {
         "title": "φ è irrazionale: il rapporto aureo",
-        "excerpt": "Esplorazione visiva del numero aureo ($\\phi$) e della spirale logaritmica. Un'esperienza interattiva per visualizzare le frazioni continue, la fillotassi e l'incommensurabilità della proporzione aurea in natura.",
+        "excerpt": "Confronta due punti che ruotano con velocità in rapporto razionale (3/2, 5/3, 8/5, 13/8) o aureo ($\\phi$) sul piano e sulla sfera: osserva quando il tracciato si chiude e perché con $\\phi$ non si chiude mai.",
         "tags": [
             "$\\PHI$",
             "3D",
@@ -813,7 +813,7 @@ const db = [
         ]
     },
     {
-        "title": "$\\pi$ is irrational: perché π non è una frazione",
+        "title": "$\\pi$ è irrazionale: perché π non è una frazione",
         "excerpt": "Percorso guidato in quattro tappe sul numero $\\pi$: srotolare una ruota, cercare un'unità comune tra diametro e circonferenza, due lancette il cui disegno non si chiude mai e cifre decimali che non si ripetono. Con domande di previsione, quiz finale e spiegazione animata.",
         "tags": [
             "$\\PI$",
@@ -1403,7 +1403,7 @@ const db = [
         "scheda": "schede/le_fasi_della_luna.html"
     },
     {
-        "title": "Studio Plotter CNC",
+        "title": "Studio Plotter CNC: Ender 3 V2 Pen Plotter",
         "excerpt": "Generatore ed elaboratore G-Code avanzato per pen plotter e CNC, con algoritmi generativi e simulatore 3D.",
         "tags": [
             "3 MEC",
@@ -1448,7 +1448,7 @@ const db = [
     },
     {
         "title": "Teoria dei giochi e valutazione consapevole",
-        "excerpt": "Simulazione interattiva del Dilemma del Prigioniero ed Equilibrio di Nash. Laboratorio per esplorare la cooperazione e le scelte strategiche nel contesto del voto scolastico.",
+        "excerpt": "Simulazione del Dilemma del Prigioniero ed Equilibrio di Nash: regola la tua richiesta di voto rispetto al merito reale e verifica quando le scelte dei compagni fanno scattare la penalità collettiva.",
         "tags": [
             "4 EL",
             "CITTADINANZA",
@@ -1467,7 +1467,7 @@ const db = [
         "url": "content/apps/voto_cosapevole.2.5.html",
         "type": "app",
         "icon": "📐",
-        "game_type": "sim",
+        "game_type": "document",
         "thumbnail": "content/assets/thumbnails/voto_cosapevole.2.5.webp",
         "allenamento": [
             {
@@ -1502,8 +1502,8 @@ const db = [
         "scheda": "schede/voto_cosapevole.2.5.html"
     },
     {
-        "title": "Challenge: Scomposizione di Polinomi (PRO)",
-        "excerpt": "Versione PRO della sfida 3D sui polinomi: Ghost Target, X-Ray mode e variabili dinamiche.",
+        "title": "Sfida 3D: Scomposizione di Polinomi",
+        "excerpt": "Scomponi i polinomi algebricamente e confronta la tua risposta con il modello 3D di blocchi e volumi: sfida a cinque esercizi su quattro livelli di difficoltà.",
         "tags": [
             "1 EL",
             "3D",
@@ -1512,7 +1512,6 @@ const db = [
             "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
             "NERDAMER",
             "POLINOMI",
-            "PRO",
             "SCOMPOSIZIONE"
         ],
         "date": "2026-05-27",
@@ -1553,8 +1552,8 @@ const db = [
         "scheda": "schede/polinomi_challenge_v2_pro.html"
     },
     {
-        "title": "Experience Fibonacci",
-        "excerpt": "Esplorazione interattiva della successione di Fibonacci, della spirale aurea e della fillotassi nei girasoli. Un'esperienza visiva per comprendere la convergenza del rapporto aureo e l'ottimizzazione geometrica in natura.",
+        "title": "Fibonacci e rapporto aureo: spirale, conigli e fillotassi",
+        "excerpt": "Muovi i cursori per costruire la spirale di Fibonacci, contare le coppie di conigli, sommare le diagonali del triangolo di Tartaglia e variare l'angolo di divergenza nei girasoli per vedere perché l'angolo aureo (137,51°) evita l'allineamento dei semi.",
         "tags": [
             "FIBONACCI",
             "FILLOTASSI",
@@ -1605,7 +1604,7 @@ const db = [
     },
     {
         "title": "Esploratore di Scale Logaritmiche",
-        "excerpt": "Laboratorio interattivo sulle scale logaritmiche per esplorare la crescita esponenziale, le leggi di potenza e fenomeni fisici reali.",
+        "excerpt": "Commuta gli assi tra scala lineare e logaritmica (Lin-Lin, Lin-Log, Log-Log) su dati reali per distinguere crescite lineari, esponenziali e leggi di potenza tramite l'indice R².",
         "tags": [
             "4 EL",
             "5 EL",
@@ -1659,8 +1658,8 @@ const db = [
         "scheda": "schede/scale_logaritmiche.html"
     },
     {
-        "title": "Random Walk 3D: Hypercaos & Chromatic Memory",
-        "excerpt": "Simulatore interattivo di passeggiate aleatorie in 3D. Esplora il caos deterministico e la geometria frattale (Koch, Hilbert, Peano) attraverso algoritmi generativi e morphing cromatico in tempo reale.",
+        "title": "Random Walk 3D: Passeggiate aleatorie e frattali",
+        "excerpt": "Simula passeggiate aleatorie e curve frattali (Koch, Hilbert, Peano) nello spazio 3D, regolando curvatura, angolo ortogonale, rumore casuale e gradiente cromatico del tracciato.",
         "tags": [
             "3D",
             "4 EL",
@@ -1678,7 +1677,7 @@ const db = [
         "url": "content/apps/random_walk.html",
         "type": "app",
         "icon": "🌀",
-        "game_type": "memory",
+        "game_type": "sim",
         "thumbnail": "content/assets/thumbnails/random_walk.webp",
         "allenamento": [
             {
@@ -1795,7 +1794,7 @@ const db = [
         "scheda": "schede/cards_polinomi_memory004.html"
     },
     {
-        "title": "C.E. Match",
+        "title": "C.E. Match: Palestra Matematica",
         "excerpt": "Gioco Memory sul riconoscimento delle condizioni di esistenza di frazioni algebriche.",
         "tags": [
             "1 EL",
@@ -2371,8 +2370,8 @@ const db = [
         "scheda": "schede/operazioni_polinomi_graph.html"
     },
     {
-        "title": "Errori Comuni - Potenze, Espressioni",
-        "excerpt": "Risorsa: Errori Comuni. Prontuario per evitare gli errori più comuni nel calcolo di espressioni.",
+        "title": "Errori Comuni: Potenze ed Espressioni",
+        "excerpt": "Prontuario visivo sugli errori più frequenti con potenze, segni ed espressioni (ordine delle operazioni PEMDAS), per riconoscerli prima di calcolare.",
         "tags": [
             "1 EL",
             "CALCOLO",
@@ -2395,7 +2394,7 @@ const db = [
     },
     {
         "title": "Decodifica la Matematica: grammatica dei simboli",
-        "excerpt": "Smetti di indovinare, inizia a capire: prontuario visuale per decodificare il formalismo, i simboli e la sintassi matematica, trasformando un insieme di regole mnemoniche in un linguaggio chiaro e accessibile.",
+        "excerpt": "Prontuario sui simboli, sulle parentesi e sulla sintassi matematica: traduce le formule riga per riga per leggere correttamente il significato di ogni segno ed evitare errori di precedenza.",
         "tags": [
             "DECODIFICA",
             "DIDATTICA INCLUSIVA",
@@ -2473,7 +2472,7 @@ const db = [
     },
     {
         "title": "Guida al Mondo delle Funzioni Matematiche",
-        "excerpt": "Mappa concettuale e infografica sinottica per orientarsi tra dominio, codominio, proprietà (iniettività, suriettività) e classificazione analitica delle funzioni elementari.",
+        "excerpt": "Mappa riassuntiva per leggere e confrontare dominio, codominio, iniettività, suriettività e famiglie di funzioni elementari in un unico schema.",
         "tags": [
             "ANALISI MATEMATICA",
             "CODOMINIO",
@@ -2592,8 +2591,8 @@ const db = [
         ]
     },
     {
-        "title": "Percent Lab",
-        "excerpt": "Laboratorio interattivo sulle percentuali. Visualizzazione, calcolo mentale e gamification.",
+        "title": "Percent Lab: Calcolo di percentuali",
+        "excerpt": "Calcola e visualizza le percentuali su griglie e barre, esercita il calcolo mentale su sconti e ricarichi e affronta i quiz a tempo.",
         "tags": [
             "1 EL",
             "ARITMETICA",
@@ -2651,7 +2650,7 @@ const db = [
     },
     {
         "title": "Sketch to Pattern: Arte Generativa",
-        "excerpt": "Strumento di arte generativa che trasforma schizzi a mano libera in pattern geometrici complessi. Sperimenta con algoritmi, semplificazione e tassellazioni.",
+        "excerpt": "Disegna a mano libera sul riquadro sinistro e regola semplificazione del tratto, distanza dei punti e densità per generare pattern geometrici con triangolazione di Delaunay esportabili in PNG e SVG.",
         "tags": [
             "ARTE",
             "CIT_4:COMPETENZA DIGITALE",
@@ -2724,7 +2723,7 @@ const db = [
     },
     {
         "title": "Laboratorio di operazioni tra Frazioni",
-        "excerpt": "Simulatore interattivo per comprendere le operazioni tra frazioni (Somma, Prodotto, Potenza) attraverso modelli visivi (Torte) e retta numerica.",
+        "excerpt": "Cambia numeratori, denominatori ed esponenti per confrontare frazioni a torta, posizione sulla retta numerica e passaggi di somma, sottrazione, moltiplicazione, divisione e potenza.",
         "tags": [
             "1 EL",
             "2 EL",
@@ -2782,7 +2781,7 @@ const db = [
     },
     {
         "title": "Esploratore Numerico: Pitagora & Tartaglia",
-        "excerpt": "Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo di Tartaglia (Combinatoria) e regole di divisibilità.",
+        "excerpt": "Filtra numeri primi, quadrati, cubi e multipli nella Tavola Pitagorica, evidenzia diagonali e somma delle righe nel Triangolo di Tartaglia e verifica i criteri di divisibilità.",
         "tags": [
             "1 EL",
             "2 EL",
@@ -2805,7 +2804,7 @@ const db = [
         "url": "content/apps/tavola_tart_canva0003.html",
         "type": "app",
         "icon": "📐",
-        "game_type": "sim",
+        "game_type": "document",
         "thumbnail": "content/assets/thumbnails/tavola_tart_canva0003.webp",
         "allenamento": [
             {
@@ -2848,7 +2847,7 @@ const db = [
     },
     {
         "title": "Mappe & Distorsioni: Mercatore",
-        "excerpt": "Modello interattivo in D3.js per esplorare le distorsioni della proiezione di Mercatore confrontando le aree reali dei paesi.",
+        "excerpt": "Trascina una nazione dall'equatore ai poli sulla mappa di Mercatore per misurare la distorsione di scala e confrontare la superficie apparente con quella reale.",
         "tags": [
             "1 EL",
             "2 EL",
@@ -2895,7 +2894,7 @@ const db = [
     },
     {
         "title": "GonioMatch: Memory su valori notevoli di funzioni goniometriche",
-        "excerpt": "Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.",
+        "excerpt": "Gioco memory sulla circonferenza goniometrica: abbina seno, coseno e tangente degli angoli notevoli ai loro valori esatti ed evita le trappole sui valori impossibili (come sin x = 2 o tan 90°).",
         "tags": [
             "3 MEC",
             "4 EL",
@@ -2946,7 +2945,7 @@ const db = [
     },
     {
         "title": "Albero di Pitagora: Frattali 3D",
-        "excerpt": "Simulazione WebGL dell'Albero di Pitagora in 3D. Un'esplorazione visiva dei frattali e delle relazioni geometriche tra i quadrati.",
+        "excerpt": "Simulatore 3D dell'Albero di Pitagora: varia livelli di ricorsione, angolo del triangolo rettangolo, spessore e torsione per osservare come cambiano i cateti e scaricare il modello .STL.",
         "tags": [
             "1 EL",
             "2 EL",
@@ -3010,6 +3009,98 @@ const db = [
         ]
     },
     {
+        "title": "Simulazione CA: Fasori & Onde",
+        "excerpt": "Simulatore interattivo del comportamento in Corrente Alternata (Sfasamento, Valori Efficaci, Potenza) per il corso di macchine elettriche.",
+        "tags": [
+            "4 EL",
+            "CORRENTE ALTERNATA",
+            "ELETTROTECNICA",
+            "FASORI",
+            "FISICA",
+            "IND:STRUMENTAZIONE",
+            "LAB",
+            "MAT:ANALISI",
+            "MAT:MODELLIZZAZIONE",
+            "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
+            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
+            "MAT_K2:FUNZIONI ELEMENTARI",
+            "ONDE"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/corrente_4el_sincos.html",
+        "type": "app",
+        "icon": "⚡",
+        "game_type": "sim",
+        "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.webp",
+        "allenamento": [
+            {
+                "id": "goniometria",
+                "titolo": "Goniometria",
+                "url": "allenamento/#/lezione/goniometria/1",
+                "mat": [
+                    "MAT_K2",
+                    "MAT_K3"
+                ]
+            },
+            {
+                "id": "trigonometria",
+                "titolo": "Trigonometria del triangolo rettangolo",
+                "url": "allenamento/#/lezione/trigonometria/1",
+                "mat": [
+                    "MAT_K3",
+                    "MAT_C4"
+                ]
+            }
+        ],
+        "scheda": "schede/corrente_4el_sincos.html"
+    },
+    {
+        "title": "Logic Lab: Insiemi & Venn",
+        "excerpt": "Modifica gli elementi di tre insiemi A, B e C, componi espressioni con unione, intersezione, differenza e differenza simmetrica e controlla sul diagramma di Venn quali elementi risultano inclusi.",
+        "tags": [
+            "1 EL",
+            "2 EL",
+            "2 GP",
+            "DIAGRAMMI DI VENN",
+            "EU:STEM",
+            "INSIEMI",
+            "LAB",
+            "LOGICA",
+            "MAT:LOGICA",
+            "MAT:MODELLIZZAZIONE",
+            "MATEMATICA",
+            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI"
+        ],
+        "date": "2025-12-08",
+        "url": "content/apps/insiemi004.html",
+        "type": "app",
+        "icon": "🔴",
+        "game_type": "standard",
+        "thumbnail": "content/assets/thumbnails/insiemi004.webp",
+        "allenamento": [
+            {
+                "id": "probabilita",
+                "titolo": "Probabilità",
+                "url": "allenamento/#/lezione/probabilita/1",
+                "mat": [
+                    "MAT_K4",
+                    "MAT_C3"
+                ]
+            },
+            {
+                "id": "statistica",
+                "titolo": "Statistica",
+                "url": "allenamento/#/lezione/statistica/1",
+                "mat": [
+                    "MAT_K4",
+                    "MAT_C3",
+                    "MAT_A2"
+                ]
+            }
+        ],
+        "scheda": "schede/insiemi004.html"
+    },
+    {
         "title": "AlgebraLab 3D: Scomposizione di polinomi attraverso prodotti notevoli e trinomio speciale",
         "excerpt": "Simulatore 3D interattivo per visualizzare prodotti notevoli e scomposizioni come aree e volumi.",
         "tags": [
@@ -3058,100 +3149,8 @@ const db = [
         "scheda": "schede/scomp_3d_grafica_002.html"
     },
     {
-        "title": "Simulazione CA: Fasori & Onde",
-        "excerpt": "Simulatore interattivo del comportamento in Corrente Alternata (Sfasamento, Valori Efficaci, Potenza) per il corso di macchine elettriche.",
-        "tags": [
-            "4 EL",
-            "CORRENTE ALTERNATA",
-            "ELETTROTECNICA",
-            "FASORI",
-            "FISICA",
-            "IND:STRUMENTAZIONE",
-            "LAB",
-            "MAT:ANALISI",
-            "MAT:MODELLIZZAZIONE",
-            "MAT_A2:RAPPRESENTARE DATI E FUNZIONI",
-            "MAT_C2:PENSIERO RAZIONALE IN CONTESTI REALI",
-            "MAT_K2:FUNZIONI ELEMENTARI",
-            "ONDE"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/corrente_4el_sincos.html",
-        "type": "app",
-        "icon": "⚡",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/corrente_4el_sincos.webp",
-        "allenamento": [
-            {
-                "id": "goniometria",
-                "titolo": "Goniometria",
-                "url": "allenamento/#/lezione/goniometria/1",
-                "mat": [
-                    "MAT_K2",
-                    "MAT_K3"
-                ]
-            },
-            {
-                "id": "trigonometria",
-                "titolo": "Trigonometria del triangolo rettangolo",
-                "url": "allenamento/#/lezione/trigonometria/1",
-                "mat": [
-                    "MAT_K3",
-                    "MAT_C4"
-                ]
-            }
-        ],
-        "scheda": "schede/corrente_4el_sincos.html"
-    },
-    {
-        "title": "Logic Lab: Insiemi & Venn",
-        "excerpt": "Laboratorio interattivo per esplorare la Teoria degli Insiemi. Definisci gli elementi, componi espressioni logiche (Unione, Intersezione) e visualizza i Diagrammi di Venn in tempo reale.",
-        "tags": [
-            "1 EL",
-            "2 EL",
-            "2 GP",
-            "DIAGRAMMI DI VENN",
-            "EU:STEM",
-            "INSIEMI",
-            "LAB",
-            "LOGICA",
-            "MAT:LOGICA",
-            "MAT:MODELLIZZAZIONE",
-            "MATEMATICA",
-            "MAT_C2:UTILIZZARE STRATEGIE DEL PENSIERO RAZIONALE PER AFFRONTARE SITUAZIONI PROBLEMATICHE IN CONTESTI REALI"
-        ],
-        "date": "2025-12-08",
-        "url": "content/apps/insiemi004.html",
-        "type": "app",
-        "icon": "🔴",
-        "game_type": "sim",
-        "thumbnail": "content/assets/thumbnails/insiemi004.webp",
-        "allenamento": [
-            {
-                "id": "probabilita",
-                "titolo": "Probabilità",
-                "url": "allenamento/#/lezione/probabilita/1",
-                "mat": [
-                    "MAT_K4",
-                    "MAT_C3"
-                ]
-            },
-            {
-                "id": "statistica",
-                "titolo": "Statistica",
-                "url": "allenamento/#/lezione/statistica/1",
-                "mat": [
-                    "MAT_K4",
-                    "MAT_C3",
-                    "MAT_A2"
-                ]
-            }
-        ],
-        "scheda": "schede/insiemi004.html"
-    },
-    {
         "title": "Math Underground: Mappa per la classificazione di Funzioni",
-        "excerpt": "Mappa interattiva della metropolitana per lo studio teorico delle funzioni analitiche e delle loro principali proprietà (Dominio, Codominio).",
+        "excerpt": "Mappa a linee per classificare le funzioni analitiche: segui i bivi tra radici, denominatori ed esponenti per determinare tipo di funzione, dominio e proprietà.",
         "tags": [
             "4 EL",
             "ANALISI",
@@ -3212,7 +3211,7 @@ const db = [
     },
     {
         "title": "Chaos Lab: Sistemi Dinamici",
-        "excerpt": "Simulatore 3D di Attrattori Strani (Lorenz, Rössler, Chen). Esplora il Caos Deterministico e le Equazioni Differenziali tramite integrazione numerica RK4.",
+        "excerpt": "Simulatore 3D di attrattori strani (Lorenz, Rössler, Chen, Aizawa, Halvorsen) con integrazione RK4: cambia modello e parametri, ferma o azzera la traiettoria ed esporta curve .OBJ o solidi .STL.",
         "tags": [
             "2 EL",
             "2 GP",

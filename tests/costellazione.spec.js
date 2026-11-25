@@ -147,10 +147,10 @@ test('il Sole: zoomando molto indietro resta sempre visibile la parola Matematic
 
 test('le transizioni di luce sono graduali: nessuno scatto di opacità', async ({ page }) => {
   await apriFerma(page);
-  await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.querySelector('.nodo[data-nodo="polinomi"]')).opacity))).toBeGreaterThan(0.1);
+  await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.querySelector('.nodo[data-nodo="equazione"]')).opacity))).toBeGreaterThan(0.1);
   // la ricerca spegne le stelle che non corrispondono: l'opacità scende per tappe, non in un colpo
   const serie = page.evaluate(() => new Promise((ok) => {
-    const el = document.querySelector('.nodo[data-nodo="polinomi"]'), v = [], t0 = performance.now();
+    const el = document.querySelector('.nodo[data-nodo="equazione"]'), v = [], t0 = performance.now();
     const g = () => { v.push(Number(getComputedStyle(el).opacity)); if (performance.now() - t0 < 1800) requestAnimationFrame(g); else ok(v); };
     requestAnimationFrame(g);
   }));
@@ -345,7 +345,11 @@ test('elasticità: una stella trascinata porta con sé le collegate e resta dove
   await apriFerma(page);
   // un padre con le figlie, libero da altre stelle davanti
   const padri = VOCABOLARIO.filter((p) => VOCABOLARIO.some((f) => f.padre === p.id)).map((p) => p.id);
-  const presa = await stellaLibera(page, `(n) => ${JSON.stringify(padri)}.includes(n.id)`);
+  let presa = await stellaLibera(page, `(n) => ${JSON.stringify(padri)}.includes(n.id) && n.sx < window.innerWidth - 160 && n.sy > 120`);
+  for (let i = 0; i < 16 && !presa; i++) {
+    await page.keyboard.press('ArrowRight');
+    presa = await stellaLibera(page, `(n) => ${JSON.stringify(padri)}.includes(n.id) && n.sx < window.innerWidth - 160 && n.sy > 120`);
+  }
   expect(presa).not.toBeNull();
   const figlia = VOCABOLARIO.find((p) => p.padre === presa.id).id;
   // la più lontana nella rete dei fili (almeno tre legami di distanza): si muove, ma molto meno

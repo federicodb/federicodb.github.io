@@ -11,7 +11,7 @@
     <script src="../assets/js/orfini-shared.js"></script>
 
     <meta name="description"
-        content="Arcade educativo per allenare il riconoscimento immediato dei valori trigonometrici (Seno, Coseno) sulla circonferenza goniometrica.">
+        content="Gioco memory sulla circonferenza goniometrica: abbina seno, coseno e tangente degli angoli notevoli ai loro valori esatti ed evita le trappole sui valori impossibili (come sin x = 2 o tan 90°).">
     <meta name="keywords"
         content="Matematica, Goniometria, Trigonometria, Funzioni, Angoli, Mat:Analisi, Lab, Gamification, 3 MEC, 4 EL">
     <meta name="allenamento" content="goniometria, trigonometria">
@@ -21,12 +21,6 @@
     <!-- 2. FIX MOBILE -->
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
-    <title>GonioMatch - Signal Processing</title>
-
-    <!-- Shared Orfini Design System -->
-    <link rel="stylesheet" href="../assets/style/orfini-shared.css">
-    <script src="../assets/js/orfini-shared.js"></script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -543,35 +537,35 @@
                     <div className="flex h-full w-full bg-background text-on-background font-mono transition-colors duration-500">
                         <aside className="w-full md:w-1/3 max-w-md bg-surface border-r border-outline-variant flex flex-col shadow-xl z-20 h-full">
                             <div className="p-6 border-b border-outline-variant flex justify-between items-center bg-background">
-                                <div><h1 className="text-2xl font-black text-on-background tracking-tighter flex items-center gap-2"><span className="text-3xl">{Icons.Radar}</span> GonioMatch</h1><p className="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mt-1">Signal Processing Unit v3.0</p></div>
+                                <div><h1 className="text-2xl font-black text-on-background tracking-tighter flex items-center gap-2"><span className="text-3xl">{Icons.Radar}</span> GonioMatch</h1><p className="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mt-1">Valori notevoli sulla circonferenza goniometrica</p></div>
                             </div>
                             <div className="flex-1 overflow-y-auto p-6 space-y-8 scroller">
-                                <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">ID Operatore</label><div className="flex gap-2"><button onClick={() => { const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length; setUserAvatar(AVATARS[nextIdx]); localStorage.setItem('gm_avatar', AVATARS[nextIdx]); }} className="bg-surface-container hover:bg-outline-variant cursor-pointer text-2xl w-14 h-14 flex items-center justify-center rounded-lg border-2 border-outline-variant transition-all active:scale-95">{userAvatar}</button><input value={nick} onChange={e => setNick(e.target.value)} placeholder="NOME IN CODICE..." className="w-full bg-surface-container rounded-lg px-4 font-bold text-on-background border-2 border-transparent focus:border-radar-500 focus:bg-surface outline-none transition-all uppercase placeholder-on-surface-variant" /></div></div>
+                                <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">Studente</label><div className="flex gap-2"><button onClick={() => { const nextIdx = (AVATARS.indexOf(userAvatar) + 1) % AVATARS.length; setUserAvatar(AVATARS[nextIdx]); localStorage.setItem('gm_avatar', AVATARS[nextIdx]); }} className="bg-surface-container hover:bg-outline-variant cursor-pointer text-2xl w-14 h-14 flex items-center justify-center rounded-lg border-2 border-outline-variant transition-all active:scale-95">{userAvatar}</button><input value={nick} onChange={e => setNick(e.target.value)} placeholder="Il tuo nome..." className="w-full bg-surface-container rounded-lg px-4 font-bold text-on-background border-2 border-transparent focus:border-radar-500 focus:bg-surface outline-none transition-all uppercase placeholder-on-surface-variant" /></div></div>
 
                                 {/* SCAFFOLDING TOGGLE (Radar Style) */}
                                 <button onClick={() => setScaffoldMode(!scaffoldMode)} className={`w-full flex items-center justify-between p-3 rounded-lg border-2 transition-all ${scaffoldMode ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/20' : 'border-outline-variant bg-surface'}`}>
                                     <div className="flex items-center gap-3">
                                         <div className={`text-xl ${scaffoldMode ? 'text-radar-600' : 'text-on-surface-variant'}`}>👻</div>
                                         <div className="text-left">
-                                            <div className="font-bold text-xs uppercase tracking-widest text-on-background">Ghost Signal</div>
-                                            <div className="text-[9px] font-mono text-on-surface-variant">Trace Persistence</div>
+                                            <div className="font-bold text-xs uppercase tracking-widest text-on-background">Carte visibili</div>
+                                            <div className="text-[9px] font-mono text-on-surface-variant">Mostra le carte già girate</div>
                                         </div>
                                     </div>
                                     <div className={`w-3 h-3 rounded-full border ${scaffoldMode ? 'bg-radar-500 border-radar-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'border-outline-variant'}`} />
                                 </button>
 
-                                <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">Protocollo</label><div className="grid gap-2">{LEVELS.map(l => (<button key={l.id} onClick={() => setLvl(l.id)} className={`text-left p-3 rounded-lg border-2 transition-all flex justify-between items-center group ${lvl === l.id ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/30 dark:border-radar-500' : 'border-outline-variant hover:border-radar-500/50 bg-surface'}`}><div><div className={`font-bold text-sm ${lvl === l.id ? 'text-primary' : 'text-on-surface-variant'}`}>{l.label}</div><div className="text-[10px] opacity-60 font-mono">{l.desc}</div></div>{lvl === l.id && <div className="text-primary animate-pulse">{Icons.Check}</div>}</button>))}</div></div>
-                                <div className="bg-surface-container rounded-xl border border-outline-variant p-4"><div className="flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant"><div className="text-yellow-500">{Icons.Trophy}</div><span className="font-bold text-[10px] uppercase tracking-widest text-on-surface-variant">Top Signals</span></div><div className="max-h-48 overflow-y-auto scroller space-y-2 font-sans">{lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 font-mono">NO DATA LOGGED</div>}{lb.map((row, i) => (<div key={i} className="flex justify-between items-center text-xs p-2 bg-surface rounded border border-outline-variant shadow-sm"><div className="flex gap-2 items-center"><span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i < 3 ? 'bg-yellow-100 text-yellow-700' : 'bg-surface-container text-on-surface-variant'}`}>{i + 1}</span><span className="text-base leading-none">{row.avatar || '👤'}</span><span className="font-bold text-on-background truncate max-w-[80px] uppercase">{row.name}</span></div><div className="text-right"><div className="text-primary font-bold">{row.score}</div><div className="text-[9px] text-on-surface-variant font-mono">{row.moves}mv</div></div></div>))}</div></div>
+                                <div className="space-y-2"><label className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">Livello</label><div className="grid gap-2">{LEVELS.map(l => (<button key={l.id} onClick={() => setLvl(l.id)} className={`text-left p-3 rounded-lg border-2 transition-all flex justify-between items-center group ${lvl === l.id ? 'border-radar-500 bg-radar-50 dark:bg-radar-900/30 dark:border-radar-500' : 'border-outline-variant hover:border-radar-500/50 bg-surface'}`}><div><div className={`font-bold text-sm ${lvl === l.id ? 'text-primary' : 'text-on-surface-variant'}`}>{l.label}</div><div className="text-[10px] opacity-60 font-mono">{l.desc}</div></div>{lvl === l.id && <div className="text-primary animate-pulse">{Icons.Check}</div>}</button>))}</div></div>
+                                <div className="bg-surface-container rounded-xl border border-outline-variant p-4"><div className="flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant"><div className="text-yellow-500">{Icons.Trophy}</div><span className="font-bold text-[10px] uppercase tracking-widest text-on-surface-variant">Classifica</span></div><div className="max-h-48 overflow-y-auto scroller space-y-2 font-sans">{lb.length === 0 && <div className="text-xs text-center py-4 opacity-40 font-mono">Nessuna partita salvata</div>}{lb.map((row, i) => (<div key={i} className="flex justify-between items-center text-xs p-2 bg-surface rounded border border-outline-variant shadow-sm"><div className="flex gap-2 items-center"><span className={`w-5 h-5 rounded flex items-center justify-center font-mono font-bold text-[10px] ${i < 3 ? 'bg-yellow-100 text-yellow-700' : 'bg-surface-container text-on-surface-variant'}`}>{i + 1}</span><span className="text-base leading-none">{row.avatar || '👤'}</span><span className="font-bold text-on-background truncate max-w-[80px] uppercase">{row.name}</span></div><div className="text-right"><div className="text-primary font-bold">{row.score}</div><div className="text-[9px] text-on-surface-variant font-mono">{row.moves}mv</div></div></div>))}</div></div>
                             </div>
-                            <div className="p-6 border-t border-outline-variant bg-background"><button onClick={() => startGame(false)} className="w-full py-4 bg-primary hover:opacity-90 text-on-primary rounded-lg font-bold shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2 tracking-widest text-sm uppercase">Avvia Scansione {Icons.Play}</button></div>
+                            <div className="p-6 border-t border-outline-variant bg-background"><button onClick={() => startGame(false)} className="w-full py-4 bg-primary hover:opacity-90 text-on-primary rounded-lg font-bold shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2 tracking-widest text-sm uppercase">Inizia {Icons.Play}</button></div>
                         </aside>
                         <main className="hidden md:flex flex-1 bg-crt items-center justify-center relative overflow-hidden bg-background">
                             <div className="w-full max-w-5xl p-8">
                                 <div className="bg-surface/90 backdrop-blur p-10 rounded-2xl shadow-2xl border border-outline-variant h-full flex flex-col">
-                                    <div className="flex items-center gap-6 mb-8 pb-6 border-b border-outline-variant"><div className="p-4 bg-primary/10 text-primary rounded-xl">{Icons.Wave}</div><div><h2 className="text-3xl font-black text-on-background tracking-tight">MANUALE DI CAMPO</h2><p className="text-on-surface-variant font-mono text-sm mt-1">Riferimenti Goniometrici Essenziali</p></div></div>
+                                    <div className="flex items-center gap-6 mb-8 pb-6 border-b border-outline-variant"><div className="p-4 bg-primary/10 text-primary rounded-xl">{Icons.Wave}</div><div><h2 className="text-3xl font-black text-on-background tracking-tight">Guida rapida</h2><p className="text-on-surface-variant font-mono text-sm mt-1">Riferimenti Goniometrici Essenziali</p></div></div>
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto scroller pr-2">
-                                        <div className="space-y-4"><div className="flex items-start gap-3 p-4 bg-background rounded-lg border-l-4 border-radar-500"><div className="text-primary mt-1">{Icons.Warning}</div><div><h3 className="font-bold text-on-background text-sm uppercase tracking-wide">Direttiva Primaria</h3><p className="text-on-surface-variant text-sm mt-1 leading-relaxed">Il sistema genera onde uniche. Associa ogni <strong>Funzione (Bordo Tratteggiato)</strong> al suo <strong>Valore Numerico (Bordo Continuo)</strong>. Attenzione alle trappole di segnale (valori impossibili).</p></div></div></div>
-                                        <div className="space-y-3"><h3 className="font-bold text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Pattern Riconosciuti</h3>{BRIEFING_ITEMS.map((item, idx) => (<div key={idx} className={`p-3 rounded border flex flex-col justify-center min-h-[80px] ${item.color} bg-opacity-10 border-opacity-30`}><div className="text-[9px] font-bold opacity-70 mb-1 uppercase tracking-wider">{item.title}</div><div className="w-full overflow-x-auto no-scrollbar"><MathText txt={item.tex} className="text-sm text-left justify-start" /></div></div>))}</div>
+                                        <div className="space-y-4"><div className="flex items-start gap-3 p-4 bg-background rounded-lg border-l-4 border-radar-500"><div className="text-primary mt-1">{Icons.Warning}</div><div><h3 className="font-bold text-on-background text-sm uppercase tracking-wide">Regole del gioco</h3><p className="text-on-surface-variant text-sm mt-1 leading-relaxed">Il sistema genera onde uniche. Associa ogni <strong>Funzione (Bordo Tratteggiato)</strong> al suo <strong>Valore Numerico (Bordo Continuo)</strong>. Attenzione alle trappole di segnale (valori impossibili).</p></div></div></div>
+                                        <div className="space-y-3"><h3 className="font-bold text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Valori notevoli e trappole</h3>{BRIEFING_ITEMS.map((item, idx) => (<div key={idx} className={`p-3 rounded border flex flex-col justify-center min-h-[80px] ${item.color} bg-opacity-10 border-opacity-30`}><div className="text-[9px] font-bold opacity-70 mb-1 uppercase tracking-wider">{item.title}</div><div className="w-full overflow-x-auto no-scrollbar"><MathText txt={item.tex} className="text-sm text-left justify-start" /></div></div>))}</div>
                                     </div>
                                 </div>
                             </div>
@@ -589,8 +583,8 @@
                     <div className="h-full w-full flex flex-col bg-background overflow-hidden font-mono bg-crt">
                         <header className="h-16 bg-surface/80 backdrop-blur shadow-sm flex items-center justify-between px-6 z-30 shrink-0 border-b border-outline-variant">
                             <div className="flex items-center gap-6">
-                                <button onClick={() => setView('menu')} className="text-[10px] font-bold text-on-surface-variant hover:text-red-500 uppercase tracking-widest border border-outline-variant rounded px-2 py-1 hover:border-red-400 transition-all">Abort Mission</button>
-                                {isRush ? (<div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ${rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-red-100 text-red-800 border-red-200 animate-pulse'}`}>{Icons.Timer} {timeLeft}s</div>) : (<div className="flex flex-col"><span className="text-[9px] font-bold text-on-surface-variant uppercase leading-none tracking-widest">Signal Strenght</span><span className="text-xl font-bold text-radar-600 leading-none mt-1 dark:text-radar-400">{score} dB</span></div>)}
+                                <button onClick={() => setView('menu')} className="text-[10px] font-bold text-on-surface-variant hover:text-red-500 uppercase tracking-widest border border-outline-variant rounded px-2 py-1 hover:border-red-400 transition-all">Esci</button>
+                                {isRush ? (<div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ${rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-red-100 text-red-800 border-red-200 animate-pulse'}`}>{Icons.Timer} {timeLeft}s</div>) : (<div className="flex flex-col"><span className="text-[9px] font-bold text-on-surface-variant uppercase leading-none tracking-widest">Punteggio</span><span className="text-xl font-bold text-radar-600 leading-none mt-1 dark:text-radar-400">{score} pt</span></div>)}
                             </div>
                             {matchMsg && (<div className={`absolute top-20 left-1/2 -translate-x-1/2 px-8 py-4 rounded shadow-2xl border-l-4 flex items-center gap-4 animate-bounce z-50 bg-surface ${matchMsg.color || 'border-l-radar-500 border-outline-variant'}`}><div className="text-2xl">{matchMsg.text.includes('!') ? '⚠️' : '✅'}</div><div><div className="font-black text-on-background text-base uppercase tracking-tight">{matchMsg.text}</div><div className="text-xs font-medium text-on-surface-variant uppercase font-sans">{matchMsg.sub}</div></div></div>)}
                         </header>
@@ -637,10 +631,10 @@
                             <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
                                 <div className="bg-surface p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full relative overflow-hidden border border-outline-variant">
                                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-radar-400 to-emerald-400"></div>
-                                    <h2 className="text-3xl font-black text-on-background mb-1 tracking-tight">ANALISI COMPLETA</h2>
-                                    <p className="text-on-surface-variant mb-8 text-sm font-mono uppercase tracking-wide">Integrità Dati: 100%</p>
+                                    <h2 className="text-3xl font-black text-on-background mb-1 tracking-tight">Livello completato</h2>
+                                    <p className="text-on-surface-variant mb-8 text-sm font-mono uppercase tracking-wide">Tutte le coppie abbinate</p>
                                     <div className="flex justify-center items-end gap-2 mb-8"><span className="text-5xl font-black text-radar-600 dark:text-radar-400">{score}</span><span className="text-sm font-bold text-on-surface-variant mb-2 uppercase">Punti</span></div>
-                                    <div className="space-y-3"><button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-lg font-bold shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wide text-sm">{Icons.Zap} Overclock (Rush Mode)</button><button onClick={saveAndExit} className="w-full py-3 bg-surface border-2 border-outline-variant text-on-surface-variant rounded-lg font-bold hover:bg-surface-container transition-colors uppercase tracking-wide text-xs">Salva nel Log</button></div>
+                                    <div className="space-y-3"><button onClick={() => startGame(true)} className="w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-lg font-bold shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wide text-sm">{Icons.Zap} Sfida a tempo</button><button onClick={saveAndExit} className="w-full py-3 bg-surface border-2 border-outline-variant text-on-surface-variant rounded-lg font-bold hover:bg-surface-container transition-colors uppercase tracking-wide text-xs">Salva ed esci</button></div>
                                 </div>
                             </div>
                         )}
@@ -650,7 +644,7 @@
                                     <div className="text-6xl mb-6">{score > 1000 ? '📡' : '📉'}</div>
                                     <h2 className="text-6xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">{score}</h2>
                                     <p className="text-sm text-radar-400 mb-8 font-bold uppercase tracking-[0.3em]">Risultato Finale</p>
-                                    <button onClick={saveAndExit} className="px-10 py-4 bg-surface text-on-background rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">RIAVVIA SISTEMA</button>
+                                    <button onClick={saveAndExit} className="px-10 py-4 bg-surface text-on-background rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">Torna al menu</button>
                                 </div>
                             </div>
                         )}
@@ -663,7 +657,7 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-    <script data-jsx-compilato="34166671571b">
+    <script data-jsx-compilato="d4bddf28a1ce">
 // Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
 document.addEventListener('DOMContentLoaded', function () {
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
@@ -1271,13 +1265,13 @@ function App() {
       className: "text-3xl"
     }, Icons.Radar), " GonioMatch"), /*#__PURE__*/React.createElement("p", {
       className: "text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mt-1"
-    }, "Signal Processing Unit v3.0"))), /*#__PURE__*/React.createElement("div", {
+    }, "Valori notevoli sulla circonferenza goniometrica"))), /*#__PURE__*/React.createElement("div", {
       className: "flex-1 overflow-y-auto p-6 space-y-8 scroller"
     }, /*#__PURE__*/React.createElement("div", {
       className: "space-y-2"
     }, /*#__PURE__*/React.createElement("label", {
       className: "text-[10px] font-bold uppercase text-on-surface-variant tracking-widest"
-    }, "ID Operatore"), /*#__PURE__*/React.createElement("div", {
+    }, "Studente"), /*#__PURE__*/React.createElement("div", {
       className: "flex gap-2"
     }, /*#__PURE__*/React.createElement("button", {
       onClick: function onClick() {
@@ -1291,7 +1285,7 @@ function App() {
       onChange: function onChange(e) {
         return setNick(e.target.value);
       },
-      placeholder: "NOME IN CODICE...",
+      placeholder: "Il tuo nome...",
       className: "w-full bg-surface-container rounded-lg px-4 font-bold text-on-background border-2 border-transparent focus:border-radar-500 focus:bg-surface outline-none transition-all uppercase placeholder-on-surface-variant"
     }))), /*#__PURE__*/React.createElement("button", {
       onClick: function onClick() {
@@ -1306,15 +1300,15 @@ function App() {
       className: "text-left"
     }, /*#__PURE__*/React.createElement("div", {
       className: "font-bold text-xs uppercase tracking-widest text-on-background"
-    }, "Ghost Signal"), /*#__PURE__*/React.createElement("div", {
+    }, "Carte visibili"), /*#__PURE__*/React.createElement("div", {
       className: "text-[9px] font-mono text-on-surface-variant"
-    }, "Trace Persistence"))), /*#__PURE__*/React.createElement("div", {
+    }, "Mostra le carte gi\xE0 girate"))), /*#__PURE__*/React.createElement("div", {
       className: "w-3 h-3 rounded-full border ".concat(scaffoldMode ? 'bg-radar-500 border-radar-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'border-outline-variant')
     })), /*#__PURE__*/React.createElement("div", {
       className: "space-y-2"
     }, /*#__PURE__*/React.createElement("label", {
       className: "text-[10px] font-bold uppercase text-on-surface-variant tracking-widest"
-    }, "Protocollo"), /*#__PURE__*/React.createElement("div", {
+    }, "Livello"), /*#__PURE__*/React.createElement("div", {
       className: "grid gap-2"
     }, LEVELS.map(function (l) {
       return /*#__PURE__*/React.createElement("button", {
@@ -1338,11 +1332,11 @@ function App() {
       className: "text-yellow-500"
     }, Icons.Trophy), /*#__PURE__*/React.createElement("span", {
       className: "font-bold text-[10px] uppercase tracking-widest text-on-surface-variant"
-    }, "Top Signals")), /*#__PURE__*/React.createElement("div", {
+    }, "Classifica")), /*#__PURE__*/React.createElement("div", {
       className: "max-h-48 overflow-y-auto scroller space-y-2 font-sans"
     }, lb.length === 0 && /*#__PURE__*/React.createElement("div", {
       className: "text-xs text-center py-4 opacity-40 font-mono"
-    }, "NO DATA LOGGED"), lb.map(function (row, i) {
+    }, "Nessuna partita salvata"), lb.map(function (row, i) {
       return /*#__PURE__*/React.createElement("div", {
         key: i,
         className: "flex justify-between items-center text-xs p-2 bg-surface rounded border border-outline-variant shadow-sm"
@@ -1368,7 +1362,7 @@ function App() {
         return startGame(false);
       },
       className: "w-full py-4 bg-primary hover:opacity-90 text-on-primary rounded-lg font-bold shadow-lg active:scale-95 transition-all flex justify-center items-center gap-2 tracking-widest text-sm uppercase"
-    }, "Avvia Scansione ", Icons.Play))), /*#__PURE__*/React.createElement("main", {
+    }, "Inizia ", Icons.Play))), /*#__PURE__*/React.createElement("main", {
       className: "hidden md:flex flex-1 bg-crt items-center justify-center relative overflow-hidden bg-background"
     }, /*#__PURE__*/React.createElement("div", {
       className: "w-full max-w-5xl p-8"
@@ -1380,7 +1374,7 @@ function App() {
       className: "p-4 bg-primary/10 text-primary rounded-xl"
     }, Icons.Wave), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
       className: "text-3xl font-black text-on-background tracking-tight"
-    }, "MANUALE DI CAMPO"), /*#__PURE__*/React.createElement("p", {
+    }, "Guida rapida"), /*#__PURE__*/React.createElement("p", {
       className: "text-on-surface-variant font-mono text-sm mt-1"
     }, "Riferimenti Goniometrici Essenziali"))), /*#__PURE__*/React.createElement("div", {
       className: "grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto scroller pr-2"
@@ -1392,13 +1386,13 @@ function App() {
       className: "text-primary mt-1"
     }, Icons.Warning), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
       className: "font-bold text-on-background text-sm uppercase tracking-wide"
-    }, "Direttiva Primaria"), /*#__PURE__*/React.createElement("p", {
+    }, "Regole del gioco"), /*#__PURE__*/React.createElement("p", {
       className: "text-on-surface-variant text-sm mt-1 leading-relaxed"
     }, "Il sistema genera onde uniche. Associa ogni ", /*#__PURE__*/React.createElement("strong", null, "Funzione (Bordo Tratteggiato)"), " al suo ", /*#__PURE__*/React.createElement("strong", null, "Valore Numerico (Bordo Continuo)"), ". Attenzione alle trappole di segnale (valori impossibili).")))), /*#__PURE__*/React.createElement("div", {
       className: "space-y-3"
     }, /*#__PURE__*/React.createElement("h3", {
       className: "font-bold text-on-surface-variant text-[10px] uppercase tracking-widest mb-2"
-    }, "Pattern Riconosciuti"), BRIEFING_ITEMS.map(function (item, idx) {
+    }, "Valori notevoli e trappole"), BRIEFING_ITEMS.map(function (item, idx) {
       return /*#__PURE__*/React.createElement("div", {
         key: idx,
         className: "p-3 rounded border flex flex-col justify-center min-h-[80px] ".concat(item.color, " bg-opacity-10 border-opacity-30")
@@ -1427,15 +1421,15 @@ function App() {
         return setView('menu');
       },
       className: "text-[10px] font-bold text-on-surface-variant hover:text-red-500 uppercase tracking-widest border border-outline-variant rounded px-2 py-1 hover:border-red-400 transition-all"
-    }, "Abort Mission"), isRush ? /*#__PURE__*/React.createElement("div", {
+    }, "Esci"), isRush ? /*#__PURE__*/React.createElement("div", {
       className: "flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm border ".concat(rushPhase === 'mem' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : 'bg-red-100 text-red-800 border-red-200 animate-pulse')
     }, Icons.Timer, " ", timeLeft, "s") : /*#__PURE__*/React.createElement("div", {
       className: "flex flex-col"
     }, /*#__PURE__*/React.createElement("span", {
       className: "text-[9px] font-bold text-on-surface-variant uppercase leading-none tracking-widest"
-    }, "Signal Strenght"), /*#__PURE__*/React.createElement("span", {
+    }, "Punteggio"), /*#__PURE__*/React.createElement("span", {
       className: "text-xl font-bold text-radar-600 leading-none mt-1 dark:text-radar-400"
-    }, score, " dB"))), matchMsg && /*#__PURE__*/React.createElement("div", {
+    }, score, " pt"))), matchMsg && /*#__PURE__*/React.createElement("div", {
       className: "absolute top-20 left-1/2 -translate-x-1/2 px-8 py-4 rounded shadow-2xl border-l-4 flex items-center gap-4 animate-bounce z-50 bg-surface ".concat(matchMsg.color || 'border-l-radar-500 border-outline-variant')
     }, /*#__PURE__*/React.createElement("div", {
       className: "text-2xl"
@@ -1500,9 +1494,9 @@ function App() {
       className: "absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-radar-400 to-emerald-400"
     }), /*#__PURE__*/React.createElement("h2", {
       className: "text-3xl font-black text-on-background mb-1 tracking-tight"
-    }, "ANALISI COMPLETA"), /*#__PURE__*/React.createElement("p", {
+    }, "Livello completato"), /*#__PURE__*/React.createElement("p", {
       className: "text-on-surface-variant mb-8 text-sm font-mono uppercase tracking-wide"
-    }, "Integrit\xE0 Dati: 100%"), /*#__PURE__*/React.createElement("div", {
+    }, "Tutte le coppie abbinate"), /*#__PURE__*/React.createElement("div", {
       className: "flex justify-center items-end gap-2 mb-8"
     }, /*#__PURE__*/React.createElement("span", {
       className: "text-5xl font-black text-radar-600 dark:text-radar-400"
@@ -1515,10 +1509,10 @@ function App() {
         return startGame(true);
       },
       className: "w-full py-4 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 rounded-lg font-bold shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 uppercase tracking-wide text-sm"
-    }, Icons.Zap, " Overclock (Rush Mode)"), /*#__PURE__*/React.createElement("button", {
+    }, Icons.Zap, " Sfida a tempo"), /*#__PURE__*/React.createElement("button", {
       onClick: saveAndExit,
       className: "w-full py-3 bg-surface border-2 border-outline-variant text-on-surface-variant rounded-lg font-bold hover:bg-surface-container transition-colors uppercase tracking-wide text-xs"
-    }, "Salva nel Log")))), view === 'final' && /*#__PURE__*/React.createElement("div", {
+    }, "Salva ed esci")))), view === 'final' && /*#__PURE__*/React.createElement("div", {
       className: "fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in zoom-in-95 font-mono"
     }, /*#__PURE__*/React.createElement("div", {
       className: "text-center text-on-background border border-outline-variant p-10 rounded-3xl bg-surface"
@@ -1531,7 +1525,7 @@ function App() {
     }, "Risultato Finale"), /*#__PURE__*/React.createElement("button", {
       onClick: saveAndExit,
       className: "px-10 py-4 bg-surface text-on-background rounded-full font-bold hover:scale-110 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-    }, "RIAVVIA SISTEMA"))));
+    }, "Torna al menu"))));
   }
   return null;
 }

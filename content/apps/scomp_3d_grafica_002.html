@@ -195,7 +195,7 @@
 
         <!-- Toggle Button per Mobile -->
         <button id="toggle-sidebar"
-            class="pointer-events-auto md:hidden mb-2 bg-indigo-600 text-on-background p-2 rounded-lg self-start shadow-lg flex items-center gap-2 text-xs font-bold uppercase">
+            class="pointer-events-auto md:hidden mb-2 bg-cyan-600 text-white p-2 rounded-lg self-start shadow-lg flex items-center gap-2 text-xs font-bold uppercase">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="3" y1="12" x2="21" y2="12" />
@@ -211,7 +211,7 @@
             <!-- Header -->
             <div class="mb-6 border-b border-outline-variant pb-4">
                 <h1 class="text-xl md:text-2xl font-black text-on-background tracking-tighter">Algebra<span
-                        class="text-indigo-400">Lab</span> 3D</h1>
+                        class="text-cyan-400">Lab</span> 3D</h1>
                 <p class="text-[10px] text-outline-variant mt-1 uppercase tracking-widest font-bold">Visualizzazione
                     Geometrica</p>
             </div>
@@ -220,7 +220,7 @@
             <div class="mb-4">
                 <div class="grid grid-cols-2 gap-2 bg-slate-900/50 p-1 rounded-xl">
                     <button id="btn-cat-2d"
-                        class="py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-on-background shadow-lg flex items-center justify-center gap-2">
+                        class="py-2 px-3 rounded-lg text-xs font-bold transition bg-cyan-600 text-white shadow-lg flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -246,7 +246,7 @@
                 <label class="text-[10px] font-bold text-outline-variant uppercase tracking-wider mb-2 block">Modello
                     Matematico</label>
                 <select id="select-model"
-                    class="w-full bg-surface border border-outline-variant text-on-background text-xs rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 math-font shadow-inner outline-none">
+                    class="w-full bg-surface border border-outline-variant text-on-background text-xs rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 math-font shadow-inner outline-none">
                     <!-- Popolato via JS -->
                 </select>
             </div>
@@ -264,7 +264,7 @@
                         class="w-2 h-2 rounded-full bg-pink-500 mr-2 shadow-[0_0_5px_#ec4899]"></span>Termine B / y
                 </div>
                 <div class="flex items-center"><span
-                        class="w-2 h-2 rounded-full bg-violet-500 mr-2 shadow-[0_0_5px_#8b5cf6]"></span>Misto (ab, xy)
+                        class="w-2 h-2 rounded-full bg-amber-500 mr-2 shadow-[0_0_5px_#f59e0b]"></span>Misto (ab, xy)
                 </div>
                 <div class="flex items-center"><span
                         class="w-2 h-2 rounded-full bg-emerald-500 mr-2 shadow-[0_0_5px_#10b981]"></span>Unità / Fattore
@@ -273,9 +273,9 @@
 
             <div class="mt-auto">
                 <div
-                    class="p-4 bg-gradient-to-br from-indigo-900/30 to-slate-900/50 border border-indigo-500/20 rounded-xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 -mt-2 -mr-2 w-16 h-16 bg-indigo-500 blur-3xl opacity-20"></div>
-                    <h3 id="formula-display" class="text-sm font-bold text-indigo-200 mb-1 math-font relative z-10">
+                    class="p-4 bg-gradient-to-br from-cyan-900/30 to-slate-900/50 border border-cyan-500/20 rounded-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-2 -mr-2 w-16 h-16 bg-cyan-500 blur-3xl opacity-20"></div>
+                    <h3 id="formula-display" class="text-sm font-bold text-cyan-200 mb-1 math-font relative z-10">
                         Formula</h3>
                     <p id="description-display"
                         class="text-xs text-on-surface-variant leading-relaxed relative z-10 italic">Descrizione.</p>
@@ -363,7 +363,7 @@
         scene.add(dirLight);
 
         // Luce colorata per atmosfera
-        const rimLight = new THREE.DirectionalLight(0x818cf8, 0.5); // Indigo light
+        const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.5); // Cyan light
         rimLight.position.set(-10, 5, -5);
         scene.add(rimLight);
 
@@ -374,7 +374,7 @@
         const PALETTE = {
             primary: 0x06b6d4,    // Cyan (Termini base)
             secondary: 0xec4899,  // Pink (Termini secondari)
-            mixed: 0x8b5cf6,      // Violet (Prodotti misti)
+            mixed: 0xf59e0b,      // Amber (Prodotti misti)
             mixed2: 0xd946ef,     // Fuchsia (Prodotti misti complessi)
             unit: 0x10b981,       // Emerald (Costanti/Unità)
             negative: 0xe11d48,   // Rose (Termini negativi)
@@ -599,7 +599,7 @@
         const controlsArea = document.getElementById('controls-area');
 
         function renderUI() {
-            const is2d = document.getElementById('btn-cat-2d').classList.contains('bg-indigo-600');
+            const is2d = document.getElementById('btn-cat-2d').classList.contains('bg-cyan-600');
             const cat = is2d ? '2d' : '3d';
 
             selectModel.innerHTML = '';
@@ -614,7 +614,7 @@
             const createSlider = (id, label, min, max, val, step = 0.5) => {
                 const div = document.createElement('div');
                 div.innerHTML = `
-                    <div class="flex justify-between text-[10px] text-indigo-300 font-bold mb-1 uppercase tracking-wide">
+                    <div class="flex justify-between text-[10px] text-cyan-300 font-bold mb-1 uppercase tracking-wide">
                         <span>${label}</span><span id="val-${id}" class="text-on-background">${val}</span>
                     </div>
                     <input type="range" id="sld-${id}" min="${min}" max="${max}" step="${step}" value="${val}" class="w-full">
@@ -667,12 +667,12 @@
             const btn3d = document.getElementById('btn-cat-3d');
 
             if (is2d) {
-                btn2d.className = "py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-on-background shadow-lg flex items-center justify-center gap-2";
+                btn2d.className = "py-2 px-3 rounded-lg text-xs font-bold transition bg-cyan-600 text-white shadow-lg flex items-center justify-center gap-2";
                 btn3d.className = "py-2 px-3 rounded-lg text-xs font-bold transition text-outline-variant hover:text-white hover:bg-slate-800 flex items-center justify-center gap-2";
                 state.model = 'sq_bin_con';
             } else {
                 btn2d.className = "py-2 px-3 rounded-lg text-xs font-bold transition text-outline-variant hover:text-white hover:bg-slate-800 flex items-center justify-center gap-2";
-                btn3d.className = "py-2 px-3 rounded-lg text-xs font-bold transition bg-indigo-600 text-on-background shadow-lg flex items-center justify-center gap-2";
+                btn3d.className = "py-2 px-3 rounded-lg text-xs font-bold transition bg-cyan-600 text-white shadow-lg flex items-center justify-center gap-2";
                 state.model = 'cube_bin';
             }
             state.exploded = false;
@@ -691,7 +691,7 @@
 
         document.getElementById('btn-explode').onclick = function () {
             state.exploded = !state.exploded;
-            this.classList.toggle('bg-indigo-900/50');
+            this.classList.toggle('bg-cyan-900/50');
             this.innerHTML = state.exploded ? '<span class="text-base">↩️</span> Unisci' : '<span class="text-base">💥</span> Esplodi';
             updateExplosion();
         };

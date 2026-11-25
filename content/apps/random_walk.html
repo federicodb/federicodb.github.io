@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Random Walk 3D: Hypercaos & Chromatic Memory</title>
+    <title>Random Walk 3D: Passeggiate aleatorie e frattali</title>
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
     <script src="../assets/js/orfini-shared.js"></script>
 
 
     <meta name="description"
-        content="Simulatore interattivo di passeggiate aleatorie in 3D. Esplora il caos deterministico e la geometria frattale (Koch, Hilbert, Peano) attraverso algoritmi generativi e morphing cromatico in tempo reale.">
+        content="Simula passeggiate aleatorie e curve frattali (Koch, Hilbert, Peano) nello spazio 3D, regolando curvatura, angolo ortogonale, rumore casuale e gradiente cromatico del tracciato.">
     <meta name="keywords"
         content="Frattali, Random Walk, Caos, 3D, WebGL, Algoritmi, MAT_K3:Geometria, IND_C2:Coding, SOFT_2:Metacognizione, 4 EL, 5 EL">
     <meta name="allenamento" content="probabilita">
@@ -237,8 +237,8 @@
         class="fixed left-0 top-0 h-full w-80 ui-panel p-8 flex flex-col pointer-events-auto panel-closed overflow-y-auto">
         <div class="flex justify-between items-center mb-8 shrink-0">
             <div>
-                <h1 class="text-2xl font-bold text-white tracking-tighter">Hypercaos</h1>
-                <p class="text-[10px] text-accent uppercase tracking-[0.2em] font-black">Chromatic Memory</p>
+                <h1 class="text-2xl font-bold text-white tracking-tighter">Random Walk 3D</h1>
+                <p class="text-[10px] text-accent uppercase tracking-[0.2em] font-black">Passeggiate e Frattali</p>
             </div>
             <button id="closeMenu" class="text-white/30 hover:text-white p-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -254,7 +254,7 @@
                 <p class="text-[11px] font-bold text-white/30 uppercase tracking-widest border-b border-white/10 pb-2">
                     Navigazione</p>
                 <div class="flex items-center justify-between text-xs">
-                    <label>Auto-Fit (Space Fill)</label>
+                    <label>Adatta vista</label>
                     <input type="checkbox" id="autoFit" checked>
                 </div>
                 <div class="flex flex-col gap-2">
@@ -267,14 +267,14 @@
             <!-- Cromia -->
             <section class="space-y-6">
                 <p class="text-[11px] font-bold text-white/30 uppercase tracking-widest border-b border-white/10 pb-2">
-                    Cromia & Morphing</p>
+                    Colore del tracciato</p>
                 <div class="flex flex-col gap-2">
                     <div class="flex justify-between text-xs"><span>Tonalità Attuale</span><span id="hue-val"
                             class="text-accent">280°</span></div>
                     <input type="range" id="hue" min="0" max="360" step="1" value="280">
                 </div>
                 <div class="flex items-center justify-between text-xs">
-                    <label>Ciclo Permanente (Morphing)</label>
+                    <label>Rotazione continua del colore</label>
                     <input type="checkbox" id="cycleColor" checked>
                 </div>
             </section>
@@ -295,7 +295,7 @@
                         <input type="range" id="solidAngle" min="0" max="1" step="0.01" value="0">
                     </div>
                     <div class="flex flex-col gap-2">
-                        <div class="flex justify-between text-xs"><span>Randomness</span><span id="noise-val"
+                        <div class="flex justify-between text-xs"><span>Rumore casuale</span><span id="noise-val"
                                 class="text-accent">0</span></div>
                         <input type="range" id="noise" min="0" max="100" step="1" value="0">
                     </div>
@@ -307,11 +307,11 @@
                 <p class="text-[11px] font-bold text-white/30 uppercase tracking-widest border-b border-white/10 pb-2">
                     Macro Frattali</p>
                 <select id="fractalMode">
-                    <option value="none">Standard Harmonic</option>
-                    <option value="koch">Koch Morphism</option>
-                    <option value="hilbert">Hilbert Spatial Grid</option>
-                    <option value="peano">Peano Ternary</option>
-                    <option value="walk">Fractal Random Walk</option>
+                    <option value="none">Armonica standard</option>
+                    <option value="koch">Curva di Koch</option>
+                    <option value="hilbert">Griglia di Hilbert</option>
+                    <option value="peano">Curva di Peano</option>
+                    <option value="walk">Passeggiata frattale</option>
                 </select>
                 <div class="flex flex-col gap-2 mt-4">
                     <div class="flex justify-between text-xs"><span>Intensità Frattale</span><span id="fractalInt-val"
@@ -323,8 +323,8 @@
 
         <div class="pt-8 border-t border-white/10 grid grid-cols-2 gap-4 shrink-0">
             <button id="resetView"
-                class="bg-white/5 hover:bg-white/10 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all">Reset
-                View</button>
+                class="bg-white/5 hover:bg-white/10 py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all">Ripristina
+                vista</button>
             <button id="clearPoints"
                 class="bg-white/10 text-accent py-4 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all">Pulisci</button>
         </div>
@@ -334,7 +334,7 @@
 
     <script>
         /**
-         * HYPERCHAOS ENGINE 3D - CHROMATIC MEMORY
+         * MOTORE RANDOM WALK 3D
          * Motore di generazione parametrica con persistenza cromatica.
          */
         let scene, camera, renderer, controls, line;

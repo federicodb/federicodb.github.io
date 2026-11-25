@@ -6,7 +6,7 @@
     
     <!-- META DATI PER CATALOGAZIONE (build.py) -->
     <title>Esploratore di Scale Logaritmiche</title>
-    <meta name="description" content="Laboratorio interattivo sulle scale logaritmiche per esplorare la crescita esponenziale, le leggi di potenza e fenomeni fisici reali.">
+    <meta name="description" content="Commuta gli assi tra scala lineare e logaritmica (Lin-Lin, Lin-Log, Log-Log) su dati reali per distinguere crescite lineari, esponenziali e leggi di potenza tramite l'indice R².">
     <meta name="keywords" content="Matematica, Scale Logaritmiche, Crescita Esponenziale, Legge di Moore, Legge di Kleiber, Epidemiologia, Acustica, 4 EL, 5 EL, Laboratorio, MAT_K2:Funzioni elementari, MAT_A2:Rappresentare dati e funzioni, MAT_C3:Dati e strumenti statistici">
     <meta name="allenamento" content="logaritmi, esponenziali, notazione-scientifica">
     <meta name="parole" content="logaritmo, modelli">
@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
     <script defer src="/content/assets/vendor/katex/katex.min.js"></script>
 
-    <!-- Google Fonts -->
+    <!-- Font locali -->
     <link href="/content/assets/fonts/outfit-jetbrainsmono-d01962.css" rel="stylesheet">
 
     <script>
@@ -42,8 +42,8 @@
                         panel: 'rgba(15, 15, 20, 0.7)',
                         accent: '#10b981', // Verde Smeraldo per Esplorazione
                         accentGlow: 'rgba(16, 185, 129, 0.35)',
-                        challenge: '#c084fc', // Viola per Sfida
-                        challengeGlow: 'rgba(192, 132, 252, 0.35)'
+                        challenge: '#f59e0b', // Ambra per Sfida
+                        challengeGlow: 'rgba(245, 158, 11, 0.35)'
                     }
                 }
             }
@@ -54,7 +54,7 @@
         body {
             font-family: 'Outfit', sans-serif;
             background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
-                        radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.04) 0%, transparent 45%),
+                        radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 45%),
                         #030303;
             overflow-x: hidden;
             transition: background 0.8s ease;
@@ -117,8 +117,8 @@
             border-color: rgba(16, 185, 129, 0.5);
         }
         .btn-glow-challenge {
-            box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
-            border-color: rgba(192, 132, 252, 0.5);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+            border-color: rgba(245, 158, 11, 0.5);
         }
 
     </style>
@@ -228,7 +228,7 @@
                     </select>
                 </div>
 
-                <!-- DESCRIZIONE IMMERSIVA SCENARIO -->
+                <!-- DESCRIZIONE SCENARIO -->
                 <div id="scenarioDescriptionContainer" class="bg-neutral-900/30 p-4 rounded-xl border border-neutral-800/40">
                     <h4 class="text-[10px] uppercase tracking-wider font-semibold text-neutral-500 mb-1.5 flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -253,7 +253,7 @@
                         Abbiamo campionato un fenomeno sconosciuto (con rumore di misurazione). Modifica gli assi: <strong>quando i punti formano una retta, hai trovato la legge che governa il fenomeno!</strong>
                     </p>
                     
-                    <button id="btnNewChallenge" class="bg-challenge hover:bg-purple-400 text-black font-bold py-2.5 px-4 rounded-lg text-sm transition-all duration-300 shadow-lg shadow-challenge/10 hover:scale-[1.02] active:scale-[0.98]">
+                    <button id="btnNewChallenge" class="bg-challenge hover:bg-amber-300 text-black font-bold py-2.5 px-4 rounded-lg text-sm transition-all duration-300 shadow-lg shadow-challenge/10 hover:scale-[1.02] active:scale-[0.98]">
                         Genera Nuovo Campione
                     </button>
                 </div>
@@ -344,7 +344,7 @@
                 xLabel: "Anni dal 1970",
                 yLabel: "Transistor",
                 math: `y = a \\cdot e^{kx} \\implies \\log(y) = \\log(a) + kx`,
-                scenarioDescription: "<strong>La sfida dell'infinitamente piccolo:</strong> Prendi il tuo smartphone o tablet. Quello che stringi tra le mani ha miliardi di transistor microscopici che lavorano all'unisono. Ora viaggia indietro nel tempo fino al 1971: sei un giovane ingegnere informatico nel primo pionieristico laboratorio di microelettronica. Stai assemblando l'Intel 4004, il primo microprocessore commerciale, saldando al microscopio appena 2.300 transistor giganti su una piastrina di silicio. Un collega sussurra una profezia audace: <em>\"Il numero di transistor raddoppierà ogni due anni!\"</em>. Guardando il grafico in scala lineare (Lin-Lin), i primi 30 anni di questa rivoluzione tecnologica sembrano piatti, come se non fosse successo nulla. Sembra che i pionieri degli anni '70 e '80 non abbiano fatto progressi! Passa alla scala semi-logaritmica (Lin-Log): quale verità nascosta si rivela sotto questo inganno visivo? Come si collega il raddoppio regolare alla retta risultante?",
+                scenarioDescription: "<strong>La sfida dell'infinitamente piccolo:</strong> Prendi il tuo smartphone o tablet. Quello che stringi tra le mani ha miliardi di transistor microscopici che lavorano all'unisono. Ora viaggia indietro nel tempo fino al 1971: sei un giovane ingegnere informatico nel primo pionieristico laboratorio di microelettronica. Stai assemblando l'Intel 4004, il primo microprocessore commerciale, saldando al microscopio appena 2.300 transistor giganti su una piastrina di silicio. Un collega sussurra una profezia audace: <em>\"Il numero di transistor raddoppierà ogni due anni!\"</em>. Guardando il grafico in scala lineare (Lin-Lin), i primi 30 anni di questa crescita tecnologica sembrano piatti, come se non fosse successo nulla. Sembra che i pionieri degli anni '70 e '80 non abbiano fatto progressi! Passa alla scala semi-logaritmica (Lin-Log): quale verità nascosta si rivela sotto questo inganno visivo? Come si collega il raddoppio regolare alla retta risultante?",
                 info: {
                     "linear-linear": "I dati storici sembrano nulli nell'origine. L'enorme numero dei processori moderni (decine di miliardi) schiaccia tutto il passato sull'asse X. Impossibile leggere o interpretare il grafico.",
                     "linear-logarithmic": "La curva si raddrizza in una <strong>retta quasi perfetta</strong>. Questo dimostra visivamente che la crescita è Esponenziale: a intervalli di tempo regolari (asse X lineare), il numero di transistor si moltiplica per un fattore costante (asse Y logaritmico).",
@@ -457,7 +457,7 @@
 
         // Colori in base alla modalità (utilizzano HSL coerenti)
         const colorAccent = '#10b981';
-        const colorChallenge = '#c084fc';
+        const colorChallenge = '#f59e0b';
 
 
         // --- 3. INIZIALIZZAZIONE GRAFICO ---
@@ -577,7 +577,7 @@
             chartInstance.data.datasets[0].pointBorderColor = dsColor;
             
             // Aggiorna colore della retta di regressione (dataset 1)
-            chartInstance.data.datasets[1].borderColor = isExplore ? 'rgba(16, 185, 129, 0.45)' : 'rgba(192, 132, 252, 0.45)';
+            chartInstance.data.datasets[1].borderColor = isExplore ? 'rgba(16, 185, 129, 0.45)' : 'rgba(245, 158, 11, 0.45)';
             
             // Imposta tipo di scala in modo sicuro
             try {
@@ -622,7 +622,7 @@
                 if (r2 >= 0.98) {
                     r2ValEl.className = "text-xs font-mono font-bold text-emerald-400";
                     r2BarEl.style.backgroundColor = isExplore ? colorAccent : colorChallenge;
-                    r2BarEl.style.boxShadow = isExplore ? "0 0 10px rgba(16, 185, 129, 0.6)" : "0 0 10px rgba(192, 132, 252, 0.6)";
+                    r2BarEl.style.boxShadow = isExplore ? "0 0 10px rgba(16, 185, 129, 0.6)" : "0 0 10px rgba(245, 158, 11, 0.6)";
                     
                     if (isExplore) {
                         r2CommentEl.innerHTML = "✨ <strong>Allineamento perfetto!</strong> La scala scelta raddrizza i dati: rivela una legge scientifica esatta.";
@@ -884,7 +884,7 @@
                 currentMode = 'explore';
                 
                 // Cambia sfondo in modo fluido
-                document.body.style.background = `radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.04) 0%, transparent 45%), #030303`;
+                document.body.style.background = `radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 45%), #030303`;
 
                 document.getElementById('sectionExplore').classList.remove('hidden');
                 document.getElementById('sectionExplore').classList.add('flex');
@@ -904,7 +904,7 @@
                 currentMode = 'challenge';
                 
                 // Cambia sfondo in modo fluido
-                document.body.style.background = `radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.02) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(192, 132, 252, 0.06) 0%, transparent 45%), #030303`;
+                document.body.style.background = `radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.02) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.06) 0%, transparent 45%), #030303`;
 
                 document.getElementById('sectionChallenge').classList.remove('hidden');
                 document.getElementById('sectionChallenge').classList.add('flex');

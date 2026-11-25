@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
     <script src="../assets/js/orfini-shared.js"></script>
 
-    <meta name="description" content="Laboratorio interattivo per scoprire i pattern dei numeri: Tavola Pitagorica (Primi, Quadrati), Triangolo di Tartaglia (Combinatoria) e regole di divisibilità.">
+    <meta name="description" content="Filtra numeri primi, quadrati, cubi e multipli nella Tavola Pitagorica, evidenzia diagonali e somma delle righe nel Triangolo di Tartaglia e verifica i criteri di divisibilità.">
     <meta name="keywords" content="Matematica, Aritmetica, Numeri, Pitagora, Tartaglia, Divisibilità, Mat:Calcolo, Mat:Modellizzazione, Mat:Dati, Lab, 1 EL, 2 EL, 2 GP, 4 EL">
     <meta name="allenamento" content="calcolo-triangolo-dei-coefficienti, pitagora, prodotti-notevoli">
     <meta name="parole" content="numeri, mcm-mcd">
@@ -134,7 +134,7 @@
 
         /* Classi Logiche */
         .highlight-prime { background-color: #be123c !important; color: white !important; border-color: #fda4af; }
-        .highlight-square { background-color: #7c3aed !important; color: white !important; border-color: #c4b5fd; }
+        .highlight-square { background-color: #d97706 !important; color: white !important; border-color: #fcd34d; }
         .highlight-cube { background-color: #2563eb !important; color: white !important; border-color: #93c5fd; }
         
         .selected { 
@@ -160,12 +160,12 @@
         .toggle-label input { display: none; }
         
         .toggle-label[data-type="prime"] { border-color: #be123c; }
-        .toggle-label[data-type="square"] { border-color: #7c3aed; }
+        .toggle-label[data-type="square"] { border-color: #d97706; }
         .toggle-label[data-type="cube"] { border-color: #2563eb; }
         
         .toggle-label.active { color: #0f172a; }
         .toggle-label[data-type="prime"].active { background-color: #fda4af; }
-        .toggle-label[data-type="square"].active { background-color: #c4b5fd; }
+        .toggle-label[data-type="square"].active { background-color: #fcd34d; }
         .toggle-label[data-type="cube"].active { background-color: #93c5fd; }
 
         .multiple-toggle { font-family: monospace; font-weight: 700; border-width: 2px; }
@@ -217,13 +217,13 @@
         .bg-fib { background-color: #4a2c0d; color: #fdba74; border: 1px solid #f97316; }
         .bg-pow11 { background-color: #400a45; color: #f0abfc; border: 1px solid #c026d3; }
         
-        .highlight-odd { background-color: #4f46e5 !important; color: white !important; }
-        .highlight-even { background-color: #312e81 !important; color: #a5b4fc !important; }
+        .highlight-odd { background-color: #0891b2 !important; color: white !important; }
+        .highlight-even { background-color: #164e63 !important; color: #67e8f9 !important; }
         
         .highlight-hockey-stick { background-color: #047857 !important; color: white !important; transform: scale(1.05); z-index: 5; }
         .highlight-hockey-puck { background-color: #a3e635 !important; color: #0f172a !important; font-weight: 800; transform: scale(1.2); z-index: 15; border: 2px solid white; }
 
-        body.light .highlight-even { background-color: #e0e7ff !important; color: #312e81 !important; }
+        body.light .highlight-even { background-color: #cffafe !important; color: #164e63 !important; }
         
         /* Switch Tema */
         .theme-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
@@ -391,7 +391,7 @@
                             <h3 class="font-bold text-xs uppercase themed-text-secondary mb-3 tracking-wider">Configurazione</h3>
                             <div class="flex gap-2 mb-4">
                                 <input type="number" id="gridSize" value="10" min="5" max="30" class="w-full p-2 rounded text-center font-bold font-mono">
-                                <button id="generateGridBtn" class="bg-yellow-500 hover:bg-yellow-400 text-on-background font-bold px-4 rounded transition shadow-lg">VAI</button>
+                                <button id="generateGridBtn" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 rounded transition shadow-lg">VAI</button>
                             </div>
                             
                             <div class="space-y-2">
@@ -439,7 +439,7 @@
                             <h3 class="font-bold text-xs uppercase themed-text-secondary mb-3 tracking-wider">Righe</h3>
                             <div class="flex gap-2">
                                 <input type="number" id="pascalRows" value="10" min="3" max="25" class="w-full p-2 rounded text-center font-bold font-mono">
-                                <button id="generatePascalBtn" class="bg-yellow-500 hover:bg-yellow-400 text-on-background font-bold px-4 rounded transition shadow-lg">VAI</button>
+                                <button id="generatePascalBtn" class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 rounded transition shadow-lg">VAI</button>
                             </div>
                         </div>
                         <div class="themed-bg-card p-4 rounded-xl shadow border themed-border">
@@ -488,7 +488,7 @@
                         <h2 class="text-2xl font-bold mb-6 themed-text-accent">Macchina della Divisibilità</h2>
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <input type="number" id="numberCheck" placeholder="Inserisci numero..." class="text-3xl p-4 rounded-xl w-full sm:w-64 text-center font-bold border-2 border-transparent focus:border-yellow-400 shadow-inner">
-                            <button class="bg-yellow-500 hover:bg-yellow-400 text-on-background font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition transform hover:scale-105 active:scale-95 w-full sm:w-auto" onclick="checkDivisibility()">ANALIZZA</button>
+                            <button class="bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold text-lg px-8 py-4 rounded-xl shadow-lg transition transform hover:scale-105 active:scale-95 w-full sm:w-auto" onclick="checkDivisibility()">ANALIZZA</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4" id="divisibilityResults"></div>
@@ -501,7 +501,7 @@
                     <div class="themed-bg-card p-6 md:p-10 rounded-2xl shadow-xl border themed-border">
                         <div class="flex justify-between items-center mb-8">
                             <h2 class="text-2xl font-bold themed-text-accent" id="quizTitle">Quiz di Teoria</h2>
-                            <span class="bg-indigo-600 text-on-background px-4 py-2 rounded-lg font-mono font-bold shadow-lg" id="quizScore">0/0</span>
+                            <span class="bg-cyan-600 text-white px-4 py-2 rounded-lg font-mono font-bold shadow-lg" id="quizScore">0/0</span>
                         </div>
                         
                         <div class="min-h-[100px] flex items-center justify-center mb-8 bg-black/20 p-6 rounded-xl border themed-border">
@@ -511,7 +511,7 @@
                         <div class="grid grid-cols-1 gap-3 mb-8" id="quizOptions"></div>
                         
                         <div class="text-center h-14">
-                             <button id="nextQuizBtn" class="hidden mx-auto bg-blue-600 hover:bg-blue-500 text-on-background font-bold px-8 py-3 rounded-full transition shadow-lg transform hover:scale-105" onclick="nextQuizQuestion()">Prossima Domanda ➜</button>
+                             <button id="nextQuizBtn" class="hidden mx-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3 rounded-full transition shadow-lg transform hover:scale-105" onclick="nextQuizQuestion()">Prossima Domanda ➜</button>
                         </div>
                         <div id="quizFeedback" class="mt-2 text-center text-lg font-bold min-h-[30px]"></div>
                     </div>
