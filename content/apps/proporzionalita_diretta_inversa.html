@@ -72,6 +72,7 @@
       color-scheme: light;
     }
     *, *::before, *::after { box-sizing: border-box; }
+    html { scrollbar-gutter: stable; }
     html, body { margin: 0; padding: 0; }
     body {
       font-family: var(--sans);
@@ -111,7 +112,7 @@
     .tab-btn {
       display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 16px;
       border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--muted);
-      font-weight: 700; cursor: pointer;
+      font-weight: 700; cursor: pointer; line-height: 1.25; white-space: normal; text-align: left; max-width: 100%;
     }
     .tab-btn .n { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--surface-3); font-size: 14px; }
     .tab-btn[aria-selected="true"] { color: var(--text); border-color: var(--primary); background: var(--primary-soft); }
@@ -126,11 +127,11 @@
 
     /* ===== Laboratorio ===== */
     .lab { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr); gap: 14px; align-items: start; }
-    .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 12px; }
     .mode {
       --c: var(--c-d);
-      text-align: left; min-height: 64px; padding: 10px 12px; border-radius: 12px; cursor: pointer;
-      border: 1px solid var(--border); background: var(--surface-2);
+      text-align: left; min-height: 64px; min-width: 0; padding: 10px 12px; border-radius: 12px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface-2); line-height: 1.3; overflow-wrap: break-word;
     }
     .mode[data-mode="i"] { --c: var(--c-i); }
     .mode[data-mode="n"] { --c: var(--c-n); }
@@ -149,7 +150,7 @@
     .side { display: flex; flex-direction: column; gap: 12px; }
     .formula { --c: var(--accent, var(--c-d)); border: 2px solid color-mix(in srgb, var(--c) 60%, transparent); background: color-mix(in srgb, var(--c) 8%, var(--surface)); }
     .formula .what { color: var(--c); font-weight: 700; font-size: 15px; }
-    .formula .big { font-size: clamp(20px, 2vw, 26px); min-height: 2.6em; display: flex; align-items: center; overflow-x: auto; overflow-y: hidden; }
+    .formula .big { font-size: clamp(20px, 2vw, 26px); min-height: 3.1em; display: flex; align-items: center; overflow-x: auto; overflow-y: hidden; }
     .formula .law { color: var(--text-2); font-size: 16px; }
 
     .ctrl { display: grid; gap: 12px; }
@@ -160,8 +161,9 @@
     .ops { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .ops-title { font-weight: 700; margin-right: 4px; }
     .btn {
-      min-height: 44px; min-width: 56px; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-weight: 700;
+      min-height: 44px; min-width: 56px; max-width: 100%; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-weight: 700;
       border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+      line-height: 1.25; white-space: normal; text-align: center;
     }
     .btn:hover:not(:disabled) { border-color: var(--text-2); }
     .btn:disabled { opacity: .35; cursor: not-allowed; }
@@ -195,13 +197,14 @@
     .case-group:first-child { margin-top: 0; }
     .case-btn {
       --c: var(--c-d);
-      display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left;
-      min-height: 48px; padding: 8px 12px; border-radius: 12px; cursor: pointer;
-      border: 1px solid var(--border); border-left: 4px solid var(--c); background: var(--surface);
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 10px; text-align: left;
+      min-height: 48px; min-width: 0; width: 100%; padding: 8px 12px; border-radius: 12px; cursor: pointer;
+      border: 1px solid var(--border); border-left: 4px solid var(--c); background: var(--surface); line-height: 1.3;
     }
+    .case-btn span { min-width: 0; overflow-wrap: break-word; }
     .case-btn[data-tipo="i"] { --c: var(--c-i); }
     .case-btn[data-tipo="n"] { --c: var(--c-n); }
-    .case-btn small { color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .case-btn small { color: var(--muted); font-size: 13px; white-space: normal; flex-shrink: 0; }
     .case-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 12%, var(--surface)); border-color: var(--c); }
     .case-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 14px; align-items: start; }
     .badge { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 14px; font-weight: 700; color: var(--accent); border: 1px solid var(--accent); margin-bottom: 8px; }
@@ -232,10 +235,12 @@
     @media (max-width: 1050px) {
       .lab, .cases, .case-detail, .train { grid-template-columns: minmax(0, 1fr); }
     }
-    @media (max-width: 560px) {
-      body { font-size: 16px; }
+    @media (max-width: 760px) {
       .modes { grid-template-columns: 1fr; }
       .mode { min-height: 52px; }
+    }
+    @media (max-width: 560px) {
+      body { font-size: 16px; }
       .card { padding: 12px; }
       table.tab th, table.tab td { padding: 5px 6px; }
     }
@@ -468,10 +473,11 @@ function el(name, attrs, text) {
  * figure: 'tri' (triangolo del rapporto), 'rect' (rettangolo del prodotto), 'quota' (quota fissa)
  */
 function drawGraph(svg, o) {
-  svg.textContent = '';
-  const u = Math.max(1, Math.min(2.2, (0.78 * W) / (svg.clientWidth || W)));
+  const clientW = svg.clientWidth || W;
+  const u = Math.max(1, Math.min(2.2, (0.78 * W) / clientW));
   svg.style.setProperty('--fs', `${15 * u}px`);
   svg._last = o;
+  const frag = document.createDocumentFragment();
   const sx = (W - PL - PR) / (o.xmax - o.xmin), sy = (H - PT - PB) / (o.ymax - o.ymin);
   const X = (x) => PL + (x - o.xmin) * sx, Y = (y) => H - PB - (y - o.ymin) * sy;
   svg._toX = (px) => o.xmin + (px - PL) / sx;
@@ -493,13 +499,13 @@ function drawGraph(svg, o) {
   g.append(el('text', { x: PL - 8, y: y0 + 20, 'text-anchor': 'end' }, '0'));
   g.append(el('text', { x: W - PR, y: y0 - 8, 'text-anchor': 'end', class: 'lbl' }, o.xname || 'x'));
   g.append(el('text', { x: X(0) + 10, y: o.ymax <= 0 ? H - PB - 10 : PT + 16 * u, class: 'lbl' }, o.yname || 'y'));
-  svg.append(g);
+  frag.append(g);
 
   const clip = el('clipPath', { id: svg.id + '-clip' });
   clip.append(el('rect', { x: PL, y: PT, width: W - PL - PR, height: H - PT - PB }));
-  svg.append(clip);
+  frag.append(clip);
   const plot = el('g', { 'clip-path': `url(#${svg.id}-clip)` });
-  svg.append(plot);
+  frag.append(plot);
 
   const fig = (p, ghost) => {
     if (!p) return;
@@ -556,6 +562,7 @@ function drawGraph(svg, o) {
       plot.append(el('text', { x: X(p.x) + 14, y: Y(p.y) + 5, class: 'lbl', style: `fill:${o.color}` }, `(${fmt(p.x)}; ${fmt(p.y)})`));
     }
   }
+  svg.replaceChildren(frag);
 }
 
 // =====================================================================
@@ -965,11 +972,33 @@ window.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initLab();
   initCasi();
-  // al cambio di dimensione testi e punti si riscalano
-  const ro = new ResizeObserver(() => { if (!$('panel-lab').hidden) updateLab(); if (!$('panel-casi').hidden) updateCaso(); });
+  // al cambio reale di larghezza del grafico testi e punti si riscalano (evitando loop di ResizeObserver)
+  const lastW = new Map();
+  let roRaf = 0;
+  const ro = new ResizeObserver((entries) => {
+    let changed = false;
+    for (const en of entries) {
+      const w = Math.round(en.contentRect.width);
+      if (w > 0 && Math.abs(w - (lastW.get(en.target) ?? w)) > 1) {
+        lastW.set(en.target, w);
+        changed = true;
+      } else if (w > 0 && !lastW.has(en.target)) {
+        lastW.set(en.target, w);
+      }
+    }
+    if (!changed || roRaf) return;
+    roRaf = requestAnimationFrame(() => {
+      roRaf = 0;
+      if (!$('panel-lab').hidden) updateLab();
+      if (!$('panel-casi').hidden) updateCaso();
+    });
+  });
   ro.observe($('lab-graph')); ro.observe($('case-graph'));
-  // al cambio di tema i colori del grafico si aggiornano
-  new MutationObserver(() => { updateLab(); updateCaso(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  // al cambio di tema si aggiorna solo il pannello attivo
+  new MutationObserver(() => {
+    if (!$('panel-lab').hidden) updateLab();
+    if (!$('panel-casi').hidden) updateCaso();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 });
 </script>
 </body>
