@@ -288,7 +288,7 @@
 
             <section id="content-rabbits" class="module-content hidden">
                 <h2 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-purple-500"></span> Il Problema dei Conigli
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Il Problema dei Conigli
                 </h2>
                 
                 <!-- Scheda Storica -->
@@ -304,7 +304,7 @@
 
                 <!-- Il Problema -->
                 <div class="mb-4 text-xs text-slate-300 leading-relaxed">
-                    <h3 class="text-purple-400 font-bold mb-1 uppercase tracking-wider text-[10px]">La Riproduzione delle Coppie</h3>
+                    <h3 class="text-emerald-400 font-bold mb-1 uppercase tracking-wider text-[10px]">La Riproduzione delle Coppie</h3>
                     <p>
                         Nel <i>Liber Abaci</i>, Fibonacci pose questo celebre problema speculativo: supponiamo di posizionare una coppia iniziale di conigli neonati in un recinto. Ogni coppia diventa fertile (adulta) dopo un mese e genera una nuova coppia (un maschio ed una femmina) ogni mese successivo. Sapendo che i conigli non muoiono mai, quante coppie ci saranno dopo $t$ mesi?
                     </p>
@@ -314,7 +314,7 @@
                 <div class="mt-4 p-4 bg-slate-800/80 rounded-lg border border-slate-700 shadow-inner">
                     <div class="flex justify-between items-end mb-2">
                         <label for="rabbits-slider" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mese Corrente (t)</label>
-                        <span id="rabbits-month-display" class="text-purple-400 font-mono text-lg font-bold bg-slate-900 px-2 py-1 rounded">1</span>
+                        <span id="rabbits-month-display" class="text-emerald-400 font-mono text-lg font-bold bg-slate-900 px-2 py-1 rounded">1</span>
                     </div>
                     <input type="range" id="rabbits-slider" min="1" max="10" value="1" step="1" oninput="updateRabbitsMonth(this.value)" aria-label="Seleziona mese conigli">
                     
@@ -330,7 +330,7 @@
                         </div>
                         <div class="bg-slate-900 p-2 rounded border border-slate-800">
                             <span class="block text-slate-500 font-semibold uppercase">Totale</span>
-                            <span id="rabbits-total-count" class="text-purple-400 font-mono text-sm font-bold">1</span>
+                            <span id="rabbits-total-count" class="text-emerald-400 font-mono text-sm font-bold">1</span>
                         </div>
                     </div>
                 </div>
@@ -340,7 +340,7 @@
                     <p class="text-slate-300 text-xs leading-relaxed mb-2">
                         Le coppie al mese $t$ sono la somma delle coppie del mese precedente ($F_{t-1}$) e delle coppie nate in questo mese. Poiché nascono nuove coppie solo da quelle che erano già adulte al mese scorso, le neonate sono pari alle coppie presenti due mesi prima ($F_{t-2}$):
                     </p>
-                    <div id="rabbits-math-calc" class="math-block text-center text-sm text-purple-400">
+                    <div id="rabbits-math-calc" class="math-block text-center text-sm text-emerald-400">
                         $$ F_1 = \mathbf{1} $$
                     </div>
                 </div>

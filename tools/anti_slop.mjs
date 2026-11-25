@@ -36,6 +36,7 @@ const AI_TOOL_TRACES_RE = /\b(?:gemini|claude|chatgpt|openai|worksproperly|ai\s+
 const BARE_LATEX_CMD_RE = /\\(?:pi|phi|varphi|Delta|sqrt|frac)\b/;
 const DEAD_TAILWIND_CLASS_RE = /\b(?:bg-(?:slate|indigo|purple|violet|gray|zinc)-\d{2,3}(?:\/\d+)?|text-(?:slate|indigo|purple|violet|emerald|cyan)-\d{2,3}|rounded-(?:2xl|3xl)|space-y-\d+)\b/g;
 const SITE_AI_GRADIENT_RE = /(?:#667eea|#764ba2|\b(?:indigo|purple|violet)-(?:400|500|600)\b)/gi;
+const APP_AI_GRADIENT_RE = /(?:#667eea|#764ba2)/gi;
 
 const ROOT_PAGES = [
   'index.html',
@@ -127,9 +128,14 @@ for (const rel of listFiles('content/apps', '.html')) {
     checkAiTraces(rel, desc, '<meta description>');
   }
 
-  // Controllo commenti/testi HTML visibili per parole slop
-  const bodyHtml = html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '');
-  checkLexicon(rel, bodyHtml, 'HTML/commenti app');
+  // Controllo HTML, commenti e stringhe JS (escluso CSS) per cliché AI, tracce di tool e gradienti template AI
+  const htmlNoStyle = html.replace(/<style[\s\S]*?<\/style>/gi, '');
+  checkLexicon(rel, htmlNoStyle, 'contenuto/script app');
+  checkAiTraces(rel, htmlNoStyle, 'contenuto/script app');
+  const appGrad = [...html.matchAll(APP_AI_GRADIENT_RE)].map((m) => m[0]);
+  if (appGrad.length) {
+    addFinding(rel, 'estetico', 'ai-palette-gradient', `gradiente tipico da template AI: ${[...new Set(appGrad)].join(', ')}`);
+  }
 
   // Controlli strutturali & local-first
   if (/fonts\.(?:googleapis|gstatic)\.com/i.test(html)) {

@@ -452,10 +452,10 @@
                     <div className="col-span-12 md:col-span-3 flex flex-col items-center gap-3">
                         {op === 'pow' ? (
                             <>
-                                <label className="text-purple-400 font-bold text-sm tracking-wide">ESPONENTE (n)</label>
+                                <label className="text-amber-400 font-bold text-sm tracking-wide">ESPONENTE (n)</label>
                                 <div className="flex flex-col items-center justify-center w-full h-24 px-4 bg-surface-container rounded-xl border border-outline-variant shadow-inner">
                                     <input type="range" min="-3" max="3" step="1" value={exp} onChange={(e) => setExp(parseInt(e.target.value))}
-                                        className="w-full accent-purple-500 cursor-pointer h-1 bg-neutral-700 rounded-lg appearance-none" />
+                                        className="w-full accent-amber-500 cursor-pointer h-1 bg-neutral-700 rounded-lg appearance-none" />
                                     <div className="flex justify-between w-full text-xs text-on-surface-variant font-mono mt-4">
                                         <span>-3</span>
                                         <span className="text-on-background text-2xl font-bold -mt-3">{exp}</span>
@@ -484,8 +484,8 @@
         };
 
         const SolutionStep = ({ title, latex, description }) => (
-            <div className="mb-6 last:mb-0 border-l-2 border-indigo-500 pl-4 py-1 animate-in fade-in slide-in-from-left-4 duration-500">
-                <h4 className="text-indigo-400 font-bold text-sm uppercase mb-1">{title}</h4>
+            <div className="mb-6 last:mb-0 border-l-2 border-cyan-500 pl-4 py-1 animate-in fade-in slide-in-from-left-4 duration-500">
+                <h4 className="text-cyan-400 font-bold text-sm uppercase mb-1">{title}</h4>
                 <p className="text-neutral-300 text-sm mb-2">{description}</p>
                 <div className="bg-surface-container p-3 rounded border border-outline-variant overflow-x-auto shadow-inner text-on-surface-variant">
                     <LaTeX formula={latex} block={true} />
@@ -643,8 +643,8 @@
                                     {result.steps.length === 0 && !result.error && <p className="text-on-surface-variant italic text-center py-10">Modifica i valori per vedere i passaggi di calcolo.</p>}
                                     {result.steps.map((step, idx) => <SolutionStep key={idx} title={step.title} description={step.desc} latex={step.latex} />)}
                                 </div>
-                                <div className="mt-8 bg-indigo-900/10 border border-indigo-500/20 p-4 rounded-lg">
-                                    <h4 className="text-indigo-400 font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wide"><Icons.Info /> Concetto Chiave</h4>
+                                <div className="mt-8 bg-cyan-900/10 border border-cyan-500/20 p-4 rounded-lg">
+                                    <h4 className="text-cyan-400 font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wide"><Icons.Info /> Concetto Chiave</h4>
                                     <p className="text-sm text-on-surface-variant leading-relaxed">
                                         {op === 'sum' || op === 'sub' ? "Per sommare o sottrarre, dobbiamo trovare una 'taglia' di fetta comune (MCM). Solo quando le fette sono uguali possiamo contarle." :
                                             op === 'mul' ? "Moltiplicare è come calcolare l'area di un rettangolo con lati dati dalle due frazioni." :
@@ -662,7 +662,7 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-    <script data-jsx-compilato="007e30d31237">
+    <script data-jsx-compilato="f951a5953e34">
 // Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
 document.addEventListener('DOMContentLoaded', function () {
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
@@ -1249,7 +1249,7 @@ var ControlPanel = function ControlPanel(_ref8) {
   })))))), /*#__PURE__*/React.createElement("div", {
     className: "col-span-12 md:col-span-3 flex flex-col items-center gap-3"
   }, op === 'pow' ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
-    className: "text-purple-400 font-bold text-sm tracking-wide"
+    className: "text-amber-400 font-bold text-sm tracking-wide"
   }, "ESPONENTE (n)"), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col items-center justify-center w-full h-24 px-4 bg-surface-container rounded-xl border border-outline-variant shadow-inner"
   }, /*#__PURE__*/React.createElement("input", {
@@ -1261,7 +1261,7 @@ var ControlPanel = function ControlPanel(_ref8) {
     onChange: function onChange(e) {
       return setExp(parseInt(e.target.value));
     },
-    className: "w-full accent-purple-500 cursor-pointer h-1 bg-neutral-700 rounded-lg appearance-none"
+    className: "w-full accent-amber-500 cursor-pointer h-1 bg-neutral-700 rounded-lg appearance-none"
   }), /*#__PURE__*/React.createElement("div", {
     className: "flex justify-between w-full text-xs text-on-surface-variant font-mono mt-4"
   }, /*#__PURE__*/React.createElement("span", null, "-3"), /*#__PURE__*/React.createElement("span", {
@@ -1280,9 +1280,9 @@ var SolutionStep = function SolutionStep(_ref9) {
     latex = _ref9.latex,
     description = _ref9.description;
   return /*#__PURE__*/React.createElement("div", {
-    className: "mb-6 last:mb-0 border-l-2 border-indigo-500 pl-4 py-1 animate-in fade-in slide-in-from-left-4 duration-500"
+    className: "mb-6 last:mb-0 border-l-2 border-cyan-500 pl-4 py-1 animate-in fade-in slide-in-from-left-4 duration-500"
   }, /*#__PURE__*/React.createElement("h4", {
-    className: "text-indigo-400 font-bold text-sm uppercase mb-1"
+    className: "text-cyan-400 font-bold text-sm uppercase mb-1"
   }, title), /*#__PURE__*/React.createElement("p", {
     className: "text-neutral-300 text-sm mb-2"
   }, description), /*#__PURE__*/React.createElement("div", {
@@ -1539,9 +1539,9 @@ var App = function App() {
       latex: step.latex
     });
   })), /*#__PURE__*/React.createElement("div", {
-    className: "mt-8 bg-indigo-900/10 border border-indigo-500/20 p-4 rounded-lg"
+    className: "mt-8 bg-cyan-900/10 border border-cyan-500/20 p-4 rounded-lg"
   }, /*#__PURE__*/React.createElement("h4", {
-    className: "text-indigo-400 font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wide"
+    className: "text-cyan-400 font-bold mb-2 flex items-center gap-2 text-sm uppercase tracking-wide"
   }, /*#__PURE__*/React.createElement(Icons.Info, null), " Concetto Chiave"), /*#__PURE__*/React.createElement("p", {
     className: "text-sm text-on-surface-variant leading-relaxed"
   }, op === 'sum' || op === 'sub' ? "Per sommare o sottrarre, dobbiamo trovare una 'taglia' di fetta comune (MCM). Solo quando le fette sono uguali possiamo contarle." : op === 'mul' ? "Moltiplicare è come calcolare l'area di un rettangolo con lati dati dalle due frazioni." : op === 'div' ? "Dividere significa 'quante volte il secondo numero sta nel primo?'. Dividere per 1/2 è come raddoppiare." : "L'esponente negativo inverte numeratore e denominatore, come una retromarcia."))))));
