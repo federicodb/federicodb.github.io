@@ -147,13 +147,18 @@ test('il Sole: zoomando molto indietro resta sempre visibile la parola Matematic
 
 test('le transizioni di luce sono graduali: nessuno scatto di opacità', async ({ page }) => {
   await apriFerma(page);
-  await expect.poll(() => page.evaluate(() => Number(getComputedStyle(document.querySelector('.nodo[data-nodo="equazione"]')).opacity))).toBeGreaterThan(0.1);
+  const stellaId = await page.evaluate(() => {
+    const nodi = [...document.querySelectorAll('.nodo-stella:not(.nascosta)')];
+    const accesa = nodi.find((el) => el.dataset.nodo !== 'mercatore' && Number(getComputedStyle(el).opacity) > 0.4);
+    return accesa?.dataset.nodo || null;
+  });
+  expect(stellaId).not.toBeNull();
   // la ricerca spegne le stelle che non corrispondono: l'opacità scende per tappe, non in un colpo
-  const serie = page.evaluate(() => new Promise((ok) => {
-    const el = document.querySelector('.nodo[data-nodo="equazione"]'), v = [], t0 = performance.now();
+  const serie = page.evaluate((id) => new Promise((ok) => {
+    const el = document.querySelector(`.nodo[data-nodo="${id}"]`), v = [], t0 = performance.now();
     const g = () => { v.push(Number(getComputedStyle(el).opacity)); if (performance.now() - t0 < 1800) requestAnimationFrame(g); else ok(v); };
     requestAnimationFrame(g);
-  }));
+  }), stellaId);
   await page.locator('#cerca').fill('mercatore');
   const v = await serie;
   expect(v[0]).toBeGreaterThan(v.at(-1) + 0.1);

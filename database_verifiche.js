@@ -4,6 +4,279 @@
 
 const db_verifiche = [
     {
+        "title": "Verifica Classe 3 GP, Novembre 2026",
+        "excerpt": "Verifica parametrica (n, c) su 6 tracce: lettura grafica di rette e intersezione, funzione lineare, sistemi lineari (sostituzione, confronto, riduzione) e problemi di realtà per l'indirizzo Grafico (durata 50 minuti).",
+        "tags": [
+            "3 GP",
+            "EQUAZIONI",
+            "FUNZIONE LINEARE",
+            "FUNZIONI",
+            "GRAFICI",
+            "GRAFICO",
+            "MATEMATICA",
+            "MAT_A2:RAPPRESENTARE DATI MEDIANTE TABELLE, GRAFICI E FUNZIONI",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "PIANO CARTESIANO",
+            "RETTA",
+            "SISTEMI LINEARI",
+            "TRACCE"
+        ],
+        "date": "2026-11-25",
+        "group_ref": "3_gp_2026-11-23_matematica",
+        "version_label": "Versione Unica",
+        "url": "content/verifiche/3GP/Verifica di Matematica - Classe 3GP 6 Tracce.pdf",
+        "type": "document",
+        "icon": "📄",
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "funzioni-lineari",
+                "titolo": "Funzioni lineari",
+                "url": "allenamento/#/lezione/funzioni-lineari/1",
+                "mat": [
+                    "MAT_A2",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "sistemi-lineari",
+                "titolo": "Sistemi lineari",
+                "url": "allenamento/#/lezione/sistemi-lineari/1",
+                "mat": [
+                    "MAT_A3"
+                ]
+            },
+            {
+                "id": "equazioni-2",
+                "titolo": "Equazioni di secondo grado",
+                "url": "allenamento/#/lezione/equazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            },
+            {
+                "id": "disequazioni-2",
+                "titolo": "Disequazioni di secondo grado",
+                "url": "allenamento/#/lezione/disequazioni-2/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K2"
+                ]
+            }
+        ],
+        "versions": [
+            {
+                "url": "content/verifiche/3GP/Verifica di Matematica - Classe 3GP 6 Tracce.pdf",
+                "date": "2026-11-25",
+                "label": "Versione Unica"
+            }
+        ]
+    },
+    {
+        "title": "Verifica Classe 4 MEC, Novembre 2026",
+        "excerpt": "Verifica parametrica (n, c) per l'indirizzo Meccanico su funzioni quadratiche, parabola (simmetria, vertice, forma fattorizzata e canonica), scomposizione del trinomio speciale e proporzionalità diretta e inversa in officina (tornitura CNC, linea automatica; durata 50 minuti).",
+        "tags": [
+            "4 MEC",
+            "EQUAZIONI",
+            "FUNZIONI",
+            "FUNZIONI QUADRATICHE",
+            "GRAFICI",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "MECCANICO",
+            "PARABOLA",
+            "POLINOMI",
+            "PROPORZIONALITÀ",
+            "RETTA",
+            "SCOMPOSIZIONE",
+            "SCOMPOSIZIONI E PROPORZIONALITÀ",
+            "TRINOMIO SPECIALE"
+        ],
+        "date": "2026-11-18",
+        "group_ref": "4_mec_2026-11-18_funzioni_quadratiche",
+        "version_label": "Versione Unica",
+        "url": "content/verifiche/4MEC/verifica_4MEC_18_nov_2026.pdf",
+        "type": "document",
+        "icon": "📄",
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ],
+        "versions": [
+            {
+                "url": "content/verifiche/4MEC/verifica_4MEC_18_nov_2026.pdf",
+                "date": "2026-11-18",
+                "label": "Versione Unica"
+            }
+        ]
+    },
+    {
+        "title": "Verifica Classe 1AM/EL, Novembre 2026",
+        "excerpt": "Verifica parametrica (n, c) su numeri interi, sequenza di Fibonacci, proprietà delle potenze, MCD e mcm, frazioni, percentuali e problemi di laboratorio (4 versioni: Fila A e B per Moda 1AM ed Elettrico 1EL; durata 70 minuti).",
+        "tags": [
+            "1 AM",
+            "1 EL",
+            "3 MEC",
+            "CIT_6:COMPETENZE SOCIALI E CIVICHE",
+            "ELETTRICITÀ",
+            "ELETTRICO",
+            "FIBONACCI",
+            "FRAZIONI",
+            "FUNZIONI",
+            "INSIEMI",
+            "MAT_A1:ESEGUIRE CALCOLI OPERANDO CON DIVERSI INSIEMI NUMERICI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "MAT_K2:FUNZIONI ELEMENTARI E LORO RAPPRESENTAZIONE",
+            "MCD E MCM",
+            "MODA",
+            "NUMERI INTERI",
+            "PERCENTUALI",
+            "PERCENTUALI E PROBLEMI DI LABORATORIO",
+            "POTENZE",
+            "RETTA",
+            "SCOMPOSIZIONE"
+        ],
+        "date": "2026-11-12",
+        "group_ref": "3_mec_2026-11-11_numeri_interi",
+        "version_label": "Versione Unica",
+        "url": "content/verifiche/1AMEL/Verifica Completa 1AMEL Anteprima PDF.pdf",
+        "type": "document",
+        "icon": "📄",
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "fibonacci",
+                "titolo": "Successione di Fibonacci",
+                "url": "allenamento/#/lezione/fibonacci/1",
+                "mat": [
+                    "MAT_K1"
+                ]
+            }
+        ],
+        "versions": [
+            {
+                "url": "content/verifiche/1AMEL/Verifica Completa 1AMEL Anteprima PDF.pdf",
+                "date": "2026-11-12",
+                "label": "Versione Unica"
+            }
+        ]
+    },
+    {
+        "title": "Verifica Classe 4ELGA, Ottobre 2026",
+        "excerpt": "Verifica parametrica (n, c) su disequazioni di secondo grado e di grado superiore: raccoglimento, differenza di quadrati, trinomio speciale, quadrato di binomio, confronto tra metodo della parabola e scomposizione, con Vademecum Socratico (Fila A e B).",
+        "tags": [
+            "3 MEC",
+            "4ELGA",
+            "DISEQUAZIONI",
+            "DISEQUAZIONI DI SECONDO GRADO",
+            "EQUAZIONI",
+            "FILAA",
+            "GRAFICI",
+            "MAT_A3:RISOLVERE EQUAZIONI, DISEQUAZIONI E SISTEMI",
+            "MAT_K1:INSIEMI NUMERICI E CALCOLO LETTERALE",
+            "PARABOLA",
+            "POLINOMI",
+            "RETTA",
+            "SCOMPOSIZIONE",
+            "VADEMECUM"
+        ],
+        "date": "2026-10-30",
+        "group_ref": "3_mec_2026-10-30_4elga",
+        "version_label": "Fila A",
+        "url": "content/verifiche/4ELGA/4ELGA___verifica_30_ottobre_2026_filaA.pdf",
+        "type": "document",
+        "icon": "📄",
+        "game_type": "document",
+        "allenamento": [
+            {
+                "id": "scomposizioni",
+                "titolo": "Scomposizioni",
+                "url": "allenamento/#/lezione/scomposizioni/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1",
+                "titolo": "Equazioni di primo grado",
+                "url": "allenamento/#/lezione/equazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "equazioni-1-speciali",
+                "titolo": "Equazioni di primo grado: oltre gli interi",
+                "url": "allenamento/#/lezione/equazioni-1-speciali/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            },
+            {
+                "id": "disequazioni-1",
+                "titolo": "Disequazioni di primo grado",
+                "url": "allenamento/#/lezione/disequazioni-1/1",
+                "mat": [
+                    "MAT_A3",
+                    "MAT_K1"
+                ]
+            }
+        ],
+        "versions": [
+            {
+                "url": "content/verifiche/4ELGA/4ELGA___verifica_30_ottobre_2026_filaA.pdf",
+                "date": "2026-10-30",
+                "label": "Fila A"
+            },
+            {
+                "url": "content/verifiche/4ELGA/4ELGA___verifica_30_ottobre_2026_filaB.pdf",
+                "date": "2026-10-30",
+                "label": "Fila B"
+            }
+        ]
+    },
+    {
         "title": "Verifica Classe 1 EL, Maggio 2026",
         "excerpt": "Verifica sommativa strutturata su Proprietà delle potenze, Frazioni e percentuali, Proporzioni in elettrotecnica, Geometria frattale (Sierpinski) e Errore percentuale. Include vademecum socratico per il ragionamento logico.",
         "tags": [
