@@ -12,11 +12,16 @@
   <title>Snake of Life</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231d4ed8'/%3E%3Cpath d='M8 22h7a3 3 0 0 0 0-6h-3a3 3 0 0 1 0-6h8' stroke='%23dbe6ff' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='22' cy='10' r='2.4' fill='%23f2a516'/%3E%3C/svg%3E">
 
+  <meta name="color-scheme" content="light dark">
   <script>
     try {
       const saved = localStorage.getItem('orfini_theme') || localStorage.getItem('snakeM3.theme');
+      const cs = document.querySelector('meta[name="color-scheme"]');
       if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.dataset.theme = 'dark';
+        if (cs) cs.content = 'dark';
+      } else if (saved === 'light' && cs) {
+        cs.content = 'light';
       }
     } catch (err) { /* storage non disponibile */ }
   </script>

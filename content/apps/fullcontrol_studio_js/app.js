@@ -1420,6 +1420,8 @@ el.btnExport3mf.addEventListener('click', async () => {
 function applyTheme(pref) {
   root.dataset.theme = pref;
   root.classList.toggle('theme-light', pref === 'light');
+  const cs = document.querySelector('meta[name="color-scheme"]');
+  if (cs) cs.content = pref === 'light' ? 'light' : 'dark';
   btnTheme.dataset.pref = pref;
   btnTheme.title = btnTheme.ariaLabel = THEME_LABEL[pref];
   scene.background = new THREE.Color(sceneColors().bg);

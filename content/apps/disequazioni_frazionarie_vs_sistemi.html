@@ -852,7 +852,7 @@
         $('den').addEventListener('input', valutaFrazPiano);
         $('eq1').addEventListener('input', valutaSistPiano);
         $('eq2').addEventListener('input', valutaSistPiano);
-        ['num', 'den', 'eq1', 'eq2'].forEach(id => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') aggiornaVista(); }));
+        ['num', 'den', 'eq1', 'eq2'].forEach(id => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) aggiornaVista(); }));
 
         const versoBtns = [...document.querySelectorAll('.verso button')];
         function syncVerso() {
@@ -1899,7 +1899,7 @@
             const input = $(`tutor-input-${i}`);
             const anteprima = debounce(() => updateTutorLivePreview(i), 200);
             input.addEventListener('input', anteprima);
-            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') verifyTutorStep(i); });
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) verifyTutorStep(i); });
             $(`tutor-btn-${i}`).addEventListener('click', () => verifyTutorStep(i));
             if (i > 0 && window.matchMedia('(pointer: fine)').matches) input.focus({ preventScroll: true });
 

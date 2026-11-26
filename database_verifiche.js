@@ -23,7 +23,7 @@ const db_verifiche = [
             "TRACCE"
         ],
         "date": "2026-11-25",
-        "group_ref": "3_gp_2026-11-23_matematica",
+        "group_ref": "3_gp_2026-11-25_matematica",
         "version_label": "Versione Unica",
         "url": "content/verifiche/3GP/Verifica di Matematica - Classe 3GP 6 Tracce.pdf",
         "type": "document",
@@ -175,7 +175,7 @@ const db_verifiche = [
             "SCOMPOSIZIONE"
         ],
         "date": "2026-11-12",
-        "group_ref": "3_mec_2026-11-11_numeri_interi",
+        "group_ref": "3_mec_2026-11-25_numeri_interi",
         "version_label": "Versione Unica",
         "url": "content/verifiche/1AMEL/Verifica Completa 1AMEL Anteprima PDF.pdf",
         "type": "document",

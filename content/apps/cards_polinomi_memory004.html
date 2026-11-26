@@ -402,6 +402,9 @@
                     root.classList.remove('dark');
                     root.setAttribute('data-theme', 'light');
                 }
+                let cs = document.querySelector('meta[name="color-scheme"]');
+                if (!cs && document.head) { cs = document.createElement('meta'); cs.name = 'color-scheme'; document.head.appendChild(cs); }
+                if (cs) cs.content = theme === 'dark' ? 'dark' : 'light';
                 localStorage.setItem('ce_theme', theme);
             }, [theme]);
 
@@ -766,7 +769,7 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-    <script data-jsx-compilato="fb2d6db2243e">
+    <script data-jsx-compilato="751d28b4bb07">
 // Tradotto da tools/compila_jsx.mjs dal sorgente qui sopra: non modificare, modifica il sorgente e rilancia.
 document.addEventListener('DOMContentLoaded', function () {
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
@@ -1140,6 +1143,13 @@ function App() {
       root.classList.remove('dark');
       root.setAttribute('data-theme', 'light');
     }
+    var cs = document.querySelector('meta[name="color-scheme"]');
+    if (!cs && document.head) {
+      cs = document.createElement('meta');
+      cs.name = 'color-scheme';
+      document.head.appendChild(cs);
+    }
+    if (cs) cs.content = theme === 'dark' ? 'dark' : 'light';
     localStorage.setItem('ce_theme', theme);
   }, [theme]);
   useEffect(function () {

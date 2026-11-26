@@ -17,11 +17,17 @@
   <meta property="og:description" content="I prodotti notevoli dimostrati con aree e volumi, in 2D e 3D.">
   <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.webp">
   <!-- Tema chiaro/scuro condiviso con la home (chiave orfini_theme): applicato prima del rendering -->
+  <meta name="color-scheme" content="dark light">
   <script>
-    if (localStorage.getItem('orfini_theme') === 'light') {
-      document.documentElement.classList.add('theme-light');
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
+    try {
+      const t = localStorage.getItem('orfini_theme');
+      const cs = document.querySelector('meta[name="color-scheme"]');
+      if (t === 'light') {
+        document.documentElement.classList.add('theme-light');
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (cs) cs.content = 'light';
+      } else if (t === 'dark' && cs) cs.content = 'dark';
+    } catch (e) {}
   </script>
   <script src="../assets/js/theme-toggle.js" defer></script>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>

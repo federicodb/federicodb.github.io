@@ -1077,7 +1077,7 @@
         }
 
         $('poly-input').addEventListener('input', debounceProcess);
-        $('poly-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { clearTimeout(debounceTimer); processPolynomial(); } });
+        $('poly-input').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) { clearTimeout(debounceTimer); processPolynomial(); } });
 
         const versoBtns = [...document.querySelectorAll('.verso button')];
         function syncVerso() {
@@ -2224,7 +2224,7 @@
                     if (inv) inv.addEventListener('click', () => checkChallengeStep(i));
                     const inp = $(`ans-${i}`);
                     if (inp.type === 'text') {
-                        inp.onkeydown = (e) => { if (e.key === 'Enter') checkChallengeStep(i); };
+                        inp.onkeydown = (e) => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) checkChallengeStep(i); };
                         if (window.matchMedia('(pointer: fine)').matches) inp.focus();
                     }
                 }

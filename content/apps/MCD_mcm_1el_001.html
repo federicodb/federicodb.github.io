@@ -1921,7 +1921,7 @@
        ========================================================= */
     $('#avatarBtn').addEventListener('click', () => { P.avatar = AVATARS[(AVATARS.indexOf(P.avatar) + 1) % AVATARS.length]; saveP(); renderTop(); SFX.tap(); });
     $('#nameInput').addEventListener('change', e => { P.name = e.target.value.toUpperCase().replace(/[^A-Z0-9ÀÈÉÌÒÙ _.-]/g, '').trim().slice(0, 12) || 'CADETTO'; saveP(); renderTop(); });
-    $('#nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
+    $('#nameInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) e.target.blur(); });
     $('#muteBtn').addEventListener('click', () => { P.muted = !P.muted; saveP(); renderTop(); SFX.tap(); });
     $('#modeGrid').addEventListener('click', e => { const b = e.target.closest('[data-mode]'); if (b) { SFX.tap(); openMode(b.dataset.mode); } });
     $('#scenPick').addEventListener('click', e => { const b = e.target.closest('[data-scen]'); if (b) { lastScen = b.dataset.scen; store.set('scen', lastScen); SFX.tap(); renderScen(); } });
@@ -1964,7 +1964,7 @@
         if (R.phase !== 'input') return;
         if (/^[0-9]$/.test(e.key)) { keyIn(e.key); e.preventDefault(); }
         else if (e.key === 'Backspace') { keyIn('del'); e.preventDefault(); }
-        else if (e.key === 'Enter') { keyIn('ok'); e.preventDefault(); }
+        else if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) { keyIn('ok'); e.preventDefault(); }
     });
     $('#vDate').value = today();
     $('#vBtn').addEventListener('click', () => {
