@@ -22,10 +22,18 @@
     <link rel="stylesheet" href="/content/assets/fonts/inter-spacemono-1669ae.css">
 
     <!-- Nerdamer -->
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js?sw2" integrity="sha384-xQSEWC9U3TkEcP2wa+TfVlioD35y0B9w5UDICbHR1VbBRt/Sta9vVtiI7OipX2YP" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js?sw2" integrity="sha384-Fe6m/6uHCTl86ItmvzSPYPzE16B0zARqm1Bo5Z8oKGHcnQnvkBe0hYavSadUjSqV" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js?sw2" integrity="sha384-zEv30J3CdpM8w5+WYPmcuv8lUhq3n8qzbDYU3sbZqHluSTmdsjJMBHJWHoqw6Cla" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js?sw2" integrity="sha384-Cd8aK9hE0bOs/4mmDSGOQ3XiHDSs4LMlFFpd8/SzTbVyr07tooiOnw2wkA4D2Off" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js?sw2"
+        integrity="sha384-xQSEWC9U3TkEcP2wa+TfVlioD35y0B9w5UDICbHR1VbBRt/Sta9vVtiI7OipX2YP"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js?sw2"
+        integrity="sha384-Fe6m/6uHCTl86ItmvzSPYPzE16B0zARqm1Bo5Z8oKGHcnQnvkBe0hYavSadUjSqV"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js?sw2"
+        integrity="sha384-zEv30J3CdpM8w5+WYPmcuv8lUhq3n8qzbDYU3sbZqHluSTmdsjJMBHJWHoqw6Cla"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js?sw2"
+        integrity="sha384-Cd8aK9hE0bOs/4mmDSGOQ3XiHDSs4LMlFFpd8/SzTbVyr07tooiOnw2wkA4D2Off"
+        crossorigin="anonymous"></script>
 
     <!-- KaTeX -->
     <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
@@ -80,11 +88,17 @@
             color-scheme: light;
         }
 
-        [hidden] { display: none !important; }
+        [hidden] {
+            display: none !important;
+        }
 
-        html { font-size: clamp(15px, 0.5vw + 9px, 18px); background: var(--bg) !important; }
+        html {
+            font-size: clamp(15px, 0.5vw + 9px, 18px);
+            background: var(--bg) !important;
+        }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             overflow: hidden !important;
         }
@@ -97,10 +111,21 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        ::selection { background: var(--accent); color: var(--on-accent); }
-        :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+        ::selection {
+            background: var(--accent);
+            color: var(--on-accent);
+        }
 
-        button { font: inherit; color: inherit; cursor: pointer; }
+        :focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+        }
 
         .app {
             display: grid;
@@ -122,7 +147,11 @@
             background: var(--bg);
         }
 
-        .barra .orfini-back-btn { grid-area: back; min-height: 40px; margin-right: 0; }
+        .barra .orfini-back-btn {
+            grid-area: back;
+            min-height: 40px;
+            margin-right: 0;
+        }
 
         .titolo {
             grid-area: titolo;
@@ -135,9 +164,17 @@
             text-overflow: ellipsis;
         }
 
-        .titolo span { color: var(--text-2); font-weight: 500; }
+        .titolo span {
+            color: var(--text-2);
+            font-weight: 500;
+        }
 
-        .schede { grid-area: schede; display: flex; gap: .25rem; align-self: stretch; }
+        .schede {
+            grid-area: schede;
+            display: flex;
+            gap: .25rem;
+            align-self: stretch;
+        }
 
         .schede button {
             position: relative;
@@ -151,8 +188,13 @@
             white-space: nowrap;
         }
 
-        .schede button:hover { color: var(--text); }
-        .schede button[aria-selected="true"] { color: var(--text); }
+        .schede button:hover {
+            color: var(--text);
+        }
+
+        .schede button[aria-selected="true"] {
+            color: var(--text);
+        }
 
         .schede button[aria-selected="true"]::after {
             content: "";
@@ -165,7 +207,11 @@
             background: var(--accent);
         }
 
-        .azioni { grid-area: azioni; display: flex; gap: .35rem; }
+        .azioni {
+            grid-area: azioni;
+            display: flex;
+            gap: .35rem;
+        }
 
         .icona {
             width: 44px;
@@ -178,9 +224,19 @@
             color: var(--text-2);
         }
 
-        .icona:hover { color: var(--text); border-color: var(--line-strong); }
-        .icona svg { width: 20px; height: 20px; }
-        .solo-mobile { display: none; }
+        .icona:hover {
+            color: var(--text);
+            border-color: var(--line-strong);
+        }
+
+        .icona svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .solo-mobile {
+            display: none;
+        }
 
         /* ---------- Corpo ---------- */
 
@@ -222,7 +278,12 @@
             border-bottom: 1px solid var(--line);
         }
 
-        .eq-riga { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+        .eq-riga {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .6rem;
+        }
 
         .eq-campo {
             flex: 1 1 15rem;
@@ -236,7 +297,10 @@
             transition: border-color .15s ease, box-shadow .15s ease;
         }
 
-        .eq-campo:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+        .eq-campo:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
 
         .eq-lbl {
             padding: 0 .4rem 0 .9rem;
@@ -275,11 +339,28 @@
             font: 700 1.05rem var(--mono);
         }
 
-        .verso button:hover { color: var(--text); }
-        .verso button[aria-checked="true"] { background: var(--accent); color: var(--on-accent); }
+        .verso button:hover {
+            color: var(--text);
+        }
 
-        .esempi { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-top: .65rem; }
-        .esempi-lbl { color: var(--text-2); font-size: .85rem; margin-right: .15rem; }
+        .verso button[aria-checked="true"] {
+            background: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .esempi {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .4rem;
+            margin-top: .65rem;
+        }
+
+        .esempi-lbl {
+            color: var(--text-2);
+            font-size: .85rem;
+            margin-right: .15rem;
+        }
 
         .chip {
             min-height: 2.1rem;
@@ -291,7 +372,9 @@
             font: 400 .85rem var(--mono);
         }
 
-        .chip:hover { border-color: var(--accent); }
+        .chip:hover {
+            border-color: var(--accent);
+        }
 
         .stato {
             margin: .6rem 0 0;
@@ -302,7 +385,10 @@
             font-size: .9rem;
         }
 
-        .stato[data-tipo="errore"] { color: var(--neg); background: color-mix(in srgb, var(--neg) 10%, transparent); }
+        .stato[data-tipo="errore"] {
+            color: var(--neg);
+            background: color-mix(in srgb, var(--neg) 10%, transparent);
+        }
 
         .risultato {
             display: flex;
@@ -317,18 +403,48 @@
             transition: opacity .2s ease;
         }
 
-        .ris-lbl { color: var(--sol); font-weight: 700; font-size: .85rem; letter-spacing: .02em; }
-        .ris-math { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem 1.5rem; min-width: 0; font-size: 1.12rem; }
-        .ris-math .sol-log { color: var(--sol); }
-        .ris-math > div { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+        .ris-lbl {
+            color: var(--sol);
+            font-weight: 700;
+            font-size: .85rem;
+            letter-spacing: .02em;
+        }
+
+        .ris-math {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: .2rem 1.5rem;
+            min-width: 0;
+            font-size: 1.12rem;
+        }
+
+        .ris-math .sol-log {
+            color: var(--sol);
+        }
+
+        .ris-math>div {
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
 
         .dati-vecchi .risultato,
-        .dati-vecchi .blocco { opacity: .4; }
+        .dati-vecchi .blocco {
+            opacity: .4;
+        }
 
         /* ---------- Blocchi di analisi ---------- */
 
-        .blocco { padding: 1.25rem 0 .25rem; transition: opacity .2s ease; }
-        .blocco + .blocco { border-top: 1px solid var(--line); margin-top: .75rem; }
+        .blocco {
+            padding: 1.25rem 0 .25rem;
+            transition: opacity .2s ease;
+        }
+
+        .blocco+.blocco {
+            border-top: 1px solid var(--line);
+            margin-top: .75rem;
+        }
 
         .blocco h2 {
             margin: 0 0 .5rem;
@@ -337,10 +453,23 @@
             letter-spacing: -0.005em;
         }
 
-        .strategia { margin: 0 0 .25rem; color: var(--text-2); font-size: .92rem; }
-        .strategia strong { color: var(--text); font-weight: 600; }
+        .strategia {
+            margin: 0 0 .25rem;
+            color: var(--text-2);
+            font-size: .92rem;
+        }
 
-        .nota { margin: .35rem 0; color: var(--text-2); font-size: .92rem; max-width: 68ch; }
+        .strategia strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .nota {
+            margin: .35rem 0;
+            color: var(--text-2);
+            font-size: .92rem;
+            max-width: 68ch;
+        }
 
         .avviso {
             padding: .6rem .85rem;
@@ -349,7 +478,9 @@
             color: var(--text);
         }
 
-        .avviso strong { color: var(--warn); }
+        .avviso strong {
+            color: var(--warn);
+        }
 
         .mrow {
             overflow-x: auto;
@@ -358,37 +489,88 @@
             font-size: 1.05rem;
         }
 
-        .mrow.forte { color: var(--sol); font-size: 1.15rem; }
-
-        .contenuti .katex-display { margin: 0 !important; padding: .15em 0 !important; }
-        .contenuti .katex-display > .katex { text-align: left; }
-
-        .segni { display: grid; gap: .75rem 1.5rem; align-items: start; }
-
-        @container (min-width: 46rem) {
-            .segni { grid-template-columns: minmax(14rem, 1fr) minmax(0, 1.6fr); }
+        .mrow.forte {
+            color: var(--sol);
+            font-size: 1.15rem;
         }
 
-        .fattori { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
-        .fattori li { padding: .45rem .7rem; border-radius: var(--r-s); background: var(--surface); border: 1px solid var(--line); overflow-x: auto; overflow-y: hidden; }
+        .contenuti .katex-display {
+            margin: 0 !important;
+            padding: .15em 0 !important;
+        }
 
-        .svg-wrapper { overflow-x: auto; }
-        .svg-wrapper svg { display: block; max-width: 100%; height: auto; }
+        .contenuti .katex-display>.katex {
+            text-align: left;
+        }
+
+        .segni {
+            display: grid;
+            gap: .75rem 1.5rem;
+            align-items: start;
+        }
+
+        @container (min-width: 46rem) {
+            .segni {
+                grid-template-columns: minmax(14rem, 1fr) minmax(0, 1.6fr);
+            }
+        }
+
+        .fattori {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: .35rem;
+        }
+
+        .fattori li {
+            padding: .45rem .7rem;
+            border-radius: var(--r-s);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .svg-wrapper {
+            overflow-x: auto;
+        }
+
+        .svg-wrapper svg {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
 
         /* ---------- Metodo del Δ e richiami ---------- */
 
-        .sezione-titolo { margin: 1.25rem 0 .25rem; font-size: 1.1rem; font-weight: 700; }
-        .sezione-intro { margin: 0 0 .75rem; color: var(--text-2); font-size: .92rem; max-width: 68ch; }
+        .sezione-titolo {
+            margin: 1.25rem 0 .25rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
 
-        .passi { list-style: none; margin: 0; padding: 0; counter-reset: passo; }
+        .sezione-intro {
+            margin: 0 0 .75rem;
+            color: var(--text-2);
+            font-size: .92rem;
+            max-width: 68ch;
+        }
 
-        .passi > li {
+        .passi {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            counter-reset: passo;
+        }
+
+        .passi>li {
             position: relative;
             padding: .9rem 0 .9rem 2.6rem;
             border-bottom: 1px solid var(--line);
         }
 
-        .passi > li::before {
+        .passi>li::before {
             counter-increment: passo;
             content: counter(passo);
             position: absolute;
@@ -405,29 +587,87 @@
             font-size: .9rem;
         }
 
-        .passi h3 { margin: 0 0 .3rem; font-size: .98rem; font-weight: 600; }
-        .passi p { margin: .2rem 0; color: var(--text-2); font-size: .92rem; max-width: 68ch; }
-        .esito { font-weight: 600; }
-        .passi p.esito.pos { color: var(--pos); }
-        .passi p.esito.zero { color: var(--warn); }
-        .passi p.esito.neg { color: var(--neg); }
-
-        .regole { display: grid; gap: 0 2rem; }
-
-        @container (min-width: 46rem) {
-            .regole { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .passi h3 {
+            margin: 0 0 .3rem;
+            font-size: .98rem;
+            font-weight: 600;
         }
 
-        .regola { padding: .9rem 0; border-bottom: 1px solid var(--line); }
-        .regola h3 { margin: 0 0 .25rem; font-size: .98rem; font-weight: 600; }
-        .regola p { margin: .25rem 0; color: var(--text-2); font-size: .92rem; }
-        .regola .es { color: var(--text); }
+        .passi p {
+            margin: .2rem 0;
+            color: var(--text-2);
+            font-size: .92rem;
+            max-width: 68ch;
+        }
+
+        .esito {
+            font-weight: 600;
+        }
+
+        .passi p.esito.pos {
+            color: var(--pos);
+        }
+
+        .passi p.esito.zero {
+            color: var(--warn);
+        }
+
+        .passi p.esito.neg {
+            color: var(--neg);
+        }
+
+        .regole {
+            display: grid;
+            gap: 0 2rem;
+        }
+
+        @container (min-width: 46rem) {
+            .regole {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        .regola {
+            padding: .9rem 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .regola h3 {
+            margin: 0 0 .25rem;
+            font-size: .98rem;
+            font-weight: 600;
+        }
+
+        .regola p {
+            margin: .25rem 0;
+            color: var(--text-2);
+            font-size: .92rem;
+        }
+
+        .regola .es {
+            color: var(--text);
+        }
 
         /* ---------- Sfida ---------- */
 
-        .sfida-intro, .sfida-fine { max-width: 34rem; padding: 2rem 0; }
-        .sfida-intro h2, .sfida-fine h2 { margin: 0 0 .5rem; font-size: 1.35rem; letter-spacing: -0.01em; }
-        .sfida-intro p, .sfida-fine p { margin: 0 0 1.25rem; color: var(--text-2); }
+        .sfida-intro,
+        .sfida-fine {
+            max-width: 34rem;
+            padding: 2rem 0;
+        }
+
+        .sfida-intro h2,
+        .sfida-fine h2 {
+            margin: 0 0 .5rem;
+            font-size: 1.35rem;
+            letter-spacing: -0.01em;
+        }
+
+        .sfida-intro p,
+        .sfida-fine p {
+            margin: 0 0 1.25rem;
+            color: var(--text-2);
+        }
 
         .btn {
             min-height: 48px;
@@ -439,9 +679,19 @@
             font-weight: 600;
         }
 
-        .btn:hover { border-color: var(--accent); }
-        .btn.primario { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-        .btn.primario:hover { filter: brightness(1.08); }
+        .btn:hover {
+            border-color: var(--accent);
+        }
+
+        .btn.primario {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .btn.primario:hover {
+            filter: brightness(1.08);
+        }
 
         .sfida-stato {
             display: flex;
@@ -451,7 +701,10 @@
             font-size: .92rem;
         }
 
-        .sfida-stato b { color: var(--text); font: 700 1rem var(--mono); }
+        .sfida-stato b {
+            color: var(--text);
+            font: 700 1rem var(--mono);
+        }
 
         .sfida-domanda {
             padding: .6rem 1rem;
@@ -462,9 +715,17 @@
             overflow-x: auto;
         }
 
-        .sfida-domanda .katex-display > .katex { text-align: center; }
+        .sfida-domanda .katex-display>.katex {
+            text-align: center;
+        }
 
-        .sfida-passi { list-style: none; margin: .9rem 0 0; padding: 0; display: grid; gap: .6rem; }
+        .sfida-passi {
+            list-style: none;
+            margin: .9rem 0 0;
+            padding: 0;
+            display: grid;
+            gap: .6rem;
+        }
 
         .passo {
             padding: .85rem 1rem;
@@ -472,14 +733,41 @@
             border: 1px solid var(--line);
         }
 
-        .passo.corrente { border-color: var(--accent); background: var(--accent-soft); }
+        .passo.corrente {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
 
-        .passo-testa { display: flex; justify-content: space-between; gap: .5rem; font-size: .8rem; color: var(--text-2); font-weight: 600; }
-        .passo-testa svg { width: 18px; height: 18px; color: var(--pos); }
-        .passo-q { margin: .2rem 0 .6rem; font-size: .98rem; color: var(--text); }
-        .passo.fatto .passo-q { color: var(--text-2); margin-bottom: .35rem; }
+        .passo-testa {
+            display: flex;
+            justify-content: space-between;
+            gap: .5rem;
+            font-size: .8rem;
+            color: var(--text-2);
+            font-weight: 600;
+        }
 
-        .passo-risposta { display: flex; gap: .5rem; }
+        .passo-testa svg {
+            width: 18px;
+            height: 18px;
+            color: var(--pos);
+        }
+
+        .passo-q {
+            margin: .2rem 0 .6rem;
+            font-size: .98rem;
+            color: var(--text);
+        }
+
+        .passo.fatto .passo-q {
+            color: var(--text-2);
+            margin-bottom: .35rem;
+        }
+
+        .passo-risposta {
+            display: flex;
+            gap: .5rem;
+        }
 
         .passo-risposta input {
             flex: 1;
@@ -493,22 +781,61 @@
             font: 400 1rem var(--mono);
         }
 
-        .passo-risposta input:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-        .passo-risposta input:disabled { opacity: .75; border-style: dashed; }
+        .passo-risposta input:focus {
+            outline: 0;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
 
-        .scelte { display: flex; flex-wrap: wrap; gap: .5rem; }
-        .scelte .btn { min-width: 9rem; }
+        .passo-risposta input:disabled {
+            opacity: .75;
+            border-style: dashed;
+        }
 
-        .feedback { margin: .55rem 0 0; font-size: .92rem; }
-        .feedback.ok { color: var(--pos); font-weight: 600; }
-        .feedback.no { color: var(--neg); }
-        .feedback .aiuto { display: block; margin-top: .2rem; color: var(--text-2); }
+        .scelte {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
 
-        .punti { font: 700 3.5rem/1.1 var(--mono); color: var(--accent); margin-bottom: .5rem; }
+        .scelte .btn {
+            min-width: 9rem;
+        }
+
+        .feedback {
+            margin: .55rem 0 0;
+            font-size: .92rem;
+        }
+
+        .feedback.ok {
+            color: var(--pos);
+            font-weight: 600;
+        }
+
+        .feedback.no {
+            color: var(--neg);
+        }
+
+        .feedback .aiuto {
+            display: block;
+            margin-top: .2rem;
+            color: var(--text-2);
+        }
+
+        .punti {
+            font: 700 3.5rem/1.1 var(--mono);
+            color: var(--accent);
+            margin-bottom: .5rem;
+        }
 
         /* ---------- Grafico ---------- */
 
-        .g-area { position: absolute; inset: 0; overflow: hidden; background: var(--bg); }
+        .g-area {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            background: var(--bg);
+        }
 
         #g-canvas {
             position: absolute;
@@ -519,8 +846,13 @@
             cursor: grab;
         }
 
-        .g-area.trascina #g-canvas { cursor: grabbing; }
-        #g-canvas:focus-visible { outline-offset: -4px; }
+        .g-area.trascina #g-canvas {
+            cursor: grabbing;
+        }
+
+        #g-canvas:focus-visible {
+            outline-offset: -4px;
+        }
 
         .g-titolo {
             position: absolute;
@@ -542,10 +874,26 @@
             font-size: 1.05rem;
         }
 
-        .g-leg { display: inline-flex; align-items: center; gap: .45rem; font-size: .85rem; color: var(--text-2); }
-        .g-leg i { width: 1.4rem; height: 5px; border-radius: 3px; background: var(--sol); }
+        .g-leg {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-size: .85rem;
+            color: var(--text-2);
+        }
 
-        .g-labels { position: absolute; inset: 0; pointer-events: none; }
+        .g-leg i {
+            width: 1.4rem;
+            height: 5px;
+            border-radius: 3px;
+            background: var(--sol);
+        }
+
+        .g-labels {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
 
         .g-lab {
             position: absolute;
@@ -557,7 +905,10 @@
             transform: translateX(-50%);
         }
 
-        .g-lab.vertice { color: var(--text-2); font-size: .85rem; }
+        .g-lab.vertice {
+            color: var(--text-2);
+            font-size: .85rem;
+        }
 
         .g-msg {
             position: absolute;
@@ -576,7 +927,13 @@
             pointer-events: none;
         }
 
-        .g-comandi { position: absolute; right: .75rem; bottom: .75rem; display: flex; gap: .35rem; }
+        .g-comandi {
+            position: absolute;
+            right: .75rem;
+            bottom: .75rem;
+            display: flex;
+            gap: .35rem;
+        }
 
         .g-btn {
             min-width: 44px;
@@ -594,13 +951,26 @@
             font-weight: 600;
         }
 
-        .g-btn:hover { color: var(--text); border-color: var(--line-strong); }
-        .g-btn svg { width: 18px; height: 18px; }
-        .g-reset.mosso { color: var(--on-accent); background: var(--accent); border-color: var(--accent); }
+        .g-btn:hover {
+            color: var(--text);
+            border-color: var(--line-strong);
+        }
+
+        .g-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .g-reset.mosso {
+            color: var(--on-accent);
+            background: var(--accent);
+            border-color: var(--accent);
+        }
 
         /* ---------- Telefono e tablet in verticale ---------- */
 
-        @media (max-width: 899px), (orientation: portrait) {
+        @media (max-width: 899px),
+        (orientation: portrait) {
             .barra {
                 grid-template-columns: auto minmax(0, 1fr) auto;
                 grid-template-areas:
@@ -610,11 +980,29 @@
                 gap: .25rem .6rem;
             }
 
-            .titolo { font-size: .98rem; }
-            .titolo span { display: none; }
-            .schede { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
-            .schede button { min-height: 2.9rem; padding: 0 .25rem; font-size: .9rem; }
-            .solo-mobile { display: grid; }
+            .titolo {
+                font-size: .98rem;
+            }
+
+            .titolo span {
+                display: none;
+            }
+
+            .schede {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 0;
+            }
+
+            .schede button {
+                min-height: 2.9rem;
+                padding: 0 .25rem;
+                font-size: .9rem;
+            }
+
+            .solo-mobile {
+                display: grid;
+            }
 
             .corpo {
                 grid-template-columns: minmax(0, 1fr);
@@ -622,23 +1010,53 @@
                 grid-template-areas: "grafico" "contenuti";
             }
 
-            .app.senza-grafico .corpo { grid-template-rows: 0 minmax(0, 1fr); }
-            .app.senza-grafico .grafico { display: none; }
+            .app.senza-grafico .corpo {
+                grid-template-rows: 0 minmax(0, 1fr);
+            }
 
-            .grafico { border-left: 0; border-bottom: 1px solid var(--line); }
-            .contenuti { padding: 0 1rem 2rem; }
-            .equazione { position: static; margin: 0; padding: .9rem 0 .75rem; border-bottom: 0; }
-            .g-msg { bottom: 3.9rem; }
+            .app.senza-grafico .grafico {
+                display: none;
+            }
+
+            .grafico {
+                border-left: 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .contenuti {
+                padding: 0 1rem 2rem;
+            }
+
+            .equazione {
+                position: static;
+                margin: 0;
+                padding: .9rem 0 .75rem;
+                border-bottom: 0;
+            }
+
+            .g-msg {
+                bottom: 3.9rem;
+            }
         }
 
         @media (max-width: 899px) and (orientation: portrait) {
-            .lungo { display: none; }
+            .lungo {
+                display: none;
+            }
         }
 
         @media (max-width: 520px) {
-            .verso { width: 100%; }
-            .barra .orfini-back-btn { padding: 6px 10px; }
-            .g-reset span { display: none; }
+            .verso {
+                width: 100%;
+            }
+
+            .barra .orfini-back-btn {
+                padding: 6px 10px;
+            }
+
+            .g-reset span {
+                display: none;
+            }
         }
 
         /* ---------- Spiegazione animata ---------- */
@@ -657,9 +1075,21 @@
             font-size: .92rem;
         }
 
-        .btn-spiega svg, .link-btn svg { width: 18px; height: 18px; color: var(--accent); }
-        .btn-spiega:hover { background: var(--accent); color: var(--on-accent); }
-        .btn-spiega:hover svg { color: var(--on-accent); }
+        .btn-spiega svg,
+        .link-btn svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+        }
+
+        .btn-spiega:hover {
+            background: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .btn-spiega:hover svg {
+            color: var(--on-accent);
+        }
 
         .link-btn {
             display: inline-flex;
@@ -674,10 +1104,26 @@
             font-weight: 600;
         }
 
-        .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
-        .blocco-testa { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 1rem; }
-        .blocco-testa h2 { margin: 0; }
-        .blocco-testa + * { margin-top: .4rem; }
+        .link-btn:hover {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .blocco-testa {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0 1rem;
+        }
+
+        .blocco-testa h2 {
+            margin: 0;
+        }
+
+        .blocco-testa+* {
+            margin-top: .4rem;
+        }
 
         .explain {
             position: fixed;
@@ -701,7 +1147,12 @@
             border: 1px solid var(--line);
         }
 
-        .explain-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .explain-box iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
 
         .explain-close {
             position: absolute;
@@ -718,15 +1169,28 @@
             color: var(--text);
         }
 
-        .explain-close svg { width: 20px; height: 20px; }
+        .explain-close svg {
+            width: 20px;
+            height: 20px;
+        }
 
-        @media (max-width: 899px), (orientation: portrait) {
-            .btn-spiega { width: 44px; padding: 0; justify-content: center; }
-            .btn-spiega span { display: none; }
+        @media (max-width: 899px),
+        (orientation: portrait) {
+            .btn-spiega {
+                width: 44px;
+                padding: 0;
+                justify-content: center;
+            }
+
+            .btn-spiega span {
+                display: none;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            * { transition: none !important; }
+            * {
+                transition: none !important;
+            }
         }
     </style>
 </head>
@@ -734,95 +1198,136 @@
 <body>
     <div class="app" id="app">
         <header class="barra">
-<!-- ORFINI-BACK START -->
-<style>
-.orfini-back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(15, 23, 42, 0.8);
-  color: #e2e8f0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-  padding: 6px 14px;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  pointer-events: auto;
-  line-height: 1.2;
-}
-.orfini-back-btn:hover {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255, 255, 255, 0.35);
-  color: #ffffff !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-}
-.orfini-back-btn-fixed-left {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 10000;
-}
-.orfini-back-btn-fixed-right {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 10000;
-}
-.orfini-back-btn-header {
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-.orfini-back-arrow {
-  font-size: 14px;
-  line-height: 1;
-}
-/* Regole separate: un selettore non riconosciuto invaliderebbe l'intera lista */
-:fullscreen .orfini-back-btn { display: none !important; }
-:-webkit-full-screen .orfini-back-btn { display: none !important; }
-@media (display-mode: fullscreen) { .orfini-back-btn { display: none !important; } }
-@media (max-width: 640px) {
-  .orfini-back-btn .orfini-back-text {
-    display: none;
-  }
-  .orfini-back-btn {
-    padding: 6px 10px;
-  }
-}
-</style>
-<a href="../../index.html" class="orfini-back-btn orfini-back-btn-header" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
-  <span class="orfini-back-arrow">←</span>
-  <span class="orfini-back-text">Orfini Math Lab</span>
-</a>
-<!-- ORFINI-BACK END -->
+            <!-- ORFINI-BACK START -->
+            <style>
+                .orfini-back-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: rgba(15, 23, 42, 0.8);
+                    color: #e2e8f0 !important;
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-radius: 9999px;
+                    padding: 6px 14px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    font-size: 12px;
+                    font-weight: 500;
+                    text-decoration: none !important;
+                    backdrop-filter: blur(8px);
+                    -webkit-backdrop-filter: blur(8px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                    transition: all 0.2s ease;
+                    cursor: pointer;
+                    pointer-events: auto;
+                    line-height: 1.2;
+                }
+
+                .orfini-back-btn:hover {
+                    background: rgba(30, 41, 59, 0.95);
+                    border-color: rgba(255, 255, 255, 0.35);
+                    color: #ffffff !important;
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+                }
+
+                .orfini-back-btn-fixed-left {
+                    position: fixed;
+                    top: 16px;
+                    left: 16px;
+                    z-index: 10000;
+                }
+
+                .orfini-back-btn-fixed-right {
+                    position: fixed;
+                    top: 16px;
+                    right: 16px;
+                    z-index: 10000;
+                }
+
+                .orfini-back-btn-header {
+                    margin-right: 12px;
+                    flex-shrink: 0;
+                }
+
+                .orfini-back-arrow {
+                    font-size: 14px;
+                    line-height: 1;
+                }
+
+                /* Regole separate: un selettore non riconosciuto invaliderebbe l'intera lista */
+                :fullscreen .orfini-back-btn {
+                    display: none !important;
+                }
+
+                :-webkit-full-screen .orfini-back-btn {
+                    display: none !important;
+                }
+
+                @media (display-mode: fullscreen) {
+                    .orfini-back-btn {
+                        display: none !important;
+                    }
+                }
+
+                @media (max-width: 640px) {
+                    .orfini-back-btn .orfini-back-text {
+                        display: none;
+                    }
+
+                    .orfini-back-btn {
+                        padding: 6px 10px;
+                    }
+                }
+            </style>
+            <a href="../../index.html" class="orfini-back-btn orfini-back-btn-header" title="Torna a Orfini Math Lab"
+                aria-label="Torna a Orfini Math Lab">
+                <span class="orfini-back-arrow">←</span>
+                <span class="orfini-back-text">Orfini Math Lab</span>
+            </a>
+            <!-- ORFINI-BACK END -->
 
             <h1 class="titolo">Parabola <span>e disequazioni di 2° grado</span></h1>
 
             <nav class="schede" role="tablist" aria-label="Sezioni">
-                <button type="button" role="tab" id="btn-lab" aria-controls="tab-lab" aria-selected="true">Laboratorio</button>
-                <button type="button" role="tab" id="btn-delta" aria-controls="tab-delta" aria-selected="false" tabindex="-1"><span class="lungo">Metodo del&nbsp;</span>Δ</button>
-                <button type="button" role="tab" id="btn-richiami" aria-controls="tab-richiami" aria-selected="false" tabindex="-1">Richiami</button>
-                <button type="button" role="tab" id="btn-sfida" aria-controls="tab-sfida" aria-selected="false" tabindex="-1">Sfida</button>
+                <button type="button" role="tab" id="btn-lab" aria-controls="tab-lab"
+                    aria-selected="true">Laboratorio</button>
+                <button type="button" role="tab" id="btn-delta" aria-controls="tab-delta" aria-selected="false"
+                    tabindex="-1"><span class="lungo">Metodo del&nbsp;</span>Δ</button>
+                <button type="button" role="tab" id="btn-richiami" aria-controls="tab-richiami" aria-selected="false"
+                    tabindex="-1">Richiami</button>
+                <button type="button" role="tab" id="btn-sfida" aria-controls="tab-sfida" aria-selected="false"
+                    tabindex="-1">Sfida</button>
             </nav>
 
             <div class="azioni">
                 <button type="button" class="btn-spiega" data-explain="" title="Spiegazione animata di un minuto">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                    </svg>
                     <span>Spiegami</span>
                 </button>
-                <button type="button" class="icona solo-mobile" id="btn-grafico" aria-pressed="true" aria-label="Nascondi il grafico" title="Mostra o nascondi il grafico">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18" /><path d="M6 16c2.5-9 6.5-9 9 0" /></svg>
+                <button type="button" class="icona solo-mobile" id="btn-grafico" aria-pressed="true"
+                    aria-label="Nascondi il grafico" title="Mostra o nascondi il grafico">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 3v18h18" />
+                        <path d="M6 16c2.5-9 6.5-9 9 0" />
+                    </svg>
                 </button>
-                <button type="button" class="icona" id="btn-tema" aria-label="Passa al tema chiaro" title="Tema chiaro o scuro">
-                    <svg class="ic-sole" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
-                    <svg class="ic-luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+                <button type="button" class="icona" id="btn-tema" aria-label="Passa al tema chiaro"
+                    title="Tema chiaro o scuro">
+                    <svg class="ic-sole" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4" />
+                        <path
+                            d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+                    </svg>
+                    <svg class="ic-luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+                        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                    </svg>
                 </button>
             </div>
         </header>
@@ -839,13 +1344,23 @@
                     <p class="g-msg" id="g-msg" hidden></p>
                     <div class="g-comandi">
                         <button type="button" class="g-btn" id="g-meno" aria-label="Allontana" title="Allontana (−)">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" aria-hidden="true">
+                                <path d="M5 12h14" />
+                            </svg>
                         </button>
                         <button type="button" class="g-btn" id="g-piu" aria-label="Avvicina" title="Avvicina (+)">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" aria-hidden="true">
+                                <path d="M12 5v14M5 12h14" />
+                            </svg>
                         </button>
                         <button type="button" class="g-btn g-reset" id="g-reset" title="Ricentra la parabola (0)">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
                             <span>Ricentra</span>
                         </button>
                     </div>
@@ -860,14 +1375,18 @@
                         <div class="eq-riga">
                             <div class="eq-campo">
                                 <label class="eq-lbl" for="poly-input">P(x) =</label>
-                                <input type="text" id="poly-input" class="eq-input" value="x^2 - 5x + 6" autocomplete="off"
-                                    spellcheck="false" autocapitalize="off" enterkeyhint="done" aria-describedby="stato-input">
+                                <input type="text" id="poly-input" class="eq-input" value="x^2 - 5x + 6"
+                                    autocomplete="off" spellcheck="false" autocapitalize="off" enterkeyhint="done"
+                                    aria-describedby="stato-input">
                             </div>
                             <div class="verso" role="radiogroup" aria-label="Verso della disequazione">
                                 <button type="button" role="radio" data-op=">" aria-checked="true">&gt;&nbsp;0</button>
-                                <button type="button" role="radio" data-op=">=" aria-checked="false" tabindex="-1">&ge;&nbsp;0</button>
-                                <button type="button" role="radio" data-op="<" aria-checked="false" tabindex="-1">&lt;&nbsp;0</button>
-                                <button type="button" role="radio" data-op="<=" aria-checked="false" tabindex="-1">&le;&nbsp;0</button>
+                                <button type="button" role="radio" data-op=">=" aria-checked="false"
+                                    tabindex="-1">&ge;&nbsp;0</button>
+                                <button type="button" role="radio" data-op="<" aria-checked="false"
+                                    tabindex="-1">&lt;&nbsp;0</button>
+                                <button type="button" role="radio" data-op="<=" aria-checked="false"
+                                    tabindex="-1">&le;&nbsp;0</button>
                             </div>
                             <input type="hidden" id="op-input" value=">">
                         </div>
@@ -889,7 +1408,11 @@
                     <section class="blocco" aria-labelledby="h-scomp">
                         <div class="blocco-testa">
                             <h2 id="h-scomp">Scomposizione</h2>
-                            <button type="button" class="link-btn" data-explain="lab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
+                            <button type="button" class="link-btn" data-explain="lab"><svg viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                                </svg>Come funziona</button>
                         </div>
                         <div id="algebra-output"></div>
                     </section>
@@ -897,7 +1420,11 @@
                     <section class="blocco" aria-labelledby="h-segni">
                         <div class="blocco-testa">
                             <h2 id="h-segni">Studio del segno</h2>
-                            <button type="button" class="link-btn" data-explain="segno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
+                            <button type="button" class="link-btn" data-explain="segno"><svg viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                                </svg>Come funziona</button>
                         </div>
                         <div class="segni">
                             <div id="factors-output"></div>
@@ -909,7 +1436,11 @@
                 <!-- ==================== METODO DEL DELTA ==================== -->
                 <div id="tab-delta" role="tabpanel" aria-labelledby="btn-delta" hidden>
                     <div id="delta-output"></div>
-                    <p><button type="button" class="link-btn" data-explain="delta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona il metodo del Δ</button></p>
+                    <p><button type="button" class="link-btn" data-explain="delta"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                            </svg>Come funziona il metodo del Δ</button></p>
                 </div>
 
                 <!-- ==================== RICHIAMI ==================== -->
@@ -918,47 +1449,59 @@
                     <ol class="passi">
                         <li>
                             <h3>Forma normale</h3>
-                            <p>Porta sempre la disequazione nella forma $ax^2 + bx + c > 0$ e, se possibile, rendi $a > 0$ cambiando i versi.</p>
+                            <p>Porta sempre la disequazione nella forma $ax^2 + bx + c > 0$ e, se possibile, rendi $a >
+                                0$ cambiando i versi.</p>
                         </li>
                         <li>
                             <h3>Trova le radici</h3>
-                            <p>Risolvi l'equazione associata. I valori trovati sono i punti in cui la parabola "tocca" l'asse x.</p>
+                            <p>Risolvi l'equazione associata. I valori trovati sono i punti in cui la parabola "tocca"
+                                l'asse x.</p>
                         </li>
                         <li>
                             <h3>Immagina il grafico</h3>
-                            <p>Una parabola con $a > 0$ rivolge la concavità verso l'alto (sorridente). È positiva esternamente alle radici.</p>
+                            <p>Una parabola con $a > 0$ rivolge la concavità verso l'alto (sorridente). È positiva
+                                esternamente alle radici.</p>
                         </li>
                         <li>
                             <h3>Attenzione al Delta</h3>
-                            <p>Se $\Delta < 0$, la parabola non tocca mai l'asse x. È tutta sopra ($a > 0$) o tutta sotto ($a < 0$).</p>
+                            <p>Se $\Delta < 0$, la parabola non tocca mai l'asse x. È tutta sopra ($a> 0$) o tutta sotto
+                                    ($a < 0$).</p>
                         </li>
                     </ol>
-                    <p><button type="button" class="link-btn" data-explain="casi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Guarda i tre casi del Δ</button></p>
+                    <p><button type="button" class="link-btn" data-explain="casi"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                            </svg>Guarda i tre casi del Δ</button></p>
 
                     <h2 class="sezione-titolo">Le scomposizioni da riconoscere</h2>
                     <div class="regole">
                         <article class="regola">
                             <h3>Raccoglimento totale</h3>
                             <div class="mrow">$$AB + AC = A(B + C)$$</div>
-                            <p>Tutti i termini del polinomio presentano un fattore (numero o lettera) in comune. Deve essere sempre il primo tentativo!</p>
+                            <p>Tutti i termini del polinomio presentano un fattore (numero o lettera) in comune. Deve
+                                essere sempre il primo tentativo!</p>
                             <p class="es">Esempio: $3x^2 - 6x = 3x(x - 2)$</p>
                         </article>
                         <article class="regola">
                             <h3>Differenza di due quadrati</h3>
                             <div class="mrow">$$A^2 - B^2 = (A - B)(A + B)$$</div>
-                            <p>Il polinomio ha esattamente due termini, entrambi riconducibili a quadrati perfetti, separati da un segno meno.</p>
+                            <p>Il polinomio ha esattamente due termini, entrambi riconducibili a quadrati perfetti,
+                                separati da un segno meno.</p>
                             <p class="es">Esempio: $x^2 - 16 = x^2 - 4^2 = (x - 4)(x + 4)$</p>
                         </article>
                         <article class="regola">
                             <h3>Trinomio speciale (somma e prodotto)</h3>
                             <div class="mrow">$$x^2 + Sx + P = (x - x_1)(x - x_2)$$</div>
-                            <p>Trinomio di secondo grado con il coefficiente di $x^2$ pari a 1 (o riconducibile ad esso). Cerchiamo due numeri la cui somma sia $S$ e il prodotto sia $P$.</p>
+                            <p>Trinomio di secondo grado con il coefficiente di $x^2$ pari a 1 (o riconducibile ad
+                                esso). Cerchiamo due numeri la cui somma sia $S$ e il prodotto sia $P$.</p>
                             <p class="es">Esempio: $x^2 - 5x + 6 \implies S=-5,\ P=6 \implies (x-2)(x-3)$</p>
                         </article>
                         <article class="regola">
                             <h3>Quadrato di binomio</h3>
                             <div class="mrow">$$A^2 \pm 2AB + B^2 = (A \pm B)^2$$</div>
-                            <p>Trinomio con due termini che sono quadrati perfetti positivi. Il terzo termine deve corrispondere esattamente al doppio prodotto delle loro basi.</p>
+                            <p>Trinomio con due termini che sono quadrati perfetti positivi. Il terzo termine deve
+                                corrispondere esattamente al doppio prodotto delle loro basi.</p>
                             <p class="es">Esempio: $x^2 + 6x + 9 = (x + 3)^2$</p>
                         </article>
                     </div>
@@ -968,9 +1511,16 @@
                 <div id="tab-sfida" role="tabpanel" aria-labelledby="btn-sfida" hidden>
                     <div id="challenge-setup" class="sfida-intro">
                         <h2>Sfida: cinque disequazioni</h2>
-                        <p>Ogni esercizio si risolve in quattro passaggi: concavità, discriminante (o scomposizione), radici e soluzione. Il grafico non ti dà la risposta: compare un pezzo alla volta, dopo ogni passaggio giusto.</p>
+                        <p>Ogni esercizio si risolve in quattro passaggi: concavità, discriminante (o scomposizione),
+                            radici e soluzione. Il grafico non ti dà la risposta: compare un pezzo alla volta, dopo ogni
+                            passaggio giusto.</p>
                         <button type="button" class="btn primario" id="btn-inizia">Inizia la sfida</button>
-                        <button type="button" class="link-btn" data-explain="sfida" style="margin-left:.75rem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
+                        <button type="button" class="link-btn" data-explain="sfida" style="margin-left:.75rem"><svg
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                            </svg>Come funziona</button>
                     </div>
 
                     <div id="challenge-game" hidden>
@@ -997,7 +1547,10 @@
     <div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
         <div class="explain-box">
             <button type="button" class="explain-close" id="explainClose" aria-label="Chiudi la spiegazione">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
             </button>
             <iframe id="explainFrame" title="Spiegazione animata: parabola e disequazioni" allow="fullscreen"></iframe>
         </div>
@@ -2425,19 +2978,19 @@
             /* Finestra della spiegazione: chiusa solo da chi guarda (✕, Esc, clic fuori, Esc dentro l'animazione);
                mentre è aperta il resto della pagina è inerte, alla chiusura il focus torna al pulsante che l'ha aperta */
             (() => {
-              const box = document.getElementById('explain'); if (!box) return;
-              let opener = null; const prev = new Map();
-              document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
-              document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
-              new MutationObserver(() => {
-                if (!box.hidden) {
-                  for (let n = box; n && n !== document.body; n = n.parentElement)
-                    for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
-                } else {
-                  prev.forEach((v, s) => { s.inert = v; }); prev.clear();
-                  if (opener && document.contains(opener) && opener.focus) opener.focus();
-                }
-              }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
+                const box = document.getElementById('explain'); if (!box) return;
+                let opener = null; const prev = new Map();
+                document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
+                document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
+                new MutationObserver(() => {
+                    if (!box.hidden) {
+                        for (let n = box; n && n !== document.body; n = n.parentElement)
+                            for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
+                    } else {
+                        prev.forEach((v, s) => { s.inert = v; }); prev.clear();
+                        if (opener && document.contains(opener) && opener.focus) opener.focus();
+                    }
+                }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
             })();
             if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-chiudi' && e.source === document.getElementById('explainFrame').contentWindow) closeExplainer();
         });

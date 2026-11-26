@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Prodotti Notevoli: dimostrazioni geometriche 2D e 3D</title>
-  <meta name="description" content="Laboratorio interattivo di geometria dinamica: i prodotti notevoli dimostrati con aree e volumi. Differenza di quadrati, quadrato e cubo del binomio in 2D e 3D, con la dimostrazione passo passo del cubo della differenza.">
-  <meta name="keywords" content="Matematica, Algebra, Geometria, Prodotti Notevoli, Differenza di Quadrati, Quadrato del Binomio, Cubo del Binomio, Scomposizione, Dimostrazione Geometrica, Aree, Volumi, Visualizzazione 3D, Mat:Calcolo, Mat:Geometria, Mat:Modellizzazione, EU:STEM, EU:Digitale, CIT_4:COMPETENZA DIGITALE, Lab, Simulazione, 1 EL, 2 EL, 1 GP, 2 GP, 1 MA, 2 MA, Biennio">
-    <meta name="allenamento" content="prodotti-notevoli, solidi">
-    <meta name="parole" content="prodotti-notevoli, geometria">
+  <meta name="description"
+    content="Laboratorio interattivo di geometria dinamica: i prodotti notevoli dimostrati con aree e volumi. Differenza di quadrati, quadrato e cubo del binomio in 2D e 3D, con la dimostrazione passo passo del cubo della differenza.">
+  <meta name="keywords"
+    content="Matematica, Algebra, Geometria, Prodotti Notevoli, Differenza di Quadrati, Quadrato del Binomio, Cubo del Binomio, Scomposizione, Dimostrazione Geometrica, Aree, Volumi, Visualizzazione 3D, Mat:Calcolo, Mat:Geometria, Mat:Modellizzazione, EU:STEM, EU:Digitale, CIT_4:COMPETENZA DIGITALE, Lab, Simulazione, 1 EL, 2 EL, 1 GP, 2 GP, 1 MA, 2 MA, Biennio">
+  <meta name="allenamento" content="prodotti-notevoli, solidi">
+  <meta name="parole" content="prodotti-notevoli, geometria">
   <meta name="date" content="2026-10-16">
   <meta name="theme-color" content="#000000">
-  <link rel="canonical" href="https://federicodb.github.io/content/apps/dimostrazione_geometrica_prodotti_notevoli.html">
+  <link rel="canonical"
+    href="https://federicodb.github.io/content/apps/dimostrazione_geometrica_prodotti_notevoli.html">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://federicodb.github.io/content/apps/dimostrazione_geometrica_prodotti_notevoli.html">
+  <meta property="og:url"
+    content="https://federicodb.github.io/content/apps/dimostrazione_geometrica_prodotti_notevoli.html">
   <meta property="og:title" content="Prodotti Notevoli: dimostrazioni geometriche 2D e 3D">
   <meta property="og:description" content="I prodotti notevoli dimostrati con aree e volumi, in 2D e 3D.">
   <meta property="og:image" content="https://federicodb.github.io/content/assets/social_share_cover.webp">
@@ -27,13 +32,17 @@
         document.documentElement.setAttribute('data-theme', 'light');
         if (cs) cs.content = 'light';
       } else if (t === 'dark' && cs) cs.content = 'dark';
-    } catch (e) {}
+    } catch (e) { }
   </script>
   <script src="../assets/js/theme-toggle.js" defer></script>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <!-- Three.js e OrbitControls per le dimostrazioni 3D volumetriche -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js?sw2" integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js?sw2" integrity="sha384-wagZhIFgY4hD+7awjQjR4e2E294y6J2HSnd8eTNc15ZubTeQeVRZwhQJ+W6hnBsf" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js?sw2"
+    integrity="sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js?sw2"
+    integrity="sha384-wagZhIFgY4hD+7awjQjR4e2E294y6J2HSnd8eTNc15ZubTeQeVRZwhQJ+W6hnBsf"
+    crossorigin="anonymous"></script>
   <link href="/content/assets/fonts/inter-syne-spacemono-1fb366.css" rel="stylesheet">
   <style>
     /* ===== Tema del sito: nero AMOLED (default) e chiaro, come la home ===== */
@@ -50,6 +59,7 @@
       --primary: hsl(190, 100%, 45%);
       --primary-soft: hsla(190, 100%, 45%, 0.14);
     }
+
     html.theme-light {
       --bg: #f4f5f7;
       --surface: #ffffff;
@@ -63,6 +73,7 @@
       --primary: hsl(190, 90%, 30%);
       --primary-soft: hsla(190, 90%, 30%, 0.12);
     }
+
     body {
       font-family: 'Inter', sans-serif;
       user-select: none;
@@ -70,15 +81,19 @@
       color: var(--text) !important;
       transition: background-color .25s ease, color .25s ease;
     }
+
     .math-font {
       font-family: 'Space Mono', monospace;
     }
+
     .title-font {
       font-family: 'Syne', 'Inter', sans-serif;
     }
+
     input[type=range] {
       accent-color: var(--primary);
     }
+
     .tab-btn.active {
       background: var(--primary-soft) !important;
       border-color: var(--primary) !important;
@@ -87,181 +102,379 @@
     }
 
     /* Le classi Tailwind "slate" usate nella pagina seguono le variabili del tema */
-    .bg-slate-950, .bg-slate-950\/90, .bg-slate-950\/80, .bg-slate-950\/70 { background-color: var(--bg) !important; }
-    .bg-slate-950\/50 { background-color: var(--surface-2) !important; }
-    .bg-slate-900\/95, .bg-slate-900\/90, .bg-slate-900\/70, .bg-slate-900\/60 { background-color: var(--surface) !important; }
-    .bg-slate-800, .hover\:bg-slate-800\/80:hover { background-color: var(--surface-3) !important; }
-    .hover\:bg-slate-700:hover { background-color: var(--border) !important; }
-    #math-details { background-color: var(--surface-2) !important; }
-    [class*="border-slate-"] { border-color: var(--border) !important; }
-    .text-slate-100, .text-slate-200, .text-white { color: var(--text) !important; }
-    .text-slate-300 { color: var(--text-2) !important; }
-    .text-slate-400 { color: var(--muted) !important; }
-    .text-slate-500 { color: var(--dim) !important; }
-    .hover\:text-white:hover { color: var(--text) !important; }
+    .bg-slate-950,
+    .bg-slate-950\/90,
+    .bg-slate-950\/80,
+    .bg-slate-950\/70 {
+      background-color: var(--bg) !important;
+    }
+
+    .bg-slate-950\/50 {
+      background-color: var(--surface-2) !important;
+    }
+
+    .bg-slate-900\/95,
+    .bg-slate-900\/90,
+    .bg-slate-900\/70,
+    .bg-slate-900\/60 {
+      background-color: var(--surface) !important;
+    }
+
+    .bg-slate-800,
+    .hover\:bg-slate-800\/80:hover {
+      background-color: var(--surface-3) !important;
+    }
+
+    .hover\:bg-slate-700:hover {
+      background-color: var(--border) !important;
+    }
+
+    #math-details {
+      background-color: var(--surface-2) !important;
+    }
+
+    [class*="border-slate-"] {
+      border-color: var(--border) !important;
+    }
+
+    .text-slate-100,
+    .text-slate-200,
+    .text-white {
+      color: var(--text) !important;
+    }
+
+    .text-slate-300 {
+      color: var(--text-2) !important;
+    }
+
+    .text-slate-400 {
+      color: var(--muted) !important;
+    }
+
+    .text-slate-500 {
+      color: var(--dim) !important;
+    }
+
+    .hover\:text-white:hover {
+      color: var(--text) !important;
+    }
+
     /* Pulsanti pieni: testo sempre bianco su colore */
-    .bg-blue-600, .bg-amber-600 { color: #fff !important; }
-    .bg-blue-600 { background-color: var(--primary) !important; }
+    .bg-blue-600,
+    .bg-amber-600 {
+      color: #fff !important;
+    }
+
+    .bg-blue-600 {
+      background-color: var(--primary) !important;
+    }
+
     /* Tema chiaro: colori d'accento più scuri per il contrasto e badge tenui */
-    html.theme-light .text-blue-400 { color: #1d4ed8 !important; }
-    html.theme-light .text-sky-400 { color: #0369a1 !important; }
-    html.theme-light .text-emerald-400 { color: #047857 !important; }
-    html.theme-light .text-rose-400 { color: #be123c !important; }
-    html.theme-light .text-amber-300, html.theme-light .text-amber-400 { color: #b45309 !important; }
-    html.theme-light .text-purple-400 { color: #7e22ce !important; }
-    html.theme-light .bg-blue-950\/60, html.theme-light .bg-blue-500\/15, html.theme-light .bg-blue-500\/10 { background-color: rgba(29, 78, 216, 0.08) !important; }
-    html.theme-light .bg-amber-950\/40, html.theme-light .bg-amber-500\/20 { background-color: rgba(180, 83, 9, 0.09) !important; }
-    html.theme-light .bg-rose-950\/40 { background-color: rgba(190, 18, 60, 0.08) !important; }
-    html.theme-light .bg-emerald-500\/10 { background-color: rgba(4, 120, 87, 0.08) !important; }
-    html.theme-light .shadow-xl, html.theme-light .shadow-2xl, html.theme-light .shadow-lg { box-shadow: 0 6px 22px rgba(15, 23, 42, 0.08) !important; }
+    html.theme-light .text-blue-400 {
+      color: #1d4ed8 !important;
+    }
+
+    html.theme-light .text-sky-400 {
+      color: #0369a1 !important;
+    }
+
+    html.theme-light .text-emerald-400 {
+      color: #047857 !important;
+    }
+
+    html.theme-light .text-rose-400 {
+      color: #be123c !important;
+    }
+
+    html.theme-light .text-amber-300,
+    html.theme-light .text-amber-400 {
+      color: #b45309 !important;
+    }
+
+    html.theme-light .text-purple-400 {
+      color: #7e22ce !important;
+    }
+
+    html.theme-light .bg-blue-950\/60,
+    html.theme-light .bg-blue-500\/15,
+    html.theme-light .bg-blue-500\/10 {
+      background-color: rgba(29, 78, 216, 0.08) !important;
+    }
+
+    html.theme-light .bg-amber-950\/40,
+    html.theme-light .bg-amber-500\/20 {
+      background-color: rgba(180, 83, 9, 0.09) !important;
+    }
+
+    html.theme-light .bg-rose-950\/40 {
+      background-color: rgba(190, 18, 60, 0.08) !important;
+    }
+
+    html.theme-light .bg-emerald-500\/10 {
+      background-color: rgba(4, 120, 87, 0.08) !important;
+    }
+
+    html.theme-light .shadow-xl,
+    html.theme-light .shadow-2xl,
+    html.theme-light .shadow-lg {
+      box-shadow: 0 6px 22px rgba(15, 23, 42, 0.08) !important;
+    }
 
     /* Comandi della vista 3D: bersagli tattili adeguati su tablet e smartphone */
-    #three-controls-toolbar button { min-height: 36px; min-width: 36px; }
-    #three-controls-toolbar { flex-wrap: wrap; justify-content: flex-end; }
+    #three-controls-toolbar button {
+      min-height: 36px;
+      min-width: 36px;
+    }
+
+    #three-controls-toolbar {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
 
     /* Pulsante tema (come nella home) */
     .orfini-theme-toggle {
-      width: 36px; height: 36px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border); background: var(--surface-2); color: var(--text); cursor: pointer; transition: all .2s ease;
+      width: 36px;
+      height: 36px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      cursor: pointer;
+      transition: all .2s ease;
     }
-    .orfini-theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
-    .orfini-theme-toggle svg { width: 18px; height: 18px; }
-    .orfini-theme-toggle .theme-icon-moon { display: none; }
-    html.theme-light .orfini-theme-toggle .theme-icon-sun { display: none; }
-    html.theme-light .orfini-theme-toggle .theme-icon-moon { display: block; }
+
+    .orfini-theme-toggle:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .orfini-theme-toggle svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .orfini-theme-toggle .theme-icon-moon {
+      display: none;
+    }
+
+    html.theme-light .orfini-theme-toggle .theme-icon-sun {
+      display: none;
+    }
+
+    html.theme-light .orfini-theme-toggle .theme-icon-moon {
+      display: block;
+    }
 
     /* ORFINI-BACK (stesso pulsante delle altre app) */
     .orfini-back-btn {
-      display: inline-flex; align-items: center; gap: 6px; border-radius: 9999px; padding: 6px 14px;
-      background: var(--surface-2); color: var(--text) !important; border: 1px solid var(--border);
-      font-size: 13px; font-weight: 700; text-decoration: none !important; transition: all .2s ease; line-height: 1.2;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 9999px;
+      padding: 6px 14px;
+      background: var(--surface-2);
+      color: var(--text) !important;
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none !important;
+      transition: all .2s ease;
+      line-height: 1.2;
     }
-    .orfini-back-btn:hover { border-color: var(--primary); color: var(--primary) !important; }
-    :fullscreen .orfini-back-btn { display: none !important; }
-    @media (max-width: 640px) { .orfini-back-btn .orfini-back-text { display: none; } .orfini-back-btn { padding: 6px 10px; } }
+
+    .orfini-back-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary) !important;
+    }
+
+    :fullscreen .orfini-back-btn {
+      display: none !important;
+    }
+
+    @media (max-width: 640px) {
+      .orfini-back-btn .orfini-back-text {
+        display: none;
+      }
+
+      .orfini-back-btn {
+        padding: 6px 10px;
+      }
+    }
+
     /* Smooth custom scrollbars */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
+
     ::-webkit-scrollbar-track {
       background: var(--bg);
     }
+
     ::-webkit-scrollbar-thumb {
       background: var(--surface-3);
       border-radius: 9999px;
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: var(--border);
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-blue-600 selection:text-white">
 
-  <header class="border-b border-slate-800/80 bg-slate-900/95 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-3 shadow-lg">
+<body
+  class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-blue-600 selection:text-white">
+
+  <header
+    class="border-b border-slate-800/80 bg-slate-900/95 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-3 shadow-lg">
     <div class="max-w-[1700px] mx-auto flex flex-col gap-3">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div class="flex flex-wrap items-center gap-3">
           <!-- ORFINI-BACK START -->
-          <a href="../../index.html" class="orfini-back-btn" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
+          <a href="../../index.html" class="orfini-back-btn" title="Torna a Orfini Math Lab"
+            aria-label="Torna a Orfini Math Lab">
             <span aria-hidden="true">←</span>
             <span class="orfini-back-text">Orfini Math Lab</span>
           </a>
           <!-- ORFINI-BACK END -->
-          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-400 text-xs font-semibold shadow-inner">
+          <div
+            class="flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-400 text-xs font-semibold shadow-inner">
             <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
             Prodotti Notevoli
           </div>
-          <h1 id="main-title" class="title-font text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
+          <h1 id="main-title"
+            class="title-font text-base sm:text-lg lg:text-xl font-bold tracking-tight text-white flex flex-wrap items-center gap-2">
             <span>Differenza di due Quadrati</span>
-            <span id="formula-badge" class="math-font text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-0.5 rounded-lg font-semibold text-xs sm:text-sm">
+            <span id="formula-badge"
+              class="math-font text-blue-400 bg-blue-950/60 border border-blue-800/50 px-2.5 py-0.5 rounded-lg font-semibold text-xs sm:text-sm">
               A² – B² = (A + B)(A – B)
             </span>
           </h1>
         </div>
 
         <div class="flex items-center gap-2 self-start sm:self-auto">
-          <div class="flex items-center gap-2 text-xs text-slate-400 bg-slate-950/80 py-1.5 px-3 rounded-xl border border-slate-800">
+          <div
+            class="flex items-center gap-2 text-xs text-slate-400 bg-slate-950/80 py-1.5 px-3 rounded-xl border border-slate-800">
             <span class="text-slate-500">Stato geometrico:</span>
             <span id="badge-phase" class="font-medium text-blue-400">Quadrato con incavo A²–B²</span>
           </div>
-          <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro" title="Cambia tema chiaro/scuro">
-            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <button id="orfini-theme-toggle" class="orfini-theme-toggle" aria-label="Cambia tema chiaro/scuro"
+            title="Cambia tema chiaro/scuro">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
           </button>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
       <nav class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-0.5">
-        <button data-tab="diff_sq" class="tab-btn active px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+        <button data-tab="diff_sq"
+          class="tab-btn active px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
           <span>A² – B²</span>
           <span class="text-[10px] text-slate-400 font-mono">2D</span>
         </button>
-        <button data-tab="sq_sum" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+        <button data-tab="sq_sum"
+          class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
           <span>(A + B)²</span>
           <span class="text-[10px] text-slate-400 font-mono">2D</span>
         </button>
-        <button data-tab="sq_diff" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+        <button data-tab="sq_diff"
+          class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
           <span>(A – B)²</span>
           <span class="text-[10px] text-slate-400 font-mono">2D</span>
         </button>
-        <button data-tab="cube_sum" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+        <button data-tab="cube_sum"
+          class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
           <span>(A + B)³</span>
-          <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">3D</span>
+          <span
+            class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">3D</span>
         </button>
-        <button data-tab="cube_diff" class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
+        <button data-tab="cube_diff"
+          class="tab-btn px-3.5 py-2 rounded-xl border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition flex items-center gap-1.5">
           <span>(A – B)³</span>
-          <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">3D</span>
+          <span
+            class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">3D</span>
         </button>
       </nav>
     </div>
   </header>
 
   <main class="max-w-[1700px] w-full mx-auto p-3 sm:p-5 lg:p-6 flex-1 flex flex-col lg:flex-row gap-5 items-stretch">
-    
+
     <!-- Viewport Container (Occupa la maggioranza dello schermo) -->
-    <section class="flex-1 min-w-0 bg-slate-900/60 border border-slate-800/90 rounded-2xl flex flex-col relative shadow-2xl overflow-hidden min-h-[520px] lg:min-h-[640px]">
-      
+    <section
+      class="flex-1 min-w-0 bg-slate-900/60 border border-slate-800/90 rounded-2xl flex flex-col relative shadow-2xl overflow-hidden min-h-[520px] lg:min-h-[640px]">
+
       <!-- Top Viewport Bar with Mode Indicator & 3D Tools -->
       <div class="px-4 py-2.5 border-b border-slate-800/80 bg-slate-950/70 flex items-center justify-between z-20">
         <div class="flex items-center gap-2">
           <span id="canvas-mode-icon" class="text-blue-400">📐</span>
-          <span id="canvas-mode-label" class="text-xs font-semibold text-slate-300">Vista Piano 2D: Geometria Equiestesa</span>
+          <span id="canvas-mode-label" class="text-xs font-semibold text-slate-300">Vista Piano 2D: Geometria
+            Equiestesa</span>
         </div>
-        
+
         <!-- Controlli Three.js Orbit / Pan / Zoom / Reset View (mostrati nelle tab 3D) -->
         <div id="three-controls-toolbar" class="hidden items-center gap-1.5">
-          <span class="text-[11px] text-slate-400 mr-2 hidden 2xl:inline">Navigazione 3D: Rotazione (SX), Pan (DX), Zoom (Rotella)</span>
-          <button id="btn-3d-reset" title="Ripristina Angolo Camera" class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1 transition">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="text-[11px] text-slate-400 mr-2 hidden 2xl:inline">Navigazione 3D: Rotazione (SX), Pan (DX), Zoom
+            (Rotella)</span>
+          <button id="btn-3d-reset" title="Ripristina Angolo Camera"
+            class="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
             <span>Reset Vista</span>
           </button>
-          <button id="btn-3d-front" title="Vista Frontale" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          <button id="btn-3d-front" title="Vista Frontale"
+            class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
             Front
           </button>
-          <button id="btn-3d-iso" title="Vista Assonometrica" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+          <button id="btn-3d-iso" title="Vista Assonometrica"
+            class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
             Iso
           </button>
           <span id="diff-tools" class="hidden items-center gap-1.5 ml-1 pl-2 border-l border-slate-700">
-            <button id="btn-step-prev" title="Passo precedente" aria-label="Passo precedente" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">◀</button>
-            <button id="btn-step-next" title="Passo successivo" aria-label="Passo successivo" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">▶</button>
-            <button id="btn-diff-view" title="Cambia vista: bilancio dei termini oppure blocchi disgiunti" class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">Bilancio ±</button>
+            <button id="btn-step-prev" title="Passo precedente" aria-label="Passo precedente"
+              class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">◀</button>
+            <button id="btn-step-next" title="Passo successivo" aria-label="Passo successivo"
+              class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">▶</button>
+            <button id="btn-diff-view" title="Cambia vista: bilancio dei termini oppure blocchi disgiunti"
+              class="px-2 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap">Bilancio
+              ±</button>
           </span>
         </div>
       </div>
 
       <!-- Area Rendering: Canvas 2D + Viewport Three.js -->
-      <div id="viewport-stage" class="flex-1 w-full h-full relative overflow-hidden bg-slate-950 flex items-center justify-center">
+      <div id="viewport-stage"
+        class="flex-1 w-full h-full relative overflow-hidden bg-slate-950 flex items-center justify-center">
         <!-- Canvas 2D Nativo per massima nitidezza delle quote e dei testi matematici -->
         <canvas id="canvas2d" class="w-full h-full absolute inset-0 block"></canvas>
-        
+
         <!-- Three.js Container per le dimostrazioni volumetriche 3D -->
         <div id="three-container" class="w-full h-full absolute inset-0 hidden"></div>
 
         <!-- Suggerimento didattico in sovraimpressione in basso -->
         <div id="canvas-overlay-hint" class="absolute bottom-4 left-4 right-4 pointer-events-none text-center">
-          <div class="inline-block max-w-2xl text-xs sm:text-sm text-slate-200 bg-slate-900/90 py-2.5 px-4 rounded-xl border border-slate-700/70 backdrop-blur shadow-2xl">
+          <div
+            class="inline-block max-w-2xl text-xs sm:text-sm text-slate-200 bg-slate-900/90 py-2.5 px-4 rounded-xl border border-slate-700/70 backdrop-blur shadow-2xl">
             Trascina lo slider per staccare il tassello mobile, ruotarlo di 90° e formare il rettangolo equiesteso.
           </div>
         </div>
@@ -269,15 +482,19 @@
     </section>
 
     <aside class="w-full lg:w-[410px] xl:w-[440px] flex flex-col gap-4 shrink-0">
-      
+
       <!-- Card Controlli Animazione e Parametri -->
       <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-4">
         <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
           <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
             <span>Controlli di Trasformazione</span>
           </h2>
-          <span class="text-[11px] text-blue-400 font-mono bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">interattivo</span>
+          <span
+            class="text-[11px] text-blue-400 font-mono bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">interattivo</span>
         </div>
 
         <!-- Slider di Avanzamento Dinamico -->
@@ -286,7 +503,8 @@
             <span class="text-slate-300">Progresso Trasformazione</span>
             <span id="label-progress" class="text-blue-400 math-font font-bold text-sm">0%</span>
           </div>
-          <input id="slider-progress" type="range" min="0" max="1" step="0.001" value="0" class="w-full h-2.5 bg-slate-800 rounded-lg cursor-pointer">
+          <input id="slider-progress" type="range" min="0" max="1" step="0.001" value="0"
+            class="w-full h-2.5 bg-slate-800 rounded-lg cursor-pointer">
           <div class="flex justify-between text-[10px] text-slate-500 font-medium">
             <span id="lbl-start" class="truncate max-w-[170px]">Stato Iniziale</span>
             <span id="lbl-end" class="truncate max-w-[170px] text-right">Forma Scomposta</span>
@@ -295,12 +513,19 @@
 
         <!-- Pulsanti Play / Pausa / Reset -->
         <div class="grid grid-cols-2 gap-2.5">
-          <button id="btn-play" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white rounded-xl text-xs font-semibold shadow-lg shadow-blue-900/30 transition">
-            <svg id="icon-play" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <button id="btn-play"
+            class="flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white rounded-xl text-xs font-semibold shadow-lg shadow-blue-900/30 transition">
+            <svg id="icon-play" class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
             <span id="text-play">Riproduci</span>
           </button>
-          <button id="btn-reset" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition">
-            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+          <button id="btn-reset"
+            class="flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+            </svg>
             <span>Ripristina</span>
           </button>
         </div>
@@ -313,9 +538,12 @@
                 <span class="w-2.5 h-2.5 rounded-sm bg-amber-400"></span>
                 Dimensione A:
               </span>
-              <span id="val-a" class="math-font text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-2 py-0.5 rounded">180 px</span>
+              <span id="val-a"
+                class="math-font text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-2 py-0.5 rounded">180
+                px</span>
             </div>
-            <input id="slider-a" type="range" min="120" max="220" step="5" value="180" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer accent-amber-400">
+            <input id="slider-a" type="range" min="120" max="220" step="5" value="180"
+              class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer accent-amber-400">
           </div>
 
           <div>
@@ -324,10 +552,14 @@
                 <span class="w-2.5 h-2.5 rounded-sm bg-rose-400"></span>
                 Dimensione B:
               </span>
-              <span id="val-b" class="math-font text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2 py-0.5 rounded">60 px</span>
+              <span id="val-b"
+                class="math-font text-rose-400 font-bold bg-rose-950/40 border border-rose-800/40 px-2 py-0.5 rounded">60
+                px</span>
             </div>
-            <input id="slider-b" type="range" min="30" max="95" step="5" value="60" class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer accent-rose-400">
-            <p class="text-[10px] text-slate-500 mt-1 italic">Condizione geometrica: B &lt; A per garantire la validità delle scomposizioni.</p>
+            <input id="slider-b" type="range" min="30" max="95" step="5" value="60"
+              class="w-full h-1.5 bg-slate-800 rounded-lg cursor-pointer accent-rose-400">
+            <p class="text-[10px] text-slate-500 mt-1 italic">Condizione geometrica: B &lt; A per garantire la validità
+              delle scomposizioni.</p>
           </div>
         </div>
       </div>
@@ -336,10 +568,14 @@
       <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-3.5">
         <div class="flex items-center justify-between pb-2 border-b border-slate-800/70">
           <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
             <span>Verifica Analitica</span>
           </h3>
-          <span class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">conservazione</span>
+          <span
+            class="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">conservazione</span>
         </div>
 
         <div id="math-details" class="bg-slate-950/90 p-4 rounded-xl border border-slate-800/90 text-xs space-y-2.5">
@@ -347,7 +583,8 @@
         </div>
 
         <div class="bg-slate-950/50 p-3.5 rounded-xl border border-slate-800/60">
-          <h4 class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Dimostrazione Geometrica</h4>
+          <h4 class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Dimostrazione Geometrica
+          </h4>
           <p id="math-explanation" class="text-xs text-slate-300 leading-relaxed font-normal">
             <!-- Testo didattico contestualizzato -->
           </p>
@@ -695,7 +932,7 @@
         // 4. Quote dinamiche coerenti
         // Quota orizzontale in alto: da A a (A + B)
         const currentTopW = (1 - t) * A + t * (A + B);
-        const topLabel = t < 0.15 ? 'Lato = A' : (t > 0.85 ? 'Base = A + B' : `A + B (t=${Math.round(t*100)}%)`);
+        const topLabel = t < 0.15 ? 'Lato = A' : (t > 0.85 ? 'Base = A + B' : `A + B (t=${Math.round(t * 100)}%)`);
         drawCrispDimension(ctx2d, p1X, p1Y, p1X + currentTopW, p1Y, topLabel, '#60a5fa', true, -28);
 
         // Quota verticale a sinistra: da A a (A - B)
@@ -1021,14 +1258,14 @@
     // Coordinate locali [0, a]: N = cubo (A−B)³ nell'angolo, P = lastre, E = barre di spigolo, C = cubetto d'angolo.
     // Ogni termine della formula agisce su alcune zone: il contatore di ciascuna zona dice quante volte è ancora inclusa.
     const DIFF_ZONES = [
-      { id: 'N',   lo: [0, 0, 0], hi: ['d', 'd', 'd'] },
-      { id: 'PX',  lo: ['d', 0, 0], hi: ['a', 'd', 'd'] },
-      { id: 'PY',  lo: [0, 'd', 0], hi: ['d', 'a', 'd'] },
-      { id: 'PZ',  lo: [0, 0, 'd'], hi: ['d', 'd', 'a'] },
+      { id: 'N', lo: [0, 0, 0], hi: ['d', 'd', 'd'] },
+      { id: 'PX', lo: ['d', 0, 0], hi: ['a', 'd', 'd'] },
+      { id: 'PY', lo: [0, 'd', 0], hi: ['d', 'a', 'd'] },
+      { id: 'PZ', lo: [0, 0, 'd'], hi: ['d', 'd', 'a'] },
       { id: 'EXY', lo: ['d', 'd', 0], hi: ['a', 'a', 'd'] },
       { id: 'EXZ', lo: ['d', 0, 'd'], hi: ['a', 'd', 'a'] },
       { id: 'EYZ', lo: [0, 'd', 'd'], hi: ['d', 'a', 'a'] },
-      { id: 'C',   lo: ['d', 'd', 'd'], hi: ['a', 'a', 'a'] }
+      { id: 'C', lo: ['d', 'd', 'd'], hi: ['a', 'a', 'a'] }
     ];
     // Contatori dopo ogni passo: A³, −3A²B, +3AB², −B³
     const DIFF_COUNTS = [
@@ -1330,13 +1567,13 @@
         const b3 = Math.pow(B, 3);
         const totVol = Math.pow(A + B, 3);
         html = `
-          <div class="flex justify-between items-center"><span class="text-slate-400">1 Cubo A³:</span><span class="math-font font-semibold text-blue-400">${(a3/1000).toFixed(1)}k px³</span></div>
-          <div class="flex justify-between items-center"><span class="text-slate-400">3 Prismi A²B:</span><span class="math-font font-semibold text-sky-400">${(a2b/1000).toFixed(1)}k px³</span></div>
-          <div class="flex justify-between items-center"><span class="text-slate-400">3 Prismi AB²:</span><span class="math-font font-semibold text-amber-400">${(ab2/1000).toFixed(1)}k px³</span></div>
-          <div class="flex justify-between items-center"><span class="text-slate-400">1 Cubo B³:</span><span class="math-font font-semibold text-rose-400">${(b3/1000).toFixed(1)}k px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">1 Cubo A³:</span><span class="math-font font-semibold text-blue-400">${(a3 / 1000).toFixed(1)}k px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">3 Prismi A²B:</span><span class="math-font font-semibold text-sky-400">${(a2b / 1000).toFixed(1)}k px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">3 Prismi AB²:</span><span class="math-font font-semibold text-amber-400">${(ab2 / 1000).toFixed(1)}k px³</span></div>
+          <div class="flex justify-between items-center"><span class="text-slate-400">1 Cubo B³:</span><span class="math-font font-semibold text-rose-400">${(b3 / 1000).toFixed(1)}k px³</span></div>
           <div class="border-t border-slate-800/80 pt-2 flex justify-between items-center font-bold text-slate-100">
             <span>Volume (A+B)³:</span>
-            <span class="math-font text-emerald-400 text-sm">${(totVol/1000).toFixed(1)}k px³</span>
+            <span class="math-font text-emerald-400 text-sm">${(totVol / 1000).toFixed(1)}k px³</span>
           </div>
         `;
         badge.innerText = progress < 0.1 ? "Cubo Compatto (A+B)³" : (progress > 0.85 ? "8 Prismi Tridimensionali" : "Esplosione volumetrica");
@@ -1614,4 +1851,5 @@
     });
   </script>
 </body>
+
 </html>

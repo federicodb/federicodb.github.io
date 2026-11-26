@@ -3,7 +3,7 @@
    Gestisce la commutazione chiaro/scuro e la persistenza in localStorage.
    ========================================================================== */
 
-(function() {
+(function () {
     'use strict';
     const STORAGE_KEY = 'orfini_theme';
 
@@ -50,14 +50,14 @@
         const currentTheme = getPreferredTheme();
         applyTheme(currentTheme, false);
 
-        toggleBtn.addEventListener('click', function(e) {
+        toggleBtn.addEventListener('click', function (e) {
             e.preventDefault();
             const isCurrentlyLight = document.documentElement.classList.contains('theme-light');
             const newTheme = isCurrentlyLight ? 'dark' : 'light';
             applyTheme(newTheme, true);
         });
 
-        window.addEventListener('storage', function(e) {
+        window.addEventListener('storage', function (e) {
             if (e.key === STORAGE_KEY && (e.newValue === 'light' || e.newValue === 'dark')) {
                 applyTheme(e.newValue, false);
             }

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <!-- SPDX-License-Identifier: GPL-3.0-only. FullControl Studio è un'eccezione alla CC BY-NC-SA del sito: vedi fullcontrol_studio_js/LICENZA.txt -->
 <html lang="it">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FullControl Studio</title>
-  <meta name="description" content="FullControl Studio: si disegna un oggetto da stampare in 3D (vaso, spirale, forme a onda) muovendo dei cursori, e ogni cursore cambia il percorso che l'ugello seguirà strato per strato. Si vede il percorso in 3D, si controllano altezza e pendenza, si legge il codice Python FullControl che lo genera e si esporta per Bambu Lab A1 mini, A1 e P2S.">
-  <meta name="keywords" content="FullControl, Stampa 3D, G-code, Percorso utensile, Vaso, Elica, Onda, Funzioni goniometriche, Coordinate cilindriche, Modellazione parametrica, Python, Bambu Lab, Tinkering, MAT_K2:Funzioni elementari, MAT_K3:Geometria euclidea e analitica, IND_C3:Fabbricazione Digitale 3D, 3 EL, 4 EL, 5 EL">
+  <meta name="description"
+    content="FullControl Studio: si disegna un oggetto da stampare in 3D (vaso, spirale, forme a onda) muovendo dei cursori, e ogni cursore cambia il percorso che l'ugello seguirà strato per strato. Si vede il percorso in 3D, si controllano altezza e pendenza, si legge il codice Python FullControl che lo genera e si esporta per Bambu Lab A1 mini, A1 e P2S.">
+  <meta name="keywords"
+    content="FullControl, Stampa 3D, G-code, Percorso utensile, Vaso, Elica, Onda, Funzioni goniometriche, Coordinate cilindriche, Modellazione parametrica, Python, Bambu Lab, Tinkering, MAT_K2:Funzioni elementari, MAT_K3:Geometria euclidea e analitica, IND_C3:Fabbricazione Digitale 3D, 3 EL, 4 EL, 5 EL">
   <meta name="allenamento" content="goniometria, trigonometria, solidi">
   <meta name="parole" content="funzione-goniometrica, geometria, stampa-3d, algoritmi, modelli">
   <meta name="date" content="2026-11-23">
@@ -14,11 +17,14 @@
   <meta name="miniatura" content="fissa">
   <meta name="theme-color" content="#000000">
   <meta name="color-scheme" content="dark light">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 2h8v5l-2.5 4h-3L8 7z' fill='%23131416'/%3E%3Cpath d='M3 21c2.2-3.2 4.4-3.2 6 0s3.8 3.2 6 0 3.8-3.2 6 0' fill='none' stroke='%231b6c80' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 2h8v5l-2.5 4h-3L8 7z' fill='%23131416'/%3E%3Cpath d='M3 21c2.2-3.2 4.4-3.2 6 0s3.8 3.2 6 0 3.8-3.2 6 0' fill='none' stroke='%231b6c80' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="../assets/fonts/ibmplexmono-ibmplexsans-b7caec.css">
-  <script>(function () { var t = 'dark'; try { if (localStorage.getItem('orfini_theme') === 'light') t = 'light'; } catch (e) {} document.documentElement.dataset.theme = t; if (t === 'light') document.documentElement.classList.add('theme-light'); var cs = document.querySelector('meta[name="color-scheme"]'); if (cs) cs.content = t; })();</script>
+  <script>(function () { var t = 'dark'; try { if (localStorage.getItem('orfini_theme') === 'light') t = 'light'; } catch (e) { } document.documentElement.dataset.theme = t; if (t === 'light') document.documentElement.classList.add('theme-light'); var cs = document.querySelector('meta[name="color-scheme"]'); if (cs) cs.content = t; })();</script>
   <link rel="stylesheet" href="fullcontrol_studio_js/styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"
+    integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG"
+    crossorigin="anonymous"></script>
   <script type="importmap">
 {
   "imports": {
@@ -33,14 +39,16 @@
 }
 </script>
 </head>
+
 <body>
   <header class="topbar">
     <a class="back" href="../../index.html" aria-label="Torna ai laboratori" title="Torna ai laboratori">←</a>
     <a class="mark" href="fullcontrol_studio.html" aria-label="FullControl Studio">
       <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-        <path d="M8 2h8v5l-2.5 4h-3L8 7z" fill="var(--text)"/>
-        <path d="M3 21c2.2-3.2 4.4-3.2 6 0s3.8 3.2 6 0 3.8-3.2 6 0" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="12" cy="14.5" r="1.6" fill="var(--accent)"/>
+        <path d="M8 2h8v5l-2.5 4h-3L8 7z" fill="var(--text)" />
+        <path d="M3 21c2.2-3.2 4.4-3.2 6 0s3.8 3.2 6 0 3.8-3.2 6 0" fill="none" stroke="var(--accent)" stroke-width="2"
+          stroke-linecap="round" />
+        <circle cx="12" cy="14.5" r="1.6" fill="var(--accent)" />
       </svg>
       <span>FullControl Studio</span>
     </a>
@@ -62,16 +70,32 @@
     <div class="top-actions">
       <span id="engine-status" class="engine" role="status" aria-live="polite">Carico Python…</span>
       <button id="btn-theme" type="button" class="icon-btn" aria-label="Tema: sistema" title="Tema: sistema">
-        <svg class="ico-system" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor"/></svg>
-        <svg class="ico-light" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <svg class="ico-dark" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M13.5 9.6A5.7 5.7 0 0 1 6.4 2.5a5.7 5.7 0 1 0 7.1 7.1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <svg class="ico-system" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path d="M8 2a6 6 0 0 1 0 12z" fill="currentColor" />
+        </svg>
+        <svg class="ico-light" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <svg class="ico-dark" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <path d="M13.5 9.6A5.7 5.7 0 0 1 6.4 2.5a5.7 5.7 0 1 0 7.1 7.1z" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linejoin="round" />
+        </svg>
       </button>
       <button id="btn-help" type="button" class="icon-btn" aria-label="Guida" title="Guida">
-        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.6" r=".9" fill="currentColor"/></svg>
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path d="M6.3 6.2a1.8 1.8 0 1 1 2.5 1.7c-.5.2-.8.6-.8 1.1v.4" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" />
+          <circle cx="8" cy="11.6" r=".9" fill="currentColor" />
+        </svg>
       </button>
       <span class="divider" aria-hidden="true"></span>
       <button id="btn-export-gcode" type="button" class="btn" disabled>Scarica G-code</button>
-      <button id="btn-export-3mf" type="button" class="btn primary" disabled><span class="label-long">Esporta per Bambu Studio</span><span class="label-short">Esporta 3MF</span></button>
+      <button id="btn-export-3mf" type="button" class="btn primary" disabled><span class="label-long">Esporta per Bambu
+          Studio</span><span class="label-short">Esporta 3MF</span></button>
     </div>
   </header>
 
@@ -91,7 +115,8 @@
           <h2 id="shape-heading">Forma</h2>
           <div class="head-actions">
             <button id="btn-undo-vary" type="button" class="btn small ghost" disabled>Annulla</button>
-            <button id="btn-vary" type="button" class="btn small" title="Prova una variante con parametri casuali entro limiti stampabili">Varia</button>
+            <button id="btn-vary" type="button" class="btn small"
+              title="Prova una variante con parametri casuali entro limiti stampabili">Varia</button>
           </div>
         </div>
         <p id="shape-description" class="description"></p>
@@ -129,7 +154,8 @@
           <button id="btn-cam-front" type="button" class="seg">Fronte</button>
         </div>
 
-        <p id="draw-hint" class="overlay draw-hint" hidden>Clicca sul piatto per aggiungere punti. Premi Esc per finire.</p>
+        <p id="draw-hint" class="overlay draw-hint" hidden>Clicca sul piatto per aggiungere punti. Premi Esc per finire.
+        </p>
 
         <div class="overlay bottom">
           <label class="range">
@@ -153,18 +179,26 @@
       <!-- Cassetto: codice, G-code, console, funzioni -->
       <div id="drawer" class="drawer">
         <div class="tabs" role="tablist" aria-label="Dettagli tecnici">
-          <button type="button" class="tab" role="tab" aria-selected="false" data-pane="pane-code">Codice Python</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-pane="pane-code">Codice
+            Python</button>
           <button type="button" class="tab" role="tab" aria-selected="false" data-pane="pane-gcode">G-code</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-pane="pane-console">Console <span id="console-count" class="count" hidden></span></button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-pane="pane-api">Funzioni FullControl</button>
-          <button id="btn-drawer-toggle" type="button" class="drawer-toggle" aria-expanded="false" aria-label="Apri o chiudi il pannello">
-            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-pane="pane-console">Console <span
+              id="console-count" class="count" hidden></span></button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-pane="pane-api">Funzioni
+            FullControl</button>
+          <button id="btn-drawer-toggle" type="button" class="drawer-toggle" aria-expanded="false"
+            aria-label="Apri o chiudi il pannello">
+            <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+              <path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
           </button>
         </div>
         <div class="panes">
           <div id="pane-code" class="pane" role="tabpanel">
             <div class="pane-bar">
-              <label class="switch-label"><input id="toggle-sync-wysiwyg" type="checkbox" checked> Rigenera dal pannello Forma</label>
+              <label class="switch-label"><input id="toggle-sync-wysiwyg" type="checkbox" checked> Rigenera dal pannello
+                Forma</label>
               <span class="bar-actions">
                 <button id="btn-check-steps" type="button" class="btn small" disabled>Verifica passi</button>
                 <button id="btn-run" type="button" class="btn small" disabled>Esegui codice</button>
@@ -181,7 +215,8 @@
           </div>
           <div id="pane-api" class="pane" role="tabpanel">
             <div class="pane-bar">
-              <input id="catalog-search" type="search" placeholder="Cerca: helix, bezier, onda…" aria-label="Cerca tra le funzioni FullControl">
+              <input id="catalog-search" type="search" placeholder="Cerca: helix, bezier, onda…"
+                aria-label="Cerca tra le funzioni FullControl">
               <span id="api-count-badge" class="meta"></span>
             </div>
             <div id="catalog-tree" class="catalog"></div>
@@ -203,23 +238,32 @@
         <h2 id="material-heading">Materiale</h2>
         <div class="segmented" role="radiogroup" aria-label="Materiale">
           <button type="button" class="seg" role="radio" data-material="PLA" aria-checked="false">PLA</button>
-          <button type="button" class="seg" role="radio" data-material="PLA_MATTE" aria-checked="true">PLA Matte</button>
+          <button type="button" class="seg" role="radio" data-material="PLA_MATTE" aria-checked="true">PLA
+            Matte</button>
           <button type="button" class="seg" role="radio" data-material="PETG" aria-checked="false">PETG</button>
           <button type="button" class="seg" role="radio" data-material="TPU" aria-checked="false">TPU</button>
         </div>
         <div class="field-grid">
-          <label class="field"><span>Ugello</span><span class="unit-input"><input id="nozzle-temp" type="number" min="150" max="300" step="5"><em>°C</em></span></label>
-          <label class="field"><span>Piatto</span><span class="unit-input"><input id="bed-temp" type="number" min="0" max="85" step="5"><em>°C</em></span></label>
-          <label class="field"><span>Velocità</span><span class="unit-input"><input id="print-speed" type="number" min="5" max="300" step="5"><em>mm/s</em></span></label>
-          <label class="field" id="aux-fan-wrap" hidden><span>Ventola ausiliaria</span><span class="unit-input"><input id="aux-fan" type="number" min="0" max="100" step="5"><em>%</em></span></label>
+          <label class="field"><span>Ugello</span><span class="unit-input"><input id="nozzle-temp" type="number"
+                min="150" max="300" step="5"><em>°C</em></span></label>
+          <label class="field"><span>Piatto</span><span class="unit-input"><input id="bed-temp" type="number" min="0"
+                max="85" step="5"><em>°C</em></span></label>
+          <label class="field"><span>Velocità</span><span class="unit-input"><input id="print-speed" type="number"
+                min="5" max="300" step="5"><em>mm/s</em></span></label>
+          <label class="field" id="aux-fan-wrap" hidden><span>Ventola ausiliaria</span><span class="unit-input"><input
+                id="aux-fan" type="number" min="0" max="100" step="5"><em>%</em></span></label>
         </div>
         <h3 class="subhead">Primo strato</h3>
         <div class="field-grid three">
-          <label class="field"><span>Altezza</span><span class="unit-input"><input id="first-layer-h" type="number" min="0.12" max="0.4" step="0.02" value="0.2"><em>mm</em></span></label>
-          <label class="field"><span>Velocità</span><span class="unit-input"><input id="first-layer-speed" type="number" min="10" max="60" step="5" value="30"><em>mm/s</em></span></label>
-          <label class="field"><span>Ugello</span><span class="unit-input"><input id="first-layer-nozzle" type="number" min="150" max="300" step="5"><em>°C</em></span></label>
+          <label class="field"><span>Altezza</span><span class="unit-input"><input id="first-layer-h" type="number"
+                min="0.12" max="0.4" step="0.02" value="0.2"><em>mm</em></span></label>
+          <label class="field"><span>Velocità</span><span class="unit-input"><input id="first-layer-speed" type="number"
+                min="10" max="60" step="5" value="30"><em>mm/s</em></span></label>
+          <label class="field"><span>Ugello</span><span class="unit-input"><input id="first-layer-nozzle" type="number"
+                min="150" max="300" step="5"><em>°C</em></span></label>
         </div>
-        <p class="note">Sul primo strato la ventola resta spenta e la linea è larga 0,5 mm. Le onde in Z entrano gradualmente nei quattro strati successivi.</p>
+        <p class="note">Sul primo strato la ventola resta spenta e la linea è larga 0,5 mm. Le onde in Z entrano
+          gradualmente nei quattro strati successivi.</p>
       </section>
 
       <section class="block" aria-labelledby="ams-heading">
@@ -228,12 +272,17 @@
           <span id="ams-badge-title" class="meta">AMS lite</span>
         </div>
         <div class="ams" role="radiogroup" aria-label="Slot del filamento per l'oggetto selezionato">
-          <div class="ams-slot" data-slot="1"><button type="button" class="slot-select-btn" data-slot="1" role="radio" aria-label="Slot 1">1</button><input type="color" id="ams-color-1" aria-label="Colore slot 1"></div>
-          <div class="ams-slot" data-slot="2"><button type="button" class="slot-select-btn" data-slot="2" role="radio" aria-label="Slot 2">2</button><input type="color" id="ams-color-2" aria-label="Colore slot 2"></div>
-          <div class="ams-slot" data-slot="3"><button type="button" class="slot-select-btn" data-slot="3" role="radio" aria-label="Slot 3">3</button><input type="color" id="ams-color-3" aria-label="Colore slot 3"></div>
-          <div class="ams-slot" data-slot="4"><button type="button" class="slot-select-btn" data-slot="4" role="radio" aria-label="Slot 4">4</button><input type="color" id="ams-color-4" aria-label="Colore slot 4"></div>
+          <div class="ams-slot" data-slot="1"><button type="button" class="slot-select-btn" data-slot="1" role="radio"
+              aria-label="Slot 1">1</button><input type="color" id="ams-color-1" aria-label="Colore slot 1"></div>
+          <div class="ams-slot" data-slot="2"><button type="button" class="slot-select-btn" data-slot="2" role="radio"
+              aria-label="Slot 2">2</button><input type="color" id="ams-color-2" aria-label="Colore slot 2"></div>
+          <div class="ams-slot" data-slot="3"><button type="button" class="slot-select-btn" data-slot="3" role="radio"
+              aria-label="Slot 3">3</button><input type="color" id="ams-color-3" aria-label="Colore slot 3"></div>
+          <div class="ams-slot" data-slot="4"><button type="button" class="slot-select-btn" data-slot="4" role="radio"
+              aria-label="Slot 4">4</button><input type="color" id="ams-color-4" aria-label="Colore slot 4"></div>
         </div>
-        <p class="note">Il colore va nell'anteprima e nel 3MF. Lo slot fisico lo scegli in Bambu Studio quando invii la stampa. Il cambio di colore durante la stampa non è ancora supportato.</p>
+        <p class="note">Il colore va nell'anteprima e nel 3MF. Lo slot fisico lo scegli in Bambu Studio quando invii la
+          stampa. Il cambio di colore durante la stampa non è ancora supportato.</p>
       </section>
 
       <details class="block advanced">
@@ -250,7 +299,8 @@
             <option value="no_primer">Nessuno spurgo</option>
           </select>
         </label>
-        <label class="switch-label"><input id="toggle-hotend-clamp" type="checkbox" checked> Limita le onde Z alla pendenza sicura per l'ugello</label>
+        <label class="switch-label"><input id="toggle-hotend-clamp" type="checkbox" checked> Limita le onde Z alla
+          pendenza sicura per l'ugello</label>
       </details>
     </aside>
   </main>
@@ -272,18 +322,31 @@
     </div>
     <div class="dialog-body">
       <ol class="steps">
-        <li><strong>Scegli la stampante</strong> in alto a sinistra: piatto, volume e limiti dell'ugello cambiano con lei.</li>
-        <li><strong>Aggiungi una forma</strong> e modellala con i cursori del pannello Forma. Varia propone una variante casuale entro limiti stampabili.</li>
+        <li><strong>Scegli la stampante</strong> in alto a sinistra: piatto, volume e limiti dell'ugello cambiano con
+          lei.</li>
+        <li><strong>Aggiungi una forma</strong> e modellala con i cursori del pannello Forma. Varia propone una variante
+          casuale entro limiti stampabili.</li>
         <li><strong>Sposta l'oggetto</strong> trascinando le maniglie nella vista 3D, o scrivi X e Y.</li>
-        <li><strong>Guarda il Controllo stampa</strong>: altezza, ingombro e pendenza devono stare dentro i limiti della stampante.</li>
+        <li><strong>Guarda il Controllo stampa</strong>: altezza, ingombro e pendenza devono stare dentro i limiti della
+          stampante.</li>
         <li><strong>Esporta per Bambu Studio</strong>: apri il file .3mf e invialo alla stampante.</li>
       </ol>
-      <p>Il codice Python generato e il G-code sono nel pannello sotto la vista. Togli la spunta a "Rigenera dal pannello Forma" per scrivere il tuo codice FullControl.</p>
-      <p>Per ripassare la matematica che c'è dietro, nella Quest: <a href="../../allenamento/#/lezione/goniometria/1">Goniometria</a> (seno e coseno disegnano il bordo ondulato), <a href="../../allenamento/#/lezione/trigonometria/1">Trigonometria</a> (la pendenza per l'ugello è un angolo di un triangolo rettangolo) e <a href="../../allenamento/#/lezione/solidi/1">Solidi e volumi</a>.</p>
-      <p class="credits">Il percorso è calcolato con <a href="https://fullcontrol.xyz" target="_blank" rel="noopener">FullControl</a> (licenza <a href="fullcontrol_studio_js/LICENSE_fullcontrol.txt" target="_blank">GNU GPL v3</a>), che gira nel browser con Pyodide. Grafica 3D con Three.js (licenza MIT). FullControl Studio è software libero con <a href="fullcontrol_studio_js/LICENZA.txt" target="_blank">licenza GNU GPL v3</a>. Al primo avvio servono internet e qualche secondo per caricare Python.</p>
+      <p>Il codice Python generato e il G-code sono nel pannello sotto la vista. Togli la spunta a "Rigenera dal
+        pannello Forma" per scrivere il tuo codice FullControl.</p>
+      <p>Per ripassare la matematica che c'è dietro, nella Quest: <a
+          href="../../allenamento/#/lezione/goniometria/1">Goniometria</a> (seno e coseno disegnano il bordo ondulato),
+        <a href="../../allenamento/#/lezione/trigonometria/1">Trigonometria</a> (la pendenza per l'ugello è un angolo di
+        un triangolo rettangolo) e <a href="../../allenamento/#/lezione/solidi/1">Solidi e volumi</a>.
+      </p>
+      <p class="credits">Il percorso è calcolato con <a href="https://fullcontrol.xyz" target="_blank"
+          rel="noopener">FullControl</a> (licenza <a href="fullcontrol_studio_js/LICENSE_fullcontrol.txt"
+          target="_blank">GNU GPL v3</a>), che gira nel browser con Pyodide. Grafica 3D con Three.js (licenza MIT).
+        FullControl Studio è software libero con <a href="fullcontrol_studio_js/LICENZA.txt" target="_blank">licenza GNU
+          GPL v3</a>. Al primo avvio servono internet e qualche secondo per caricare Python.</p>
     </div>
   </dialog>
 
   <script type="module" src="fullcontrol_studio_js/app.js"></script>
 </body>
+
 </html>

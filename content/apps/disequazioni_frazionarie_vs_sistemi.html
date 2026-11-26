@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Laboratorio Interattivo: Sistemi vs Disequazioni frazionarie</title>
     <link rel="stylesheet" href="../assets/style/orfini-shared.css">
 
-    <meta name="description" content="Risolutore simbolico passo-passo con Tutor Socratico integrato: metti a confronto la regola dei segni nelle frazionarie con l'intersezione delle soluzioni nei sistemi, senza più fare confusione alla lavagna o sul quaderno.">
-    <meta name="keywords" content="algebra, disequazioni, sistemi, frazionarie, tutor, risolutore, logica, 1 EL, 2 EL, 2 GP, 3 MEC, 4 EL">
+    <meta name="description"
+        content="Risolutore simbolico passo-passo con Tutor Socratico integrato: metti a confronto la regola dei segni nelle frazionarie con l'intersezione delle soluzioni nei sistemi, senza più fare confusione alla lavagna o sul quaderno.">
+    <meta name="keywords"
+        content="algebra, disequazioni, sistemi, frazionarie, tutor, risolutore, logica, 1 EL, 2 EL, 2 GP, 3 MEC, 4 EL">
     <meta name="allenamento" content="disequazioni-1, disequazioni-2, sistemi-lineari">
     <meta name="parole" content="disequazione, frazione-algebrica">
     <meta name="date" content="2026-10-30">
@@ -19,10 +22,18 @@
     <link rel="stylesheet" href="/content/assets/fonts/inter-spacemono-1669ae.css">
 
     <!-- Nerdamer: Motore di calcolo simbolico -->
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js?sw2" integrity="sha384-xQSEWC9U3TkEcP2wa+TfVlioD35y0B9w5UDICbHR1VbBRt/Sta9vVtiI7OipX2YP" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js?sw2" integrity="sha384-Fe6m/6uHCTl86ItmvzSPYPzE16B0zARqm1Bo5Z8oKGHcnQnvkBe0hYavSadUjSqV" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js?sw2" integrity="sha384-zEv30J3CdpM8w5+WYPmcuv8lUhq3n8qzbDYU3sbZqHluSTmdsjJMBHJWHoqw6Cla" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js?sw2" integrity="sha384-Cd8aK9hE0bOs/4mmDSGOQ3XiHDSs4LMlFFpd8/SzTbVyr07tooiOnw2wkA4D2Off" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js?sw2"
+        integrity="sha384-xQSEWC9U3TkEcP2wa+TfVlioD35y0B9w5UDICbHR1VbBRt/Sta9vVtiI7OipX2YP"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js?sw2"
+        integrity="sha384-Fe6m/6uHCTl86ItmvzSPYPzE16B0zARqm1Bo5Z8oKGHcnQnvkBe0hYavSadUjSqV"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js?sw2"
+        integrity="sha384-zEv30J3CdpM8w5+WYPmcuv8lUhq3n8qzbDYU3sbZqHluSTmdsjJMBHJWHoqw6Cla"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js?sw2"
+        integrity="sha384-Cd8aK9hE0bOs/4mmDSGOQ3XiHDSs4LMlFFpd8/SzTbVyr07tooiOnw2wkA4D2Off"
+        crossorigin="anonymous"></script>
 
     <!-- KaTeX: Rendering matematico -->
     <link rel="stylesheet" href="/content/assets/vendor/katex/katex.min.css">
@@ -83,13 +94,24 @@
             color-scheme: light;
         }
 
-        [hidden] { display: none !important; }
+        [hidden] {
+            display: none !important;
+        }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
-        html { font-size: clamp(15px, 0.5vw + 9px, 18px); background: var(--bg) !important; }
+        html {
+            font-size: clamp(15px, 0.5vw + 9px, 18px);
+            background: var(--bg) !important;
+        }
 
-        html, body { height: 100%; overflow: hidden !important; }
+        html,
+        body {
+            height: 100%;
+            overflow: hidden !important;
+        }
 
         body {
             margin: 0;
@@ -99,11 +121,27 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        ::selection { background: var(--accent); color: var(--on-accent); }
-        :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-        button { font: inherit; color: inherit; cursor: pointer; }
+        ::selection {
+            background: var(--accent);
+            color: var(--on-accent);
+        }
 
-        .app { display: grid; grid-template-rows: auto minmax(0, 1fr); height: 100dvh; }
+        :focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        button {
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .app {
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            height: 100dvh;
+        }
 
         /* ---------- Barra superiore ---------- */
 
@@ -119,7 +157,11 @@
             background: var(--bg);
         }
 
-        .barra .orfini-back-btn { grid-area: back; min-height: 40px; margin-right: 0; }
+        .barra .orfini-back-btn {
+            grid-area: back;
+            min-height: 40px;
+            margin-right: 0;
+        }
 
         .titolo {
             grid-area: titolo;
@@ -132,9 +174,16 @@
             text-overflow: ellipsis;
         }
 
-        .titolo span { color: var(--accent); }
+        .titolo span {
+            color: var(--accent);
+        }
 
-        .schede { grid-area: schede; display: flex; gap: .25rem; align-self: stretch; }
+        .schede {
+            grid-area: schede;
+            display: flex;
+            gap: .25rem;
+            align-self: stretch;
+        }
 
         .schede button {
             position: relative;
@@ -148,7 +197,10 @@
             white-space: nowrap;
         }
 
-        .schede button:hover, .schede button[aria-selected="true"] { color: var(--text); }
+        .schede button:hover,
+        .schede button[aria-selected="true"] {
+            color: var(--text);
+        }
 
         .schede button[aria-selected="true"]::after {
             content: "";
@@ -161,7 +213,11 @@
             background: var(--accent);
         }
 
-        .azioni { grid-area: azioni; display: flex; gap: .35rem; }
+        .azioni {
+            grid-area: azioni;
+            display: flex;
+            gap: .35rem;
+        }
 
         .icona {
             width: 44px;
@@ -174,8 +230,15 @@
             color: var(--text-2);
         }
 
-        .icona:hover { color: var(--text); border-color: var(--line-strong); }
-        .icona svg { width: 20px; height: 20px; }
+        .icona:hover {
+            color: var(--text);
+            border-color: var(--line-strong);
+        }
+
+        .icona svg {
+            width: 20px;
+            height: 20px;
+        }
 
         /* ---------- Contenuti: un solo scorrimento ---------- */
 
@@ -190,11 +253,24 @@
             scrollbar-color: var(--line-strong) transparent;
         }
 
-        .vista { display: grid; gap: 1.25rem; max-width: 92rem; margin: 0 auto; align-items: start; }
+        .vista {
+            display: grid;
+            gap: 1.25rem;
+            max-width: 92rem;
+            margin: 0 auto;
+            align-items: start;
+        }
 
         @container (min-width: 56rem) {
-            .vista:not(.vista-tutor) { grid-template-columns: minmax(18rem, 23rem) minmax(0, 1fr); gap: 2rem; }
-            .col-dati { position: sticky; top: 0; }
+            .vista:not(.vista-tutor) {
+                grid-template-columns: minmax(18rem, 23rem) minmax(0, 1fr);
+                gap: 2rem;
+            }
+
+            .col-dati {
+                position: sticky;
+                top: 0;
+            }
         }
 
         .scheda-dati {
@@ -206,8 +282,17 @@
             border: 1px solid var(--line);
         }
 
-        .campo { display: grid; gap: .35rem; }
-        .campo label, .campo .lbl { color: var(--text-2); font-size: .88rem; font-weight: 600; }
+        .campo {
+            display: grid;
+            gap: .35rem;
+        }
+
+        .campo label,
+        .campo .lbl {
+            color: var(--text-2);
+            font-size: .88rem;
+            font-weight: 600;
+        }
 
         .input-mono {
             width: 100%;
@@ -221,11 +306,29 @@
             transition: border-color .15s ease, box-shadow .15s ease;
         }
 
-        .input-mono::placeholder { color: var(--text-2); font-weight: 400; opacity: .8; }
-        .input-mono:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-        .input-mono:disabled { opacity: .75; border-style: dashed; }
+        .input-mono::placeholder {
+            color: var(--text-2);
+            font-weight: 400;
+            opacity: .8;
+        }
 
-        .linea-frazione { height: 3px; border-radius: 2px; background: var(--line-strong); margin: 0 .2rem; }
+        .input-mono:focus {
+            outline: 0;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .input-mono:disabled {
+            opacity: .75;
+            border-style: dashed;
+        }
+
+        .linea-frazione {
+            height: 3px;
+            border-radius: 2px;
+            background: var(--line-strong);
+            margin: 0 .2rem;
+        }
 
         .verso {
             display: grid;
@@ -237,12 +340,35 @@
             border: 1px solid var(--line);
         }
 
-        .verso button { border: 0; border-radius: 11px; background: none; color: var(--text-2); font: 700 1.05rem var(--mono); }
-        .verso button:hover { color: var(--text); }
-        .verso button[aria-checked="true"] { background: var(--accent); color: var(--on-accent); }
+        .verso button {
+            border: 0;
+            border-radius: 11px;
+            background: none;
+            color: var(--text-2);
+            font: 700 1.05rem var(--mono);
+        }
 
-        .esempi { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
-        .esempi-lbl { color: var(--text-2); font-size: .85rem; margin-right: .15rem; }
+        .verso button:hover {
+            color: var(--text);
+        }
+
+        .verso button[aria-checked="true"] {
+            background: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .esempi {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .esempi-lbl {
+            color: var(--text-2);
+            font-size: .85rem;
+            margin-right: .15rem;
+        }
 
         .chip {
             min-height: 2.2rem;
@@ -254,10 +380,20 @@
             font: 400 .82rem var(--mono);
         }
 
-        .chip:hover { border-color: var(--accent); }
+        .chip:hover {
+            border-color: var(--accent);
+        }
 
-        .aiuto-sintassi { margin: 0; color: var(--text-2); font-size: .85rem; }
-        .aiuto-sintassi code { font-family: var(--mono); color: var(--text); }
+        .aiuto-sintassi {
+            margin: 0;
+            color: var(--text-2);
+            font-size: .85rem;
+        }
+
+        .aiuto-sintassi code {
+            font-family: var(--mono);
+            color: var(--text);
+        }
 
         .stato {
             margin: 0;
@@ -268,12 +404,21 @@
             font-size: .9rem;
         }
 
-        .stato[data-tipo="errore"] { color: var(--neg); background: color-mix(in srgb, var(--neg) 10%, transparent); }
+        .stato[data-tipo="errore"] {
+            color: var(--neg);
+            background: color-mix(in srgb, var(--neg) 10%, transparent);
+        }
 
         /* ---------- Esiti ---------- */
 
-        .esiti { min-width: 0; transition: opacity .2s ease; }
-        .esiti.vecchi { opacity: .4; }
+        .esiti {
+            min-width: 0;
+            transition: opacity .2s ease;
+        }
+
+        .esiti.vecchi {
+            opacity: .4;
+        }
 
         .risultato {
             display: flex;
@@ -286,32 +431,124 @@
             border: 1px solid color-mix(in srgb, var(--sol) 45%, transparent);
         }
 
-        .ris-lbl { color: var(--sol); font-weight: 700; font-size: .85rem; }
-        .ris-math { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem 1.5rem; min-width: 0; font-size: 1.12rem; }
-        .ris-math > div { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
-        .sol-log { color: var(--sol); }
+        .ris-lbl {
+            color: var(--sol);
+            font-weight: 700;
+            font-size: .85rem;
+        }
 
-        .blocco { padding: 1.1rem 0 .25rem; }
-        .blocco + .blocco { border-top: 1px solid var(--line); margin-top: .75rem; }
-        .blocco-testa { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; margin-bottom: .5rem; }
-        .blocco h2 { margin: 0 0 .5rem; font-size: 1rem; font-weight: 700; }
-        .blocco-testa h2 { margin: 0; }
-        .blocco h2 .tipo { color: var(--text-2); font-weight: 500; }
+        .ris-math {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: .2rem 1.5rem;
+            min-width: 0;
+            font-size: 1.12rem;
+        }
 
-        .nota { margin: .35rem 0; color: var(--text-2); font-size: .92rem; max-width: 68ch; }
-        .legenda { margin: .5rem 0 0; color: var(--text-2); font-size: .85rem; }
+        .ris-math>div {
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
 
-        .mrow { overflow-x: auto; overflow-y: hidden; padding: .15rem 0; font-size: 1.05rem; }
-        .mrow.forte { color: var(--sol); font-size: 1.15rem; }
+        .sol-log {
+            color: var(--sol);
+        }
 
-        .contenuti .katex-display { margin: 0 !important; padding: .15em 0 !important; }
-        .contenuti .katex-display > .katex { text-align: left; }
+        .blocco {
+            padding: 1.1rem 0 .25rem;
+        }
 
-        .fattori { list-style: none; margin: .25rem 0 0; padding: 0; display: grid; gap: .35rem; }
-        .fattori li { padding: .45rem .7rem; border-radius: var(--r-s); background: var(--surface); border: 1px solid var(--line); overflow-x: auto; overflow-y: hidden; }
+        .blocco+.blocco {
+            border-top: 1px solid var(--line);
+            margin-top: .75rem;
+        }
 
-        .svg-wrapper { overflow-x: auto; }
-        .svg-wrapper svg { display: block; max-width: 100%; height: auto; }
+        .blocco-testa {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: .5rem 1rem;
+            margin-bottom: .5rem;
+        }
+
+        .blocco h2 {
+            margin: 0 0 .5rem;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .blocco-testa h2 {
+            margin: 0;
+        }
+
+        .blocco h2 .tipo {
+            color: var(--text-2);
+            font-weight: 500;
+        }
+
+        .nota {
+            margin: .35rem 0;
+            color: var(--text-2);
+            font-size: .92rem;
+            max-width: 68ch;
+        }
+
+        .legenda {
+            margin: .5rem 0 0;
+            color: var(--text-2);
+            font-size: .85rem;
+        }
+
+        .mrow {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: .15rem 0;
+            font-size: 1.05rem;
+        }
+
+        .mrow.forte {
+            color: var(--sol);
+            font-size: 1.15rem;
+        }
+
+        .contenuti .katex-display {
+            margin: 0 !important;
+            padding: .15em 0 !important;
+        }
+
+        .contenuti .katex-display>.katex {
+            text-align: left;
+        }
+
+        .fattori {
+            list-style: none;
+            margin: .25rem 0 0;
+            padding: 0;
+            display: grid;
+            gap: .35rem;
+        }
+
+        .fattori li {
+            padding: .45rem .7rem;
+            border-radius: var(--r-s);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .svg-wrapper {
+            overflow-x: auto;
+        }
+
+        .svg-wrapper svg {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
 
         .btn {
             min-height: 44px;
@@ -326,17 +563,36 @@
             gap: .45rem;
         }
 
-        .btn:hover { border-color: var(--accent); }
-        .btn svg { width: 18px; height: 18px; }
-        .btn.primario { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-        .btn.primario:hover { filter: brightness(1.08); }
+        .btn:hover {
+            border-color: var(--accent);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn.primario {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .btn.primario:hover {
+            filter: brightness(1.08);
+        }
 
         /* ---------- Confronto ---------- */
 
-        .confronto-sol { display: grid; gap: .75rem; }
+        .confronto-sol {
+            display: grid;
+            gap: .75rem;
+        }
 
         @container (min-width: 72rem) {
-            .confronto-sol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .confronto-sol {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
 
         .strada {
@@ -347,9 +603,20 @@
             min-width: 0;
         }
 
-        .strada h3 { margin: 0 0 .15rem; font-size: .98rem; }
-        .strada p { margin: 0 0 .4rem; color: var(--text-2); font-size: .88rem; }
-        .strada .mrow { font-size: 1rem; }
+        .strada h3 {
+            margin: 0 0 .15rem;
+            font-size: .98rem;
+        }
+
+        .strada p {
+            margin: 0 0 .4rem;
+            color: var(--text-2);
+            font-size: .88rem;
+        }
+
+        .strada .mrow {
+            font-size: 1rem;
+        }
 
         .verdetto {
             margin: .9rem 0 0;
@@ -358,18 +625,45 @@
             font-size: .95rem;
         }
 
-        .verdetto.diversi { background: color-mix(in srgb, var(--warn) 12%, transparent); }
-        .verdetto.uguali { background: color-mix(in srgb, var(--pos) 10%, transparent); }
-        .verdetto strong { display: block; margin-bottom: .2rem; }
-        .verdetto.diversi strong { color: var(--warn); }
-        .verdetto.uguali strong { color: var(--pos); }
+        .verdetto.diversi {
+            background: color-mix(in srgb, var(--warn) 12%, transparent);
+        }
+
+        .verdetto.uguali {
+            background: color-mix(in srgb, var(--pos) 10%, transparent);
+        }
+
+        .verdetto strong {
+            display: block;
+            margin-bottom: .2rem;
+        }
+
+        .verdetto.diversi strong {
+            color: var(--warn);
+        }
+
+        .verdetto.uguali strong {
+            color: var(--pos);
+        }
 
         /* ---------- Tutor ---------- */
 
-        .vista-tutor { max-width: 52rem; }
+        .vista-tutor {
+            max-width: 52rem;
+        }
 
-        .tutor-testa { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; }
-        .tutor-testa h2 { margin: 0; font-size: 1.15rem; }
+        .tutor-testa {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: .5rem 1rem;
+        }
+
+        .tutor-testa h2 {
+            margin: 0;
+            font-size: 1.15rem;
+        }
 
         .tutor-consegna {
             position: sticky;
@@ -384,9 +678,15 @@
             overflow-x: auto;
         }
 
-        .tutor-consegna .katex-display > .katex { text-align: center; }
+        .tutor-consegna .katex-display>.katex {
+            text-align: center;
+        }
 
-        .tutor-passi { display: grid; gap: .7rem; margin-top: .9rem; }
+        .tutor-passi {
+            display: grid;
+            gap: .7rem;
+            margin-top: .9rem;
+        }
 
         .tutor-passo {
             padding: .9rem 1rem;
@@ -394,11 +694,31 @@
             border: 1px solid var(--line);
         }
 
-        .tutor-passo.corrente { border-color: var(--accent); background: var(--accent-soft); }
-        .tutor-num { color: var(--text-2); font-size: .8rem; font-weight: 600; }
-        .tutor-domanda { margin: .2rem 0 .65rem; font-size: 1rem; }
-        .tutor-riga { display: flex; gap: .5rem; }
-        .tutor-riga .input-mono { flex: 1; min-width: 0; }
+        .tutor-passo.corrente {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .tutor-num {
+            color: var(--text-2);
+            font-size: .8rem;
+            font-weight: 600;
+        }
+
+        .tutor-domanda {
+            margin: .2rem 0 .65rem;
+            font-size: 1rem;
+        }
+
+        .tutor-riga {
+            display: flex;
+            gap: .5rem;
+        }
+
+        .tutor-riga .input-mono {
+            flex: 1;
+            min-width: 0;
+        }
 
         .tutor-anteprima {
             margin-top: .5rem;
@@ -409,13 +729,34 @@
             overflow-x: auto;
         }
 
-        .tutor-anteprima:empty { display: none; }
-        .tutor-anteprima small { color: var(--text-2); font-size: .85rem; }
+        .tutor-anteprima:empty {
+            display: none;
+        }
 
-        .feedback { margin: .55rem 0 0; font-size: .95rem; }
-        .feedback.ok { color: var(--pos); font-weight: 600; }
-        .feedback.no { color: var(--neg); }
-        .feedback .aiuto { display: block; margin-top: .25rem; color: var(--text-2); }
+        .tutor-anteprima small {
+            color: var(--text-2);
+            font-size: .85rem;
+        }
+
+        .feedback {
+            margin: .55rem 0 0;
+            font-size: .95rem;
+        }
+
+        .feedback.ok {
+            color: var(--pos);
+            font-weight: 600;
+        }
+
+        .feedback.no {
+            color: var(--neg);
+        }
+
+        .feedback .aiuto {
+            display: block;
+            margin-top: .25rem;
+            color: var(--text-2);
+        }
 
         .tutor-fine {
             padding: 1rem;
@@ -424,9 +765,20 @@
             background: color-mix(in srgb, var(--pos) 7%, transparent);
         }
 
-        .tutor-fine h3 { margin: 0 0 .2rem; font-size: 1.05rem; color: var(--pos); }
-        .tutor-fine > p { margin: 0 0 .5rem; color: var(--text-2); }
-        .tutor-fine .risultato { margin-top: .75rem; }
+        .tutor-fine h3 {
+            margin: 0 0 .2rem;
+            font-size: 1.05rem;
+            color: var(--pos);
+        }
+
+        .tutor-fine>p {
+            margin: 0 0 .5rem;
+            color: var(--text-2);
+        }
+
+        .tutor-fine .risultato {
+            margin-top: .75rem;
+        }
 
         /* ---------- Finestra del grafico ---------- */
 
@@ -440,16 +792,38 @@
             color: var(--text);
         }
 
-        .modale[open] { display: flex; flex-direction: column; }
-        .modale::backdrop { background: rgba(0, 0, 0, .7); }
-        .modale-testa { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-        .modale-testa h2 { margin: 0; font-size: 1.15rem; }
+        .modale[open] {
+            display: flex;
+            flex-direction: column;
+        }
 
-        .modal-graph-container { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .modale::backdrop {
+            background: rgba(0, 0, 0, .7);
+        }
+
+        .modale-testa {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .modale-testa h2 {
+            margin: 0;
+            font-size: 1.15rem;
+        }
+
+        .modal-graph-container {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
 
         /* ---------- Telefono e tablet in verticale ---------- */
 
-        @media (max-width: 899px), (orientation: portrait) {
+        @media (max-width: 899px),
+        (orientation: portrait) {
             .barra {
                 grid-template-columns: auto minmax(0, 1fr) auto;
                 grid-template-areas:
@@ -459,17 +833,43 @@
                 gap: .25rem .6rem;
             }
 
-            .titolo { font-size: .98rem; }
-            .schede { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
-            .schede button { min-height: 2.9rem; padding: 0 .25rem; font-size: .9rem; }
-            .contenuti { padding: 1rem 1rem 2rem; }
-            .tutor-consegna { top: -1rem; }
+            .titolo {
+                font-size: .98rem;
+            }
+
+            .schede {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 0;
+            }
+
+            .schede button {
+                min-height: 2.9rem;
+                padding: 0 .25rem;
+                font-size: .9rem;
+            }
+
+            .contenuti {
+                padding: 1rem 1rem 2rem;
+            }
+
+            .tutor-consegna {
+                top: -1rem;
+            }
         }
 
         @media (max-width: 520px) {
-            .barra .orfini-back-btn { padding: 6px 10px; }
-            .tutor-riga { flex-direction: column; }
-            .tutor-riga .input-mono { flex: none; }
+            .barra .orfini-back-btn {
+                padding: 6px 10px;
+            }
+
+            .tutor-riga {
+                flex-direction: column;
+            }
+
+            .tutor-riga .input-mono {
+                flex: none;
+            }
         }
 
         /* ---------- Spiegazione animata ---------- */
@@ -488,9 +888,21 @@
             font-size: .92rem;
         }
 
-        .btn-spiega svg, .link-btn svg { width: 18px; height: 18px; color: var(--accent); }
-        .btn-spiega:hover { background: var(--accent); color: var(--on-accent); }
-        .btn-spiega:hover svg { color: var(--on-accent); }
+        .btn-spiega svg,
+        .link-btn svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+        }
+
+        .btn-spiega:hover {
+            background: var(--accent);
+            color: var(--on-accent);
+        }
+
+        .btn-spiega:hover svg {
+            color: var(--on-accent);
+        }
 
         .link-btn {
             justify-self: start;
@@ -506,7 +918,10 @@
             font-weight: 600;
         }
 
-        .link-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+        .link-btn:hover {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
 
         .explain {
             position: fixed;
@@ -530,7 +945,12 @@
             border: 1px solid var(--line);
         }
 
-        .explain-box iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .explain-box iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
 
         .explain-close {
             position: absolute;
@@ -547,107 +967,158 @@
             color: var(--text);
         }
 
-        .explain-close svg { width: 20px; height: 20px; }
+        .explain-close svg {
+            width: 20px;
+            height: 20px;
+        }
 
-        @media (max-width: 899px), (orientation: portrait) {
-            .btn-spiega { width: 44px; padding: 0; justify-content: center; }
-            .btn-spiega span { display: none; }
+        @media (max-width: 899px),
+        (orientation: portrait) {
+            .btn-spiega {
+                width: 44px;
+                padding: 0;
+                justify-content: center;
+            }
+
+            .btn-spiega span {
+                display: none;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            * { transition: none !important; scroll-behavior: auto !important; }
+            * {
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="app">
         <header class="barra">
-<!-- ORFINI-BACK START -->
-<style>
-.orfini-back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(15, 23, 42, 0.8);
-  color: #e2e8f0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-  padding: 6px 14px;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  pointer-events: auto;
-  line-height: 1.2;
-}
-.orfini-back-btn:hover {
-  background: rgba(30, 41, 59, 0.95);
-  border-color: rgba(255, 255, 255, 0.35);
-  color: #ffffff !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-}
-.orfini-back-btn-fixed-left {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 10000;
-}
-.orfini-back-btn-fixed-right {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 10000;
-}
-.orfini-back-btn-header {
-  margin-right: 12px;
-  flex-shrink: 0;
-}
-.orfini-back-arrow {
-  font-size: 14px;
-  line-height: 1;
-}
-/* Regole separate: un selettore non riconosciuto invaliderebbe l'intera lista */
-:fullscreen .orfini-back-btn { display: none !important; }
-:-webkit-full-screen .orfini-back-btn { display: none !important; }
-@media (display-mode: fullscreen) { .orfini-back-btn { display: none !important; } }
-@media (max-width: 640px) {
-  .orfini-back-btn .orfini-back-text {
-    display: none;
-  }
-  .orfini-back-btn {
-    padding: 6px 10px;
-  }
-}
-</style>
-<a href="../../index.html" class="orfini-back-btn orfini-back-btn-header" title="Torna a Orfini Math Lab" aria-label="Torna a Orfini Math Lab">
-  <span class="orfini-back-arrow">←</span>
-  <span class="orfini-back-text">Orfini Math Lab</span>
-</a>
-<!-- ORFINI-BACK END -->
+            <!-- ORFINI-BACK START -->
+            <style>
+                .orfini-back-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: rgba(15, 23, 42, 0.8);
+                    color: #e2e8f0 !important;
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-radius: 9999px;
+                    padding: 6px 14px;
+                    font-family: system-ui, -apple-system, sans-serif;
+                    font-size: 12px;
+                    font-weight: 500;
+                    text-decoration: none !important;
+                    backdrop-filter: blur(8px);
+                    -webkit-backdrop-filter: blur(8px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+                    transition: all 0.2s ease;
+                    cursor: pointer;
+                    pointer-events: auto;
+                    line-height: 1.2;
+                }
+
+                .orfini-back-btn:hover {
+                    background: rgba(30, 41, 59, 0.95);
+                    border-color: rgba(255, 255, 255, 0.35);
+                    color: #ffffff !important;
+                    transform: translateY(-1px);
+                    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+                }
+
+                .orfini-back-btn-fixed-left {
+                    position: fixed;
+                    top: 16px;
+                    left: 16px;
+                    z-index: 10000;
+                }
+
+                .orfini-back-btn-fixed-right {
+                    position: fixed;
+                    top: 16px;
+                    right: 16px;
+                    z-index: 10000;
+                }
+
+                .orfini-back-btn-header {
+                    margin-right: 12px;
+                    flex-shrink: 0;
+                }
+
+                .orfini-back-arrow {
+                    font-size: 14px;
+                    line-height: 1;
+                }
+
+                /* Regole separate: un selettore non riconosciuto invaliderebbe l'intera lista */
+                :fullscreen .orfini-back-btn {
+                    display: none !important;
+                }
+
+                :-webkit-full-screen .orfini-back-btn {
+                    display: none !important;
+                }
+
+                @media (display-mode: fullscreen) {
+                    .orfini-back-btn {
+                        display: none !important;
+                    }
+                }
+
+                @media (max-width: 640px) {
+                    .orfini-back-btn .orfini-back-text {
+                        display: none;
+                    }
+
+                    .orfini-back-btn {
+                        padding: 6px 10px;
+                    }
+                }
+            </style>
+            <a href="../../index.html" class="orfini-back-btn orfini-back-btn-header" title="Torna a Orfini Math Lab"
+                aria-label="Torna a Orfini Math Lab">
+                <span class="orfini-back-arrow">←</span>
+                <span class="orfini-back-text">Orfini Math Lab</span>
+            </a>
+            <!-- ORFINI-BACK END -->
 
             <h1 class="titolo">Frazionarie <span>vs</span> sistemi</h1>
 
             <nav class="schede" role="tablist" aria-label="Sezioni">
-                <button type="button" role="tab" id="tab-btn-fraz" aria-controls="vista-fraz" aria-selected="true">Frazionaria</button>
-                <button type="button" role="tab" id="tab-btn-sist" aria-controls="vista-sist" aria-selected="false" tabindex="-1">Sistema</button>
-                <button type="button" role="tab" id="tab-btn-confronto" aria-controls="vista-confronto" aria-selected="false" tabindex="-1">Confronto</button>
-                <button type="button" role="tab" id="tab-btn-tutor" aria-controls="vista-tutor" aria-selected="false" tabindex="-1">Tutor</button>
+                <button type="button" role="tab" id="tab-btn-fraz" aria-controls="vista-fraz"
+                    aria-selected="true">Frazionaria</button>
+                <button type="button" role="tab" id="tab-btn-sist" aria-controls="vista-sist" aria-selected="false"
+                    tabindex="-1">Sistema</button>
+                <button type="button" role="tab" id="tab-btn-confronto" aria-controls="vista-confronto"
+                    aria-selected="false" tabindex="-1">Confronto</button>
+                <button type="button" role="tab" id="tab-btn-tutor" aria-controls="vista-tutor" aria-selected="false"
+                    tabindex="-1">Tutor</button>
             </nav>
 
             <div class="azioni">
                 <button type="button" class="btn-spiega" data-explain="" title="Spiegazione animata di un minuto">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                    </svg>
                     <span>Spiegami</span>
                 </button>
-                <button type="button" class="icona" id="btn-tema" aria-label="Passa al tema chiaro" title="Tema chiaro o scuro">
-                    <svg class="ic-sole" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
-                    <svg class="ic-luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+                <button type="button" class="icona" id="btn-tema" aria-label="Passa al tema chiaro"
+                    title="Tema chiaro o scuro">
+                    <svg class="ic-sole" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4" />
+                        <path
+                            d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+                    </svg>
+                    <svg class="ic-luna" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+                        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+                    </svg>
                 </button>
             </div>
         </header>
@@ -660,33 +1131,48 @@
                     <div class="scheda-dati" id="card-fraz">
                         <div class="campo">
                             <label for="num">Numeratore N(x)</label>
-                            <input type="text" id="num" class="input-mono" placeholder="es. x^2 - 4" value="x^2 - 4" autocomplete="off" spellcheck="false" autocapitalize="off">
+                            <input type="text" id="num" class="input-mono" placeholder="es. x^2 - 4" value="x^2 - 4"
+                                autocomplete="off" spellcheck="false" autocapitalize="off">
                         </div>
                         <div class="linea-frazione" aria-hidden="true"></div>
                         <div class="campo">
                             <label for="den">Denominatore D(x)</label>
-                            <input type="text" id="den" class="input-mono" placeholder="es. x^2 - 5x + 6 (vuoto: intera)" value="x^2 - 5x + 6" autocomplete="off" spellcheck="false" autocapitalize="off">
+                            <input type="text" id="den" class="input-mono"
+                                placeholder="es. x^2 - 5x + 6 (vuoto: intera)" value="x^2 - 5x + 6" autocomplete="off"
+                                spellcheck="false" autocapitalize="off">
                         </div>
                         <div class="campo">
                             <span class="lbl" id="lbl-verso">Verso della disequazione</span>
                             <div class="verso" role="radiogroup" aria-labelledby="lbl-verso">
                                 <button type="button" role="radio" data-op=">" aria-checked="true">&gt;&nbsp;0</button>
-                                <button type="button" role="radio" data-op=">=" aria-checked="false" tabindex="-1">&ge;&nbsp;0</button>
-                                <button type="button" role="radio" data-op="<" aria-checked="false" tabindex="-1">&lt;&nbsp;0</button>
-                                <button type="button" role="radio" data-op="<=" aria-checked="false" tabindex="-1">&le;&nbsp;0</button>
+                                <button type="button" role="radio" data-op=">=" aria-checked="false"
+                                    tabindex="-1">&ge;&nbsp;0</button>
+                                <button type="button" role="radio" data-op="<" aria-checked="false"
+                                    tabindex="-1">&lt;&nbsp;0</button>
+                                <button type="button" role="radio" data-op="<=" aria-checked="false"
+                                    tabindex="-1">&le;&nbsp;0</button>
                             </div>
                             <input type="hidden" id="fraz-verso" value=">">
                         </div>
                         <div class="esempi">
                             <span class="esempi-lbl">Prova</span>
-                            <button type="button" class="chip" data-n="x^2 - 4" data-d="x^2 - 5x + 6" data-op=">">(x²−4)/(x²−5x+6)</button>
-                            <button type="button" class="chip" data-n="x - 1" data-d="x + 2" data-op=">">(x−1)/(x+2)</button>
-                            <button type="button" class="chip" data-n="x + 3" data-d="x - 1" data-op="<=">(x+3)/(x−1)</button>
-                            <button type="button" class="chip" data-n="x^2 + 1" data-d="x - 3" data-op="<">(x²+1)/(x−3)</button>
+                            <button type="button" class="chip" data-n="x^2 - 4" data-d="x^2 - 5x + 6"
+                                data-op=">">(x²−4)/(x²−5x+6)</button>
+                            <button type="button" class="chip" data-n="x - 1" data-d="x + 2"
+                                data-op=">">(x−1)/(x+2)</button>
+                            <button type="button" class="chip" data-n="x + 3" data-d="x - 1"
+                                data-op="<=">(x+3)/(x−1)</button>
+                            <button type="button" class="chip" data-n="x^2 + 1" data-d="x - 3"
+                                data-op="<">(x²+1)/(x−3)</button>
                         </div>
-                        <p class="aiuto-sintassi">Potenze con <code>^</code>: <code>2x^2 - 3x</code>. Denominatore vuoto: disequazione intera.</p>
+                        <p class="aiuto-sintassi">Potenze con <code>^</code>: <code>2x^2 - 3x</code>. Denominatore
+                            vuoto: disequazione intera.</p>
                         <p class="stato" id="stato-fraz" role="status" hidden></p>
-                        <button type="button" class="link-btn" data-explain="vista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
+                        <button type="button" class="link-btn" data-explain="vista"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                            </svg>Come funziona</button>
                     </div>
                 </div>
                 <div class="col-esiti">
@@ -700,21 +1186,32 @@
                     <div class="scheda-dati">
                         <div class="campo">
                             <label for="eq1">Prima disequazione S₁</label>
-                            <input type="text" id="eq1" class="input-mono" placeholder="es. x^2 - 1 > 0" value="x^2 - 1 > 0" autocomplete="off" spellcheck="false" autocapitalize="off">
+                            <input type="text" id="eq1" class="input-mono" placeholder="es. x^2 - 1 > 0"
+                                value="x^2 - 1 > 0" autocomplete="off" spellcheck="false" autocapitalize="off">
                         </div>
                         <div class="campo">
                             <label for="eq2">Seconda disequazione S₂</label>
-                            <input type="text" id="eq2" class="input-mono" placeholder="es. x - 2 < 0" value="x - 2 < 0" autocomplete="off" spellcheck="false" autocapitalize="off">
+                            <input type="text" id="eq2" class="input-mono" placeholder="es. x - 2 < 0" value="x - 2 < 0"
+                                autocomplete="off" spellcheck="false" autocapitalize="off">
                         </div>
                         <div class="esempi">
                             <span class="esempi-lbl">Prova</span>
-                            <button type="button" class="chip" data-e1="x^2 - 1 > 0" data-e2="x - 2 < 0">x²−1&gt;0 · x−2&lt;0</button>
-                            <button type="button" class="chip" data-e1="x - 1 >= 0" data-e2="x + 3 > 0">x−1≥0 · x+3&gt;0</button>
-                            <button type="button" class="chip" data-e1="x^2 - 4 <= 0" data-e2="x > 0">x²−4≤0 · x&gt;0</button>
+                            <button type="button" class="chip" data-e1="x^2 - 1 > 0" data-e2="x - 2 < 0">x²−1&gt;0 ·
+                                x−2&lt;0</button>
+                            <button type="button" class="chip" data-e1="x - 1 >= 0" data-e2="x + 3 > 0">x−1≥0 ·
+                                x+3&gt;0</button>
+                            <button type="button" class="chip" data-e1="x^2 - 4 <= 0" data-e2="x > 0">x²−4≤0 ·
+                                x&gt;0</button>
                         </div>
-                        <p class="aiuto-sintassi">Scrivi ogni disequazione completa di verso: <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>.</p>
+                        <p class="aiuto-sintassi">Scrivi ogni disequazione completa di verso: <code>&gt;</code>,
+                            <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>.
+                        </p>
                         <p class="stato" id="stato-sist" role="status" hidden></p>
-                        <button type="button" class="link-btn" data-explain="sist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="m10 8 6 4-6 4z" fill="currentColor" /></svg>Come funziona</button>
+                        <button type="button" class="link-btn" data-explain="sist"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m10 8 6 4-6 4z" fill="currentColor" />
+                            </svg>Come funziona</button>
                     </div>
                 </div>
                 <div class="col-esiti">
@@ -740,7 +1237,10 @@
     <div class="explain" id="explain" hidden role="dialog" aria-modal="true" aria-label="Spiegazione animata">
         <div class="explain-box">
             <button type="button" class="explain-close" id="explainClose" aria-label="Chiudi la spiegazione">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
             </button>
             <iframe id="explainFrame" title="Spiegazione animata: frazionarie e sistemi" allow="fullscreen"></iframe>
         </div>
@@ -751,10 +1251,14 @@
         <div class="modale-testa">
             <h2 id="modal-titolo">Grafico dei segni</h2>
             <button type="button" class="icona" id="modal-chiudi" aria-label="Chiudi il grafico">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
             </button>
         </div>
-        <p class="nota">Le curve sono riscalate per stare nello stesso riquadro: conta dove stanno sopra l'asse (positive) o sotto (negative), non quanto sono alte.</p>
+        <p class="nota">Le curve sono riscalate per stare nello stesso riquadro: conta dove stanno sopra l'asse
+            (positive) o sotto (negative), non quanto sono alte.</p>
         <div id="modal-graph-container" class="modal-graph-container"></div>
     </dialog>
 
@@ -768,7 +1272,7 @@
             throwOnError: false
         };
 
-        const subMap = {'0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉'};
+        const subMap = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉' };
         function toSub(idx) {
             return idx.toString().split('').map(c => subMap[c] || c).join('');
         }
@@ -932,10 +1436,10 @@
 
         function checkMathEquivalence(input, expected, requiresFactor = false) {
             try {
-                if(requiresFactor && !input.includes('(') && expected.includes('(')) return false;
+                if (requiresFactor && !input.includes('(') && expected.includes('(')) return false;
                 let diff = nerdamer(`simplify( (${input}) - (${expected}) )`).text();
                 return diff === '0';
-            } catch(e) { return false; }
+            } catch (e) { return false; }
         }
 
         function extractFactors(polyStr) {
@@ -946,19 +1450,19 @@
                 let depth = 0;
 
                 // Parser robusto per dividere i fattori separati da '*' a livello gerarchico 0
-                for(let i=0; i<factored.length; i++) {
+                for (let i = 0; i < factored.length; i++) {
                     let char = factored[i];
-                    if(char === '(') depth++;
-                    else if(char === ')') depth--;
+                    if (char === '(') depth++;
+                    else if (char === ')') depth--;
 
-                    if(char === '*' && depth === 0) {
-                        if(current) factors.push(current.trim());
+                    if (char === '*' && depth === 0) {
+                        if (current) factors.push(current.trim());
                         current = "";
                     } else {
                         current += char;
                     }
                 }
-                if(current) factors.push(current.trim());
+                if (current) factors.push(current.trim());
 
                 // Filtriamo i fattori:
                 // 1. Teniamo quelli che contengono l'incognita 'x'
@@ -970,11 +1474,11 @@
                     try {
                         let val = parseFloat(nerdamer(f).evaluate().text());
                         if (val < 0) return true; // Contribuisce al segno negativo
-                    } catch(e) {}
+                    } catch (e) { }
                     return false;
                 });
                 return validFactors.length > 0 ? validFactors : [polyStr];
-            } catch(e) { return [polyStr]; }
+            } catch (e) { return [polyStr]; }
         }
 
         function formatLogicPart(intv) {
@@ -989,14 +1493,14 @@
             let partsLog = [];
             let currentInterval = null;
 
-            for(let i=0; i<intervalSigns.length; i++) {
+            for (let i = 0; i < intervalSigns.length; i++) {
                 let isTrue = (intervalSigns[i] === targetCondition);
 
                 if (isTrue) {
                     if (!currentInterval) {
                         let isLeftInf = (i === 0);
-                        let leftSym = isLeftInf ? "" : T(capisaldi[i-1].sym);
-                        let leftInc = isLeftInf ? false : checkPointFn(capisaldi[i-1].val);
+                        let leftSym = isLeftInf ? "" : T(capisaldi[i - 1].sym);
+                        let leftInc = isLeftInf ? false : checkPointFn(capisaldi[i - 1].val);
                         let leftBound = isLeftInf ? `${AP_ESC}-\\infty` : (leftInc ? `${AP_INC}${leftSym}` : `${AP_ESC}${leftSym}`);
 
                         let isRightInf = (i === intervalSigns.length - 1);
@@ -1006,7 +1510,7 @@
 
                         currentInterval = { left: leftBound, right: rightBound, isLeftInf, isRightInf, leftSym, rightSym, leftInc, rightInc };
                     } else {
-                        let sepCap = capisaldi[i-1];
+                        let sepCap = capisaldi[i - 1];
                         if (checkPointFn(sepCap.val)) {
                             let isRightInf = (i === intervalSigns.length - 1);
                             currentInterval.isRightInf = isRightInf;
@@ -1043,7 +1547,7 @@
 
             capisaldi.forEach((cap, i) => {
                 let leftTrue = i === 0 ? intervalSigns[0] === targetCondition : intervalSigns[i] === targetCondition;
-                let rightTrue = i === intervalSigns.length - 1 ? intervalSigns[intervalSigns.length - 1] === targetCondition : intervalSigns[i+1] === targetCondition;
+                let rightTrue = i === intervalSigns.length - 1 ? intervalSigns[intervalSigns.length - 1] === targetCondition : intervalSigns[i + 1] === targetCondition;
 
                 if (!leftTrue && !rightTrue && checkPointFn(cap.val)) {
                     partsInt.push(`\\{${T(cap.sym)}\\}`);
@@ -1051,8 +1555,8 @@
                 }
             });
 
-            if(partsInt.length === 0) return { interval: "\\emptyset", logic: "\\nexists x \\in \\mathbb{R}", vuoto: true };
-            if(partsLog.length === 1 && partsLog[0] === "x \\in \\mathbb{R}") return { interval: `${AP_ESC}-\\infty;\\, +\\infty${CH_ESC}`, logic: "\\forall x \\in \\mathbb{R}" };
+            if (partsInt.length === 0) return { interval: "\\emptyset", logic: "\\nexists x \\in \\mathbb{R}", vuoto: true };
+            if (partsLog.length === 1 && partsLog[0] === "x \\in \\mathbb{R}") return { interval: `${AP_ESC}-\\infty;\\, +\\infty${CH_ESC}`, logic: "\\forall x \\in \\mathbb{R}" };
 
             return { interval: partsInt.join(" \\cup "), logic: partsLog.join(" \\lor "), targetCondition: targetCondition };
         }
@@ -1151,7 +1655,7 @@
                         let cx = xCoords[i];
                         // A sinistra del caposaldo i c'è l'intervallo i, a destra l'intervallo i+1
                         let leftTrue = row.intervals[i];
-                        let rightTrue = row.intervals[i+1];
+                        let rightTrue = row.intervals[i + 1];
 
                         if (kind === 'segno' || leftTrue || rightTrue || row.evalFn(cap.val)) {
                             let isInc = row.evalFn(cap.val);
@@ -1190,22 +1694,22 @@
                 try {
                     let fn = nerdamer(f.expr).buildFunction(['x']);
                     let raw_pts = [];
-                    for(let i=0; i<=pointsN; i++) {
-                        let x = minX + i*dx;
+                    for (let i = 0; i <= pointsN; i++) {
+                        let x = minX + i * dx;
                         try {
                             let y = fn(x);
                             if (typeof y === 'number' && Number.isFinite(y)) {
-                                raw_pts.push({x, y});
+                                raw_pts.push({ x, y });
                             }
-                        }catch(e){}
+                        } catch (e) { }
                     }
 
                     // Rilevamento vertici matematici per scalatura perfetta
                     let extrema = [];
                     for (let i = 1; i < raw_pts.length - 1; i++) {
-                        let y0 = raw_pts[i-1].y;
+                        let y0 = raw_pts[i - 1].y;
                         let y1 = raw_pts[i].y;
-                        let y2 = raw_pts[i+1].y;
+                        let y2 = raw_pts[i + 1].y;
                         if ((y1 < y0 && y1 < y2) || (y1 > y0 && y1 > y2)) {
                             extrema.push(y1);
                         }
@@ -1226,25 +1730,25 @@
                     if (f.thick) amplitude = 1.0;
 
                     let pts = [];
-                    for(let i=0; i<raw_pts.length; i++) {
+                    for (let i = 0; i < raw_pts.length; i++) {
                         let p = raw_pts[i];
                         let y_norm = (p.y / refY) * amplitude;
 
                         if (y_norm > 1.5) y_norm = 1.5;
                         if (y_norm < -1.5) y_norm = -1.5;
 
-                        pts.push({x: p.x, y_norm: y_norm, rawY: p.y});
+                        pts.push({ x: p.x, y_norm: y_norm, rawY: p.y });
                     }
 
                     curves.push({ label: f.label, pts: pts, dashPattern: f.dashPattern, thick: f.thick, refY: refY });
-                }catch(e){}
+                } catch (e) { }
             });
 
-            function mapX(x) { return (20*scale) + (x - minX)/(maxX - minX) * (svgW - 40*scale); }
+            function mapX(x) { return (20 * scale) + (x - minX) / (maxX - minX) * (svgW - 40 * scale); }
 
             let zeroY = svgH / 2;
             function mapY(y_norm) {
-                return zeroY - y_norm * (zeroY - 20*scale);
+                return zeroY - y_norm * (zeroY - 20 * scale);
             }
 
             let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 100%; flex-grow: 1; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-color); margin-top: 10px;">`;
@@ -1256,25 +1760,25 @@
             svg += `<stop offset="100%" stop-color="var(--error-color)" />`;
             svg += `</linearGradient></defs>`;
 
-            svg += `<line x1="${10*scale}" y1="${zeroY}" x2="${svgW-10*scale}" y2="${zeroY}" stroke="var(--text-secondary)" stroke-dasharray="${4*scale},${4*scale}" stroke-width="${1.5*scale}" opacity="0.7" />`;
+            svg += `<line x1="${10 * scale}" y1="${zeroY}" x2="${svgW - 10 * scale}" y2="${zeroY}" stroke="var(--text-secondary)" stroke-dasharray="${4 * scale},${4 * scale}" stroke-width="${1.5 * scale}" opacity="0.7" />`;
 
             let lastTextEnd = -100;
             capisaldi.forEach(c => {
                 let cx = mapX(c.val);
                 let isInc = checkFn ? checkFn(c.val) : false;
                 let fill = isInc ? "var(--accent-color)" : "var(--bg-color)";
-                svg += `<circle cx="${cx}" cy="${zeroY}" r="${5*scale}" fill="${fill}" stroke="var(--accent-color)" stroke-width="${2*scale}" />`;
+                svg += `<circle cx="${cx}" cy="${zeroY}" r="${5 * scale}" fill="${fill}" stroke="var(--accent-color)" stroke-width="${2 * scale}" />`;
 
-                let ty = zeroY + 12*scale;
-                if (cx < lastTextEnd + 50*scale) ty += 22*scale;
+                let ty = zeroY + 12 * scale;
+                if (cx < lastTextEnd + 50 * scale) ty += 22 * scale;
 
                 let texSym = "";
-                try { texSym = nerdamer(c.sym).toTeX(); } catch(e) { texSym = c.sym; }
+                try { texSym = nerdamer(c.sym).toTeX(); } catch (e) { texSym = c.sym; }
 
                 // Etichetta caposaldo cartesiano anti-overlap (badge HTML)
-                svg += `<foreignObject x="${cx - 40*scale}" y="${ty}" width="${80*scale}" height="${30*scale}" style="overflow:visible; pointer-events:none;">
+                svg += `<foreignObject x="${cx - 40 * scale}" y="${ty}" width="${80 * scale}" height="${30 * scale}" style="overflow:visible; pointer-events:none;">
                     <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
-                        <div style="color:var(--text-primary); font-size:${12*scale}px; font-weight:bold; background: var(--surface-color); padding: 2px ${6*scale}px; border-radius: ${4*scale}px; border: 1px solid var(--border-color);">
+                        <div style="color:var(--text-primary); font-size:${12 * scale}px; font-weight:bold; background: var(--surface-color); padding: 2px ${6 * scale}px; border-radius: ${4 * scale}px; border: 1px solid var(--border-color);">
                             $${texSym}$
                         </div>
                     </div>
@@ -1283,16 +1787,16 @@
             });
 
             curves.forEach(c => {
-                if(c.pts.length === 0) return;
+                if (c.pts.length === 0) return;
                 let d = "";
                 let lastDrawnX = -100;
 
-                for(let i=0; i<c.pts.length; i++) {
+                for (let i = 0; i < c.pts.length; i++) {
                     let pt = c.pts[i];
                     let isJump = false;
 
                     if (i > 0) {
-                        let prevRaw = c.pts[i-1].rawY;
+                        let prevRaw = c.pts[i - 1].rawY;
                         let currRaw = pt.rawY;
                         if (Math.abs(currRaw - prevRaw) > c.refY * 1.5 && (currRaw * prevRaw < 0)) {
                             isJump = true;
@@ -1313,8 +1817,8 @@
                     lastDrawnX = pt.x;
                 }
 
-                let dash = c.dashPattern ? `stroke-dasharray="${c.dashPattern.split(',').map(n => n*scale).join(',')}"` : '';
-                let strokeW = c.thick ? 2.5*scale : 1.5*scale;
+                let dash = c.dashPattern ? `stroke-dasharray="${c.dashPattern.split(',').map(n => n * scale).join(',')}"` : '';
+                let strokeW = c.thick ? 2.5 * scale : 1.5 * scale;
                 let opacity = c.thick ? '1' : '0.9';
                 svg += `<path d="${d}" fill="none" stroke="url(#gradSign${containerId})" stroke-width="${strokeW}" opacity="${opacity}" ${dash} stroke-linecap="round" stroke-linejoin="round" />`;
 
@@ -1324,12 +1828,12 @@
                     let ly = mapY(ptL.y_norm);
                     let lx = mapX(ptL.x);
                     let fw = c.thick ? "bold" : "normal";
-                    let fs = c.thick ? 14*scale : 12*scale;
+                    let fs = c.thick ? 14 * scale : 12 * scale;
 
                     // Etichetta funzione anti-overlap scavalca le linee
-                    svg += `<foreignObject x="${lx - 50*scale}" y="${ly - 40*scale}" width="${100*scale}" height="${40*scale}" style="overflow:visible; pointer-events:none;">
+                    svg += `<foreignObject x="${lx - 50 * scale}" y="${ly - 40 * scale}" width="${100 * scale}" height="${40 * scale}" style="overflow:visible; pointer-events:none;">
                         <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex; justify-content:center;">
-                            <div style="color:var(--text-primary); font-size:${fs}px; font-weight:${fw}; background: var(--surface-color); border: 1px solid var(--border-color); padding: ${2*scale}px ${6*scale}px; border-radius: ${8*scale}px;">
+                            <div style="color:var(--text-primary); font-size:${fs}px; font-weight:${fw}; background: var(--surface-color); border: 1px solid var(--border-color); padding: ${2 * scale}px ${6 * scale}px; border-radius: ${8 * scale}px;">
                                 ${c.label}
                             </div>
                         </div>
@@ -1356,7 +1860,7 @@
                 if (op === '>=') return res >= -1e-7;
                 if (op === '<') return res < -1e-7;
                 if (op === '<=') return res <= 1e-7;
-            } catch(e) { return false; }
+            } catch (e) { return false; }
             return false;
         }
 
@@ -1375,9 +1879,9 @@
                     let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
                     if (isNaN(val)) return;
                     if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
-                        capisaldi.push({sym: sym, val: val});
+                        capisaldi.push({ sym: sym, val: val });
                     }
-                } catch(e) {}
+                } catch (e) { }
             });
             capisaldi.sort((a, b) => a.val - b.val);
             return capisaldi;
@@ -1388,8 +1892,8 @@
             if (capisaldi.length === 0) testPoints.push(0);
             else {
                 testPoints.push(capisaldi[0].val - 1);
-                for(let i = 0; i < capisaldi.length - 1; i++) {
-                    testPoints.push((capisaldi[i].val + capisaldi[i+1].val) / 2);
+                for (let i = 0; i < capisaldi.length - 1; i++) {
+                    testPoints.push((capisaldi[i].val + capisaldi[i + 1].val) / 2);
                 }
                 testPoints.push(capisaldi[capisaldi.length - 1].val + 1);
             }
@@ -1411,7 +1915,7 @@
                     let val = parseFloat(nerdamer(f).sub('x', 0).evaluate().text());
                     sol = val > 0 ? "\\forall x \\in \\mathbb{R}" : "\\nexists x \\in \\mathbb{R}";
                 }
-            } catch(e) {}
+            } catch (e) { }
             return sol;
         }
 
@@ -1448,14 +1952,14 @@
 
                 nFactors.forEach((f, idx) => {
                     if (f === '1' || f === '(1)') return;
-                    let label = nFactors.length > 1 ? `N${toSub(idx+1)}` : 'N(x)';
-                    let labelTex = nFactors.length > 1 ? `N_{${idx+1}}` : 'N(x)';
+                    let label = nFactors.length > 1 ? `N${toSub(idx + 1)}` : 'N(x)';
+                    let labelTex = nFactors.length > 1 ? `N_{${idx + 1}}` : 'N(x)';
                     let row = { label: label, intervals: [] };
                     testPoints.forEach(tp => {
                         try {
                             let val = parseFloat(nerdamer(f).sub('x', tp).evaluate().text());
                             row.intervals.push(val >= 0 ? '+' : '-');
-                        } catch(e) { row.intervals.push('+'); }
+                        } catch (e) { row.intervals.push('+'); }
                     });
                     diagramRows.push(row);
                     fattoriHTML += `<li>$${labelTex}: ${nerdamer(f).toTeX()} > 0 \\implies ${positivitaFattore(f)}$</li>`;
@@ -1463,14 +1967,14 @@
 
                 dFactors.forEach((f, idx) => {
                     if (f === '1' || f === '(1)') return;
-                    let label = dFactors.length > 1 ? `D${toSub(idx+1)}` : 'D(x)';
-                    let labelTex = dFactors.length > 1 ? `D_{${idx+1}}` : 'D(x)';
+                    let label = dFactors.length > 1 ? `D${toSub(idx + 1)}` : 'D(x)';
+                    let labelTex = dFactors.length > 1 ? `D_{${idx + 1}}` : 'D(x)';
                     let row = { label: label, intervals: [] };
                     testPoints.forEach(tp => {
                         try {
                             let val = parseFloat(nerdamer(f).sub('x', tp).evaluate().text());
                             row.intervals.push(val > 0 ? '+' : '-');
-                        } catch(e) { row.intervals.push('+'); }
+                        } catch (e) { row.intervals.push('+'); }
                     });
                     diagramRows.push(row);
                     fattoriHTML += `<li>$${labelTex}: ${nerdamer(f).toTeX()} > 0 \\implies ${positivitaFattore(f)}$</li>`;
@@ -1478,14 +1982,14 @@
 
                 let checkFn = (val) => checkFrazPoint(numRaw, denRaw, op, val);
                 let targetSign = (op === '>' || op === '>=') ? '+' : '-';
-                let rowRes = {label: isIntera ? 'Segno' : 'N/D', intervals: [], isResult: true, evalFn: checkFn, targetCondition: targetSign};
+                let rowRes = { label: isIntera ? 'Segno' : 'N/D', intervals: [], isResult: true, evalFn: checkFn, targetCondition: targetSign };
 
                 testPoints.forEach(tp => {
                     try {
                         let n_val = parseFloat(nerdamer(numRaw).sub('x', tp).evaluate().text());
                         let d_val = parseFloat(nerdamer(denRaw).sub('x', tp).evaluate().text());
                         rowRes.intervals.push((n_val / d_val) >= 0 ? '+' : '-');
-                    } catch(e) { rowRes.intervals.push('+'); }
+                    } catch (e) { rowRes.intervals.push('+'); }
                 });
                 diagramRows.push(rowRes);
 
@@ -1538,7 +2042,7 @@
                 if (op === '>=') return res >= -1e-7;
                 if (op === '<') return res < -1e-7;
                 if (op === '<=') return res <= 1e-7;
-            } catch(e) { return false; }
+            } catch (e) { return false; }
             return false;
         }
 
@@ -1566,10 +2070,10 @@
                 let capisaldi = capisaldiDa([...roots1, ...roots2]);
                 let testPoints = puntiDiProva(capisaldi);
 
-                let rowS1 = {label: 'S₁', intervals: [], evalFn: (v) => checkSysPoint(ineq1.poly, ineq1.op, v)};
-                let rowS2 = {label: 'S₂', intervals: [], evalFn: (v) => checkSysPoint(ineq2.poly, ineq2.op, v)};
+                let rowS1 = { label: 'S₁', intervals: [], evalFn: (v) => checkSysPoint(ineq1.poly, ineq1.op, v) };
+                let rowS2 = { label: 'S₂', intervals: [], evalFn: (v) => checkSysPoint(ineq2.poly, ineq2.op, v) };
                 let checkFn = (val) => { return checkSysPoint(ineq1.poly, ineq1.op, val) && checkSysPoint(ineq2.poly, ineq2.op, val); };
-                let rowRes = {label: 'S₁ ∩ S₂', intervals: [], isResult: true, evalFn: checkFn, targetCondition: true};
+                let rowRes = { label: 'S₁ ∩ S₂', intervals: [], isResult: true, evalFn: checkFn, targetCondition: true };
 
                 testPoints.forEach(tp => {
                     try {
@@ -1578,7 +2082,7 @@
                         rowS1.intervals.push(s1_val);
                         rowS2.intervals.push(s2_val);
                         rowRes.intervals.push(s1_val && s2_val);
-                    } catch(e) {
+                    } catch (e) {
                         rowS1.intervals.push(false); rowS2.intervals.push(false); rowRes.intervals.push(false);
                     }
                 });
@@ -1909,12 +2413,12 @@
         function updateTutorLivePreview(idx) {
             const val = $(`tutor-input-${idx}`).value.trim();
             const preview = $(`tutor-live-preview-${idx}`);
-            if(!val) { preview.innerHTML = ""; return; }
+            if (!val) { preview.innerHTML = ""; return; }
             try {
                 const tex = nerdamer(val).toTeX();
                 preview.innerHTML = `$${tex}$`;
                 renderMathInElement(preview, KATEX_OPTS);
-            } catch(e) {
+            } catch (e) {
                 preview.innerHTML = "<small>Continua a scrivere…</small>";
             }
         }
@@ -1987,14 +2491,14 @@
                     try {
                         let val = parseFloat(nerdamer(sym).evaluate().text('decimals'));
                         if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
-                            capisaldi.push({sym: sym, val: val});
+                            capisaldi.push({ sym: sym, val: val });
                         }
-                    } catch(e) {}
+                    } catch (e) { }
                 });
 
                 ceArray.forEach(val => {
                     if (!capisaldi.find(c => Math.abs(c.val - val) < 0.0001)) {
-                        capisaldi.push({sym: val.toString(), val: val, isCE: true});
+                        capisaldi.push({ sym: val.toString(), val: val, isCE: true });
                     }
                 });
 
@@ -2002,8 +2506,8 @@
 
                 let testPoints = puntiDiProva(capisaldi);
 
-                let rowN = {label: 'N(x)', intervals: []};
-                let rowD = {label: 'D(x)', intervals: []};
+                let rowN = { label: 'N(x)', intervals: [] };
+                let rowD = { label: 'D(x)', intervals: [] };
 
                 testPoints.forEach(tp => {
                     let n_val = parseFloat(nerdamer(numRaw).sub('x', tp).evaluate().text());
@@ -2018,7 +2522,7 @@
                 };
 
                 let targetSign = (verso === '>' || verso === '>=') ? '+' : '-';
-                let rowRes = {label: 'N/D', intervals: [], isResult: true, evalFn: checkFn, targetCondition: targetSign};
+                let rowRes = { label: 'N/D', intervals: [], isResult: true, evalFn: checkFn, targetCondition: targetSign };
                 testPoints.forEach(tp => {
                     let n_val = parseFloat(nerdamer(numRaw).sub('x', tp).evaluate().text());
                     let d_val = parseFloat(nerdamer(denRaw).sub('x', tp).evaluate().text());
@@ -2032,7 +2536,7 @@
                     ${bloccoSoluzione(solutions)}
                 `;
                 renderMath('tutor-final-diagram', diagHtml);
-            } catch(e) {
+            } catch (e) {
                 $('tutor-final-diagram').innerHTML = `<p class="stato" data-tipo="errore">Non sono riuscito a disegnare il diagramma dei segni per questo esercizio.</p>`;
             }
         }
@@ -2055,19 +2559,19 @@
             /* Finestra della spiegazione: chiusa solo da chi guarda (✕, Esc, clic fuori, Esc dentro l'animazione);
                mentre è aperta il resto della pagina è inerte, alla chiusura il focus torna al pulsante che l'ha aperta */
             (() => {
-              const box = document.getElementById('explain'); if (!box) return;
-              let opener = null; const prev = new Map();
-              document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
-              document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
-              new MutationObserver(() => {
-                if (!box.hidden) {
-                  for (let n = box; n && n !== document.body; n = n.parentElement)
-                    for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
-                } else {
-                  prev.forEach((v, s) => { s.inert = v; }); prev.clear();
-                  if (opener && document.contains(opener) && opener.focus) opener.focus();
-                }
-              }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
+                const box = document.getElementById('explain'); if (!box) return;
+                let opener = null; const prev = new Map();
+                document.addEventListener('focusin', e => { if (box.hidden && !box.contains(e.target)) opener = e.target; });
+                document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('[data-explain]'); if (b) opener = b; }, true);
+                new MutationObserver(() => {
+                    if (!box.hidden) {
+                        for (let n = box; n && n !== document.body; n = n.parentElement)
+                            for (const s of n.parentElement ? n.parentElement.children : []) if (s !== n && !prev.has(s) && s.tagName !== 'SCRIPT') { prev.set(s, s.inert); s.inert = true; }
+                    } else {
+                        prev.forEach((v, s) => { s.inert = v; }); prev.clear();
+                        if (opener && document.contains(opener) && opener.focus) opener.focus();
+                    }
+                }).observe(box, { attributes: true, attributeFilter: ['hidden'] });
             })();
             if (e.origin === location.origin && e.data && e.data.type === 'spiegazione-chiudi' && e.source === document.getElementById('explainFrame').contentWindow) closeExplainer();
         });
@@ -2090,6 +2594,7 @@
             evaluateFractional();
         });
     </script>
-<script src="../assets/js/orfini-shared.js"></script>
+    <script src="../assets/js/orfini-shared.js"></script>
 </body>
+
 </html>
